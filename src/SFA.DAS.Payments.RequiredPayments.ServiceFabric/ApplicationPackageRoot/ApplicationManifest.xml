@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="ProviderPaymentsService_InstanceCount" DefaultValue="1" />
+    <Parameter Name="ProviderPaymentsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EmployerRequiredPaymentsServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="EmployerRequiredPaymentsServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="EmployerRequiredPaymentsServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
@@ -25,6 +25,11 @@
       <StatefulService ServiceTypeName="EmployerRequiredPaymentsServiceActorServiceType" TargetReplicaSetSize="[EmployerRequiredPaymentsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[EmployerRequiredPaymentsServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[EmployerRequiredPaymentsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
+    </Service>
+    <Service Name="SFA.DAS.Payments.RequiredPayments.ProviderPaymentsServiceType">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.RequiredPayments.ProviderPaymentsServiceType" InstanceCount="[ProviderPaymentsService_InstanceCount]">
+        <UniformInt64Partition PartitionCount="1" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatelessService>
     </Service>
   </DefaultServices>
 </ApplicationManifest>
