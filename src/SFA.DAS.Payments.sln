@@ -45,17 +45,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EarningEvents", "EarningEve
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.PaymentsDue.ServiceFabric", "SFA.DAS.Payments.PaymentsDue.ServiceFabric\SFA.DAS.Payments.PaymentsDue.ServiceFabric.sfproj", "{AD20CDB1-C2B4-4614-A995-68E43E707808}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService", "SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService\SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.csproj", "{A956BA9C-7ECC-47B9-B641-986B75353451}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService", "SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService\SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.csproj", "{A956BA9C-7ECC-47B9-B641-986B75353451}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces", "SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces\SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces.csproj", "{93ADC86D-EB02-4150-A77C-96C1FF3E5C55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces", "SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces\SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces.csproj", "{93ADC86D-EB02-4150-A77C-96C1FF3E5C55}"
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.RequiredPayments.ServiceFabric", "SFA.DAS.Payments.RequiredPayments.ServiceFabric\SFA.DAS.Payments.RequiredPayments.ServiceFabric.sfproj", "{8B80DADD-5311-4CA0-9274-9F044A38185E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService", "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService\SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.csproj", "{735D928B-DFE9-43EF-95D5-DA51F0B6FE63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService", "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService\SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.csproj", "{735D928B-DFE9-43EF-95D5-DA51F0B6FE63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces", "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces\SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces.csproj", "{F7A28094-7C54-4885-802A-15F22829BACD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces", "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces\SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces.csproj", "{F7A28094-7C54-4885-802A-15F22829BACD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService", "SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService\SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService.csproj", "{15873169-C746-4FF9-9848-B6C0BCFC4CF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService", "SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService\SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService.csproj", "{15873169-C746-4FF9-9848-B6C0BCFC4CF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -178,6 +178,8 @@ Global
 		{02CA48E0-35E5-4950-879F-EED3F3B9E0D5}.Release|x64.ActiveCfg = Release|Any CPU
 		{02CA48E0-35E5-4950-879F-EED3F3B9E0D5}.Release|x64.Build.0 = Release|Any CPU
 		{AD20CDB1-C2B4-4614-A995-68E43E707808}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{AD20CDB1-C2B4-4614-A995-68E43E707808}.Debug|Any CPU.Build.0 = Debug|x64
+		{AD20CDB1-C2B4-4614-A995-68E43E707808}.Debug|Any CPU.Deploy.0 = Debug|x64
 		{AD20CDB1-C2B4-4614-A995-68E43E707808}.Debug|x64.ActiveCfg = Debug|x64
 		{AD20CDB1-C2B4-4614-A995-68E43E707808}.Debug|x64.Build.0 = Debug|x64
 		{AD20CDB1-C2B4-4614-A995-68E43E707808}.Debug|x64.Deploy.0 = Debug|x64
@@ -202,6 +204,8 @@ Global
 		{93ADC86D-EB02-4150-A77C-96C1FF3E5C55}.Release|x64.ActiveCfg = Release|Any CPU
 		{93ADC86D-EB02-4150-A77C-96C1FF3E5C55}.Release|x64.Build.0 = Release|Any CPU
 		{8B80DADD-5311-4CA0-9274-9F044A38185E}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{8B80DADD-5311-4CA0-9274-9F044A38185E}.Debug|Any CPU.Build.0 = Debug|x64
+		{8B80DADD-5311-4CA0-9274-9F044A38185E}.Debug|Any CPU.Deploy.0 = Debug|x64
 		{8B80DADD-5311-4CA0-9274-9F044A38185E}.Debug|x64.ActiveCfg = Debug|x64
 		{8B80DADD-5311-4CA0-9274-9F044A38185E}.Debug|x64.Build.0 = Debug|x64
 		{8B80DADD-5311-4CA0-9274-9F044A38185E}.Debug|x64.Deploy.0 = Debug|x64
