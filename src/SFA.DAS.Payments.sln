@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces", "SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces\SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces.csproj", "{F7A28094-7C54-4885-802A-15F22829BACD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService", "SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService\SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService.csproj", "{15873169-C746-4FF9-9848-B6C0BCFC4CF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -223,6 +225,14 @@ Global
 		{F7A28094-7C54-4885-802A-15F22829BACD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F7A28094-7C54-4885-802A-15F22829BACD}.Release|x64.ActiveCfg = Release|Any CPU
 		{F7A28094-7C54-4885-802A-15F22829BACD}.Release|x64.Build.0 = Release|Any CPU
+		{15873169-C746-4FF9-9848-B6C0BCFC4CF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15873169-C746-4FF9-9848-B6C0BCFC4CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15873169-C746-4FF9-9848-B6C0BCFC4CF9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{15873169-C746-4FF9-9848-B6C0BCFC4CF9}.Debug|x64.Build.0 = Debug|Any CPU
+		{15873169-C746-4FF9-9848-B6C0BCFC4CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15873169-C746-4FF9-9848-B6C0BCFC4CF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15873169-C746-4FF9-9848-B6C0BCFC4CF9}.Release|x64.ActiveCfg = Release|Any CPU
+		{15873169-C746-4FF9-9848-B6C0BCFC4CF9}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -248,6 +258,7 @@ Global
 		{8B80DADD-5311-4CA0-9274-9F044A38185E} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{735D928B-DFE9-43EF-95D5-DA51F0B6FE63} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{F7A28094-7C54-4885-802A-15F22829BACD} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
+		{15873169-C746-4FF9-9848-B6C0BCFC4CF9} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
