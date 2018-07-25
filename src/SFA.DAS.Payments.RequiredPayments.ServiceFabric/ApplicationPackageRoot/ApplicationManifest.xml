@@ -1,18 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ApplicationManifest ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType"
-                     ApplicationTypeVersion="1.0.0"
-                     xmlns="http://schemas.microsoft.com/2011/01/fabric"
-                     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="ProviderPaymentsService_InstanceCount" DefaultValue="1" />
+    <Parameter Name="EmployerRequiredPaymentsServiceActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="EmployerRequiredPaymentsServiceActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="EmployerRequiredPaymentsServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.ProviderPaymentsServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsServicePkg" ServiceManifestVersion="1.0.0" />
@@ -23,10 +21,10 @@
          ServiceFabric PowerShell module.
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
-    <Service Name="SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.RequiredPayments.ProviderPaymentsServiceType" InstanceCount="[SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService_InstanceCount]">
-        <SingletonPartition />
-      </StatelessService>
+    <Service Name="EmployerRequiredPaymentsServiceActorService" GeneratedIdRef="35ffa931-d75b-47cd-91e7-a40cb250574d|Persisted">
+      <StatefulService ServiceTypeName="EmployerRequiredPaymentsServiceActorServiceType" TargetReplicaSetSize="[EmployerRequiredPaymentsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[EmployerRequiredPaymentsServiceActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[EmployerRequiredPaymentsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
     </Service>
   </DefaultServices>
 </ApplicationManifest>
