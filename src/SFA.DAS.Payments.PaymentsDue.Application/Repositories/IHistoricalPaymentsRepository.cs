@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using SFA.DAS.Payments.PaymentsDue.Domain.Entities;
+
+namespace SFA.DAS.Payments.PaymentsDue.Application.Repositories
+{
+    public interface IHistoricalPaymentsRepository
+    {
+        Task<IEnumerable<HistoricalPayment>> GetHistoricalPayments(Learner learner);
+    }
+}

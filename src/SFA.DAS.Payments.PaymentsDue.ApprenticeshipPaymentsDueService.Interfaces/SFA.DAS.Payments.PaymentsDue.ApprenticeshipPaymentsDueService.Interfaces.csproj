@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.1.301" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
+  </ItemGroup>
+
 </Project>

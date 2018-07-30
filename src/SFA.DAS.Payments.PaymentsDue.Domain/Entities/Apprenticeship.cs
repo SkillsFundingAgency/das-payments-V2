@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using SFA.DAS.Payments.PaymentsDue.Domain.Models;
 
-namespace SFA.DAS.Payments.PaymentsDue.Domain.Model
+namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
 {
-    public class Apprenticeship
+    public class Apprenticeship : IApprenticeship
     {
         public long Ukprn { get; set; }
 

@@ -7,6 +7,11 @@
   <ItemGroup>
     <Folder Include="Infrastructure\Configuration\" />
     <Folder Include="Infrastructure\Registries\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.Domain\SFA.DAS.Payments.PaymentsDue.Domain.csproj" />
   </ItemGroup>
 
 </Project>

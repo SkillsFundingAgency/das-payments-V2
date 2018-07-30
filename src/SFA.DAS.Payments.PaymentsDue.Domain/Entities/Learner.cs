@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.Payments.PaymentsDue.Domain.Model
+﻿namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
 {
     public class Learner
     {

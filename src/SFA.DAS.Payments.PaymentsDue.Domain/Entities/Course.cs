@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SFA.DAS.Payments.PaymentsDue.Domain.Enum;
+﻿using SFA.DAS.Payments.PaymentsDue.Domain.Enums;
 
-namespace SFA.DAS.Payments.PaymentsDue.Domain.Model
+namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
 {
     public class Course
     {
