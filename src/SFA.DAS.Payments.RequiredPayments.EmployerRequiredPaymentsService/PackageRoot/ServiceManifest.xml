@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsServicePkg" Version="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <ServiceTypes>
+    <StatefulServiceType ServiceTypeName="EmployerRequiredPaymentsServiceActorServiceType" HasPersistedState="true">
+      <Extensions>
+        <Extension Name="__GeneratedServiceType__" GeneratedId="35ffa931-d75b-47cd-91e7-a40cb250574d|Persisted">
+          <GeneratedNames xmlns="http://schemas.microsoft.com/2015/03/fabact-no-schema">
+            <DefaultService Name="EmployerRequiredPaymentsServiceActorService" />
+            <ReplicatorEndpoint Name="EmployerRequiredPaymentsServiceActorServiceReplicatorEndpoint" />
+            <ReplicatorConfigSection Name="EmployerRequiredPaymentsServiceActorServiceReplicatorConfig" />
+            <ReplicatorSecurityConfigSection Name="EmployerRequiredPaymentsServiceActorServiceReplicatorSecurityConfig" />
+            <StoreConfigSection Name="EmployerRequiredPaymentsServiceActorServiceLocalStoreConfig" />
+            <ServiceEndpointV2 Name="EmployerRequiredPaymentsServiceActorServiceEndpointV2" />
+          </GeneratedNames>
+        </Extension>
+      </Extensions>
+    </StatefulServiceType>
+  </ServiceTypes>
+  <CodePackage Name="Code" Version="1.0.0">
+    <EntryPoint>
+      <ExeHost>
+        <Program>SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.exe</Program>
+      </ExeHost>
+    </EntryPoint>
+  </CodePackage>
+  <ConfigPackage Name="Config" Version="1.0.0" />
+  <Resources>
+    <Endpoints>
+      <Endpoint Name="EmployerRequiredPaymentsServiceActorServiceEndpointV2" />
+      <Endpoint Name="EmployerRequiredPaymentsServiceActorServiceReplicatorEndpoint" />
+    </Endpoints>
+  </Resources>
+  <!-- The content will be generated during build -->
+</ServiceManifest>
