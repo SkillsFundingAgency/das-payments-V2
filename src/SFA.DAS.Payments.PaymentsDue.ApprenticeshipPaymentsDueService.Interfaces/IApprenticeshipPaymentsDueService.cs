@@ -8,7 +8,7 @@ using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Remoting;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
-[assembly: FabricTransportActorRemotingProvider(RemotingListener = RemotingListener.V2Listener, RemotingClient = RemotingClient.V2Client)]
+[assembly: FabricTransportActorRemotingProvider(RemotingListenerVersion = RemotingListenerVersion.V2_1, RemotingClientVersion = RemotingClientVersion.V2_1)]
 namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces
 {
     public interface IApprenticeshipPaymentsDueService : IActor

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.Payments.PaymentsDue.Domain.Models;
+using SFA.DAS.Payments.PaymentsDue.Domain.Interfaces;
 
 namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
 {
@@ -11,12 +11,12 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
 
         public Course Course { get; set; }
 
-        public IEnumerable<HistoricalPayment> GetPaymentHistory()
+        public IEnumerable<Payment> GetPaymentHistory()
         {
-            return new HistoricalPayment[0];
+            return new Payment[0];
         }
 
-        public IEnumerable<PaymentDue> CreatePaymentDue(IEnumerable<PayableEarning> earnings, IEnumerable<HistoricalPayment> paymentHistory)
+        public IEnumerable<PaymentDue> CreatePaymentDue(IEnumerable<PayableEarning> earnings, IEnumerable<Payment> paymentHistory)
         {
             return new PaymentDue[0];
         }

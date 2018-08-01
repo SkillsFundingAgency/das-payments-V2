@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueServicePkg" Version="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <ServiceTypes>
-    <StatefulServiceType ServiceTypeName="ApprenticeshipPaymentsDueServiceActorServiceType" HasPersistedState="true">
+    <StatefulServiceType ServiceTypeName="ApprenticeshipPaymentsDueServiceActorServiceType">
       <Extensions>
-        <Extension Name="__GeneratedServiceType__" GeneratedId="30deed44-3ffb-456d-8460-dcdcd356bda0|Persisted">
+        <Extension Name="__GeneratedServiceType__" GeneratedId="07a26712-d090-4c37-a98d-292bafe8d004|Volatile">
           <GeneratedNames xmlns="http://schemas.microsoft.com/2015/03/fabact-no-schema">
             <DefaultService Name="ApprenticeshipPaymentsDueServiceActorService" />
             <ReplicatorEndpoint Name="ApprenticeshipPaymentsDueServiceActorServiceReplicatorEndpoint" />
             <ReplicatorConfigSection Name="ApprenticeshipPaymentsDueServiceActorServiceReplicatorConfig" />
             <ReplicatorSecurityConfigSection Name="ApprenticeshipPaymentsDueServiceActorServiceReplicatorSecurityConfig" />
             <StoreConfigSection Name="ApprenticeshipPaymentsDueServiceActorServiceLocalStoreConfig" />
-            <ServiceEndpointV2 Name="ApprenticeshipPaymentsDueServiceActorServiceEndpointV2" />
+            <ServiceEndpointV2_1 Name="ApprenticeshipPaymentsDueServiceActorServiceEndpointV2_1" />
           </GeneratedNames>
         </Extension>
       </Extensions>
@@ -28,6 +28,7 @@
     <Endpoints>
       <Endpoint Name="ApprenticeshipPaymentsDueServiceActorServiceEndpointV2" />
       <Endpoint Name="ApprenticeshipPaymentsDueServiceActorServiceReplicatorEndpoint" />
+      <Endpoint Name="ApprenticeshipPaymentsDueServiceActorServiceEndpointV2_1" />
     </Endpoints>
   </Resources>
   <!-- The content will be generated during build -->

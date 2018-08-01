@@ -12,7 +12,7 @@
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueServicePkg" ServiceManifestVersion="1.0.0" />
   </ServiceManifestImport>
   <DefaultServices>
-    <Service Name="ApprenticeshipPaymentsDueServiceActorService" GeneratedIdRef="30deed44-3ffb-456d-8460-dcdcd356bda0|Persisted">
+    <Service Name="ApprenticeshipPaymentsDueServiceActorService" GeneratedIdRef="07a26712-d090-4c37-a98d-292bafe8d004|Volatile">
       <StatefulService ServiceTypeName="ApprenticeshipPaymentsDueServiceActorServiceType" TargetReplicaSetSize="[ApprenticeshipPaymentsDueServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ApprenticeshipPaymentsDueServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[ApprenticeshipPaymentsDueServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>

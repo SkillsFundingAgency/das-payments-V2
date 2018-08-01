@@ -1,6 +1,9 @@
-﻿namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
+﻿using System;
+
+namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
 {
-    public class HistoricalPayment
+    public class Payment
     {
+        public Guid Id { get; set; }
     }
 }
