@@ -11,7 +11,5 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Repositories
         Task Reset();
         Task Add(string key, T entity);
         Task<T> Get(string key);
-        Task Update(string key, T entity);
-
     }
 }

@@ -2,5 +2,6 @@
 {
     public enum ProgrammeType
     {
+        None = 0
     }
 }

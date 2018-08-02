@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using SFA.DAS.Payments.PaymentsDue.Domain.Interfaces;
 
 namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
@@ -14,6 +15,25 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
         public IEnumerable<Payment> GetPaymentHistory()
         {
             return new Payment[0];
+        }
+
+        public string Key
+        {
+            get
+            {
+                return string.Join("-", 
+                    new[]
+                    {
+                        Ukprn.ToString(CultureInfo.InvariantCulture),
+                        Learner.LearnerReferenceNumber,
+                        Course.FrameworkCode.ToString(CultureInfo.InvariantCulture),
+                        Course.PathwayCode.ToString(CultureInfo.InvariantCulture),
+                        ((int)Course.ProgrammeType).ToString(CultureInfo.InvariantCulture),
+                        Course.StandardCode.ToString(CultureInfo.InvariantCulture),
+                        Course.LearnAimRef.ToString(CultureInfo.InvariantCulture)
+                    }
+                );
+            }
         }
 
         public IEnumerable<PaymentDue> CreatePaymentDue(IEnumerable<PayableEarning> earnings, IEnumerable<Payment> paymentHistory)
