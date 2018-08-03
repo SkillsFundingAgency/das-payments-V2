@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -61,17 +62,14 @@ namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Application.Repositories
             _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
             _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
 
-            _cacheMock.Setup(c => c.IsInitialised).Returns(false).Verifiable();
             _dedsContextMock.Setup(c => c.PaymentHistory).Returns(_paymentSetMock.Object).Verifiable();
-            _cacheMock.Setup(c => c.Reset()).Returns(Task.FromResult(false)).Verifiable();
-            _cacheMock.Setup(c => c.Add(apprenticeshipKey, It.IsAny<IEnumerable<PaymentEntity>>())).Returns(Task.FromResult(false)).Verifiable();
-            _cacheMock.Setup(c => c.Get(apprenticeshipKey)).ReturnsAsync(_paymentEntities).Verifiable();
-            _cacheMock.SetupSet(c => c.IsInitialised = true).Verifiable();
+            _cacheMock.Setup(c => c.TryGet(apprenticeshipKey, default(CancellationToken))).ReturnsAsync(new ConditionalValue<IEnumerable<PaymentEntity>>(false, null)).Verifiable();
+            _cacheMock.Setup(c => c.Add(apprenticeshipKey, It.IsAny<IEnumerable<PaymentEntity>>(), default(CancellationToken))).Returns(Task.FromResult(false)).Verifiable();
 
-            _repository = new PaymentHistoryRepository(_cacheMock.Object, _dedsContextMock.Object);
+            _repository = new PaymentHistoryRepository(_dedsContextMock.Object, _cacheMock.Object);
 
             // act 
-            var result = (await _repository.GetPaymentHistory(apprenticeshipKey)).ToArray();
+            var result = (await _repository.GetPaymentHistory(apprenticeshipKey).ConfigureAwait(false)).ToArray();
 
             // assert
             Assert.IsNotNull(result);
@@ -89,14 +87,13 @@ namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Application.Repositories
             _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
             _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
 
-            _cacheMock.Setup(c => c.IsInitialised).Returns(true).Verifiable();
-            _cacheMock.Setup(c => c.Get(apprenticeshipKey)).ReturnsAsync(_paymentEntities).Verifiable();
+            _cacheMock.Setup(c => c.TryGet(apprenticeshipKey, default(CancellationToken))).ReturnsAsync(new ConditionalValue<IEnumerable<PaymentEntity>>(true, _paymentEntities)).Verifiable();
 
-            _repository = new PaymentHistoryRepository(_cacheMock.Object, _dedsContextMock.Object);
+            _repository = new PaymentHistoryRepository(_dedsContextMock.Object, _cacheMock.Object);
 
 
             // act 
-            var result = (await _repository.GetPaymentHistory(apprenticeshipKey)).ToArray();
+            var result = (await _repository.GetPaymentHistory(apprenticeshipKey).ConfigureAwait(false)).ToArray();
 
             // assert
             Assert.IsNotNull(result);
@@ -122,7 +119,7 @@ namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Application.Repositories
 
 
             // act 
-            var result = (await _repository.GetPaymentHistory(apprenticeshipKey)).ToArray();
+            var result = (await _repository.GetPaymentHistory(apprenticeshipKey).ConfigureAwait(false)).ToArray();
 
             // assert
             Assert.IsNotNull(result);

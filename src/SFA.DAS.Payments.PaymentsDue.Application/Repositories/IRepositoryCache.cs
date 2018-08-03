@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.PaymentsDue.Application.Repositories
 {
     public interface IRepositoryCache<T>
     {
-        bool IsInitialised { get; set;  }
-        Task Reset();
-        Task Add(string key, T entity);
-        Task<T> Get(string key);
+        Task<bool> Contains(string key, CancellationToken cancellationToken = default(CancellationToken));
+        Task Add(string key, T entity, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ConditionalValue<T>> TryGet(string key, CancellationToken cancellationToken = default(CancellationToken));
+        Task Clear(string key, CancellationToken cancellationToken = default(CancellationToken));
     }
+
 }

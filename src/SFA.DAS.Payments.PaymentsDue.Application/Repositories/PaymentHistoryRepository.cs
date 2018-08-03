@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.PaymentsDue.Application.Data;
 using SFA.DAS.Payments.PaymentsDue.Domain.Entities;
 using SFA.DAS.Payments.PaymentsDue.Model.Entities;
@@ -20,33 +19,32 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Repositories
             _dedsContext = dedsContext;
         }
 
-        public PaymentHistoryRepository(IRepositoryCache<IEnumerable<PaymentEntity>> cache, DedsContext dedsContext)
+        public PaymentHistoryRepository(DedsContext dedsContext, IRepositoryCache<IEnumerable<PaymentEntity>> cache)
         {
             _cache = cache;
             _dedsContext = dedsContext;
         }
 
-        public async Task<IEnumerable<Payment>> GetPaymentHistory(string apprenticeshipKey)
+        public async Task<IEnumerable<Payment>> GetPaymentHistory(string apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
         {
-            IEnumerable<PaymentEntity> entities;
+            if (_cache != null)
+            {
+                var result = await _cache.TryGet(apprenticeshipKey, cancellationToken).ConfigureAwait(false);
+                if (result.HasValue)
+                    return ConvertEntities(result.Value);
+            }
 
-            if (_cache != null && !_cache.IsInitialised)
-                await InitialiseCache(apprenticeshipKey).ConfigureAwait(false);
+            var entities = GetEntities(apprenticeshipKey);
 
-            if (_cache == null)
-                entities = GetEntities(apprenticeshipKey);
-            else
-                entities = await _cache.Get(apprenticeshipKey).ConfigureAwait(false);
+            if (_cache != null)
+                await _cache.Add(apprenticeshipKey, entities, cancellationToken).ConfigureAwait(false);
 
-            return entities.Select(Mapper.Map<PaymentEntity, Payment>).ToArray();
+            return ConvertEntities(entities);
         }
 
-        private async Task InitialiseCache(string apprenticeshipKey)
+        private static Payment[] ConvertEntities(IEnumerable<PaymentEntity> entities)
         {
-            await _cache.Reset().ConfigureAwait(false);
-            var entities = GetEntities(apprenticeshipKey);
-            await _cache.Add(apprenticeshipKey, entities).ConfigureAwait(false);
-            _cache.IsInitialised = true;
+            return entities.Select(Mapper.Map<PaymentEntity, Payment>).ToArray();
         }
 
         private PaymentEntity[] GetEntities(string apprenticeshipKey)

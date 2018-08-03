@@ -57,7 +57,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.Messages", "SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj", "{07A36781-D09B-4CF9-8D0B-80BB929FE535}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.PaymentsDue.UnitTests", "SFA.DAS.Payments.PaymentsDue.UnitTests\SFA.DAS.Payments.PaymentsDue.UnitTests.csproj", "{90E1755E-3238-48DF-89DC-AC03EB803985}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PaymentsDue.UnitTests", "SFA.DAS.Payments.PaymentsDue.UnitTests\SFA.DAS.Payments.PaymentsDue.UnitTests.csproj", "{90E1755E-3238-48DF-89DC-AC03EB803985}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
