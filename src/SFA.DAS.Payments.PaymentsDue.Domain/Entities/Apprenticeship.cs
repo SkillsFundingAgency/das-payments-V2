@@ -12,11 +12,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
 
         public Course Course { get; set; }
 
-        public IEnumerable<Payment> GetPaymentHistory()
-        {
-            return new Payment[0];
-        }
-
         public string Key
         {
             get

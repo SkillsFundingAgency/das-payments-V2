@@ -13,6 +13,6 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfac
 {
     public interface IApprenticeshipPaymentsDueService : IActor
     {
-        Task HandlePayableEarning(IPayableEarningEvent earning, CancellationToken cancellationToken);
+        Task HandlePayableEarning(IPayableEarningEvent earningEntity, CancellationToken cancellationToken);
     }
 }

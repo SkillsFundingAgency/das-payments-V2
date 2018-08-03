@@ -1,28 +1,43 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
+using SFA.DAS.Payments.EarningEvents.Messages.Entities;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.PaymentsDue.Application.Repositories;
 using SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces;
+using SFA.DAS.Payments.PaymentsDue.Domain.Entities;
 
 namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
 {
     [StatePersistence(StatePersistence.Volatile)]
     internal class ApprenticeshipPaymentsDueService : Actor, IApprenticeshipPaymentsDueService
     {
-        public ApprenticeshipPaymentsDueService(ActorService actorService, ActorId actorId) 
+        private readonly IPaymentHistoryRepository _paymentHistoryRepository;
+
+        public ApprenticeshipPaymentsDueService(ActorService actorService, ActorId actorId, IPaymentHistoryRepository paymentHistoryRepository) 
             : base(actorService, actorId)
         {
+            _paymentHistoryRepository = paymentHistoryRepository;
         }
 
-        public Task HandlePayableEarning(IPayableEarningEvent earning, CancellationToken cancellationToken)
+        public async Task HandlePayableEarning(IPayableEarningEvent earningEntity, CancellationToken cancellationToken)
         {
-            // TODO: create repositories and inject cache provider
             // TODO: get apprenticeship
-            // TODO: get historical payments
-            // TODO: calculate payments due (call apprenticeship domain method)
+            var earning = Mapper.Map<IPayableEarningEvent, PayableEarning>(earningEntity);
+            var apprenticeship = new Apprenticeship
+            {
+                // learner
+                // course
+            };
+        
+            var paymentHistory = await _paymentHistoryRepository.GetPaymentHistory(apprenticeship.Key, cancellationToken).ConfigureAwait(false);
+
+            var paymentsDue = apprenticeship.CreatePaymentDue(new[] {earning}, paymentHistory);
+
             // TODO: command to send payments due down the line
-            return Task.FromResult(0);
         }
     }
 }
+

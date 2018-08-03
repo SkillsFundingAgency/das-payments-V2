@@ -14,7 +14,5 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.Interfaces
         string Key { get; }
 
         IEnumerable<PaymentDue> CreatePaymentDue(IEnumerable<PayableEarning> earnings, IEnumerable<Payment> paymentHistory);
-
-        IEnumerable<Payment> GetPaymentHistory();
     }
 }

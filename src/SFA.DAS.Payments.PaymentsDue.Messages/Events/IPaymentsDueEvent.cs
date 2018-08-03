@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
 {
     public interface IPaymentsDueEvent : IPaymentsEvent
     {
-        PaymentDue PaymentDue { get; set; }
+        PaymentDueEntity PaymentDueEntity { get; set; }
     }
 }

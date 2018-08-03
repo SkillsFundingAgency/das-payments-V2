@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SFA.DAS.Payments.PaymentsDue.Messages.Entities
 {
-    public class PaymentDue
+    public class PaymentDueEntity
     {
     }
 }
