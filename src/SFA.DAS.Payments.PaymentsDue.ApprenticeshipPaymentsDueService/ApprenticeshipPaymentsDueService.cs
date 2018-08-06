@@ -30,6 +30,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
             {
                 // learner
                 // course
+                // price episodes
             };
         
             var paymentHistory = await _paymentHistoryRepository.GetPaymentHistory(apprenticeship.Key, cancellationToken).ConfigureAwait(false);

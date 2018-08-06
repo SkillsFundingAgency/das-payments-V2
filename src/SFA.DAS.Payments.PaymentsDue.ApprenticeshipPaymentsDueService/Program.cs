@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using Autofac;
+using Autofac.Integration.ServiceFabric;
 using AutoMapper;
-using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.PaymentsDue.Application.Repositories;
 using SFA.DAS.Payments.PaymentsDue.Model.Entities;
 
@@ -18,45 +18,23 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
         {
             try
             {
-                // This line registers an Actor Service to host your actor class with the Service Fabric runtime.
-                // The contents of your ServiceManifest.xml and ApplicationManifest.xml files
-                // are automatically populated when you build this project.
-                // For more information, see https://aka.ms/servicefabricactorsplatform
+                var builder = new ContainerBuilder();
 
-                var container = BuildContainer();
+                RegisterServices(builder);
+                RegisterMap(builder);
 
-                ActorRuntime.RegisterActorAsync<ApprenticeshipPaymentsDueService>
-                    (
-                        (context, actorType) => new ActorService
-                        (
-                            context,
-                            actorType,
-                            (service, id) =>
-                            {
-                                using (var scope = container.BeginLifetimeScope())
-                                {
-                                    return new ApprenticeshipPaymentsDueService(service, id, scope.Resolve<IPaymentHistoryRepository>());
-                                }
-                            })
-                    )
-                    .GetAwaiter().GetResult();
+                builder.RegisterActor<ApprenticeshipPaymentsDueService>();
 
-                Thread.Sleep(Timeout.Infinite);
+                using (builder.Build())
+                {
+                    Thread.Sleep(Timeout.Infinite);
+                }
             }
             catch (Exception e)
             {
                 ActorEventSource.Current.ActorHostInitializationFailed(e.ToString());
                 throw;
             }
-        }
-
-        private static IContainer BuildContainer()
-        {
-            var builder = new ContainerBuilder();
-            RegisterServices(builder);
-            RegisterMap(builder);
-            var c = builder.Build();
-            return c;
         }
 
         private static void RegisterServices(ContainerBuilder builder)
