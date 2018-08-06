@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Autofac;
 using Autofac.Integration.ServiceFabric;
 using AutoMapper;
+using Castle.Core.Internal;
 using SFA.DAS.Payments.PaymentsDue.Application.Repositories;
 using SFA.DAS.Payments.PaymentsDue.Model.Entities;
+
+[assembly: InternalsVisibleTo(InternalsVisible.ToDynamicProxyGenAssembly2)]
 
 namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
 {
     internal static class Program
     {
-        /// <summary>
-        /// This is the entry point of the service host process.
-        /// </summary>
         private static void Main()
         {
             try
             {
+                // https://alexmg.com/posts/introducing-the-autofac-integration-for-service-fabric
+
                 var builder = new ContainerBuilder();
 
                 RegisterServices(builder);
