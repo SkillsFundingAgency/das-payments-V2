@@ -4,36 +4,27 @@ using System.Text;
 using NUnit.Framework;
 using SFA.DAS.Payments.PaymentsDue.Domain.Entities;
 using SFA.DAS.Payments.PaymentsDue.Domain.Enums;
+using SFA.DAS.Payments.PaymentsDue.Domain.Services;
 
 namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Domain
 {
     [TestFixture]
-    public class ApprenticeshipTest
+    public class ApprenticeshipKeyServiceTest
     {
         [Test]
         public void ApprenticeshipKeyContainsAllElements()
         {
             // arrange
-            var apprenticeship = new Apprenticeship
-            {
-                Learner = new Learner
-                {
-                    LearnerReferenceNumber = "1",
-                    Ukprn = 2
-                },
-                Course = new Course
-                {
-                    FrameworkCode = 3,
-                    PathwayCode = 4,
-                    ProgrammeType = ProgrammeType.None,
-                    StandardCode = 5,
-                    LearnAimRef = 6
-                },
-                Ukprn = 2
-            };
+            var learnerReferenceNumber = "1";
+            var ukprn = 2;
+            var frameworkCode = 3;
+            var pathwayCode = 4;
+            var programmeType = ProgrammeType.None;
+            var standardCode = 5;
+            var learnAimRef = "6";
 
             // act
-            var key = apprenticeship.Key;
+            var key = new ApprenticeshipKeyService().GenerateKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef);
 
             // assert
             Assert.AreEqual(0, key.IndexOf("2", StringComparison.Ordinal), "UKPRN should go first");

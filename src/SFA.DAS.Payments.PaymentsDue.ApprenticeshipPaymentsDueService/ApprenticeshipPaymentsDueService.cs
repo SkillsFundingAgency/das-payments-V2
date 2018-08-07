@@ -15,11 +15,13 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
     internal class ApprenticeshipPaymentsDueService : Actor, IApprenticeshipPaymentsDueService
     {
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
+        private readonly string _apprenticeshipKey;
 
         public ApprenticeshipPaymentsDueService(ActorService actorService, ActorId actorId, IPaymentHistoryRepository paymentHistoryRepository) 
             : base(actorService, actorId)
         {
             _paymentHistoryRepository = paymentHistoryRepository;
+            _apprenticeshipKey = actorId.GetStringId();
         }
 
         public async Task HandlePayableEarning(IPayableEarningEvent earningEntity, CancellationToken cancellationToken)
@@ -33,7 +35,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
                 // price episodes
             };
         
-            var paymentHistory = await _paymentHistoryRepository.GetPaymentHistory(apprenticeship.Key, cancellationToken).ConfigureAwait(false);
+            var paymentHistory = await _paymentHistoryRepository.GetPaymentHistory(_apprenticeshipKey, cancellationToken).ConfigureAwait(false);
 
             var paymentsDue = apprenticeship.CreatePaymentDue(new[] {earning}, paymentHistory);
 
