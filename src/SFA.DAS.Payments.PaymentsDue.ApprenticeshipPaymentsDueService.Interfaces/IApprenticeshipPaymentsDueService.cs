@@ -7,12 +7,13 @@ using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Remoting;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 [assembly: FabricTransportActorRemotingProvider(RemotingListenerVersion = RemotingListenerVersion.V2_1, RemotingClientVersion = RemotingClientVersion.V2_1)]
 namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces
 {
     public interface IApprenticeshipPaymentsDueService : IActor
     {
-        Task HandlePayableEarning(IPayableEarningEvent earningEntity, CancellationToken cancellationToken);
+        Task<IEnumerable<ICalculatedPaymentDueEvent>> HandlePayableEarning(IPayableEarningEvent earningEntity, CancellationToken cancellationToken);
     }
 }

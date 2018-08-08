@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.PaymentsDue.Domain.Interfaces
 {
-    interface IApprenticeshipKeyService
+    public interface IApprenticeshipKeyService
     {
         string GenerateKey(long ukprn, string learnerReferenceNumber, int frameworkCode, int pathwayCode, ProgrammeType programmeType, int standardCode, string learnAimRef);
     }

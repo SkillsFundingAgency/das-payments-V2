@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
         public int FrameworkCode { get; set; }
 
         public int PathwayCode { get; set; }
-        public int LearnAimRef { get; set; }
+
+        public string LearnAimRef { get; set; }
     }
 }

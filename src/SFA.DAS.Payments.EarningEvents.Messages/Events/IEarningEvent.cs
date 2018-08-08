@@ -6,16 +6,16 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
     public interface IEarningEvent : IPaymentsEvent
     {
-        long Ukprn { get; set; }
+        long Ukprn { get; }
 
-        string LearnRefNumber { get; set; }
+        string LearnRefNumber { get; }
 
-        ContractType ContractType { get; set; }
+        ContractType ContractType { get; }
 
-        LearnerEntity Learner { get; set; }
+        LearnerEntity Learner { get; }
 
-        string LearnAimRef { get; set; }
+        LearnAimEntity LearnAim { get; }
 
-        IEnumerable<PriceEpisodeEntity> PriceEpisodes { get; set; }
+        IEnumerable<PriceEpisodeEntity> PriceEpisodes { get; }
     }
 }

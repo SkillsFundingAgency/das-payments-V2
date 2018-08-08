@@ -7,12 +7,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payment.ServiceFabric.Core;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
 {
     internal sealed class ApprenticeshipPaymentsDueProxyService : StatelessService
     {
-        private EndpointCommunicationListener _listener;
+        private EndpointCommunicationListener<IPayableEarningEvent> _listener;
 
         public ApprenticeshipPaymentsDueProxyService(StatelessServiceContext context)
             : base(context)
@@ -26,8 +28,9 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
         {
             return new List<ServiceInstanceListener>
             {
+                // TODO: put this stuff to config
                 new ServiceInstanceListener(context =>
-                    (_listener = new EndpointCommunicationListener()))
+                    (_listener = new EndpointCommunicationListener<IPayableEarningEvent>("sfa-das-payments-paymentsdue-proxyservice", "UseDevelopmentStorage=true")))
             };
         }
 
@@ -39,7 +42,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
         {
             try
             {
-                await _listener.RunAsync();
+                 //await _listener.OpenAsync(cancellationToken);//.RunAsync();
             }
             catch (Exception ex)
             {

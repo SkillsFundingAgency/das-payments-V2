@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.ServiceFabric.Actors;
@@ -8,6 +10,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.PaymentsDue.Application.Repositories;
 using SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces;
 using SFA.DAS.Payments.PaymentsDue.Domain.Entities;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
 {
@@ -24,7 +27,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
             _apprenticeshipKey = actorId.GetStringId();
         }
 
-        public async Task HandlePayableEarning(IPayableEarningEvent earningEntity, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ICalculatedPaymentDueEvent>> HandlePayableEarning(IPayableEarningEvent earningEntity, CancellationToken cancellationToken)
         {
             // TODO: get apprenticeship
             var earning = Mapper.Map<IPayableEarningEvent, PayableEarning>(earningEntity);
@@ -39,7 +42,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
 
             var paymentsDue = apprenticeship.CreatePaymentDue(new[] {earning}, paymentHistory);
 
-            // TODO: command to send payments due down the line
+            return paymentsDue.Select(Mapper.Map<PaymentDue, CalculatedPaymentDueEvent>);
         }
     }
 }

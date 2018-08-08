@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.Application\SFA.DAS.Payments.PaymentsDue.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService\SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService\SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.Model\SFA.DAS.Payments.PaymentsDue.Model.csproj" />
   </ItemGroup>
