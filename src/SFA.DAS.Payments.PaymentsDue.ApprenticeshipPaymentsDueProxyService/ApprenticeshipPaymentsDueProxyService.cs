@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Fabric;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
@@ -12,7 +11,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
 {
-    internal sealed class ApprenticeshipPaymentsDueProxyService : StatelessService
+    public class ApprenticeshipPaymentsDueProxyService : StatelessService
     {
         private EndpointCommunicationListener<IPayableEarningEvent> _listener;
 

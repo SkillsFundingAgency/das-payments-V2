@@ -6,6 +6,8 @@ using Autofac;
 using Autofac.Integration.ServiceFabric;
 using AutoMapper;
 using Castle.Core.Internal;
+using Microsoft.ServiceFabric.Actors.Client;
+using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.PaymentsDue.Application.Repositories;
 using SFA.DAS.Payments.PaymentsDue.Model.Entities;
 
@@ -26,6 +28,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
                 RegisterServices(builder);
                 RegisterMap(builder);
 
+                builder.RegisterServiceFabricSupport();
                 builder.RegisterActor<ApprenticeshipPaymentsDueService>();
 
                 using (builder.Build())
@@ -44,6 +47,8 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
         {
             builder.RegisterType<ReliableCollectionCache<IEnumerable<PaymentEntity>>>().AsImplementedInterfaces();
             builder.RegisterType<PaymentHistoryRepository>().AsImplementedInterfaces();
+            //builder.RegisterType<ActorProxyFactory>().AsImplementedInterfaces();
+            //builder.RegisterType<ActorService>().AsSelf();
         }
 
         private static void RegisterMap(ContainerBuilder builder)

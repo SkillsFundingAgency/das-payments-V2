@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
-using SFA.DAS.Payments.EarningEvents.Messages.Entities;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.PaymentsDue.Application.Repositories;
 using SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService.Interfaces;
@@ -15,7 +14,7 @@ using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
 {
     [StatePersistence(StatePersistence.Volatile)]
-    internal class ApprenticeshipPaymentsDueService : Actor, IApprenticeshipPaymentsDueService
+    public class ApprenticeshipPaymentsDueService : Actor, IApprenticeshipPaymentsDueService
     {
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         private readonly string _apprenticeshipKey;

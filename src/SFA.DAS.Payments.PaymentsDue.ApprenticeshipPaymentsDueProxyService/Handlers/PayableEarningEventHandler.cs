@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService.Han
                 );
 
                 var actorId = new ActorId(key);
-                var actor = _proxyFactory.CreateActorProxy<IApprenticeshipPaymentsDueService>(new Uri("fabric:/SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService"), actorId);
+                var actor = _proxyFactory.CreateActorProxy<IApprenticeshipPaymentsDueService>(new Uri("fabric:/SFA.DAS.Payments.PaymentsDue.ServiceFabric/ApprenticeshipPaymentsDueServiceActorService"), actorId);
                 var paymentsDue = await actor.HandlePayableEarning(message, CancellationToken.None).ConfigureAwait(false);
 
                 await Task.WhenAll(paymentsDue.Select(p => _endpoint.Send(p)).ToArray()).ConfigureAwait(false);
