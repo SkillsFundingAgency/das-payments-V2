@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payment.ServiceFabric.Core;
@@ -14,13 +15,13 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
 {
     public class ApprenticeshipPaymentsDueProxyService : StatelessService
     {
-        private EndpointCommunicationListener<IPayableEarningEvent> _listener;
-        private IServiceConfig _config;
+        private IEndpointCommunicationListener<IPayableEarningEvent> _listener;
+        private readonly ILifetimeScope _lifetimeScope;
 
-        public ApprenticeshipPaymentsDueProxyService(StatelessServiceContext context, IServiceConfig config)
+        public ApprenticeshipPaymentsDueProxyService(StatelessServiceContext context, ILifetimeScope lifetimeScope)
             : base(context)
         {
-            _config = config;
+            _lifetimeScope = lifetimeScope;
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
             {
                 // TODO: put this stuff to config
                 new ServiceInstanceListener(context =>
-                    _listener = new EndpointCommunicationListener<IPayableEarningEvent>(_config.IncomingEndpointName, _config.StorageConnectionString)
+                    _listener = _lifetimeScope.Resolve<IEndpointCommunicationListener<IPayableEarningEvent>>()
                 )
             };
         }

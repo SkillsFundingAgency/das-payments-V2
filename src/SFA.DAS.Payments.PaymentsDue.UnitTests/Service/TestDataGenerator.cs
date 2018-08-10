@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Autofac;
 using NServiceBus;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
@@ -47,7 +48,7 @@ namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Service
                 }
             };
 
-            var sender = new EndpointCommunicationSender<IPayableEarningEvent>("sfa-das-payments-paymentsdue-integration-test", "UseDevelopmentStorage=true", "sfa-das-payments-paymentsdue-proxyservice");
+            var sender = new EndpointCommunicationSender<IPayableEarningEvent>("sfa-das-payments-paymentsdue-integration-test", "UseDevelopmentStorage=true", "sfa-das-payments-paymentsdue-proxyservice", new ContainerBuilder().Build());
             await sender.Send(earning).ConfigureAwait(false);
         }
     }

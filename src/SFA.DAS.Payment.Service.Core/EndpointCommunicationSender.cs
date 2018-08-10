@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.Messages.Core;
 
@@ -8,8 +9,8 @@ namespace SFA.DAS.Payment.ServiceFabric.Core
     {
         private readonly string _destinationEndpointName;
 
-        public EndpointCommunicationSender(string endpointName, string storageConnectionString, string destinationEndpointName) 
-            : base(endpointName, storageConnectionString)
+        public EndpointCommunicationSender(string endpointName, string storageConnectionString, string destinationEndpointName, ILifetimeScope lifetimeScope) 
+            : base(endpointName, storageConnectionString, lifetimeScope)
         {
             _destinationEndpointName = destinationEndpointName;
         }

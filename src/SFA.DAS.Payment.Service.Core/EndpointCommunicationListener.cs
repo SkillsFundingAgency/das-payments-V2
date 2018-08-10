@@ -1,19 +1,15 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Services.Communication.Runtime;
-using NServiceBus;
-using NServiceBus.Features;
+using Autofac;
 using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payment.ServiceFabric.Core
 {
-    public class EndpointCommunicationListener<T> : EndpointCommunicationBase<T>, ICommunicationListener 
+    public class EndpointCommunicationListener<T> : EndpointCommunicationBase<T>, IEndpointCommunicationListener<T>
         where T : IPaymentsMessage
     {
-        public EndpointCommunicationListener(string endpointName, string storageConnectionString) 
-            : base(endpointName, storageConnectionString)
+        public EndpointCommunicationListener(string endpointName, string storageConnectionString, ILifetimeScope lifetimeScope) 
+            : base(endpointName, storageConnectionString, lifetimeScope)
         {
         }
 

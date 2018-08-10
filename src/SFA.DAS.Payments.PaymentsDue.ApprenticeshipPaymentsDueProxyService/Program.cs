@@ -5,7 +5,10 @@ using Autofac;
 using Autofac.Core;
 using Autofac.Integration.ServiceFabric;
 using Castle.Core.Internal;
+using Microsoft.ServiceFabric.Actors.Client;
+using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using SFA.DAS.Payment.ServiceFabric.Core;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.PaymentsDue.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.PaymentsDue.Domain.Services;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
@@ -52,6 +55,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
 
         private static void RegisterServices(ContainerBuilder builder)
         {
+            builder.RegisterType<ActorProxyFactory>().As<IActorProxyFactory>();
             builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
 
             // TODO: use configuration 
@@ -65,11 +69,26 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
             ).AsImplementedInterfaces();
 
             builder.Register((c, p) =>
-                {
-                    var config = c.Resolve<IServiceConfig>();
-                    return new EndpointCommunicationSender<IPaymentsDueEvent>(config.OutgoingEndpointName, config.StorageConnectionString, config.DestinationEndpointName);
-                })
-                .As<IEndpointCommunicationSender<IPaymentsDueEvent>>();
+            {
+                var config = c.Resolve<IServiceConfig>();
+                return new EndpointCommunicationSender<IPaymentsDueEvent>(
+                    config.OutgoingEndpointName,
+                    config.StorageConnectionString,
+                    config.DestinationEndpointName,
+                    c.Resolve<ILifetimeScope>()
+                );
+            }).As<IEndpointCommunicationSender<IPaymentsDueEvent>>();
+
+            builder.Register((c, p) =>
+            {
+                var config = c.Resolve<IServiceConfig>();
+                return new EndpointCommunicationListener<IPayableEarningEvent>(
+                    config.IncomingEndpointName,
+                    config.StorageConnectionString,
+                    c.Resolve<ILifetimeScope>()
+                );
+            }).As<IEndpointCommunicationListener<IPayableEarningEvent>>();
+
         }
     }
 }

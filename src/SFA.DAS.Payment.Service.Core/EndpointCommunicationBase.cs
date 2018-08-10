@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Messages.Core;
@@ -13,11 +13,13 @@ namespace SFA.DAS.Payment.ServiceFabric.Core
         protected string EndpointName { get; }
 
         private readonly string _storageConnectionString;
+        private readonly ILifetimeScope _lifetimeScope;
 
-        protected EndpointCommunicationBase(string endpointName, string storageConnectionString)
+        protected EndpointCommunicationBase(string endpointName, string storageConnectionString, ILifetimeScope lifetimeScope)
         {
             EndpointName = endpointName;
             _storageConnectionString = storageConnectionString;
+            _lifetimeScope = lifetimeScope;
         }
 
         protected async Task StartEndpoint()
@@ -41,7 +43,7 @@ namespace SFA.DAS.Payment.ServiceFabric.Core
             
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.EnableInstallers();
-            endpointConfiguration.UseContainer<AutofacBuilder>();
+            endpointConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(_lifetimeScope));
 
             OnConfigure(endpointConfiguration, transport);
             
@@ -54,7 +56,7 @@ namespace SFA.DAS.Payment.ServiceFabric.Core
 
         public void Dispose()
         {
-            // TODO: stop and dispose of endpoint
+            // TODO: stop and dispose of endpoint            
         }
     }
 }
