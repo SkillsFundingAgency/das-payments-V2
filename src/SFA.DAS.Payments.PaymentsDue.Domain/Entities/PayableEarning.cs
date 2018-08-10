@@ -7,7 +7,7 @@
         public Learner Learner { get;set; }
 
         public Course Course { get; set; }
-        string LearnAimRef { get; set; }
 
+        string LearnAimRef { get; set; }
     }
 }

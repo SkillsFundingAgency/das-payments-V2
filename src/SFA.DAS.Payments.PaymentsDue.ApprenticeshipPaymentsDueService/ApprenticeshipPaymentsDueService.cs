@@ -18,18 +18,20 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
     {
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         private readonly string _apprenticeshipKey;
+        private readonly IMapper _mapper;
 
-        public ApprenticeshipPaymentsDueService(ActorService actorService, ActorId actorId, IPaymentHistoryRepository paymentHistoryRepository) 
+        public ApprenticeshipPaymentsDueService(ActorService actorService, ActorId actorId, IPaymentHistoryRepository paymentHistoryRepository, IMapper mapper) 
             : base(actorService, actorId)
         {
             _paymentHistoryRepository = paymentHistoryRepository;
+            _mapper = mapper;
             _apprenticeshipKey = actorId.GetStringId();
         }
 
-        public async Task<IEnumerable<ICalculatedPaymentDueEvent>> HandlePayableEarning(IPayableEarningEvent earningEntity, CancellationToken cancellationToken)
+        public async Task<CalculatedPaymentDueEvent[]> HandlePayableEarning(PayableEarningEvent earningEntity, CancellationToken cancellationToken)
         {
             // TODO: get apprenticeship
-            var earning = Mapper.Map<IPayableEarningEvent, PayableEarning>(earningEntity);
+            var earning = _mapper.Map<PayableEarningEvent, PayableEarning>(earningEntity);
             var apprenticeship = new Apprenticeship
             {
                 // learner
@@ -41,7 +43,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueService
 
             var paymentsDue = apprenticeship.CreatePaymentDue(new[] {earning}, paymentHistory);
 
-            return paymentsDue.Select(Mapper.Map<PaymentDue, CalculatedPaymentDueEvent>);
+            return paymentsDue.Select(_mapper.Map<PaymentDue, CalculatedPaymentDueEvent>).ToArray();
         }
     }
 }

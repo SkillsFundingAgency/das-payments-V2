@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using SFA.DAS.Payments.PaymentsDue.Domain.Interfaces;
 
 namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
@@ -14,7 +15,28 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.Entities
 
         public IEnumerable<PaymentDue> CreatePaymentDue(IEnumerable<PayableEarning> earnings, IEnumerable<Payment> paymentHistory)
         {
-            return new PaymentDue[0];
+            return earnings.Select(e =>
+                new PaymentDue
+                {
+                    Earning = new PayableEarning
+                    {
+                        Ukprn = e.Ukprn,
+                        Learner = new Learner
+                        {
+                            LearnerReferenceNumber = e.Learner.LearnerReferenceNumber,
+                            Ukprn = e.Ukprn,
+                            Uln = e.Learner.Uln
+                        },
+                        Course = new Course
+                        {
+                            ProgrammeType = e.Course.ProgrammeType,
+                            PathwayCode = e.Course.PathwayCode,
+                            StandardCode = e.Course.StandardCode,
+                            FrameworkCode = e.Course.FrameworkCode,
+                            LearnAimRef = e.Course.LearnAimRef
+                        }                        
+                    }
+                }).ToArray();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Service
         public async Task TestHandle()
         {
             // arrange
-            IPayableEarningEvent earning = new PayableEarningEvent
+            PayableEarningEvent earning = new PayableEarningEvent
             {
                 Ukprn = 1,
                 LearnRefNumber = "2",
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Service
             var endpoint = new Mock<IEndpointCommunicationSender<IPaymentsDueEvent>>(MockBehavior.Strict);
             endpoint.Setup(e => e.Send(It.IsAny<IPaymentsDueEvent>())).Returns(Task.FromResult(0)).Verifiable();
 
-            IEnumerable<ICalculatedPaymentDueEvent> paymentsDueEvents = new[]
+            var paymentsDueEvents = new[]
             {
                 new CalculatedPaymentDueEvent {PaymentDueEntity = new PaymentDueEntity()},
                 new CalculatedPaymentDueEvent {PaymentDueEntity = new PaymentDueEntity()},
@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Service
             var proxyFactoryMock = new Mock<IActorProxyFactory>(MockBehavior.Strict);
             proxyFactoryMock.Setup(f => f.CreateActorProxy<IApprenticeshipPaymentsDueService>(It.IsAny<Uri>(), It.IsAny<ActorId>(), null)).Returns(actorMock.Object).Verifiable();
 
-            IHandleMessages<IPayableEarningEvent> handler = new PayableEarningEventHandler(apprenticeshipKeyServiceMock.Object, endpoint.Object, proxyFactoryMock.Object);
+            IHandleMessages<PayableEarningEvent> handler = new PayableEarningEventHandler(apprenticeshipKeyServiceMock.Object, endpoint.Object, proxyFactoryMock.Object);
 
             // act
             await handler.Handle(earning, null); 

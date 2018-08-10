@@ -17,7 +17,7 @@ using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService.Handlers
 {
-    public class PayableEarningEventHandler : IHandleMessages<IPayableEarningEvent>
+    public class PayableEarningEventHandler : IHandleMessages<PayableEarningEvent>
     {
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly IEndpointCommunicationSender<IPaymentsDueEvent> _endpoint;
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService.Han
             _proxyFactory = proxyFactory ?? new ActorProxyFactory();
         }
 
-        public async Task Handle(IPayableEarningEvent message, IMessageHandlerContext context)
+        public async Task Handle(PayableEarningEvent message, IMessageHandlerContext context)
         {
             try
             {
