@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Features;
@@ -6,7 +7,7 @@ using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payment.ServiceFabric.Core
 {
-    public abstract class EndpointCommunicationBase<T> where T : IPaymentsMessage
+    public abstract class EndpointCommunicationBase<T> : IDisposable where T : IPaymentsMessage
     {
         protected IEndpointInstance EndpointInstance { get; private set; }
         protected string EndpointName { get; }
@@ -21,17 +22,13 @@ namespace SFA.DAS.Payment.ServiceFabric.Core
 
         protected async Task StartEndpoint()
         {
-            //_endpointName = "sfa-das-payments-paymentsdue-proxyservice";
-
             var endpointConfiguration = new EndpointConfiguration(EndpointName);
 
             var conventions = endpointConfiguration.Conventions();
-            //conventions.DefiningCommandsAs(type => typeof(PaymentsCommand).IsAssignableFrom(type));
-            conventions.DefiningEventsAs(type => typeof(T).IsAssignableFrom(type));
-            //conventions.DefiningMessagesAs(type => typeof(IPaymentsMessage).IsAssignableFrom(type));
+            conventions.DefiningCommandsAs(type => typeof(T).IsAssignableFrom(type));
+            //conventions.DefiningEventsAs(type => typeof(T).IsAssignableFrom(type));
 
             var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
-            //_storageConnectionString = "UseDevelopmentStorage=true";
             persistence.ConnectionString(_storageConnectionString);
 
             endpointConfiguration.DisableFeature<TimeoutManager>();
@@ -44,13 +41,20 @@ namespace SFA.DAS.Payment.ServiceFabric.Core
             
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.EnableInstallers();
+            endpointConfiguration.UseContainer<AutofacBuilder>();
+
+            OnConfigure(endpointConfiguration, transport);
             
-            EndpointInstance = await Endpoint.Start(endpointConfiguration)
-                .ConfigureAwait(false);
+            EndpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
         }
 
-        protected virtual void OnConfigure(EndpointConfiguration configuration)
+        protected virtual void OnConfigure(EndpointConfiguration configuration, TransportExtensions<AzureStorageQueueTransport> transport)
         {
+        }
+
+        public void Dispose()
+        {
+            // TODO: stop and dispose of endpoint
         }
     }
 }

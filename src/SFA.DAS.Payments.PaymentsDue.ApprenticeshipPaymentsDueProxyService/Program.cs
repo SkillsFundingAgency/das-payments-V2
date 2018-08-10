@@ -2,8 +2,13 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Autofac;
+using Autofac.Core;
 using Autofac.Integration.ServiceFabric;
 using Castle.Core.Internal;
+using SFA.DAS.Payment.ServiceFabric.Core;
+using SFA.DAS.Payments.PaymentsDue.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.PaymentsDue.Domain.Services;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 [assembly: InternalsVisibleTo(InternalsVisible.ToDynamicProxyGenAssembly2)]
 
@@ -19,6 +24,8 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
             try
             {
                 var builder = new ContainerBuilder();
+
+                RegisterServices(builder);
 
                 builder.RegisterServiceFabricSupport();
                 builder.RegisterStatelessService<ApprenticeshipPaymentsDueProxyService>("SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyServiceType");
@@ -41,6 +48,28 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService
                 ServiceEventSource.Current.ServiceHostInitializationFailed(e.ToString());
                 throw;
             }
+        }
+
+        private static void RegisterServices(ContainerBuilder builder)
+        {
+            builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
+
+            // TODO: use configuration 
+            builder.Register((c, p) => new ServiceConfig
+                {
+                    IncomingEndpointName = "sfa-das-payments-paymentsdue-proxyservice",
+                    OutgoingEndpointName = "sfa-das-payments-paymentsdue-proxyservice-out",
+                    DestinationEndpointName = "sfa-das-payments-requiredpayments-proxyservice",
+                    StorageConnectionString = "UseDevelopmentStorage=true"
+                }
+            ).AsImplementedInterfaces();
+
+            builder.Register((c, p) =>
+                {
+                    var config = c.Resolve<IServiceConfig>();
+                    return new EndpointCommunicationSender<IPaymentsDueEvent>(config.OutgoingEndpointName, config.StorageConnectionString, config.DestinationEndpointName);
+                })
+                .As<IEndpointCommunicationSender<IPaymentsDueEvent>>();
         }
     }
 }

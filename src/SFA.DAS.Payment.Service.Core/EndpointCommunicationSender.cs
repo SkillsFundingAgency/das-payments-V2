@@ -6,18 +6,25 @@ namespace SFA.DAS.Payment.ServiceFabric.Core
 {
     public class EndpointCommunicationSender<T> : EndpointCommunicationBase<T>, IEndpointCommunicationSender<T> where T : IPaymentsMessage
     {
-        public EndpointCommunicationSender(string endpointName, string storageConnectionString) 
+        private readonly string _destinationEndpointName;
+
+        public EndpointCommunicationSender(string endpointName, string storageConnectionString, string destinationEndpointName) 
             : base(endpointName, storageConnectionString)
         {
+            _destinationEndpointName = destinationEndpointName;
         }
 
-        protected override void OnConfigure(EndpointConfiguration configuration)
+        protected override void OnConfigure(EndpointConfiguration configuration, TransportExtensions<AzureStorageQueueTransport> transport)
         {
+            transport.Routing().RouteToEndpoint(typeof(T).Assembly, _destinationEndpointName);
             configuration.SendOnly();
         }
 
         public async Task Send(T message)
         {
+            if (EndpointInstance == null)
+                await StartEndpoint().ConfigureAwait(false);
+
             await EndpointInstance.Send(message).ConfigureAwait(false);
         }
     }

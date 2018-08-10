@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.PaymentsDue.ApprenticeshipPaymentsDueProxyService.Han
 
         public PayableEarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService, IEndpointCommunicationSender<IPaymentsDueEvent> endpoint, IActorProxyFactory proxyFactory)
         {
+            Debug.WriteLine("******************************************************** handler started");
             _apprenticeshipKeyService = apprenticeshipKeyService;
             _endpoint = endpoint;
             _proxyFactory = proxyFactory ?? new ActorProxyFactory();

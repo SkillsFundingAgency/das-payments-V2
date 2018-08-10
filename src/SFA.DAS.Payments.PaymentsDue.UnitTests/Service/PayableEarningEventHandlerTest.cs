@@ -17,7 +17,7 @@ using SFA.DAS.Payments.PaymentsDue.Domain.Interfaces;
 using SFA.DAS.Payments.PaymentsDue.Messages.Entities;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
-namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Test
+namespace SFA.DAS.Payments.PaymentsDue.UnitTests.Service
 {
     [TestFixture]
     public class PayableEarningEventHandlerTest
