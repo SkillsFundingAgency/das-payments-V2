@@ -115,38 +115,9 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Minimum
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
-                        "EpisodeStartDate",
-                        "EpisodeEffectiveTNPStartDate",
-                        "TotalNegotiatedPrice",
-                        "Learning_1"});
-            table3.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "06/08/2017",
-                        "06/08/2017",
-                        "9000",
-                        "600"});
-#line 14
- testRunner.And("the following contract type 1 on programme earnings for periods 1-12:", ((string)(null)), table3, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "AimSeqNumber",
-                        "PriceEpisodeIdentifier",
-                        "EpisodeStartDate",
-                        "EpisodeEffectiveTNPStartDate",
                         "Period",
                         "ULN",
-                        "ProgrammeType",
-                        "FrameworkCode",
-                        "PathwayCode",
-                        "StandardCode",
                         "SfaContributionPercentage",
-                        "FundingLineType",
-                        "LearnAimRef",
-                        "LearningStartDate",
                         "Learning_1",
                         "Completion_2",
                         "Balancing_3",
@@ -162,23 +133,13 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Minimum
                         "OnProgrammeMathsAndEnglish_13",
                         "BalancingMathsAndEnglish_14",
                         "LearningSupport_15"});
-            table4.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "1",
                         "p1",
-                        "06/08/2017",
-                        "06/08/2017",
                         "1",
                         "10000",
-                        "2",
-                        "403",
-                        "1",
-                        "",
                         "0.90000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "06/08/2017",
                         "600",
                         "0",
                         "",
@@ -194,23 +155,13 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Minimum
                         "0",
                         "0",
                         "0"});
-            table4.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "1",
                         "p1",
-                        "06/08/2017",
-                        "06/08/2017",
                         "2",
                         "10000",
-                        "2",
-                        "403",
-                        "1",
-                        "",
                         "0.90000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "06/08/2017",
                         "600",
                         "0",
                         "",
@@ -226,8 +177,28 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Minimum
                         "0",
                         "0",
                         "0"});
-#line 18
- testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table4, "And ");
+#line 14
+ testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table3, "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                        "LearnRefNumber",
+                        "Ukprn",
+                        "PriceEpisodeIdentifier",
+                        "EpisodeStartDate",
+                        "EpisodeEffectiveTNPStartDate",
+                        "TotalNegotiatedPrice",
+                        "Learning_1"});
+            table4.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p2",
+                        "06/08/2017",
+                        "06/08/2017",
+                        "9000",
+                        "600"});
+#line 19
+ testRunner.And("the following contract type 1 on programme earnings for periods 1-12 are provided" +
+                    " in the latest ILR for the academic year 1718:", ((string)(null)), table4, "And ");
 #line hidden
         }
         
@@ -235,14 +206,14 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.DescriptionAttribute("Contract Type 2 Payable Earnings")]
         [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
-        [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_2")]
+        [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_changes")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         public virtual void ContractType2PayableEarnings()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 Payable Earnings", new string[] {
                         "learner_changes_contract_type",
                         "Non-DAS",
-                        "apprenticeship_contract_type_2",
+                        "apprenticeship_contract_type_changes",
                         "minimum_tests"});
 #line 27
 this.ScenarioSetup(scenarioInfo);
@@ -254,20 +225,10 @@ this.FeatureBackground();
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
-                        "AimSeqNumber",
                         "PriceEpisodeIdentifier",
-                        "EpisodeStartDate",
-                        "EpisodeEffectiveTNPStartDate",
                         "Period",
                         "ULN",
-                        "ProgrammeType",
-                        "FrameworkCode",
-                        "PathwayCode",
-                        "StandardCode",
                         "SfaContributionPercentage",
-                        "FundingLineType",
-                        "LearnAimRef",
-                        "LearningStartDate",
                         "Learning_1",
                         "Completion_2",
                         "Balancing_3",
@@ -286,20 +247,10 @@ this.FeatureBackground();
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "1",
                         "p1",
-                        "06/08/2017",
-                        "06/08/2017",
                         "1",
                         "10000",
-                        "2",
-                        "403",
-                        "1",
-                        "",
                         "0.90000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "06/08/2017",
                         "600",
                         "0",
                         "",
@@ -318,20 +269,10 @@ this.FeatureBackground();
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "1",
                         "p1",
-                        "06/08/2017",
-                        "06/08/2017",
                         "2",
                         "10000",
-                        "2",
-                        "403",
-                        "1",
-                        "",
                         "0.90000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "06/08/2017",
                         "600",
                         "0",
                         "",
@@ -350,20 +291,10 @@ this.FeatureBackground();
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "1",
                         "p1",
-                        "06/08/2017",
-                        "06/08/2017",
                         "1",
                         "10000",
-                        "2",
-                        "403",
-                        "1",
-                        "",
                         "0.90000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "06/08/2017",
                         "-600",
                         "0",
                         "",
@@ -382,20 +313,10 @@ this.FeatureBackground();
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "1",
                         "p1",
-                        "06/08/2017",
-                        "06/08/2017",
                         "2",
                         "10000",
-                        "2",
-                        "403",
-                        "1",
-                        "",
                         "0.90000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "06/08/2017",
                         "-600",
                         "0",
                         "",
@@ -411,7 +332,7 @@ this.FeatureBackground();
                         "0",
                         "0",
                         "0"});
-#line 30
+#line 31
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table5, "Then ");
 #line hidden
@@ -422,39 +343,29 @@ this.FeatureBackground();
         [NUnit.Framework.DescriptionAttribute("Contract Type 1 Payable Earnings")]
         [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
-        [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_2")]
+        [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_changes")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         public virtual void ContractType1PayableEarnings()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 1 Payable Earnings", new string[] {
                         "learner_changes_contract_type",
                         "Non-DAS",
-                        "apprenticeship_contract_type_2",
+                        "apprenticeship_contract_type_changes",
                         "minimum_tests"});
-#line 41
+#line 42
 this.ScenarioSetup(scenarioInfo);
 #line 3
 this.FeatureBackground();
-#line 42
+#line 44
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
-                        "AimSeqNumber",
                         "PriceEpisodeIdentifier",
-                        "EpisodeStartDate",
-                        "EpisodeEffectiveTNPStartDate",
                         "Period",
                         "ULN",
-                        "ProgrammeType",
-                        "FrameworkCode",
-                        "PathwayCode",
-                        "StandardCode",
                         "SfaContributionPercentage",
-                        "FundingLineType",
-                        "LearnAimRef",
-                        "LearningStartDate",
                         "Learning_1",
                         "Completion_2",
                         "Balancing_3",
@@ -473,20 +384,10 @@ this.FeatureBackground();
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "1",
-                        "p1",
-                        "06/08/2017",
-                        "06/08/2017",
+                        "p2",
                         "1",
                         "10000",
-                        "2",
-                        "403",
-                        "1",
-                        "",
                         "0.90000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "06/08/2017",
                         "600",
                         "0",
                         "",
@@ -505,20 +406,10 @@ this.FeatureBackground();
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "1",
-                        "p1",
-                        "06/08/2017",
-                        "06/08/2017",
+                        "p2",
                         "2",
                         "10000",
-                        "2",
-                        "403",
-                        "1",
-                        "",
                         "0.90000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "06/08/2017",
                         "600",
                         "0",
                         "",
@@ -537,20 +428,10 @@ this.FeatureBackground();
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "1",
-                        "p1",
-                        "06/08/2017",
-                        "06/08/2017",
+                        "p2",
                         "3",
                         "10000",
-                        "2",
-                        "403",
-                        "1",
-                        "",
                         "0.90000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "06/08/2017",
                         "600",
                         "0",
                         "",
@@ -566,7 +447,7 @@ this.FeatureBackground();
                         "0",
                         "0",
                         "0"});
-#line 43
+#line 46
  testRunner.Then("the payments due component will generate the following contract type 1 payable ea" +
                     "rnings:", ((string)(null)), table6, "Then ");
 #line hidden

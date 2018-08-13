@@ -20,22 +20,22 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         {
         }
 
-        [Given(@"the following contract type (.*) on programme earnings for periods (.*)-(.*):")]
-        public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriods(short contractType, short fromPeriod, short toPeriod, Table table)
+        [Given(@"the following contract type (.*) on programme earnings for periods (.*)-(.*) are provided in the latest ILR for the academic year (.*):")]
+        public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriods(short contractType, short fromPeriod, short toPeriod, string academicYear,  Table table)
         {
             var rawEarnings = table.CreateSet<OnProgrammeEarning>();
 
-            var contractTypeEarnings = new ContractTypeEarnings(contractType, fromPeriod, toPeriod, rawEarnings.ToList());
+            var contractTypeEarnings = new ContractTypeEarnings(contractType, fromPeriod, toPeriod, academicYear, rawEarnings.ToList());
 
             scenarioContext[$"ContractType{contractType}OnProgrammeEarnings"] = contractTypeEarnings;
         }
 
-        [Given(@"the following contract type (.*) incentive earnings for periods (.*)-(.*):")]
-        public void GivenTheFollowingContractTypeIncentiveEarningsForPeriods(short contractType, short fromPeriod, short toPeriod, Table table)
+        [Given(@"the following contract type (.*) incentive earnings for periods (.*)-(.*) are provided in the latest ILR for the academic year (.*):")]
+        public void GivenTheFollowingContractTypeIncentiveEarningsForPeriods(short contractType, short fromPeriod, short toPeriod, string academicYear, Table table)
         {
             var rawEarnings = table.CreateSet<IncentiveEarning>();
 
-            var incentiveEarnings = new ContractTypeEarnings(contractType, fromPeriod, toPeriod, rawEarnings.ToList());
+            var incentiveEarnings = new ContractTypeEarnings(contractType, fromPeriod, toPeriod, academicYear, rawEarnings.ToList());
 
             scenarioContext[$"ContractType{contractType}IncentiveEarnings"] = incentiveEarnings;
         }
