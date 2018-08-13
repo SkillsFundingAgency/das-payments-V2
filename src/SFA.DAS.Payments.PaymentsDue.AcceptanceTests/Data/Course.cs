@@ -6,13 +6,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data
     {
         public int AimSeqNumber { get; set; }
 
-        public string PriceEpisodeIdentifier { get; set; }
-
-        public DateTime EpisodeStartDate { get; set; }
-
-        public DateTime EpisodeEffectiveTNPStartDate { get; set; }
-
-        public int ProgrammeType { get; set; }
+          public int ProgrammeType { get; set; }
 
         public int? FrameworkCode { get; set; }
 

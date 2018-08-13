@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 
@@ -13,6 +14,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         {
             scenarioContext = context;
         }
+
         [When(@"a TOBY is received")]
         public void WhenATobyIsReceived()
         {
@@ -21,7 +23,12 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 
             var learners = scenarioContext["Learners"] as IEnumerable<Learner>;
 
-            var courses = scenarioContext["Courses"] as IEnumerable<Course>;
+            IEnumerable<Course> courses;
+
+            if (scenarioContext.ContainsKey("Courses"))
+            {
+                courses = scenarioContext["Courses"] as IEnumerable<Course>;
+            }
 
             ContractTypeEarnings contractType1OnProgrammeEarnings;
 
@@ -36,6 +43,8 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
             {
                 contractType2OnProgrammeEarnings = scenarioContext["ContractType2OnProgrammeEarnings"] as ContractTypeEarnings;
             }
+
+            // now create an event from all this stuff and sent it off
         }
     }
 }

@@ -31,8 +31,13 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         }
 
         [Given(@"the following contract type (.*) incentive earnings for periods (.*)-(.*):")]
-        public void GivenTheFollowingContractTypeIncentiveEarningsForPeriods(int contractType, int fromPeriod, int toPeriod, Table table)
+        public void GivenTheFollowingContractTypeIncentiveEarningsForPeriods(short contractType, short fromPeriod, short toPeriod, Table table)
         {
+            var rawEarnings = table.CreateSet<IncentiveEarning>();
+
+            var incentiveEarnings = new ContractTypeEarnings(contractType, fromPeriod, toPeriod, rawEarnings.ToList());
+
+            scenarioContext[$"ContractType{contractType}IncentiveEarnings"] = incentiveEarnings;
         }
 
         [Given(@"the following contract type (.*) incentive earnings for period (.*):")]

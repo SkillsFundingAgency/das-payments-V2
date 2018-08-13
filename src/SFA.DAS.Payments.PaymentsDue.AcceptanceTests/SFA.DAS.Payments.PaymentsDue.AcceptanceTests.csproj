@@ -42,8 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\LearnRefNumberGenerator.cs" />
+    <Compile Include="Data\IncentiveEarning.cs" />
     <Compile Include="Data\LearnerIdentifier.cs" />
-    <Compile Include="MinimumTests.feature.cs">
+    <Compile Include="Data\PriceIdentifier.cs" />
+    <Compile Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct1.feature.cs">
+      <DependentUpon>ContractTypeChangesFromAct2ToAct1.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Minimum\MinimumTests.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MinimumTests.feature</DependentUpon>
@@ -65,7 +73,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="MinimumTests.feature">
+    <None Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct1.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ContractTypeChangesFromAct2ToAct1.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\MinimumTests.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>MinimumTests.feature.cs</LastGenOutput>
     </None>
