@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.Messages.Core;
 
-namespace SFA.DAS.Payment.ServiceFabric.Core
+namespace SFA.DAS.Payments.ServiceFabric.Core
 {
     public class EndpointCommunicationListener<T> : EndpointCommunicationBase<T>, IEndpointCommunicationListener<T>
         where T : IPaymentsMessage

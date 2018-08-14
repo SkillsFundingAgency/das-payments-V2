@@ -29,7 +29,7 @@ Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.RequiredPa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.Messages", "SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj", "{07A36781-D09B-4CF9-8D0B-80BB929FE535}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payment.ServiceFabric.Core", "SFA.DAS.Payment.Service.Core\SFA.DAS.Payment.ServiceFabric.Core.csproj", "{A1FA6CCE-21AC-41D8-8678-460FD8AE8C8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ServiceFabric.Core", "SFA.DAS.Payments.Service.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj", "{A1FA6CCE-21AC-41D8-8678-460FD8AE8C8A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService", "SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.csproj", "{B390568E-DAFF-4ED3-99B6-3914491D4F54}"
 EndProject

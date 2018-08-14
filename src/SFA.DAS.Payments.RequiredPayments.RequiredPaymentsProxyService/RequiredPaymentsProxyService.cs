@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
-using SFA.DAS.Payment.ServiceFabric.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
 {
