@@ -29,11 +29,11 @@
     <None Include="Scripts\Deploy-FabricApplication.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService\SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService\SFA.DAS.Payments.RequiredPayments.ProviderPaymentsService.csproj" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>
