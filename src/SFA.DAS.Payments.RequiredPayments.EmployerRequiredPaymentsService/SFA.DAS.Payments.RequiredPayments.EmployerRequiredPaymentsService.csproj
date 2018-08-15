@@ -15,8 +15,4 @@
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces\SFA.DAS.Payments.RequiredPayments.EmployerRequiredPaymentsService.Interfaces.csproj" />
-  </ItemGroup>
-
 </Project>
