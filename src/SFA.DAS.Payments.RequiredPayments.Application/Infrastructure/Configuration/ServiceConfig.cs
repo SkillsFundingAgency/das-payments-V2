@@ -10,5 +10,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
         public string IncomingEndpointName { get; set; }
         public string OutgoingEndpointName { get; set; }
         public string DestinationEndpointName { get; set; }
+        public string LoggerConnectionstring { get; set; }
     }
 }

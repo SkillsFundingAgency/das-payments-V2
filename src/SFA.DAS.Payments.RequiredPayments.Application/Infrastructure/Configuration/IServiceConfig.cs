@@ -6,5 +6,6 @@
         string IncomingEndpointName { get; }
         string OutgoingEndpointName { get; }
         string DestinationEndpointName { get; }
+        string LoggerConnectionstring { get; }
     }
 }

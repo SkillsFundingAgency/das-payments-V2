@@ -1,18 +1,15 @@
-﻿using System;
-using System.Diagnostics;
-using System.Fabric;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Autofac.Integration.ServiceFabric;
 using Castle.Core.Internal;
 using Microsoft.ServiceFabric.Actors.Client;
-using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payments.Core.LoggingHelper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
+using System;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 [assembly: InternalsVisibleTo(InternalsVisible.ToDynamicProxyGenAssembly2)]
 
@@ -20,7 +17,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
 {
     internal static class Program
     {
-       
         private static void Main()
         {
             try
@@ -36,7 +32,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }
-
             }
             catch (Exception e)
             {
@@ -47,18 +42,33 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
 
         private static void RegisterServices(ContainerBuilder builder)
         {
-            builder.RegisterType<ActorProxyFactory>().As<IActorProxyFactory>();
-            builder.RegisterType<RequiredPaymentsProxyService>().AsImplementedInterfaces();
-
-            // TODO: use configuration 
+            // TODO: use configuration
             builder.Register((c, p) => new ServiceConfig
             {
                 IncomingEndpointName = "sfa-das-payments-paymentsdue-proxyservice",
                 OutgoingEndpointName = "sfa-das-payments-paymentsdue-proxyservice-out",
                 DestinationEndpointName = "sfa-das-payments-requiredpayments-proxyservice",
-                StorageConnectionString = "UseDevelopmentStorage=true"
-            }
-            ).AsImplementedInterfaces();
+                StorageConnectionString = "UseDevelopmentStorage=true",
+                LoggerConnectionstring = "Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"
+            }).AsImplementedInterfaces();
+
+            //Register Logger
+            builder.Register((c, p) =>
+            {
+                var config = c.Resolve<IServiceConfig>();
+                return new LoggerOptions
+                {
+                    LoggerConnectionstring = config.LoggerConnectionstring
+                };
+            }).As<LoggerOptions>().SingleInstance();
+            builder.RegisterType<VersionInfo>().As<IVersionInfo>().SingleInstance();
+            builder.RegisterModule<LoggerModule>();
+
+
+            // Register Service Fabric Service components
+            builder.RegisterType<ActorProxyFactory>().As<IActorProxyFactory>();
+            builder.RegisterType<RequiredPaymentsProxyService>().AsImplementedInterfaces();
+
 
             builder.Register((c, p) =>
             {
@@ -80,7 +90,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
                     c.Resolve<ILifetimeScope>()
                 );
             }).As<IEndpointCommunicationListener<IPayableEarningEvent>>();
-
         }
     }
 }

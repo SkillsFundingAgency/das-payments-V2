@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
+using SFA.DAS.Payments.Core.LoggingHelper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
 using SFA.DAS.Payments.RequiredPayments.Domain.Interfaces;
@@ -20,17 +21,20 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly IEndpointCommunicationSender<IPaymentsDueEvent> _endpoint;
         private readonly IActorProxyFactory _proxyFactory;
+        private readonly IPaymentLogger _paymentLogger;
 
-        public PayableEarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService, IEndpointCommunicationSender<IPaymentsDueEvent> endpoint, IActorProxyFactory proxyFactory)
+        public PayableEarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService, IEndpointCommunicationSender<IPaymentsDueEvent> endpoint, IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger)
         {
-            Debug.WriteLine("******************************************************** handler started");
             _apprenticeshipKeyService = apprenticeshipKeyService;
             _endpoint = endpoint;
             _proxyFactory = proxyFactory ?? new ActorProxyFactory();
+            _paymentLogger = paymentLogger;
         }
 
         public async Task Handle(PayableEarningEvent message, IMessageHandlerContext context)
         {
+            _paymentLogger.LogInfo($"Handling RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
+
             try
             {
                 var key = _apprenticeshipKeyService.GenerateKey(
@@ -48,10 +52,13 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 var paymentsDue = await actor.HandlePayableEarning(message, CancellationToken.None).ConfigureAwait(false);
 
                 await Task.WhenAll(paymentsDue.Select(p => _endpoint.Send(p)).ToArray()).ConfigureAwait(false);
+
+                _paymentLogger.LogInfo($"Sucessfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
+
             }
             catch (Exception ex)
             {
-                Trace.TraceError($"Error: {ex.Message}, Ex: {ex}");
+                _paymentLogger.LogError($"Error while handling RequiredPaymentsProxyService event", ex);
                 throw;
             }
         }
