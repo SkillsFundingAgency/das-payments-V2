@@ -3,7 +3,7 @@ using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.Messages.Core;
 
-namespace SFA.DAS.Payment.ServiceFabric.Core
+namespace SFA.DAS.Payments.ServiceFabric.Core
 {
     public class EndpointCommunicationSender<T> : EndpointCommunicationBase<T>, IEndpointCommunicationSender<T> where T : IPaymentsMessage
     {

@@ -6,9 +6,9 @@ using Autofac;
 using NServiceBus;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using SFA.DAS.Payment.ServiceFabric.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Entities;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
 {

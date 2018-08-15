@@ -5,7 +5,7 @@ using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Messages.Core;
 
-namespace SFA.DAS.Payment.ServiceFabric.Core
+namespace SFA.DAS.Payments.ServiceFabric.Core
 {
     public abstract class EndpointCommunicationBase<T> : IDisposable where T : IPaymentsMessage
     {

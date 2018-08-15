@@ -7,7 +7,6 @@ using Microsoft.ServiceFabric.Actors.Client;
 using Moq;
 using NServiceBus;
 using NUnit.Framework;
-using SFA.DAS.Payment.ServiceFabric.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Entities;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers;
@@ -16,6 +15,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
 using SFA.DAS.Payments.RequiredPayments.Domain.Interfaces;
 using SFA.DAS.Payments.RequiredPayments.Messages.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
 {
