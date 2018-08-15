@@ -28,5 +28,8 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 
         [DataMember]
         public IEnumerable<PriceEpisodeEntity> PriceEpisodes { get; set; }
+
+        [DataMember]
+        public string JobId { get; set; }
     }
 }

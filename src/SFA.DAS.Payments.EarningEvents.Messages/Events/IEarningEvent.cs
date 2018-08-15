@@ -17,5 +17,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         LearnAimEntity LearnAim { get; }
 
         IEnumerable<PriceEpisodeEntity> PriceEpisodes { get; }
+
+         string JobId { get; }
     }
 }

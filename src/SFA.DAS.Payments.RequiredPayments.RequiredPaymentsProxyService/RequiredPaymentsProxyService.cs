@@ -26,9 +26,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
             _paymentLogger.LogInfo($"Creating Service Instance Listeners For RequiredPaymentsProxyService");
 
             return new List<ServiceInstanceListener>
-            {
-                new ServiceInstanceListener(context =>_listener = _lifetimeScope.Resolve<IEndpointCommunicationListener<IPayableEarningEvent>>())
-            };
+                {
+                    new ServiceInstanceListener(context =>_listener = _lifetimeScope.Resolve<IEndpointCommunicationListener<IPayableEarningEvent>>())
+                };
         }
     }
 }
