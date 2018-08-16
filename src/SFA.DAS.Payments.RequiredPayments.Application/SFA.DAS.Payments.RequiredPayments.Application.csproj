@@ -5,8 +5,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Infrastructure\Registries\**" />
+    <EmbeddedResource Remove="Infrastructure\Registries\**" />
+    <None Remove="Infrastructure\Registries\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Infrastructure\Configuration\" />
-    <Folder Include="Infrastructure\Registries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Domain\SFA.DAS.Payments.RequiredPayments.Domain.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Model\SFA.DAS.Payments.RequiredPayments.Model.csproj" />
   </ItemGroup>
 
 </Project>
