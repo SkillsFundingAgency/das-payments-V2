@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
@@ -13,6 +14,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
@@ -41,10 +43,10 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
         {
             using (var scope = _lifetimeScope.BeginLifetimeScope())
             {
-                var executionContext = (ESFA.DC.Logging.ExecutionContext)_lifetimeScope.Resolve<ESFA.DC.Logging.Interfaces.IExecutionContext>();
-                executionContext.JobId = message.JobId;
+                _paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}", null, "", "", 0);
 
-                _paymentLogger.LogInfo($"Handling RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
+                var executionContext = (ESFA.DC.Logging.ExecutionContext)_lifetimeScope.Resolve<IExecutionContext>();
+                executionContext.JobId = message.JobId;
 
                 try
                 {

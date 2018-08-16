@@ -16,31 +16,39 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Interfaces;
 using SFA.DAS.Payments.RequiredPayments.Messages.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
+using Autofac;
+using ESFA.DC.Logging.Interfaces;
+using SFA.DAS.Payments.Core.LoggingHelper;
+using Autofac.Extras.Moq;
 
 namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
 {
     [TestFixture]
     public class PayableEarningEventHandlerTest
     {
+
         [Test]
         public async Task TestHandle()
         {
-            // arrange
-            PayableEarningEvent earning = new PayableEarningEvent
+            using (var mock = AutoMock.GetLoose())
             {
-                Ukprn = 1,
-                LearnRefNumber = "2",
-                ContractType = ContractType.Act2,
-                Learner = new LearnerEntity(),
-                LearnAim = new LearnAimEntity
+                // arrange
+                PayableEarningEvent earning = new PayableEarningEvent
                 {
-                    ProgrammeType = 3,
-                    FrameworkCode = 4,
-                    PathwayCode = 5,
-                    StandardCode = 6,
-                    LearnAimRef = "7"
-                },
-                PriceEpisodes = new[]
+                    JobId = "1000000",
+                    Ukprn = 1,
+                    LearnRefNumber = "2",
+                    ContractType = ContractType.Act2,
+                    Learner = new LearnerEntity(),
+                    LearnAim = new LearnAimEntity
+                    {
+                        ProgrammeType = 3,
+                        FrameworkCode = 4,
+                        PathwayCode = 5,
+                        StandardCode = 6,
+                        LearnAimRef = "7"
+                    },
+                    PriceEpisodes = new[]
                 {
                     new PriceEpisodeEntity
                     {
@@ -53,39 +61,57 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
                         Price = 111
                     }
                 }
-            };
+                };
 
-            var apprenticeshipKeyServiceMock = new Mock<IApprenticeshipKeyService>(MockBehavior.Strict);
-            apprenticeshipKeyServiceMock.Setup(s => s.GenerateKey(earning.Ukprn, earning.LearnRefNumber, earning.LearnAim.FrameworkCode, earning.LearnAim.PathwayCode, (ProgrammeType)earning.LearnAim.ProgrammeType, earning.LearnAim.StandardCode, earning.LearnAim.LearnAimRef))
-                .Returns("key")
-                .Verifiable();
+                var apprenticeshipKeyServiceMock = new Mock<IApprenticeshipKeyService>(MockBehavior.Strict);
+                apprenticeshipKeyServiceMock.Setup(s => s.GenerateKey(earning.Ukprn, earning.LearnRefNumber, earning.LearnAim.FrameworkCode, earning.LearnAim.PathwayCode, (ProgrammeType)earning.LearnAim.ProgrammeType, earning.LearnAim.StandardCode, earning.LearnAim.LearnAimRef))
+                    .Returns("key")
+                    .Verifiable();
 
-            var endpoint = new Mock<IEndpointCommunicationSender<IPaymentsDueEvent>>(MockBehavior.Strict);
-            endpoint.Setup(e => e.Send(It.IsAny<IPaymentsDueEvent>())).Returns(Task.FromResult(0)).Verifiable();
+                var endpoint = new Mock<IEndpointCommunicationSender<IPaymentsDueEvent>>(MockBehavior.Strict);
+                endpoint.Setup(e => e.Send(It.IsAny<IPaymentsDueEvent>())).Returns(Task.FromResult(0)).Verifiable();
 
-            var paymentsDueEvents = new[]
-            {
+                var paymentsDueEvents = new[]
+                {
                 new CalculatedPaymentDueEvent {PaymentDueEntity = new PaymentDueEntity()},
                 new CalculatedPaymentDueEvent {PaymentDueEntity = new PaymentDueEntity()},
                 new CalculatedPaymentDueEvent {PaymentDueEntity = new PaymentDueEntity()}
             };
 
-            var actorMock = new Mock<IRequiredPaymentsService>(MockBehavior.Strict);
-            actorMock.Setup(a => a.HandlePayableEarning(earning, It.IsAny<CancellationToken>())).ReturnsAsync(paymentsDueEvents).Verifiable();
+                var actorMock = new Mock<IRequiredPaymentsService>(MockBehavior.Strict);
+                actorMock.Setup(a => a.HandlePayableEarning(earning, It.IsAny<CancellationToken>())).ReturnsAsync(paymentsDueEvents).Verifiable();
 
-            var proxyFactoryMock = new Mock<IActorProxyFactory>(MockBehavior.Strict);
-            proxyFactoryMock.Setup(f => f.CreateActorProxy<IRequiredPaymentsService>(It.IsAny<Uri>(), It.IsAny<ActorId>(), null)).Returns(actorMock.Object).Verifiable();
+                var proxyFactoryMock = new Mock<IActorProxyFactory>(MockBehavior.Strict);
+                proxyFactoryMock.Setup(f => f.CreateActorProxy<IRequiredPaymentsService>(It.IsAny<Uri>(), It.IsAny<ActorId>(), null)).Returns(actorMock.Object).Verifiable();
 
-            IHandleMessages<PayableEarningEvent> handler = new PayableEarningEventHandler(apprenticeshipKeyServiceMock.Object, endpoint.Object, proxyFactoryMock.Object);
+                mock.Provide<IExecutionContext>(new ESFA.DC.Logging.ExecutionContext());
 
-            // act
-            await handler.Handle(earning, null); 
+                var lifeTimeScopeMock = mock.Create<ILifetimeScope>();
 
-            // assert
-            proxyFactoryMock.Verify();
-            actorMock.Verify();
-            endpoint.Verify();
-            apprenticeshipKeyServiceMock.Verify();
+                var paymentLoggerMock = new Mock<IPaymentLogger>();
+                paymentLoggerMock.Setup(o => o.LogInfo(It.IsAny<string>(), null, "", "", 0)).Verifiable();
+
+                var messageHandlerContextMock = new Mock<IMessageHandlerContext>();
+                messageHandlerContextMock.SetupGet(o => o.MessageId).Returns(Guid.NewGuid().ToString()).Verifiable();
+
+                IHandleMessages<PayableEarningEvent> handler = new PayableEarningEventHandler(apprenticeshipKeyServiceMock.Object,
+                                                                                                endpoint.Object, proxyFactoryMock.Object,
+                                                                                                paymentLoggerMock.Object,
+                                                                                                lifeTimeScopeMock);
+
+                // act
+                await handler.Handle(earning, messageHandlerContextMock.Object);
+
+                // assert
+                proxyFactoryMock.Verify();
+                actorMock.Verify();
+                endpoint.Verify();
+                apprenticeshipKeyServiceMock.Verify();
+                paymentLoggerMock.Verify();
+                messageHandlerContextMock.Verify();
+
+            }
+
         }
     }
 }
