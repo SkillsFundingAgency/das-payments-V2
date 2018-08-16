@@ -36,7 +36,7 @@ Scenario: Contract Type 2 Payable Earnings
 	| learnref1      | 10000 | p1                     | 2      | 10000 | 0.90000                   | -600       | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
 
 @learner_changes_contract_type
-@Non-DAS
+@DAS
 @apprenticeship_contract_type_changes
 @minimum_tests
 Scenario: Contract Type 1 Payable Earnings

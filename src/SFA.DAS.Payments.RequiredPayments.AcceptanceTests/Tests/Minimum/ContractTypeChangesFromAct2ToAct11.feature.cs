@@ -342,14 +342,14 @@ this.FeatureBackground();
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Contract Type 1 Payable Earnings")]
         [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
-        [NUnit.Framework.CategoryAttribute("Non-DAS")]
+        [NUnit.Framework.CategoryAttribute("DAS")]
         [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_changes")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         public virtual void ContractType1PayableEarnings()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 1 Payable Earnings", new string[] {
                         "learner_changes_contract_type",
-                        "Non-DAS",
+                        "DAS",
                         "apprenticeship_contract_type_changes",
                         "minimum_tests"});
 #line 42
