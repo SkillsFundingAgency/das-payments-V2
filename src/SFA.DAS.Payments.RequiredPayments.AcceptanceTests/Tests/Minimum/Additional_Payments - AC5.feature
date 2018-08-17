@@ -2,6 +2,7 @@
 		AC5- Payment for a non-DAS learner, lives in a disadvantaged postocde area - 1-10% most deprived, funding agreed within band maximum, UNDERTAKING APPRENTICESHIP FRAMEWORK The provider incentive for this postcode group is £600 split equally into 2 payments at 90 and 365 days. INELIGIBLE FOR APPRENTICESHIP STANDARDS
 
 Background: 
+
 	Given the current processing period is 4
   
 	And the following learners:
@@ -13,14 +14,17 @@ Background:
 	| learnref4      | 10000 | 10000 | 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 09/08/2018             |                       | Continuing       |
 
 	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| learnref4      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 1000        |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice |
+	| learnref4      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 15000                |
 
-#@Notes - INCOMPLETE as incentives
-@additional_payments
+	#And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+	#| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	#| learnref4      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 1000        |
+
 @Non-DAS
-@disadvantaged_postcode
 @minimum_tests
+@additional_payments
+#@disadvantaged_postcode
 	
 Scenario Outline: Contract Type 2 On programme payments
 	And the following historical contract type 2 on programme payments exist:   
@@ -45,7 +49,7 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	
 
-	
+#----------------------------------------------------------------------------------------------------------------------------------------	
 	
 #--  Payments V1 for reference
 #
@@ -75,3 +79,5 @@ Scenario Outline: Contract Type 2 On programme payments
 #        | Balancing                    | 0     | 0     | 0     | 0     | ... | 0     | 0     |
 #        | Provider disadvantage uplift | 0     | 0     | 0     | 300   | ... | 0     | 300   |
 #
+
+#----------------------------------------------------------------------------------------------------------------------------------------

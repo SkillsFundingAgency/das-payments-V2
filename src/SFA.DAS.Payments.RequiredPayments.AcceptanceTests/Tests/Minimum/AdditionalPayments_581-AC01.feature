@@ -2,6 +2,7 @@
 		581-AC01-Non DAS learner finishes early, price equals the funding band maximum, earns balancing and completion framework uplift payments. Assumes 15 month apprenticeship and learner completes after 12 months.
 
 Background:
+
 	Given the current processing period is 12
 
 	And the following learners:
@@ -13,21 +14,29 @@ Background:
 	| learnref5      | 10000 | 10000 | 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 09/11/2018             | 09/08/2018            | Completed       |
 
 	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| learnref5      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 480        |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice |
+	| learnref5      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 |
 
-	And the following contract type 2 completion earning for period 12 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | Amount |
-	| learnref5      | 10000 | 1800   |  
+#	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+#	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+#	| learnref5      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 480        |
+#
+#	And the following contract type 2 completion earning for period 12 are provided in the latest ILR for the academic year 1718:
+#	| LearnRefNumber | Ukprn | Amount |
+#	| learnref5      | 10000 | 1800   |  
+#
+#	And the following contract type 2 balancing earning for period 12 are provided in the latest ILR for the academic year 1718:
+#	| LearnRefNumber | Ukprn | Amount |
+#	| learnref5      | 10000 | 1440   |  
 	
-#-- @Queries - Should the amount be for SFA+Provider combined or just for SFA. E.g., 432+48 = 480, 1620+180 = 1800??
-@additional_payments
 @Non-DAS
-@completion
-#-- @Framework_uplift -- missing, will require funding band
-@FinishingEarly
 @minimum_tests
+@additional_payments
+@completion
 @balancing
+@FinishingEarly
+#@Price_same_as_FundingBand
+#@Framework_uplift -- missing, will require funding band
 
 Scenario Outline: Contract Type 2 On programme payments
 	And the following historical contract type 2 on programme payments exist:   
@@ -91,7 +100,7 @@ Scenario Outline: Contract Type 2 balancing payment
 	| Balancing_3      | 1440   |	
 	
 
-
+#----------------------------------------------------------------------------------------------------------------------------------------
 #/*  Payments V1 for reference
 #
 #
@@ -125,3 +134,4 @@ Scenario Outline: Contract Type 2 balancing payment
 #        | Framework uplift balancing   | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 288   |
 #        | Provider disadvantage uplift | 0     | 0     | 0     | 0     | 0     | ..  | 0     | 0     | 0     | 0     |
 #*/        
+#----------------------------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 ﻿Feature: Contract Type Changes From ACT1 To ACT2
 	DPP_965_02 - Non-Levy apprentice, provider edits contract type (ACT) in the ILR, previous on-programme and English/math payments are refunded and repaid according to latest contract type
+
 Background:
 	Given the current processing period is 3
 
@@ -12,15 +13,17 @@ Background:
 	| learnref2      | 10000 | 10000 | 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 20/08/2018             |                       | continuing       |
 
 	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| learnref2      | 10000 | p2                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
-	
-@learner_changes_contract_type
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice |
+	| learnref2      | 10000 | p2                     | 06/08/2017       | 06/08/2017                   | 9000                 |
+
 @DAS
-@apprenticeship_contract_type_changes
 @minimum_tests
-#Incentives are excluded
+@learner_changes_contract_type
+@apprenticeship_contract_type_changes
+#@English_Maths
+
 Scenario Outline: Contract Type 1 On programme payments
+
 	And the following historical contract type 1 on programme payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref2      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
@@ -39,10 +42,12 @@ Scenario Outline: Contract Type 1 On programme payments
 	| transaction_type | amount |
 	| Learning_1       | 600    |
 
-@learner_changes_contract_type
 @Non-DAS
-@apprenticeship_contract_type_changes
 @minimum_tests
+@learner_changes_contract_type
+@apprenticeship_contract_type_changes
+#@English_Maths
+
 Scenario Outline: Contract Type 2 On programme payments
 
 	When a TOBY is received
@@ -59,7 +64,10 @@ Scenario Outline: Contract Type 2 On programme payments
 
 
 
-	#/* V1 - Original Test
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#/* V1 - Original Test
 
 
 #@learner_changes_contract_type
@@ -102,4 +110,6 @@ Scenario Outline: Contract Type 2 On programme payments
 #        | SFA non-Levy additional payments budget | 39.25  | 39.25  | 39.25  | 39.25    |
 
 
-	#*/
+#*/
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

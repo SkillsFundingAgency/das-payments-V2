@@ -2,6 +2,7 @@
 	AC3-Learner finishes on time, earns on-programme and completion payments. /* Assumes 12 month apprenticeship and learner completes after 10 months. */ Commented part is under review with Payments V1 team.
 
 Background: 
+
 	Given the current processing period is 12
 
 	And the following learners:
@@ -13,22 +14,26 @@ Background:
 	| learnref3      | 10000 | 10000 | 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 09/08/2018             | 09/08/2018            | Completed       |
 
 	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| learnref3      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice |
+	| learnref3      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 |
 
-	And the following contract type 2 completion earning for period 12 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | Amount |
-	| learnref3      | 10000 | 1800   |  
+#	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+#	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+#	| learnref3      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
+#
+#	And the following contract type 2 completion earning for period 12 are provided in the latest ILR for the academic year 1718:
+#	| LearnRefNumber | Ukprn | Amount |
+#	| learnref3      | 10000 | 1800   |  
 	
-#@Queries - Should the amount be for SFA+Provider combined or just for SFA. E.g., 540+60 = 600, 1620+180 = 1800??
-@additional_payments
 @Non-DAS
-@completion
-#@16-18 incentive -- missing
-#@Framework_uplift -- missing, will require funding band
 @minimum_tests
+@additional_payments
+@completion
+#@16-18 incentive
+#@Framework_uplift -- will require funding band
 
 Scenario Outline: Contract Type 2 On programme payments
+
 	And the following historical contract type 2 on programme payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref3      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
@@ -42,8 +47,6 @@ Scenario Outline: Contract Type 2 On programme payments
 	| learnref3      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
 	| learnref3      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
 	| learnref3      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
-
-
 
 	When a TOBY is received
 
@@ -79,6 +82,8 @@ Scenario Outline: Contract Type 2 completion payment
 	| Completion_2     | 1800   |
 	
 
+
+#----------------------------------------------------------------------------------------------------------------------------------------
 # Payments V1 - for reference
 #
 #@AdditionalPayments
@@ -115,3 +120,5 @@ Scenario Outline: Contract Type 2 completion payment
 #        | Framework uplift completion  | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 360   |
 #        | Framework uplift balancing   | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     |
 #        | Provider disadvantage uplift | 0     | 0     | 0     | 0     | 0     | ..  | 0     | 0     | 0     | 0     |
+
+#----------------------------------------------------------------------------------------------------------------------------------------

@@ -73,6 +73,11 @@
     <Compile Include="Steps\PaymentsDueInputSteps.cs" />
     <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
+    <Compile Include="Tests\Minimum\AdditionalPayments_581-AC02.feature.cs">
+      <DependentUpon>AdditionalPayments_581-AC02.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Minimum\Additional_Payments - AC3.feature.cs">
       <DependentUpon>Additional_Payments - AC3.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -107,6 +112,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Tests\Minimum\AdditionalPayments_581-AC02.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>AdditionalPayments_581-AC02.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Minimum\Additional_Payments - AC3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments - AC3.feature.cs</LastGenOutput>
