@@ -9,6 +9,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -59,7 +60,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
                 var paymentsDue = apprenticeship.CreatePaymentDue(new[] { earning }, paymentHistory);
 
-                return paymentsDue.Select(_mapper.Map<PaymentDue, CalculatedPaymentDueEvent>).ToArray();
+                var calculatedPaymentDueEvent = paymentsDue.Select(_mapper.Map<PaymentDue, CalculatedPaymentDueEvent>).ToList();
+
+                calculatedPaymentDueEvent.ForEach(x => x.JobId = earningEntity.JobId);
+
+                return calculatedPaymentDueEvent.ToArray();
             };
         }
     }
