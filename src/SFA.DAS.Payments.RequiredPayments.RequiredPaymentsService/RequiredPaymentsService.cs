@@ -2,7 +2,6 @@
 using AutoMapper;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
-using SFA.DAS.Payments.Core.LoggingHelper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
@@ -11,6 +10,7 @@ using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 {

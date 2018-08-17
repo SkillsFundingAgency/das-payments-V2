@@ -1,12 +1,12 @@
 ﻿using Autofac;
 using Autofac.Integration.ServiceFabric;
 using AutoMapper;
-using SFA.DAS.Payments.Core.LoggingHelper;
 using SFA.DAS.Payments.RequiredPayments.Application.Data;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using System;
 using System.Threading;
+using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 {
@@ -18,12 +18,13 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             {
                 // https://alexmg.com/posts/introducing-the-autofac-integration-for-service-fabric
 
-                var builder = new ContainerBuilder();
+                var builder = ContainerFactory.CreateBuilder();
 
-                RegisterServices(builder);
-                RegisterMap(builder);
+                //RegisterServices(builder);
+                //RegisterMap(builder);
 
-                builder.RegisterServiceFabricSupport();
+                //builder.RegisterServiceFabricSupport();
+                //TODO: let the SF module scan for actors in the assembly and then register each one.
                 builder.RegisterActor<RequiredPaymentsService>();
 
                 using (builder.Build())
@@ -51,44 +52,46 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }).AsImplementedInterfaces();
 
             //Register Logger
-            builder.Register((c, p) =>
-            {
-                var config = c.Resolve<IServiceConfig>();
-                return new LoggerOptions
-                {
-                    LoggerConnectionstring = config.LoggerConnectionstring
-                };
-            }).As<LoggerOptions>().SingleInstance();
-            builder.RegisterType<VersionInfo>().As<IVersionInfo>().SingleInstance();
-            builder.RegisterModule<LoggerModule>();
+            //builder.Register((c, p) =>
+            //{
+            //    var config = c.Resolve<IServiceConfig>();
+            //    return new LoggerOptions
+            //    {
+            //        LoggerConnectionstring = config.LoggerConnectionstring
+            //    };
+            //})
+            //    .As<LoggerOptions>()
+            //    .SingleInstance();
+            //builder.RegisterType<VersionInfo>().As<IVersionInfo>().SingleInstance();
+            //builder.RegisterModule<LoggerModule>();
 
             // Register services
-            builder.RegisterType<PaymentHistoryRepository>().AsImplementedInterfaces();
+            //builder.RegisterType<PaymentHistoryRepository>().AsImplementedInterfaces();
         }
 
         private static void RegisterMap(ContainerBuilder builder)
         {
-            builder.Register(context =>
-            {
-                //var profiles = context.Resolve<IEnumerable<Profile>>();
-                var config = AutoMapperConfigurationFactory.CreateMappingConfig();
+            //builder.Register(context =>
+            //{
+            //    //var profiles = context.Resolve<IEnumerable<Profile>>();
+            //    var config = AutoMapperConfigurationFactory.CreateMappingConfig();
 
-                return config;
-            }).SingleInstance() // We only need one instance
-                .AutoActivate() // Create it on ContainerBuilder.Build()
-                .AsSelf(); // Bind it to its own type
+            //    return config;
+            //}).SingleInstance() // We only need one instance
+            //    .AutoActivate() // Create it on ContainerBuilder.Build()
+            //    .AsSelf(); // Bind it to its own type
 
             // HACK: IComponentContext needs to be resolved again as 'tempContext' is only temporary. See http://stackoverflow.com/a/5386634/718053
-            builder.Register(tempContext =>
-            {
-                var ctx = tempContext.Resolve<IComponentContext>();
-                var config = ctx.Resolve<MapperConfiguration>();
+            //builder.Register(tempContext =>
+            //{
+            //    var ctx = tempContext.Resolve<IComponentContext>();
+            //    var config = ctx.Resolve<MapperConfiguration>();
 
-                // Create our mapper using our configuration above
-                return config.CreateMapper();
-            }).As<IMapper>(); // Bind it to the IMapper interface
+            //    // Create our mapper using our configuration above
+            //    return config.CreateMapper();
+            //}).As<IMapper>(); // Bind it to the IMapper interface
 
-            builder.Register((c, p) => new DedsContext());
+            //builder.Register((c, p) => new RequiredPaymentsDataContext());
         }
     }
 }

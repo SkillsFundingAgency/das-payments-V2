@@ -2,7 +2,6 @@
 using Autofac.Integration.ServiceFabric;
 using Castle.Core.Internal;
 using Microsoft.ServiceFabric.Actors.Client;
-using SFA.DAS.Payments.Core.LoggingHelper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -53,16 +52,16 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
             }).AsImplementedInterfaces();
 
             //Register Logger
-            builder.Register((c, p) =>
-            {
-                var config = c.Resolve<IServiceConfig>();
-                return new LoggerOptions
-                {
-                    LoggerConnectionstring = config.LoggerConnectionstring
-                };
-            }).As<LoggerOptions>().SingleInstance();
-            builder.RegisterType<VersionInfo>().As<IVersionInfo>().SingleInstance();
-            builder.RegisterModule<LoggerModule>();
+            //builder.Register((c, p) =>
+            //{
+            //    var config = c.Resolve<IServiceConfig>();
+            //    return new LoggerOptions
+            //    {
+            //        LoggerConnectionString = config.LoggerConnectionstring
+            //    };
+            //}).As<LoggerOptions>().SingleInstance();
+            //builder.RegisterType<VersionInfo>().As<IVersionInfo>().SingleInstance();
+            //builder.RegisterModule<LoggerModule>();
 
 
             // Register Service Fabric Service components

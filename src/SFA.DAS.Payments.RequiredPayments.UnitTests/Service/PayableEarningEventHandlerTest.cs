@@ -18,8 +18,8 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
 using Autofac;
 using ESFA.DC.Logging.Interfaces;
-using SFA.DAS.Payments.Core.LoggingHelper;
 using Autofac.Extras.Moq;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
 {

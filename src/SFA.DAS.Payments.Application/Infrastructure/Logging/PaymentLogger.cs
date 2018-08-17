@@ -2,7 +2,7 @@
 using ESFA.DC.Logging.Config.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 
-namespace SFA.DAS.Payments.Core.LoggingHelper
+namespace SFA.DAS.Payments.Application.Infrastructure.Logging
 {
     public class PaymentLogger : SeriLogger, IPaymentLogger
     {

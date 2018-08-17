@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application.Repositories
         private IPaymentHistoryRepository _repository;
         private Mock<IRepositoryCache<IEnumerable<PaymentEntity>>> _cacheMock;
         private Mock<DbSet<PaymentEntity>> _paymentSetMock;
-        private Mock<DedsContext> _dedsContextMock;
+        private Mock<RequiredPaymentsDataContext> _dedsContextMock;
         private List<PaymentEntity> _paymentEntities;
 
         [OneTimeSetUp]
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application.Repositories
         public void FixtureSetUp()
         {
             _cacheMock = new Mock<IRepositoryCache<IEnumerable<PaymentEntity>>>(MockBehavior.Strict);
-            _dedsContextMock = new Mock<DedsContext>(MockBehavior.Loose);
+            _dedsContextMock = new Mock<RequiredPaymentsDataContext>(MockBehavior.Loose);
 
             _paymentEntities = new List<PaymentEntity>();
             _paymentSetMock = new Mock<DbSet<PaymentEntity>>(MockBehavior.Loose);

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.Core.LoggingHelper
+﻿namespace SFA.DAS.Payments.Application.Infrastructure.Logging
 {
     public class VersionInfo : IVersionInfo
     {
