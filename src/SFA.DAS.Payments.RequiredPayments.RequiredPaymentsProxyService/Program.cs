@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
             // TODO: use configuration
             builder.Register((c, p) => new ServiceConfig
             {
-                IncomingEndpointName = "sfa-das-payments-paymentsdue-proxyservice",
+                IncomingEndpointName = "payments-required-payments",
                 OutgoingEndpointName = "sfa-das-payments-paymentsdue-proxyservice-out",
                 DestinationEndpointName = "sfa-das-payments-requiredpayments-proxyservice",
                 StorageConnectionString = "UseDevelopmentStorage=true",
