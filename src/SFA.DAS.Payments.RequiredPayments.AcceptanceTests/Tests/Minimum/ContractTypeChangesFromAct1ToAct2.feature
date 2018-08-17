@@ -19,6 +19,7 @@ Background:
 @DAS
 @apprenticeship_contract_type_changes
 @minimum_tests
+#Incentives are excluded
 Scenario Outline: Contract Type 1 On programme payments
 	And the following historical contract type 1 on programme payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
@@ -51,7 +52,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	| learnref2      | 10000 | p2                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref2      | 10000 | p2                     | 2      | 10000 | <transaction_type> | <amount> |
 	| learnref2      | 10000 | p2                     | 3      | 10000 | <transaction_type> | <amount> |
-	#Should amount be 540
+	
 	Examples: 
 	| transaction_type | amount |
 	| Learning_1       | 600    |

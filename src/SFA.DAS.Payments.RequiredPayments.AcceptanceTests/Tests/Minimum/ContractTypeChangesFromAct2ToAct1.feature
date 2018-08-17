@@ -16,6 +16,7 @@ Background:
 @Non-DAS
 @apprenticeship_contract_type_changes
 @minimum_tests
+#Incentives are excluded
 Scenario Outline: Contract Type 2 On programme payments
 	And the following historical contract type 2 on programme payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
@@ -30,7 +31,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount>  |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | -<amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | -<amount> |
-	#Should amount be 540
+
 	Examples: 
 	| transaction_type | amount |
 	| Learning_1       | 600    |
@@ -59,7 +60,7 @@ Scenario Outline: Contract Type 1 On programme payments
 @apprenticeship_contract_type_changes
 @minimum_tests
 Scenario: Contract Type 2 Payable Earnings
-	#Should amount be 540
+
 	When a TOBY is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:

@@ -144,7 +144,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments", @__tags);
-#line 19
+#line 20
 this.ScenarioSetup(scenarioInfo);
 #line 3
 this.FeatureBackground();
@@ -173,9 +173,9 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 20
+#line 21
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table4, "And ");
-#line 25
+#line 26
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -218,7 +218,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("-{0}", amount)});
-#line 27
+#line 28
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table5, "Then ");
 #line hidden
@@ -244,11 +244,11 @@ this.FeatureBackground();
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 1 On programme payments", @__tags);
-#line 42
+#line 43
 this.ScenarioSetup(scenarioInfo);
 #line 3
 this.FeatureBackground();
-#line 43
+#line 44
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -283,7 +283,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 44
+#line 45
  testRunner.Then("the payments due component will generate the following contract type 1 payable ea" +
                     "rnings:", ((string)(null)), table6, "Then ");
 #line hidden
@@ -303,11 +303,11 @@ this.FeatureBackground();
                         "Non-DAS",
                         "apprenticeship_contract_type_changes",
                         "minimum_tests"});
-#line 61
+#line 62
 this.ScenarioSetup(scenarioInfo);
 #line 3
 this.FeatureBackground();
-#line 63
+#line 64
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -420,7 +420,7 @@ this.FeatureBackground();
                         "0",
                         "0",
                         "0"});
-#line 65
+#line 66
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table7, "Then ");
 #line hidden
@@ -440,11 +440,11 @@ this.FeatureBackground();
                         "DAS",
                         "apprenticeship_contract_type_changes",
                         "minimum_tests"});
-#line 76
+#line 77
 this.ScenarioSetup(scenarioInfo);
 #line 3
 this.FeatureBackground();
-#line 78
+#line 79
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -535,7 +535,7 @@ this.FeatureBackground();
                         "0",
                         "0",
                         "0"});
-#line 80
+#line 81
  testRunner.Then("the payments due component will generate the following contract type 1 payable ea" +
                     "rnings:", ((string)(null)), table8, "Then ");
 #line hidden

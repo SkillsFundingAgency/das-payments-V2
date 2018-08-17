@@ -14,11 +14,11 @@ Background:
 
 	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| learnref3      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 540        |
+	| learnref3      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
 
 	And the following contract type 2 completion earning for period 12 are provided in the latest ILR for the academic year 1718:
 	| LearnRefNumber | Ukprn | Amount |
-	| learnref3      | 10000 | 1620   |  
+	| learnref3      | 10000 | 1800   |  
 	
 #@Queries - Should the amount be for SFA+Provider combined or just for SFA. E.g., 540+60 = 600, 1620+180 = 1800??
 @additional_payments
@@ -64,7 +64,7 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 540    |	
+	| Learning_1       | 600    |	
 	
 Scenario Outline: Contract Type 2 completion payment
 
@@ -76,7 +76,7 @@ Scenario Outline: Contract Type 2 completion payment
 	
 	Examples: 
 	| transaction_type | amount |
-	| Completion_2     | 1620   |
+	| Completion_2     | 1800   |
 	
 
 # Payments V1 - for reference

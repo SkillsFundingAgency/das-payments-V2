@@ -14,7 +14,7 @@ Background:
 
 	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| learnref4      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 900        |
+	| learnref4      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 1000        |
 
 #@Notes - INCOMPLETE as incentives
 @additional_payments
@@ -40,7 +40,7 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 900    |	
+	| Learning_1       | 1000    |	
 	
 
 	

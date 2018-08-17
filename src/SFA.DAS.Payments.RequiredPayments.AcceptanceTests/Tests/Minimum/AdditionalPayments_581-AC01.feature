@@ -14,14 +14,13 @@ Background:
 
 	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| learnref5      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 432        |
+	| learnref5      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 480        |
 
 	And the following contract type 2 completion earning for period 12 are provided in the latest ILR for the academic year 1718:
 	| LearnRefNumber | Ukprn | Amount |
-	| learnref5      | 10000 | 1620   |  
+	| learnref5      | 10000 | 1800   |  
 	
-#-- IN-PROGRESS -- INCOMPLETE
-#-- @Queries - Should the amount be for SFA+Provider combined or just for SFA. E.g., 432+48 = 600, 1620+180 = 1800??
+#-- @Queries - Should the amount be for SFA+Provider combined or just for SFA. E.g., 432+48 = 480, 1620+180 = 1800??
 @additional_payments
 @Non-DAS
 @completion
@@ -64,7 +63,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	#480 or 432
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 432    |	
+	| Learning_1       | 480    |	
 	
 Scenario Outline: Contract Type 2 completion payment
 
@@ -76,7 +75,7 @@ Scenario Outline: Contract Type 2 completion payment
 	#1800 or 1620
 	Examples: 
 	| transaction_type | amount |
-	| Completion_2     | 1620   |
+	| Completion_2     | 1800   |
 	
 	
 Scenario Outline: Contract Type 2 balancing payment
@@ -89,7 +88,7 @@ Scenario Outline: Contract Type 2 balancing payment
 	#1440 or 1296
 	Examples: 
 	| transaction_type | amount |
-	| Balancing_3      | 1296   |	
+	| Balancing_3      | 1440   |	
 	
 
 

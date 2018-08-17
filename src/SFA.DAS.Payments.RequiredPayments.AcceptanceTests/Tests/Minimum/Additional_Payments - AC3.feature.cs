@@ -130,7 +130,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "06/08/2017",
                         "06/08/2017",
                         "9000",
-                        "540"});
+                        "600"});
 #line 15
  testRunner.And("the following contract type 2 on programme earnings for periods 1-12 are provided" +
                     " in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
@@ -142,7 +142,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
             table4.AddRow(new string[] {
                         "learnref3",
                         "10000",
-                        "1620"});
+                        "1800"});
 #line 19
  testRunner.And("the following contract type 2 completion earning for period 12 are provided in th" +
                     "e latest ILR for the academic year 1718:", ((string)(null)), table4, "And ");
@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("completion")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
-        [NUnit.Framework.TestCaseAttribute("Learning_1", "540", null)]
+        [NUnit.Framework.TestCaseAttribute("Learning_1", "600", null)]
         public virtual void ContractType2OnProgrammePayments(string transaction_Type, string amount, string[] exampleTags)
         {
             string[] @__tags = new string[] {
@@ -387,7 +387,7 @@ this.FeatureBackground();
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Contract Type 2 completion payment")]
-        [NUnit.Framework.TestCaseAttribute("Completion_2", "1620", null)]
+        [NUnit.Framework.TestCaseAttribute("Completion_2", "1800", null)]
         public virtual void ContractType2CompletionPayment(string transaction_Type, string amount, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 completion payment", exampleTags);
