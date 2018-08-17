@@ -73,6 +73,26 @@
     <Compile Include="Steps\PaymentsDueInputSteps.cs" />
     <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
+    <Compile Include="Tests\Minimum\Additional_Payments - AC3.feature.cs">
+      <DependentUpon>Additional_Payments - AC3.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments - AC5.feature.cs">
+      <DependentUpon>Additional_Payments - AC5.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Minimum\ContractTypeChangesFromAct1ToAct2.feature.cs">
+      <DependentUpon>ContractTypeChangesFromAct1ToAct2.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Minimum\AdditionalPayments_581-AC01.feature.cs">
+      <DependentUpon>AdditionalPayments_581-AC01.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct11.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -87,6 +107,22 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Tests\Minimum\Additional_Payments - AC3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Additional_Payments - AC3.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\Additional_Payments - AC5.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Additional_Payments - AC5.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\ContractTypeChangesFromAct1ToAct2.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ContractTypeChangesFromAct1ToAct2.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\AdditionalPayments_581-AC01.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>AdditionalPayments_581-AC01.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct1.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ContractTypeChangesFromAct2ToAct11.feature.cs</LastGenOutput>
@@ -95,6 +131,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>MinimumTests1.feature.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
