@@ -12,5 +12,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 
         [DataMember]
         public PaymentDueEntity PaymentDueEntity { get; set; }
+
+        [DataMember]
+        public string JobId { get; set; }
     }
 }
