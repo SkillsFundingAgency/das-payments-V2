@@ -88,6 +88,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AdditionalPayments_671-AC02.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Minimum\small_employers - AC3.feature.cs">
+      <DependentUpon>small_employers - AC3.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Minimum\small_employers - AC2.feature.cs">
+      <DependentUpon>small_employers - AC2.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Minimum\Additional_Payments - AC3.feature.cs">
       <DependentUpon>Additional_Payments - AC3.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -133,6 +143,14 @@
     <None Include="Tests\Minimum\AdditionalPayments_671-AC02.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>AdditionalPayments_671-AC02.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\small_employers - AC3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>small_employers - AC3.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\small_employers - AC2.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>small_employers - AC2.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Minimum\Additional_Payments - AC3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
