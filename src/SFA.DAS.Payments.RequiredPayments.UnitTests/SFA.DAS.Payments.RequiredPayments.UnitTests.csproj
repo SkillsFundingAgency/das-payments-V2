@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Application\SFA.DAS.Payments.RequiredPayments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Model\SFA.DAS.Payments.RequiredPayments.Model.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.csproj" />

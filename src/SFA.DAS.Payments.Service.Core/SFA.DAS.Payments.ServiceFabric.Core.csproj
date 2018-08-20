@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
     <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="3.2.162" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.162" />
     <PackageReference Include="NServiceBus" Version="7.0.1" />
@@ -16,6 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
   </ItemGroup>
 

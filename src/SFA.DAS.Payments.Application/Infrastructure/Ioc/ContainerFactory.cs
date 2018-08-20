@@ -28,28 +28,22 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc
         {
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var filenames = Directory.GetFiles(path, "SFA.DAS.Payments.*.dll")
-//                .Where(file => file.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                 .ToList();
-            //var tempDomain = AppDomain.CreateDomain("Temp.Payments.Autofac.ScanningDomain");
 
             foreach (string file in filenames)
             {
                 try
                 {
-                    //var name = new AssemblyName(file);// { CodeBase = file };
-//                    var assembly = tempDomain.Load(name);
-                    //var assembly = Assembly.Load(name);
                     //TODO: support modules in exe??
                     var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
                     builder.RegisterAssemblyModules(assembly);
                 }
                 catch (Exception ex)
                 {
-                    //TODO: use logger or re-throw exception
+                    //TODO: use logger or re-throw exception?
                     Trace.TraceError($"Error loading assembly: {file}. Error: {ex.Message}. {ex}");
                 }
             }
-            //AppDomain.Unload(tempDomain);
         }
     }
 }

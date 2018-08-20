@@ -1,12 +1,7 @@
 ﻿using Autofac;
-using Autofac.Integration.ServiceFabric;
-using AutoMapper;
-using SFA.DAS.Payments.RequiredPayments.Application.Data;
-using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
-using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using System;
 using System.Threading;
-using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 {
@@ -16,17 +11,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             try
             {
-                // https://alexmg.com/posts/introducing-the-autofac-integration-for-service-fabric
-
-                var builder = ContainerFactory.CreateBuilder();
-
-                //RegisterServices(builder);
-                //RegisterMap(builder);
-
-                //builder.RegisterServiceFabricSupport();
-                //TODO: let the SF module scan for actors in the assembly and then register each one.
-                builder.RegisterActor<RequiredPaymentsService>();
-
+                var builder = ServiceFabricContainerFactory.CreateBuilderForActor<RequiredPaymentsService>();
                 using (builder.Build())
                 {
                     Thread.Sleep(Timeout.Infinite);
@@ -42,14 +27,14 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private static void RegisterServices(ContainerBuilder builder)
         {
             // TODO: use configuration
-            builder.Register((c, p) => new ServiceConfig
-            {
-                IncomingEndpointName = "sfa-das-payments-paymentsdue-proxyservice",
-                OutgoingEndpointName = "sfa-das-payments-paymentsdue-proxyservice-out",
-                DestinationEndpointName = "sfa-das-payments-requiredpayments-proxyservice",
-                StorageConnectionString = "UseDevelopmentStorage=true",
-                LoggerConnectionstring = "Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"
-            }).AsImplementedInterfaces();
+            //builder.Register((c, p) => new ServiceConfig
+            //{
+            //    IncomingEndpointName = "sfa-das-payments-paymentsdue-proxyservice",
+            //    OutgoingEndpointName = "sfa-das-payments-paymentsdue-proxyservice-out",
+            //    DestinationEndpointName = "sfa-das-payments-requiredpayments-proxyservice",
+            //    StorageConnectionString = "UseDevelopmentStorage=true",
+            //    LoggerConnectionstring = "Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"
+            //}).AsImplementedInterfaces();
 
             //Register Logger
             //builder.Register((c, p) =>

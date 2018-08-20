@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     var actor = _proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
                     var paymentsDue = await actor.HandlePayableEarning(message, CancellationToken.None).ConfigureAwait(false);
 
-                    await Task.WhenAll(paymentsDue.Select(p => _endpoint.Send(p)).ToArray()).ConfigureAwait(false);
+                    //await Task.WhenAll(paymentsDue.Select(p => _endpoint.Send(p)).ToArray()).ConfigureAwait(false);
 
                     _paymentLogger.LogInfo($"Sucessfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
                 }

@@ -7,5 +7,9 @@
   <Section Name="RequiredPaymentsServiceActorServiceReplicatorSecurityConfig">
     <Parameter Name="CredentialType" Value="None" />
   </Section>
+  <Section Name="RequiredPaymentsServiceConfig">
+    <Parameter Name="CredentialType" Value="None" />
+  </Section>
+  
   <!-- The content will be generated during build -->
 </Settings>

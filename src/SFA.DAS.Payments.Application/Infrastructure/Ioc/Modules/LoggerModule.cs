@@ -6,18 +6,22 @@ using ESFA.DC.Logging.Config.Interfaces;
 using ESFA.DC.Logging.Enums;
 using ESFA.DC.Logging.Interfaces;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
 {
     public class LoggerModule : Module
     {
         protected override void Load(ContainerBuilder builder)
-
         {
-            builder.Register((c, p) => new LoggerOptions
+            builder.Register((c, p) =>
                 {
-                    //TODO: Get connection string from config
-                    LoggerConnectionString = "Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"
+                    var configHelper = c.Resolve<IConfigurationHelper >();
+                    return new LoggerOptions
+                    {
+                        //Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;
+                        LoggerConnectionString = configHelper.GetConnectionString("LoggingConnectionString")
+                    };
                 })
                 .As<LoggerOptions>()
                 .SingleInstance();
@@ -51,5 +55,4 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.RegisterType<PaymentLogger>().As<IPaymentLogger>().InstancePerLifetimeScope();
         }
     }
-
 }

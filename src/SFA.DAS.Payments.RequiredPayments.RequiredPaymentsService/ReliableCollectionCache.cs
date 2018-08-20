@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 
-namespace SFA.DAS.Payments.RequiredPayments.ApprenticeshipPaymentsDueService
+namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 {
     public class ReliableCollectionCache<T> : IRepositoryCache<T>
     {

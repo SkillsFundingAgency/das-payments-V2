@@ -15,21 +15,18 @@
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Autofac.ServiceFabric" Version="2.0.0" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="Microsoft.ServiceFabric" Version="6.2.283" />
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.1.283" />
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.1.283" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.1.283" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="6.3.162" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.2.162" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.162" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="3.2.162" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Application\SFA.DAS.Payments.RequiredPayments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Service.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>
 
 </Project>
