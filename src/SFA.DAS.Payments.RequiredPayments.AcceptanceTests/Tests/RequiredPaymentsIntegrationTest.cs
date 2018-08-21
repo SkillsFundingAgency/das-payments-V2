@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.ServiceFabric.Actors;
+using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
@@ -13,6 +16,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
     public class RequiredPaymentsIntegrationTest
     {
         protected static IEndpointInstance Sender;
+        protected IPayableEarningEvent Earning;
 
         [OneTimeSetUp]
         public static async Task SetUpMessaging()
@@ -20,10 +24,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
             Sender = await CreateMessageSender();
         }
 
-        [Test]
-        public async Task Processes_Earning_Event()
+        [SetUp]
+        public void SetUp()
         {
-            IPayableEarningEvent earning = new PayableEarningEvent
+            Earning = new PayableEarningEvent
             {
                 Ukprn = 1,
                 LearnRefNumber = "2",
@@ -51,8 +55,14 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                     }
                 }
             };
+
+        }
+
+        [Test]
+        public async Task Processes_Earning_Event()
+        {
             Console.WriteLine("Sending test earning event");
-            await Sender.Send(earning).ConfigureAwait(false);
+            await Sender.Send(Earning).ConfigureAwait(false);
             Console.WriteLine("Finished sending earning");
         }
 
@@ -81,6 +91,15 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
             endpointConfiguration.UseContainer<AutofacBuilder>();
             endpointConfiguration.SendOnly();
             return await Endpoint.Start(endpointConfiguration);
+        }
+
+        [Test]
+        public async Task Invoke_Require_Payments_Actor()
+        {
+            var actorId = new ActorId("12345");
+//            var actor = new ActorProxyFactory().CreateActorProxy<SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces.IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
+            //var paymentsDue = await actor.HandlePayableEarning(Earning, CancellationToken.None).ConfigureAwait(false);
+
         }
     }
 }

@@ -12,9 +12,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
     public class PaymentHistoryRepository : IPaymentHistoryRepository
     {
         private readonly IRepositoryCache<IEnumerable<PaymentEntity>> _cache;
-        private readonly RequiredPaymentsDataContext _requiredPaymentsDataContext;
+        private readonly IRequiredPaymentsDataContext _requiredPaymentsDataContext;
 
-        public PaymentHistoryRepository(RequiredPaymentsDataContext requiredPaymentsDataContext)
+        public PaymentHistoryRepository(IRequiredPaymentsDataContext requiredPaymentsDataContext)
         {
             _requiredPaymentsDataContext = requiredPaymentsDataContext;
         }

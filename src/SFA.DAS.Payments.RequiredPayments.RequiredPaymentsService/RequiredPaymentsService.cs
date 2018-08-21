@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using AutoMapper;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.RequiredPayments.Messages.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 {
@@ -46,25 +48,14 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 executionContext.JobId = earningEntity.JobId;
 
                 _paymentLogger.LogInfo($"Handling Payable Earning for {earningEntity?.Ukprn} ");
-
-                // TODO: get apprenticeship
-                var earning = _mapper.Map<PayableEarningEvent, PayableEarning>(earningEntity);
-                var apprenticeship = new Apprenticeship
-                {
-                    // learner
-                    // course
-                    // price episodes
+                return new [] {
+                    new CalculatedPaymentDueEvent
+                    {
+                        JobId = earningEntity.JobId, 
+                        EventTime = DateTimeOffset.UtcNow,
+                        PaymentDueEntity = new PaymentDueEntity()
+                    }
                 };
-
-                var paymentHistory = await _paymentHistoryRepository.GetPaymentHistory(_apprenticeshipKey, cancellationToken).ConfigureAwait(false);
-
-                var paymentsDue = apprenticeship.CreatePaymentDue(new[] { earning }, paymentHistory);
-
-                var calculatedPaymentDueEvent = paymentsDue.Select(_mapper.Map<PaymentDue, CalculatedPaymentDueEvent>).ToList();
-
-                calculatedPaymentDueEvent.ForEach(x => x.JobId = earningEntity.JobId);
-
-                return calculatedPaymentDueEvent.ToArray();
             };
         }
     }
