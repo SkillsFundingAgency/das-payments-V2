@@ -1,4 +1,7 @@
-﻿Feature: Small_Employers 
+﻿#New name - small_employers_fully_funded_Additional_Payments_EEF4_Completion
+#Old name - small_employers - AC3
+
+Feature: Small_Employers 
 		 AC3- 1 learner aged 19-24, non-DAS, is a care leaver, In paid employment with a small employer at start, is fully funded for on programme and completion payments
 #Note: care leavers are flagged on the ILR through EEF code = 4*
 #Given the apprenticeship funding band maximum is 9000
@@ -100,6 +103,7 @@ Scenario Outline: Contract Type 2 completion payment
 #
 #@SmallEmployerNonDas
 #Scenario:AC3- 1 learner aged 19-24, non-DAS, is a care leaver, In paid employment with a small employer at start, is fully funded for on programme and completion payments
+#
 ##Note: care leavers are flagged on the ILR through EEF code = 4*
 #	Given the apprenticeship funding band maximum is 9000
 #    When an ILR file is submitted with the following data:
@@ -107,8 +111,8 @@ Scenario Outline: Contract Type 2 completion payment
 #        | learner a | 19-24 programme only non-DAS | 7500         | 06/08/2017 | 08/08/2018       | 08/08/2018      | completed         | 403            | 2              | 1            | In paid employment | 05/08/2017                | 12345678    | SEM1           | EEF4        |
 #	And the employment status in the ILR is:
 #        | Employer    | Employment Status      | Employment Status Applies | Small Employer |
-#        | employer_2  | in paid employment     | 05/08/2017                | SEM1           |
-#    	Then the provider earnings and payments break down as follows:
+#        | employer 1  | in paid employment     | 05/08/2017                | SEM1           |
+#    Then the provider earnings and payments break down as follows:
 #        | Type                                    | 08/17 | 09/17 | 10/17 | 11/17 | 12/17 | ... | 07/18 | 08/18 | 09/18 |
 #        | Provider Earned Total                   | 620   | 620   | 620   | 1620  | 620   | ... | 620   | 2860  | 0     |
 #        | Provider Earned from SFA                | 620   | 620   | 620   | 1620  | 620   | ... | 620   | 2860  | 0     |
@@ -126,7 +130,7 @@ Scenario Outline: Contract Type 2 completion payment
 #        | On-program                   | 500   | 500   | 500   | 500   | ... | 500   | 0     |
 #        | Completion                   | 0     | 0     | 0     | 0     | ... | 0     | 1500  |
 #        | Balancing                    | 0     | 0     | 0     | 0     | ... | 0     | 0     |
-#        | employer_26-18 incentive     | 0     | 0     | 0     | 500   | ... | 0     | 500   |
+#        | Employer 16-18 incentive     | 0     | 0     | 0     | 500   | ... | 0     | 500   |
 #        | Provider 16-18 incentive     | 0     | 0     | 0     | 500   | ... | 0     | 500   |
 #        | Framework uplift on-program  | 120   | 120   | 120   | 120   | ... | 120   | 0     |
 #        | Framework uplift completion  | 0     | 0     | 0     | 0     | ... | 0     | 360   |
