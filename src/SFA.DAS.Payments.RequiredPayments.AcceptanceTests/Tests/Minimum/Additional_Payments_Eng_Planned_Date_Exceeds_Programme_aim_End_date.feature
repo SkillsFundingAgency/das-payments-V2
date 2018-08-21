@@ -1,4 +1,7 @@
-﻿Feature: Additional payments
+﻿#New name - Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date
+#Old name - AdditionalPayments_638-AC01
+
+Feature: Additional payments
 		638-AC01 Non-DAS learner, takes an English qualification that has a planned end date that exceeds the actual end date of the programme aim
 
 Background:
