@@ -1,4 +1,7 @@
-﻿#Payment v1 test has incorrect refund for employer - Rohan to investigatge
+﻿#New name - Refund_price_change_retrospectively_from_beginning
+#Old name - Refund_894-AC02
+
+#Payment v1 test has incorrect refund for employer - Rohan to investigatge
 
 Feature: Refunds - Provider earnings and payments where learner refund payments are due
 		 894-AC02 - non DAS standard learner, payments made then price is changed retrospectively from beginning
