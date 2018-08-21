@@ -24,14 +24,16 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "AdditionalPayments_671-AC02.feature"
+#line 1 "AdditionalPayments_price_change_during_programme_learning_support.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Additional payments", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Additional payments", "\t\t 671-AC02 Non-DAS learner, levy available, is taking an English or maths qualif" +
+                    "ication, has learning support and the negotiated price changes during the progra" +
+                    "mme", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -63,18 +65,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
             testRunner.CollectScenarioErrors();
         }
         
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("671-AC02 Non-DAS learner, levy available, is taking an English or maths qualifica" +
-            "tion, has learning support and the negotiated price changes during the programme" +
-            "")]
-        public virtual void _671_AC02Non_DASLearnerLevyAvailableIsTakingAnEnglishOrMathsQualificationHasLearningSupportAndTheNegotiatedPriceChangesDuringTheProgramme()
+        public virtual void FeatureBackground()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("671-AC02 Non-DAS learner, levy available, is taking an English or maths qualifica" +
-                    "tion, has learning support and the negotiated price changes during the programme" +
-                    "", ((string[])(null)));
-#line 3
-  this.ScenarioSetup(scenarioInfo);
-#line 7
+#line 9
+#line 11
  testRunner.Given("the current processing period is 5", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -85,7 +79,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "learnref8",
                         "10000",
                         "10000"});
-#line 10
+#line 14
  testRunner.And("the following learners:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -133,7 +127,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "06/10/2018",
                         "",
                         "Continuing"});
-#line 15
+#line 19
  testRunner.And("the following course information:", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -150,7 +144,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "04/08/2017",
                         "04/08/2017",
                         "11250"});
-#line 21
+#line 25
  testRunner.And("the following contract type 2 on programme earnings for periods 1-3 are provided " +
                     "in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
 #line hidden
@@ -168,11 +162,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "11/11/2017",
                         "11/11/2017",
                         "6750"});
-#line 25
+#line 29
  testRunner.And("the following contract type 2 on programme earnings for periods 4-12 are provided" +
                     " in the latest ILR for the academic year 1718:", ((string)(null)), table4, "And ");
 #line hidden
-            this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
@@ -192,8 +185,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments", @__tags);
-#line 36
+#line 40
 this.ScenarioSetup(scenarioInfo);
+#line 9
+this.FeatureBackground();
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -227,9 +222,9 @@ this.ScenarioSetup(scenarioInfo);
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 38
+#line 42
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table5, "And ");
-#line 44
+#line 48
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -264,7 +259,7 @@ this.ScenarioSetup(scenarioInfo);
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 46
+#line 50
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table6, "Then ");
 #line hidden
@@ -277,8 +272,10 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void ContractType2OnProgrammePaymentsChangedPrice(string transaction_Type, string amount, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments changed price", exampleTags);
-#line 57
+#line 61
 this.ScenarioSetup(scenarioInfo);
+#line 9
+this.FeatureBackground();
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -296,9 +293,9 @@ this.ScenarioSetup(scenarioInfo);
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 59
- testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table7, "And ");
 #line 63
+ testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table7, "And ");
+#line 67
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -325,7 +322,7 @@ this.ScenarioSetup(scenarioInfo);
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 65
+#line 69
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table8, "Then ");
 #line hidden
