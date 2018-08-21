@@ -5,7 +5,7 @@
 
         public static string GetConnectionString(this IConfigurationHelper helper, string connectionStringName)
         {
-            return helper.GetSetting("ConnectionStrings", connectionStringName);
+            return helper.GetSetting("ConnectionStringsSection", connectionStringName);
         }
 
         public static string GetSetting(this IConfigurationHelper helper, string settingName)

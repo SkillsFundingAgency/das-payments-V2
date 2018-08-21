@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
 using System.Collections.Generic;
 using System.Fabric;
@@ -11,7 +10,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
 {
     public class RequiredPaymentsProxyService : StatelessService
     {
-        private IEndpointCommunicationListener<IPayableEarningEvent> _listener;
+        private IEndpointCommunicationListener _listener;
         private readonly ILifetimeScope _lifetimeScope;
         private readonly IPaymentLogger _paymentLogger;
 
@@ -23,11 +22,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            _paymentLogger.LogInfo($"Creating Service Instance Listeners For RequiredPaymentsProxyService");
+            _paymentLogger.LogInfo("Creating Service Instance Listeners For RequiredPaymentsProxyService");
 
             return new List<ServiceInstanceListener>
                 {
-                    new ServiceInstanceListener(context =>_listener = _lifetimeScope.Resolve<IEndpointCommunicationListener<IPayableEarningEvent>>())
+                    new ServiceInstanceListener(context =>_listener = _lifetimeScope.Resolve<IEndpointCommunicationListener>())
                 };
         }
     }

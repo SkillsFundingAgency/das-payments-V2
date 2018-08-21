@@ -10,5 +10,9 @@
   <Section Name="RequiredPaymentsServiceConfig">
     <Parameter Name="CredentialType" Value="None" />
   </Section>
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
+  </Section>
   <!-- The content will be generated during build -->
 </Settings>

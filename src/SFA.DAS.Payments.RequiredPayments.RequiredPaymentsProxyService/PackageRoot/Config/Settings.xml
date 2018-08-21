@@ -6,4 +6,10 @@
     <Parameter Name="MyParameter" Value="Value1" />
   </Section>
   -->
+
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"/>
+  </Section>
+
 </Settings>
