@@ -7,17 +7,6 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            //builder.Register((c, p) =>
-            //{
-            //    var config = c.Resolve<IApplicationConfiguration>();
-            //    return new EndpointCommunicationSender(
-            //        config.OutgoingEndpointName,
-            //        config.StorageConnectionString,
-            //        config.DestinationEndpointName,
-            //        c.Resolve<ILifetimeScope>()
-            //    );
-            //}).As<IEndpointCommunicationSender<IPaymentsDueEvent>>();
-
             builder.Register((c, p) =>
             {
                 var config = c.Resolve<IApplicationConfiguration>();
