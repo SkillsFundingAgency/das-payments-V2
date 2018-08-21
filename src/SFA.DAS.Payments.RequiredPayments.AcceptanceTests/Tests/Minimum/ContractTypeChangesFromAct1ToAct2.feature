@@ -1,4 +1,6 @@
-﻿Feature: Contract Type Changes From ACT1 To ACT2
+﻿#New name - ContractTypeChangesFromAct1ToAct2
+#Old name - DPP_965_02
+Feature: Contract Type Changes From ACT1 To ACT2
 	DPP_965_02 - Non-Levy apprentice, provider edits contract type (ACT) in the ILR, previous on-programme and English/math payments are refunded and repaid according to latest contract type
 
 Background:
