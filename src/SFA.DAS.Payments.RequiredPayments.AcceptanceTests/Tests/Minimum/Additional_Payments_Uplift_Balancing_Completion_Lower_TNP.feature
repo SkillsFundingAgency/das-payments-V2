@@ -1,4 +1,6 @@
-﻿Feature: Additional payments
+﻿#New name - Additional_Payments_Uplift_Balancing_Completion_Lower_TNP
+#Old name - AdditionalPayments_581-AC02
+Feature: Additional payments
 		581-AC02-Non DAS learner finishes early, price lower than the funding band maximum, earns balancing and completion framework uplift payments. Assumes 15 month apprenticeship and learner completes after 12 months.
 
 Background:
