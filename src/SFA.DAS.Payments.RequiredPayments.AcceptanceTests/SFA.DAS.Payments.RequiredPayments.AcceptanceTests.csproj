@@ -73,38 +73,38 @@
     <Compile Include="Steps\PaymentsDueInputSteps.cs" />
     <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
-    <Compile Include="Tests\Minimum\AdditionalPayments_581-AC02.feature.cs">
-      <DependentUpon>AdditionalPayments_581-AC02.feature</DependentUpon>
+    <Compile Include="Tests\Minimum\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs">
+      <DependentUpon>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Minimum\AdditionalPayments_638-AC01.feature.cs">
+    <Compile Include="Tests\Minimum\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AdditionalPayments_638-AC01.feature</DependentUpon>
+      <DependentUpon>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Minimum\AdditionalPayments_671-AC02.feature.cs">
+    <Compile Include="Tests\Minimum\AdditionalPayments_price_change_during_programme_learning_support.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AdditionalPayments_671-AC02.feature</DependentUpon>
+      <DependentUpon>AdditionalPayments_price_change_during_programme_learning_support.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Minimum\learner_finishes_early - non-DAS learner.feature.cs">
+    <Compile Include="Tests\Minimum\learner_finishes_early_Balancing_Completion.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>learner_finishes_early - non-DAS learner.feature</DependentUpon>
+      <DependentUpon>learner_finishes_early_Balancing_Completion.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Minimum\Refund_894-AC02.feature.cs">
+    <Compile Include="Tests\Minimum\Refund_price_change_retrospectively_from_beginning.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Refund_894-AC02.feature</DependentUpon>
+      <DependentUpon>Refund_price_change_retrospectively_from_beginning.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Minimum\small_employers - AC3.feature.cs">
-      <DependentUpon>small_employers - AC3.feature</DependentUpon>
+    <Compile Include="Tests\Minimum\small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature.cs">
+      <DependentUpon>small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Minimum\small_employers - AC2.feature.cs">
-      <DependentUpon>small_employers - AC2.feature</DependentUpon>
+    <Compile Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs">
+      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -123,8 +123,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Minimum\AdditionalPayments_581-AC01.feature.cs">
-      <DependentUpon>AdditionalPayments_581-AC01.feature</DependentUpon>
+    <Compile Include="Tests\Minimum\Additional_Payments_Framework_Uplift_Balancing_Completion.feature.cs">
+      <DependentUpon>Additional_Payments_Framework_Uplift_Balancing_Completion.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -142,33 +142,33 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Tests\Minimum\AdditionalPayments_581-AC02.feature">
+    <None Include="Tests\Minimum\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>AdditionalPayments_581-AC02.feature.cs</LastGenOutput>
+      <LastGenOutput>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Minimum\AdditionalPayments_638-AC01.feature">
+    <None Include="Tests\Minimum\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>AdditionalPayments_638-AC01.feature.cs</LastGenOutput>
+      <LastGenOutput>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Minimum\AdditionalPayments_671-AC02.feature">
+    <None Include="Tests\Minimum\AdditionalPayments_price_change_during_programme_learning_support.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>AdditionalPayments_671-AC02.feature.cs</LastGenOutput>
+      <LastGenOutput>AdditionalPayments_price_change_during_programme_learning_support.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Minimum\learner_finishes_early - non-DAS learner.feature">
+    <None Include="Tests\Minimum\learner_finishes_early_Balancing_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>learner_finishes_early - non-DAS learner.feature.cs</LastGenOutput>
+      <LastGenOutput>learner_finishes_early_Balancing_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Minimum\Refund_894-AC02.feature">
+    <None Include="Tests\Minimum\Refund_price_change_retrospectively_from_beginning.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Refund_894-AC02.feature.cs</LastGenOutput>
+      <LastGenOutput>Refund_price_change_retrospectively_from_beginning.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Minimum\small_employers - AC3.feature">
+    <None Include="Tests\Minimum\small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>small_employers - AC3.feature.cs</LastGenOutput>
+      <LastGenOutput>small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Minimum\small_employers - AC2.feature">
+    <None Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>small_employers - AC2.feature.cs</LastGenOutput>
+      <LastGenOutput>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -182,9 +182,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ContractTypeChangesFromAct1ToAct2.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Minimum\AdditionalPayments_581-AC01.feature">
+    <None Include="Tests\Minimum\Additional_Payments_Framework_Uplift_Balancing_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>AdditionalPayments_581-AC01.feature.cs</LastGenOutput>
+      <LastGenOutput>Additional_Payments_Framework_Uplift_Balancing_Completion.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct1.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
