@@ -20,6 +20,7 @@ using Autofac;
 using ESFA.DC.Logging.Interfaces;
 using Autofac.Extras.Moq;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Messaging;
 
 namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
 {
@@ -68,7 +69,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
                     .Returns("key")
                     .Verifiable();
 
-                var endpoint = new Mock<IEndpointCommunicationSender<IPaymentsDueEvent>>(MockBehavior.Strict);
+                var endpoint = new Mock<IEndpointCommunicationSender>(MockBehavior.Strict);
                 endpoint.Setup(e => e.Send(It.IsAny<IPaymentsDueEvent>())).Returns(Task.FromResult(0)).Verifiable();
 
                 var paymentsDueEvents = new[]
@@ -95,7 +96,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
                 messageHandlerContextMock.SetupGet(o => o.MessageId).Returns(Guid.NewGuid().ToString()).Verifiable();
 
                 IHandleMessages<PayableEarningEvent> handler = new PayableEarningEventHandler(apprenticeshipKeyServiceMock.Object,
-                                                                                                endpoint.Object, proxyFactoryMock.Object,
+                                                                                                proxyFactoryMock.Object,
                                                                                                 paymentLoggerMock.Object,
                                                                                                 lifeTimeScopeMock);
 
@@ -109,9 +110,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
                 apprenticeshipKeyServiceMock.Verify();
                 paymentLoggerMock.Verify();
                 messageHandlerContextMock.Verify();
-
             }
-
         }
     }
 }

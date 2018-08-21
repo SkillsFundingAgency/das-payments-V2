@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Messaging;
 
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
@@ -21,19 +22,16 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
     public class PayableEarningEventHandler : IHandleMessages<PayableEarningEvent>
     {
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
-        private readonly IEndpointCommunicationSender<IPaymentsDueEvent> _endpoint;
         private readonly IActorProxyFactory _proxyFactory;
         private readonly IPaymentLogger _paymentLogger;
         private readonly ILifetimeScope _lifetimeScope;
 
         public PayableEarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
-                                        IEndpointCommunicationSender<IPaymentsDueEvent> endpoint,
                                         IActorProxyFactory proxyFactory,
                                         IPaymentLogger paymentLogger,
                                         ILifetimeScope lifetimeScope)
         {
             _apprenticeshipKeyService = apprenticeshipKeyService;
-            _endpoint = endpoint;
             _proxyFactory = proxyFactory ?? new ActorProxyFactory();
             _paymentLogger = paymentLogger;
             _lifetimeScope = lifetimeScope;
@@ -64,9 +62,21 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     var actor = _proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
                     var paymentsDue = await actor.HandlePayableEarning(message, CancellationToken.None).ConfigureAwait(false);
 
-                    //await Task.WhenAll(paymentsDue.Select(p => _endpoint.Send(p)).ToArray()).ConfigureAwait(false);
-
-                    _paymentLogger.LogInfo($"Sucessfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
+                    foreach (var calculatedPaymentDueEvent in paymentsDue)
+                    {
+                        try
+                        {
+                            await context.Publish(calculatedPaymentDueEvent);
+                        }
+                        catch (Exception ex)
+                        {
+                            //TODO: add more details when we flesh out the event.
+                            _paymentLogger.LogError($"Error publishing the event: 'CalculatedPaymentDueEvent'.  Error: {ex.Message}.", ex);
+                            throw;
+                            //TODO: update the job
+                        }
+                    }
+                    _paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
                 }
                 catch (Exception ex)
                 {
