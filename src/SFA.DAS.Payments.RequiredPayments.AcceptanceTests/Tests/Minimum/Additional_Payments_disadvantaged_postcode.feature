@@ -1,4 +1,6 @@
-﻿Feature: Additional payments 
+﻿#New name - Additional_Payments_disadvantaged_postcode
+#Old name - Additional_Payments - AC5
+Feature: Additional payments 
 		AC5- Payment for a non-DAS learner, lives in a disadvantaged postocde area - 1-10% most deprived, funding agreed within band maximum, UNDERTAKING APPRENTICESHIP FRAMEWORK The provider incentive for this postcode group is £600 split equally into 2 payments at 90 and 365 days. INELIGIBLE FOR APPRENTICESHIP STANDARDS
 
 Background: 
