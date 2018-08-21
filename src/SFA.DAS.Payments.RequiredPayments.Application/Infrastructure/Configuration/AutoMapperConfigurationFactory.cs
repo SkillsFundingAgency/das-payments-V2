@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 cfg.CreateMap<PaymentDue, CalculatedPaymentDueEvent>()
                     .ForMember(dst => dst.PaymentDueEntity, opt => opt.Ignore())
                     .ForMember(dst => dst.EventTime, opt => opt.Ignore())
+                    .ForMember(dest =>dest.JobId, opt => opt.Ignore())
                     .AfterMap((src, dst) =>
                     {
                         dst.PaymentDueEntity = new PaymentDueEntity();

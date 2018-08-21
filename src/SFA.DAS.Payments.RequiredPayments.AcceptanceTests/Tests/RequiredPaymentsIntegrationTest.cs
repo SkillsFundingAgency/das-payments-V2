@@ -62,8 +62,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 
             var conventions = endpointConfiguration.Conventions();
             conventions.DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments")??false) && (type.Namespace?.Contains(".Messages")??false));
-            conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments")??false) && (type.Namespace?.Contains(".Messages.Commands")??false));
-            conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments")??false) && (type.Namespace?.Contains(".Messages.Events")??false));
+            //conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments")??false) && (type.Namespace?.Contains(".Messages.Commands")??false));
+            //conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments")??false) && (type.Namespace?.Contains(".Messages.Events")??false));
 
             endpointConfiguration.UsePersistence<AzureStoragePersistence>()
                 .ConnectionString(TestConfiguration.StorageConnectionString);

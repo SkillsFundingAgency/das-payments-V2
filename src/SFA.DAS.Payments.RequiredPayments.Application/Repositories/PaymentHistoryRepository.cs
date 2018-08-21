@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
         private PaymentEntity[] GetEntities(string apprenticeshipKey)
         {
             // HACK: this is for integration test to work
-            return new PaymentEntity[0];
+            //return new PaymentEntity[0];
             return _requiredPaymentsDataContext.PaymentHistory.Where(p => p.ApprenticeshipKey == apprenticeshipKey).ToArray();
         }
     }

@@ -8,6 +8,8 @@
     <Parameter Name="RequiredPaymentsServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
+    <Parameter Name="RequiredPaymentsProxyService_EndpointName" DefaultValue="" />
+    <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -21,6 +23,9 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
           </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[RequiredPaymentsProxyService_EndpointName]" />
+          </Section>
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>
@@ -33,6 +38,9 @@
           <Section Name="ConnectionStringsSection">
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
           </Section>
         </Settings>
       </ConfigOverride>
