@@ -1,4 +1,7 @@
-﻿Feature: Provider earnings and payments where learner completes earlier than planned
+﻿#New name - learner_finishes_early_Balancing_Completion
+#Old name - learner_finishes_early - non-DAS learner
+
+Feature: Provider earnings and payments where learner completes earlier than planned
 
     #The earnings and payment rules for early completions are the same as for learners finishing on time, except that the completion payment is earned earlier.
 
