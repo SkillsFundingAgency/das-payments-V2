@@ -23,17 +23,33 @@ Background:
 @Refunds
 @price_reduced_retrospectively
 
-Scenario Outline: Contract Type 2 On programme payments
+Scenario Outline: Contract Type 2 On programme payments before price change
 
 	And the following historical contract type 2 on programme payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref12     | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref12     | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
+	
+	When a TOBY is received
+
+	Then the payments due component will generate the following contract type 1 payable earnings:
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount    |
+	| learnref12     | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount>  |
+	| learnref12     | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount>  |
+	| learnref12     | 10000 | p1                     | 1      | 10000 | <transaction_type> | -<amount> |
+	| learnref12     | 10000 | p1                     | 2      | 10000 | <transaction_type> | -<amount> |
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 750 |
+	| Learning_1       | 750	|
 
+@Non-DAS
+@minimum_tests
+@Refunds
+@price_reduced_retrospectively
+
+Scenario Outline: Contract Type 2 On programme payments after price change
+	
 	When a TOBY is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
@@ -46,14 +62,14 @@ Scenario Outline: Contract Type 2 On programme payments
 	| transaction_type | amount |
 	| Learning_1       | 0.6667 |
 
-	And the payments due component will generate the following contract type 2 refund:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref12     | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
-	
-	#Check with Dave if we want 1500 or we want to deduct period 1-2 new amount
-	Examples: 
-	| transaction_type | amount		 |
-	| Learning_1       | 1498.6667   |
+	#And the payments due component will generate the following contract type 2 refund:
+	#| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
+	#| learnref12     | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
+	#
+	##Check with Dave if we want 1500 or we want to deduct period 1-2 new amount
+	#Examples: 
+	#| transaction_type | amount		 |
+	#| Learning_1       | 1498.6667   |
 
 
 
