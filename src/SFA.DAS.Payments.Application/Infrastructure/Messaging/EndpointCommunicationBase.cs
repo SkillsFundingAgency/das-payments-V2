@@ -34,7 +34,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Messaging
             persistence.ConnectionString(_storageConnectionString);
 
             endpointConfiguration.DisableFeature<TimeoutManager>();
-            //endpointConfiguration.DisableFeature<MessageDrivenSubscriptions>();
             var transport = endpointConfiguration.UseTransport<AzureStorageQueueTransport>();
             transport.ConnectionString(_storageConnectionString);
             transport.BatchSize(1);

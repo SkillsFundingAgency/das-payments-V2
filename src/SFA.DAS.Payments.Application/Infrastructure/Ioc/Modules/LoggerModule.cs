@@ -19,7 +19,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     var configHelper = c.Resolve<IConfigurationHelper >();
                     return new LoggerOptions
                     {
-                        //Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;
                         LoggerConnectionString = configHelper.GetConnectionString("LoggingConnectionString")
                     };
                 })
@@ -32,7 +31,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     var versionInfo = c.Resolve<IVersionInfo>();
                     return new ApplicationLoggerSettings
                     {
-                        ApplicationLoggerOutputSettingsCollection = new List<IApplicationLoggerOutputSettings>()
+                        ApplicationLoggerOutputSettingsCollection = new List<IApplicationLoggerOutputSettings>
                         {
                             new MsSqlServerApplicationLoggerOutputSettings
                             {
@@ -42,7 +41,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
 
                             new ConsoleApplicationLoggerOutputSettings
                             {
-                                MinimumLogLevel = LogLevel.Verbose,
+                                MinimumLogLevel = LogLevel.Verbose
                             },
                         },
                         TaskKey = versionInfo.ServiceReleaseVersion

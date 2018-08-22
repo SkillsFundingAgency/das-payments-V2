@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc
             var filenames = Directory.GetFiles(path, "SFA.DAS.Payments.*.dll")
                 .ToList();
 
-            foreach (string file in filenames)
+            foreach (var file in filenames)
             {
                 try
                 {
