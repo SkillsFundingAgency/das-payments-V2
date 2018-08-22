@@ -20,22 +20,14 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
     [StatePersistence(StatePersistence.Volatile)]
     public class RequiredPaymentsService : Actor, IRequiredPaymentsService
     {
-        private readonly IPaymentHistoryRepository _paymentHistoryRepository;
-        private readonly string _apprenticeshipKey;
-        private readonly IMapper _mapper;
         private readonly IPaymentLogger _paymentLogger;
         private readonly ILifetimeScope _lifetimeScope;
 
         public RequiredPaymentsService(ActorService actorService,
                                         ActorId actorId,
-                                        IPaymentHistoryRepository paymentHistoryRepository,
-                                        IMapper mapper,
                                         IPaymentLogger paymentLogger,
                                         ILifetimeScope lifetimeScope) : base(actorService, actorId)
         {
-            _paymentHistoryRepository = paymentHistoryRepository;
-            _mapper = mapper;
-            _apprenticeshipKey = actorId.GetStringId();
             _paymentLogger = paymentLogger;
             _lifetimeScope = lifetimeScope;
         }
