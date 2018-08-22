@@ -18,8 +18,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.3.2.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Small_Employers")]
-    public partial class Small_EmployersFeature
+    [NUnit.Framework.DescriptionAttribute("Small Employers fully funded additional payments EEF4 completion")]
+    public partial class SmallEmployersFullyFundedAdditionalPaymentsEEF4CompletionFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Small_Employers", "\t\t AC3- 1 learner aged 19-24, non-DAS, is a care leaver, In paid employment with " +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Small Employers fully funded additional payments EEF4 completion", "\t\t AC3- 1 learner aged 19-24, non-DAS, is a care leaver, In paid employment with " +
                     "a small employer at start, is fully funded for on programme and completion payme" +
                     "nts", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);

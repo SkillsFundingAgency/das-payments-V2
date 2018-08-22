@@ -4,7 +4,7 @@
 #New name - AdditionalPayments_price_change_during_programme_learning_support
 #Old name - AdditionalPayments_671-AC02
 
-Feature: Additional payments
+Feature: Additional payments price change during programme learning support
 		 671-AC02 Non-DAS learner, levy available, is taking an English or maths qualification, has learning support and the negotiated price changes during the programme
 
 Background:

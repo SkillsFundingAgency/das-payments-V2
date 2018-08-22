@@ -173,10 +173,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Minimum\AdditionalPayments_price_change_during_programme_learning_support.feature.cs">
+    <Compile Include="Tests\Minimum\Additional_Payments_price_change_during_programme_learning_support.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AdditionalPayments_price_change_during_programme_learning_support.feature</DependentUpon>
+      <DependentUpon>Additional_Payments_price_change_during_programme_learning_support.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Minimum\learner_finishes_early_Balancing_Completion.feature.cs">
       <AutoGen>True</AutoGen>
@@ -235,9 +235,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Minimum\AdditionalPayments_price_change_during_programme_learning_support.feature">
+    <None Include="Tests\Minimum\Additional_Payments_price_change_during_programme_learning_support.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>AdditionalPayments_price_change_during_programme_learning_support.feature.cs</LastGenOutput>
+      <LastGenOutput>Additional_Payments_price_change_during_programme_learning_support.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Minimum\learner_finishes_early_Balancing_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
