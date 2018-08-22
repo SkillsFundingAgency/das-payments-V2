@@ -12,17 +12,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
     public class PaymentHistoryRepository : IPaymentHistoryRepository
     {
         private readonly IRepositoryCache<IEnumerable<PaymentEntity>> _cache;
-        private readonly DedsContext _dedsContext;
+        private readonly IRequiredPaymentsDataContext _requiredPaymentsDataContext;
 
-        public PaymentHistoryRepository(DedsContext dedsContext)
+        public PaymentHistoryRepository(IRequiredPaymentsDataContext requiredPaymentsDataContext)
         {
-            _dedsContext = dedsContext;
+            _requiredPaymentsDataContext = requiredPaymentsDataContext;
         }
 
-        public PaymentHistoryRepository(DedsContext dedsContext, IRepositoryCache<IEnumerable<PaymentEntity>> cache)
+        public PaymentHistoryRepository(RequiredPaymentsDataContext requiredPaymentsDataContext, IRepositoryCache<IEnumerable<PaymentEntity>> cache)
         {
             _cache = cache;
-            _dedsContext = dedsContext;
+            _requiredPaymentsDataContext = requiredPaymentsDataContext;
         }
 
         public async Task<IEnumerable<Payment>> GetPaymentHistory(string apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
@@ -50,8 +50,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
         private PaymentEntity[] GetEntities(string apprenticeshipKey)
         {
             // HACK: this is for integration test to work
-            return new PaymentEntity[0];
-            return _dedsContext.PaymentHistory.Where(p => p.ApprenticeshipKey == apprenticeshipKey).ToArray();
+            //return new PaymentEntity[0];
+            return _requiredPaymentsDataContext.PaymentHistory.Where(p => p.ApprenticeshipKey == apprenticeshipKey).ToArray();
         }
     }
 }

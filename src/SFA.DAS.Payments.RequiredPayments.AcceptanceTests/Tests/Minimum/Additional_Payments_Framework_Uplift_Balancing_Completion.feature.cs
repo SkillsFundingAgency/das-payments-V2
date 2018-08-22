@@ -18,8 +18,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.3.2.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Additional payments")]
-    public partial class AdditionalPaymentsFeature
+    [NUnit.Framework.DescriptionAttribute("Additional payments framework uplift balancing completion")]
+    public partial class AdditionalPaymentsFrameworkUpliftBalancingCompletionFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Additional payments", "\t\t581-AC01-Non DAS learner finishes early, price equals the funding band maximum," +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Additional payments framework uplift balancing completion", "\t\t581-AC01-Non DAS learner finishes early, price equals the funding band maximum," +
                     " earns balancing and completion framework uplift payments. Assumes 15 month appr" +
                     "enticeship and learner completes after 12 months.", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);

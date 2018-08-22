@@ -7,9 +7,9 @@ using Microsoft.ServiceFabric.Actors.Runtime;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
-using SFA.DAS.Payments.RequiredPayments.ApprenticeshipPaymentsDueService;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
+using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService;
 
 namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application.Repositories
 {

@@ -6,6 +6,7 @@ using Autofac;
 using NServiceBus;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using SFA.DAS.Payments.Application.Infrastructure.Messaging;
 using SFA.DAS.Payments.EarningEvents.Messages.Entities;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
@@ -48,7 +49,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Service
                 }
             };
 
-            var sender = new EndpointCommunicationSender<IPayableEarningEvent>("sfa-das-payments-paymentsdue-integration-test", "UseDevelopmentStorage=true", "sfa-das-payments-paymentsdue-proxyservice", new ContainerBuilder().Build());
+            var sender = new EndpointCommunicationSender("sfa-das-payments-paymentsdue-integration-test", "UseDevelopmentStorage=true", new ContainerBuilder().Build());
             await sender.Send(earning).ConfigureAwait(false);
         }
     }

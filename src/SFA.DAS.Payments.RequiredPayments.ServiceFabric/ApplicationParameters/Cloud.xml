@@ -2,5 +2,6 @@
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService_InstanceCount" Value="-1" />
+    <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
   </Parameters>
 </Application>
