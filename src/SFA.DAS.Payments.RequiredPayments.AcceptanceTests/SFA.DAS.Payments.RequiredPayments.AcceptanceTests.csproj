@@ -73,6 +73,11 @@
     <Compile Include="Steps\PaymentsDueInputSteps.cs" />
     <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_Clawback_Delay_in_Completion.feature.cs">
+      <DependentUpon>R12_Clawback_Delay_in_Completion.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R06_MissingHistoricalPayments.feature.cs">
       <DependentUpon>R06_MissingHistoricalPayments.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -172,6 +177,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_Clawback_Delay_in_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R12_Clawback_Delay_in_Completion.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R06_MissingHistoricalPayments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R06_MissingHistoricalPayments.feature.cs</LastGenOutput>
