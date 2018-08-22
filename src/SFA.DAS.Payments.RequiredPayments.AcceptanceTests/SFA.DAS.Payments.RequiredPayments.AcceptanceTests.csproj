@@ -73,6 +73,41 @@
     <Compile Include="Steps\PaymentsDueInputSteps.cs" />
     <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R06_MissingHistoricalPayments.feature.cs">
+      <DependentUpon>R06_MissingHistoricalPayments.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R03_MultipleHistoricalPayments.feature.cs">
+      <DependentUpon>R03_MultipleHistoricalPayments.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R02_SingleHistoricalPayment.feature.cs">
+      <DependentUpon>R02_SingleHistoricalPayment.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_FullHistory_Completion_OnTime.feature.cs">
+      <DependentUpon>R12_FullHistory_Completion_OnTime.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_NoHistory_Final_Completion.feature.cs">
+      <DependentUpon>R12_NoHistory_Final_Completion.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R02_NoHistory.feature.cs">
+      <DependentUpon>R02_NoHistory.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R01_NoHistory.feature.cs">
+      <DependentUpon>R01_NoHistory.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Minimum\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs">
       <DependentUpon>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -137,6 +172,34 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R06_MissingHistoricalPayments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R06_MissingHistoricalPayments.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R03_MultipleHistoricalPayments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R03_MultipleHistoricalPayments.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R02_SingleHistoricalPayment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R02_SingleHistoricalPayment.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_FullHistory_Completion_OnTime.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R12_FullHistory_Completion_OnTime.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_NoHistory_Final_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R12_NoHistory_Final_Completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R02_NoHistory.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R02_NoHistory.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R01_NoHistory.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R01_NoHistory.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Minimum\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs</LastGenOutput>
