@@ -133,11 +133,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ContractTypeChangesFromAct2ToAct1.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Minimum\MinimumTests1.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MinimumTests.feature</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -189,10 +184,6 @@
     <None Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct1.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ContractTypeChangesFromAct2ToAct11.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Minimum\MinimumTests.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>MinimumTests1.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
