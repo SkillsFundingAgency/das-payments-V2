@@ -24,8 +24,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             var courses = table.CreateSet<Course>().ToList();
 
-            courses.ForEach(c => learnRefNumberGenerator.Generate(c.Ukprn, c.LearnRefNumber));
-
             scenarioContext["Courses"] = courses;
 
         }
