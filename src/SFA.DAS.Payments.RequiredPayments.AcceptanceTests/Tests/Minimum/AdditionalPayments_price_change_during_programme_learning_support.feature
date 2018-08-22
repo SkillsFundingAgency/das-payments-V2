@@ -1,4 +1,5 @@
-﻿#Warning - This test needs reviewing - V1 data values (£315) after price change are incorrect
+﻿#Warning - This test may need reviewing 
+#V1 data values (£315) after price change are incorrect
 
 #New name - AdditionalPayments_price_change_during_programme_learning_support
 #Old name - AdditionalPayments_671-AC02
@@ -15,20 +16,18 @@ Background:
 	| LearnRefNumber | Ukprn | ULN   |
 	| learnref8      | 10000 | 10000 |
 
-	#Check with Dave
 	And the following course information:
-	| LearnRefNumber | Ukprn | ULN   | AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
-	| learnref8      | 10000 | 10000 | 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 04/08/2017        | 20/08/2018             |						| Contunuing       |
-	| learnref8      | 10000 | 10000 | 2            |               |               |             | 471          | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 06/10/2018             |						| Continuing	   |
+	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
+	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 04/08/2017        | 20/08/2018             |						| Contunuing       |
+	| 2            |               |               |             | 471          | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 06/10/2018             |						| Continuing	   |
 
-	#Check with Dave
 	And the following contract type 2 on programme earnings for periods 1-3 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice |
-	| learnref8      | 10000 | p1                     | 04/08/2017       | 04/08/2017                   | 11250                |
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	| p1                     | 04/08/2017       | 04/08/2017                   | 11250                | 750        |	
 
 	And the following contract type 2 on programme earnings for periods 4-12 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice |
-	| learnref8      | 10000 | p2                     | 11/11/2017       | 11/11/2017                   | 6750                 |
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	| p2                     | 11/11/2017       | 11/11/2017                   | 6750                 | 600        |	
 
 @Non-DAS
 @minimum_tests

@@ -13,25 +13,17 @@ Background:
 	| learnref5      | 10000 | 10000 |
 
 	And the following course information:
-	| LearnRefNumber | Ukprn | ULN   | AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
-	| learnref5      | 10000 | 10000 | 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 09/11/2018             | 09/08/2018            | Completed       |
+	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
+	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 09/11/2018             | 09/08/2018            | Completed       |
 
-	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice |
-	| learnref5      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 |
+	And the following contract type 2 on programme earnings for periods 1-11 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 480        |
 
-#	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-#	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-#	| learnref5      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 480        |
-#
-#	And the following contract type 2 completion earning for period 12 are provided in the latest ILR for the academic year 1718:
-#	| LearnRefNumber | Ukprn | Amount |
-#	| learnref5      | 10000 | 1800   |  
-#
-#	And the following contract type 2 balancing earning for period 12 are provided in the latest ILR for the academic year 1718:
-#	| LearnRefNumber | Ukprn | Amount |
-#	| learnref5      | 10000 | 1440   |  
-	
+	And the following contract type 2 on programme earnings for periods 12 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 | Completion_2 | Balancing_3 |
+	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 480        | 1800         | 1440        |
+
 @Non-DAS
 @minimum_tests
 @additional_payments
@@ -72,7 +64,6 @@ Scenario Outline: Contract Type 2 On programme payments
 	| learnref5      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
 	| learnref5      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
 	| learnref5      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
-	#480 or 432
 	Examples: 
 	| transaction_type | amount |
 	| Learning_1       | 480    |	
@@ -84,7 +75,6 @@ Scenario Outline: Contract Type 2 completion payment
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref5      | 10000 | p1                     | 12      | 10000 | <transaction_type> | <amount> |
-	#1800 or 1620
 	Examples: 
 	| transaction_type | amount |
 	| Completion_2     | 1800   |
@@ -97,7 +87,6 @@ Scenario Outline: Contract Type 2 balancing payment
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref5      | 10000 | p1                     | 12      | 10000 | <transaction_type> | <amount> |
-	#1440 or 1296
 	Examples: 
 	| transaction_type | amount |
 	| Balancing_3      | 1440   |	
