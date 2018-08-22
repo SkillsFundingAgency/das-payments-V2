@@ -16,8 +16,8 @@ Background:
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 20/08/2018             |                       | continuing       |
 
 	And the following contract type 1 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | 
-	| p2                     | 06/08/2017       | 06/08/2017                   | 9000                 | 
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	| p2                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        | 
 	
 @Non-DAS
 @minimum_tests

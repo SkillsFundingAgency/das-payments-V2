@@ -15,24 +15,17 @@ Background:
 	| learnref11     | 10000 | 10000 |
 
 	And the following course information:
-	| LearnRefNumber | Ukprn | ULN   | AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
-	| learnref11     | 10000 | 10000 | 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 01/09/2017        | 08/12/2018             | 08/09/2018            | Completed       |
+	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
+	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 01/09/2017        | 08/12/2018             | 08/09/2018            | Completed       |
 
-	And the following contract type 2 on programme earnings for periods 1-15 are provided in the latest ILR for the academic year 1718:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice |
-	| learnref11     | 10000 | p1                     | 01/09/2017       | 01/09/2017                   | 18750                |
+	And the following contract type 2 on programme earnings for periods 1-11 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	| p1                     | 01/09/2017       | 01/09/2017                   | 18750                | 1000       |
 
-#	And the following contract type 2 on programme earnings for periods 1-15 are provided in the latest ILR for the academic year 1718:
-#	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-#	| learnref11     | 10000 | p1                     | 01/09/2017       | 01/09/2017                   | 18750                | 1000       |
-#
-#	And the following contract type 2 completion earning for period 12 are provided in the latest ILR for the academic year 1718:
-#	| LearnRefNumber | Ukprn | Amount |
-#	| learnref11     | 10000 | 3750   |  
-#
-#	And the following contract type 2 balancing earning for period 12 are provided in the latest ILR for the academic year 1718:
-#	| LearnRefNumber | Ukprn | Amount |
-#	| learnref11     | 10000 | 3000   |  
+	And the following contract type 2 on programme earnings for period 12 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 | Completion_2 | Balancing_3 |
+	| p1                     | 01/09/2017       | 01/09/2017                   | 18750                | 1000       | 3750         | 3000        |
+
 	
 @Non-DAS
 @minimum_tests
