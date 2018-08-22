@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.Application.Infrastructure.Messaging;
-using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
