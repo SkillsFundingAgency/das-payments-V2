@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMoq;
+using AutoMoqCore;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
