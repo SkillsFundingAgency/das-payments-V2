@@ -73,6 +73,11 @@
     <Compile Include="Steps\PaymentsDueInputSteps.cs" />
     <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R04_ChangeInStartDate_Earlier_By_1_month.feature.cs">
+      <DependentUpon>R04_ChangeInStartDate_Earlier_By_1_month.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band.feature.cs">
       <DependentUpon>TNP_higher_than_max_funding_band.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -182,6 +187,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R04_ChangeInStartDate_Earlier_By_1_month.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R04_ChangeInStartDate_Earlier_By_1_month.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>TNP_higher_than_max_funding_band.feature.cs</LastGenOutput>
