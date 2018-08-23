@@ -18,20 +18,20 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.3.2.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Clawback - Delay in completion due to change in planned end date in R12.")]
-    public partial class Clawback_DelayInCompletionDueToChangeInPlannedEndDateInR12_Feature
+    [NUnit.Framework.DescriptionAttribute("Refund - Delay in completion due to change in planned end date in R12.")]
+    public partial class Refund_DelayInCompletionDueToChangeInPlannedEndDateInR12_Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "R12_Clawback_Delay_in_Completion.feature"
+#line 1 "R12_Refund_Delay_in_Completion.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Clawback - Delay in completion due to change in planned end date in R12.", "\t\t 12 months apprenticeship changed to 15 months. ", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Refund - Delay in completion due to change in planned end date in R12.", "\t\t 12 months apprenticeship changed to 15 months. ", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -141,7 +141,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
         [NUnit.Framework.CategoryAttribute("delayed_completion")]
         [NUnit.Framework.CategoryAttribute("Changed_Planned_End_Date")]
         [NUnit.Framework.CategoryAttribute("multiple_price_episodes")]
-        [NUnit.Framework.CategoryAttribute("clawback")]
+        [NUnit.Framework.CategoryAttribute("refund")]
         [NUnit.Framework.TestCaseAttribute("Learning_1", "1000", null)]
         public virtual void ContractType2OnProgrammePaymentsBeforeChangeInPlannedEndDate(string transaction_Type, string amount, string[] exampleTags)
         {
@@ -150,7 +150,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                     "delayed_completion",
                     "Changed_Planned_End_Date",
                     "multiple_price_episodes",
-                    "clawback"};
+                    "refund"};
             if ((exampleTags != null))
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
@@ -459,7 +459,7 @@ this.FeatureBackground();
         [NUnit.Framework.CategoryAttribute("delayed_completion")]
         [NUnit.Framework.CategoryAttribute("Changed_Planned_End_Date")]
         [NUnit.Framework.CategoryAttribute("multiple_price_episodes")]
-        [NUnit.Framework.CategoryAttribute("clawback")]
+        [NUnit.Framework.CategoryAttribute("refund")]
         [NUnit.Framework.TestCaseAttribute("Learning_1", "800", null)]
         public virtual void ContractType2OnProgrammePaymentsAfterChangeInPlannedEndDate(string transaction_Type, string amount, string[] exampleTags)
         {
@@ -468,7 +468,7 @@ this.FeatureBackground();
                     "delayed_completion",
                     "Changed_Planned_End_Date",
                     "multiple_price_episodes",
-                    "clawback"};
+                    "refund"};
             if ((exampleTags != null))
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));

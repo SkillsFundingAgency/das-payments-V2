@@ -1,4 +1,4 @@
-﻿Feature: Clawback - Delay in completion due to change in planned end date in R12.
+﻿Feature: Refund - Delay in completion due to change in planned end date in R12.
 		 12 months apprenticeship changed to 15 months. 
 		 
 Background:
@@ -22,7 +22,7 @@ Background:
 @delayed_completion
 @Changed_Planned_End_Date
 @multiple_price_episodes
-@clawback
+@refund
 
 Scenario Outline: Contract Type 2 On programme payments before change in planned end date
 
@@ -75,7 +75,7 @@ Scenario Outline: Contract Type 2 On programme payments before change in planned
 @delayed_completion
 @Changed_Planned_End_Date
 @multiple_price_episodes
-@clawback
+@refund
 
 Scenario Outline: Contract Type 2 On programme payments after change in planned end date
 	
