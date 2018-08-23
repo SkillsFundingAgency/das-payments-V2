@@ -1,4 +1,4 @@
-﻿Feature: R02 - with multiple historical payment
+﻿Feature: R03 - with multiple historical payment
 
 Background:
 	Given the current processing period is 3
