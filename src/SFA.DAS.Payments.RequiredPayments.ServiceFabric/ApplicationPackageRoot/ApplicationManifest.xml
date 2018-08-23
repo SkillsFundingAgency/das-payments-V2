@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+<ApplicationManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="ProviderPaymentsService_InstanceCount" DefaultValue="-1" />
@@ -57,7 +57,7 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <Service Name="RequiredPaymentsServiceActorService" GeneratedIdRef="8c6bb4db-b5a0-432e-9b0a-1a98507360eb|Volatile">
+    <Service Name="RequiredPaymentsServiceActorService" GeneratedIdRef="245eed7a-bf98-4f11-bd2b-1495b83e4dd8|Volatile">
       <StatefulService ServiceTypeName="RequiredPaymentsServiceActorServiceType" TargetReplicaSetSize="[RequiredPaymentsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[RequiredPaymentsServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[RequiredPaymentsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>

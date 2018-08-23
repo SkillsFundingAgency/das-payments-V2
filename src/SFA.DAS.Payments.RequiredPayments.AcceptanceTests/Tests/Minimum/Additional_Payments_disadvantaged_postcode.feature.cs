@@ -126,7 +126,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract Type 2 On programme payments")]
+        [NUnit.Framework.DescriptionAttribute("Contract EarningType 2 On programme payments")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("additional_payments")]
@@ -141,7 +141,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments", @__tags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract EarningType 2 On programme payments", @__tags);
 #line 27
 this.ScenarioSetup(scenarioInfo);
 #line 6
@@ -154,7 +154,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Price"});
             table4.AddRow(new string[] {
                         "learnref4",
                         "10000",
@@ -191,7 +191,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Price"});
             table5.AddRow(new string[] {
                         "learnref4",
                         "10000",

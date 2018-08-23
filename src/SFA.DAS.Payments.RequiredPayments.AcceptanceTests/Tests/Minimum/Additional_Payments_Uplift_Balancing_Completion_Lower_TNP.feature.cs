@@ -148,7 +148,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract Type 2 On programme payments")]
+        [NUnit.Framework.DescriptionAttribute("Contract EarningType 2 On programme payments")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("additional_payments")]
@@ -171,7 +171,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments", @__tags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract EarningType 2 On programme payments", @__tags);
 #line 35
 this.ScenarioSetup(scenarioInfo);
 #line 6
@@ -184,7 +184,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Price"});
             table5.AddRow(new string[] {
                         "learnref6",
                         "10000",
@@ -285,7 +285,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Price"});
             table6.AddRow(new string[] {
                         "learnref6",
                         "10000",
@@ -390,11 +390,11 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract Type 2 completion payment")]
+        [NUnit.Framework.DescriptionAttribute("Contract EarningType 2 completion payment")]
         [NUnit.Framework.TestCaseAttribute("Completion_2", "1500", null)]
         public virtual void ContractType2CompletionPayment(string transaction_Type, string amount, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 completion payment", exampleTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract EarningType 2 completion payment", exampleTags);
 #line 71
 this.ScenarioSetup(scenarioInfo);
 #line 6
@@ -409,7 +409,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Price"});
             table7.AddRow(new string[] {
                         "learnref6",
                         "10000",
@@ -426,11 +426,11 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract Type 2 balancing payment")]
+        [NUnit.Framework.DescriptionAttribute("Contract EarningType 2 balancing payment")]
         [NUnit.Framework.TestCaseAttribute("Balancing_3", "1200", null)]
         public virtual void ContractType2BalancingPayment(string transaction_Type, string amount, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 balancing payment", exampleTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract EarningType 2 balancing payment", exampleTags);
 #line 84
 this.ScenarioSetup(scenarioInfo);
 #line 6
@@ -445,7 +445,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Price"});
             table8.AddRow(new string[] {
                         "learnref6",
                         "10000",

@@ -4,11 +4,11 @@
                  xmlns="http://schemas.microsoft.com/2011/01/fabric"
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <ServiceTypes>
+  <ServiceEarningTypes>
     <!-- This is the name of your ServiceType. 
          This name must match the string used in the RegisterServiceAsync call in Program.cs. -->
-    <StatelessServiceType ServiceTypeName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyServiceType" />
-  </ServiceTypes>
+    <StatelessServiceEarningType ServiceEarningTypeName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyServiceEarningType" />
+  </ServiceEarningTypes>
 
   <!-- Code package is your service executable. -->
   <CodePackage Name="Code" Version="1.0.0">

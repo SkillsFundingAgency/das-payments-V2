@@ -21,33 +21,30 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
     public class RequiredPaymentsService : Actor, IRequiredPaymentsService
     {
         private readonly IPaymentLogger _paymentLogger;
-        private readonly ILifetimeScope _lifetimeScope;
+        private readonly IExecutionContextFactory _executionContextFactory;
 
         public RequiredPaymentsService(ActorService actorService,
                                         ActorId actorId,
                                         IPaymentLogger paymentLogger,
-                                        ILifetimeScope lifetimeScope) : base(actorService, actorId)
+                                        IExecutionContextFactory executionContextFactory) : base(actorService, actorId)
         {
             _paymentLogger = paymentLogger;
-            _lifetimeScope = lifetimeScope;
+            _executionContextFactory = executionContextFactory ?? throw new ArgumentNullException(nameof(executionContextFactory));
         }
 
-        public async Task<CalculatedPaymentDueEvent[]> HandlePayableEarning(PayableEarningEvent earningEntity, CancellationToken cancellationToken)
+        public async Task<RequiredPaymentEvent[]> HandleEarning(IEarningEvent earningEvent, CancellationToken cancellationToken)
         {
-            using (var scope = _lifetimeScope.BeginLifetimeScope())
-            {
-                var executionContext = (ESFA.DC.Logging.ExecutionContext)_lifetimeScope.Resolve<ESFA.DC.Logging.Interfaces.IExecutionContext>();
-                executionContext.JobId = earningEntity.JobId;
+            var executionContext = _executionContextFactory.GetExecutionContext();
+            executionContext.JobId = earningEvent.JobId;
 
-                _paymentLogger.LogInfo($"Handling Payable Earning for {earningEntity?.Ukprn} ");
-                return new [] {
-                    new CalculatedPaymentDueEvent
-                    {
-                        JobId = earningEntity.JobId, 
-                        EventTime = DateTimeOffset.UtcNow,
-                        PaymentDueEntity = new PaymentDueEntity()
-                    }
-                };
+            _paymentLogger.LogInfo($"Handling Earning for {earningEvent?.Ukprn} ");
+            //TODO: use handler in application layer to process the earning event.
+            return new [] {
+                new RequiredPaymentEvent
+                {
+                    JobId = earningEvent.JobId, 
+                    EventTime = DateTimeOffset.UtcNow
+                }
             };
         }
     }

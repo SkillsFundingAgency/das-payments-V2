@@ -3,7 +3,7 @@
   <ServiceTypes>
     <StatefulServiceType ServiceTypeName="RequiredPaymentsServiceActorServiceType">
       <Extensions>
-        <Extension Name="__GeneratedServiceType__" GeneratedId="8c6bb4db-b5a0-432e-9b0a-1a98507360eb|Volatile">
+        <Extension Name="__GeneratedServiceType__" GeneratedId="245eed7a-bf98-4f11-bd2b-1495b83e4dd8|Volatile">
           <GeneratedNames xmlns="http://schemas.microsoft.com/2015/03/fabact-no-schema">
             <DefaultService Name="RequiredPaymentsServiceActorService" />
             <ReplicatorEndpoint Name="RequiredPaymentsServiceActorServiceReplicatorEndpoint" />
