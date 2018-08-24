@@ -2,6 +2,5 @@
 {
     public class ApprenticeshipContractType2EarningEvent : OnProgrammeEarningEvent
     {
-        public decimal SfaContributionPercentage { get; set; }
     }
 }

@@ -8,5 +8,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         long Ukprn { get; }
         Learner Learner { get; }
         LearningAim LearningAim { get; }
+        short EarningYear { get; }
     }
 }

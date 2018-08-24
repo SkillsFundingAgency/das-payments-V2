@@ -1,8 +1,7 @@
 ﻿namespace SFA.DAS.Payments.RequiredPayments.Messages.Events.OnProgramme
 {
-    public class ApprenticeshipContractType2RequiredPaymentEvent: RequiredPaymentEvent
+    public class ApprenticeshipContractType2RequiredPaymentEvent: OnProgrammeRequiredPaymentEvent
     {
-        public decimal SfaContributionPercentage { get; set; }
 
     }
 }
