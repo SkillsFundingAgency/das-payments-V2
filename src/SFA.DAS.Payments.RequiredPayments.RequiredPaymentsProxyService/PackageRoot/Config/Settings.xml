@@ -14,7 +14,7 @@
   </Section>
 
   <Section Name="Settings">
-    <Parameter Name="EndpointName" Value="sfa-das-payments-requiredpaymentsproxyservice"/>
+    <Parameter Name="EndpointName" Value="sfa-das-payments-requiredpaymentsservice"/>
   </Section>
 
 </Settings>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ApplicationManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="ProviderPaymentsService_InstanceCount" DefaultValue="-1" />
@@ -8,7 +8,6 @@
     <Parameter Name="RequiredPaymentsServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
-    <Parameter Name="RequiredPaymentsProxyService_EndpointName" DefaultValue="" />
     <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
@@ -24,7 +23,7 @@
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[RequiredPaymentsProxyService_EndpointName]" />
+            <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -57,7 +56,7 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <Service Name="RequiredPaymentsServiceActorService" GeneratedIdRef="245eed7a-bf98-4f11-bd2b-1495b83e4dd8|Volatile">
+    <Service Name="RequiredPaymentsServiceActorService" GeneratedIdRef="79cd0ba9-bb5a-45f9-92bc-300ca0ae2395|Volatile">
       <StatefulService ServiceTypeName="RequiredPaymentsServiceActorServiceType" TargetReplicaSetSize="[RequiredPaymentsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[RequiredPaymentsServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[RequiredPaymentsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>

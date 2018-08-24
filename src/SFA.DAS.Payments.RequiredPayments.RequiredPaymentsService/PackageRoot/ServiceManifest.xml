@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsServicePkg" Version="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <ServiceTypes>
+    <!-- This is the name of your ServiceType. 
+         This name must match the string used in the RegisterServiceAsync call in Program.cs. -->
+    <StatelessServiceType ServiceTypeName="SFA.DAS.Payments.RequiredPayments.ProviderPaymentsServiceType" />
     <StatefulServiceType ServiceTypeName="RequiredPaymentsServiceActorServiceType">
       <Extensions>
-        <Extension Name="__GeneratedServiceType__" GeneratedId="245eed7a-bf98-4f11-bd2b-1495b83e4dd8|Volatile">
+        <Extension Name="__GeneratedServiceType__" GeneratedId="79cd0ba9-bb5a-45f9-92bc-300ca0ae2395|Volatile">
           <GeneratedNames xmlns="http://schemas.microsoft.com/2015/03/fabact-no-schema">
             <DefaultService Name="RequiredPaymentsServiceActorService" />
             <ReplicatorEndpoint Name="RequiredPaymentsServiceActorServiceReplicatorEndpoint" />
@@ -16,6 +19,7 @@
       </Extensions>
     </StatefulServiceType>
   </ServiceTypes>
+  <!-- Code package is your service executable. -->
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
       <ExeHost>
@@ -23,13 +27,17 @@
       </ExeHost>
     </EntryPoint>
   </CodePackage>
+  <!-- Config package is the contents of the Config directoy under PackageRoot that contains an 
+       independently-updateable and versioned set of custom configuration settings for your service. -->
   <ConfigPackage Name="Config" Version="1.0.0" />
   <Resources>
     <Endpoints>
-      <Endpoint Name="RequiredPaymentsServiceActorServiceEndpointV2" />
-      <Endpoint Name="RequiredPaymentsServiceActorServiceReplicatorEndpoint" />
+      <!-- This endpoint is used by the communication listener to obtain the port on which to 
+           listen. Please note that if your service is partitioned, this port is shared with 
+           replicas of different partitions that are placed in your code. -->
+      <Endpoint Name="ServiceEndpoint" />
       <Endpoint Name="RequiredPaymentsServiceActorServiceEndpointV2_1" />
+      <Endpoint Name="RequiredPaymentsServiceActorServiceReplicatorEndpoint" />
     </Endpoints>
   </Resources>
-  <!-- The content will be generated during build -->
 </ServiceManifest>
