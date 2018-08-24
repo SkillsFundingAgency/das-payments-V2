@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                         "Ukprn",
                         "ULN"});
             table1.AddRow(new string[] {
-                        "learnref105",
+                        "learnref1",
                         "10000",
                         "10000"});
 #line 6
@@ -154,7 +154,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table4.AddRow(new string[] {
-                        "learnref105",
+                        "learnref1",
                         "10000",
                         "p1",
                         "1",
@@ -162,7 +162,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table4.AddRow(new string[] {
-                        "learnref105",
+                        "learnref1",
                         "10000",
                         "p1",
                         "2",
@@ -183,7 +183,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table5.AddRow(new string[] {
-                        "learnref105",
+                        "learnref1",
                         "10000",
                         "p1",
                         "1",
@@ -191,7 +191,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref105",
+                        "learnref1",
                         "10000",
                         "p1",
                         "2",
@@ -199,7 +199,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref105",
+                        "learnref1",
                         "10000",
                         "p1",
                         "3",

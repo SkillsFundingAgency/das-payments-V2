@@ -11,7 +11,7 @@ Background:
 
 	And the following learners:
 	| LearnRefNumber | Ukprn | ULN   |
-	| learnref9      | 10000 | 10000 |
+	| learnref1      | 10000 | 10000 |
 
 	#Check with Dave if FundingLineType needs changing
 	And the following course information:
@@ -20,12 +20,12 @@ Background:
 
 	#Dave to consider this additional requirement for small employer tests 
 	And the employment status in the ILR is:
-    | Employer   | Employment Status      | Employment Status Applies | Small Employer |
-    | employer_1 | in paid employment     | 05/08/2017                | SEM1           |
+    | Employer     | Employment Status      | Employment Status Applies | Small Employer |
+    | EmployerRef1 | in paid employment     | 05/08/2017                | SEM1           |
 
 	#And the EEF (Eligibility for Enhanced Funding) code is:
-	#| Employer    |  LearnDelFAM |
-	#| employer_1 | EEF2         |
+	#| Employer     |  LearnDelFAM |
+	#| EmployerRef1 | EEF2         |
 
 	And the following contract type 2 on programme earnings for periods 1-11 are provided in the latest ILR for the academic year 1718:
 	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
@@ -49,34 +49,34 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	And the following historical contract type 2 on programme payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref9      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
 
 	When a TOBY is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref9      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
-	| learnref9      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
 
 	Examples: 
 	| transaction_type | amount |
@@ -88,7 +88,7 @@ Scenario Outline: Contract Type 2 completion payment
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period  | ULN   | TransactionType    | Amount   |
-	| learnref9      | 10000 | p1                     | 12      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 12      | 10000 | <transaction_type> | <amount> |
 	
 	Examples: 
 	| transaction_type | amount |

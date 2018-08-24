@@ -5,7 +5,7 @@ Background:
 
 	And the following learners:
 	| LearnRefNumber | Ukprn | ULN   |
-	| learnref101    | 10000 | 10000 |
+	| learnref1      | 10000 | 10000 |
 
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
@@ -25,7 +25,7 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref101    | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	
 	Examples: 
 	| transaction_type | amount |

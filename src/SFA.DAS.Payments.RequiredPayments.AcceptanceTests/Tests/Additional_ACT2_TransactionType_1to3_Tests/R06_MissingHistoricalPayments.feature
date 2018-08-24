@@ -5,7 +5,7 @@ Background:
 
 	And the following learners:
 	| LearnRefNumber | Ukprn | ULN   |
-	| learnref106    | 10000 | 10000 |
+	| learnref1      | 10000 | 10000 |
 
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
@@ -23,19 +23,19 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	And the following historical contract type 2 on programme payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref106      | 10000 | p1                   | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref106      | 10000 | p1                   | 2      | 10000 | <transaction_type> | <amount> |
+	| learnref1        | 10000 | p1                   | 1      | 10000 | <transaction_type> | <amount> |
+	| learnref1        | 10000 | p1                   | 2      | 10000 | <transaction_type> | <amount> |
 
 	When a TOBY is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref106    | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref106    | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
-	| learnref106    | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
-	| learnref106    | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
-	| learnref106    | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref106    | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
 	
 	Examples: 
 	| transaction_type | amount |
