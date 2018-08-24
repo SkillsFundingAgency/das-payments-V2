@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
-using SFA.DAS.Payments.RequiredPayments.Messages.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
