@@ -1,7 +1,7 @@
-﻿Feature: TNP is higher than the maximum funding band, completed on time with full history
+﻿Feature: TNP is higher than the maximum funding band, continuing
 
 Background:
-	Given the current processing period is 12
+	Given the current processing period is 3
 	And maximum funding band is 9000
 
 	And the following learners:
@@ -16,15 +16,10 @@ Background:
 	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
 	| p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 600        |
 
-	And the following contract type 2 on programme earnings for period 12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 | Completion_2 |
-	| p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 600        | 1800         |
 
 @Non-DAS
-@Historical_Payments
-@Completion
 @funding_band
-@TNP_higher
+@capping
 
 Scenario Outline: Contract Type 2 On programme payments
 
@@ -32,15 +27,6 @@ Scenario Outline: Contract Type 2 On programme payments
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
 
 	When a TOBY is received
 
@@ -49,28 +35,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
 	
 	Examples: 
 	| transaction_type | amount |
 	| Learning_1       | 600    |
-
-Scenario Outline: Contract Type 2 completion payment
-
-	When a TOBY is received
-
-	Then the payments due component will generate the following contract type 2 payable earnings:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
-	
-	Examples: 
-	| transaction_type | amount |
-	| Completion_2     | 1800   |
