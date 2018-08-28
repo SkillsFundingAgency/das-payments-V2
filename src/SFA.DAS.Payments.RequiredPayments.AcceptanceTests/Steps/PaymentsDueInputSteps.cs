@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
+using SFA.DAS.Payments.Tests.Core.Data;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps

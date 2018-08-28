@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.Payments.Tests.Core.Data;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data
 {

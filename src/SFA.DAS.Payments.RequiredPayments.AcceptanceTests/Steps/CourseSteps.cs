@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
+using SFA.DAS.Payments.Tests.Core.Application;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 

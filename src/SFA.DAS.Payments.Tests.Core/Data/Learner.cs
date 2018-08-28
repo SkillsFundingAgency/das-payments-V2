@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data
+﻿namespace SFA.DAS.Payments.Tests.Core.Data
 {
     public class Learner : LearnerIdentifier
     {

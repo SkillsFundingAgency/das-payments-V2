@@ -145,12 +145,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\LearnRefNumberGenerator.cs" />
     <Compile Include="Data\ContractTypeEarnings.cs" />
     <Compile Include="Data\Course.cs" />
     <Compile Include="Data\IncentiveEarning.cs" />
-    <Compile Include="Data\Learner.cs" />
-    <Compile Include="Data\LearnerIdentifier.cs" />
     <Compile Include="Data\OnProgrammeEarning.cs" />
     <Compile Include="Data\PriceIdentifier.cs" />
     <Compile Include="EndpointNames.cs" />
@@ -290,6 +287,13 @@
       <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>
       <Name>SFA.DAS.Payments.Messages.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Tests.Core\SFA.DAS.Payments.Tests.Core.csproj">
+      <Project>{BD81705A-7BA9-4016-A976-716905AC9B3B}</Project>
+      <Name>SFA.DAS.Payments.Tests.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
