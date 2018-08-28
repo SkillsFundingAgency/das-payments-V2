@@ -2,7 +2,7 @@
 
 Background:
 	Given the current processing period is 12
-	And maximum funding band is 9000
+	And the apprenticeship funding band maximum is 9000
 
 	And the following learners:
 	| LearnRefNumber | Ukprn | ULN   |
