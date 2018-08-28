@@ -11,8 +11,6 @@
         Balancing16To18FrameworkUplift = 10,
         FirstDisadvantagePayment = 11,
         SecondDisadvantagePayment = 12,
-        OnProgrammeMathsAndEnglish = 13,
-        BalancingMathsAndEnglish = 14,
         LearningSupport = 15
     }
 }

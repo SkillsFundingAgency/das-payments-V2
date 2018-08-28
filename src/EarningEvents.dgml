@@ -1,184 +1,192 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DirectedGraph DataVirtualized="True" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="(@1 @10 @18 Member=Month)" Category="CodeSchema_Property" Bounds="683.490891117087,790.429274019648,93.9023947873816,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Month" />
-    <Node Id="(@1 @10 @18 Member=Year)" Category="CodeSchema_Property" Bounds="572.908496329706,790.429274019648,80.5823947873814,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Year" />
-    <Node Id="(@1 @10 @28 @40)" Category="CodeSchema_Method" Bounds="292.05130481232,1186.38909198384,75.4466666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="Learner" />
-    <Node Id="(@1 @10 @28 Member=ReferenceNumber)" Category="CodeSchema_Property" Bounds="291.982168468882,1242.4247801737,154.252394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ReferenceNumber" />
-    <Node Id="(@1 @10 @28 Member=Uln)" Category="CodeSchema_Property" Bounds="397.396009466832,1186.38901628469,76.3890614540483,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Uln" />
-    <Node Id="(@1 @10 @30 @40)" Category="CodeSchema_Method" Bounds="515.948151289106,905.429222599073,102.743333333333,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="LearningAim" />
-    <Node Id="(@1 @10 @30 Member=AgreedPrice)" Category="CodeSchema_Property" Bounds="515.948112574308,961.389216284688,122.669061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="AgreedPrice" />
-    <Node Id="(@1 @10 @30 Member=FrameworkCode)" Category="CodeSchema_Property" Bounds="679.563840695023,1016.38921628469,144.845728120715,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="FrameworkCode" />
-    <Node Id="(@1 @10 @30 Member=PathwayCode)" Category="CodeSchema_Property" Bounds="668.617174028356,961.389216284688,130.112394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="PathwayCode" />
-    <Node Id="(@1 @10 @30 Member=ProgrammeType)" Category="CodeSchema_Property" Bounds="515.948112574308,1071.38921628469,145.432394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ProgrammeType" />
-    <Node Id="(@1 @10 @30 Member=Reference)" Category="CodeSchema_Property" Bounds="648.691445907642,905.429216284688,110.645728120715,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Reference" />
-    <Node Id="(@1 @10 @30 Member=StandardCode)" Category="CodeSchema_Property" Bounds="515.948112574308,1016.38921628469,133.615728120715,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="StandardCode" />
-    <Node Id="(@1 @10 @36 Member=AgreedPrice)" Category="CodeSchema_Property" Bounds="375.129651781417,678.376511138548,122.669061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="AgreedPrice" />
-    <Node Id="(@1 @10 @36 Member=EndDate)" Category="CodeSchema_Property" Bounds="237.417256994036,623.376411138548,103.239061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="EndDate" />
-    <Node Id="(@1 @10 @36 Member=Identifier)" Category="CodeSchema_Property" Bounds="370.656318448084,623.376411138548,105.862394787381,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Identifier" />
-    <Node Id="(@1 @10 @36 Member=StartDate)" Category="CodeSchema_Property" Bounds="237.417256994036,678.376511138548,107.712394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="StartDate" />
-    <Node Id="(@1 @10 @38 @40)" Category="CodeSchema_Method" Bounds="309.101458130545,827.810123550931,136.846666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="PriceEpisodePeriod" />
-    <Node Id="(@1 @10 @38 Member=Amount)" Category="CodeSchema_Property" Bounds="309.10152308872,938.821317978003,101.202394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Amount" />
-    <Node Id="(@1 @10 @38 Member=Periods)" Category="CodeSchema_Property" Bounds="309.10152308872,883.865317978004,97.2723947873815,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Periods" />
-    <Node Id="(@1 @10 Type=NamedCalendarPeriod Member=Name)" Category="CodeSchema_Property" Bounds="597.48954592342,557.720483276196,90.1457281207149,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Name" />
-    <Node Id="(@1 @10 Type=TransactionType)" Category="CodeSchema_Enum" Bounds="363.023964559418,1317.4020177547,141.613333333333,25" CodeSchemaProperty_IsFinal="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="TransactionType" />
-    <Node Id="(@1 @12 @26 Member=Balancing16To18FrameworkUplift)" Category="CodeSchema_Field" Bounds="358.706964863836,1458.34309354634,213.65,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Balancing16To18FrameworkUplift" />
-    <Node Id="(@1 @12 @26 Member=BalancingMathsAndEnglish)" Category="CodeSchema_Field" Bounds="358.706964863836,1486.30305448384,180.15,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="BalancingMathsAndEnglish" />
-    <Node Id="(@1 @12 @26 Member=Completion16To18FrameworkUplift)" Category="CodeSchema_Field" Bounds="358.707061909734,1514.26313749165,224.38,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Completion16To18FrameworkUplift" />
-    <Node Id="(@1 @12 @26 Member=First16To18EmployerIncentive)" Category="CodeSchema_Field" Bounds="358.707011250554,1542.22309842915,194.37,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="First16To18EmployerIncentive" />
-    <Node Id="(@1 @12 @26 Member=First16To18ProviderIncentive)" Category="CodeSchema_Field" Bounds="358.706997212468,1570.18305936665,188.81,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="First16To18ProviderIncentive" />
-    <Node Id="(@1 @12 @26 Member=FirstDisadvantagePayment)" Category="CodeSchema_Field" Bounds="358.706972188054,1598.14302030415,176.54,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="FirstDisadvantagePayment" />
-    <Node Id="(@1 @12 @26 Member=LearningSupport)" Category="CodeSchema_Field" Bounds="358.707038106023,1626.10310331196,125.3,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="LearningSupport" />
-    <Node Id="(@1 @12 @26 Member=OnProgramme16To18FrameworkUplift)" Category="CodeSchema_Field" Bounds="358.706975850164,1654.06306424946,240.61,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="OnProgramme16To18FrameworkUplift" />
-    <Node Id="(@1 @12 @26 Member=OnProgrammeMathsAndEnglish)" Category="CodeSchema_Field" Bounds="358.706975850164,1682.02302518696,207.11,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="OnProgrammeMathsAndEnglish" />
-    <Node Id="(@1 @12 @26 Member=Second16To18EmployerIncentive)" Category="CodeSchema_Field" Bounds="358.707032002508,1709.98310819478,211.35,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Second16To18EmployerIncentive" />
-    <Node Id="(@1 @12 @26 Member=Second16To18ProviderIncentive)" Category="CodeSchema_Field" Bounds="358.706972188054,1737.94306913228,205.79,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Second16To18ProviderIncentive" />
-    <Node Id="(@1 @12 @26 Member=SecondDisadvantagePayment)" Category="CodeSchema_Field" Bounds="601.317054585515,1458.34309354634,193.52,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="SecondDisadvantagePayment" />
-    <Node Id="(@1 @14 @21 Member=Balancing)" Category="CodeSchema_Field" Bounds="540.0412865598,1885.90351835102,88.0966666666667,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Balancing" />
-    <Node Id="(@1 @14 @21 Member=Completion)" Category="CodeSchema_Field" Bounds="540.041276794175,1913.86347928852,98.8266666666667,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Completion" />
-    <Node Id="(@1 @14 @21 Member=Learning)" Category="CodeSchema_Field" Bounds="540.041284932196,1941.82356229634,82.76,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Learning" />
-    <Node Id="(@3 @8 @33 Member=SfaContributionPercentage)" Category="CodeSchema_Property" Bounds="409.987337652442,-128.999906963828,200.572394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="SfaContributionPercentage" />
-    <Node Id="(@3 @8 Type=ApprenticeshipContractType1EarningEvent Member=AgreementId)" Category="CodeSchema_Property" Bounds="379.765201712802,-354.959908039313,127.712394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="AgreementId" />
-    <Node Id="@11" Category="CodeSchema_Namespace" Bounds="197.417235020244,421.760483276196,666.992333795494,940.641534478504" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="7" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.Model‎.Core" UseManualLocation="True" />
-    <Node Id="@13" Category="CodeSchema_Namespace" Bounds="332.706954470181,1392.4021177547,488.130082397461,397.560375585937" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="1" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.Model‎.Core‎.Incentives" UseManualLocation="True" />
-    <Node Id="@15" Category="CodeSchema_Namespace" Bounds="439.797943866088,1819.96259334064,299.313333333334,173.880443945312" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="1" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.Model‎.Core‎.OnProgramme" UseManualLocation="True" />
-    <Node Id="@16" Category="CodeSchema_Class" Bounds="359.765201712802,-450.920443729713,301.016669777827,140.960232443865" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="2" Group="Expanded" Label="ApprenticeshipContractType1EarningEvent" />
-    <Node Id="@17" Category="CodeSchema_Class" Bounds="43.2652017128009,-392.939906510893,286.016666666667,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ApprenticeshipContractType2EarningEvent" />
-    <Node Id="@19" Category="CodeSchema_Class" Bounds="552.908496329705,694.445292727929,244.484789574763,140.9603" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="CalendarPeriod" UseManualLocation="True" />
-    <Node Id="@2" Category="CodeSchema_Assembly" Bounds="177.417235020244,381.760483276196,706.992333795494,1632.08255400975" CodeSchemaProperty_StrongName="SFA.DAS.Payments.Model.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" FilePath="$(fafc16fb-316e-4c83-9f35-d0d36ddccaf7.OutputPath)" Group="Expanded" Label="SFA.DAS.Payments.Model.Core.dll" UseManualLocation="True" />
-    <Node Id="@20" Category="CodeSchema_Class" Bounds="835.096868379468,176.960093489107,129.853333333333,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="EarningEvent" />
-    <Node Id="@22" Category="CodeSchema_Enum" Bounds="528.621277199421,1859.96269334064,121.666666666667,113.880243945313" CodeSchemaProperty_IsFinal="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="EarningType" UseManualLocation="True" />
-    <Node Id="@23" Category="CodeSchema_Interface" Bounds="833.500201712802,231.960093489107,133.046666666667,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="IEarningEvent" />
-    <Node Id="@25" Category="CodeSchema_Class" Bounds="803.801795196684,-279.960018510522,192.443333333333,195.960211999634" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="IncentiveEarningEvent" />
-    <Node Id="@27" Category="CodeSchema_Enum" Bounds="352.706954470181,1432.4022177547,448.130082397461,337.560175585938" CodeSchemaProperty_IsFinal="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="12" Group="Expanded" Label="IncentiveType" UseManualLocation="True" />
-    <Node Id="@29" Category="CodeSchema_Class" Bounds="271.982168468882,1146.36595386569,221.853881305138,141.035963889007" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="Learner" UseManualLocation="True" />
-    <Node Id="@31" Category="CodeSchema_Class" Bounds="495.948112574308,865.405353865693,348.461456241429,250.9605" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="7" Group="Expanded" Label="LearningAim" UseManualLocation="True" />
-    <Node Id="@32" Category="CodeSchema_Class" Bounds="577.48954592342,461.760483276196,195.35,140.96" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="2" Group="Expanded" Label="NamedCalendarPeriod" UseManualLocation="True" />
-    <Node Id="@34" Category="CodeSchema_Class" Bounds="389.987337652443,-279.960111285848,240.572394787382,195.9604" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="OnProgrammeEarningEvent" />
-    <Node Id="@35" Category="CodeSchema_Class" Bounds="379.73508275365,-53.9996112858479,261.076666666667,140.960208956591" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="2" Group="Expanded" Label="OnProgrammeEarningPriceEpisode" />
-    <Node Id="@37" Category="CodeSchema_Class" Bounds="217.417235020244,527.349213483311,300.381478215221,195.960335236242" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="6" Group="Expanded" Label="PriceEpisode" UseManualLocation="True" />
-    <Node Id="@39" Category="CodeSchema_Class" Bounds="289.101438916803,787.742965841729,176.846666666667,196.055489717279" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="PriceEpisodePeriod" UseManualLocation="True" />
-    <Node Id="@4" Category="CodeSchema_Assembly" Bounds="3.2652017128014,-530.920643729714,1105.43159348388,827.88093721882" CodeSchemaProperty_StrongName="SFA.DAS.Payments.EarningEvents.Messages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" FilePath="$(07a36781-d09b-4cf9-8d0b-80bb929fe535.OutputPath)" Group="Expanded" Label="SFA.DAS.Payments.EarningEvents.Messages.dll" />
-    <Node Id="@41" Category="CodeSchema_Method" Bounds="379.765215776874,-410.919937634465,261.016666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="ApprenticeshipContractType1EarningEvent" />
-    <Node Id="@42" Category="CodeSchema_Method" Bounds="572.908522933864,734.469314843785,116.586666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="CalendarPeriod" />
-    <Node Id="@43" Category="CodeSchema_Method" Bounds="823.801790890807,-239.959915661808,152.443333333333,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="IncentiveEarningEvent" />
-    <Node Id="@44" Category="CodeSchema_Method" Bounds="597.48954592342,501.760483276196,155.35,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="NamedCalendarPeriod" />
-    <Node Id="@45" Category="CodeSchema_Method" Bounds="409.987357093606,-239.959915661808,182.91,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsProtected="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="OnProgrammeEarningEvent" />
-    <Node Id="@46" Category="CodeSchema_Method" Bounds="399.735108965351,-13.9999161004986,221.076666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="OnProgrammeEarningPriceEpisode" />
-    <Node Id="@47" Category="CodeSchema_Method" Bounds="237.417230045367,567.416383000099,103.116666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="PriceEpisode" />
-    <Node Id="@48" Category="CodeSchema_Property" Bounds="370.533923660702,567.416411138548,97.2723947873816,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Periods" />
-    <Node Id="@49" Category="CodeSchema_Property" Bounds="823.801868379468,-128.999906510888,130.659061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="PriceEpisodes" />
-    <Node Id="@5" Category="CodeSchema_Namespace" Bounds="738.991868379469,136.959943489107,322.063333333333,140.0003" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="2" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.EarningEvents‎.Messages‎.Events" />
-    <Node Id="@50" Category="CodeSchema_Property" Bounds="409.987337652444,-183.999907178925,130.659061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="PriceEpisodes" />
-    <Node Id="@51" Category="CodeSchema_Property" Bounds="823.801868379468,-183.999906646093,83.2123947873815,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Type" />
-    <Node Id="@52" Category="CodeSchema_Property" Bounds="399.735201712802,41.960093822076,83.2123947873815,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Type" />
-    <Node Id="@7" Category="CodeSchema_Namespace" Bounds="711.350128530017,-319.960118510522,377.346666666667,255.960411999634" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="1" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.EarningEvents‎.Messages‎.Events‎.Incentives" />
-    <Node Id="@9" Category="CodeSchema_Namespace" Bounds="23.2652017128014,-490.920543729714,657.516669777828,597.881241400456" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="4" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.EarningEvents‎.Messages‎.Events‎.OnProgramme" />
-    <Node Id="EarningEvents{213651BD-07BA-4A57-B1BE-CF4A649BA069}" Category="CodeMap_SolutionFolder" Bounds="-16.7347982871986,-570.920743729714,1145.43159348388,887.88113721882" Group="Expanded" Label="EarningEvents" />
+    <Node Id="(@1 @11 @19 Member=Month)" Category="CodeSchema_Property" Bounds="682.354315810164,833.334083608345,93.9023947873816,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Month" />
+    <Node Id="(@1 @11 @19 Member=Year)" Category="CodeSchema_Property" Bounds="571.771921022783,833.334083608345,80.5823947873814,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Year" />
+    <Node Id="(@1 @11 @30 @42)" Category="CodeSchema_Method" Bounds="290.91471904529,1229.29382814338,75.4466666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="Learner" />
+    <Node Id="(@1 @11 @30 Member=ReferenceNumber)" Category="CodeSchema_Property" Bounds="290.845593161958,1285.32958976239,154.252394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ReferenceNumber" />
+    <Node Id="(@1 @11 @30 Member=Uln)" Category="CodeSchema_Property" Bounds="396.259434159908,1229.29382587339,76.3890614540483,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Uln" />
+    <Node Id="(@1 @11 @32 @42)" Category="CodeSchema_Method" Bounds="514.811612762738,948.334019793776,102.743333333333,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="LearningAim" />
+    <Node Id="(@1 @11 @32 Member=AgreedPrice)" Category="CodeSchema_Property" Bounds="514.811537267385,1004.29402587339,122.669061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="AgreedPrice" />
+    <Node Id="(@1 @11 @32 Member=FrameworkCode)" Category="CodeSchema_Property" Bounds="678.4272653881,1059.29402587339,144.845728120715,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="FrameworkCode" />
+    <Node Id="(@1 @11 @32 Member=PathwayCode)" Category="CodeSchema_Property" Bounds="667.480598721433,1004.29402587339,130.112394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="PathwayCode" />
+    <Node Id="(@1 @11 @32 Member=ProgrammeType)" Category="CodeSchema_Property" Bounds="514.811537267385,1114.29402587339,145.432394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ProgrammeType" />
+    <Node Id="(@1 @11 @32 Member=Reference)" Category="CodeSchema_Property" Bounds="647.554870600718,948.334025873386,110.645728120715,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Reference" />
+    <Node Id="(@1 @11 @32 Member=StandardCode)" Category="CodeSchema_Property" Bounds="514.811537267385,1059.29402587339,133.615728120715,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="StandardCode" />
+    <Node Id="(@1 @11 @38 Member=AgreedPrice)" Category="CodeSchema_Property" Bounds="373.993076474494,721.281320727246,122.669061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="AgreedPrice" />
+    <Node Id="(@1 @11 @38 Member=EndDate)" Category="CodeSchema_Property" Bounds="236.280681687113,666.281220727246,103.239061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="EndDate" />
+    <Node Id="(@1 @11 @38 Member=Identifier)" Category="CodeSchema_Property" Bounds="369.519743141161,666.281220727246,105.862394787381,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Identifier" />
+    <Node Id="(@1 @11 @38 Member=StartDate)" Category="CodeSchema_Property" Bounds="236.280681687112,721.281320727246,107.712394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="StartDate" />
+    <Node Id="(@1 @11 @40 @42)" Category="CodeSchema_Method" Bounds="307.96488689197,870.714940203932,136.846666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="PriceEpisodePeriod" />
+    <Node Id="(@1 @11 @40 Member=Amount)" Category="CodeSchema_Property" Bounds="307.964947781797,981.726127566701,101.202394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Amount" />
+    <Node Id="(@1 @11 @40 Member=Periods)" Category="CodeSchema_Property" Bounds="307.964947781797,926.770127566701,97.2723947873815,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Periods" />
+    <Node Id="(@1 @11 Type=NamedCalendarPeriod Member=Name)" Category="CodeSchema_Property" Bounds="596.352970616497,600.625292864893,90.1457281207149,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Name" />
+    <Node Id="(@1 @11 Type=TransactionType)" Category="CodeSchema_Enum" Bounds="361.887389252495,1360.3068273434,141.613333333333,25" CodeSchemaProperty_IsFinal="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="TransactionType" />
+    <Node Id="(@1 @13 @28 Member=Balancing16To18FrameworkUplift)" Category="CodeSchema_Field" Bounds="357.570376597374,1501.24792970588,213.65,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Balancing16To18FrameworkUplift" />
+    <Node Id="(@1 @13 @28 Member=BalancingMathsAndEnglish)" Category="CodeSchema_Field" Bounds="357.570376597374,1529.20789064338,180.15,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="BalancingMathsAndEnglish" />
+    <Node Id="(@1 @13 @28 Member=Completion16To18FrameworkUplift)" Category="CodeSchema_Field" Bounds="357.570473643272,1557.1679736512,224.38,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Completion16To18FrameworkUplift" />
+    <Node Id="(@1 @13 @28 Member=First16To18EmployerIncentive)" Category="CodeSchema_Field" Bounds="357.570438242881,1585.1279345887,194.37,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="First16To18EmployerIncentive" />
+    <Node Id="(@1 @13 @28 Member=First16To18ProviderIncentive)" Category="CodeSchema_Field" Bounds="357.570408946007,1613.0878955262,188.81,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="First16To18ProviderIncentive" />
+    <Node Id="(@1 @13 @28 Member=FirstDisadvantagePayment)" Category="CodeSchema_Field" Bounds="357.570383921592,1641.0478564637,176.54,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="FirstDisadvantagePayment" />
+    <Node Id="(@1 @13 @28 Member=LearningSupport)" Category="CodeSchema_Field" Bounds="357.570449839561,1669.00793947151,125.3,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="LearningSupport" />
+    <Node Id="(@1 @13 @28 Member=OnProgramme16To18FrameworkUplift)" Category="CodeSchema_Field" Bounds="357.570387583702,1696.96790040901,240.61,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="OnProgramme16To18FrameworkUplift" />
+    <Node Id="(@1 @13 @28 Member=OnProgrammeMathsAndEnglish)" Category="CodeSchema_Field" Bounds="357.570387583702,1724.92786134651,207.11,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="OnProgrammeMathsAndEnglish" />
+    <Node Id="(@1 @13 @28 Member=Second16To18EmployerIncentive)" Category="CodeSchema_Field" Bounds="357.570443736046,1752.88794435432,211.35,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Second16To18EmployerIncentive" />
+    <Node Id="(@1 @13 @28 Member=Second16To18ProviderIncentive)" Category="CodeSchema_Field" Bounds="357.570383921592,1780.84790529182,205.79,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Second16To18ProviderIncentive" />
+    <Node Id="(@1 @13 @28 Member=SecondDisadvantagePayment)" Category="CodeSchema_Field" Bounds="600.180512095421,1501.24792970588,193.52,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="SecondDisadvantagePayment" />
+    <Node Id="(@1 @15 @22 Member=Balancing)" Category="CodeSchema_Field" Bounds="538.904690969119,1928.80835451057,88.0966666666667,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Balancing" />
+    <Node Id="(@1 @15 @22 Member=Completion)" Category="CodeSchema_Field" Bounds="538.904681203494,1956.76831544807,98.8266666666667,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Completion" />
+    <Node Id="(@1 @15 @22 Member=Learning)" Category="CodeSchema_Field" Bounds="538.904689341514,1984.72839845588,82.76,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" DelayedCrossGroupLinksState="Fetched" Label="Learning" />
+    <Node Id="(@3 @5 @24 Member=EarningYear)" Category="CodeSchema_Property" Bounds="554.139881341827,212.926308897143,120.485728120715,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsVirtual="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="EarningYear" />
+    <Node Id="(@3 @5 @24 Member=Ukprn)" Category="CodeSchema_Property" Bounds="554.139881341827,157.926308897143,90.6723947873816,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsVirtual="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Ukprn" />
+    <Node Id="(@3 @9 @35 Member=SfaContributionPercentage)" Category="CodeSchema_Property" Bounds="530.276071769948,-243.034280113637,200.572394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="SfaContributionPercentage" />
+    <Node Id="(@3 @9 Type=ApprenticeshipContractType1EarningEvent Member=AgreementId)" Category="CodeSchema_Property" Bounds="500.053935830308,-468.994281189122,127.712394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="AgreementId" />
+    <Node Id="@10" Category="CodeSchema_Namespace" Bounds="143.553935830307,-604.954932503312,657.516675932056,597.881258982226" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="4" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.EarningEvents‎.Messages‎.Events‎.OnProgramme" />
+    <Node Id="@12" Category="CodeSchema_Namespace" Bounds="196.280662038455,464.641310928702,666.99233147036,940.666290915545" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="7" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.Model‎.Core" UseManualLocation="True" />
+    <Node Id="@14" Category="CodeSchema_Namespace" Bounds="331.570376597374,1435.30765184426,488.130135498047,397.560375585937" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="1" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.Model‎.Core‎.Incentives" UseManualLocation="True" />
+    <Node Id="@16" Category="CodeSchema_Namespace" Bounds="438.66134787016,1862.86817743018,299.313333333334,173.880443945312" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="1" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.Model‎.Core‎.OnProgramme" UseManualLocation="True" />
+    <Node Id="@17" Category="CodeSchema_Class" Bounds="480.053935830308,-564.954858190449,301.016675932055,140.9603" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="2" Group="Expanded" Label="ApprenticeshipContractType1EarningEvent" />
+    <Node Id="@18" Category="CodeSchema_Class" Bounds="163.553935830307,-506.974279660702,286.016666666667,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ApprenticeshipContractType2EarningEvent" />
+    <Node Id="@2" Category="CodeSchema_Assembly" Bounds="176.280662038455,424.641210928702,706.99233147036,1632.10751044679" CodeSchemaProperty_StrongName="SFA.DAS.Payments.Model.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" FilePath="$(fafc16fb-316e-4c83-9f35-d0d36ddccaf7.OutputPath)" Group="Expanded" Label="SFA.DAS.Payments.Model.Core.dll" UseManualLocation="True" />
+    <Node Id="@20" Category="CodeSchema_Class" Bounds="551.771921022783,737.35038795525,244.484789574763,140.9603" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="CalendarPeriod" UseManualLocation="True" />
+    <Node Id="@21" Category="CodeSchema_Class" Bounds="598.497276129208,62.9263088971433,129.853333333333,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="EarningEvent" />
+    <Node Id="@23" Category="CodeSchema_Enum" Bounds="527.484681203493,1902.86827743018,121.666666666667,113.880243945312" CodeSchemaProperty_IsFinal="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="EarningType" UseManualLocation="True" />
+    <Node Id="@25" Category="CodeSchema_Interface" Bounds="534.139881341827,117.926308897143,258.568122908096,195" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="4" Group="Expanded" Label="IEarningEvent" UseManualLocation="True" />
+    <Node Id="@27" Category="CodeSchema_Class" Bounds="923.522372274799,-223.034003102491,192.443333333333,195.9604" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="IncentiveEarningEvent" />
+    <Node Id="@29" Category="CodeSchema_Enum" Bounds="351.570376597374,1475.30775184426,448.130135498047,337.560175585937" CodeSchemaProperty_IsFinal="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="12" Group="Expanded" Label="IncentiveType" UseManualLocation="True" />
+    <Node Id="@31" Category="CodeSchema_Class" Bounds="270.845593161958,1189.27138795525,221.853878228023,141.035963889007" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="Learner" UseManualLocation="True" />
+    <Node Id="@33" Category="CodeSchema_Class" Bounds="494.811537267385,908.31073795524,348.46145624143,250.960599999999" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="7" Group="Expanded" Label="LearningAim" UseManualLocation="True" />
+    <Node Id="@34" Category="CodeSchema_Class" Bounds="576.352970616497,504.641460928712,195.350035375408,140.9603" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="2" Group="Expanded" Label="NamedCalendarPeriod" UseManualLocation="True" />
+    <Node Id="@36" Category="CodeSchema_Class" Bounds="510.276071769948,-393.994483877586,240.572394787382,195.9604" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="OnProgrammeEarningEvent" />
+    <Node Id="@37" Category="CodeSchema_Class" Bounds="500.023838284172,-168.033983877586,261.076666666667,140.9602103565" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="2" Group="Expanded" Label="OnProgrammeEarningPriceEpisode" />
+    <Node Id="@39" Category="CodeSchema_Class" Bounds="216.280662038454,570.2545328091,300.381475890088,195.9604" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="6" Group="Expanded" Label="PriceEpisode" UseManualLocation="True" />
+    <Node Id="@4" Category="CodeSchema_Assembly" Bounds="123.553935830307,-644.954932503312,1104.8634364445,997.881241400456" CodeSchemaProperty_StrongName="SFA.DAS.Payments.EarningEvents.Messages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" FilePath="$(07a36781-d09b-4cf9-8d0b-80bb929fe535.OutputPath)" Group="Expanded" Label="SFA.DAS.Payments.EarningEvents.Messages.dll" />
+    <Node Id="@41" Category="CodeSchema_Class" Bounds="287.96488689197,830.648402285796,176.846666666667,196.055487362769" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="PriceEpisodePeriod" UseManualLocation="True" />
+    <Node Id="@43" Category="CodeSchema_Method" Bounds="500.053945095696,-524.954329814848,261.016666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="ApprenticeshipContractType1EarningEvent" />
+    <Node Id="@44" Category="CodeSchema_Method" Bounds="571.771934621462,777.374119891432,116.586666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="CalendarPeriod" />
+    <Node Id="@45" Category="CodeSchema_Method" Bounds="943.522372274799,-183.033806586362,152.443333333333,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="IncentiveEarningEvent" />
+    <Node Id="@46" Category="CodeSchema_Method" Bounds="596.353005991905,544.665318621901,155.35,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="NamedCalendarPeriod" />
+    <Node Id="@47" Category="CodeSchema_Method" Bounds="530.276086412428,-353.994284954008,182.91,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsProtected="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="OnProgrammeEarningEvent" />
+    <Node Id="@48" Category="CodeSchema_Method" Bounds="520.023838284173,-128.034289684233,221.076666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="OnProgrammeEarningPriceEpisode" />
+    <Node Id="@49" Category="CodeSchema_Method" Bounds="236.280662038454,610.321202410963,103.116666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="PriceEpisode" />
+    <Node Id="@50" Category="CodeSchema_Property" Bounds="674.812276129209,157.926308897143,97.8957281207149,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsVirtual="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Learner" />
+    <Node Id="@51" Category="CodeSchema_Property" Bounds="554.139881341827,267.926308897143,125.192394787382,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsVirtual="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="LearningAim" />
+    <Node Id="@52" Category="CodeSchema_Property" Bounds="369.397348353779,610.321220727246,97.2723947873816,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Periods" />
+    <Node Id="@53" Category="CodeSchema_Property" Bounds="943.522439303356,-72.0738012930511,130.659061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="PriceEpisodes" />
+    <Node Id="@54" Category="CodeSchema_Property" Bounds="530.27607176995,-298.034280328734,130.659061454048,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="PriceEpisodes" />
+    <Node Id="@55" Category="CodeSchema_Property" Bounds="943.522439303356,-127.073801428256,83.2123947873815,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Type" />
+    <Node Id="@56" Category="CodeSchema_Property" Bounds="520.023935830308,-72.0742793277329,83.2123947873815,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Type" />
+    <Node Id="@6" Category="CodeSchema_Namespace" Bounds="502.392276129209,22.9263088971433,322.063333333333,310" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="2" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.EarningEvents‎.Messages‎.Events" />
+    <Node Id="@8" Category="CodeSchema_Namespace" Bounds="831.070705608132,-263.034103102491,377.346666666667,255.9606" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="1" Group="Expanded" Label="SFA‎.DAS‎.Payments‎.EarningEvents‎.Messages‎.Events‎.Incentives" />
+    <Node Id="EarningEvents{213651BD-07BA-4A57-B1BE-CF4A649BA069}" Category="CodeMap_SolutionFolder" Bounds="103.553935830307,-684.954932503312,1144.8634364445,1057.88124140046" Group="Expanded" Label="EarningEvents" />
   </Nodes>
   <Links>
-    <Link Source="@11" Target="(@1 @10 Type=TransactionType)" Category="Contains" FetchingParent="@11" />
-    <Link Source="@11" Target="@19" Category="Contains" FetchingParent="@11" />
-    <Link Source="@11" Target="@29" Category="Contains" FetchingParent="@11" />
-    <Link Source="@11" Target="@31" Category="Contains" FetchingParent="@11" />
-    <Link Source="@11" Target="@32" Category="Contains" FetchingParent="@11" />
-    <Link Source="@11" Target="@37" Category="Contains" FetchingParent="@11" />
-    <Link Source="@11" Target="@39" Category="Contains" FetchingParent="@11" />
-    <Link Source="@13" Target="@27" Category="Contains" FetchingParent="@13" />
-    <Link Source="@15" Target="@22" Category="Contains" FetchingParent="@15" />
-    <Link Source="@16" Target="(@3 @8 Type=ApprenticeshipContractType1EarningEvent Member=AgreementId)" Category="Contains" FetchingParent="@16" />
-    <Link Source="@16" Target="@34" Category="InheritsFrom" Weight="1" />
-    <Link Source="@16" Target="@41" Category="Contains" FetchingParent="@16" />
-    <Link Source="@17" Target="@34" Category="InheritsFrom" Weight="1" />
-    <Link Source="@17" Target="@45" Category="CodeSchema_Calls" IsSourceVirtualized="True" Weight="1" />
-    <Link Source="@19" Target="(@1 @10 @18 Member=Month)" Category="Contains" FetchingParent="@19" />
-    <Link Source="@19" Target="(@1 @10 @18 Member=Year)" Category="Contains" FetchingParent="@19" />
-    <Link Source="@19" Target="@42" Category="Contains" FetchingParent="@19" />
-    <Link Source="@2" Target="@11" Category="Contains" FetchingParent="@2" />
-    <Link Source="@2" Target="@13" Category="Contains" FetchingParent="@2" />
-    <Link Source="@2" Target="@15" Category="Contains" FetchingParent="@2" />
-    <Link Source="@20" Target="@23" Category="Implements" Bounds="900.023535046135,201.960093489107,4.54747350886464E-13,20.5000000000001" Weight="1" />
-    <Link Source="@20" Target="@29" Category="References" IsSourceVirtualized="True" Weight="4">
+    <Link Source="@10" Target="@17" Category="Contains" FetchingParent="@10" />
+    <Link Source="@10" Target="@18" Category="Contains" FetchingParent="@10" />
+    <Link Source="@10" Target="@36" Category="Contains" FetchingParent="@10" />
+    <Link Source="@10" Target="@37" Category="Contains" FetchingParent="@10" />
+    <Link Source="@12" Target="(@1 @11 Type=TransactionType)" Category="Contains" FetchingParent="@12" />
+    <Link Source="@12" Target="@20" Category="Contains" FetchingParent="@12" />
+    <Link Source="@12" Target="@31" Category="Contains" FetchingParent="@12" />
+    <Link Source="@12" Target="@33" Category="Contains" FetchingParent="@12" />
+    <Link Source="@12" Target="@34" Category="Contains" FetchingParent="@12" />
+    <Link Source="@12" Target="@39" Category="Contains" FetchingParent="@12" />
+    <Link Source="@12" Target="@41" Category="Contains" FetchingParent="@12" />
+    <Link Source="@14" Target="@29" Category="Contains" FetchingParent="@14" />
+    <Link Source="@16" Target="@23" Category="Contains" FetchingParent="@16" />
+    <Link Source="@17" Target="(@3 @9 Type=ApprenticeshipContractType1EarningEvent Member=AgreementId)" Category="Contains" FetchingParent="@17" />
+    <Link Source="@17" Target="@36" Category="InheritsFrom" Weight="1" />
+    <Link Source="@17" Target="@43" Category="Contains" FetchingParent="@17" />
+    <Link Source="@18" Target="@36" Category="InheritsFrom" Weight="1" />
+    <Link Source="@18" Target="@47" Category="CodeSchema_Calls" IsSourceVirtualized="True" Weight="1" />
+    <Link Source="@2" Target="@12" Category="Contains" FetchingParent="@2" />
+    <Link Source="@2" Target="@14" Category="Contains" FetchingParent="@2" />
+    <Link Source="@2" Target="@16" Category="Contains" FetchingParent="@2" />
+    <Link Source="@20" Target="(@1 @11 @19 Member=Month)" Category="Contains" FetchingParent="@20" />
+    <Link Source="@20" Target="(@1 @11 @19 Member=Year)" Category="Contains" FetchingParent="@20" />
+    <Link Source="@20" Target="@44" Category="Contains" FetchingParent="@20" />
+    <Link Source="@21" Target="@25" Category="Implements" Bounds="663.423942795875,87.9263088971433,1.13686837721616E-13,20.5" Weight="1" />
+    <Link Source="@21" Target="@31" Category="References" IsSourceVirtualized="True" Weight="4">
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@20" Target="@31" Category="References" IsSourceVirtualized="True" Weight="4">
+    <Link Source="@21" Target="@33" Category="References" IsSourceVirtualized="True" Weight="4">
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@22" Target="(@1 @14 @21 Member=Balancing)" Category="Contains" FetchingParent="@22" />
-    <Link Source="@22" Target="(@1 @14 @21 Member=Completion)" Category="Contains" FetchingParent="@22" />
-    <Link Source="@22" Target="(@1 @14 @21 Member=Learning)" Category="Contains" FetchingParent="@22" />
-    <Link Source="@23" Target="@29" Category="CodeSchema_ReturnTypeLink" IsSourceVirtualized="True" Weight="1" />
-    <Link Source="@23" Target="@31" Category="CodeSchema_ReturnTypeLink" IsSourceVirtualized="True" Weight="1" />
-    <Link Source="@25" Target="@20" Category="InheritsFrom" Weight="1" />
-    <Link Source="@25" Target="@43" Category="Contains" FetchingParent="@25" />
-    <Link Source="@25" Target="@49" Category="Contains" FetchingParent="@25" />
+    <Link Source="@23" Target="(@1 @15 @22 Member=Balancing)" Category="Contains" FetchingParent="@23" />
+    <Link Source="@23" Target="(@1 @15 @22 Member=Completion)" Category="Contains" FetchingParent="@23" />
+    <Link Source="@23" Target="(@1 @15 @22 Member=Learning)" Category="Contains" FetchingParent="@23" />
+    <Link Source="@25" Target="(@3 @5 @24 Member=EarningYear)" Category="Contains" FetchingParent="@25" />
+    <Link Source="@25" Target="(@3 @5 @24 Member=Ukprn)" Category="Contains" FetchingParent="@25" />
+    <Link Source="@25" Target="@50" Category="Contains" FetchingParent="@25" />
     <Link Source="@25" Target="@51" Category="Contains" FetchingParent="@25" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=Balancing16To18FrameworkUplift)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=BalancingMathsAndEnglish)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=Completion16To18FrameworkUplift)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=First16To18EmployerIncentive)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=First16To18ProviderIncentive)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=FirstDisadvantagePayment)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=LearningSupport)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=OnProgramme16To18FrameworkUplift)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=OnProgrammeMathsAndEnglish)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=Second16To18EmployerIncentive)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=Second16To18ProviderIncentive)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@27" Target="(@1 @12 @26 Member=SecondDisadvantagePayment)" Category="Contains" FetchingParent="@27" />
-    <Link Source="@29" Target="(@1 @10 @28 @40)" Category="Contains" FetchingParent="@29" />
-    <Link Source="@29" Target="(@1 @10 @28 Member=ReferenceNumber)" Category="Contains" FetchingParent="@29" />
-    <Link Source="@29" Target="(@1 @10 @28 Member=Uln)" Category="Contains" FetchingParent="@29" />
-    <Link Source="@31" Target="(@1 @10 @30 @40)" Category="Contains" FetchingParent="@31" />
-    <Link Source="@31" Target="(@1 @10 @30 Member=AgreedPrice)" Category="Contains" FetchingParent="@31" />
-    <Link Source="@31" Target="(@1 @10 @30 Member=FrameworkCode)" Category="Contains" FetchingParent="@31" />
-    <Link Source="@31" Target="(@1 @10 @30 Member=PathwayCode)" Category="Contains" FetchingParent="@31" />
-    <Link Source="@31" Target="(@1 @10 @30 Member=ProgrammeType)" Category="Contains" FetchingParent="@31" />
-    <Link Source="@31" Target="(@1 @10 @30 Member=Reference)" Category="Contains" FetchingParent="@31" />
-    <Link Source="@31" Target="(@1 @10 @30 Member=StandardCode)" Category="Contains" FetchingParent="@31" />
-    <Link Source="@32" Target="(@1 @10 Type=NamedCalendarPeriod Member=Name)" Category="Contains" FetchingParent="@32" />
-    <Link Source="@32" Target="@19" Category="InheritsFrom" Weight="1" />
-    <Link Source="@32" Target="@44" Category="Contains" FetchingParent="@32" />
-    <Link Source="@34" Target="(@3 @8 @33 Member=SfaContributionPercentage)" Category="Contains" FetchingParent="@34" />
+    <Link Source="@27" Target="@21" Category="InheritsFrom" Weight="1" />
+    <Link Source="@27" Target="@45" Category="Contains" FetchingParent="@27" />
+    <Link Source="@27" Target="@53" Category="Contains" FetchingParent="@27" />
+    <Link Source="@27" Target="@55" Category="Contains" FetchingParent="@27" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=Balancing16To18FrameworkUplift)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=BalancingMathsAndEnglish)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=Completion16To18FrameworkUplift)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=First16To18EmployerIncentive)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=First16To18ProviderIncentive)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=FirstDisadvantagePayment)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=LearningSupport)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=OnProgramme16To18FrameworkUplift)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=OnProgrammeMathsAndEnglish)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=Second16To18EmployerIncentive)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=Second16To18ProviderIncentive)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@29" Target="(@1 @13 @28 Member=SecondDisadvantagePayment)" Category="Contains" FetchingParent="@29" />
+    <Link Source="@31" Target="(@1 @11 @30 @42)" Category="Contains" FetchingParent="@31" />
+    <Link Source="@31" Target="(@1 @11 @30 Member=ReferenceNumber)" Category="Contains" FetchingParent="@31" />
+    <Link Source="@31" Target="(@1 @11 @30 Member=Uln)" Category="Contains" FetchingParent="@31" />
+    <Link Source="@33" Target="(@1 @11 @32 @42)" Category="Contains" FetchingParent="@33" />
+    <Link Source="@33" Target="(@1 @11 @32 Member=AgreedPrice)" Category="Contains" FetchingParent="@33" />
+    <Link Source="@33" Target="(@1 @11 @32 Member=FrameworkCode)" Category="Contains" FetchingParent="@33" />
+    <Link Source="@33" Target="(@1 @11 @32 Member=PathwayCode)" Category="Contains" FetchingParent="@33" />
+    <Link Source="@33" Target="(@1 @11 @32 Member=ProgrammeType)" Category="Contains" FetchingParent="@33" />
+    <Link Source="@33" Target="(@1 @11 @32 Member=Reference)" Category="Contains" FetchingParent="@33" />
+    <Link Source="@33" Target="(@1 @11 @32 Member=StandardCode)" Category="Contains" FetchingParent="@33" />
+    <Link Source="@34" Target="(@1 @11 Type=NamedCalendarPeriod Member=Name)" Category="Contains" FetchingParent="@34" />
     <Link Source="@34" Target="@20" Category="InheritsFrom" Weight="1" />
-    <Link Source="@34" Target="@45" Category="Contains" FetchingParent="@34" />
-    <Link Source="@34" Target="@50" Category="Contains" FetchingParent="@34" />
-    <Link Source="@35" Target="@37" Category="InheritsFrom" Weight="1" />
-    <Link Source="@35" Target="@46" Category="Contains" FetchingParent="@35" />
-    <Link Source="@35" Target="@52" Category="Contains" FetchingParent="@35" />
-    <Link Source="@37" Target="(@1 @10 @36 Member=AgreedPrice)" Category="Contains" FetchingParent="@37" />
-    <Link Source="@37" Target="(@1 @10 @36 Member=EndDate)" Category="Contains" FetchingParent="@37" />
-    <Link Source="@37" Target="(@1 @10 @36 Member=Identifier)" Category="Contains" FetchingParent="@37" />
-    <Link Source="@37" Target="(@1 @10 @36 Member=StartDate)" Category="Contains" FetchingParent="@37" />
-    <Link Source="@37" Target="@47" Category="Contains" FetchingParent="@37" />
+    <Link Source="@34" Target="@46" Category="Contains" FetchingParent="@34" />
+    <Link Source="@36" Target="(@3 @9 @35 Member=SfaContributionPercentage)" Category="Contains" FetchingParent="@36" />
+    <Link Source="@36" Target="@21" Category="InheritsFrom" Weight="1" />
+    <Link Source="@36" Target="@47" Category="Contains" FetchingParent="@36" />
+    <Link Source="@36" Target="@54" Category="Contains" FetchingParent="@36" />
+    <Link Source="@37" Target="@39" Category="InheritsFrom" Weight="1" />
     <Link Source="@37" Target="@48" Category="Contains" FetchingParent="@37" />
-    <Link Source="@39" Target="(@1 @10 @38 @40)" Category="Contains" FetchingParent="@39" />
-    <Link Source="@39" Target="(@1 @10 @38 Member=Amount)" Category="Contains" FetchingParent="@39" />
-    <Link Source="@39" Target="(@1 @10 @38 Member=Periods)" Category="Contains" FetchingParent="@39" />
+    <Link Source="@37" Target="@56" Category="Contains" FetchingParent="@37" />
+    <Link Source="@39" Target="(@1 @11 @38 Member=AgreedPrice)" Category="Contains" FetchingParent="@39" />
+    <Link Source="@39" Target="(@1 @11 @38 Member=EndDate)" Category="Contains" FetchingParent="@39" />
+    <Link Source="@39" Target="(@1 @11 @38 Member=Identifier)" Category="Contains" FetchingParent="@39" />
+    <Link Source="@39" Target="(@1 @11 @38 Member=StartDate)" Category="Contains" FetchingParent="@39" />
+    <Link Source="@39" Target="@49" Category="Contains" FetchingParent="@39" />
+    <Link Source="@39" Target="@52" Category="Contains" FetchingParent="@39" />
+    <Link Source="@4" Target="@10" Category="Contains" FetchingParent="@4" />
     <Link Source="@4" Target="@2" Category="CodeMap_ExternalReference" Bounds="564.884965935905,603.188866166187,1.20066925697699,44.3089761837757" />
-    <Link Source="@4" Target="@5" Category="Contains" FetchingParent="@4" />
-    <Link Source="@4" Target="@7" Category="Contains" FetchingParent="@4" />
-    <Link Source="@4" Target="@9" Category="Contains" FetchingParent="@4" />
-    <Link Source="@41" Target="@45" Category="CodeSchema_Calls" Weight="1" />
-    <Link Source="@43" Target="@20" Category="CodeSchema_Calls" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@44" Target="@42" Category="CodeSchema_Calls" Weight="1" />
-    <Link Source="@45" Target="@20" Category="CodeSchema_Calls" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@46" Target="@47" Category="CodeSchema_Calls" Weight="1" />
-    <Link Source="@48" Target="@39" Category="References" IsSourceVirtualized="True" Weight="4" />
-    <Link Source="@49" Target="@37" Category="References" IsSourceVirtualized="True" Weight="4" />
-    <Link Source="@5" Target="@20" Category="Contains" FetchingParent="@5" />
-    <Link Source="@5" Target="@23" Category="Contains" FetchingParent="@5" />
-    <Link Source="@50" Target="@35" Category="References" Bounds="-103.1973769591,-163.63117064426,45.6379217463186,2.49448442888374" IsSourceVirtualized="True" Weight="4" />
-    <Link Source="@51" Target="@27" Category="References" IsSourceVirtualized="True" Weight="4">
+    <Link Source="@4" Target="@6" Category="Contains" FetchingParent="@4" />
+    <Link Source="@4" Target="@8" Category="Contains" FetchingParent="@4" />
+    <Link Source="@41" Target="(@1 @11 @40 @42)" Category="Contains" FetchingParent="@41" />
+    <Link Source="@41" Target="(@1 @11 @40 Member=Amount)" Category="Contains" FetchingParent="@41" />
+    <Link Source="@41" Target="(@1 @11 @40 Member=Periods)" Category="Contains" FetchingParent="@41" />
+    <Link Source="@43" Target="@47" Category="CodeSchema_Calls" Weight="1" />
+    <Link Source="@45" Target="@21" Category="CodeSchema_Calls" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@46" Target="@44" Category="CodeSchema_Calls" Weight="1" />
+    <Link Source="@47" Target="@21" Category="CodeSchema_Calls" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@48" Target="@49" Category="CodeSchema_Calls" Weight="1" />
+    <Link Source="@50" Target="@31" Category="CodeSchema_ReturnTypeLink" IsSourceVirtualized="True" Weight="1" />
+    <Link Source="@51" Target="@33" Category="CodeSchema_ReturnTypeLink" IsSourceVirtualized="True" Weight="1" />
+    <Link Source="@52" Target="@41" Category="References" IsSourceVirtualized="True" Weight="4" />
+    <Link Source="@53" Target="@39" Category="References" IsSourceVirtualized="True" Weight="4" />
+    <Link Source="@54" Target="@37" Category="References" Bounds="-103.1973769591,-163.63117064426,45.6379217463186,2.49448442888374" IsSourceVirtualized="True" Weight="4" />
+    <Link Source="@55" Target="@29" Category="References" IsSourceVirtualized="True" Weight="4">
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@52" Target="@22" Category="References" IsSourceVirtualized="True" Weight="4">
+    <Link Source="@56" Target="@23" Category="References" IsSourceVirtualized="True" Weight="4">
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@7" Target="@25" Category="Contains" FetchingParent="@7" />
-    <Link Source="@9" Target="@16" Category="Contains" FetchingParent="@9" />
-    <Link Source="@9" Target="@17" Category="Contains" FetchingParent="@9" />
-    <Link Source="@9" Target="@34" Category="Contains" FetchingParent="@9" />
-    <Link Source="@9" Target="@35" Category="Contains" FetchingParent="@9" />
+    <Link Source="@6" Target="@21" Category="Contains" FetchingParent="@6" />
+    <Link Source="@6" Target="@25" Category="Contains" FetchingParent="@6" />
+    <Link Source="@8" Target="@27" Category="Contains" FetchingParent="@8" />
     <Link Source="EarningEvents{213651BD-07BA-4A57-B1BE-CF4A649BA069}" Target="@4" Category="Contains" FetchingParent="EarningEvents{213651BD-07BA-4A57-B1BE-CF4A649BA069}" />
   </Links>
   <Categories>
@@ -213,6 +221,7 @@
     <Property Id="CodeSchemaProperty_IsPublic" Label="Is Public" Description="Flag to indicate the scope is Public" DataType="System.Boolean" />
     <Property Id="CodeSchemaProperty_IsSpecialName" Label="Is Special Name" Description="Flag to indicate the method is treated in a special way by some compilers" DataType="System.Boolean" />
     <Property Id="CodeSchemaProperty_IsStatic" Label="Is Static" Description="Flag to indicate the member is a static member" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsVirtual" Label="Is Virtual" Description="Flag to indicate the method can be overridden" DataType="System.Boolean" />
     <Property Id="CodeSchemaProperty_StrongName" Label="StrongName" Description="StrongName" DataType="System.String" />
     <Property Id="DataVirtualized" Label="Data Virtualized" Description="If true, the graph can contain nodes and links that represent data for virtualized nodes/links (i.e. not actually created in the graph)." DataType="System.Boolean" />
     <Property Id="DefaultAction" Label="DefaultAction" Description="DefaultAction" DataType="System.String" />
@@ -254,54 +263,58 @@
     <Alias n="2" Id="(@1)" />
     <Alias n="3" Uri="Assembly=$(07a36781-d09b-4cf9-8d0b-80bb929fe535.OutputPathUri)" />
     <Alias n="4" Id="(@3)" />
-    <Alias n="5" Id="(@3 Namespace=SFA.DAS.Payments.EarningEvents.Messages.Events)" />
-    <Alias n="6" Id="Namespace=SFA.DAS.Payments.EarningEvents.Messages.Events.Incentives" />
-    <Alias n="7" Id="(@3 @6)" />
-    <Alias n="8" Id="Namespace=SFA.DAS.Payments.EarningEvents.Messages.Events.OnProgramme" />
-    <Alias n="9" Id="(@3 @8)" />
-    <Alias n="10" Id="Namespace=SFA.DAS.Payments.Model.Core" />
-    <Alias n="11" Id="(@1 @10)" />
-    <Alias n="12" Id="Namespace=SFA.DAS.Payments.Model.Core.Incentives" />
-    <Alias n="13" Id="(@1 @12)" />
-    <Alias n="14" Id="Namespace=SFA.DAS.Payments.Model.Core.OnProgramme" />
-    <Alias n="15" Id="(@1 @14)" />
-    <Alias n="16" Id="(@3 @8 Type=ApprenticeshipContractType1EarningEvent)" />
-    <Alias n="17" Id="(@3 @8 Type=ApprenticeshipContractType2EarningEvent)" />
-    <Alias n="18" Id="Type=CalendarPeriod" />
-    <Alias n="19" Id="(@1 @10 @18)" />
-    <Alias n="20" Id="(@3 Namespace=SFA.DAS.Payments.EarningEvents.Messages.Events Type=EarningEvent)" />
-    <Alias n="21" Id="Type=EarningType" />
-    <Alias n="22" Id="(@1 @14 @21)" />
-    <Alias n="23" Id="(@3 Namespace=SFA.DAS.Payments.EarningEvents.Messages.Events Type=IEarningEvent)" />
-    <Alias n="24" Id="Type=IncentiveEarningEvent" />
-    <Alias n="25" Id="(@3 @6 @24)" />
-    <Alias n="26" Id="Type=IncentiveType" />
-    <Alias n="27" Id="(@1 @12 @26)" />
-    <Alias n="28" Id="Type=Learner" />
-    <Alias n="29" Id="(@1 @10 @28)" />
-    <Alias n="30" Id="Type=LearningAim" />
-    <Alias n="31" Id="(@1 @10 @30)" />
-    <Alias n="32" Id="(@1 @10 Type=NamedCalendarPeriod)" />
-    <Alias n="33" Id="Type=OnProgrammeEarningEvent" />
-    <Alias n="34" Id="(@3 @8 @33)" />
-    <Alias n="35" Id="(@3 @8 Type=OnProgrammeEarningPriceEpisode)" />
-    <Alias n="36" Id="Type=PriceEpisode" />
-    <Alias n="37" Id="(@1 @10 @36)" />
-    <Alias n="38" Id="Type=PriceEpisodePeriod" />
-    <Alias n="39" Id="(@1 @10 @38)" />
-    <Alias n="40" Id="Member=.ctor" />
-    <Alias n="41" Id="(@3 @8 Type=ApprenticeshipContractType1EarningEvent @40)" />
-    <Alias n="42" Id="(@1 @10 @18 @40)" />
-    <Alias n="43" Id="(@3 @6 @24 @40)" />
-    <Alias n="44" Id="(@1 @10 Type=NamedCalendarPeriod @40)" />
-    <Alias n="45" Id="(@3 @8 @33 @40)" />
-    <Alias n="46" Id="(@3 @8 Type=OnProgrammeEarningPriceEpisode @40)" />
-    <Alias n="47" Id="(@1 @10 @36 @40)" />
-    <Alias n="48" Id="(@1 @10 @36 Member=Periods)" />
-    <Alias n="49" Id="(@3 @6 @24 Member=PriceEpisodes)" />
-    <Alias n="50" Id="(@3 @8 @33 Member=PriceEpisodes)" />
-    <Alias n="51" Id="(@3 @6 @24 Member=Type)" />
-    <Alias n="52" Id="(@3 @8 Type=OnProgrammeEarningPriceEpisode Member=Type)" />
+    <Alias n="5" Id="Namespace=SFA.DAS.Payments.EarningEvents.Messages.Events" />
+    <Alias n="6" Id="(@3 @5)" />
+    <Alias n="7" Id="Namespace=SFA.DAS.Payments.EarningEvents.Messages.Events.Incentives" />
+    <Alias n="8" Id="(@3 @7)" />
+    <Alias n="9" Id="Namespace=SFA.DAS.Payments.EarningEvents.Messages.Events.OnProgramme" />
+    <Alias n="10" Id="(@3 @9)" />
+    <Alias n="11" Id="Namespace=SFA.DAS.Payments.Model.Core" />
+    <Alias n="12" Id="(@1 @11)" />
+    <Alias n="13" Id="Namespace=SFA.DAS.Payments.Model.Core.Incentives" />
+    <Alias n="14" Id="(@1 @13)" />
+    <Alias n="15" Id="Namespace=SFA.DAS.Payments.Model.Core.OnProgramme" />
+    <Alias n="16" Id="(@1 @15)" />
+    <Alias n="17" Id="(@3 @9 Type=ApprenticeshipContractType1EarningEvent)" />
+    <Alias n="18" Id="(@3 @9 Type=ApprenticeshipContractType2EarningEvent)" />
+    <Alias n="19" Id="Type=CalendarPeriod" />
+    <Alias n="20" Id="(@1 @11 @19)" />
+    <Alias n="21" Id="(@3 @5 Type=EarningEvent)" />
+    <Alias n="22" Id="Type=EarningType" />
+    <Alias n="23" Id="(@1 @15 @22)" />
+    <Alias n="24" Id="Type=IEarningEvent" />
+    <Alias n="25" Id="(@3 @5 @24)" />
+    <Alias n="26" Id="Type=IncentiveEarningEvent" />
+    <Alias n="27" Id="(@3 @7 @26)" />
+    <Alias n="28" Id="Type=IncentiveType" />
+    <Alias n="29" Id="(@1 @13 @28)" />
+    <Alias n="30" Id="Type=Learner" />
+    <Alias n="31" Id="(@1 @11 @30)" />
+    <Alias n="32" Id="Type=LearningAim" />
+    <Alias n="33" Id="(@1 @11 @32)" />
+    <Alias n="34" Id="(@1 @11 Type=NamedCalendarPeriod)" />
+    <Alias n="35" Id="Type=OnProgrammeEarningEvent" />
+    <Alias n="36" Id="(@3 @9 @35)" />
+    <Alias n="37" Id="(@3 @9 Type=OnProgrammeEarningPriceEpisode)" />
+    <Alias n="38" Id="Type=PriceEpisode" />
+    <Alias n="39" Id="(@1 @11 @38)" />
+    <Alias n="40" Id="Type=PriceEpisodePeriod" />
+    <Alias n="41" Id="(@1 @11 @40)" />
+    <Alias n="42" Id="Member=.ctor" />
+    <Alias n="43" Id="(@3 @9 Type=ApprenticeshipContractType1EarningEvent @42)" />
+    <Alias n="44" Id="(@1 @11 @19 @42)" />
+    <Alias n="45" Id="(@3 @7 @26 @42)" />
+    <Alias n="46" Id="(@1 @11 Type=NamedCalendarPeriod @42)" />
+    <Alias n="47" Id="(@3 @9 @35 @42)" />
+    <Alias n="48" Id="(@3 @9 Type=OnProgrammeEarningPriceEpisode @42)" />
+    <Alias n="49" Id="(@1 @11 @38 @42)" />
+    <Alias n="50" Id="(@3 @5 @24 Member=Learner)" />
+    <Alias n="51" Id="(@3 @5 @24 Member=LearningAim)" />
+    <Alias n="52" Id="(@1 @11 @38 Member=Periods)" />
+    <Alias n="53" Id="(@3 @7 @26 Member=PriceEpisodes)" />
+    <Alias n="54" Id="(@3 @9 @35 Member=PriceEpisodes)" />
+    <Alias n="55" Id="(@3 @7 @26 Member=Type)" />
+    <Alias n="56" Id="(@3 @9 Type=OnProgrammeEarningPriceEpisode Member=Type)" />
   </IdentifierAliases>
   <Styles>
     <Style TargetType="Node" GroupLabel="Results" ValueLabel="True">

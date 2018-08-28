@@ -5,8 +5,8 @@ using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.EarningEvents.Messages.Events.OnProgramme;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
@@ -46,38 +46,56 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                     Reference = "Ref-1234",
                     StandardCode = 1
                 },
-                PriceEpisodes = new List<OnProgrammeEarningPriceEpisode>
+                PriceEpisodes = new List<PriceEpisode>
                 {
-                    new OnProgrammeEarningPriceEpisode
+                    new PriceEpisode
                     {
-                        Type = EarningType.Learning,
                         StartDate = DateTime.Now.AddMonths(-6),
-                        EndDate = DateTime.Now.AddMonths(6),
+                        EndDate = DateTime.Now.AddMonths(-3),
                         AgreedPrice = 15000,
                         Identifier = "p-1",
-                        Periods = new List<PriceEpisodePeriod>
-                        {
-                            new PriceEpisodePeriod
-                            {
-                                Amount = 1000,
-                                Periods = new List<byte> {1,2,3,4,5,6,7,8,9,10,11,12}
-                            }
-                        }
                     },
-                    new OnProgrammeEarningPriceEpisode
+                    new PriceEpisode
                     {
-                        Type = EarningType.Completion,
-                        StartDate = DateTime.Now.AddMonths(-6),
+
+                        StartDate = DateTime.Now.AddMonths(-3),
                         EndDate = DateTime.Now.AddMonths(6),
                         AgreedPrice = 15000,
                         Identifier = "p-1",
-                        Periods = new List<PriceEpisodePeriod>
+                    }
+                },
+                EarningYear = (short)DateTime.Today.Year,
+                SfaContributionPercentage = 0.9M,
+                IncentiveEarnings = new List<IncentiveEarning>
+                {
+                    new IncentiveEarning
+                    {
+                        Type = IncentiveType.LearningSupport,
+                        Periods = new List<EarningPeriod>
                         {
-                            new PriceEpisodePeriod
-                            {
-                                Amount = 3000,
-                                Periods = new List<byte> {13}
-                            }
+                            new EarningPeriod {Amount = 500, Period = 1}
+                        }
+                    }
+                },
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
+                {
+                    new OnProgrammeEarning
+                    {
+                        Type = OnProgrammeEarningType.Learning,
+                        Periods = new List<EarningPeriod>
+                        {
+                            new EarningPeriod{Amount = 1000, Period = 1},
+                            new EarningPeriod{Amount = 1000, Period =21},
+                            new EarningPeriod{Amount = 1000, Period = 3},
+                            new EarningPeriod{Amount = 1000, Period = 4},
+                            new EarningPeriod{Amount = 1000, Period = 5},
+                            new EarningPeriod{Amount = 1000, Period = 6},
+                            new EarningPeriod{Amount = 1000, Period = 7},
+                            new EarningPeriod{Amount = 1000, Period = 8},
+                            new EarningPeriod{Amount = 1000, Period = 9},
+                            new EarningPeriod{Amount = 1000, Period = 10},
+                            new EarningPeriod{Amount = 1000, Period = 11},
+                            new EarningPeriod{Amount = 1000, Period = 12},
                         }
                     }
                 }

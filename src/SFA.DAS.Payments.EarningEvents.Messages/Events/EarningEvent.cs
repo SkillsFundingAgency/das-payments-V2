@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
+    /// <summary>
+    /// Base earning event
+    /// </summary>
+    /// <seealso cref="SFA.DAS.Payments.EarningEvents.Messages.Events.IEarningEvent" />
     public abstract class EarningEvent : IEarningEvent
     {
         public string JobId { get; set; }
@@ -11,5 +16,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
         public short EarningYear { get; set; }
+        public IReadOnlyCollection<PriceEpisode> PriceEpisodes { get; set; }
     }
 }
