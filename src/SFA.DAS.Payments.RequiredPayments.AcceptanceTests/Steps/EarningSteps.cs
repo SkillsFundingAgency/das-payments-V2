@@ -30,6 +30,20 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             scenarioContext[$"ContractType{contractType}OnProgrammeEarnings"] = contractTypeEarnings;
         }
 
+        [Given(@"the following contract type (.*) on programme earnings for period (.*) are provided in the latest ILR for the academic year (.*):")]
+        public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriod(short contractType, short period, string academicYear, Table table)
+        {
+            var rawEarnings = table.CreateSet<OnProgrammeEarning>();
+
+            if (scenarioContext[$"ContractType{contractType}OnProgrammeEarnings"] != null)
+            {
+                var currentEarnings = scenarioContext[$"ContractType{contractType}OnProgrammeEarnings"] as ContractTypeEarnings;
+
+                currentEarnings?.AddOnProgrammeEarnings(period, rawEarnings);
+            }
+        }
+
+
         [Given(@"the following contract type (.*) incentive earnings for periods (.*)-(.*) are provided in the latest ILR for the academic year (.*):")]
         public void GivenTheFollowingContractTypeIncentiveEarningsForPeriods(short contractType, short fromPeriod, short toPeriod, string academicYear, Table table)
         {

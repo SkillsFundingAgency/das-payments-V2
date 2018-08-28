@@ -302,6 +302,26 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table8.AddRow(new string[] {
+                        "learnref3",
+                        "10000",
+                        "p1",
+                        "1",
+                        "10000",
+                        string.Format("{0}", transaction_Type),
+                        string.Format("{0}", amount)});
+#line 68
+ testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
+                    "rnings:", ((string)(null)), table8, "Then ");
+#line hidden
+            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                        "LearnRefNumber",
+                        "Ukprn",
+                        "PriceEpisodeIdentifier",
+                        "Period",
+                        "ULN",
+                        "TransactionType",
+                        "Amount"});
+            table9.AddRow(new string[] {
                         "learnref8",
                         "10000",
                         "p2",
@@ -309,7 +329,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-            table8.AddRow(new string[] {
+            table9.AddRow(new string[] {
                         "learnref8",
                         "10000",
                         "p2",
@@ -317,9 +337,9 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 68
+#line 71
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
-                    "rnings:", ((string)(null)), table8, "Then ");
+                    "rnings:", ((string)(null)), table9, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

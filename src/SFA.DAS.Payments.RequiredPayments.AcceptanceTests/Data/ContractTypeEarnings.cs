@@ -28,7 +28,14 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data
             IncentiveEarnings = rawEarnings.ToList();
         }
 
-        public short ToPeriod { get;  }
+        public void AddOnProgrammeEarnings(short period, IEnumerable<OnProgrammeEarning> earning)
+        {
+            ToPeriod = period;
+
+            OnProgrammeEarnings.AddRange(earning);
+        }
+
+        public short ToPeriod { get; private set; }
 
         public short FromPeriod { get;  }
 
@@ -36,7 +43,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data
 
         public string AcademicYear { get; }
 
-        public List<OnProgrammeEarning> OnProgrammeEarnings { get; } 
+        public List<OnProgrammeEarning> OnProgrammeEarnings { get; private set; } 
 
         public List<IncentiveEarning> IncentiveEarnings { get; }
     }

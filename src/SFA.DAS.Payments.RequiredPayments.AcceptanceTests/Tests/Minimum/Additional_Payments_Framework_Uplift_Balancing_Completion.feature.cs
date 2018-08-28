@@ -148,8 +148,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "1800",
                         "1440"});
 #line 23
- testRunner.And("the following contract type 2 on programme earnings for periods 12 are provided i" +
-                    "n the latest ILR for the academic year 1718:", ((string)(null)), table4, "And ");
+ testRunner.And("the following contract type 2 on programme earnings for period 12 are provided in" +
+                    " the latest ILR for the academic year 1718:", ((string)(null)), table4, "And ");
 #line hidden
         }
         
