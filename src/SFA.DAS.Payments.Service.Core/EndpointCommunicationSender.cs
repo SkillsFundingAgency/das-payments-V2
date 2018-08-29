@@ -5,23 +5,20 @@ using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
-    public class EndpointCommunicationSender<T> : EndpointCommunicationBase<T>, IEndpointCommunicationSender<T> where T : IPaymentsMessage
+    public class EndpointCommunicationSender : EndpointCommunicationBase, IEndpointCommunicationSender
     {
-        private readonly string _destinationEndpointName;
-
-        public EndpointCommunicationSender(string endpointName, string storageConnectionString, string destinationEndpointName, ILifetimeScope lifetimeScope) 
+        public EndpointCommunicationSender(string endpointName, string storageConnectionString, ILifetimeScope lifetimeScope) 
             : base(endpointName, storageConnectionString, lifetimeScope)
         {
-            _destinationEndpointName = destinationEndpointName;
         }
 
         protected override void OnConfigure(EndpointConfiguration configuration, TransportExtensions<AzureStorageQueueTransport> transport)
         {
-            transport.Routing().RouteToEndpoint(typeof(T).Assembly, _destinationEndpointName);
+            //transport.Routing().RouteToEndpoint(typeof(T).Assembly, _destinationEndpointName);
             configuration.SendOnly();
         }
 
-        public async Task Send(T message)
+        public async Task Send<T>(T message) where T : IPaymentsMessage
         {
             if (EndpointInstance == null)
                 await StartEndpoint().ConfigureAwait(false);

@@ -7,5 +7,16 @@
   <Section Name="RequiredPaymentsServiceActorServiceReplicatorSecurityConfig">
     <Parameter Name="CredentialType" Value="None" />
   </Section>
+  <Section Name="RequiredPaymentsServiceConfig">
+    <Parameter Name="CredentialType" Value="None" />
+  </Section>
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+  </Section>
+  <Section Name="Settings">
+    <Parameter Name="EndpointName" Value="sfa-das-payments-requiredpaymentsservice" />
+  </Section>
   <!-- The content will be generated during build -->
 </Settings>

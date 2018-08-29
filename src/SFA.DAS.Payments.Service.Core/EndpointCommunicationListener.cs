@@ -1,12 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Application.Infrastructure.Messaging;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
-    public class EndpointCommunicationListener<T> : EndpointCommunicationBase<T>, IEndpointCommunicationListener<T>
-        where T : IPaymentsMessage
+    public class EndpointCommunicationListener: EndpointCommunicationBase, IEndpointCommunicationListener
     {
         public EndpointCommunicationListener(string endpointName, string storageConnectionString, ILifetimeScope lifetimeScope) 
             : base(endpointName, storageConnectionString, lifetimeScope)
@@ -18,22 +17,6 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             await StartEndpoint();
             return EndpointName;
         }
-
-        //public async Task RunAsync()
-        //{
-        //    try
-        //    {
-        //        // TODO: do stuff
-
-        //        //EndpointInstance = await Endpoint.Start(_endpointConfiguration)
-        //        //    .ConfigureAwait(false);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Trace.TraceError($"Error starting endpoint. Error: {ex.Message}. Ex: {ex}");
-        //        throw;
-        //    }
-        //}
 
         public Task CloseAsync(CancellationToken cancellationToken)
         {

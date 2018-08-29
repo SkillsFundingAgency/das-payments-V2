@@ -10,7 +10,7 @@
             <ReplicatorConfigSection Name="RequiredPaymentsServiceActorServiceReplicatorConfig" />
             <ReplicatorSecurityConfigSection Name="RequiredPaymentsServiceActorServiceReplicatorSecurityConfig" />
             <StoreConfigSection Name="RequiredPaymentsServiceActorServiceLocalStoreConfig" />
-            <ServiceEndpointV2 Name="RequiredPaymentsServiceActorServiceEndpointV2" />
+            <ServiceEndpointV2_1 Name="RequiredPaymentsServiceActorServiceEndpointV2_1" />
           </GeneratedNames>
         </Extension>
       </Extensions>
@@ -28,6 +28,7 @@
     <Endpoints>
       <Endpoint Name="RequiredPaymentsServiceActorServiceEndpointV2" />
       <Endpoint Name="RequiredPaymentsServiceActorServiceReplicatorEndpoint" />
+      <Endpoint Name="RequiredPaymentsServiceActorServiceEndpointV2_1" />
     </Endpoints>
   </Resources>
   <!-- The content will be generated during build -->

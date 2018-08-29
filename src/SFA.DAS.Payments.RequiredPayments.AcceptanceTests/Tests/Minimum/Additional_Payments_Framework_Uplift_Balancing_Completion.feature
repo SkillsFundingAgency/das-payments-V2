@@ -1,7 +1,7 @@
 ﻿#New name - Additional_Payments_Framework_Uplift_Balancing_Completion
 #Old name - AdditionalPayments_581-AC01
 
-Feature: Additional payments
+Feature: Additional payments framework uplift balancing completion
 		581-AC01-Non DAS learner finishes early, price equals the funding band maximum, earns balancing and completion framework uplift payments. Assumes 15 month apprenticeship and learner completes after 12 months.
 
 Background:

@@ -3,11 +3,10 @@ using System.Threading.Tasks;
 using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
-using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
-    public abstract class EndpointCommunicationBase<T> : IDisposable where T : IPaymentsMessage
+    public abstract class EndpointCommunicationBase : IDisposable
     {
         protected IEndpointInstance EndpointInstance { get; private set; }
         protected string EndpointName { get; }
@@ -27,26 +26,27 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             var endpointConfiguration = new EndpointConfiguration(EndpointName);
 
             var conventions = endpointConfiguration.Conventions();
-            conventions.DefiningCommandsAs(type => typeof(T).IsAssignableFrom(type));
-            //conventions.DefiningEventsAs(type => typeof(T).IsAssignableFrom(type));
+            conventions.DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
+            conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Commands") ?? false));
+            conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Events") ?? false));
 
             var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
             persistence.ConnectionString(_storageConnectionString);
 
             endpointConfiguration.DisableFeature<TimeoutManager>();
             endpointConfiguration.DisableFeature<MessageDrivenSubscriptions>();
-            
+
             var transport = endpointConfiguration.UseTransport<AzureStorageQueueTransport>();
             transport.ConnectionString(_storageConnectionString);
             transport.BatchSize(1);
             transport.DegreeOfReceiveParallelism(1);
-            
+
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.EnableInstallers();
             endpointConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(_lifetimeScope));
 
             OnConfigure(endpointConfiguration, transport);
-            
+
             EndpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
         }
 

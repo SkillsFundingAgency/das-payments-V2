@@ -1,7 +1,7 @@
 ﻿#New name - small_employers_fully_funded_Additional_Payments_EEF4_Completion
 #Old name - small_employers - AC3
 
-Feature: Small_Employers 
+Feature: Small Employers fully funded additional payments EEF4 completion
 		 AC3- 1 learner aged 19-24, non-DAS, is a care leaver, In paid employment with a small employer at start, is fully funded for on programme and completion payments
 #Note: care leavers are flagged on the ILR through EEF code = 4*
 #Given the apprenticeship funding band maximum is 9000

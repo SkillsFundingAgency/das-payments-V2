@@ -18,8 +18,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.3.2.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Additional payments")]
-    public partial class AdditionalPaymentsFeature
+    [NUnit.Framework.DescriptionAttribute("Additional payments english planned date exceeds programme aim end date")]
+    public partial class AdditionalPaymentsEnglishPlannedDateExceedsProgrammeAimEndDateFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Additional payments", "\t\t638-AC01 Non-DAS learner, takes an English qualification that has a planned end" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Additional payments english planned date exceeds programme aim end date", "\t\t638-AC01 Non-DAS learner, takes an English qualification that has a planned end" +
                     " date that exceeds the actual end date of the programme aim", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }

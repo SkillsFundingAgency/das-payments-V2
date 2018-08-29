@@ -1,6 +1,6 @@
 ﻿#Additional_Payments_16_to_18_Framework_Uplift_Completion
 #Old name - Additional_Payments - AC3
-Feature: Additional payments 
+Feature: Additional payments 16 to 18 framework uplift completion
 	AC3-Learner finishes on time, earns on-programme and completion payments. 
 	#Original description is with Payments V1 team to review as implementation is different.
 	#AC3-Learner finishes on time, earns on-programme and completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.

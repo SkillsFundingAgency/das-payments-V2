@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.ServiceFabric.Data;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.RequiredPayments.Application.Data;
@@ -20,7 +21,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application.Repositories
         private IPaymentHistoryRepository _repository;
         private Mock<IRepositoryCache<IEnumerable<PaymentEntity>>> _cacheMock;
         private Mock<DbSet<PaymentEntity>> _paymentSetMock;
-        private Mock<DedsContext> _dedsContextMock;
+        private Mock<RequiredPaymentsDataContext> _dedsContextMock;
         private List<PaymentEntity> _paymentEntities;
 
         [OneTimeSetUp]
@@ -33,7 +34,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application.Repositories
         public void FixtureSetUp()
         {
             _cacheMock = new Mock<IRepositoryCache<IEnumerable<PaymentEntity>>>(MockBehavior.Strict);
-            _dedsContextMock = new Mock<DedsContext>(MockBehavior.Loose);
+            _dedsContextMock = new Mock<RequiredPaymentsDataContext>(MockBehavior.Loose);
 
             _paymentEntities = new List<PaymentEntity>();
             _paymentSetMock = new Mock<DbSet<PaymentEntity>>(MockBehavior.Loose);
@@ -42,7 +43,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application.Repositories
             _paymentSetMock.As<IQueryable<PaymentEntity>>().Setup(m => m.ElementType).Returns(_paymentEntities.AsQueryable().ElementType);
             _paymentSetMock.As<IQueryable<PaymentEntity>>().Setup(m => m.GetEnumerator()).Returns(_paymentEntities.GetEnumerator());
 
-            _paymentSetMock.As<IAsyncEnumerable<PaymentEntity>>().Setup(m => m.GetEnumerator()).Returns(_paymentEntities.ToAsyncEnumerable().GetEnumerator);
+            _paymentSetMock.As<System.Collections.Generic.IAsyncEnumerable<PaymentEntity>>().Setup(m => m.GetEnumerator()).Returns(_paymentEntities.ToAsyncEnumerable().GetEnumerator);
         }
 
         [TearDown]
@@ -63,7 +64,9 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application.Repositories
             _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
 
             _dedsContextMock.Setup(c => c.PaymentHistory).Returns(_paymentSetMock.Object).Verifiable();
-            _cacheMock.Setup(c => c.TryGet(apprenticeshipKey, default(CancellationToken))).ReturnsAsync(new ConditionalValue<IEnumerable<PaymentEntity>>(false, null)).Verifiable();
+            _cacheMock.Setup(c => c.TryGet(apprenticeshipKey, default(CancellationToken)))
+                .ReturnsAsync(new RequiredPayments.Application.Repositories.ConditionalValue<IEnumerable<PaymentEntity>>(false, null))
+                .Verifiable();
             _cacheMock.Setup(c => c.Add(apprenticeshipKey, It.IsAny<IEnumerable<PaymentEntity>>(), default(CancellationToken))).Returns(Task.FromResult(false)).Verifiable();
 
             _repository = new PaymentHistoryRepository(_dedsContextMock.Object, _cacheMock.Object);
@@ -87,7 +90,7 @@ namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application.Repositories
             _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
             _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
 
-            _cacheMock.Setup(c => c.TryGet(apprenticeshipKey, default(CancellationToken))).ReturnsAsync(new ConditionalValue<IEnumerable<PaymentEntity>>(true, _paymentEntities)).Verifiable();
+            _cacheMock.Setup(c => c.TryGet(apprenticeshipKey, default(CancellationToken))).ReturnsAsync(new RequiredPayments.Application.Repositories.ConditionalValue<IEnumerable<PaymentEntity>>(true, _paymentEntities)).Verifiable();
 
             _repository = new PaymentHistoryRepository(_dedsContextMock.Object, _cacheMock.Object);
 

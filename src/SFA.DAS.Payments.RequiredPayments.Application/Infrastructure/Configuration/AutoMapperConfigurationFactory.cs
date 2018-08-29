@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Entities;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
@@ -12,6 +8,7 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration
 {
+    //TODO: should use automapper profiles instead
     public class AutoMapperConfigurationFactory
     {
         public static MapperConfiguration CreateMappingConfig()
@@ -26,6 +23,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 cfg.CreateMap<PaymentDue, CalculatedPaymentDueEvent>()
                     .ForMember(dst => dst.PaymentDueEntity, opt => opt.Ignore())
                     .ForMember(dst => dst.EventTime, opt => opt.Ignore())
+                    .ForMember(dest =>dest.JobId, opt => opt.Ignore())
                     .AfterMap((src, dst) =>
                     {
                         dst.PaymentDueEntity = new PaymentDueEntity();

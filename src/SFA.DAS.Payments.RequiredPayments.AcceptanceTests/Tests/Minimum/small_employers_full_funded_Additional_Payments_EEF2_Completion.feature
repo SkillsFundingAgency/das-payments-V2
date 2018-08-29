@@ -1,7 +1,7 @@
 ﻿#New name - small_employers_full_funded_Additional_Payments_EEF2_Completion
 #Old name - small_employers - AC2
 
-Feature: Small_Employers 
+Feature: Small_Employers fully funded additional payments EEF2 completion
 		 AC2- 1 learner aged 19-24, non-DAS, with an Education Health Care (EHC) plan, In paid employment with a small employer at start, is fully funded for on programme and completion payments
 #Note: EHC plans are flagged on the ILR through Eligibility for Enhanced Funding (EEF) code = 2*
 #Given the apprenticeship funding band maximum is 9000
