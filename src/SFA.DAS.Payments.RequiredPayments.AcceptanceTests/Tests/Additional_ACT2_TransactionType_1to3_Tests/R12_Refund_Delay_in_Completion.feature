@@ -23,6 +23,7 @@ Background:
 @Changed_Planned_End_Date
 @multiple_price_episodes
 @refund
+@review
 
 Scenario Outline: Contract Type 2 On programme payments before change in planned end date
 

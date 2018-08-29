@@ -1,4 +1,5 @@
 ﻿Feature: TNP is higher than the maximum funding band, continuing
+#Reduced on program funding as per band maximum - 600 instead of 1000
 
 Background:
 	Given the current processing period is 3

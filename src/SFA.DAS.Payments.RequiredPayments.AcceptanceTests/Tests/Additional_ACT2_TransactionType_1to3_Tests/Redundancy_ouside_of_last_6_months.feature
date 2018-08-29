@@ -1,7 +1,9 @@
 ﻿Feature: 807_AC2- Non-DAS learner, is made redundant outside of the last 6 months of planned learning - receives full government funding for the next 12 weeks only 
+#Learner made redudundant after 6 months, receives funding for next 3 months and then no further funding 
+#Further test scenarios needs adding for boundary cases
 
 Background:
-	Given the current processing period is 12
+	Given the current processing period is 10
 
 	And the following learners:
 	| LearnRefNumber | Ukprn | ULN   |

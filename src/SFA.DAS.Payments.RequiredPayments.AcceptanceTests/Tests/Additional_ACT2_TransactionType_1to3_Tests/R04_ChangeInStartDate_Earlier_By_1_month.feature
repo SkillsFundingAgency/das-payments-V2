@@ -1,5 +1,7 @@
 ﻿#In-progress - Check if this is a valid scenarion and review the scenario
-Feature: R04 - Start date changed to previous month, end date brought forward
+Feature: R04 - No change in duration but start and end months changed after few months
+#Start date changed to original start date - 1, end date month also changed to original planned month - 1
+
 
 Background:
 	Given the current processing period is 4
@@ -34,8 +36,8 @@ Scenario Outline: Contract Type 2 On programme payments
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1       | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1       | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
-	| learnref1       | 10000 | p1                     | 3      | 10000 | <transaction_type> | -<amount> |
-	| learnref1       | 10000 | p1                     | 4      | 10000 | <transaction_type> | -<amount> |
+	| learnref1       | 10000 | p1                     | 1      | 10000 | <transaction_type> | -<amount> |
+	| learnref1       | 10000 | p1                     | 2      | 10000 | <transaction_type> | -<amount> |
 	| learnref1       | 10000 | p2                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1       | 10000 | p2                     | 2      | 10000 | <transaction_type> | <amount> |
 	| learnref1       | 10000 | p2                     | 3      | 10000 | <transaction_type> | <amount> |

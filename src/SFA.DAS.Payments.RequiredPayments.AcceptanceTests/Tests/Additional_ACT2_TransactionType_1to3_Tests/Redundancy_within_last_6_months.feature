@@ -1,5 +1,5 @@
 ﻿Feature: 807_AC1- Non-DAS learner, is made redundant within the last 6 months of planned learning - receives full government funding for the rest of the programme 
-#Will they get the completion payment?
+#What will be the learner status after 12 months
 
 Background:
 	Given the current processing period is 12

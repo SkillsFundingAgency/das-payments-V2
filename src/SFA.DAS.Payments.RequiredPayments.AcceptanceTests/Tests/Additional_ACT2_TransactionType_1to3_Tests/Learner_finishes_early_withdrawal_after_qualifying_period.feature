@@ -1,4 +1,5 @@
 ﻿Feature: A non-DAS learner, learner withdraws after qualifying period
+#Learner withdraws after 4 months so there will be no payments earned after 4 months
 
 Background:
 	Given the current processing period is 6
@@ -18,9 +19,7 @@ Background:
 @Non-DAS
 @Learner_finishes_early
 @Withdrawal
-@query
 @minimum_additional
-#what is the qualified period for withdrawal, will we not pay anything if they withdraw earlier
 
 Scenario Outline: Contract Type 2 On programme payments
 

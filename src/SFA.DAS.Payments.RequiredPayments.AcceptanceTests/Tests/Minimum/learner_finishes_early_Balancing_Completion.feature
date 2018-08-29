@@ -7,7 +7,7 @@ Feature: Provider earnings and payments where learner completes earlier than pla
 
 Background:
 
-	Given the current processing period is 12
+	Given the current processing period is 13
 	#Given the apprenticeship funding band maximum for each learner is 20000
 
 	And the following learners:
@@ -18,13 +18,13 @@ Background:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 01/09/2017        | 08/12/2018             | 08/09/2018            | Completed       |
 
-	And the following contract type 2 on programme earnings for periods 1-11 are provided in the latest ILR for the academic year 1718:
+	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
 	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
 	| p1                     | 01/09/2017       | 01/09/2017                   | 18750                | 1000       |
 
-	And the following contract type 2 on programme earnings for period 12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 | Completion_2 | Balancing_3 |
-	| p1                     | 01/09/2017       | 01/09/2017                   | 18750                | 1000       | 3750         | 3000        |
+	And the following contract type 2 on programme earnings for period 13 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Completion_2 | Balancing_3 |
+	| p1                     | 01/09/2017       | 01/09/2017                   | 18750                | 3750         | 3000        |
 
 	
 @Non-DAS
@@ -47,6 +47,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
 
 	When a TOBY is received
 
@@ -75,7 +76,7 @@ Scenario Outline: Contract Type 2 completion payment
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 12      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 13      | 10000 | <transaction_type> | <amount> |
 	
 	Examples: 
 	| transaction_type | amount |
@@ -88,7 +89,7 @@ Scenario Outline: Contract Type 2 balancing payment
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 12      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 13      | 10000 | <transaction_type> | <amount> |
 
 	Examples: 
 	| transaction_type | amount |

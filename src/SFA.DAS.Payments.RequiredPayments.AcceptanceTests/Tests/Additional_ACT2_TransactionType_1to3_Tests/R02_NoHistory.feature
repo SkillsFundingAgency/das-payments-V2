@@ -1,4 +1,4 @@
-﻿Feature: R02 - First payment
+﻿Feature: R02 - First payment including previous month
 
 Background:
 	Given the current processing period is 2

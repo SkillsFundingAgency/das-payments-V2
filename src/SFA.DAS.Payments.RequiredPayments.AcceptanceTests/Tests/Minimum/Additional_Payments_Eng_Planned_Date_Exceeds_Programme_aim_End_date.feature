@@ -19,13 +19,13 @@ Background:
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 08/08/2018             | 08/08/2018            | Completed       |
 	| 2            |               |               |             | 471          | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 06/10/2018             | 06/10/2018            | Completed       |
 
-	And the following contract type 2 on programme earnings for periods 1-11 are provided in the latest ILR for the academic year 1718:
+	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
 	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
 	| p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 1000       |
 
-	And the following contract type 2 on programme earnings for period 12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 | Completion_2 |
-	| p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 1000       | 3000         |
+	And the following contract type 2 on programme earnings for period 13 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Completion_2 |
+	| p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 3000         |
 
 @Non-DAS
 @minimum_tests
@@ -76,13 +76,13 @@ Scenario Outline: Contract Type 2 completion payment
 
 	And the following historical contract type 2 completion payment exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 12      | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 13      | 10000 | <transaction_type> | <amount> |
 
 	When a TOBY is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
+	| learnref1      | 10000 | p1                     | 13     | 10000 | <transaction_type> | <amount> |
 	
 	Examples: 
 	| transaction_type | amount |
