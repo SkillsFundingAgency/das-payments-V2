@@ -10,7 +10,7 @@ using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
 {
-    public class LoggerModule : Module
+    public class LoggingModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -50,6 +50,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 .As<IApplicationLoggerSettings>()
                 .SingleInstance();
             builder.RegisterType<ExecutionContext>().As<IExecutionContext>().InstancePerLifetimeScope();
+            builder.RegisterType<ExecutionContextFactory>().As<IExecutionContextFactory>().InstancePerLifetimeScope();
             builder.RegisterType<SerilogLoggerFactory>().As<ISerilogLoggerFactory>().InstancePerLifetimeScope();
             builder.RegisterType<PaymentLogger>().As<IPaymentLogger>().InstancePerLifetimeScope();
         }

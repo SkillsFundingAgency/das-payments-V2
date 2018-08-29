@@ -11,7 +11,7 @@
     <RootNamespace>SFA.DAS.Payments.RequiredPayments.AcceptanceTests</RootNamespace>
     <AssemblyName>SFA.DAS.Payments.RequiredPayments.AcceptanceTests</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <FileAlignment>512</FileAlignment> 
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -279,10 +279,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ContractTypeChangesFromAct1ToAct2.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct11.feature.cs">
+    <Compile Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ContractTypeChangesFromAct2ToAct1.feature</DependentUpon>
+      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Minimum\learner_finishes_early_Balancing_Completion.feature.cs">
       <AutoGen>True</AutoGen>
@@ -298,11 +298,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\RequiredPaymentsIntegrationTest.cs" />
   </ItemGroup>
@@ -433,6 +428,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>
       <Name>SFA.DAS.Payments.Messages.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
+      <Project>{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}</Project>
+      <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

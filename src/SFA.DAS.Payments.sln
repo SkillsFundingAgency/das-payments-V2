@@ -35,8 +35,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService", "SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.csproj", "{B6569426-98BA-4BC0-8CD3-737E8316486F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.UnitTests", "SFA.DAS.Payments.RequiredPayments.UnitTests\SFA.DAS.Payments.RequiredPayments.UnitTests.csproj", "{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPayments.AcceptanceTests", "SFA.DAS.Payments.RequiredPayments.AcceptanceTests\SFA.DAS.Payments.RequiredPayments.AcceptanceTests.csproj", "{F3DE46FC-6184-42CA-9C84-DA08ED4FFB4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.Domain.UnitTests", "SFA.DAS.Payments.RequiredPayments.Domain.UnitTests\SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.csproj", "{F5E5076C-689A-4D3D-B5CB-585E7DC514BE}"
@@ -45,7 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProviderPayments", "ProviderPayments", "{CE13B0C9-B716-4E9A-9563-95DAD13BD5DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Application", "SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj", "{23551CD8-7554-4F2C-9B42-A67B9E0C261D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Application", "SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj", "{23551CD8-7554-4F2C-9B42-A67B9E0C261D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Model.Core", "SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj", "{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,14 +153,6 @@ Global
 		{B6569426-98BA-4BC0-8CD3-737E8316486F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6569426-98BA-4BC0-8CD3-737E8316486F}.Release|x64.ActiveCfg = Release|Any CPU
 		{B6569426-98BA-4BC0-8CD3-737E8316486F}.Release|x64.Build.0 = Release|Any CPU
-		{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104}.Debug|x64.Build.0 = Debug|Any CPU
-		{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104}.Release|Any CPU.Build.0 = Release|Any CPU
-		{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104}.Release|x64.ActiveCfg = Release|Any CPU
-		{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104}.Release|x64.Build.0 = Release|Any CPU
 		{F3DE46FC-6184-42CA-9C84-DA08ED4FFB4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F3DE46FC-6184-42CA-9C84-DA08ED4FFB4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3DE46FC-6184-42CA-9C84-DA08ED4FFB4C}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -193,6 +185,14 @@ Global
 		{23551CD8-7554-4F2C-9B42-A67B9E0C261D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{23551CD8-7554-4F2C-9B42-A67B9E0C261D}.Release|x64.ActiveCfg = Release|Any CPU
 		{23551CD8-7554-4F2C-9B42-A67B9E0C261D}.Release|x64.Build.0 = Release|Any CPU
+		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|x64.Build.0 = Debug|Any CPU
+		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Release|x64.ActiveCfg = Release|Any CPU
+		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -208,7 +208,6 @@ Global
 		{B390568E-DAFF-4ED3-99B6-3914491D4F54} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{061DB3B8-47DC-4F5E-9B0C-5370D13A3362} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{B6569426-98BA-4BC0-8CD3-737E8316486F} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
-		{414365CA-E6B7-42C0-8B5B-1ED0CA0A7104} = {FCAA3F86-D2C1-43B7-A048-5FE388E4AAA0}
 		{F3DE46FC-6184-42CA-9C84-DA08ED4FFB4C} = {FCAA3F86-D2C1-43B7-A048-5FE388E4AAA0}
 		{F5E5076C-689A-4D3D-B5CB-585E7DC514BE} = {FCAA3F86-D2C1-43B7-A048-5FE388E4AAA0}
 		{A17B6FE2-0A12-46C9-B9DB-866D68557D8D} = {FCAA3F86-D2C1-43B7-A048-5FE388E4AAA0}
