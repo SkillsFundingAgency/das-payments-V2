@@ -67,11 +67,15 @@
     <Compile Include="Data\Learner.cs" />
     <Compile Include="Data\LearnerIdentifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Steps\LearnerSteps.cs" />
+    <Compile Include="LearnerSteps.cs" />
+    <Compile Include="ProcessingPeriodSteps.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Steps\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

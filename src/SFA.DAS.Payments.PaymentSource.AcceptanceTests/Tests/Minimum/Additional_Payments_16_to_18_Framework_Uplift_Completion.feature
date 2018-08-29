@@ -13,19 +13,8 @@ Background:
 	| LearnRefNumber | Ukprn | ULN   |
 	| learnref3      | 10000 | 10000 |
 
-	And the payments due component generates the following contract type 2 payable earnings:
+	And the payments due component generates the following contract type 2 on programme earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 1      | 10000 | 1               | 600    |
-	| p1                     | 2      | 10000 | 1               | 600    |
-	| p1                     | 3      | 10000 | 1               | 600    |
-	| p1                     | 4      | 10000 | 1               | 600    |
-	| p1                     | 5      | 10000 | 1               | 600    |
-	| p1                     | 6      | 10000 | 1               | 600    |
-	| p1                     | 7      | 10000 | 1               | 600    |
-	| p1                     | 8      | 10000 | 1               | 600    |
-	| p1                     | 9      | 10000 | 1               | 600    |
-	| p1                     | 10     | 10000 | 1               | 600    |
-	| p1                     | 11     | 10000 | 1               | 600    |
 	| p1                     | 12     | 10000 | 1               | 600    |
 
 	And the payments due component generates the following contract type 2 completion earnings:
@@ -41,7 +30,7 @@ Background:
 
 Scenario: Contract Type 2 On programme payments
 
-	When a TOBY is received
+	When MASH is received
 
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
@@ -50,9 +39,9 @@ Scenario: Contract Type 2 On programme payments
 
 Scenario: Contract Type 2 completion payment
 
-	When a TOBY is received
+	When MASH is received
 
-	Then the payments due component will generate the following contract type 2 coinvested payments:
+	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
 	| learnref3      | 10000 | p1                     | 12     | 10000 | Completion_2    | CoInvestedSfa_2      | 1620   |
 	| learnref3      | 10000 | p1                     | 12     | 10000 | Completion_2    | CoInvestedEmployer_3 | 180    |

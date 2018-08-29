@@ -161,10 +161,8 @@
     <Compile Include="Steps\EarningSteps.cs" />
     <Compile Include="Steps\FundingSteps.cs" />
     <Compile Include="Steps\HistoricalPaymentSteps.cs" />
-    <Compile Include="Steps\LearnerSteps.cs" />
     <Compile Include="Steps\PaymentsDueInputSteps.cs" />
     <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
-    <Compile Include="Steps\ProcessingPeriodSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="Tests\Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs">
       <AutoGen>True</AutoGen>
