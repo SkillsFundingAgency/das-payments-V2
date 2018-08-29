@@ -1,51 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Fabric;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.ServiceFabric.Core;
+using System.Collections.Generic;
+using System.Fabric;
 
 namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService
 {
-    /// <summary>
-    /// An instance of this class is created for each service instance by the Service Fabric runtime.
-    /// </summary>
-    internal sealed class NonLevyFundedService : StatelessService
+    public class NonLevyFundedService : StatelessService
     {
-        public NonLevyFundedService(StatelessServiceContext context)
-            : base(context)
-        { }
+        private IEndpointCommunicationListener _listener;
+        private readonly ILifetimeScope _lifetimeScope;
+        private readonly IPaymentLogger _paymentLogger;
 
-        /// <summary>
-        /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
-        /// </summary>
-        /// <returns>A collection of listeners.</returns>
-        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+        public NonLevyFundedService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
         {
-            return new ServiceInstanceListener[0];
+            _lifetimeScope = lifetimeScope;
+            _paymentLogger = paymentLogger;
         }
 
-        /// <summary>
-        /// This is the main entry point for your service instance.
-        /// </summary>
-        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
-        protected override async Task RunAsync(CancellationToken cancellationToken)
+        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            // TODO: Replace the following sample code with your own logic 
-            //       or remove this RunAsync override if it's not needed in your service.
+            _paymentLogger.LogInfo("Creating Service Instance Listeners For NonLevyFundedService");
 
-            long iterations = 0;
-
-            while (true)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
-
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-            }
+            return new List<ServiceInstanceListener>
+                {
+                    new ServiceInstanceListener(context =>_listener = _lifetimeScope.Resolve<IEndpointCommunicationListener>())
+                };
         }
     }
 }
