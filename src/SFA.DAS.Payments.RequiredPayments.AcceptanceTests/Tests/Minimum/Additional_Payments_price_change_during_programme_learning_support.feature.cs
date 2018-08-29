@@ -1,0 +1,3 @@
+﻿#error (70:1): expected: #EOF, #TableRow, #StepLine, #TagLine, #ExamplesLine, #ScenarioLine, #ScenarioOutlineLine, #Comment, #Empty, got '<<<<<<< HEAD'
+#error (76:1): expected: #EOF, #TableRow, #StepLine, #TagLine, #ExamplesLine, #ScenarioLine, #ScenarioOutlineLine, #Comment, #Empty, got '======='
+#error (79:1): expected: #EOF, #TableRow, #StepLine, #TagLine, #ExamplesLine, #ScenarioLine, #ScenarioOutlineLine, #Comment, #Empty, got '>>>>>>> da6c8d612260e2e489702aa616d2fe27a7bade86'

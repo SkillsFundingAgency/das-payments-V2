@@ -1,0 +1,6 @@
+﻿#error (12:1): expected: #EOF, #TableRow, #DocStringSeparator, #StepLine, #TagLine, #ScenarioLine, #ScenarioOutlineLine, #Comment, #Empty, got '<<<<<<< HEAD'
+#error (14:1): expected: #EOF, #TableRow, #DocStringSeparator, #StepLine, #TagLine, #ScenarioLine, #ScenarioOutlineLine, #Comment, #Empty, got '======='
+#error (18:1): expected: #EOF, #TableRow, #StepLine, #TagLine, #ScenarioLine, #ScenarioOutlineLine, #Comment, #Empty, got '>>>>>>> da6c8d612260e2e489702aa616d2fe27a7bade86'
+#error (28:1): expected: #EOF, #TableRow, #StepLine, #TagLine, #ScenarioLine, #ScenarioOutlineLine, #Comment, #Empty, got '<<<<<<< HEAD'
+#error (32:1): expected: #EOF, #TableRow, #StepLine, #TagLine, #ScenarioLine, #ScenarioOutlineLine, #Comment, #Empty, got '======='
+#error (36:1): expected: #EOF, #TableRow, #StepLine, #TagLine, #ScenarioLine, #ScenarioOutlineLine, #Comment, #Empty, got '>>>>>>> da6c8d612260e2e489702aa616d2fe27a7bade86'
