@@ -4,23 +4,18 @@ using ESFA.DC.Logging;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Logging
 {
-    public interface IExecutionContextFactory
-    {
-        ExecutionContext GetExecutionContext();
-    }
-
     public class ExecutionContextFactory : IExecutionContextFactory
     {
-        private readonly ILifetimeScope _scope;
+        private readonly ILifetimeScope scope;
 
         public ExecutionContextFactory(ILifetimeScope scope)
         {
-            _scope = scope ?? throw new ArgumentNullException(nameof(scope));
+            this.scope = scope ?? throw new ArgumentNullException(nameof(scope));
         }
 
         public ExecutionContext GetExecutionContext()
         {
-            return _scope.Resolve<ExecutionContext>();
+            return scope.Resolve<ExecutionContext>();
         }
     }
 }
