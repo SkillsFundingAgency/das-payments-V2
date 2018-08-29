@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract EarningType 1 On programme payments")]
+        [NUnit.Framework.DescriptionAttribute("Contract Type 1 On programme payments")]
         [NUnit.Framework.CategoryAttribute("DAS")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
@@ -145,7 +145,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract EarningType 1 On programme payments", @__tags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 1 On programme payments", @__tags);
 #line 27
 this.ScenarioSetup(scenarioInfo);
 #line 6
@@ -158,7 +158,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Price"});
+                        "Amount"});
             table4.AddRow(new string[] {
                         "learnref2",
                         "10000",
@@ -187,7 +187,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Price"});
+                        "Amount"});
             table5.AddRow(new string[] {
                         "learnref2",
                         "10000",
@@ -228,7 +228,7 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract EarningType 2 On programme payments")]
+        [NUnit.Framework.DescriptionAttribute("Contract Type 2 On programme payments")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
@@ -245,7 +245,7 @@ this.FeatureBackground();
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract EarningType 2 On programme payments", @__tags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments", @__tags);
 #line 53
 this.ScenarioSetup(scenarioInfo);
 #line 6
@@ -260,7 +260,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Price"});
+                        "Amount"});
             table6.AddRow(new string[] {
                         "learnref2",
                         "10000",

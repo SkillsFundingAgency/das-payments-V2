@@ -127,7 +127,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract EarningType 2 On programme payments before price change")]
+        [NUnit.Framework.DescriptionAttribute("Contract Type 2 On programme payments before price change")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("Refunds")]
@@ -144,7 +144,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract EarningType 2 On programme payments before price change", @__tags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments before price change", @__tags);
 #line 29
 this.ScenarioSetup(scenarioInfo);
 #line 9
@@ -157,7 +157,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Price"});
+                        "Amount"});
             table4.AddRow(new string[] {
                         "learnref12",
                         "10000",
@@ -186,7 +186,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Price"});
+                        "Amount"});
             table5.AddRow(new string[] {
                         "learnref12",
                         "10000",
@@ -227,7 +227,7 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract EarningType 2 On programme payments after price change")]
+        [NUnit.Framework.DescriptionAttribute("Contract Type 2 On programme payments after price change")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("Refunds")]
@@ -244,7 +244,7 @@ this.FeatureBackground();
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract EarningType 2 On programme payments after price change", @__tags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments after price change", @__tags);
 #line 54
 this.ScenarioSetup(scenarioInfo);
 #line 9
@@ -259,7 +259,7 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Price"});
+                        "Amount"});
             table6.AddRow(new string[] {
                         "learnref12",
                         "10000",
