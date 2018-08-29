@@ -22,8 +22,8 @@ Background:
 	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
 
 	And the following contract type 2 on programme earnings for periods 12 are provided in the latest ILR for the academic year 1718:
-	| learnrefnumber | ukprn | priceepisodeidentifier | episodestartdate | episodeeffectivetnpstartdate | totalnegotiatedprice | learning_1 | Completion_2 |
-	| learnref1      | 10000 | p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        | 1800         |
+	| priceepisodeidentifier | episodestartdate | episodeeffectivetnpstartdate | totalnegotiatedprice | learning_1 | Completion_2 |
+	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        | 1800         |
 	
 @Non-DAS
 @minimum_tests

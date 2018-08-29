@@ -82,9 +82,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
  testRunner.And("the following learners:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "ULN",
                         "AimSeqNumber",
                         "ProgrammeType",
                         "FrameworkCode",
@@ -97,9 +94,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "LearningActualEndDate",
                         "CompletionStatus"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "10000",
                         "1",
                         "2",
                         "403",
@@ -112,9 +106,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "08/08/2018",
                         "Completed"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "10000",
                         "2",
                         "",
                         "",
@@ -130,16 +121,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
  testRunner.And("the following course information:", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
                         "PriceEpisodeIdentifier",
                         "EpisodeStartDate",
                         "EpisodeEffectiveTNPStartDate",
                         "TotalNegotiatedPrice",
                         "Learning_1"});
             table3.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "06/08/2017",
                         "06/08/2017",
@@ -150,8 +137,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                     " in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
                         "PriceEpisodeIdentifier",
                         "EpisodeStartDate",
                         "EpisodeEffectiveTNPStartDate",
@@ -159,8 +144,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "Learning_1",
                         "Completion_2"});
             table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "06/08/2017",
                         "06/08/2017",

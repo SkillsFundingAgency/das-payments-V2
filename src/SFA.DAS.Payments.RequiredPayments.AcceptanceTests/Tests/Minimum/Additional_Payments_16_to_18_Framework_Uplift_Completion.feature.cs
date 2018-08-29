@@ -124,8 +124,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                     " in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "learnrefnumber",
-                        "ukprn",
                         "priceepisodeidentifier",
                         "episodestartdate",
                         "episodeeffectivetnpstartdate",
@@ -133,8 +131,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "learning_1",
                         "Completion_2"});
             table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "06/08/2017",
                         "06/08/2017",
