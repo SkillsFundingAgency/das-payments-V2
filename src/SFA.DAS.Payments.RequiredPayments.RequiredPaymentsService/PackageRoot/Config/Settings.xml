@@ -1,5 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <!--
+  <Section Name="MyConfigSection">
+    <Parameter Name="MyParameter" Value="Value1" />
+  </Section>
+  -->
+  <!-- Add your custom configuration sections and parameters here -->
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+  </Section>
+  <Section Name="Settings">
+    <Parameter Name="EndpointName" Value="sfa-das-payments-requiredpaymentservice" />
+  </Section>
   <Section Name="RequiredPaymentsServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="RequiredPaymentsServiceActorServiceReplicatorEndpoint" />
     <Parameter Name="BatchAcknowledgementInterval" Value="0.005" />
@@ -7,16 +21,4 @@
   <Section Name="RequiredPaymentsServiceActorServiceReplicatorSecurityConfig">
     <Parameter Name="CredentialType" Value="None" />
   </Section>
-  <Section Name="RequiredPaymentsServiceConfig">
-    <Parameter Name="CredentialType" Value="None" />
-  </Section>
-  <Section Name="ConnectionStringsSection">
-    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
-    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
-    <Parameter Name="ServiceBusConnectionString" Value="" />
-  </Section>
-  <Section Name="Settings">
-    <Parameter Name="EndpointName" Value="sfa-das-payments-requiredpaymentsservice" />
-  </Section>
-  <!-- The content will be generated during build -->
 </Settings>
