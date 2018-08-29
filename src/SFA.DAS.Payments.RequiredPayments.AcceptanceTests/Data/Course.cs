@@ -2,11 +2,11 @@
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data
 {
-    public class Course: Learner
+    public class Course
     {
         public int AimSeqNumber { get; set; }
 
-          public int ProgrammeType { get; set; }
+        public int ProgrammeType { get; set; }
 
         public int? FrameworkCode { get; set; }
 

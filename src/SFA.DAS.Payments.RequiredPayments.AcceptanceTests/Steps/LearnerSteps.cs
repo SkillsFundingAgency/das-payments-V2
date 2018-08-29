@@ -40,5 +40,17 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             scenarioContext["SessionId"] = Guid.NewGuid();
         }
+
+        [Given(@"a learner with LearnRefNumber (.*) and Uln (.*) undertaking training with training provider (.*)")]
+        public void GivenALearnerWithLearnRefNumberAndUln(string learnRefNumber, long uln, long ukprn)
+        {
+            ScenarioContext.Current["LearnRefNumber"] = learnRefNumber;
+            ScenarioContext.Current["Uln"] = uln;
+            ScenarioContext.Current["Ukprn"] = ukprn;
+
+            ScenarioContext.Current["GeneratedLearnRefNumber"] =
+                learnRefNumberGenerator.Generate(ukprn, learnRefNumber);
+        }
+
     }
 }
