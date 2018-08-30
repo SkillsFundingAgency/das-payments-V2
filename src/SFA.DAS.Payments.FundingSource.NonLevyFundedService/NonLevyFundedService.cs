@@ -10,23 +10,22 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService
 {
     public class NonLevyFundedService : StatelessService
     {
-        private IEndpointCommunicationListener _listener;
-        private readonly ILifetimeScope _lifetimeScope;
-        private readonly IPaymentLogger _paymentLogger;
+        private readonly ILifetimeScope LifetimeScope;
+        private readonly IPaymentLogger PaymentLogger;
 
         public NonLevyFundedService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
         {
-            _lifetimeScope = lifetimeScope;
-            _paymentLogger = paymentLogger;
+            LifetimeScope = lifetimeScope;
+            PaymentLogger = paymentLogger;
         }
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            _paymentLogger.LogInfo("Creating Service Instance Listeners For NonLevyFundedService");
+            PaymentLogger.LogInfo("Creating Service Instance Listeners For NonLevyFundedService");
 
             return new List<ServiceInstanceListener>
                 {
-                    new ServiceInstanceListener(context =>_listener = _lifetimeScope.Resolve<IEndpointCommunicationListener>())
+                    new ServiceInstanceListener(context =>LifetimeScope.Resolve<IEndpointCommunicationListener>())
                 };
         }
     }

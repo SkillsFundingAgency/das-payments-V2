@@ -1,30 +1,24 @@
 ﻿using NServiceBus;
 using NServiceBus.Features;
-using NUnit;
 using NUnit.Framework;
-using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests
+namespace SFA.DAS.Payments.FundingSource.AcceptanceTests
 {
     [TestFixture]
     public class FundingSourceIntegrationTest
     {
-        protected static IEndpointInstance _sender;
-        protected RequiredPaymentEvent _requiredPaymentEvent;
-
-        [OneTimeSetUp]
-        public static async Task SetUpMessaging()
-        {
-            _sender = await CreateMessageSender();
-        }
+        private IEndpointInstance Sender;
+        private RequiredPaymentEvent RequiredPaymentEvent;
 
         [SetUp]
-        public void SetUp()
+        public async Task SetUpAsync()
         {
-            _requiredPaymentEvent = new RequiredPaymentEvent
+            Sender = await CreateMessageSender();
+
+            RequiredPaymentEvent = new RequiredPaymentEvent
             {
                 JobId = "J000595959",
                 EventTime = DateTimeOffset.UtcNow,
@@ -35,10 +29,10 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests
         [Test]
         public async Task ShouldSendCalculatedPaymentDueEvent()
         {
-            await _sender.Send(_requiredPaymentEvent).ConfigureAwait(false);
+            await Sender.Send(RequiredPaymentEvent).ConfigureAwait(false);
         }
 
-        private static async Task<IEndpointInstance> CreateMessageSender()
+        private async Task<IEndpointInstance> CreateMessageSender()
         {
             var endpointConfiguration = new EndpointConfiguration("nonlevyfundedservice-payments-test-sender");
             var conventions = endpointConfiguration.Conventions();
