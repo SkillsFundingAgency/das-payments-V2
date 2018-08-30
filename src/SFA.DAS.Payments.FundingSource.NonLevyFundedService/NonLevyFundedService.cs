@@ -1,20 +1,19 @@
 ﻿using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ServiceFabric.Core;
 using System.Collections.Generic;
 using System.Fabric;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
-namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
+namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService
 {
-    public class RequiredPaymentsProxyService : StatelessService
+    public class NonLevyFundedService : StatelessService
     {
-        private IEndpointCommunicationListener listener;
         private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentLogger paymentLogger;
 
-        public RequiredPaymentsProxyService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
+        public NonLevyFundedService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
         {
             this.lifetimeScope = lifetimeScope;
             this.paymentLogger = paymentLogger;
@@ -22,11 +21,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            paymentLogger.LogInfo("Creating Service Instance Listeners For RequiredPaymentsProxyService");
+            paymentLogger.LogInfo("Creating Service Instance Listeners For NonLevyFundedService");
 
             return new List<ServiceInstanceListener>
                 {
-                    new ServiceInstanceListener(context =>listener = lifetimeScope.Resolve<IEndpointCommunicationListener>())
+                    new ServiceInstanceListener(context =>lifetimeScope.Resolve<IEndpointCommunicationListener>())
                 };
         }
     }
