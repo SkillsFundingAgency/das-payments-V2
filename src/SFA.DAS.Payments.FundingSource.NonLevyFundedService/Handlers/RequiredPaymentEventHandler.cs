@@ -12,20 +12,20 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 {
     public class RequiredPaymentEventHandler : IHandleMessages<RequiredPaymentEvent>
     {
-        private readonly IPaymentLogger PaymentLogger;
-        private readonly ILifetimeScope LifetimeScope;
+        private readonly IPaymentLogger paymentLogger;
+        private readonly ILifetimeScope lifetimeScope;
 
         public RequiredPaymentEventHandler(IPaymentLogger paymentLogger, ILifetimeScope lifetimeScope)
         {
-            PaymentLogger = paymentLogger;
-            LifetimeScope = lifetimeScope;
+            this.paymentLogger = paymentLogger;
+            this.lifetimeScope = lifetimeScope;
         }
 
         public async Task Handle(RequiredPaymentEvent message, IMessageHandlerContext context)
         {
-            using (var scope = LifetimeScope.BeginLifetimeScope())
+            using (var scope = lifetimeScope.BeginLifetimeScope())
             {
-                PaymentLogger.LogInfo($"Processing CalculatedPaymentDueEvent Service event. Message Id : {context.MessageId}");
+                paymentLogger.LogInfo($"Processing CalculatedPaymentDueEvent Service event. Message Id : {context.MessageId}");
 
                 var executionContext = (ESFA.DC.Logging.ExecutionContext)scope.Resolve<IExecutionContext>();
                 executionContext.JobId = message.JobId;
@@ -51,17 +51,17 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
                         catch (Exception ex)
                         {
                             //TODO: add more details when we flesh out the event.
-                            PaymentLogger.LogError($"Error publishing the event: RecordablePaymentEvent", ex);
+                            paymentLogger.LogError($"Error publishing the event: RecordablePaymentEvent", ex);
                             throw;
                             //TODO: update the job
                         }
                     }
 
-                    PaymentLogger.LogInfo($"Successfully processed NonLevyFunded Service event for Actor Id {message.JobId}");
+                    paymentLogger.LogInfo($"Successfully processed NonLevyFunded Service event for Actor Id {message.JobId}");
                 }
                 catch (Exception ex)
                 {
-                    PaymentLogger.LogError($"Error while handling NonLevyFundedService event", ex);
+                    paymentLogger.LogError($"Error while handling NonLevyFundedService event", ex);
                     throw;
                 }
             }

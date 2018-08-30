@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Payments.FundingSource.Messages.Event
+namespace SFA.DAS.Payments.FundingSource.Messages.Events
 {
     public class RecordablePaymentEvent : IRecordablePaymentEvent
     {

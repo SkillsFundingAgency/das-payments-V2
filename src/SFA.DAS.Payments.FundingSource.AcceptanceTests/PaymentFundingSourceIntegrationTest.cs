@@ -10,15 +10,15 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests
     [TestFixture]
     public class FundingSourceIntegrationTest
     {
-        private IEndpointInstance Sender;
-        private RequiredPaymentEvent RequiredPaymentEvent;
+        private IEndpointInstance sender;
+        private RequiredPaymentEvent requiredPaymentEvent;
 
         [SetUp]
         public async Task SetUpAsync()
         {
-            Sender = await CreateMessageSender();
+            sender = await CreateMessageSender();
 
-            RequiredPaymentEvent = new RequiredPaymentEvent
+            requiredPaymentEvent = new RequiredPaymentEvent
             {
                 JobId = "J000595959",
                 EventTime = DateTimeOffset.UtcNow,
@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests
         [Test]
         public async Task ShouldSendCalculatedPaymentDueEvent()
         {
-            await Sender.Send(RequiredPaymentEvent).ConfigureAwait(false);
+            await sender.Send(requiredPaymentEvent).ConfigureAwait(false);
         }
 
         private async Task<IEndpointInstance> CreateMessageSender()
