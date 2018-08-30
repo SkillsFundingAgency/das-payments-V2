@@ -6,23 +6,22 @@ using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 {
-    public class CalculatedPaymentDueEventHandler : IHandleMessages<CalculatedPaymentDueEvent>
+    public class RequiredPaymentEventHandler : IHandleMessages<RequiredPaymentEvent>
     {
         private readonly IPaymentLogger _paymentLogger;
         private readonly ILifetimeScope _lifetimeScope;
 
-        public CalculatedPaymentDueEventHandler(IPaymentLogger paymentLogger, ILifetimeScope lifetimeScope)
+        public RequiredPaymentEventHandler(IPaymentLogger paymentLogger, ILifetimeScope lifetimeScope)
         {
             _paymentLogger = paymentLogger;
             _lifetimeScope = lifetimeScope;
         }
 
-        public async Task Handle(CalculatedPaymentDueEvent message, IMessageHandlerContext context)
+        public async Task Handle(RequiredPaymentEvent message, IMessageHandlerContext context)
         {
             using (var scope = _lifetimeScope.BeginLifetimeScope())
             {

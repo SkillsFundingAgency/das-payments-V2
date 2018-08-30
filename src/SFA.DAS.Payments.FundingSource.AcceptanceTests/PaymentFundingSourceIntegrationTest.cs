@@ -2,7 +2,7 @@
 using NServiceBus.Features;
 using NUnit;
 using NUnit.Framework;
-using SFA.DAS.Payments.RequiredPayments.Messages.Entities;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests
     public class FundingSourceIntegrationTest
     {
         protected static IEndpointInstance _sender;
-        protected ICalculatedPaymentDueEvent _calculatedPaymentDueEvent;
+        protected RequiredPaymentEvent _requiredPaymentEvent;
 
         [OneTimeSetUp]
         public static async Task SetUpMessaging()
@@ -24,18 +24,18 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests
         [SetUp]
         public void SetUp()
         {
-            _calculatedPaymentDueEvent = new CalculatedPaymentDueEvent
+            _requiredPaymentEvent = new RequiredPaymentEvent
             {
                 JobId = "J000595959",
                 EventTime = DateTimeOffset.UtcNow,
-                PaymentDueEntity = new PaymentDueEntity()
+                Amount = 1000
             };
         }
 
         [Test]
         public async Task ShouldSendCalculatedPaymentDueEvent()
         {
-            await _sender.Send(_calculatedPaymentDueEvent).ConfigureAwait(false);
+            await _sender.Send(_requiredPaymentEvent).ConfigureAwait(false);
         }
 
         private static async Task<IEndpointInstance> CreateMessageSender()
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests
             endpointConfiguration.UseTransport<AzureStorageQueueTransport>()
                 .ConnectionString(TestConfiguration.StorageConnectionString)
                 .Routing()
-                .RouteToEndpoint(typeof(IPaymentsDueEvent).Assembly, EndpointNames.Nonlevyfundedpaymentsservice);
+                .RouteToEndpoint(typeof(IRequiredPayment).Assembly, EndpointNames.Nonlevyfundedpaymentsservice);
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.UseContainer<AutofacBuilder>();
             endpointConfiguration.SendOnly();
