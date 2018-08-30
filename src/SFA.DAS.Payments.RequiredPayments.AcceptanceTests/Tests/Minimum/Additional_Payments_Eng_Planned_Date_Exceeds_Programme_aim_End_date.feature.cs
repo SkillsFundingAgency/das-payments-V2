@@ -75,16 +75,13 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "Ukprn",
                         "ULN"});
             table1.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "10000"});
 #line 13
  testRunner.And("the following learners:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "ULN",
                         "AimSeqNumber",
                         "ProgrammeType",
                         "FrameworkCode",
@@ -97,9 +94,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "LearningActualEndDate",
                         "CompletionStatus"});
             table2.AddRow(new string[] {
-                        "learnref7",
-                        "10000",
-                        "10000",
                         "1",
                         "2",
                         "403",
@@ -112,9 +106,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "08/08/2018",
                         "Completed"});
             table2.AddRow(new string[] {
-                        "learnref7",
-                        "10000",
-                        "10000",
                         "2",
                         "",
                         "",
@@ -130,45 +121,35 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
  testRunner.And("the following course information:", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
                         "PriceEpisodeIdentifier",
                         "EpisodeStartDate",
                         "EpisodeEffectiveTNPStartDate",
                         "TotalNegotiatedPrice",
                         "Learning_1"});
             table3.AddRow(new string[] {
-                        "learnref7",
-                        "10000",
                         "p1",
                         "06/08/2017",
                         "06/08/2017",
                         "15000",
                         "1000"});
 #line 22
- testRunner.And("the following contract type 2 on programme earnings for periods 1-11 are provided" +
+ testRunner.And("the following contract type 2 on programme earnings for periods 1-12 are provided" +
                     " in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
                         "PriceEpisodeIdentifier",
                         "EpisodeStartDate",
                         "EpisodeEffectiveTNPStartDate",
                         "TotalNegotiatedPrice",
-                        "Learning_1",
                         "Completion_2"});
             table4.AddRow(new string[] {
-                        "learnref7",
-                        "10000",
                         "p1",
                         "06/08/2017",
                         "06/08/2017",
                         "15000",
-                        "1000",
                         "3000"});
 #line 26
- testRunner.And("the following contract type 2 on programme earnings for period 12 are provided in" +
+ testRunner.And("the following contract type 2 on programme earnings for period 13 are provided in" +
                     " the latest ILR for the academic year 1718:", ((string)(null)), table4, "And ");
 #line hidden
         }
@@ -206,7 +187,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "1",
@@ -214,7 +195,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "2",
@@ -222,7 +203,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "3",
@@ -230,7 +211,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "4",
@@ -238,7 +219,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "5",
@@ -246,7 +227,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "6",
@@ -254,7 +235,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "7",
@@ -262,7 +243,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "8",
@@ -270,7 +251,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "9",
@@ -278,7 +259,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "10",
@@ -286,7 +267,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "11",
@@ -294,7 +275,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "12",
@@ -315,7 +296,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "1",
@@ -323,7 +304,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "2",
@@ -331,7 +312,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "3",
@@ -339,7 +320,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "4",
@@ -347,7 +328,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "5",
@@ -355,7 +336,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "6",
@@ -363,7 +344,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "7",
@@ -371,7 +352,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "8",
@@ -379,7 +360,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "9",
@@ -387,7 +368,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "10",
@@ -395,7 +376,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "11",
@@ -403,7 +384,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
                         "12",
@@ -437,10 +418,10 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table7.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
-                        "12",
+                        "13",
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
@@ -458,10 +439,10 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table8.AddRow(new string[] {
-                        "learnref7",
+                        "learnref1",
                         "10000",
                         "p1",
-                        "12",
+                        "13",
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});

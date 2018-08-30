@@ -16,7 +16,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public class PayableEarningEventHandler : IHandleMessages<PayableEarningEvent>
+    public class PayableEarningEventHandler : IHandleMessages<IEarningEvent>
     {
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly IActorProxyFactory _proxyFactory;
@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             _lifetimeScope = lifetimeScope;
         }
 
-        public async Task Handle(PayableEarningEvent message, IMessageHandlerContext context)
+        public async Task Handle(IEarningEvent message, IMessageHandlerContext context)
         {
             using (var scope = _lifetimeScope.BeginLifetimeScope())
             {
@@ -47,20 +47,20 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 {
                     var key = _apprenticeshipKeyService.GenerateKey(
                         message.Ukprn,
-                        message.LearnRefNumber,
-                        message.LearnAim.FrameworkCode,
-                        message.LearnAim.PathwayCode,
-                        (ProgrammeType)message.LearnAim.ProgrammeType,
-                        message.LearnAim.StandardCode,
-                        message.LearnAim.LearnAimRef
+                        message.Learner.ReferenceNumber,
+                        message.LearningAim.FrameworkCode,
+                        message.LearningAim.PathwayCode,
+                        (ProgrammeType)message.LearningAim.ProgrammeType,
+                        message.LearningAim.StandardCode,
+                        message.LearningAim.Reference
                     );
 
                     var actorId = new ActorId(key);
                     var actor = _proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                    CalculatedPaymentDueEvent[] paymentsDue;
+                    RequiredPaymentEvent[] payments;
                     try
                     {
-                        paymentsDue = await actor.HandlePayableEarning(message, CancellationToken.None)
+                        payments = await actor.HandleEarning(message, CancellationToken.None)
                             .ConfigureAwait(false);
                     }
                     catch (Exception ex)
@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                         throw;
                     }
 
-                    foreach (var calculatedPaymentDueEvent in paymentsDue)
+                    foreach (var calculatedPaymentDueEvent in payments)
                     {
                         try
                         {
@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                         catch (Exception ex)
                         {
                             //TODO: add more details when we flesh out the event.
-                            _paymentLogger.LogError($"Error publishing the event: 'CalculatedPaymentDueEvent'.  Error: {ex.Message}.", ex);
+                            _paymentLogger.LogError($"Error publishing the event: 'RequiredPaymentEvent'.  Error: {ex.Message}.", ex);
                             throw;
                             //TODO: update the job
                         }

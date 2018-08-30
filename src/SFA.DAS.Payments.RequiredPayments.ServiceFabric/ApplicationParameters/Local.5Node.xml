@@ -6,7 +6,6 @@
     <Parameter Name="RequiredPaymentsServiceActorService_PartitionCount" Value="1" />
     <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
     <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
-    <Parameter Name="RequiredPaymentsProxyService_EndpointName" Value="sfa-das-payments-requiredpaymentsproxyservice" />
     <Parameter Name="RequiredPaymentsService_EndpointName" Value="sfa-das-payments-requiredpaymentsservice" />
   </Parameters>
 </Application>
