@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests
         }
 
         [Test]
-        public async Task Send_CalculatedPaymentDueEvent()
+        public async Task ShouldSendCalculatedPaymentDueEvent()
         {
             await _sender.Send(_calculatedPaymentDueEvent).ConfigureAwait(false);
         }
