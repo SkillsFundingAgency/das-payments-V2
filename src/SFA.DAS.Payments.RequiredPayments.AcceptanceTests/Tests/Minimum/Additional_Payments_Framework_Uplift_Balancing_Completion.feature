@@ -20,15 +20,9 @@ Background:
 	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
 	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 480        |
 
-<<<<<<< HEAD
-	And the following contract type 2 on programme earnings for period 12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 | Completion_2 | Balancing_3 |
-	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 480        | 1800         | 1440        |
-=======
 	And the following contract type 2 on programme earnings for periods 13 are provided in the latest ILR for the academic year 1718:
 	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Completion_2 | Balancing_3 |
 	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 1800         | 1440        |
->>>>>>> da6c8d612260e2e489702aa616d2fe27a7bade86
 
 @Non-DAS
 @minimum_tests
