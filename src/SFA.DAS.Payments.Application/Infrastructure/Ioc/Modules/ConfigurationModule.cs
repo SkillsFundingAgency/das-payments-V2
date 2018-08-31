@@ -15,7 +15,9 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     {
                         EndpointName = configHelper.GetSetting("EndpointName"),
                         StorageConnectionString = configHelper.GetConnectionString("StorageConnectionString"),
-                        ServiceBusConnectionString = configHelper.GetConnectionString("ServiceBusConnectionString")
+                        ServiceBusConnectionString = configHelper.GetConnectionString("ServiceBusConnectionString"),
+                        FailedMessagesQueue = configHelper.GetSetting("FailedMessagesQueue")
+
                     };
                 })
                 .As<IApplicationConfiguration>()

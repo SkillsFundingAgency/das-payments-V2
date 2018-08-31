@@ -1,26 +1,37 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
-using SFA.DAS.Payments.Application.Infrastructure.Messaging;
+using NServiceBus;
+using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
-    public class EndpointCommunicationListener: EndpointCommunicationBase, IEndpointCommunicationListener
+    public class EndpointCommunicationListener: IEndpointCommunicationListener
     {
-        public EndpointCommunicationListener(string endpointName, string storageConnectionString, ILifetimeScope lifetimeScope) 
-            : base(endpointName, storageConnectionString, lifetimeScope)
+        private readonly EndpointConfiguration endpointConfiguration;
+        private readonly IApplicationConfiguration config;
+        private IEndpointInstance endpointInstance;
+
+        public EndpointCommunicationListener(EndpointConfiguration endpointConfiguration, IApplicationConfiguration config)
         {
+            this.endpointConfiguration = endpointConfiguration ?? throw new ArgumentNullException(nameof(endpointConfiguration));
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
+        /// <summary>
+        /// Opens the asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<string> OpenAsync(CancellationToken cancellationToken)
         {
-            await StartEndpoint();
-            return EndpointName;
+            endpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
+            return config.EndpointName;
         }
 
         public Task CloseAsync(CancellationToken cancellationToken)
         {
-            return EndpointInstance.Stop();
+            return endpointInstance.Stop();
         }
 
         public void Abort()

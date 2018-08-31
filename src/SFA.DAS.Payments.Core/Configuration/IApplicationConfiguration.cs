@@ -5,5 +5,6 @@
         string EndpointName { get; }
         string StorageConnectionString { get; }
         string ServiceBusConnectionString { get; }
+        string FailedMessagesQueue { get; }
     }
 }
