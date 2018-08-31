@@ -3,7 +3,9 @@
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.FundingSource.NonLevyFundedService_InstanceCount" Value="1" />
     <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="ServiceBusConnectionString" Value="" />
     <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
     <Parameter Name="NonLevyFundedService_EndpointName" Value="sfa-das-payments-nonlevyfundedpaymentsservice" />
+    <Parameter Name="FailedMessagesQueue" Value="FundingSourceFailedMessages"/>
   </Parameters>
 </Application>

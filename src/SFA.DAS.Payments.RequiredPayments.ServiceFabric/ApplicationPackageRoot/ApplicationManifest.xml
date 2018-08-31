@@ -7,8 +7,10 @@
     <Parameter Name="RequiredPaymentsServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="RequiredPaymentsServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
+    <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
+    <Parameter Name="FailedMessagesQueue" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -21,9 +23,11 @@
           <Section Name="ConnectionStringsSection">
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[FailedMessagesQueue]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -37,9 +41,11 @@
           <Section Name="ConnectionStringsSection">
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[FailedMessagesQueue]" />
           </Section>
         </Settings>
       </ConfigOverride>

@@ -7,6 +7,8 @@
     <Parameter Name="RequiredPaymentsServiceActorService_TargetReplicaSetSize" Value="1" />
     <Parameter Name="RequiredPaymentsServiceActorService_MinReplicaSetSize" Value="1" />
     <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="FailedMessagesQueue" Value="RequiredPaymentsFailedMessage" />
     <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
     <Parameter Name="RequiredPaymentsService_EndpointName" Value="sfa-das-payments-requiredpaymentsservice" />
   </Parameters>
