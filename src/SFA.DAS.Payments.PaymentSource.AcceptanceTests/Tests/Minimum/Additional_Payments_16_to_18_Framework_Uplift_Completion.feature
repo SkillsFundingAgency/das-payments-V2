@@ -7,19 +7,15 @@ Feature: Additional payments 16 to 18 framework uplift completion
 
 Background: 
 
-	Given the current processing period is 12
+	Given the current processing period is 13
 
 	And the following learners:
 	| LearnRefNumber | Ukprn | ULN   |
-	| learnref3      | 10000 | 10000 |
-
-	And the payments due component generates the following contract type 2 on programme earnings:
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 12     | 10000 | 1               | 600    |
+	| learnref1      | 10000 | 10000 |
 
 	And the payments due component generates the following contract type 2 completion earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 12     | 10000 | 2               | 1800   |
+	| p1                     | 13     | 10000 | 2               | 1800   |
 
 @Non-DAS
 @minimum_tests
@@ -27,24 +23,14 @@ Background:
 @completion
 #@16-18 incentive
 #@Framework_uplift -- will require funding band
-
-Scenario: Contract Type 2 On programme payments
-
-	When MASH is received
-
-	Then the payment source component will generate the following contract type 2 coinvested payments:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-	| learnref3      | 10000 | p1                     | 12     | 10000 | Learning_1      | CoInvestedSfa_2      | 540    |
-	| learnref3      | 10000 | p1                     | 12     | 10000 | Learning_1      | CoInvestedEmployer_3 | 60     |
-
 Scenario: Contract Type 2 completion payment
 
 	When MASH is received
 
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-	| learnref3      | 10000 | p1                     | 12     | 10000 | Completion_2    | CoInvestedSfa_2      | 1620   |
-	| learnref3      | 10000 | p1                     | 12     | 10000 | Completion_2    | CoInvestedEmployer_3 | 180    |
+	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedSfa_2      | 1620   |
+	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedEmployer_3 | 180    |
 
 #----------------------------------------------------------------------------------------------------------------------------------------
 # Payments V1 - for reference
