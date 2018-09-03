@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application;
-using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
+using SFA.DAS.Payments.Tests.Core.Application;
+using SFA.DAS.Payments.Tests.Core.Data;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
+namespace SFA.DAS.Payments.Tests.Core
 {
     [Binding]
     public class LearnerSteps

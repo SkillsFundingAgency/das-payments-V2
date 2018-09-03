@@ -1,6 +1,6 @@
 ﻿using TechTalk.SpecFlow;
 
-namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
+namespace SFA.DAS.Payments.Tests.Core
 {
     [Binding]
     public class ProcessingPeriodSteps
