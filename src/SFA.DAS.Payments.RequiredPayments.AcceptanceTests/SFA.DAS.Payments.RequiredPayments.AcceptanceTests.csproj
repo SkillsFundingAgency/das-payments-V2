@@ -11,7 +11,7 @@
     <RootNamespace>SFA.DAS.Payments.RequiredPayments.AcceptanceTests</RootNamespace>
     <AssemblyName>SFA.DAS.Payments.RequiredPayments.AcceptanceTests</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment> 
+    <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -278,6 +278,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ContractTypeChangesFromAct1ToAct2.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct11.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContractTypeChangesFromAct2ToAct1.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs">
       <AutoGen>True</AutoGen>
