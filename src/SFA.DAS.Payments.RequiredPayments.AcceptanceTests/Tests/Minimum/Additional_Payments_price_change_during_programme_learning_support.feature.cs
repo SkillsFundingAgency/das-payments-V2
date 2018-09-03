@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                         "Ukprn",
                         "ULN"});
             table1.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "10000"});
 #line 15
@@ -186,7 +186,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table5.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "p1",
                         "1",
@@ -194,7 +194,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "p1",
                         "2",
@@ -202,7 +202,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table5.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "p1",
                         "3",
@@ -223,7 +223,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table6.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "p1",
                         "1",
@@ -231,7 +231,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "p1",
                         "2",
@@ -239,7 +239,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "p1",
                         "3",
@@ -273,7 +273,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table7.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "p2",
                         "4",
@@ -294,7 +294,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table8.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "p2",
                         "4",
@@ -302,7 +302,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table8.AddRow(new string[] {
-                        "learnref8",
+                        "learnref1",
                         "10000",
                         "p2",
                         "5",

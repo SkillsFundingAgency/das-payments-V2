@@ -10,23 +10,23 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
 {
     public class RequiredPaymentsProxyService : StatelessService
     {
-        private IEndpointCommunicationListener _listener;
-        private readonly ILifetimeScope _lifetimeScope;
-        private readonly IPaymentLogger _paymentLogger;
+        private IEndpointCommunicationListener listener;
+        private readonly ILifetimeScope lifetimeScope;
+        private readonly IPaymentLogger paymentLogger;
 
         public RequiredPaymentsProxyService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
         {
-            _lifetimeScope = lifetimeScope;
-            _paymentLogger = paymentLogger;
+            this.lifetimeScope = lifetimeScope;
+            this.paymentLogger = paymentLogger;
         }
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            _paymentLogger.LogInfo("Creating Service Instance Listeners For RequiredPaymentsProxyService");
+            paymentLogger.LogInfo("Creating Service Instance Listeners For RequiredPaymentsProxyService");
 
             return new List<ServiceInstanceListener>
                 {
-                    new ServiceInstanceListener(context =>_listener = _lifetimeScope.Resolve<IEndpointCommunicationListener>())
+                    new ServiceInstanceListener(context =>listener = lifetimeScope.Resolve<IEndpointCommunicationListener>())
                 };
         }
     }
