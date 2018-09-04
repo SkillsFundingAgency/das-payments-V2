@@ -68,19 +68,11 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
 #line 4
 #line 6
  testRunner.Given("the current processing period is 8", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 8
+ testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
+                    "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "ULN"});
-            table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "10000"});
-#line 9
- testRunner.And("the following learners:", ((string)(null)), table1, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "AimSeqNumber",
                         "ProgrammeType",
                         "FrameworkCode",
@@ -92,7 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                         "LearningPlannedEndDate",
                         "LearningActualEndDate",
                         "CompletionStatus"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "1",
                         "2",
                         "403",
@@ -104,7 +96,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                         "08/09/2018",
                         "31/10/2017",
                         "planned break"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "2",
                         "2",
                         "403",
@@ -116,8 +108,24 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                         "08/11/2018",
                         "",
                         "Continuing"});
-#line 13
- testRunner.And("the following course information:", ((string)(null)), table2, "And ");
+#line 10
+ testRunner.And("the following course information:", ((string)(null)), table1, "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "PriceEpisodeIdentifier",
+                        "EpisodeStartDate",
+                        "EpisodeEffectiveTNPStartDate",
+                        "TotalNegotiatedPrice",
+                        "Learning_1"});
+            table2.AddRow(new string[] {
+                        "p1",
+                        "01/09/2017",
+                        "01/09/2017",
+                        "15000",
+                        "1000"});
+#line 15
+ testRunner.And("the following contract type 2 on programme earnings for periods 1-3 are provided " +
+                    "in the latest ILR for the academic year 1718:", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -126,30 +134,14 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                         "TotalNegotiatedPrice",
                         "Learning_1"});
             table3.AddRow(new string[] {
-                        "p1",
-                        "01/09/2017",
-                        "01/09/2017",
-                        "15000",
-                        "1000"});
-#line 18
- testRunner.And("the following contract type 2 on programme earnings for periods 1-3 are provided " +
-                    "in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "PriceEpisodeIdentifier",
-                        "EpisodeStartDate",
-                        "EpisodeEffectiveTNPStartDate",
-                        "TotalNegotiatedPrice",
-                        "Learning_1"});
-            table4.AddRow(new string[] {
                         "p2",
                         "03/01/2018",
                         "03/01/2018",
                         "15000",
                         "1000"});
-#line 22
+#line 19
  testRunner.And("the following contract type 2 on programme earnings for periods 6-14 are provided" +
-                    " in the latest ILR for the academic year 1718:", ((string)(null)), table4, "And ");
+                    " in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
 #line hidden
         }
         
@@ -172,10 +164,39 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments", @__tags);
-#line 31
+#line 28
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                        "LearnRefNumber",
+                        "Ukprn",
+                        "PriceEpisodeIdentifier",
+                        "Period",
+                        "ULN",
+                        "TransactionType",
+                        "Amount"});
+            table4.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "1",
+                        "10000",
+                        string.Format("{0}", transaction_Type),
+                        string.Format("{0}", amount)});
+            table4.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "2",
+                        "10000",
+                        string.Format("{0}", transaction_Type),
+                        string.Format("{0}", amount)});
+#line 30
+ testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table4, "And ");
+#line 35
+ testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -201,10 +222,23 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 33
- testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table5, "And ");
-#line 38
- testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 37
+ testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
+                    "rnings:", ((string)(null)), table5, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Contract Type 2 On programme payments changed price")]
+        [NUnit.Framework.TestCaseAttribute("Learning_1", "1000", null)]
+        public virtual void ContractType2OnProgrammePaymentsChangedPrice(string transaction_Type, string amount, string[] exampleTags)
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments changed price", exampleTags);
+#line 47
+this.ScenarioSetup(scenarioInfo);
+#line 4
+this.FeatureBackground();
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -217,36 +251,23 @@ this.FeatureBackground();
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "p1",
-                        "1",
+                        "p2",
+                        "5",
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
-                        "p1",
-                        "2",
+                        "p2",
+                        "6",
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 40
- testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
-                    "rnings:", ((string)(null)), table6, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract Type 2 On programme payments changed price")]
-        [NUnit.Framework.TestCaseAttribute("Learning_1", "1000", null)]
-        public virtual void ContractType2OnProgrammePaymentsChangedPrice(string transaction_Type, string amount, string[] exampleTags)
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments changed price", exampleTags);
-#line 50
-this.ScenarioSetup(scenarioInfo);
-#line 4
-this.FeatureBackground();
+#line 49
+ testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table6, "And ");
+#line 54
+ testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -272,36 +293,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 52
- testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table7, "And ");
-#line 57
- testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "PriceEpisodeIdentifier",
-                        "Period",
-                        "ULN",
-                        "TransactionType",
-                        "Amount"});
-            table8.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p2",
-                        "5",
-                        "10000",
-                        string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
-            table8.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p2",
-                        "6",
-                        "10000",
-                        string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
-            table8.AddRow(new string[] {
+            table7.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p2",
@@ -309,9 +301,9 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 59
+#line 56
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
-                    "rnings:", ((string)(null)), table8, "Then ");
+                    "rnings:", ((string)(null)), table7, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
