@@ -1,4 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -8,36 +12,42 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class EarningSteps
     {
-        private readonly ScenarioContext scenarioContext;
-
-        public EarningSteps(ScenarioContext scenarioContext)
-        {
-            this.scenarioContext = scenarioContext;
-        }
-
-        [Given(@"the following earnings:")]
-        public void GivenTheFollowingEarnings(Table table)
-        {
-        }
-
         [Given(@"the following contract type (.*) on programme earnings for periods (.*)-(.*) are provided in the latest ILR for the academic year (.*):")]
-        public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriods(short contractType, short fromPeriod, short toPeriod, string academicYear,  Table table)
+        public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriods(short contractType, byte fromPeriod, byte toPeriod, string academicYear, Table table)
         {
-            var rawEarnings = table.CreateSet<OnProgrammeEarning>();
+            var rawEarnings = table.CreateSet<ContractTypeEarning>();
 
-            var contractTypeEarnings = new ContractTypeEarnings(contractType, fromPeriod, toPeriod, academicYear, rawEarnings.ToList());
+            var earning = rawEarnings.FirstOrDefault();
 
-            scenarioContext[$"ContractType{contractType}OnProgrammeEarnings"] = contractTypeEarnings;
+            earning.FromPeriod = fromPeriod;
+            earning.ToPeriod = toPeriod;
+            earning.AcademicYear = academicYear;
+
+            ScenarioContext.Current[$"ContractType{contractType}OnProgrammeEarningsLearning"] = earning;
         }
+
+        [Given(@"the following contract type (.*) on programme earnings for period (.*) are provided in the latest ILR for the academic year (.*):")]
+        public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriod(short contractType, byte period, string academicYear, Table table)
+        {
+            var rawEarnings = table.CreateSet<ContractTypeEarning>();
+
+            var earning = rawEarnings.FirstOrDefault();
+
+            earning.FromPeriod = period;
+            earning.ToPeriod = period;
+            earning.AcademicYear = academicYear;
+            ScenarioContext.Current[$"ContractType{contractType}OnProgrammeEarningsCompletion"] = earning;
+        }
+
 
         [Given(@"the following contract type (.*) incentive earnings for periods (.*)-(.*) are provided in the latest ILR for the academic year (.*):")]
         public void GivenTheFollowingContractTypeIncentiveEarningsForPeriods(short contractType, short fromPeriod, short toPeriod, string academicYear, Table table)
         {
             var rawEarnings = table.CreateSet<IncentiveEarning>();
 
-            var incentiveEarnings = new ContractTypeEarnings(contractType, fromPeriod, toPeriod, academicYear, rawEarnings.ToList());
+            // var incentiveEarnings = new ContractTypeEarning(contractType, fromPeriod, toPeriod, academicYear, rawEarnings.ToList());
 
-            scenarioContext[$"ContractType{contractType}IncentiveEarnings"] = incentiveEarnings;
+            //ScenarioContext.Current[$"ContractType{contractType}IncentiveEarnings"] = incentiveEarnings;
         }
 
         [Given(@"the following contract type (.*) incentive earnings for period (.*):")]
