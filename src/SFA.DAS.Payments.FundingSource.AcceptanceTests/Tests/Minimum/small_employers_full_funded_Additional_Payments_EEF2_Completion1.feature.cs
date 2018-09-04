@@ -71,33 +71,25 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
 #line 8
 #line 10
  testRunner.Given("the current processing period is 13", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 12
+ testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
+                    "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "ULN"});
-            table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "10000"});
-#line 12
- testRunner.And("the following learners:", ((string)(null)), table1, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Period",
                         "ULN",
                         "TransactionType",
                         "Amount"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "p1",
                         "13",
                         "10000",
                         "2",
                         "1500"});
-#line 16
- testRunner.And("the payments due component generates the following contract type 2 completion ear" +
-                    "nings:", ((string)(null)), table2, "And ");
+#line 14
+ testRunner.And("the payments due component generates the following contract type 2 payable earnin" +
+                    "gs:", ((string)(null)), table1, "And ");
 #line hidden
         }
         
@@ -116,14 +108,14 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
                         "small_employers",
                         "completion",
                         "fully_funded"});
-#line 29
+#line 27
 this.ScenarioSetup(scenarioInfo);
 #line 8
 this.FeatureBackground();
-#line 31
+#line 29
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -132,7 +124,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "FundingSource",
                         "Amount"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -141,9 +133,9 @@ this.FeatureBackground();
                         "Completion_2",
                         "FullyFundedSfa_4",
                         "1500"});
-#line 33
+#line 31
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
-                    "ed payments:", ((string)(null)), table3, "Then ");
+                    "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

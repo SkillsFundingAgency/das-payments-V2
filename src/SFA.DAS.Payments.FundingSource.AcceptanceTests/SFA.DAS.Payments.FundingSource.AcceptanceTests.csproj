@@ -148,10 +148,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs">
-      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
+    <Compile Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -203,7 +203,7 @@
     </None>
     <None Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs</LastGenOutput>
+      <LastGenOutput>small_employers_full_funded_Additional_Payments_EEF2_Completion1.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
