@@ -97,6 +97,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\RequiredPayment.cs" />
+    <Compile Include="Data\FundingSourcePayment.cs" />
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs">
       <AutoGen>True</AutoGen>
@@ -105,6 +107,9 @@
     </Compile>
     <Compile Include="PaymentFundingSourceIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\FundingSourceInputSteps.cs" />
+    <Compile Include="Steps\FundingSourceOutputSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsOutputEarnings.cs" />
     <Compile Include="TestConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -93,8 +93,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Minimum
                         "2",
                         "1800"});
 #line 16
- testRunner.And("the payments due component generates the following contract type 2 completion ear" +
-                    "nings:", ((string)(null)), table2, "And ");
+ testRunner.And("the payments due component generates the following contract type 2 payable earnin" +
+                    "gs:", ((string)(null)), table2, "And ");
 #line hidden
         }
         
@@ -133,8 +133,8 @@ this.FeatureBackground();
                         "p1",
                         "13",
                         "10000",
-                        "Completion_2",
-                        "CoInvestedSfa_2",
+                        "2",
+                        "2",
                         "1620"});
             table3.AddRow(new string[] {
                         "learnref1",
@@ -142,8 +142,8 @@ this.FeatureBackground();
                         "p1",
                         "13",
                         "10000",
-                        "Completion_2",
-                        "CoInvestedEmployer_3",
+                        "2",
+                        "3",
                         "180"});
 #line 30
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
