@@ -45,8 +45,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProviderPayments", "Provide
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Application", "SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj", "{23551CD8-7554-4F2C-9B42-A67B9E0C261D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Tests.Core", "SFA.DAS.Payments.Tests.Core\SFA.DAS.Payments.Tests.Core.csproj", "{BD81705A-7BA9-4016-A976-716905AC9B3B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Model.Core", "SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj", "{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FundingSource", "FundingSource", "{205CA299-AED1-4F0B-971A-15CCD398A597}"
@@ -209,14 +207,6 @@ Global
 		{23551CD8-7554-4F2C-9B42-A67B9E0C261D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{23551CD8-7554-4F2C-9B42-A67B9E0C261D}.Release|x64.ActiveCfg = Release|Any CPU
 		{23551CD8-7554-4F2C-9B42-A67B9E0C261D}.Release|x64.Build.0 = Release|Any CPU
-		{BD81705A-7BA9-4016-A976-716905AC9B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD81705A-7BA9-4016-A976-716905AC9B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD81705A-7BA9-4016-A976-716905AC9B3B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BD81705A-7BA9-4016-A976-716905AC9B3B}.Debug|x64.Build.0 = Debug|Any CPU
-		{BD81705A-7BA9-4016-A976-716905AC9B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD81705A-7BA9-4016-A976-716905AC9B3B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD81705A-7BA9-4016-A976-716905AC9B3B}.Release|x64.ActiveCfg = Release|Any CPU
-		{BD81705A-7BA9-4016-A976-716905AC9B3B}.Release|x64.Build.0 = Release|Any CPU
 		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|x64.ActiveCfg = Debug|Any CPU

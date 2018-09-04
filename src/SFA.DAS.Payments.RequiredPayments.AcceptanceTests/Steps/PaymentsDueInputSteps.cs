@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 
@@ -7,43 +12,122 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class PaymentsDueInputSteps
     {
-        private readonly ScenarioContext scenarioContext;
-
-        public PaymentsDueInputSteps(ScenarioContext context)
-        {
-            scenarioContext = context;
-        }
-
         [When(@"a TOBY is received")]
         public void WhenATobyIsReceived()
         {
+            var scenarioContext = ScenarioContext.Current;
             // Get all the input data
             var processingPeriod = (short)scenarioContext["ProcessingPeriod"];
 
-            var learners = scenarioContext["Learners"] as IEnumerable<Learner>;
+            var learnRefNumber = scenarioContext["LearnRefNumber"].ToString();
+            var uln = (long)scenarioContext["Uln"];
+            var ukprn = (long)scenarioContext["Ukprn"];
+            var generatedLearnRefNumber = scenarioContext["GeneratedLearnRefNumber"].ToString();
 
-            IEnumerable<Course> courses;
+            IEnumerable<Course> courses = null;
 
             if (scenarioContext.ContainsKey("Courses"))
             {
                 courses = scenarioContext["Courses"] as IEnumerable<Course>;
             }
 
-            ContractTypeEarnings contractType1OnProgrammeEarnings;
+            var course = courses?.FirstOrDefault();
 
-            if (scenarioContext.ContainsKey("ContractType1OnProgrammeEarnings"))
+            var learningAim = course.AsLearningAim();
+
+            var learningEarning = CreateEarning("ContractType2OnProgrammeEarningsLearning", OnProgrammeEarningType.Learning, e => e.Learning_1);
+            var completionEarning = CreateEarning("ContractType2OnProgrammeEarningsCompletion", OnProgrammeEarningType.Completion, e => e.Completion_2);
+
+            var onProgrammeEarnings = new List<OnProgrammeEarning>();
+
+            if (learningEarning != null)
             {
-                contractType1OnProgrammeEarnings = scenarioContext["ContractType1OnProgrammeEarnings"] as ContractTypeEarnings;
+                onProgrammeEarnings.Add(learningEarning);
             }
 
-            ContractTypeEarnings contractType2OnProgrammeEarnings;
-
-            if (scenarioContext.ContainsKey("ContractType2OnProgrammeEarnings"))
+            if (completionEarning != null)
             {
-                contractType2OnProgrammeEarnings = scenarioContext["ContractType2OnProgrammeEarnings"] as ContractTypeEarnings;
+                onProgrammeEarnings.Add(completionEarning);
             }
 
             // now create an event from all this stuff and sent it off
+            var earning = new ApprenticeshipContractType2EarningEvent
+            {
+                JobId = "job-1234",
+                Ukprn = ukprn,
+                EventTime = DateTimeOffset.UtcNow,
+                Learner = new Learner
+                {
+                    ReferenceNumber = generatedLearnRefNumber,
+                    Uln = uln
+                },
+                LearningAim = learningAim,
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        StartDate = course.LearningStartDate,
+                        EndDate = course.LearningPlannedEndDate.Value,
+                        AgreedPrice = GetAgreedPrice("ContractType2OnProgrammeEarningsLearning"),
+                        Identifier = GetPriceEpisodeIdentifier("ContractType2OnProgrammeEarningsLearning")
+                    }
+                },
+                EarningYear = (short)DateTime.Today.Year,
+                SfaContributionPercentage = 0.9M,
+
+                OnProgrammeEarnings = onProgrammeEarnings
+            };
+        }
+
+        private decimal GetAgreedPrice(string storageName)
+        {
+            if (ScenarioContext.Current.ContainsKey(storageName))
+            {
+                if (ScenarioContext.Current[storageName] is ContractTypeEarning earning)
+                {
+                    return earning.TotalNegotiatedPrice;
+                }
+            }
+
+            return decimal.Zero;
+        }
+
+        private string GetPriceEpisodeIdentifier(string storageName)
+        {
+            if (ScenarioContext.Current.ContainsKey(storageName))
+            {
+                if (ScenarioContext.Current[storageName] is ContractTypeEarning earning)
+                {
+                    return earning.PriceEpisodeIdentifier;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private OnProgrammeEarning CreateEarning(string storageName, OnProgrammeEarningType earningType, Func<ContractTypeEarning, decimal?> amount)
+        {
+            OnProgrammeEarning result = null;
+            if (ScenarioContext.Current.ContainsKey(storageName))
+            {
+                if (ScenarioContext.Current[storageName] is ContractTypeEarning earning && amount(earning).HasValue)
+                {
+                    var learningAmount = amount(earning).Value;
+                    var earningPeriods = new List<EarningPeriod>();
+
+                    for (var period = earning.FromPeriod; period <= earning.ToPeriod; period++)
+                    {
+                        earningPeriods.Add(new EarningPeriod { Period = period, Amount = learningAmount });
+                    }
+
+                    var learningEarning = new OnProgrammeEarning
+                        { Type = earningType, Periods = earningPeriods };
+
+                    result = learningEarning;
+                }
+            }
+
+            return result;
         }
     }
 }

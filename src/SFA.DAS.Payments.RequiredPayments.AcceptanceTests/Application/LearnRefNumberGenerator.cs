@@ -6,14 +6,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application
 {
     public class LearnRefNumberGenerator
     {
-        private readonly ScenarioContext scenarioContext;
-
         private readonly Dictionary<string, int> learnerLookup;
 
-        public LearnRefNumberGenerator(ScenarioContext context)
+        public LearnRefNumberGenerator()
         {
-            scenarioContext = context;
-
             learnerLookup = new Dictionary<string, int>();
         }
 
@@ -24,7 +20,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application
                 return learnerLookup[learnRefNumber];
             }
 
-            var sessionId = (Guid)scenarioContext["SessionId"];
+            var sessionId = (Guid)ScenarioContext.Current["SessionId"];
 
             var generated = sessionId.GetHashCode()
                             ^ ukprn.GetHashCode()

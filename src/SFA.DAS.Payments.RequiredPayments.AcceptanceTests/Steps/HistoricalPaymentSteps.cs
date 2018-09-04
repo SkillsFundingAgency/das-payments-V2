@@ -10,10 +10,22 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
         }
 
-        [Given(@"the following historical contract type (.*) payments exist:")]
-        public void GivenTheFollowingHistoricalPaymentsExist(short contractType, Table table)
+        [Given(@"the following historical contract type (.*) on programme payments exist:")]
+        public void GivenTheFollowingHistoricalOnProgrammePaymentsExist(short contractType, Table table)
         {
         }
+
+        [Given(@"the following historical contract type (.*) incentive payments exist:")]
+        public void GivenTheFollowingHistoricalIncentivePaymentsExist(short contractType, Table table)
+        {
+        }
+
+        [Given(@"the following historical contract type (.*) completion payment exist:")]
+        public void GivenTheFollowingHistoricalContractTypeCompletionPaymentExist(short contractType, Table table)
+        {
+            
+        }
+
 
     }
 }
