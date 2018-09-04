@@ -9,19 +9,13 @@ Background:
 	#Warning: Period 14 is for maths and english - currently not implented
 	Given the current processing period is 14
 
+	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
-	And the following learners:
-	| LearnRefNumber | Ukprn | ULN   |
-	| learnref1      | 10000 | 10000 |
-
-	And the payments due component generates the following contract type 2 completion earnings:
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 13     | 10000 | 2               | 3000   |
 
 @Non-DAS
 @minimum_tests
-@additional_payments
-@completion
+#@additional_payments
+#@completion
 #@Maths_English
 #@Maths_English_FinshedLate
 
@@ -29,12 +23,7 @@ Scenario: Contract Type 2 completion payment
 
 	When MASH is received
 
-	Then the payment source component will generate the following contract type 2 coinvested payments:
-
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedSfa_2      | 2700   |
-	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedEmployer_3 | 300    |
-
+	Then the payment source component will generate no contract type 2 coinvested payments
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------

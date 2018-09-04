@@ -6,16 +6,14 @@ Feature: Contract Type Changes From ACT1 To ACT2
 Background:
 	Given the current processing period is 3
 
-	And the following learners:
-	| LearnRefNumber | Ukprn | ULN   |
-	| learnref1      | 10000 | 10000 |
+	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
-	And the payments due component generates the following contract type 1 on program earnings:
+	And the payments due component generates the following contract type 1 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
 	| p1                     | 1      | 10000 | 1               | -600   |
 	| p1                     | 2      | 10000 | 1               | -600   |
 
-	And the payments due component generates the following contract type 2 on program earnings:
+	And the payments due component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
 	| p2                     | 1      | 10000 | 1               | 600    |
 	| p2                     | 2      | 10000 | 1               | 600    |

@@ -70,57 +70,49 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
 #line 9
 #line 10
  testRunner.Given("the current processing period is 3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 12
+ testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
+                    "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "ULN"});
-            table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "10000"});
-#line 12
- testRunner.And("the following learners:", ((string)(null)), table1, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Period",
                         "ULN",
                         "TransactionType",
                         "Amount"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "p1",
                         "1",
                         "10000",
                         "1",
                         "-750"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "p1",
                         "2",
                         "10000",
                         "1",
                         "-750"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "p2",
                         "1",
                         "10000",
                         "1",
                         "0.6667"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "p2",
                         "2",
                         "10000",
                         "1",
                         "0.6667"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "p2",
                         "3",
                         "10000",
                         "1",
                         "0.6667"});
-#line 16
- testRunner.And("the payments due component generates the following contract type 2 on program ear" +
-                    "nings:", ((string)(null)), table2, "And ");
+#line 14
+ testRunner.And("the payments due component generates the following contract type 2 payable earnin" +
+                    "gs:", ((string)(null)), table1, "And ");
 #line hidden
         }
         
@@ -137,14 +129,14 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
                         "minimum_tests",
                         "Refunds",
                         "price_reduced_retrospectively"});
-#line 29
+#line 27
 this.ScenarioSetup(scenarioInfo);
 #line 9
 this.FeatureBackground();
-#line 31
+#line 29
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -153,7 +145,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "FundingSource",
                         "Amount"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -162,7 +154,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedSfa_2",
                         "-675"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -171,7 +163,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "-75"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -180,7 +172,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedSfa_2",
                         "-675"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -189,7 +181,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "-75"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p2",
@@ -198,7 +190,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedSfa_2",
                         "0.60"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p2",
@@ -207,7 +199,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "0.0667"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p2",
@@ -216,7 +208,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedSfa_2",
                         "0.60"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p2",
@@ -225,7 +217,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "0.0667"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p2",
@@ -234,7 +226,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedSfa_2",
                         "0.60"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p2",
@@ -243,9 +235,9 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "0.0667"});
-#line 33
+#line 31
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
-                    "ed payments:", ((string)(null)), table3, "Then ");
+                    "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

@@ -71,33 +71,25 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
 #line 10
 #line 12
  testRunner.Given("the current processing period is 5", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 14
+ testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
+                    "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "ULN"});
-            table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "10000"});
-#line 15
- testRunner.And("the following learners:", ((string)(null)), table1, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Period",
                         "ULN",
                         "TransactionType",
                         "Amount"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "p2",
                         "5",
                         "10000",
                         "1",
                         "600"});
-#line 19
- testRunner.And("the payments due component generates the following contract type 2 on program ear" +
-                    "nings:", ((string)(null)), table2, "And ");
+#line 16
+ testRunner.And("the payments due component generates the following contract type 2 payable earnin" +
+                    "gs:", ((string)(null)), table1, "And ");
 #line hidden
         }
         
@@ -110,14 +102,14 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 Learning payment", new string[] {
                         "Non-DAS",
                         "minimum_tests"});
-#line 32
+#line 29
 this.ScenarioSetup(scenarioInfo);
 #line 10
 this.FeatureBackground();
-#line 34
+#line 31
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -126,7 +118,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "FundingSource",
                         "Amount"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p2",
@@ -135,7 +127,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedSfa_2",
                         "540"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p2",
@@ -144,9 +136,9 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "60"});
-#line 36
+#line 33
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
-                    "ed payments:", ((string)(null)), table3, "Then ");
+                    "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

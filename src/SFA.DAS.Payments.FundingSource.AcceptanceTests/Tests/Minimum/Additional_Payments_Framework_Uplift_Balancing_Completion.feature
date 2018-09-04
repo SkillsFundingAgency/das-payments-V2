@@ -8,16 +8,11 @@ Background:
 
 	Given the current processing period is 13
 
-	And the following learners:
-	| LearnRefNumber | Ukprn | ULN   |
-	| learnref1      | 10000 | 10000 |
+	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
-	And the payments due component generates the following contract type 2 completion earnings:
+	And the payments due component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
 	| p1                     | 13     | 10000 | 2               | 1800   |
-
-	And the payments due component generates the following contract type 2 balancing earnings:
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
 	| p1                     | 13     | 10000 | 3               | 1440   |
 
 @Non-DAS

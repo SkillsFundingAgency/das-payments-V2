@@ -71,17 +71,31 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
 #line 7
 #line 8
  testRunner.Given("the current processing period is 3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 10
+ testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
+                    "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "ULN"});
+                        "PriceEpisodeIdentifier",
+                        "Period",
+                        "ULN",
+                        "TransactionType",
+                        "Amount"});
             table1.AddRow(new string[] {
-                        "learnref1",
+                        "p1",
+                        "1",
                         "10000",
-                        "10000"});
-#line 10
- testRunner.And("the following learners:", ((string)(null)), table1, "And ");
+                        "1",
+                        "-600"});
+            table1.AddRow(new string[] {
+                        "p1",
+                        "2",
+                        "10000",
+                        "1",
+                        "-600"});
+#line 12
+ testRunner.And("the payments due component generates the following contract type 2 payable earnin" +
+                    "gs:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -90,48 +104,26 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
                         "TransactionType",
                         "Amount"});
             table2.AddRow(new string[] {
-                        "p1",
+                        "p2",
                         "1",
                         "10000",
                         "1",
-                        "-600"});
+                        "600"});
             table2.AddRow(new string[] {
-                        "p1",
-                        "2",
-                        "10000",
-                        "1",
-                        "-600"});
-#line 14
- testRunner.And("the payments due component generates the following contract type 2 on program ear" +
-                    "nings:", ((string)(null)), table2, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                        "PriceEpisodeIdentifier",
-                        "Period",
-                        "ULN",
-                        "TransactionType",
-                        "Amount"});
-            table3.AddRow(new string[] {
-                        "p2",
-                        "1",
-                        "10000",
-                        "1",
-                        "600"});
-            table3.AddRow(new string[] {
                         "p2",
                         "2",
                         "10000",
                         "1",
                         "600"});
-            table3.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "p2",
                         "3",
                         "10000",
                         "1",
                         "600"});
-#line 19
- testRunner.And("the payments due component generates the following contract type 1 on program ear" +
-                    "nings:", ((string)(null)), table3, "And ");
+#line 17
+ testRunner.And("the payments due component generates the following contract type 1 payable earnin" +
+                    "gs:", ((string)(null)), table2, "And ");
 #line hidden
         }
         
@@ -148,11 +140,83 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
                         "minimum_tests",
                         "learner_changes_contract_type",
                         "apprenticeship_contract_type_changes"});
-#line 31
+#line 29
 this.ScenarioSetup(scenarioInfo);
 #line 7
 this.FeatureBackground();
+#line 31
+ testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                        "LearnRefNumber",
+                        "Ukprn",
+                        "PriceEpisodeIdentifier",
+                        "Period",
+                        "ULN",
+                        "TransactionType",
+                        "FundingSource",
+                        "Amount"});
+            table3.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "1",
+                        "10000",
+                        "Learning_1",
+                        "CoInvestedSfa_2",
+                        "-540"});
+            table3.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "1",
+                        "10000",
+                        "Learning_1",
+                        "CoInvestedEmployer_3",
+                        "-60"});
+            table3.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "2",
+                        "10000",
+                        "Learning_1",
+                        "CoInvestedSfa_2",
+                        "-540"});
+            table3.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "2",
+                        "10000",
+                        "Learning_1",
+                        "CoInvestedEmployer_3",
+                        "-60"});
 #line 33
+ testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
+                    "ed payments:", ((string)(null)), table3, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Contract Type 1 Learning payment")]
+        [NUnit.Framework.CategoryAttribute("DAS")]
+        [NUnit.Framework.CategoryAttribute("minimum_tests")]
+        [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
+        [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_changes")]
+        public virtual void ContractType1LearningPayment()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 1 Learning payment", new string[] {
+                        "DAS",
+                        "minimum_tests",
+                        "learner_changes_contract_type",
+                        "apprenticeship_contract_type_changes"});
+#line 47
+this.ScenarioSetup(scenarioInfo);
+#line 7
+this.FeatureBackground();
+#line 49
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -172,7 +236,7 @@ this.FeatureBackground();
                         "10000",
                         "Learning_1",
                         "CoInvestedSfa_2",
-                        "-540"});
+                        "540"});
             table4.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -181,7 +245,7 @@ this.FeatureBackground();
                         "10000",
                         "Learning_1",
                         "CoInvestedEmployer_3",
-                        "-60"});
+                        "60"});
             table4.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -190,7 +254,7 @@ this.FeatureBackground();
                         "10000",
                         "Learning_1",
                         "CoInvestedSfa_2",
-                        "-540"});
+                        "540"});
             table4.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -199,100 +263,28 @@ this.FeatureBackground();
                         "10000",
                         "Learning_1",
                         "CoInvestedEmployer_3",
-                        "-60"});
-#line 35
- testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
-                    "ed payments:", ((string)(null)), table4, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract Type 1 Learning payment")]
-        [NUnit.Framework.CategoryAttribute("DAS")]
-        [NUnit.Framework.CategoryAttribute("minimum_tests")]
-        [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
-        [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_changes")]
-        public virtual void ContractType1LearningPayment()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 1 Learning payment", new string[] {
-                        "DAS",
-                        "minimum_tests",
-                        "learner_changes_contract_type",
-                        "apprenticeship_contract_type_changes"});
-#line 49
-this.ScenarioSetup(scenarioInfo);
-#line 7
-this.FeatureBackground();
+                        "60"});
+            table4.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "3",
+                        "10000",
+                        "Learning_1",
+                        "CoInvestedSfa_2",
+                        "540"});
+            table4.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "3",
+                        "10000",
+                        "Learning_1",
+                        "CoInvestedEmployer_3",
+                        "60"});
 #line 51
- testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "PriceEpisodeIdentifier",
-                        "Period",
-                        "ULN",
-                        "TransactionType",
-                        "FundingSource",
-                        "Amount"});
-            table5.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "1",
-                        "10000",
-                        "Learning_1",
-                        "CoInvestedSfa_2",
-                        "540"});
-            table5.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "1",
-                        "10000",
-                        "Learning_1",
-                        "CoInvestedEmployer_3",
-                        "60"});
-            table5.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "2",
-                        "10000",
-                        "Learning_1",
-                        "CoInvestedSfa_2",
-                        "540"});
-            table5.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "2",
-                        "10000",
-                        "Learning_1",
-                        "CoInvestedEmployer_3",
-                        "60"});
-            table5.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "3",
-                        "10000",
-                        "Learning_1",
-                        "CoInvestedSfa_2",
-                        "540"});
-            table5.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "3",
-                        "10000",
-                        "Learning_1",
-                        "CoInvestedEmployer_3",
-                        "60"});
-#line 53
  testRunner.Then("the payment source component will generate the following contract type 1 coinvest" +
-                    "ed payments:", ((string)(null)), table5, "Then ");
+                    "ed payments:", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
