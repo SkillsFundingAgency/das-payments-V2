@@ -7,5 +7,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Configuration
         public string EndpointName { get; set; }
         public string StorageConnectionString { get; set; }
         public string ServiceBusConnectionString { get; set; }
+        public string FailedMessagesQueue { get; set; }
     }
 }
