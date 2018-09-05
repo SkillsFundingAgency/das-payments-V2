@@ -1,64 +1,36 @@
 ﻿#Additional_Payments_16_to_18_Framework_Uplift_Completion
-
 #Old name - Additional_Payments - AC3
-
 Feature: Additional payments 16 to 18 framework uplift completion
-
 	AC3-Learner finishes on time, earns on-programme and completion payments. 
-
 	#Original description is with Payments V1 team to review as implementation is different.
-
 	#AC3-Learner finishes on time, earns on-programme and completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.
 
-
-
 Background: 
-
-
 
 	Given the current processing period is 13
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
-
-
 	And the payments due component generates the following contract type 2 payable earnings:
 
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-
 	| p1                     | 13     | 10000 | 2               | 1800   |
 
-
-
 @Non-DAS
-
 @minimum_tests
-
 @additional_payments
-
 @completion
-
 #@16-18 incentive
-
 #@Framework_uplift -- will require funding band
 
 Scenario: Contract Type 2 completion payment
 
-
-
 	When MASH is received
 
-
-
 	Then the payment source component will generate the following contract type 2 coinvested payments:
-
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedSfa_2      | 1620   |
-
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedEmployer_3 | 180    |
-
-
 
 #----------------------------------------------------------------------------------------------------------------------------------------
 

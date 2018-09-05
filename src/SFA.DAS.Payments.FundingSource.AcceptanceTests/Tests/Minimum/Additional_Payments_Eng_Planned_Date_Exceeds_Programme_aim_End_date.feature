@@ -19,7 +19,7 @@ Background:
 #@Maths_English
 #@Maths_English_FinshedLate
 
-Scenario: Contract Type 2 completion payment
+Scenario: Contract Type 2 no payment
 
 	When MASH is received
 

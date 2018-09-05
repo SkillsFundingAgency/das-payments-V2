@@ -98,11 +98,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
-    <Compile Include="Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature</DependentUpon>
-    </Compile>
     <Compile Include="PaymentFundingSourceIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestConfiguration.cs" />
@@ -153,36 +148,6 @@
     </Compile>
     <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_NoHistory_Final_Completion.feature.cs">
       <DependentUpon>R12_NoHistory_Final_Completion.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_Refund_Delay_in_Completion.feature.cs">
-      <DependentUpon>R12_Refund_Delay_in_Completion.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_ouside_of_last_6_months.feature.cs">
-      <DependentUpon>Redundancy_ouside_of_last_6_months.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_within_last_6_months.feature.cs">
-      <DependentUpon>Redundancy_within_last_6_months.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Balancing_Completion.feature.cs">
-      <DependentUpon>TNP_higher_than_max_funding_band_Balancing_Completion.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Completion.feature.cs">
-      <DependentUpon>TNP_higher_than_max_funding_band_Completion.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Continuing.feature.cs">
-      <DependentUpon>TNP_higher_than_max_funding_band_Continuing.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -249,10 +214,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs</LastGenOutput>
-    </None>
     <None Include="packages.config" />
     <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Learner_finishes_early_withdrawal_after_qualifying_period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -293,30 +254,6 @@
     <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_NoHistory_Final_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R12_NoHistory_Final_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_Refund_Delay_in_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>R12_Refund_Delay_in_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_ouside_of_last_6_months.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Redundancy_ouside_of_last_6_months.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_within_last_6_months.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Redundancy_within_last_6_months.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Balancing_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>TNP_higher_than_max_funding_band_Balancing_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>TNP_higher_than_max_funding_band_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Continuing.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>TNP_higher_than_max_funding_band_Continuing.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
