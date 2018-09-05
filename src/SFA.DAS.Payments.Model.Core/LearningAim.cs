@@ -14,6 +14,6 @@
 
         public decimal AgreedPrice { get; set; }
         
-
+        public string FundingLineType { get; set; }
     }
 }
