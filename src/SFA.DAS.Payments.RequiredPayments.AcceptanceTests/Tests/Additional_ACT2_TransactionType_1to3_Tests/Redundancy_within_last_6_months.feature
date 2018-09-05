@@ -4,9 +4,7 @@
 Background:
 	Given the current processing period is 12
 
-	And the following learners:
-	| LearnRefNumber | Ukprn | ULN   |
-	| learnref1      | 10000 | 10000 |
+	And a learner with LearnRefNumber learnref3 and Uln 10000 undertaking training with training provider 10000
 
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
@@ -25,6 +23,7 @@ Background:
 @Redundancy
 @query
 @Review
+@minimum_additional
 
 Scenario Outline: Contract Type 2 On programme payments
 
