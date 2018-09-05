@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Re
             _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = "some other key"});
 
             _dedsContextMock.Setup(c => c.PaymentHistory).Returns(_paymentSetMock.Object).Verifiable();
-            _repository = _moqer.Resolve<PaymentHistoryRepository>();
+            _repository = new PaymentHistoryRepository(_dedsContextMock.Object);
 
             // act 
             var result = (await _repository.GetPaymentHistory(apprenticeshipKey).ConfigureAwait(false)).ToArray();
