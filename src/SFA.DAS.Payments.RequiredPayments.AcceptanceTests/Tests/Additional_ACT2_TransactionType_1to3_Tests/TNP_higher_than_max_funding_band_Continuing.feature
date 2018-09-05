@@ -19,6 +19,7 @@ Background:
 @Non-DAS
 @funding_band
 @capping
+@minimum_additional
 
 Scenario Outline: Contract Type 2 On programme payments
 

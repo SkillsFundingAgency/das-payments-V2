@@ -25,6 +25,7 @@ Background:
 @funding_band
 @capping
 @FinishingEarly
+@minimum_additional
 
 Scenario Outline: Contract Type 2 On programme payments
 

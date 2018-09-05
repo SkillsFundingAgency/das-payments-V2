@@ -17,6 +17,7 @@ Background:
 @No_Historical_Payments
 @First_submission
 @Missing_submission
+@minimum_additional
 
 Scenario Outline: Contract Type 2 On programme payments
 

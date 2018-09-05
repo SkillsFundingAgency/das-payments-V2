@@ -23,6 +23,7 @@ Background:
 @Redundancy
 @query
 @Review
+@minimum_additional
 
 Scenario Outline: Contract Type 2 On programme payments
 

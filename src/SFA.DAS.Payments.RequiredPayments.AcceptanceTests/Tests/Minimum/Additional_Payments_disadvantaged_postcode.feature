@@ -19,7 +19,7 @@ Background:
 
 @Non-DAS
 @minimum_tests
-@additional_payments
+#@additional_payments
 #@disadvantaged_postcode
 	
 Scenario Outline: Contract Type 2 On programme payments

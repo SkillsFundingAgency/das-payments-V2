@@ -24,9 +24,9 @@ Background:
 
 @Non-DAS
 @minimum_tests
-@additional_payments
-#@completion
-#@balancing
+#@additional_payments
+@completion
+@balancing
 @FinishingEarly
 #@Price_same_as_FundingBand
 #@Framework_uplift -- missing, will require funding band

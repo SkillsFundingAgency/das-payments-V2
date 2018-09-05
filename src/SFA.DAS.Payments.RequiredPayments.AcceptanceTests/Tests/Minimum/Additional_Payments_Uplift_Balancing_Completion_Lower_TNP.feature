@@ -23,11 +23,11 @@ Background:
 
 @Non-DAS
 @minimum_tests
-@additional_payments
+#@additional_payments
 @completion
 @balancing
 @FinishingEarly
-@Price_lower_than_FundingBand
+#@Price_lower_than_FundingBand
 #@Framework_uplift -- missing, will require funding band
 
 Scenario Outline: Contract Type 2 On programme payments

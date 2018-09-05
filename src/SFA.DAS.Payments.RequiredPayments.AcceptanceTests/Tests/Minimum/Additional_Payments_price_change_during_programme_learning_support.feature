@@ -28,10 +28,10 @@ Background:
 
 @Non-DAS
 @minimum_tests
-@additional_payments
+#@additional_payments
 #@Maths_English
 #@Provider_Learning_Support
-#@Change_in_price
+@Change_in_price
 #-- funding band
 Scenario Outline: Contract Type 2 On programme payments
 

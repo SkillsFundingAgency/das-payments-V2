@@ -25,6 +25,7 @@ Background:
 @Redundancy
 @query
 @Review
+@minimum_additional
 #Check the months paid
 
 Scenario Outline: Contract Type 2 On programme payments
