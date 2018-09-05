@@ -3,8 +3,10 @@
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.FundingSource.NonLevyFundedService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
+    <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="" />
+    <Parameter Name="FailedMessagesQueue" DefaultValue=""/>
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -16,10 +18,12 @@
         <Settings>
           <Section Name="ConnectionStringsSection">
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[NonLevyFundedService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[FailedMessagesQueue]"/>
           </Section>
         </Settings>
       </ConfigOverride>
