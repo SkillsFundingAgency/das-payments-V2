@@ -6,6 +6,6 @@
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="NonLevyFundedService_EndpointName" Value="__NonLevyFundedService_EndpointName__" />
-    <Parameter Name="FailedMessagesQueue" Value="__FailedMessagesQueue__"/>
+    <Parameter Name="FailedMessagesQueue" Value="__FailedMessagesQueue__" />
   </Parameters>
 </Application>

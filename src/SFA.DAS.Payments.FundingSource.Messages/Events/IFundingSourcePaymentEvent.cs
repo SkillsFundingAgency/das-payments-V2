@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Events
 {
-    public interface IFundingSourcePayment: IPaymentsEvent
+    public interface IFundingSourcePaymentEvent: IPaymentsEvent
     {
         
     }
