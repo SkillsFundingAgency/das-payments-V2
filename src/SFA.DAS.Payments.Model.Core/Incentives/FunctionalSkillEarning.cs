@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SFA.DAS.Payments.Model.Core.Incentives
 {
@@ -15,6 +16,6 @@ namespace SFA.DAS.Payments.Model.Core.Incentives
         /// </value>
         /// <seealso cref="SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillType" />
         public FunctionalSkillType Type { get; set; }
-        public IReadOnlyCollection<EarningPeriod> Periods { get; set; }
+        public ReadOnlyCollection<EarningPeriod> Periods { get; set; }
     }
 }

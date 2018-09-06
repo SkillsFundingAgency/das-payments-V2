@@ -72,11 +72,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                         AgreedPrice = GetAgreedPrice("ContractType2OnProgrammeEarningsLearning"),
                         Identifier = GetPriceEpisodeIdentifier("ContractType2OnProgrammeEarningsLearning")
                     }
-                },
+                }
+                .AsReadOnly(),
                 EarningYear = (short)DateTime.Today.Year,
                 SfaContributionPercentage = 0.9M,
 
-                OnProgrammeEarnings = onProgrammeEarnings
+                OnProgrammeEarnings = onProgrammeEarnings.AsReadOnly()
             };
 
             var options = new SendOptions();
@@ -127,7 +128,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     }
 
                     var learningEarning = new OnProgrammeEarning
-                        { Type = earningType, Periods = earningPeriods };
+                        { Type = earningType, Periods = earningPeriods.AsReadOnly() };
 
                     result = learningEarning;
                 }

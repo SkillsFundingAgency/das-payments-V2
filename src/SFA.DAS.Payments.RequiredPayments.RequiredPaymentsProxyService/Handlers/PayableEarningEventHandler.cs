@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
                     var actorId = new ActorId(key);
                     var actor = _proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                    RequiredPaymentEvent[] payments;
+                    ApprenticeshipContractType2RequiredPaymentEvent[] payments;
                     try
                     {
                         payments = await actor.HandleAct2Earning(message, CancellationToken.None)
