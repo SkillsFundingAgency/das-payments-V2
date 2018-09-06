@@ -7,61 +7,24 @@ Background:
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
-	And the following course information:
-	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
-	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 01/09/2017        | 08/09/2018             | 31/10/2017    	       | planned break    |
-	| 2            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 03/01/2018        | 08/11/2018             |				       | Continuing 	  |
-
-	And the following contract type 2 on programme earnings for periods 1-3 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| p1                     | 01/09/2017       | 01/09/2017                   | 15000                | 1000       |	
-
-	And the following contract type 2 on programme earnings for periods 6-14 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| p2                     | 03/01/2018       | 03/01/2018                   | 15000                | 1000       |	
+	And the payments due component generates the following contract type 2 payable earnings:
+	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
+	| p2                     | 7      | 10000 | 1               | 1000    |	
 
 @Non-DAS
 @minimum_tests_additional
 @BreakInLearning
 @review
 
-Scenario Outline: Contract Type 2 On programme payments
+Scenario: Contract Type 2 Learning payment
 
-	And the following historical contract type 2 on programme payments exist:   
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1				      | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1				      | 2      | 10000 | <transaction_type> | <amount> |
+	When MASH is received
 
-	When a TOBY is received
+	Then the payment source component will generate the following contract type 2 coinvested payments:
 
-	Then the payments due component will generate the following contract type 2 payable earnings:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
-
-	Examples: 
-	| transaction_type | amount |
-	| Learning_1       | 1000   |
-
-
-Scenario Outline: Contract Type 2 On programme payments changed price
-
-	And the following historical contract type 2 on programme payments exist:   
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p2				      | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p2				      | 6      | 10000 | <transaction_type> | <amount> |
-
-	When a TOBY is received
-
-	Then the payments due component will generate the following contract type 2 payable earnings:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p2                     | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p2                     | 6      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p2                     | 7      | 10000 | <transaction_type> | <amount> |
-
-	Examples: 
-	| transaction_type | amount |
-	| Learning_1       | 1000   |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
+	| learnref1      | 10000 | p2                     | 7      | 10000 | Learning_1      | CoInvestedSfa_2      | 900    |
+	| learnref1      | 10000 | p2                     | 7      | 10000 | Learning_1      | CoInvestedEmployer_3 | 100    |
 
 #
 #    V1 - DAS test
