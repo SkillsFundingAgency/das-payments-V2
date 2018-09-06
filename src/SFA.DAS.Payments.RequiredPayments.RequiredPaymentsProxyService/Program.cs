@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Castle.Core.Internal;
+﻿using Castle.Core.Internal;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -15,9 +14,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService
         {
             try
             {
-                var builder = ServiceFabricContainerFactory.CreateBuilderForStatelessService<RequiredPaymentsProxyService>();
-
-                using (builder.Build())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<RequiredPaymentsProxyService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }

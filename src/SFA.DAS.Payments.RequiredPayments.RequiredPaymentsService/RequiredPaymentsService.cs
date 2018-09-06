@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             _executionContextFactory = executionContextFactory ?? throw new ArgumentNullException(nameof(executionContextFactory));
         }
 
-        public async Task<RequiredPaymentEvent[]> HandleEarning(IEarningEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ApprenticeshipContractType2RequiredPaymentEvent[]> HandleAct2Earning(ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             var executionContext = _executionContextFactory.GetExecutionContext();
             executionContext.JobId = earningEvent.JobId;
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             _paymentLogger.LogInfo($"Handling Earning for {earningEvent?.Ukprn} ");
             //TODO: use handler in application layer to process the earning event.
             return new [] {
-                new RequiredPaymentEvent
+                new ApprenticeshipContractType2RequiredPaymentEvent
                 {
                     JobId = earningEvent.JobId, 
                     EventTime = DateTimeOffset.UtcNow

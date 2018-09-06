@@ -125,8 +125,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
             endpointConfiguration.DisableFeature<TimeoutManager>();
             endpointConfiguration.DisableFeature<MessageDrivenSubscriptions>();
 
-            endpointConfiguration.UseTransport<AzureStorageQueueTransport>()
-                .ConnectionString(TestConfiguration.StorageConnectionString)
+            endpointConfiguration.UseTransport<AzureServiceBusTransport>()
+                .UseForwardingTopology()
+                .ConnectionString(TestConfiguration.ServiceBusConnectionString)
                 .Routing()
                 .RouteToEndpoint(typeof(IEarningEvent).Assembly, EndpointNames.RequiredPayments);
 

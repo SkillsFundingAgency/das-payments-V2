@@ -28,11 +28,10 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
                 endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
                 endpointConfiguration.EnableInstallers();
-                endpointConfiguration.UseContainer<AutofacBuilder>();
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()
-            .InstancePerDependency();
+            .SingleInstance();
         }
     }
 }
