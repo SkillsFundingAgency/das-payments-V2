@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NServiceBus;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -13,7 +14,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     public class PaymentsDueInputSteps
     {
         [When(@"a TOBY is received")]
-        public void WhenATobyIsReceived()
+        public async void WhenATobyIsReceivedAsync()
         {
             var scenarioContext = ScenarioContext.Current;
             // Get all the input data
@@ -77,6 +78,11 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
                 OnProgrammeEarnings = onProgrammeEarnings
             };
+
+            var options = new SendOptions();
+            options.RequireImmediateDispatch();
+
+            await BindingBootstrapper.EndpointInstance.Send(earning, options).ConfigureAwait(false);
         }
 
         private decimal GetAgreedPrice(string storageName)
