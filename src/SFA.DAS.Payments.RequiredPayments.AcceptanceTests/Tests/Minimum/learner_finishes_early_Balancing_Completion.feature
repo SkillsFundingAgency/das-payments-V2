@@ -30,6 +30,7 @@ Background:
 @completion
 @balancing
 @FinishingEarly
+@partial
 
 Scenario Outline: Contract Type 2 On programme payments
 	And the following historical contract type 2 on programme payments exist:   

@@ -23,6 +23,7 @@ Background:
 @minimum_tests
 @Refunds
 @price_reduced_retrospectively
+@partial
 
 Scenario Outline: Contract Type 2 On programme payments before price change
 

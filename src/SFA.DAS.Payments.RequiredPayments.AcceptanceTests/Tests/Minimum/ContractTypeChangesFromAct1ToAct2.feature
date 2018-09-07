@@ -21,6 +21,7 @@ Background:
 @learner_changes_contract_type
 @apprenticeship_contract_type_changes
 #@English_Maths
+@partial
 
 Scenario Outline: Contract Type 1 On programme payments
 

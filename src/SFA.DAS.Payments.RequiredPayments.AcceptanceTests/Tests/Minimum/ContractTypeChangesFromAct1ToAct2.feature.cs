@@ -131,6 +131,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
         [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_changes")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         [NUnit.Framework.TestCaseAttribute("Learning_1", "600", null)]
         public virtual void ContractType1OnProgrammePayments(string transaction_Type, string amount, string[] exampleTags)
         {
@@ -138,13 +139,14 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                     "DAS",
                     "minimum_tests",
                     "learner_changes_contract_type",
-                    "apprenticeship_contract_type_changes"};
+                    "apprenticeship_contract_type_changes",
+                    "partial"};
             if ((exampleTags != null))
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 1 On programme payments", null, @__tags);
-#line 25
+#line 26
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 6
@@ -174,9 +176,9 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 27
+#line 28
  testRunner.And("the following historical contract type 1 on programme payments exist:", ((string)(null)), table3, "And ");
-#line 32
+#line 33
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -219,7 +221,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("-{0}", amount)});
-#line 34
+#line 35
  testRunner.Then("the payments due component will generate the following contract type 1 payable ea" +
                     "rnings:", ((string)(null)), table4, "Then ");
 #line hidden
@@ -245,12 +247,12 @@ this.FeatureBackground();
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments", null, @__tags);
-#line 51
+#line 52
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 6
 this.FeatureBackground();
-#line 53
+#line 54
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -285,7 +287,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 55
+#line 56
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table5, "Then ");
 #line hidden

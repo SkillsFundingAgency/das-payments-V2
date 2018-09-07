@@ -30,6 +30,7 @@ Background:
 #@completion
 #@Maths_English
 #@Maths_English_FinshedLate
+@partial
 
 Scenario Outline: Contract Type 2 On programme payments
 

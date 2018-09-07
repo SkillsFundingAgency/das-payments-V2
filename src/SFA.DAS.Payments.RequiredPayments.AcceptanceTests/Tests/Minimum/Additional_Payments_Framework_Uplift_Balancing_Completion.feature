@@ -30,6 +30,7 @@ Background:
 @FinishingEarly
 #@Price_same_as_FundingBand
 #@Framework_uplift -- missing, will require funding band
+@partial
 
 Scenario Outline: Contract Type 2 On programme payments
 	And the following historical contract type 2 on programme payments exist:   

@@ -39,6 +39,7 @@ Background:
 @small_employers
 @completion
 @fully_funded
+@partial
 #@enhanced_funding
 #@16-18 incentive
 #@Framework_uplift -- will require funding band
