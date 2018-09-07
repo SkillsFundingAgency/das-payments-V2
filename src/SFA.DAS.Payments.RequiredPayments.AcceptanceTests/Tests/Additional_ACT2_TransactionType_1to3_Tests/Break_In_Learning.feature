@@ -21,7 +21,7 @@ Background:
 	| p2                     | 03/01/2018       | 03/01/2018                   | 15000                | 1000       |	
 
 @Non-DAS
-@minimum_tests_additional
+@minimum_additional
 @BreakInLearning
 @review
 

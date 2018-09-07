@@ -19,7 +19,6 @@ Background:
 @Non-DAS
 @Historical_Payments
 @Start_Date_Earlier
-@In-progress
 
 Scenario Outline: Contract Type 2 On programme payments
 

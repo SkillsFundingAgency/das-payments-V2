@@ -154,7 +154,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Contract Type 2 On programme payments")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
-        [NUnit.Framework.CategoryAttribute("minimum_tests_additional")]
+        [NUnit.Framework.CategoryAttribute("minimum_additional")]
         [NUnit.Framework.CategoryAttribute("BreakInLearning")]
         [NUnit.Framework.CategoryAttribute("review")]
         [NUnit.Framework.TestCaseAttribute("Learning_1", "1000", null)]
@@ -162,7 +162,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
         {
             string[] @__tags = new string[] {
                     "Non-DAS",
-                    "minimum_tests_additional",
+                    "minimum_additional",
                     "BreakInLearning",
                     "review"};
             if ((exampleTags != null))
