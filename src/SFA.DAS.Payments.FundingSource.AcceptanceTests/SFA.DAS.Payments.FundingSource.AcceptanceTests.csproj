@@ -156,6 +156,21 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_Refund_Delay_in_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R12_Refund_Delay_in_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_ouside_of_last_6_months.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Redundancy_ouside_of_last_6_months.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_within_last_6_months.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Redundancy_within_last_6_months.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Balancing_Completion1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -278,6 +293,18 @@
     <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_NoHistory_Final_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R12_NoHistory_Final_Completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_Refund_Delay_in_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R12_Refund_Delay_in_Completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_ouside_of_last_6_months.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Redundancy_ouside_of_last_6_months.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_within_last_6_months.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Redundancy_within_last_6_months.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Balancing_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
