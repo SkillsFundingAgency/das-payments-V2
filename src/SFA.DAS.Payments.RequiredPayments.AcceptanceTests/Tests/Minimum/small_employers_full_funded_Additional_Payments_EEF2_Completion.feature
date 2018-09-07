@@ -9,7 +9,7 @@ Background:
 
 	Given the current processing period is 13
 
-	And a learner with LearnRefNumber learnref3 and Uln 10000 undertaking training with training provider 10000
+	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
 	#Check with Dave if FundingLineType needs changing
 	And the following course information:

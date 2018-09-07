@@ -3,7 +3,7 @@
 Background:
 	Given the current processing period is 13
 
-	And a learner with LearnRefNumber learnref3 and Uln 10000 undertaking training with training provider 10000
+	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
 	And the payments due component generates the following contract type 2 payable earnings:
 
