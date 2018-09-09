@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Interface
 {
     public interface ICoInvestedPaymentProcessor
     {
-        FundingSourcePaymentEvent Process(ApprenticeshipContractType2RequiredPaymentEvent message);
+        CoInvestedFundingSourcePaymentEvent Process(ApprenticeshipContractType2RequiredPaymentEvent message);
     }
 }

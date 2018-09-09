@@ -1,24 +1,28 @@
-﻿using SFA.DAS.Payments.FundingSource.Domain.Interface;
+﻿using AutoMapper;
+using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
-using System;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
-    public class SfaCoInvestedPaymentProcessor : CoInvestedPaymentProcessor , ICoInvestedPaymentProcessor
+    public class SfaCoInvestedPaymentProcessor : CoInvestedPaymentProcessor
     {
-        public FundingSourcePaymentEvent Process(ApprenticeshipContractType2RequiredPaymentEvent message)
+        private readonly IMapper mapper;
+
+        public SfaCoInvestedPaymentProcessor(IValidateRequiredPaymentEvent validateRequiredPaymentEvent, IMapper mapper)
+            : base(validateRequiredPaymentEvent)
         {
-            ValidateSfaContributionPercentage(message);
-          
+            this.mapper = mapper;
+        }
+
+        protected override CoInvestedFundingSourcePaymentEvent CreatePayment(ApprenticeshipContractType2RequiredPaymentEvent message)
+        {
             var amountToPay = message.SfaContributionPercentage * message.AmountDue;
 
-            return new FundingSourcePaymentEvent
-            {
-                JobId = message.JobId,
-                EventTime = DateTime.UtcNow,
-                Amount = amountToPay
-            };
+            var payment = mapper.Map<CoInvestedSfaFundingSourcePaymentEvent>(message);
+            payment.AmountDue = amountToPay;
+
+            return payment;
         }
     }
 }

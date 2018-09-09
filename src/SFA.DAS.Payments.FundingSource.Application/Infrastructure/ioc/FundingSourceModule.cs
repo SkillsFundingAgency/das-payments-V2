@@ -9,12 +9,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterInstance(new ContractType2RequiredPaymentHandler
+            builder.RegisterType<IValidateRequiredPaymentEvent>().AsImplementedInterfaces().SingleInstance();
+
+            builder.Register(c => new ContractType2RequiredPaymentHandler
                 (
                   new List<ICoInvestedPaymentProcessor>()
                   {
-                    new SfaCoInvestedPaymentProcessor(),
-                    new EmployerCoInvestedPaymentProcessor()
+                    new SfaCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>(), c.Resolve<IMa),
+                    new EmployerCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>())
                   }
                 )).As<IContractType2RequiredPaymentHandler>();
         }

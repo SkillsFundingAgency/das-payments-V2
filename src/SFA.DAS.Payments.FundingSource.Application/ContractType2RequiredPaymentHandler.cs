@@ -15,15 +15,15 @@ namespace SFA.DAS.Payments.FundingSource.Application
             this.processors = processors ?? throw new ArgumentNullException(nameof(processors));
         }
 
-        public IEnumerable<FundingSourcePaymentEvent> GetFundedPayments(ApprenticeshipContractType2RequiredPaymentEvent message)
+        public IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(ApprenticeshipContractType2RequiredPaymentEvent message)
         {
-            var payments = new List<FundingSourcePaymentEvent>();
+            var payments = new List<CoInvestedFundingSourcePaymentEvent>();
 
             foreach (var processor in processors)
             {
                 var payment = processor.Process(message);
 
-                if (payment != null && payment.Amount != 0)
+                if (payment != null && payment.AmountDue != 0)
                 {
                     payments.Add(payment);
                 }
