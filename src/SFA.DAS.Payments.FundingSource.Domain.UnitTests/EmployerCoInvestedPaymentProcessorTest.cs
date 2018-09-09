@@ -1,10 +1,10 @@
-﻿using Moq;
+﻿using AutoMapper;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Domain.Exceptions;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
@@ -14,11 +14,12 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
     {
         private EmployerCoInvestedPaymentProcessor processor;
         private Mock<IValidateRequiredPaymentEvent> validator;
+        private Mock<IMapper> mapper;
 
         [Test]
-        public void ShouldThrowExceptionIfValidationResultIsNotNull()
+        public void ShouldThrowExceptionIfValidationResultIsNotEmpty()
         {
-            var message = new ApprenticeshipContractType2RequiredPaymentEvent
+            var message = new CoInvestedPayment
             {
                 SfaContributionPercentage = 0
             };
@@ -27,13 +28,14 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             {
                 new RequiredPaymentEventValidationResult
                 {
-                    RequiredPaymentEventMesage = message,
+                    RequiredCoInvestedPayment = message,
                     Rule = RequiredPaymentEventValidationRules.ZeroSfaContributionPercentage
                 }
             };
 
             validator = new Mock<IValidateRequiredPaymentEvent>();
             validator.Setup(o => o.Validate(message)).Returns(validationResults);
+
 
             processor = new EmployerCoInvestedPaymentProcessor(validator.Object);
 
@@ -47,11 +49,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
                                                                                    decimal amountDue,
                                                                                    decimal expectedAmount)
         {
-            var message = new ApprenticeshipContractType2RequiredPaymentEvent
+            var message = new CoInvestedPayment
             {
                 SfaContributionPercentage = sfaContribution,
-                AmountDue = amountDue,
-                JobId = "H001"
+                AmountDue = amountDue
             };
             validator = new Mock<IValidateRequiredPaymentEvent>();
             validator.Setup(o => o.Validate(message)).Returns(new List<RequiredPaymentEventValidationResult>());

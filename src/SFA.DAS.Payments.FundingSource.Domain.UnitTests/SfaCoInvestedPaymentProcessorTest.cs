@@ -4,7 +4,6 @@ using SFA.DAS.Payments.FundingSource.Domain.Exceptions;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
@@ -19,7 +18,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         [Test]
         public void ShouldThrowExceptionIfValidationResultIsNotNull()
         {
-            var message = new ApprenticeshipContractType2RequiredPaymentEvent
+            var message = new CoInvestedPayment
             {
                 SfaContributionPercentage = 0
             };
@@ -28,7 +27,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             {
                 new RequiredPaymentEventValidationResult
                 {
-                    RequiredPaymentEventMesage = message,
+                    RequiredCoInvestedPayment =message,
                     Rule = RequiredPaymentEventValidationRules.ZeroSfaContributionPercentage
                 }
             };
@@ -48,11 +47,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
                                                                                     decimal amountDue,
                                                                                     decimal expectedAmount)
         {
-            var message = new ApprenticeshipContractType2RequiredPaymentEvent
+            var message = new CoInvestedPayment
             {
                 SfaContributionPercentage = sfaContribution,
-                AmountDue = amountDue,
-               JobId = "H001"
+                AmountDue = amountDue
             };
 
             validator = new Mock<IValidateRequiredPaymentEvent>();

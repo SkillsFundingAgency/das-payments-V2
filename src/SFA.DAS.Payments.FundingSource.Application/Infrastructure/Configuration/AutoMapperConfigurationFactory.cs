@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
@@ -10,8 +11,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
         {
             return new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, CoInvestedSfaFundingSourcePaymentEvent>()
-                 .ForMember(dst => dst.AmountDue, opt => opt.Ignore());
+                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, CoInvestedPayment>();
+                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, CoInvestedFundingSourcePaymentEvent>();
+
+                cfg.CreateMap<CoInvestedFundingSourcePaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>();
+                cfg.CreateMap<CoInvestedFundingSourcePaymentEvent, EmployerCoInvestedFundingSourcePaymentEvent>();
 
             });
         }

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+﻿
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Models
 {
@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Models
     {
         public RequiredPaymentEventValidationRules Rule { get; set; }
 
-        public RequiredPaymentEvent RequiredPaymentEventMesage { get; set; }
+        public CoInvestedPayment RequiredCoInvestedPayment { get; set; }
     }
 }

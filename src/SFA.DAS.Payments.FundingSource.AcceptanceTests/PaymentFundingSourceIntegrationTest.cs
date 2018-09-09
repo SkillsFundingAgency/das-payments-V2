@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests
             {
                 JobId = "J000595959",
                 EventTime = DateTimeOffset.UtcNow,
-                Amount = 1000
+                AmountDue = 1000
             };
         }
 

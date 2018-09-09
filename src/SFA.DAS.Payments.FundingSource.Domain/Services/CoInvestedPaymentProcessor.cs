@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SFA.DAS.Payments.FundingSource.Domain.Exceptions;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Domain.Models;
 using System.Linq;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
@@ -16,20 +15,20 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             validator = validateRequiredPaymentEvent;
         }
 
-        protected void Validate(ApprenticeshipContractType2RequiredPaymentEvent message)
+        protected void Validate(CoInvestedPayment message)
         {
             var validationResults = validator.Validate(message);
             if (validationResults.Any()) throw new FundingSourceRequiredPaymentValidationException(JsonConvert.SerializeObject(validationResults));
         }
 
-        public CoInvestedFundingSourcePaymentEvent Process(ApprenticeshipContractType2RequiredPaymentEvent message)
+        public Payment Process(CoInvestedPayment message)
         {
             Validate(message);
 
             return CreatePayment(message);
         }
 
-        protected abstract CoInvestedFundingSourcePaymentEvent CreatePayment(ApprenticeshipContractType2RequiredPaymentEvent message);
+        protected abstract Payment CreatePayment(CoInvestedPayment message);
       
     }
 

@@ -1,7 +1,8 @@
 ﻿using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System.Collections.Generic;
 
@@ -10,14 +11,21 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
     [TestFixture]
     public class ContractType2RequiredPaymentHandlerTest
     {
-
         [Test]
         public void HandleShouldCallAllPaymentProcessors()
         {
             // Arrange
             var message = new ApprenticeshipContractType2RequiredPaymentEvent();
+            var requiredCoInvestedPayment = new CoInvestedPayment();
+            var fundingSourcePayment = new Payment();
+
             var sfaPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
             var employerPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
+
+            var mapper = new Mock<ICoInvestedFundingSourcePaymentEventMapper>(MockBehavior.Strict);
+            mapper.Setup(o => o.MapFrom(message)).Returns(requiredCoInvestedPayment);
+            mapper.Setup(o => o.MapTo(message, fundingSourcePayment));
+
             var paymentProcessors = new List<ICoInvestedPaymentProcessor>
             {
                sfaPaymentProcessor.Object,
@@ -25,15 +33,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             };
 
             sfaPaymentProcessor
-                .Setup(o => o.Process(message)).Returns(new FundingSourcePaymentEvent())
+                .Setup(o => o.Process(requiredCoInvestedPayment)).Returns(fundingSourcePayment)
                 .Verifiable();
 
             employerPaymentProcessor
-                .Setup(o => o.Process(message)).Returns(new FundingSourcePaymentEvent())
+                .Setup(o => o.Process(requiredCoInvestedPayment)).Returns(fundingSourcePayment)
                  .Verifiable();
 
             // Act
-            var handler = new ContractType2RequiredPaymentHandler(paymentProcessors);
+            var handler = new ContractType2RequiredPaymentHandler(paymentProcessors, mapper.Object);
             handler.GetFundedPayments(message);
 
             //Assert

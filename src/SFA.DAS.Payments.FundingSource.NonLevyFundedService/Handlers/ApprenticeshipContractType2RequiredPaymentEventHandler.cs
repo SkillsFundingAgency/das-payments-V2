@@ -13,13 +13,15 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly ILifetimeScope lifetimeScope;
-        private readonly IContractType2RequiredPaymentHandler handler;
+        private readonly IContractType2RequiredPaymentService contractType2RequiredPaymentService;
 
-        public ApprenticeshipContractType2RequiredPaymentEventHandler(IPaymentLogger paymentLogger, ILifetimeScope lifetimeScope, IContractType2RequiredPaymentHandler handler)
+        public ApprenticeshipContractType2RequiredPaymentEventHandler(IPaymentLogger paymentLogger, 
+                                                                      ILifetimeScope lifetimeScope, 
+                                                                      IContractType2RequiredPaymentService contractType2RequiredPaymentService)
         {
             this.paymentLogger = paymentLogger;
             this.lifetimeScope = lifetimeScope;
-            this.handler = handler;
+            this.contractType2RequiredPaymentService = contractType2RequiredPaymentService;
         }
 
         public async Task Handle(ApprenticeshipContractType2RequiredPaymentEvent message, IMessageHandlerContext context)
@@ -34,7 +36,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
                 try
                 {
                     //TODO Logic to generate Payments
-                    var payments = handler.GetFundedPayments(message);
+                    var payments = contractType2RequiredPaymentService.GetFundedPayments(message);
 
                     foreach (var recordablePaymentEvent in payments)
                     {
