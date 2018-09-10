@@ -3,7 +3,7 @@ using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Events
 {
-    public class FundingSourcePaymentEvent 
+    public abstract class FundingSourcePaymentEvent 
     {
         public string PriceEpisodeIdentifier { get; set; }
 
@@ -22,5 +22,9 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
         public LearningAim LearningAim { get; set; }
 
         public string JobId { get; set; }
+
+        public byte Period { get; set; }
+
+        public byte ContractType { get; set; }
     }
 }

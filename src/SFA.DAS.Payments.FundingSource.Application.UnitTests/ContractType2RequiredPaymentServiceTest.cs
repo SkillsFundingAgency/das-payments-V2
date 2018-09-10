@@ -17,14 +17,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             // Arrange
             var message = new ApprenticeshipContractType2RequiredPaymentEvent();
             var requiredCoInvestedPayment = new RequiredCoInvestedPayment();
-            var fundingSourcePayment = new Payment();
+            var fundingSourcePayment = new CoInvestedPayment();
 
             var sfaPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
             var employerPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
 
             var mapper = new Mock<ICoInvestedFundingSourcePaymentEventMapper>(MockBehavior.Strict);
-            mapper.Setup(o => o.MapFrom(message)).Returns(requiredCoInvestedPayment);
-            mapper.Setup(o => o.MapTo(message, fundingSourcePayment));
+            mapper.Setup(o => o.MapToRequiredCoInvestedPayment(message)).Returns(requiredCoInvestedPayment);
+            mapper.Setup(o => o.MapToCoInvestedPaymentEvent(message, fundingSourcePayment));
 
             var paymentProcessors = new List<ICoInvestedPaymentProcessor>
             {

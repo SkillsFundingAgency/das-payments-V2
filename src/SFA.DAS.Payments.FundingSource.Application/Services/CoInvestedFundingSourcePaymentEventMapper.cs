@@ -14,48 +14,34 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.mapper = mapper;
         }
 
-        public CoInvestedFundingSourcePaymentEvent MapTo(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, Payment payment)
+        public CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, CoInvestedPayment payment)
         {
             var coInvestedPaymentEvent = mapper.Map<CoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent);
-           
-            switch (payment.Type)
-            {
-                case Domain.Enum.FundingSourceType.CoInvestedSfa:
-                    coInvestedPaymentEvent = mapper.Map<SfaCoInvestedFundingSourcePaymentEvent>(coInvestedPaymentEvent);
-                    break;
-                case Domain.Enum.FundingSourceType.CoInvestedEmployer:
-                    coInvestedPaymentEvent = mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent>(coInvestedPaymentEvent);
-                    break;
-            }
+           return  MapCommonCoInvestedPaymentEventData(payment, coInvestedPaymentEvent);
+        }
 
+        public CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, SfaCoInvestedPayment payment)
+        {
+            var coInvestedPaymentEvent = mapper.Map<SfaCoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent);
+            return MapCommonCoInvestedPaymentEventData(payment, coInvestedPaymentEvent);
+        }
+
+        public CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, EmployerCoInvestedPayment payment)
+        {
+            var coInvestedPaymentEvent = mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent);
+            return MapCommonCoInvestedPaymentEventData(payment, coInvestedPaymentEvent);
+        }
+
+        public RequiredCoInvestedPayment MapToRequiredCoInvestedPayment(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent)
+        {
+            return mapper.Map<RequiredCoInvestedPayment>(requiredPaymentsEvent);
+        }
+
+        private CoInvestedFundingSourcePaymentEvent MapCommonCoInvestedPaymentEventData(CoInvestedPayment payment, CoInvestedFundingSourcePaymentEvent coInvestedPaymentEvent)
+        {
             coInvestedPaymentEvent.AmountDue = payment.AmountDue;
-
+            coInvestedPaymentEvent.ContractType = 2;
             return coInvestedPaymentEvent;
         }
-
-        public RequiredCoInvestedPayment MapFrom(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent)
-        {
-
-            return new RequiredCoInvestedPayment
-            {
-                AmountDue = requiredPaymentsEvent.AmountDue,
-                SfaContributionPercentage = requiredPaymentsEvent.SfaContributionPercentage
-            };
-        }
-
-
-
-
-
-
-
-
-
-
-
-
     }
-
-
-
 }

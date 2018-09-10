@@ -11,14 +11,15 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         {
         }
 
-        protected override Payment CreatePayment(RequiredCoInvestedPayment message)
+        protected override CoInvestedPayment CreatePayment(RequiredCoInvestedPayment message)
         {
             var amountToPay = message.SfaContributionPercentage * message.AmountDue;
 
-            return new Payment
+            return new SfaCoInvestedPayment
             {
                 AmountDue = amountToPay,
-                 Type = Enum.FundingSourceType.CoInvestedSfa
+                 Type = Enum.FundingSourceType.CoInvestedSfa,
+                 
             };
         }
     }

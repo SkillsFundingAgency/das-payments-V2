@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using SFA.DAS.Payments.FundingSource.Domain.Interface;
+﻿using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
@@ -20,7 +19,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         public IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(ApprenticeshipContractType2RequiredPaymentEvent message)
         {
-            var coInvestedPaymentMessage = mapper.MapFrom(message);
+            var coInvestedPaymentMessage = mapper.MapToRequiredCoInvestedPayment(message);
 
             var paymentEvents = new List<CoInvestedFundingSourcePaymentEvent>();
 
@@ -29,7 +28,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 var payment = processor.Process(coInvestedPaymentMessage);
                 if (payment != null && payment.AmountDue != 0)
                 {
-                    var paymentEvent = mapper.MapTo(message, payment);
+                    var paymentEvent = mapper.MapToCoInvestedPaymentEvent(message, payment);
                     paymentEvents.Add(paymentEvent);
                 }
             }

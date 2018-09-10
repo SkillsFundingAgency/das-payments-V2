@@ -6,12 +6,10 @@ namespace SFA.DAS.Payments.FundingSource.Application
 {
     public interface ICoInvestedFundingSourcePaymentEventMapper
     {
-        CoInvestedFundingSourcePaymentEvent MapTo(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, Payment payment);
-
-        RequiredCoInvestedPayment MapFrom(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent);
-
+        CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, CoInvestedPayment payment);
+        CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, SfaCoInvestedPayment payment);
+        CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, EmployerCoInvestedPayment payment);
+        RequiredCoInvestedPayment MapToRequiredCoInvestedPayment(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent);
     }
-
-
 
 }

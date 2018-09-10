@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
-using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuration;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.ioc
 {

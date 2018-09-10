@@ -2,11 +2,14 @@
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Models
 {
-    public class Payment
+    public class CoInvestedPayment
     {
         public decimal AmountDue { get; set; }
 
-        public FundingSourceType Type { get; set; }
+        public virtual FundingSourceType Type { get; set; }
+
+        public byte ContractType { get; set; }
 
     }
+
 }
