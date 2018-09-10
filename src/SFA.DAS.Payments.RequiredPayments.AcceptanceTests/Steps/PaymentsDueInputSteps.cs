@@ -13,23 +13,28 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class PaymentsDueInputSteps
     {
+        private readonly ScenarioContext context;
+
+        public PaymentsDueInputSteps(ScenarioContext context)
+        {
+            this.context = context;
+        }
         [When(@"a TOBY is received")]
         public async void WhenATobyIsReceivedAsync()
         {
-            var scenarioContext = ScenarioContext.Current;
             // Get all the input data
-            var processingPeriod = (short)scenarioContext["ProcessingPeriod"];
+            var processingPeriod = (short)context["ProcessingPeriod"];
 
-            var learnRefNumber = scenarioContext["LearnRefNumber"].ToString();
-            var uln = (long)scenarioContext["Uln"];
-            var ukprn = (long)scenarioContext["Ukprn"];
-            var generatedLearnRefNumber = scenarioContext["GeneratedLearnRefNumber"].ToString();
+            var learnRefNumber = context["LearnRefNumber"].ToString();
+            var uln = (long)context["Uln"];
+            var ukprn = (long)context["Ukprn"];
+            var generatedLearnRefNumber = context["GeneratedLearnRefNumber"].ToString();
 
             IEnumerable<Course> courses = null;
 
-            if (scenarioContext.ContainsKey("Courses"))
+            if (context.ContainsKey("Courses"))
             {
-                courses = scenarioContext["Courses"] as IEnumerable<Course>;
+                courses = context["Courses"] as IEnumerable<Course>;
             }
 
             var course = courses?.FirstOrDefault();
@@ -88,9 +93,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
         private decimal GetAgreedPrice(string storageName)
         {
-            if (ScenarioContext.Current.ContainsKey(storageName))
+            if (context.ContainsKey(storageName))
             {
-                if (ScenarioContext.Current[storageName] is ContractTypeEarning earning)
+                if (context[storageName] is ContractTypeEarning earning)
                 {
                     return earning.TotalNegotiatedPrice;
                 }
@@ -101,9 +106,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
         private string GetPriceEpisodeIdentifier(string storageName)
         {
-            if (ScenarioContext.Current.ContainsKey(storageName))
+            if (context.ContainsKey(storageName))
             {
-                if (ScenarioContext.Current[storageName] is ContractTypeEarning earning)
+                if (context[storageName] is ContractTypeEarning earning)
                 {
                     return earning.PriceEpisodeIdentifier;
                 }
@@ -115,9 +120,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         private OnProgrammeEarning CreateEarning(string storageName, OnProgrammeEarningType earningType, Func<ContractTypeEarning, decimal?> amount)
         {
             OnProgrammeEarning result = null;
-            if (ScenarioContext.Current.ContainsKey(storageName))
+            if (context.ContainsKey(storageName))
             {
-                if (ScenarioContext.Current[storageName] is ContractTypeEarning earning && amount(earning).HasValue)
+                if (context[storageName] is ContractTypeEarning earning && amount(earning).HasValue)
                 {
                     var learningAmount = amount(earning).Value;
                     var earningPeriods = new List<EarningPeriod>();

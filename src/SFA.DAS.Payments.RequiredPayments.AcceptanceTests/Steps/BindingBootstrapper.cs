@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [BeforeFeature]
         public static void FeatureSetup()
         {
-            var endpointAddress = "sfa-das-payments-requiredpayments-acceptancetests";
+            var endpointAddress = TestConfiguration.ServiceBusQueue;
             var endpointConfiguration = new EndpointConfiguration(endpointAddress);
 
             var conventions = endpointConfiguration.Conventions();
