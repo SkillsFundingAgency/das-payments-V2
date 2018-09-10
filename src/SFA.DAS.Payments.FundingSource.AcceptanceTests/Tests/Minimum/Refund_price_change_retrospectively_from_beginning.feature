@@ -23,6 +23,7 @@ Background:
 @minimum_tests
 @Refunds
 @price_reduced_retrospectively
+@partial
 
 Scenario: Contract Type 2 Learning payment
 

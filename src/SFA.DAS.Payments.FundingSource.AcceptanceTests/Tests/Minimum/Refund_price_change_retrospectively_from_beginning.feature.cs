@@ -121,18 +121,20 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("Refunds")]
         [NUnit.Framework.CategoryAttribute("price_reduced_retrospectively")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         public virtual void ContractType2LearningPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 Learning payment", new string[] {
                         "Non-DAS",
                         "minimum_tests",
                         "Refunds",
-                        "price_reduced_retrospectively"});
-#line 27
+                        "price_reduced_retrospectively",
+                        "partial"});
+#line 28
 this.ScenarioSetup(scenarioInfo);
 #line 9
 this.FeatureBackground();
-#line 29
+#line 30
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -234,7 +236,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "0.0667"});
-#line 31
+#line 32
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden

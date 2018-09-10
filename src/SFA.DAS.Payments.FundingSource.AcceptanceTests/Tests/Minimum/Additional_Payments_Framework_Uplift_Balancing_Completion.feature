@@ -23,6 +23,7 @@ Background:
 @FinishingEarly
 #@Price_same_as_FundingBand
 #@Framework_uplift -- missing, will require funding band
+@partial
 	
 Scenario: Contract Type 2 completion payment
 
@@ -33,6 +34,14 @@ Scenario: Contract Type 2 completion payment
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedSfa_2      | 1620   |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedEmployer_3 | 180    |
+
+
+Scenario: Contract Type 2 balancing payment
+
+	When MASH is received
+
+	Then the payment source component will generate the following contract type 2 coinvested payments:
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Balancing_3     | CoInvestedSfa_2      | 1296   |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Balancing_3     | CoInvestedEmployer_3 | 144    |
 

@@ -103,6 +103,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.CategoryAttribute("completion")]
         [NUnit.Framework.CategoryAttribute("balancing")]
         [NUnit.Framework.CategoryAttribute("FinishingEarly")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         public virtual void ContractType2CompletionPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 completion payment", new string[] {
@@ -110,12 +111,13 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
                         "minimum_tests",
                         "completion",
                         "balancing",
-                        "FinishingEarly"});
-#line 27
+                        "FinishingEarly",
+                        "partial"});
+#line 28
 this.ScenarioSetup(scenarioInfo);
 #line 8
 this.FeatureBackground();
-#line 29
+#line 30
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -145,7 +147,35 @@ this.FeatureBackground();
                         "Completion_2",
                         "CoInvestedEmployer_3",
                         "375"});
-            table2.AddRow(new string[] {
+#line 32
+ testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
+                    "ed payments:", ((string)(null)), table2, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Contract Type 2 balancing payment")]
+        public virtual void ContractType2BalancingPayment()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 balancing payment", ((string[])(null)));
+#line 39
+this.ScenarioSetup(scenarioInfo);
+#line 8
+this.FeatureBackground();
+#line 41
+ testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                        "LearnRefNumber",
+                        "Ukprn",
+                        "PriceEpisodeIdentifier",
+                        "Period",
+                        "ULN",
+                        "TransactionType",
+                        "FundingSource",
+                        "Amount"});
+            table3.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -154,7 +184,7 @@ this.FeatureBackground();
                         "Balancing_3",
                         "CoInvestedSfa_2",
                         "2700"});
-            table2.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -163,9 +193,9 @@ this.FeatureBackground();
                         "Balancing_3",
                         "CoInvestedEmployer_3",
                         "300"});
-#line 31
+#line 43
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
-                    "ed payments:", ((string)(null)), table2, "Then ");
+                    "ed payments:", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

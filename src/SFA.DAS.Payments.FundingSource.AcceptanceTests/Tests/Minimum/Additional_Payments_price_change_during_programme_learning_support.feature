@@ -22,8 +22,9 @@ Background:
 #@additional_payments
 #@Maths_English
 #@Provider_Learning_Support
-#@Change_in_price
+@Change_in_price
 #-- funding band
+@partial
 
 
 Scenario: Contract Type 2 Learning payment

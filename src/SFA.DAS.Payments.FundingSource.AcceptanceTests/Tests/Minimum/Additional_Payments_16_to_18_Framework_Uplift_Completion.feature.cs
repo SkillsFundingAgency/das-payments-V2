@@ -65,10 +65,10 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
         
         public virtual void FeatureBackground()
         {
-#line 15
-#line 19
+#line 8
+#line 10
  testRunner.Given("the current processing period is 13", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 21
+#line 12
  testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
                         "10000",
                         "2",
                         "1800"});
-#line 25
+#line 14
  testRunner.And("the payments due component generates the following contract type 2 payable earnin" +
                     "gs:", ((string)(null)), table1, "And ");
 #line hidden
@@ -94,20 +94,20 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.DescriptionAttribute("Contract Type 2 completion payment")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
-        [NUnit.Framework.CategoryAttribute("additional_payments")]
         [NUnit.Framework.CategoryAttribute("completion")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         public virtual void ContractType2CompletionPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 completion payment", new string[] {
                         "Non-DAS",
                         "minimum_tests",
-                        "additional_payments",
-                        "completion"});
-#line 45
+                        "completion",
+                        "partial"});
+#line 27
 this.ScenarioSetup(scenarioInfo);
-#line 15
+#line 8
 this.FeatureBackground();
-#line 49
+#line 29
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -137,7 +137,7 @@ this.FeatureBackground();
                         "Completion_2",
                         "CoInvestedEmployer_3",
                         "180"});
-#line 53
+#line 31
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden
