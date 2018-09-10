@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
         {
             return new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, CoInvestedPayment>();
+                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, RequiredCoInvestedPayment>();
                 cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, CoInvestedFundingSourcePaymentEvent>();
 
                 cfg.CreateMap<CoInvestedFundingSourcePaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>();

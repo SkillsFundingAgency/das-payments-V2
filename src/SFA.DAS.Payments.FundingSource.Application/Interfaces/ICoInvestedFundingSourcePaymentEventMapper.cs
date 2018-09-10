@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.FundingSource.Application
     {
         CoInvestedFundingSourcePaymentEvent MapTo(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, Payment payment);
 
-        CoInvestedPayment MapFrom(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent);
+        RequiredCoInvestedPayment MapFrom(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent);
 
     }
 

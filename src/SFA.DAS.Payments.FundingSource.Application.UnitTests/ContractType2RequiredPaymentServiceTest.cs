@@ -9,14 +9,14 @@ using System.Collections.Generic;
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
 {
     [TestFixture]
-    public class ContractType2RequiredPaymentHandlerTest
+    public class ContractType2RequiredPaymentServiceTest
     {
         [Test]
-        public void HandleShouldCallAllPaymentProcessors()
+        public void GetFundedPaymentsShouldCallAllPaymentProcessors()
         {
             // Arrange
             var message = new ApprenticeshipContractType2RequiredPaymentEvent();
-            var requiredCoInvestedPayment = new CoInvestedPayment();
+            var requiredCoInvestedPayment = new RequiredCoInvestedPayment();
             var fundingSourcePayment = new Payment();
 
             var sfaPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                  .Verifiable();
 
             // Act
-            var handler = new ContractType2RequiredPaymentHandler(paymentProcessors, mapper.Object);
+            var handler = new ContractType2RequiredPaymentService(paymentProcessors, mapper.Object);
             handler.GetFundedPayments(message);
 
             //Assert

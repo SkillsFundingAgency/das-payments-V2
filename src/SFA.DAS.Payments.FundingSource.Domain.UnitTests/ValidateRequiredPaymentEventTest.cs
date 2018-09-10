@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         [TestCase(0, RequiredPaymentEventValidationRules.ZeroSfaContributionPercentage)]
         public void SholuldGenerateValidationResultForInvalidEvent(decimal sfaContribution, int expectedValidationRule)
         {
-            var message = new CoInvestedPayment
+            var message = new RequiredCoInvestedPayment
             {
                 SfaContributionPercentage = sfaContribution
             };

@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Interface
 {
     public interface ICoInvestedPaymentProcessor
     {
-        Payment Process(CoInvestedPayment message);
+        Payment Process(RequiredCoInvestedPayment message);
     }
 }

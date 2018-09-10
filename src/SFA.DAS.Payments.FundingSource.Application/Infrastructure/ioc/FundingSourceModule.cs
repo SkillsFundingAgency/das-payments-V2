@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.ioc
             builder.RegisterType<ValidateRequiredPaymentEvent>().AsImplementedInterfaces();
             builder.RegisterType<CoInvestedFundingSourcePaymentEventMapper>().AsImplementedInterfaces();
 
-            builder.Register(c => new ContractType2RequiredPaymentHandler
+            builder.Register(c => new ContractType2RequiredPaymentService
                 (
                   new List<ICoInvestedPaymentProcessor>()
                   {

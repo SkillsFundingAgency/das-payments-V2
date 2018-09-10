@@ -17,23 +17,26 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         public CoInvestedFundingSourcePaymentEvent MapTo(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, Payment payment)
         {
             var coInvestedPaymentEvent = mapper.Map<CoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent);
-            coInvestedPaymentEvent.AmountDue = payment.AmountDue;
-
+           
             switch (payment.Type)
             {
                 case Domain.Enum.FundingSourceType.CoInvestedSfa:
-                  return  mapper.Map<SfaCoInvestedFundingSourcePaymentEvent>(coInvestedPaymentEvent);
+                    coInvestedPaymentEvent = mapper.Map<SfaCoInvestedFundingSourcePaymentEvent>(coInvestedPaymentEvent);
+                    break;
                 case Domain.Enum.FundingSourceType.CoInvestedEmployer:
-                    return mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent>(coInvestedPaymentEvent);
+                    coInvestedPaymentEvent = mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent>(coInvestedPaymentEvent);
+                    break;
             }
+
+            coInvestedPaymentEvent.AmountDue = payment.AmountDue;
 
             return coInvestedPaymentEvent;
         }
 
-        public CoInvestedPayment MapFrom(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent)
+        public RequiredCoInvestedPayment MapFrom(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent)
         {
 
-            return new CoInvestedPayment
+            return new RequiredCoInvestedPayment
             {
                 AmountDue = requiredPaymentsEvent.AmountDue,
                 SfaContributionPercentage = requiredPaymentsEvent.SfaContributionPercentage

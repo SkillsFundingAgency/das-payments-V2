@@ -4,6 +4,6 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Interface
 {
     public interface IValidateRequiredPaymentEvent
     {
-        IEnumerable<RequiredPaymentEventValidationResult> Validate(CoInvestedPayment requiredPayment);
+        IEnumerable<RequiredCoInvestedPaymentValidationResult> Validate(RequiredCoInvestedPayment requiredPayment);
     }
 }

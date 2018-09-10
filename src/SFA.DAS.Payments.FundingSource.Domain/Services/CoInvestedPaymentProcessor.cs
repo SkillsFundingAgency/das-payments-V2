@@ -15,20 +15,20 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             validator = validateRequiredPaymentEvent;
         }
 
-        protected void Validate(CoInvestedPayment message)
+        protected void Validate(RequiredCoInvestedPayment message)
         {
             var validationResults = validator.Validate(message);
             if (validationResults.Any()) throw new FundingSourceRequiredPaymentValidationException(JsonConvert.SerializeObject(validationResults));
         }
 
-        public Payment Process(CoInvestedPayment message)
+        public Payment Process(RequiredCoInvestedPayment message)
         {
             Validate(message);
 
             return CreatePayment(message);
         }
 
-        protected abstract Payment CreatePayment(CoInvestedPayment message);
+        protected abstract Payment CreatePayment(RequiredCoInvestedPayment message);
       
     }
 

@@ -18,14 +18,14 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         [Test]
         public void ShouldThrowExceptionIfValidationResultIsNotNull()
         {
-            var message = new CoInvestedPayment
+            var message = new RequiredCoInvestedPayment
             {
                 SfaContributionPercentage = 0
             };
 
-            var validationResults = new List<RequiredPaymentEventValidationResult>
+            var validationResults = new List<RequiredCoInvestedPaymentValidationResult>
             {
-                new RequiredPaymentEventValidationResult
+                new RequiredCoInvestedPaymentValidationResult
                 {
                     RequiredCoInvestedPayment =message,
                     Rule = RequiredPaymentEventValidationRules.ZeroSfaContributionPercentage
@@ -47,14 +47,14 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
                                                                                     decimal amountDue,
                                                                                     decimal expectedAmount)
         {
-            var message = new CoInvestedPayment
+            var message = new RequiredCoInvestedPayment
             {
                 SfaContributionPercentage = sfaContribution,
                 AmountDue = amountDue
             };
 
             validator = new Mock<IValidateRequiredPaymentEvent>();
-            validator.Setup(o => o.Validate(message)).Returns(new List<RequiredPaymentEventValidationResult>());
+            validator.Setup(o => o.Validate(message)).Returns(new List<RequiredCoInvestedPaymentValidationResult>());
             processor = new SfaCoInvestedPaymentProcessor(validator.Object);
 
             var payment = processor.Process(message);

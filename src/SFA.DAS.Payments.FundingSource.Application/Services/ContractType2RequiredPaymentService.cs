@@ -7,12 +7,12 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
-    public class ContractType2RequiredPaymentHandler : IContractType2RequiredPaymentService
+    public class ContractType2RequiredPaymentService : IContractType2RequiredPaymentService
     {
         private readonly IEnumerable<ICoInvestedPaymentProcessor> processors;
         private readonly ICoInvestedFundingSourcePaymentEventMapper mapper;
 
-        public ContractType2RequiredPaymentHandler(IEnumerable<ICoInvestedPaymentProcessor> processors, ICoInvestedFundingSourcePaymentEventMapper mapper)
+        public ContractType2RequiredPaymentService(IEnumerable<ICoInvestedPaymentProcessor> processors, ICoInvestedFundingSourcePaymentEventMapper mapper)
         {
             this.processors = processors ?? throw new ArgumentNullException(nameof(processors));
             this.mapper = mapper;

@@ -6,13 +6,13 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
     public class ValidateRequiredPaymentEvent : IValidateRequiredPaymentEvent
     {
-        public IEnumerable<RequiredPaymentEventValidationResult> Validate(CoInvestedPayment requiredPayment)
+        public IEnumerable<RequiredCoInvestedPaymentValidationResult> Validate(RequiredCoInvestedPayment requiredPayment)
         {
-            var results = new List<RequiredPaymentEventValidationResult>();
+            var results = new List<RequiredCoInvestedPaymentValidationResult>();
 
             if (requiredPayment.SfaContributionPercentage <= 0)
             {
-                results.Add(new RequiredPaymentEventValidationResult
+                results.Add(new RequiredCoInvestedPaymentValidationResult
                 {
                     Rule = RequiredPaymentEventValidationRules.ZeroSfaContributionPercentage
                 });
