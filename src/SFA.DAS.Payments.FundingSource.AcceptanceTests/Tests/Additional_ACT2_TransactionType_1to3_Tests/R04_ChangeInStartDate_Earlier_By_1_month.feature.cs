@@ -125,19 +125,17 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Additional_ACT2_T
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("Historical_Payments")]
         [NUnit.Framework.CategoryAttribute("Start_Date_Earlier")]
-        [NUnit.Framework.CategoryAttribute("In-progress")]
         public virtual void ContractType2LearningPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 Learning payment", new string[] {
                         "Non-DAS",
                         "Historical_Payments",
-                        "Start_Date_Earlier",
-                        "In-progress"});
-#line 25
+                        "Start_Date_Earlier"});
+#line 24
 this.ScenarioSetup(scenarioInfo);
 #line 6
 this.FeatureBackground();
-#line 27
+#line 26
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -257,7 +255,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "60"});
-#line 29
+#line 28
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden

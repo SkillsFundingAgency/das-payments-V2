@@ -23,6 +23,7 @@ Background:
 @completion
 @balancing
 @FinishingEarly
+@partial
 
 Scenario: Contract Type 2 completion payment
 

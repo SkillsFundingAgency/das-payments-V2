@@ -79,18 +79,20 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.DescriptionAttribute("Contract Type 2 no payment")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         public virtual void ContractType2NoPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 no payment", new string[] {
                         "Non-DAS",
-                        "minimum_tests"});
-#line 22
+                        "minimum_tests",
+                        "partial"});
+#line 23
 this.ScenarioSetup(scenarioInfo);
 #line 7
 this.FeatureBackground();
-#line 24
+#line 25
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 26
+#line 27
  testRunner.Then("the payment source component will generate no contract type 2 coinvested payments" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden

@@ -132,18 +132,20 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
         [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_changes")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         public virtual void ContractType1LearningPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 1 Learning payment", new string[] {
                         "DAS",
                         "minimum_tests",
                         "learner_changes_contract_type",
-                        "apprenticeship_contract_type_changes"});
-#line 28
+                        "apprenticeship_contract_type_changes",
+                        "partial"});
+#line 29
 this.ScenarioSetup(scenarioInfo);
 #line 6
 this.FeatureBackground();
-#line 30
+#line 31
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -191,7 +193,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "-60"});
-#line 32
+#line 33
  testRunner.Then("the payment source component will generate the following contract type 1 coinvest" +
                     "ed payments:", ((string)(null)), table3, "Then ");
 #line hidden
@@ -204,18 +206,20 @@ this.FeatureBackground();
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
         [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_changes")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         public virtual void ContractType2LearningPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 Learning payment", new string[] {
                         "Non-DAS",
                         "minimum_tests",
                         "learner_changes_contract_type",
-                        "apprenticeship_contract_type_changes"});
-#line 46
+                        "apprenticeship_contract_type_changes",
+                        "partial"});
+#line 48
 this.ScenarioSetup(scenarioInfo);
 #line 6
 this.FeatureBackground();
-#line 48
+#line 50
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -281,7 +285,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "60"});
-#line 50
+#line 52
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table4, "Then ");
 #line hidden

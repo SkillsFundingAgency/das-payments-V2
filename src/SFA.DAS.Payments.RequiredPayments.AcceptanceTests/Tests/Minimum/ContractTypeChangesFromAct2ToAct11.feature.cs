@@ -234,6 +234,7 @@ this.FeatureBackground();
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("learner_changes_contract_type")]
         [NUnit.Framework.CategoryAttribute("apprenticeship_contract_type_changes")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         [NUnit.Framework.TestCaseAttribute("Learning_1", "600", null)]
         public virtual void ContractType1OnProgrammePayments(string transaction_Type, string amount, string[] exampleTags)
         {
@@ -241,18 +242,19 @@ this.FeatureBackground();
                     "DAS",
                     "minimum_tests",
                     "learner_changes_contract_type",
-                    "apprenticeship_contract_type_changes"};
+                    "apprenticeship_contract_type_changes",
+                    "partial"};
             if ((exampleTags != null))
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 1 On programme payments", null, @__tags);
-#line 53
+#line 54
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 7
 this.FeatureBackground();
-#line 55
+#line 56
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -287,7 +289,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 57
+#line 58
  testRunner.Then("the payments due component will generate the following contract type 1 payable ea" +
                     "rnings:", ((string)(null)), table5, "Then ");
 #line hidden
@@ -307,12 +309,12 @@ this.FeatureBackground();
                         "minimum_tests",
                         "learner_changes_contract_type",
                         "apprenticeship_contract_type_changes"});
-#line 81
+#line 82
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 7
 this.FeatureBackground();
-#line 83
+#line 84
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -425,7 +427,7 @@ this.FeatureBackground();
                         "0",
                         "0",
                         "0"});
-#line 85
+#line 86
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table6, "Then ");
 #line hidden
@@ -445,12 +447,12 @@ this.FeatureBackground();
                         "minimum_tests",
                         "learner_changes_contract_type",
                         "apprenticeship_contract_type_changes"});
-#line 98
+#line 99
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 7
 this.FeatureBackground();
-#line 100
+#line 101
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -541,7 +543,7 @@ this.FeatureBackground();
                         "0",
                         "0",
                         "0"});
-#line 102
+#line 103
  testRunner.Then("the payments due component will generate the following contract type 1 payable ea" +
                     "rnings:", ((string)(null)), table7, "Then ");
 #line hidden

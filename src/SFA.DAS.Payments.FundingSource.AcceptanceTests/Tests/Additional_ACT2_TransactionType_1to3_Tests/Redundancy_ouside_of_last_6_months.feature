@@ -9,7 +9,6 @@ Background:
 
 @Non-DAS
 @Redundancy
-@query
 @Review
 @minimum_additional
 

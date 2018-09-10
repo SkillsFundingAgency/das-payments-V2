@@ -95,7 +95,6 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Additional_ACT2_T
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("Learner_finishes_early")]
         [NUnit.Framework.CategoryAttribute("Withdrawal")]
-        [NUnit.Framework.CategoryAttribute("query")]
         [NUnit.Framework.CategoryAttribute("minimum_additional")]
         [NUnit.Framework.CategoryAttribute("review")]
         [NUnit.Framework.CategoryAttribute("refund")]
@@ -105,15 +104,14 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Additional_ACT2_T
                         "Non-DAS",
                         "Learner_finishes_early",
                         "Withdrawal",
-                        "query",
                         "minimum_additional",
                         "review",
                         "refund"});
-#line 25
+#line 24
 this.ScenarioSetup(scenarioInfo);
 #line 8
 this.FeatureBackground();
-#line 27
+#line 26
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -143,7 +141,7 @@ this.FeatureBackground();
                         "Learning_1",
                         "CoInvestedEmployer_3",
                         "-100"});
-#line 29
+#line 28
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden

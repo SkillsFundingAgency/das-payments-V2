@@ -15,8 +15,9 @@ Background:
 
 @Non-DAS
 @minimum_tests
-@additional_payments
+#@additional_payments
 #@disadvantaged_postcode
+@partial
 	
 Scenario: Contract Type 2 Learning payment
 

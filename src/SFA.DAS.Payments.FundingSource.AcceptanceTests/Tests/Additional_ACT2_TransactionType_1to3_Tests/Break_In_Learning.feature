@@ -1,5 +1,4 @@
-﻿#Review needed
-Feature: Break in Learning, leaner takes 2 months break
+﻿Feature: Break in Learning, leaner takes 2 months break
 
 Background:
 	
@@ -12,9 +11,8 @@ Background:
 	| p2                     | 7      | 10000 | 1               | 1000    |	
 
 @Non-DAS
-@minimum_tests_additional
+@minimum_additional
 @BreakInLearning
-@review
 
 Scenario: Contract Type 2 Learning payment
 

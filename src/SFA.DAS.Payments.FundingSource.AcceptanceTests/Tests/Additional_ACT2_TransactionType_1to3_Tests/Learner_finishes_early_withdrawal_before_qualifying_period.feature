@@ -17,7 +17,6 @@ Background:
 @Non-DAS
 @Learner_finishes_early
 @Withdrawal
-@query
 @minimum_additional
 @review
 @refund

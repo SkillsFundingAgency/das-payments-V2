@@ -23,6 +23,7 @@ Background:
 @FinishingEarly
 #@Price_same_as_FundingBand
 #@Framework_uplift -- missing, will require funding band
+@partial
 	
 Scenario: Contract Type 2 completion payment
 

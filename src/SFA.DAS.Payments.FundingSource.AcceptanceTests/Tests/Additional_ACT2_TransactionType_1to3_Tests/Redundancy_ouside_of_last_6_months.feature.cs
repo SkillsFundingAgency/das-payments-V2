@@ -80,7 +80,6 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Additional_ACT2_T
         [NUnit.Framework.DescriptionAttribute("Contract Type 2 no payment")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("Redundancy")]
-        [NUnit.Framework.CategoryAttribute("query")]
         [NUnit.Framework.CategoryAttribute("Review")]
         [NUnit.Framework.CategoryAttribute("minimum_additional")]
         public virtual void ContractType2NoPayment()
@@ -88,16 +87,15 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Additional_ACT2_T
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 no payment", new string[] {
                         "Non-DAS",
                         "Redundancy",
-                        "query",
                         "Review",
                         "minimum_additional"});
-#line 16
+#line 15
 this.ScenarioSetup(scenarioInfo);
 #line 5
 this.FeatureBackground();
-#line 18
+#line 17
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 20
+#line 19
  testRunner.Then("the payment source component will generate no contract type 2 coinvested payments" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden

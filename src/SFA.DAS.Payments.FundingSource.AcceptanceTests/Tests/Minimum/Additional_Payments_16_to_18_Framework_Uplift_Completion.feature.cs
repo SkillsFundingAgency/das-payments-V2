@@ -94,20 +94,20 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.DescriptionAttribute("Contract Type 2 completion payment")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
-        [NUnit.Framework.CategoryAttribute("additional_payments")]
         [NUnit.Framework.CategoryAttribute("completion")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         public virtual void ContractType2CompletionPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 completion payment", new string[] {
                         "Non-DAS",
                         "minimum_tests",
-                        "additional_payments",
-                        "completion"});
-#line 26
+                        "completion",
+                        "partial"});
+#line 27
 this.ScenarioSetup(scenarioInfo);
 #line 8
 this.FeatureBackground();
-#line 28
+#line 29
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -137,7 +137,7 @@ this.FeatureBackground();
                         "Completion_2",
                         "CoInvestedEmployer_3",
                         "180"});
-#line 30
+#line 31
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden

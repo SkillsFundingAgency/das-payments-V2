@@ -20,7 +20,6 @@ Background:
 @Non-DAS
 @Historical_Payments
 @Start_Date_Earlier
-@In-progress
 
 Scenario: Contract Type 2 Learning payment
 

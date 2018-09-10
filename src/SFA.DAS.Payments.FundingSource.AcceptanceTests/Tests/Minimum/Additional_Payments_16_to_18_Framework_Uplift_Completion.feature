@@ -18,10 +18,11 @@ Background:
 
 @Non-DAS
 @minimum_tests
-@additional_payments
+#@additional_payments
 @completion
 #@16-18 incentive
 #@Framework_uplift -- will require funding band
+@partial
 
 Scenario: Contract Type 2 completion payment
 

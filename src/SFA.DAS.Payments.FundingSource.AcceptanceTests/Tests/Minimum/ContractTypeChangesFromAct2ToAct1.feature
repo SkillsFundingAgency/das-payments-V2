@@ -25,6 +25,7 @@ Background:
 @learner_changes_contract_type
 @apprenticeship_contract_type_changes
 #@English_Maths
+@partial
 
 Scenario: Contract Type 2 Learning payment
 
@@ -43,6 +44,7 @@ Scenario: Contract Type 2 Learning payment
 @learner_changes_contract_type
 @apprenticeship_contract_type_changes
 #@English_Maths
+@partial
 
 Scenario: Contract Type 1 Learning payment
 
