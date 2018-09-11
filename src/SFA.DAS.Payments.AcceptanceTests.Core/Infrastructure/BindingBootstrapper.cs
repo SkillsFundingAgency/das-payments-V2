@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Linq;
+using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Messages.Core;
@@ -12,13 +13,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         public static EndpointConfiguration EndpointConfiguration { get; private set; }
 
         [BeforeTestRun(Order = -1)]
-        public static void FeatureSetup()
+        public static void TestRunSetUp()
         {
             var config = new TestsConfiguration();
             Builder = new ContainerBuilder();
-
+            Builder.RegisterType<TestsConfiguration>().SingleInstance();
             EndpointConfiguration = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
-            Builder.RegisterInstance(EndpointConfiguration);
+            Builder.RegisterInstance(EndpointConfiguration)
+                .SingleInstance();
             var conventions = EndpointConfiguration.Conventions();
             conventions.DefiningMessagesAs(type => type.IsMessage());
 
@@ -27,11 +29,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             EndpointConfiguration.DisableFeature<TimeoutManager>();
             var transportConfig = EndpointConfiguration.UseTransport<AzureServiceBusTransport>();
             Builder.RegisterInstance(transportConfig)
-                .As<TransportExtensions<AzureServiceBusTransport>>();
+                .As<TransportExtensions<AzureServiceBusTransport>>()
+                .SingleInstance();
             transportConfig
                 .UseForwardingTopology()
                 .ConnectionString(config.ServiceBusConnectionString);
-
+            var sanitization = transportConfig.Sanitization();
+            var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
+            //strategy.QueuePathSanitization(queuePath => "sanitized queuePath");
+            //strategy.TopicPathSanitization(topicPath => "sanitized topicPath");
+            //strategy.SubscriptionNameSanitization(
+            //    subscriptionNameSanitizer: subscriptionName =>
+            //    {
+            //        return "sanitized subscriptionName";
+            //    });
+            strategy.RuleNameSanitization(
+                ruleNameSanitizer: ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+            //strategy.Hash(
+            //    hash: pathOrName =>
+            //    {
+            //        return "hashed pathOrName";
+            //    });
             EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             EndpointConfiguration.EnableInstallers();
         }

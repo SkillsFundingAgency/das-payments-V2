@@ -40,6 +40,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 .Select(earningPeriod => new ApprenticeshipContractType2RequiredPaymentEvent
                 {
                     AmountDue = earningPeriod.period.Amount,
+                    Amount = earningPeriod.period.Amount,
                     CollectionPeriod = new NamedCalendarPeriod
                     {
                         Month = (byte) DateTime.Today.Month,

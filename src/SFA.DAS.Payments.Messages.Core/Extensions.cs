@@ -10,9 +10,9 @@ namespace SFA.DAS.Payments.Messages.Core
             return (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false);
         }
 
-        public static bool IsEvent(this Type type)
+        public static bool IsEvent<TDomainEvent>(this Type type) where TDomainEvent: IPaymentsEvent
         {
-            return IsMessage(type) && typeof(IPaymentsEvent).IsAssignableFrom(type);
+            return IsMessage(type) && typeof(TDomainEvent).IsAssignableFrom(type);
         }
     }
 }

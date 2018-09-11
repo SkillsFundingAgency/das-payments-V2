@@ -4,6 +4,7 @@ using NServiceBus.Features;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
@@ -44,11 +45,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [BeforeTestRun(Order = 51)]
         public static void AddRoutingConfig()
         {
-            var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
-            transportConfig.Routing()
-                .RouteToEndpoint(typeof(IEarningEvent),EndpointNames.RequiredPayments);
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent());
+            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<IRequiredPayment>());
+            var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
+            var routing = transportConfig.Routing();
+            routing.RouteToEndpoint(typeof(IEarningEvent), EndpointNames.RequiredPayments);
+            routing.RouteToEndpoint(typeof(ApprenticeshipContractType2EarningEvent), EndpointNames.RequiredPayments);
         }
     }
 }
