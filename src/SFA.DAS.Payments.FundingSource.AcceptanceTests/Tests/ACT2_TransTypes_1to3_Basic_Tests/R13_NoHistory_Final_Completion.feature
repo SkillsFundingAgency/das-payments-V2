@@ -1,4 +1,4 @@
-﻿Feature: R12 - First payment, no previous payments. Also completion.
+﻿Feature: R13 - First payment, no previous payments. Also completion.
 
 Background:
 	Given the current processing period is 13
@@ -23,9 +23,11 @@ Background:
 	| p1                     | 13     | 10000 | 2               | 1800   |
 
 @Non-DAS
-@No_Historical_Payments
+@MissingSubmission
+@Learning_1
 @Completion
-@Missing_submission
+@CoInvested
+
 
 Scenario: Contract Type 2 Learning payment
 

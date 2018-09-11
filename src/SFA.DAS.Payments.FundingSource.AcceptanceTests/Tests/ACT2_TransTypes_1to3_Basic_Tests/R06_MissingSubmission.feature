@@ -13,8 +13,9 @@ Background:
 	| p1                     | 4      | 10000 | 1               | 600    |
 
 @Non-DAS
-@Historical_Payments
-@Missing_submission
+@MissingSubmission
+@Learning_1
+@CoInvested
 
 Scenario: Contract Type 2 Learning payment
 

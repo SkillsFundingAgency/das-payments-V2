@@ -11,8 +11,8 @@ Background:
 	| p1                     | 13     | 10000 | 2               | 1800   |
 
 @Non-DAS
-@Historical_Payments
-@Completion
+@Completion_2
+@CoInvested
 
 Scenario: Contract Type 2 completion payment
 

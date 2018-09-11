@@ -11,6 +11,7 @@ Background:
 
 @Non-DAS
 @Learning_1
+@CoInvested
 
 Scenario: Contract Type 2 Learning payment
 

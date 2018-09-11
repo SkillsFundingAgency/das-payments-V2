@@ -1,4 +1,4 @@
-﻿Feature: R06 - missing historical payments after R02
+﻿Feature: R06 - missing submission and historical payments after R02
 
 Background:
 	Given the current processing period is 6
@@ -14,8 +14,8 @@ Background:
 	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
 
 @Non-DAS
-@Historical_Payments
-@Missing_submission
+@MissingSubmission
+@Learning_1
 
 Scenario Outline: Contract Type 2 On programme payments
 
