@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
+using SFA.DAS.Payments.Messages.Core;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
@@ -8,30 +9,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
     [Binding]
     public class BindingBootstrapper : StepsBase
     {
+        public static EndpointConfiguration EndpointConfiguration { get; private set; }
+
         [BeforeTestRun(Order = -1)]
         public static void FeatureSetup()
         {
-            var config = new ApplicationConfiguration();
+            var config = new TestsConfiguration();
             Builder = new ContainerBuilder();
 
-            var endpointConfiguration = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
-            Builder.RegisterInstance(endpointConfiguration);
-            var conventions = endpointConfiguration.Conventions();
-            conventions.DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
+            EndpointConfiguration = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
+            Builder.RegisterInstance(EndpointConfiguration);
+            var conventions = EndpointConfiguration.Conventions();
+            conventions.DefiningMessagesAs(type => type.IsMessage());
 
-            endpointConfiguration.UsePersistence<AzureStoragePersistence>()
+            EndpointConfiguration.UsePersistence<AzureStoragePersistence>()
                 .ConnectionString(config.StorageConnectionString);
-            endpointConfiguration.PurgeOnStartup(true);
-            endpointConfiguration.DisableFeature<TimeoutManager>();
-            var transportConfig = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
+            EndpointConfiguration.DisableFeature<TimeoutManager>();
+            var transportConfig = EndpointConfiguration.UseTransport<AzureServiceBusTransport>();
             Builder.RegisterInstance(transportConfig)
                 .As<TransportExtensions<AzureServiceBusTransport>>();
             transportConfig
                 .UseForwardingTopology()
                 .ConnectionString(config.ServiceBusConnectionString);
 
-            endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
-            endpointConfiguration.EnableInstallers();
+            EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
+            EndpointConfiguration.EnableInstallers();
         }
 
         [BeforeTestRun(Order = 50)]

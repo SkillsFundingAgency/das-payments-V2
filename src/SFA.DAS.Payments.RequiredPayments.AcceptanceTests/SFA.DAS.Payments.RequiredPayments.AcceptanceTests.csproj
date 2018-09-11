@@ -156,6 +156,7 @@
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2Handler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\ACT2On_ProgrammePaymentsSteps.cs" />
     <Compile Include="Steps\BindingBootstrapper.cs" />
     <Compile Include="Steps\CourseSteps.cs" />
     <Compile Include="Steps\EarningSteps.cs" />
@@ -251,6 +252,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TNP_higher_than_max_funding_band_Continuing.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\ACT 2 On-Programme Payments.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ACT 2 On-Programme Payments.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs">
       <AutoGen>True</AutoGen>
@@ -395,6 +401,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R01_NoHistory.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Minimum\ACT 2 On-Programme Payments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ACT 2 On-Programme Payments.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Minimum\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs</LastGenOutput>
@@ -448,6 +458,10 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.AcceptanceTests.Core\SFA.DAS.Payments.AcceptanceTests.Core.csproj">
+      <Project>{0F0BEB68-7F9F-4D39-B85A-3FE7701BB6CC}</Project>
+      <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
       <Project>{f6e38368-c397-488b-b041-d3e8423c1ce1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
@@ -463,6 +477,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
       <Project>{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj">
+      <Project>{21918F17-1310-4276-BEF5-64243F9E0C31}</Project>
+      <Name>SFA.DAS.Payments.RequiredPayments.Messages</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

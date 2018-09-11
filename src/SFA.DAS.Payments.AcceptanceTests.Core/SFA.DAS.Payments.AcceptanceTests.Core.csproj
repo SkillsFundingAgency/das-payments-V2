@@ -101,7 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
-    <Compile Include="Infrastructure\ApplicationConfiguration.cs" />
+    <Compile Include="Infrastructure\TestsConfiguration.cs" />
     <Compile Include="StepsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -116,6 +116,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
       <Project>{07a36781-d09b-4cf9-8d0b-80bb929fe535}</Project>
       <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
+      <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>
+      <Name>SFA.DAS.Payments.Messages.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj">
       <Project>{21918f17-1310-4276-bef5-64243f9e0c31}</Project>
