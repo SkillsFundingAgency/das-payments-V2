@@ -9,9 +9,7 @@ Background:
 
 	Given the current processing period is 13
 
-	And the following learners:
-	| LearnRefNumber | Ukprn | ULN   |
-	| learnref1      | 10000 | 10000 |
+	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
 	#Check with Dave if FundingLineType needs changing
 	And the following course information:
@@ -41,6 +39,7 @@ Background:
 @small_employers
 @completion
 @fully_funded
+@partial
 #@enhanced_funding
 #@16-18 incentive
 #@Framework_uplift -- will require funding band

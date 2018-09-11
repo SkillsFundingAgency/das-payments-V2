@@ -7,9 +7,7 @@ Feature: Contract Type Changes From ACT2 To ACT1
 Background:
 	Given the current processing period is 3
 
-	And the following learners:
-	| LearnRefNumber | Ukprn | ULN   |
-	| learnref1      | 10000 | 10000 |
+	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
@@ -24,6 +22,7 @@ Background:
 @learner_changes_contract_type
 @apprenticeship_contract_type_changes
 #@English_Maths
+@partial
 
 Scenario Outline: Contract Type 2 On programme payments
 
@@ -50,6 +49,7 @@ Scenario Outline: Contract Type 2 On programme payments
 @learner_changes_contract_type
 @apprenticeship_contract_type_changes
 #@English_Maths
+@partial
 
 Scenario Outline: Contract Type 1 On programme payments
 

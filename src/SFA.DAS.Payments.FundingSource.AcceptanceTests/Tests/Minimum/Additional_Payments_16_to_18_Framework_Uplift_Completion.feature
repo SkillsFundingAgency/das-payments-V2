@@ -9,9 +9,7 @@ Background:
 
 	Given the current processing period is 13
 
-	And the following learners:
-	| LearnRefNumber | Ukprn | ULN   |
-	| learnref1      | 10000 | 10000 |
+	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
 	And the payments due component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
@@ -19,10 +17,12 @@ Background:
 
 @Non-DAS
 @minimum_tests
-@additional_payments
+#@additional_payments
 @completion
 #@16-18 incentive
 #@Framework_uplift -- will require funding band
+@partial
+
 Scenario: Contract Type 2 completion payment
 
 	When MASH is received
