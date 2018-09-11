@@ -1,4 +1,4 @@
-﻿Feature: Provider earnings and payments where learner completes earlier than planned (3 months early)
+﻿Feature: Provider earnings and payments where learner completes earlier than planned (3 months early) but missing previous submission
 
 Background:
 
@@ -23,6 +23,7 @@ Background:
 @Completion_2
 @Balancing_3
 @FinishedEarly
+@MissingSubmission
 
 Scenario Outline: Contract Type 2 On programme payments
 	And the following historical contract type 2 on programme payments exist:   
@@ -35,7 +36,6 @@ Scenario Outline: Contract Type 2 On programme payments
 	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
 
 	When a TOBY is received
 

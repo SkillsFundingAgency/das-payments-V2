@@ -105,6 +105,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R10_Learner_finishes_early_OnProg_Balancing_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R10_Learner_finishes_early_OnProg_Balancing_Completion.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R13_DelayedCompletion_NoOnProgPayment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R13_DelayedCompletion_NoOnProgPayment.feature.cs</LastGenOutput>
