@@ -1,4 +1,4 @@
-﻿Feature: R02 - with single historical payment
+﻿Feature: R02 - First payment including previous month
 
 Background:
 	Given the current processing period is 2
@@ -14,13 +14,10 @@ Background:
 	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
 
 @Non-DAS
-@Historical_Payments
+@Learning_1
+@LateSubmission
 
 Scenario Outline: Contract Type 2 On programme payments
-
-	And the following historical contract type 2 on programme payments exist:   
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1        | 10000 | p1                   | 1      | 10000 | <transaction_type> | <amount> |
 
 	When a TOBY is received
 

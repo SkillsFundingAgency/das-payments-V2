@@ -14,7 +14,8 @@ Background:
 	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
 
 @Non-DAS
-@Historical_Payments
+@HistoricalPayments
+@Learning_1
 
 Scenario Outline: Contract Type 2 On programme payments
 

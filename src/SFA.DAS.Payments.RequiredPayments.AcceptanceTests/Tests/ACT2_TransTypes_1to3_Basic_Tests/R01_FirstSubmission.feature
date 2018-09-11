@@ -1,7 +1,7 @@
-﻿Feature: R02 - First payment including previous month
+﻿Feature: R01 - First payment, No previous payments
 
 Background:
-	Given the current processing period is 2
+	Given the current processing period is 1
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
@@ -14,10 +14,8 @@ Background:
 	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
 
 @Non-DAS
-@No_Historical_Payments
-@First_submission
-@Missing_submission
-@minimum_additional
+@Learning_1
+@FirstSubmission
 
 Scenario Outline: Contract Type 2 On programme payments
 
@@ -26,7 +24,6 @@ Scenario Outline: Contract Type 2 On programme payments
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
 	
 	Examples: 
 	| transaction_type | amount |
