@@ -1,4 +1,4 @@
-﻿Feature: R12 - On time completion with full history
+﻿Feature: R13 - On time completion with full history
 
 Background:
 	Given the current processing period is 13

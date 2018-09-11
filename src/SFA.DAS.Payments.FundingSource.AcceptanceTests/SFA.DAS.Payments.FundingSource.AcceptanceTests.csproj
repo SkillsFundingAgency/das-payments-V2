@@ -101,16 +101,6 @@
     <Compile Include="PaymentFundingSourceIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestConfiguration.cs" />
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R12_FullHistory_Completion_OnTime.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>R12_FullHistory_Completion_OnTime.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R13_NoHistory_Final_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>R13_NoHistory_Final_Completion.feature</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -159,9 +149,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R12_FinalOnProgPayment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R12_FullHistory_Completion_OnTime.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R13_FullHistory_Completion_OnTime.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>R12_FullHistory_Completion_OnTime.feature.cs</LastGenOutput>
+      <LastGenOutput>R13_FullHistory_Completion_OnTime.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R13_NoHistory_Final_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -223,7 +213,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ContractTypeChangesFromAct2ToAct11.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\learner_finishes_early_Balancing_Completion.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\learner_finishes_early_Balancing_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>learner_finishes_early_Balancing_Completion.feature.cs</LastGenOutput>
     </None>
