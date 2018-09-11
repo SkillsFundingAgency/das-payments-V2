@@ -4,7 +4,7 @@ using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
 using System.Collections.Generic;
 
-namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.ioc
+namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
 {
     public class FundingSourceModule : Module
     {
@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.ioc
             builder.RegisterType<ValidateRequiredPaymentEvent>().AsImplementedInterfaces();
             builder.RegisterType<CoInvestedFundingSourcePaymentEventMapper>().AsImplementedInterfaces();
 
-            builder.Register(c => new ContractType2RequiredPaymentService
+            builder.Register(c => new ContractType2RequiredPaymentEventFundingSourceService
                 (
                   new List<ICoInvestedPaymentProcessor>()
                   {
@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.ioc
                     new EmployerCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>())
                   },
                   c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
-                )).As<IContractType2RequiredPaymentService>();
+                )).As<IContractType2RequiredPaymentEventFundingSourceService>();
         }
     }
 }

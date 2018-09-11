@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.Payments.FundingSource.Domain.Enum
+﻿namespace SFA.DAS.Payments.FundingSource.Domain.Enum
 {
     public enum FundingSourceType
     {

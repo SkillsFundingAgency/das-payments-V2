@@ -6,12 +6,11 @@ using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System.Collections.Generic;
-using FluentAssertions;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
 {
     [TestFixture]
-    public class ContractType2RequiredPaymentServiceTest
+    public class ContractType2RequiredPaymentEventFundingSourceServiceTest
     {
         [Test]
         public void GetFundedPaymentsShouldCallAllPaymentProcessors()
@@ -24,15 +23,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             var sfaPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
             var employerPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
 
+            var sfaPaymentEvent = new SfaCoInvestedFundingSourcePaymentEvent();
+
             var mapper = new Mock<ICoInvestedFundingSourcePaymentEventMapper>(MockBehavior.Strict);
             mapper.Setup(o => o.MapToRequiredCoInvestedPayment(message)).Returns(requiredCoInvestedPayment);
-            mapper.Setup(o => o.MapToCoInvestedPaymentEvent(message, fundingSourcePayment));
-
-            var paymentProcessors = new List<ICoInvestedPaymentProcessor>
-            {
-               sfaPaymentProcessor.Object,
-               employerPaymentProcessor.Object
-            };
+            mapper.Setup(o => o.MapToCoInvestedPaymentEvent(message, fundingSourcePayment)).Returns(sfaPaymentEvent);
 
             sfaPaymentProcessor
                 .Setup(o => o.Process(requiredCoInvestedPayment)).Returns(fundingSourcePayment)
@@ -40,16 +35,21 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
 
             employerPaymentProcessor
                 .Setup(o => o.Process(requiredCoInvestedPayment)).Returns(fundingSourcePayment)
-                 .Verifiable();
+                .Verifiable();
+
+            var paymentProcessors = new List<ICoInvestedPaymentProcessor>
+            {
+               sfaPaymentProcessor.Object,
+               employerPaymentProcessor.Object
+            };
 
             // Act
-            var handler = new ContractType2RequiredPaymentService(paymentProcessors, mapper.Object);
+            var handler = new ContractType2RequiredPaymentEventFundingSourceService(paymentProcessors, mapper.Object);
             handler.GetFundedPayments(message);
 
             //Assert
             sfaPaymentProcessor.Verify();
             employerPaymentProcessor.Verify();
         }
-
     }
 }

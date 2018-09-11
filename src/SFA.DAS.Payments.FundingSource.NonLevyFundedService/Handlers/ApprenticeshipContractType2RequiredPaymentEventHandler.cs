@@ -13,11 +13,11 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly ILifetimeScope lifetimeScope;
-        private readonly IContractType2RequiredPaymentService contractType2RequiredPaymentService;
+        private readonly IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService;
 
         public ApprenticeshipContractType2RequiredPaymentEventHandler(IPaymentLogger paymentLogger, 
                                                                       ILifetimeScope lifetimeScope, 
-                                                                      IContractType2RequiredPaymentService contractType2RequiredPaymentService)
+                                                                      IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService)
         {
             this.paymentLogger = paymentLogger;
             this.lifetimeScope = lifetimeScope;
@@ -35,7 +35,6 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 
                 try
                 {
-                    //TODO Logic to generate Payments
                     var payments = contractType2RequiredPaymentService.GetFundedPayments(message);
 
                     foreach (var recordablePaymentEvent in payments)
@@ -46,10 +45,8 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
                         }
                         catch (Exception ex)
                         {
-                            //TODO: add more details when we flesh out the event.
                             paymentLogger.LogError($"Error publishing the event: RecordablePaymentEvent", ex);
                             throw;
-                            //TODO: update the job
                         }
                     }
 

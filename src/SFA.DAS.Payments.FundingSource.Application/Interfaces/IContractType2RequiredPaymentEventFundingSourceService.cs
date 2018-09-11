@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.FundingSource.Application
 {
-    public interface IContractType2RequiredPaymentService
+    public interface IContractType2RequiredPaymentEventFundingSourceService
     {
         IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(ApprenticeshipContractType2RequiredPaymentEvent message);
     }

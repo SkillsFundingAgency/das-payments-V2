@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Events
 {
-    public  class CoInvestedFundingSourcePaymentEvent : FundingSourcePaymentEvent
+    public abstract class CoInvestedFundingSourcePaymentEvent : FundingSourcePaymentEvent
     {
         public decimal SfaContributionPercentage { get; set; }
 

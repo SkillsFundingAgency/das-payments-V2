@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
     {
         private readonly IValidateRequiredPaymentEvent validator;
 
-        public CoInvestedPaymentProcessor(IValidateRequiredPaymentEvent validateRequiredPaymentEvent)
+        protected CoInvestedPaymentProcessor(IValidateRequiredPaymentEvent validateRequiredPaymentEvent)
         {
             validator = validateRequiredPaymentEvent;
         }
