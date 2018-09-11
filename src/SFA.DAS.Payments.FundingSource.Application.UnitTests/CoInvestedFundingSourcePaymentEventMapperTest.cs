@@ -120,9 +120,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
 
           
 
-            var actualEmployerCoinvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredPaymentEvent, coInvestedPayment);
+            var actualEmployerCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredPaymentEvent, coInvestedPayment);
 
-            actualEmployerCoinvestedPayment.Should().BeEquivalentTo(expectedPayment);
+            actualEmployerCoInvestedPayment.Should().BeEquivalentTo(expectedPayment);
         }
 
         [Test]

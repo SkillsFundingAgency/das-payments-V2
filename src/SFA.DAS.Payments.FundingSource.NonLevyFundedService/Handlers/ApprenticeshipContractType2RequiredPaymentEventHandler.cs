@@ -2,7 +2,7 @@
 using ESFA.DC.Logging.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.FundingSource.Application;
+using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Threading.Tasks;

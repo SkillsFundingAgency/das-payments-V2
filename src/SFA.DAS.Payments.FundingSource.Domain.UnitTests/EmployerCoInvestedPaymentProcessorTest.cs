@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Domain.Exceptions;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
@@ -14,7 +13,6 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
     {
         private EmployerCoInvestedPaymentProcessor processor;
         private Mock<IValidateRequiredPaymentEvent> validator;
-        private Mock<IMapper> mapper;
 
         [Test]
         public void ShouldThrowExceptionIfValidationResultIsNotEmpty()
@@ -42,10 +40,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             Assert.That(() => processor.Process(message), Throws.InstanceOf<FundingSourceRequiredPaymentValidationException>());
         }
 
-        [TestCase(0.9, 20600.87, 2060.087)]
+        [TestCase(0.9, 2000.00, 200.00)]
         [TestCase(0.9, 552580.20, 55258.02)]
         [TestCase(1, 552580.20, 0)]
-        public void GivenValidSfaContributionAndAmountDueSholudReturnValidPayment(decimal sfaContribution,
+        public void GivenValidSfaContributionAndAmountDueShouldReturnValidPayment(decimal sfaContribution,
                                                                                    decimal amountDue,
                                                                                    decimal expectedAmount)
         {

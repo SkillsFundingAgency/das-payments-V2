@@ -8,19 +8,19 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
     [TestFixture]
     public class ValidateRequiredPaymentEventTest
     {
-        [TestCase(0, RequiredPaymentEventValidationRules.ZeroSfaContributionPercentage)]
-        public void SholuldGenerateValidationResultForInvalidEvent(decimal sfaContribution, int expectedValidationRule)
+        [Test]
+        public void ShouldGenerateValidationResultForInvalidEvent()
         {
             var message = new RequiredCoInvestedPayment
             {
-                SfaContributionPercentage = sfaContribution
+                SfaContributionPercentage = 0
             };
 
             var validator = new ValidateRequiredPaymentEvent();
             var results = validator.Validate(message);
 
             Assert.IsNotNull(results);
-            Assert.AreEqual(expectedValidationRule, (int)results.First().Rule);
+            Assert.AreEqual((int)RequiredPaymentEventValidationRules.ZeroSfaContributionPercentage, (int)results.First().Rule);
         }
 
     }
