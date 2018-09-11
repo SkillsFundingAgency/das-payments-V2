@@ -58,7 +58,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             coInvestedFundingMapper = new CoInvestedFundingSourcePaymentEventMapper(autoMapper);
         }
 
-
         [Test]
         public void ShouldMapToValidSfaCoInvestedFundingSourcePaymentEvent()
         {

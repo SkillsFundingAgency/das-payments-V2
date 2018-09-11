@@ -3,8 +3,10 @@ using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System.Collections.Generic;
+using FluentAssertions;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
 {
@@ -48,5 +50,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             sfaPaymentProcessor.Verify();
             employerPaymentProcessor.Verify();
         }
+
     }
 }
