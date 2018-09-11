@@ -16,12 +16,13 @@ Background:
 	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
 	| p1                     | 01/09/2017       | 01/09/2017                   | 15000                | 1000       |	
 
+	#review - periods
 	And the following contract type 2 on programme earnings for periods 6-14 are provided in the latest ILR for the academic year 1718:
 	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
 	| p2                     | 03/01/2018       | 03/01/2018                   | 15000                | 1000       |	
 
 @Non-DAS
-@minimum_tests_additional
+@minimum_additional
 @BreakInLearning
 @review
 

@@ -145,7 +145,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                         "03/01/2018",
                         "15000",
                         "1000"});
-#line 19
+#line 20
  testRunner.And("the following contract type 2 on programme earnings for periods 6-14 are provided" +
                     " in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
 #line hidden
@@ -154,7 +154,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Contract Type 2 On programme payments")]
         [NUnit.Framework.CategoryAttribute("Non-DAS")]
-        [NUnit.Framework.CategoryAttribute("minimum_tests_additional")]
+        [NUnit.Framework.CategoryAttribute("minimum_additional")]
         [NUnit.Framework.CategoryAttribute("BreakInLearning")]
         [NUnit.Framework.CategoryAttribute("review")]
         [NUnit.Framework.TestCaseAttribute("Learning_1", "1000", null)]
@@ -162,7 +162,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
         {
             string[] @__tags = new string[] {
                     "Non-DAS",
-                    "minimum_tests_additional",
+                    "minimum_additional",
                     "BreakInLearning",
                     "review"};
             if ((exampleTags != null))
@@ -170,7 +170,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments", null, @__tags);
-#line 28
+#line 29
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
@@ -200,9 +200,9 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 30
+#line 31
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table4, "And ");
-#line 35
+#line 36
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -229,7 +229,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 37
+#line 38
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table5, "Then ");
 #line hidden
@@ -242,7 +242,7 @@ this.FeatureBackground();
         public virtual void ContractType2OnProgrammePaymentsChangedPrice(string transaction_Type, string amount, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments changed price", null, exampleTags);
-#line 47
+#line 48
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
@@ -272,9 +272,9 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 49
+#line 50
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table6, "And ");
-#line 54
+#line 55
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -309,7 +309,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 56
+#line 57
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table7, "Then ");
 #line hidden
