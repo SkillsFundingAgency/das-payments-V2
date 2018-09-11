@@ -326,10 +326,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Break_In_Learning.feature">
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Break_In_Learning.feature.cs</LastGenOutput>
     </None>
