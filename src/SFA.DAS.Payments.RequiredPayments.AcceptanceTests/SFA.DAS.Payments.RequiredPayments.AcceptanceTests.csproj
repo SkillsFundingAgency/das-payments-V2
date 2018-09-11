@@ -159,16 +159,6 @@
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
     <Compile Include="Steps\ProviderSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\learner_finishes_early_Balancing_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>learner_finishes_early_Balancing_Completion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R13_FullHistory_Completion_OnTime.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>R13_FullHistory_Completion_OnTime.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\RequiredPaymentsIntegrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -262,9 +252,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_price_change_during_programme_learning_support.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\learner_finishes_early_Balancing_Completion.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R10_Learner_finishes_early_Balancing_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>learner_finishes_early_Balancing_Completion.feature.cs</LastGenOutput>
+      <LastGenOutput>R10_Learner_finishes_early_Balancing_Completion.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\Refund_price_change_retrospectively_from_beginning.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
