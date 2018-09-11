@@ -153,6 +153,7 @@
     <Compile Include="Application\LearnRefNumberGenerator.cs" />
     <Compile Include="Data\ContractTypeEarning.cs" />
     <Compile Include="Data\Course.cs" />
+    <Compile Include="Data\PayableEarning.cs" />
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2Handler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

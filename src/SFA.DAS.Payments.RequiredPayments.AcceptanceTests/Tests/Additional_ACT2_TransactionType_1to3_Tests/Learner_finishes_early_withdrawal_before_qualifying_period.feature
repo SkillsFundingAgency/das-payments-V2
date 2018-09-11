@@ -6,7 +6,7 @@ Feature: A non-DAS learner, learner withdraws before qualifying period
 
 
 Background:
-	Given the current processing period is 2
+	Given the current processing period is 2 
 
 	And a learner with LearnRefNumber learnref3 and Uln 10000 undertaking training with training provider 10000
 

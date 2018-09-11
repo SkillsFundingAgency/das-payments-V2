@@ -9,5 +9,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests
 
         public static string ServiceBusConnectionString =>
             ConfigurationManager.ConnectionStrings["ServiceBusConnectionString"]?.ConnectionString;
+
+        public static string ServiceBusQueue =>
+            ConfigurationManager.AppSettings["ServiceBusQueue"];
     }
 }
