@@ -109,19 +109,23 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R10_Learner_finishes_early_OnProg_Balancing_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R13_DelayedCompletion_NoOnProgPayment.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R14_Late_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>R13_DelayedCompletion_NoOnProgPayment.feature.cs</LastGenOutput>
+      <LastGenOutput>R14_Late_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Break_In_Learning.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\R13_Late_Continuing_NoOnProgPayment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R13_Late_Continuing_NoOnProgPayment.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\In-progress Tests\BreakInLearning\Break_In_Learning.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Break_In_Learning.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Learner_finishes_early_withdrawal_after_qualifying_period.feature">
+    <None Include="Tests\In-progress Tests\Withdrawal\Learner_finishes_early_withdrawal_after_qualifying_period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learner_finishes_early_withdrawal_after_qualifying_period.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Learner_finishes_early_withdrawal_before_qualifying_period.feature">
+    <None Include="Tests\In-progress Tests\Withdrawal\Learner_finishes_early_withdrawal_before_qualifying_period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learner_finishes_early_withdrawal_before_qualifying_period.feature.cs</LastGenOutput>
     </None>
@@ -141,7 +145,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R03_MultipleHistoricalPayments.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\R04_ChangeInStartDate_Earlier_By_1_month.feature">
+    <None Include="Tests\In-progress Tests\ILR_Changes\R04_ChangeInStartDate_Earlier_By_1_month.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R04_ChangeInStartDate_Earlier_By_1_month.feature.cs</LastGenOutput>
     </None>
@@ -161,27 +165,27 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R13_NoHistory_Final_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\R12_Refund_Delay_in_Completion.feature">
+    <None Include="Tests\In-progress Tests\Refunds\R12_Refund_Delay_in_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R12_Refund_Delay_in_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Redundancy_ouside_of_last_6_months.feature">
+    <None Include="Tests\In-progress Tests\Redundancy\Redundancy_ouside_of_last_6_months.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Redundancy_ouside_of_last_6_months.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Redundancy_within_last_6_months.feature">
+    <None Include="Tests\In-progress Tests\Redundancy\Redundancy_within_last_6_months.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Redundancy_within_last_6_months.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\TNP_higher_than_max_funding_band_Balancing_Completion.feature">
+    <None Include="Tests\In-progress Tests\ILR_EndToEnd\TNP_higher_than_max_funding_band_Balancing_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>TNP_higher_than_max_funding_band_Balancing_Completion1.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\TNP_higher_than_max_funding_band_Completion.feature">
+    <None Include="Tests\In-progress Tests\ILR_EndToEnd\TNP_higher_than_max_funding_band_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>TNP_higher_than_max_funding_band_Completion1.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\TNP_higher_than_max_funding_band_Continuing.feature">
+    <None Include="Tests\In-progress Tests\ILR_EndToEnd\TNP_higher_than_max_funding_band_Continuing.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>TNP_higher_than_max_funding_band_Continuing1.feature.cs</LastGenOutput>
     </None>
@@ -209,11 +213,11 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\ContractTypeChangesFromAct1ToAct2.feature">
+    <None Include="Tests\In-progress Tests\ContractTypeChanges\ContractTypeChangesFromAct1ToAct2.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ContractTypeChangesFromAct1ToAct2.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\ContractTypeChangesFromAct2ToAct1.feature">
+    <None Include="Tests\In-progress Tests\ContractTypeChanges\ContractTypeChangesFromAct2ToAct1.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ContractTypeChangesFromAct2ToAct11.feature.cs</LastGenOutput>
     </None>
@@ -221,15 +225,15 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R10_Learner_finishes_early_Balancing_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\Refund_price_change_retrospectively_from_beginning.feature">
+    <None Include="Tests\In-progress Tests\Refunds\Refund_price_change_retrospectively_from_beginning.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Refund_price_change_retrospectively_from_beginning.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature">
+    <None Include="Tests\In-progress Tests\SmallEmployers\small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature">
+    <None Include="Tests\In-progress Tests\SmallEmployers\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>small_employers_full_funded_Additional_Payments_EEF2_Completion1.feature.cs</LastGenOutput>
     </None>
