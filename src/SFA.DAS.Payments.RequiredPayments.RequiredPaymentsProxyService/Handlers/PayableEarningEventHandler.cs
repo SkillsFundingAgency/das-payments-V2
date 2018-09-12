@@ -3,20 +3,20 @@ using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
-using SFA.DAS.Payments.RequiredPayments.Domain.Interfaces;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
+using SFA.DAS.Payments.RequiredPayments.Domain;
 
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public class PayableEarningEventHandler : IHandleMessages<IEarningEvent>
+    public class PayableEarningEventHandler : IHandleMessages<PaymentDueEvent>
     {
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly IActorProxyFactory _proxyFactory;
@@ -34,34 +34,33 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             _lifetimeScope = lifetimeScope;
         }
 
-        public async Task Handle(IEarningEvent message, IMessageHandlerContext context)
+        public async Task Handle(PaymentDueEvent message, IMessageHandlerContext context)
         {
             using (var scope = _lifetimeScope.BeginLifetimeScope())
             {
                 _paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
 
-                var executionContext = (ESFA.DC.Logging.ExecutionContext)_lifetimeScope.Resolve<IExecutionContext>();
+                var executionContext = (ESFA.DC.Logging.ExecutionContext) _lifetimeScope.Resolve<IExecutionContext>();
                 executionContext.JobId = message.JobId;
 
                 try
                 {
-                    var key = _apprenticeshipKeyService.GenerateKey(
+                    var key = _apprenticeshipKeyService.GenerateApprenticeshipKey(
                         message.Ukprn,
                         message.Learner.ReferenceNumber,
                         message.LearningAim.FrameworkCode,
                         message.LearningAim.PathwayCode,
-                        (ProgrammeType)message.LearningAim.ProgrammeType,
+                        (ProgrammeType) message.LearningAim.ProgrammeType,
                         message.LearningAim.StandardCode,
                         message.LearningAim.Reference
                     );
 
                     var actorId = new ActorId(key);
                     var actor = _proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                    RequiredPaymentEvent[] payments;
+                    RequiredPaymentEvent calculatedPaymentDueEvent;
                     try
                     {
-                        payments = await actor.HandleEarning(message, CancellationToken.None)
-                            .ConfigureAwait(false);
+                        calculatedPaymentDueEvent = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -69,25 +68,23 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                         throw;
                     }
 
-                    foreach (var calculatedPaymentDueEvent in payments)
+                    try
                     {
-                        try
-                        {
-                            await context.Publish(calculatedPaymentDueEvent);
-                        }
-                        catch (Exception ex)
-                        {
-                            //TODO: add more details when we flesh out the event.
-                            _paymentLogger.LogError($"Error publishing the event: 'RequiredPaymentEvent'.  Error: {ex.Message}.", ex);
-                            throw;
-                            //TODO: update the job
-                        }
+                        await context.Publish(calculatedPaymentDueEvent);
                     }
+                    catch (Exception ex)
+                    {
+                        //TODO: add more details when we flesh out the event.
+                        _paymentLogger.LogError($"Error publishing the event: 'RequiredPaymentEvent'.  Error: {ex.Message}.", ex);
+                        throw;
+                        //TODO: update the job
+                    }
+
                     _paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
                 }
                 catch (Exception ex)
                 {
-                    _paymentLogger.LogError($"Error while handling RequiredPaymentsProxyService event", ex);
+                    _paymentLogger.LogError("Error while handling RequiredPaymentsProxyService event", ex);
                     throw;
                 }
             }

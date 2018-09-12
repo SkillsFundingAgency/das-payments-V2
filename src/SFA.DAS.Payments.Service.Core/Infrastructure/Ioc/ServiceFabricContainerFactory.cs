@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 {
-    public class ServiceFabricContainerFactory
+    public static class ServiceFabricContainerFactory
     {
         public static ContainerBuilder CreateBuilderForActor<TActor>() where TActor: ActorBase
         {

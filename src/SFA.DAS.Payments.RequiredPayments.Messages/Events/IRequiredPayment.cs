@@ -8,10 +8,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
         long Ukprn { get; }
         Learner Learner { get; }
         LearningAim LearningAim { get; }
-        byte Period { get; }
         string PriceEpisodeIdentifier { get; }
-        decimal AmountDue { get; }
+        decimal Amount { get; }
         NamedCalendarPeriod CollectionPeriod { get; }
-        CalendarPeriod DeliveryPeriod { get; }
+        NamedCalendarPeriod DeliveryPeriod { get; }
     }
 }

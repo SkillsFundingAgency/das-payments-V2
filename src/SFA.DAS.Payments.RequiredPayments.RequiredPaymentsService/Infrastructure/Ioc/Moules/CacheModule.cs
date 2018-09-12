@@ -8,8 +8,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Infrastructu
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ReliableCollectionCache<IEnumerable<PaymentEntity>>>().AsImplementedInterfaces();
-            //builder.RegisterType<PaymentHistoryRepository>().AsImplementedInterfaces();
+            builder.RegisterType<ReliableCollectionCache<PaymentEntity[]>>().AsImplementedInterfaces();
         }
     }
 }
