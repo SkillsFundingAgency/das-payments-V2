@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
+using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
-namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
+namespace SFA.DAS.Payments.RequiredPayments.Application
 {
     public interface IPaymentHistoryRepository
     {
-        Task<IEnumerable<Payment>> GetPaymentHistory(string apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken));
+        Task<PaymentEntity[]> GetPaymentHistory(string apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

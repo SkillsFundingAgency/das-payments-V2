@@ -13,6 +13,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         [DataMember]
         public string LearnerReferenceNumber { get; set; }
         [DataMember]
+        public string LearnAimReference { get; set; }
+        [DataMember]
+        public int TransactionType { get; set; }
+        [DataMember]
         public string ApprenticeshipKey { get; set; }
         [DataMember]
         public string PriceEpisodeIdentifier { get; set; }

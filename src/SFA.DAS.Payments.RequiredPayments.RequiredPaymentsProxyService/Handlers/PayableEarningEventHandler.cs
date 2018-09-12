@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
         public async Task Handle(PaymentDueEvent message, IMessageHandlerContext context)
         {
-            using (var scope = _lifetimeScope.BeginLifetimeScope())
+            using (_lifetimeScope.BeginLifetimeScope())
             {
                 _paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
 
@@ -57,10 +57,10 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
                     var actorId = new ActorId(key);
                     var actor = _proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                    RequiredPaymentEvent calculatedPaymentDueEvent;
+                    RequiredPaymentEvent requiredPaymentEvent;
                     try
                     {
-                        calculatedPaymentDueEvent = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
+                        requiredPaymentEvent = await actor.HandlePaymentDueEvent(message, CancellationToken.None).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
                     try
                     {
-                        await context.Publish(calculatedPaymentDueEvent);
+                        await context.Publish(requiredPaymentEvent);
                     }
                     catch (Exception ex)
                     {

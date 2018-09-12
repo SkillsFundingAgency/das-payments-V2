@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.RequiredPayments.Application.Data;
-using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
@@ -21,15 +20,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Payment>> GetPaymentHistory(string apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<PaymentEntity[]> GetPaymentHistory(string apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var paymentEntities = await _requiredPaymentsDataContext.PaymentHistory
+            return await _requiredPaymentsDataContext.PaymentHistory
                 .Where(p => p.ApprenticeshipKey == apprenticeshipKey)
-                .ToListAsync(cancellationToken);
-
-            return paymentEntities
-                .Select(_mapper.Map<PaymentEntity, Payment>)
-                .ToArray();
+                .ToArrayAsync(cancellationToken);
         }
     }
 }
