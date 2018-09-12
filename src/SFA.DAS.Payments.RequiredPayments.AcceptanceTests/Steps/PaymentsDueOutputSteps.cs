@@ -49,19 +49,15 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
                 var payableEarnings = table.CreateSet<PayableEarning>().ToList();
 
-                foreach (var resultEvent in results)
-                {
-                    Assert.IsTrue(payableEarnings.Exists(x => x.Period == resultEvent.Period
-                                                              && x.Ukprn == resultEvent.Ukprn
-                                                              && generator.Generate(x.Ukprn, x.LearnRefNumber)
-                                                                  .ToString() == resultEvent.Learner.ReferenceNumber
-                                                              && x.OnProgrammeEarningType.HasValue
-                                                              && x.OnProgrammeEarningType.Value ==
-                                                              resultEvent.OnProgrammeEarningType
-                                                              && x.Amount == resultEvent.AmountDue));
-                }
-
-                return results.Count == payableEarnings.Count;
+                return payableEarnings.All(x => results.Any(resultEvent => x.Period == resultEvent.Period
+                                                                    && x.Ukprn == resultEvent.Ukprn
+                                                                    && generator.Generate(x.Ukprn, x.LearnRefNumber)
+                                                                        .ToString() ==
+                                                                    resultEvent.Learner.ReferenceNumber
+                                                                    && x.OnProgrammeEarningType.HasValue
+                                                                    && x.OnProgrammeEarningType.Value ==
+                                                                    resultEvent.OnProgrammeEarningType
+                                                                    && x.Amount == resultEvent.AmountDue));
             }, "Failed to find all the required payment earning events");
         }
     }
