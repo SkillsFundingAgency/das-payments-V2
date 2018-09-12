@@ -277,14 +277,6 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount"});
             table5.AddRow(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "PriceEpisodeIdentifier",
-                        "Period",
-                        "ULN",
-                        "TransactionType",
-                        "Amount"});
-            table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",

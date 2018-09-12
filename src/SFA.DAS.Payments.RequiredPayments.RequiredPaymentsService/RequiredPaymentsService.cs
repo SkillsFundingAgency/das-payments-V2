@@ -58,7 +58,8 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                     OnProgrammeEarningType = earningPeriod.earning.Type,
                     PriceEpisodeIdentifier = earningPeriod.period.PriceEpisodeIdentifier,
                     SfaContributionPercentage = earningEvent.SfaContributionPercentage,
-                    Ukprn = earningEvent.Ukprn
+                    Ukprn = earningEvent.Ukprn,
+                    Period = earningPeriod.period.Period
                 })
                 .ToArray();
         }

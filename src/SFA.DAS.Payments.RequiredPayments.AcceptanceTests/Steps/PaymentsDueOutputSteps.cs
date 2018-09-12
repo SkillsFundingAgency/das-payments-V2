@@ -1,19 +1,34 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
+using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class PaymentsDueOutputSteps
+    public class PaymentsDueOutputSteps: StepsBase
     {
         private readonly ScenarioContext context;
+        private readonly LearnRefNumberGenerator generator;
 
-        public PaymentsDueOutputSteps(ScenarioContext context)
+        //protected ApprenticeshipContractType2EarningEvent EarningEvent
+        //{
+        //    get => Get<ApprenticeshipContractType2EarningEvent>();
+        //    set => Set(value);
+        //}
+
+        public PaymentsDueOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator)
         {
             this.context = context;
+            this.generator = generator;
+
+   //         EarningEvent = context.Get<ApprenticeshipContractType2EarningEvent>();
         }
         [Then(@"the payments due component will generate the following payable earnings:")]
         public void ThenThePaymentsDueComponentWillGenerateTheFollowingPayableEarnings(Table table)
@@ -23,17 +38,31 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [Then(@"the payments due component will generate the following contract type (.*) payable earnings:")]
         public void ThenThePaymentsDueComponentWillGenerateTheFollowingPayableEarnings(short contractType, Table table)
         {
-            while (!context.ContainsKey("ContractType2PayableEarnings"))
+            WaitForIt(() =>
             {
+                var results = ApprenticeshipContractType2Handler.ReceivedEvents;
 
-            }
+                if (results == null || !results.Any())
+                {
+                    return false;
+                }
 
-            var payableEarnings = table.CreateSet<PayableEarning>().ToList();
+                var payableEarnings = table.CreateSet<PayableEarning>().ToList();
 
-            if (context["ContractType2PayableEarnings"] is List<PayableEarning> output && output.Any())
-            {
-                output.ForEach(o => payableEarnings.Contains(o));
-            }
+                foreach (var resultEvent in results)
+                {
+                    Assert.IsTrue(payableEarnings.Exists(x => x.Period == resultEvent.Period
+                                                              && x.Ukprn == resultEvent.Ukprn
+                                                              && generator.Generate(x.Ukprn, x.LearnRefNumber)
+                                                                  .ToString() == resultEvent.Learner.ReferenceNumber
+                                                              && x.OnProgrammeEarningType.HasValue
+                                                              && x.OnProgrammeEarningType.Value ==
+                                                              resultEvent.OnProgrammeEarningType
+                                                              && x.Amount == resultEvent.AmountDue));
+                }
+
+                return results.Count == payableEarnings.Count;
+            }, "Failed to find all the required payment earning events");
         }
     }
 }

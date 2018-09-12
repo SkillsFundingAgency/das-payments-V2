@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 .AsReadOnly(),
                 EarningYear = (short)DateTime.Today.Year,
                 SfaContributionPercentage = 0.9M,
-
+                
                 OnProgrammeEarnings = onProgrammeEarnings.AsReadOnly()
             };
 
