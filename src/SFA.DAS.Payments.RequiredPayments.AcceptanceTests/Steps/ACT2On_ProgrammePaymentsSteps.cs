@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             WaitForIt(() =>
             {
                 var periods = EarningEvent.OnProgrammeEarnings.SelectMany(earning => earning.Periods,(earning,period)=> new {earning,period});
-                return periods.All(earningPeriod => ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent => receivedEvent.Amount == earningPeriod.period.Amount && receivedEvent.DeliveryPeriod?.Month == earningPeriod.period.Period));
+                return periods.All(earningPeriod => ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent => receivedEvent.AmountDue == earningPeriod.period.Amount && receivedEvent.DeliveryPeriod?.Month == earningPeriod.period.Period));
             },"Failed to find all the required payment earning events");
         }
     }
