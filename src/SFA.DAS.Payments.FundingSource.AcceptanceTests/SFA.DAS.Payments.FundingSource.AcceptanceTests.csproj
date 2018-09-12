@@ -263,6 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="App.debug.config" />
     <None Include="packages.config" />
     <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Break_In_Learning.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

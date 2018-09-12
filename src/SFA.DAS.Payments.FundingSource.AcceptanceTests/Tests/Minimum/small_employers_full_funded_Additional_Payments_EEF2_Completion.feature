@@ -27,9 +27,9 @@ Background:
 
 Scenario: Contract Type 2 completion payment
 
-	When MASH is received
+	When a payable earning event is received
 
-	Then the payment source component will generate the following contract type 2 coinvested payments:
+	Then the funding source component will generate the following contract type 2 coinvested payments:
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | FullyFundedSfa_4     | 1500   |

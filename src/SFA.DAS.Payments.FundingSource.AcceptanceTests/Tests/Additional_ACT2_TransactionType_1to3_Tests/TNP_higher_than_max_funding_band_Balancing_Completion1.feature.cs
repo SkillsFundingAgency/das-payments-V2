@@ -122,7 +122,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 3
 this.FeatureBackground();
 #line 25
- testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("a payable earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -152,7 +152,7 @@ this.FeatureBackground();
                         "CoInvestedEmployer_3",
                         "270"});
 #line 27
- testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
+ testRunner.Then("the funding source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -168,7 +168,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 3
 this.FeatureBackground();
 #line 36
- testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("a payable earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -198,7 +198,7 @@ this.FeatureBackground();
                         "CoInvestedEmployer_3",
                         "240"});
 #line 38
- testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
+ testRunner.Then("the funding source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();

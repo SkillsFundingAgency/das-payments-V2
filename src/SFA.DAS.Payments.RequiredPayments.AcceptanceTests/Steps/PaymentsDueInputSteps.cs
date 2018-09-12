@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class PaymentsDueInputSteps
     {
-        [When(@"a TOBY is received")]
+        [When(@"an earning event is received")]
         public void WhenATobyIsReceived()
         {
             var scenarioContext = ScenarioContext.Current;

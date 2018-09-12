@@ -27,9 +27,9 @@ Background:
 	
 Scenario: Contract Type 2 completion payment
 
-	When MASH is received
+	When a payable earning event is received
 
-	Then the payment source component will generate the following contract type 2 coinvested payments:
+	Then the funding source component will generate the following contract type 2 coinvested payments:
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedSfa_2      | 1620   |
@@ -38,9 +38,9 @@ Scenario: Contract Type 2 completion payment
 
 Scenario: Contract Type 2 balancing payment
 
-	When MASH is received
+	When a payable earning event is received
 
-	Then the payment source component will generate the following contract type 2 coinvested payments:
+	Then the funding source component will generate the following contract type 2 coinvested payments:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Balancing_3     | CoInvestedSfa_2      | 1296   |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Balancing_3     | CoInvestedEmployer_3 | 144    |
