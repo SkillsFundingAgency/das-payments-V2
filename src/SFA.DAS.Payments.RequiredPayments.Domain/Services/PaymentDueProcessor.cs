@@ -17,28 +17,21 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             if (paymentHistory == null)
                 throw new ArgumentNullException(nameof(paymentHistory));
 
-            // TODO: validate paymentDue
-            
             // compare amounts
             var amountPaid = paymentHistory.Sum(p => p.Amount);
 
-            // create payment
             if (amountPaid == paymentDue.Amount)
                 return null;
 
+            // create payment
             return new RequiredPaymentEvent
             {
                 Amount = paymentDue.Amount - amountPaid,
-                Learner = new Learner
-                {
-                    Ukprn = paymentDue.Ukprn,
-                    ReferenceNumber = paymentDue.Learner.ReferenceNumber,
-                    Uln = paymentDue.Learner.Uln
-                },
+                Learner = paymentDue.Learner.Clone(),
                 Ukprn = paymentDue.Ukprn,
-                CollectionPeriod = paymentDue.CollectionPeriod,
-                DeliveryPeriod = paymentDue.DeliveryPeriod,
-                LearningAim = paymentDue.LearningAim,
+                CollectionPeriod = paymentDue.CollectionPeriod.Clone(),
+                DeliveryPeriod = paymentDue.DeliveryPeriod.Clone(),
+                LearningAim = paymentDue.LearningAim.Clone(),
                 PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier,
                 EventTime = DateTimeOffset.UtcNow,
                 JobId = paymentDue.JobId

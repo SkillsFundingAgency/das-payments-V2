@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -9,7 +8,6 @@ using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Application;
 using SFA.DAS.Payments.RequiredPayments.Application.Handlers;
@@ -26,7 +24,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
         private readonly IPaymentLogger _paymentLogger;
         private readonly IExecutionContextFactory _executionContextFactory;
-        private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         private readonly string _apprenticeshipKey;
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly ILifetimeScope _lifetimeScope;
@@ -35,13 +32,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             ActorId actorId,
             IPaymentLogger paymentLogger,
             IExecutionContextFactory executionContextFactory,
-            IPaymentHistoryRepository paymentHistoryRepository, 
             IApprenticeshipKeyService apprenticeshipKeyService,
             ILifetimeScope lifetimeScope) : base(actorService, actorId)
         {
             _paymentLogger = paymentLogger;
             _executionContextFactory = executionContextFactory ?? throw new ArgumentNullException(nameof(executionContextFactory));
-            _paymentHistoryRepository = paymentHistoryRepository;
             _apprenticeshipKeyService = apprenticeshipKeyService;
             _lifetimeScope = lifetimeScope;
             _apprenticeshipKey = actorId.GetStringId();
@@ -68,7 +63,16 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 await Initialise().ConfigureAwait(false);
 
             _paymentHistoryCache = new ReliableCollectionCache<PaymentEntity[]>(StateManager);
-            _paymentDueEventHanlder = new PaymentDueEventHanlder(_lifetimeScope.Resolve<IPaymentDueProcessor>(), _paymentHistoryCache, _lifetimeScope.Resolve<IMapper>(), _apprenticeshipKeyService);
+
+            _paymentDueEventHanlder = new PaymentDueEventHanlder(
+                _lifetimeScope.Resolve<IPaymentDueProcessor>(),
+                _paymentHistoryCache,
+                _lifetimeScope.Resolve<IMapper>(),
+                _apprenticeshipKeyService,
+                _lifetimeScope.Resolve<IPaymentHistoryRepository>(),
+                _apprenticeshipKey
+            );
+
             await base.OnActivateAsync().ConfigureAwait(false);
         }
 
@@ -76,21 +80,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             _paymentLogger.LogInfo($"Initialising actor for apprenticeship {_apprenticeshipKey}");
 
-            var paymentHistory = await _paymentHistoryRepository.GetPaymentHistory(_apprenticeshipKey).ConfigureAwait(false);
+            await _paymentDueEventHanlder.PopulatePaymentHistoryCache(CancellationToken.None).ConfigureAwait(false);
 
-            if (paymentHistory != null)
-            {
-                var groupedEntities = paymentHistory
-                    .GroupBy(payment => _apprenticeshipKeyService.GeneratePaymentKey(payment.PriceEpisodeIdentifier, payment.LearnAimReference, payment.TransactionType, NamedCalendarPeriod.FromName(payment.DeliveryPeriod)))
-                    .ToDictionary(c => c.Key, c => c.ToArray());
-
-                foreach (var p in groupedEntities)
-                {
-                    await _paymentHistoryCache.Add(p.Key, p.Value, CancellationToken.None).ConfigureAwait(false);
-                }
-            }
-
-            _paymentLogger.LogInfo($"Initialised actor for apprenticeship {_apprenticeshipKey} with {paymentHistory?.Count()} historical payments");
+            _paymentLogger.LogInfo($"Initialised actor for apprenticeship {_apprenticeshipKey}");
 
             await StateManager.AddStateAsync("initialised", true).ConfigureAwait(false);
         }

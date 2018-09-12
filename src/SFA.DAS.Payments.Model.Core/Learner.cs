@@ -7,5 +7,10 @@
         public string ReferenceNumber { get; set; }
 
         public long Uln { get; set; }
+
+        public Learner Clone()
+        {
+            return (Learner) MemberwiseClone();
+        }
     }
 }

@@ -8,5 +8,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application
     public interface IPaymentDueEventHanlder
     {
         Task<RequiredPaymentEvent> HandlePaymentDue(PaymentDueEvent paymentDue, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task PopulatePaymentHistoryCache(CancellationToken cancellationToken);
     }
 }

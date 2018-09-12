@@ -70,7 +70,8 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
                     try
                     {
-                        await context.Publish(requiredPaymentEvent);
+                        if (requiredPaymentEvent != null)
+                            await context.Publish(requiredPaymentEvent).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {

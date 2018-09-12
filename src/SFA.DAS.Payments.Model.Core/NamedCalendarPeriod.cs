@@ -37,5 +37,10 @@ namespace SFA.DAS.Payments.Model.Core
                 Name = name
             };
         }
+
+        public NamedCalendarPeriod Clone()
+        {
+            return (NamedCalendarPeriod) MemberwiseClone();
+        }
     }
 }
