@@ -85,9 +85,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 Ukprn = requiredPaymentEvent.Ukprn
             };
 
-            var actualSfaCoinvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredPaymentEvent, coInvestedPayment);
+            var actualSfaCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredPaymentEvent, coInvestedPayment);
 
-            actualSfaCoinvestedPayment.Should().BeEquivalentTo(expectedPayment);
+            actualSfaCoInvestedPayment.Should().BeEquivalentTo(expectedPayment);
         }
 
 
