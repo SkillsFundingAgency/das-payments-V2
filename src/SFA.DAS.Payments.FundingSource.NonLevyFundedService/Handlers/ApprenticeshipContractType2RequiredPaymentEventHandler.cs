@@ -2,26 +2,29 @@
 using ESFA.DC.Logging.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 {
-    public class RequiredPaymentEventHandler : IHandleMessages<RequiredPaymentEvent>
+    public class ApprenticeshipContractType2RequiredPaymentEventHandler : IHandleMessages<ApprenticeshipContractType2RequiredPaymentEvent>
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly ILifetimeScope lifetimeScope;
+        private readonly IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService;
 
-        public RequiredPaymentEventHandler(IPaymentLogger paymentLogger, ILifetimeScope lifetimeScope)
+        public ApprenticeshipContractType2RequiredPaymentEventHandler(IPaymentLogger paymentLogger, 
+                                                                      ILifetimeScope lifetimeScope, 
+                                                                      IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService)
         {
             this.paymentLogger = paymentLogger;
             this.lifetimeScope = lifetimeScope;
+            this.contractType2RequiredPaymentService = contractType2RequiredPaymentService;
         }
 
-        public async Task Handle(RequiredPaymentEvent message, IMessageHandlerContext context)
+        public async Task Handle(ApprenticeshipContractType2RequiredPaymentEvent message, IMessageHandlerContext context)
         {
             using (var scope = lifetimeScope.BeginLifetimeScope())
             {
@@ -32,15 +35,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 
                 try
                 {
-                    //TODO Logic to generate Payments
-                    var payments = new List<RecordablePaymentEvent>
-                    {
-                        new RecordablePaymentEvent
-                        {
-                            JobId =  message.JobId,
-                            EventTime = DateTime.UtcNow
-                         }
-                    };
+                    var payments = contractType2RequiredPaymentService.GetFundedPayments(message);
 
                     foreach (var recordablePaymentEvent in payments)
                     {
@@ -50,10 +45,8 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
                         }
                         catch (Exception ex)
                         {
-                            //TODO: add more details when we flesh out the event.
                             paymentLogger.LogError($"Error publishing the event: RecordablePaymentEvent", ex);
                             throw;
-                            //TODO: update the job
                         }
                     }
 
