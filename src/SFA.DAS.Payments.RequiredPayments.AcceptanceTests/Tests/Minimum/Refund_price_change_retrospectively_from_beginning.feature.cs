@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
 #line 10
  testRunner.Given("the current processing period is 3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 12
- testRunner.And("a learner with LearnRefNumber learnref3 and Uln 10000 undertaking training with t" +
+ testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -130,6 +130,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
         [NUnit.Framework.CategoryAttribute("minimum_tests")]
         [NUnit.Framework.CategoryAttribute("Refunds")]
         [NUnit.Framework.CategoryAttribute("price_reduced_retrospectively")]
+        [NUnit.Framework.CategoryAttribute("partial")]
         [NUnit.Framework.TestCaseAttribute("Learning_1", "750", null)]
         public virtual void ContractType2OnProgrammePaymentsBeforePriceChange(string transaction_Type, string amount, string[] exampleTags)
         {
@@ -137,13 +138,14 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Minimum
                     "Non-DAS",
                     "minimum_tests",
                     "Refunds",
-                    "price_reduced_retrospectively"};
+                    "price_reduced_retrospectively",
+                    "partial"};
             if ((exampleTags != null))
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments before price change", null, @__tags);
-#line 27
+#line 28
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 9
@@ -173,9 +175,9 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 29
+#line 30
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table3, "And ");
-#line 34
+#line 35
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -218,7 +220,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("-{0}", amount)});
-#line 36
+#line 37
  testRunner.Then("the payments due component will generate the following contract type 1 payable ea" +
                     "rnings:", ((string)(null)), table4, "Then ");
 #line hidden
@@ -244,12 +246,12 @@ this.FeatureBackground();
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On programme payments after price change", null, @__tags);
-#line 52
+#line 53
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 9
 this.FeatureBackground();
-#line 54
+#line 55
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -284,7 +286,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 56
+#line 57
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table5, "Then ");
 #line hidden

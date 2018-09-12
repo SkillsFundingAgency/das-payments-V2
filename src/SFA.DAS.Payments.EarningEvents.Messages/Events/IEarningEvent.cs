@@ -11,9 +11,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
     /// <seealso cref="SFA.DAS.Payments.Messages.Core.Events.IPaymentsEvent" />
     public interface IEarningEvent : IPaymentsEvent
     {
-        long Ukprn { get; }
-        Learner Learner { get; }
-        LearningAim LearningAim { get; }
         short EarningYear { get; }
         ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; }
     }

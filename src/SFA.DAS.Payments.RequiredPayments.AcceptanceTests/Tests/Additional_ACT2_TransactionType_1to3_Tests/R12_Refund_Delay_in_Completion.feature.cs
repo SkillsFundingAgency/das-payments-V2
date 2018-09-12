@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
 #line 6
  testRunner.Given("the current processing period is 12", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 8
- testRunner.And("a learner with LearnRefNumber learnref3 and Uln 10000 undertaking training with t" +
+ testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
         [NUnit.Framework.CategoryAttribute("delayed_completion")]
         [NUnit.Framework.CategoryAttribute("Changed_Planned_End_Date")]
         [NUnit.Framework.CategoryAttribute("multiple_price_episodes")]
-        [NUnit.Framework.CategoryAttribute("refund")]
+        [NUnit.Framework.CategoryAttribute("refunds")]
         [NUnit.Framework.CategoryAttribute("review")]
         [NUnit.Framework.TestCaseAttribute("Learning_1", "1000", null)]
         public virtual void ContractType2OnProgrammePaymentsBeforeChangeInPlannedEndDate(string transaction_Type, string amount, string[] exampleTags)
@@ -139,7 +139,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Additional_ACT
                     "delayed_completion",
                     "Changed_Planned_End_Date",
                     "multiple_price_episodes",
-                    "refund",
+                    "refunds",
                     "review"};
             if ((exampleTags != null))
             {
