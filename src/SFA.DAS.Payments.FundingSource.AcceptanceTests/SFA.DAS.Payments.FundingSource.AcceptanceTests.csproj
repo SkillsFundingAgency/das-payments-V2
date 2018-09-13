@@ -105,9 +105,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion_Balancing_OnProg_EarlyFinish_MissingILR.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion_Balancing_OnProg_EarlyFinish_MissingILR.feature.cs</LastGenOutput>
+      <LastGenOutput>EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Completed_Completion_Only.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -269,9 +269,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ContractTypeChangesFromAct2ToAct11.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion_Balancing_EarlyFinish.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Completion_Balancing.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion_Balancing_EarlyFinish.feature.cs</LastGenOutput>
+      <LastGenOutput>EarlyFinish_Completion_Balancing.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\In-progress Tests\Refunds\Refund_price_change_retrospectively_from_beginning.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
