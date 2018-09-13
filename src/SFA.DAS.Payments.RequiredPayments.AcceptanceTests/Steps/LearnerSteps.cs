@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Linq;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application;
 using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
@@ -11,26 +8,28 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     public class LearnerSteps
     {
         private readonly LearnRefNumberGenerator learnRefNumberGenerator;
+        private readonly ScenarioContext context;
 
-        public LearnerSteps(LearnRefNumberGenerator generator)
+        public LearnerSteps(LearnRefNumberGenerator generator, ScenarioContext context)
         {
             learnRefNumberGenerator = generator;
+            this.context = context;
         }
 
         [BeforeScenario]
         public void BeforeScenario()
         {
-            ScenarioContext.Current["SessionId"] = Guid.NewGuid();
+            context["SessionId"] = Guid.NewGuid();
         }
 
         [Given(@"a learner with LearnRefNumber (.*) and Uln (.*) undertaking training with training provider (.*)")]
         public void GivenALearnerWithLearnRefNumberAndUln(string learnRefNumber, long uln, long ukprn)
         {
-            ScenarioContext.Current["LearnRefNumber"] = learnRefNumber;
-            ScenarioContext.Current["Uln"] = uln;
-            ScenarioContext.Current["Ukprn"] = ukprn;
+            context["LearnRefNumber"] = learnRefNumber;
+            context["Uln"] = uln;
+            context["Ukprn"] = ukprn;
 
-            ScenarioContext.Current["GeneratedLearnRefNumber"] =
+            context["GeneratedLearnRefNumber"] =
                 learnRefNumberGenerator.Generate(ukprn, learnRefNumber);
         }
 

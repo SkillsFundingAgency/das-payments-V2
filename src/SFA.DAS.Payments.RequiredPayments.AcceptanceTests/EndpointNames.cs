@@ -2,6 +2,6 @@
 {
     public class EndpointNames
     {
-        public static string RequiredPayments = "sfa-das-payments-requiredpaymentsproxyservice";
+        public static string RequiredPayments = "sfa-das-payments-requiredpayments";
     }
 }

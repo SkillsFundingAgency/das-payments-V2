@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         AgreedPrice = 15000,
                         Identifier = "p-1",
                     }
-                },
+                }.AsReadOnly(),
                 EarningYear = (short)DateTime.Today.Year,
                 SfaContributionPercentage = 0.9M,
                 IncentiveEarnings = new List<IncentiveEarning>
@@ -74,9 +74,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         Periods = new List<EarningPeriod>
                         {
                             new EarningPeriod {Amount = 500, Period = 1}
-                        }
+                        }.AsReadOnly()
                     }
-                },
+                }.AsReadOnly(),
                 OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
@@ -96,9 +96,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                             new EarningPeriod{Amount = 1000, Period = 10},
                             new EarningPeriod{Amount = 1000, Period = 11},
                             new EarningPeriod{Amount = 1000, Period = 12},
-                        }
+                        }.AsReadOnly()
                     }
-                }
+                }.AsReadOnly()
             };
         }
 
@@ -125,8 +125,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
             endpointConfiguration.DisableFeature<TimeoutManager>();
             endpointConfiguration.DisableFeature<MessageDrivenSubscriptions>();
 
-            endpointConfiguration.UseTransport<AzureStorageQueueTransport>()
-                .ConnectionString(TestConfiguration.StorageConnectionString)
+            endpointConfiguration.UseTransport<AzureServiceBusTransport>()
+                .UseForwardingTopology()
+                .ConnectionString(TestConfiguration.ServiceBusConnectionString)
                 .Routing()
                 .RouteToEndpoint(typeof(IEarningEvent).Assembly, EndpointNames.RequiredPayments);
 

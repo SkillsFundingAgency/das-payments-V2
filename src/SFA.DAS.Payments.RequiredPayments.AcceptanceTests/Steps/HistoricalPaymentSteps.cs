@@ -1,10 +1,20 @@
-﻿using TechTalk.SpecFlow;
+﻿using System.Linq;
+using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
+using TechTalk.SpecFlow;
+using TechTalk.SpecFlow.Assist;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
     public class HistoricalPaymentSteps
     {
+        private readonly ScenarioContext context;
+
+        public HistoricalPaymentSteps(ScenarioContext context)
+        {
+            this.context = context;
+        }
+
         [Given(@"the following historical payments exist:")]
         public void GivenTheFollowingHistoricalPaymentsExist(Table table)
         {
@@ -13,6 +23,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [Given(@"the following historical contract type (.*) on programme payments exist:")]
         public void GivenTheFollowingHistoricalOnProgrammePaymentsExist(short contractType, Table table)
         {
+            var payableEarnings = table.CreateSet<PayableEarning>().ToList();
+
+            context.Set(payableEarnings);
         }
 
         [Given(@"the following historical contract type (.*) incentive payments exist:")]

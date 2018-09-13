@@ -16,7 +16,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public class PayableEarningEventHandler : IHandleMessages<IEarningEvent>
+    public class PayableEarningEventHandler : IHandleMessages<ApprenticeshipContractType2EarningEvent>
     {
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly IActorProxyFactory _proxyFactory;
@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             _lifetimeScope = lifetimeScope;
         }
 
-        public async Task Handle(IEarningEvent message, IMessageHandlerContext context)
+        public async Task Handle(ApprenticeshipContractType2EarningEvent message, IMessageHandlerContext context)
         {
             using (var scope = _lifetimeScope.BeginLifetimeScope())
             {
@@ -57,10 +57,10 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
                     var actorId = new ActorId(key);
                     var actor = _proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                    RequiredPaymentEvent[] payments;
+                    ApprenticeshipContractType2RequiredPaymentEvent[] payments;
                     try
                     {
-                        payments = await actor.HandleEarning(message, CancellationToken.None)
+                        payments = await actor.HandleAct2Earning(message, CancellationToken.None)
                             .ConfigureAwait(false);
                     }
                     catch (Exception ex)
