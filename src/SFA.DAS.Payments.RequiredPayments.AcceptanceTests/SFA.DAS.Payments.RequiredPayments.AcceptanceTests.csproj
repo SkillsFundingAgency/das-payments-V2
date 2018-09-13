@@ -180,6 +180,18 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Break_In_Learning.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\In-progress Tests\Split - Sample\R03_MultipleHistoricalPayments_FundingSource.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R03_MultipleHistoricalPayments_FundingSource.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\In-progress Tests\Split - Sample\R03_MultipleHistoricalPayments_PaymentsDue.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R03_MultipleHistoricalPayments_PaymentsDue.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\In-progress Tests\Split - Sample\R03_MultipleHistoricalPayments_RequiredPayments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R03_MultipleHistoricalPayments_RequiredPayments.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\In-progress Tests\Withdrawal\Learner_finishes_early_withdrawal_before_qualifying_period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learner_finishes_early_withdrawal_before_qualifying_period.feature.cs</LastGenOutput>
@@ -248,15 +260,15 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R01_FirstSubmission.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature">
+    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature">
+    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\Additional_Payments_price_change_during_programme_learning_support.feature">
+    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_price_change_during_programme_learning_support.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_price_change_during_programme_learning_support.feature.cs</LastGenOutput>
     </None>
@@ -276,11 +288,11 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature">
+    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\Additional_Payments_disadvantaged_postcode.feature">
+    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_disadvantaged_postcode.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_disadvantaged_postcode.feature.cs</LastGenOutput>
     </None>
@@ -288,7 +300,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ContractTypeChangesFromAct1ToAct2.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3\Additional_Payments_Framework_Uplift_Balancing_Completion.feature">
+    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_Framework_Uplift_Balancing_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_Framework_Uplift_Balancing_Completion.feature.cs</LastGenOutput>
     </None>

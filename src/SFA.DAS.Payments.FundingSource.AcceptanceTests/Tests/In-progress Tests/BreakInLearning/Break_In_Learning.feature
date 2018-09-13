@@ -1,4 +1,4 @@
-﻿Feature: Break in Learning, leaner takes 2 months break
+﻿Feature: Break in Learning, learner takes 2 months break
 
 Background:
 	
