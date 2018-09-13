@@ -270,3 +270,6 @@ App.Debug.config
 # service fabric local config
 **/ApplicationParameters/Local.1Node.xml
 **/ApplicationParameters/Local.5Node.xml
+
+# Specflow compiled feature files
+*.feature.cs
