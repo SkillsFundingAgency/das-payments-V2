@@ -8,13 +8,18 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class CourseSteps
     {
+        private readonly ScenarioContext context;
 
+        public CourseSteps(ScenarioContext context)
+        {
+            this.context = context;
+        }
         [Given(@"the following course information:")]
         public void GivenTheFollowingCourseInformation(Table table)
         {
             var courses = table.CreateSet<Course>().ToList();
 
-            ScenarioContext.Current["Courses"] = courses;
+            context["Courses"] = courses;
 
         }
     }

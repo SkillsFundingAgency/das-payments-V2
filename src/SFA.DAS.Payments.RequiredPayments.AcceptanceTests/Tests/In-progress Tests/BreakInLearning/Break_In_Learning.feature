@@ -3,7 +3,7 @@ Feature: Break in Learning, learner takes 2 months break
 
 Background:
 	
-	Given the current processing period is 8
+	Given the current processing period is 8  
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
