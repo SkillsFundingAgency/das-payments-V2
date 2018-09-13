@@ -109,13 +109,13 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Completion_Balancing_OnProg_EarlyFinish_MissingILR.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion_Only_Late.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Completed_Completion_Only.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion_Only_Late.feature.cs</LastGenOutput>
+      <LastGenOutput>Late_Completed_Completion_Only.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\No_Completion_OnProg_Payment_Late_Continuing.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Continuing_No_Completion_Or_OnProg_Payment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>No_Completion_OnProg_Payment_Late_Continuing.feature.cs</LastGenOutput>
+      <LastGenOutput>Late_Continuing_No_Completion_Or_OnProg_Payment.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\In-progress Tests\ACT2_TransTypes_1to3_Basic_Tests_for_E2E - IGNORE\R01_FirstSubmission.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -177,17 +177,17 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learner_finishes_early_withdrawal_before_qualifying_period.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Single_OnProg_Payment_NoHistory.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_NoHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Single_OnProg_Payment_NoHistory.feature.cs</LastGenOutput>
+      <LastGenOutput>OnTime_Continuing_Single_OnProg_Payment_NoHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Multiple_OnProg_Payments_NoHistory.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Multiple_OnProg_Payments_NoHistory1.feature.cs</LastGenOutput>
+      <LastGenOutput>Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Single_OnProg_Payment_OneHistoryRecord.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Single_OnProg_Payment_OneHistoryRecord.feature.cs</LastGenOutput>
+      <LastGenOutput>OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Single_OnProg_Payment_MultipleHistoryRecords.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -197,17 +197,17 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>R04_ChangeInStartDate_Earlier_By_1_month.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Multiple_OnProg_Payments_WithHistory.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Multiple_OnProg_Payments_WithHistory.feature.cs</LastGenOutput>
+      <LastGenOutput>Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Single_OnProg_Payment_Final.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Single_OnProg_Payment_Final.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion_Only_OnTime.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Completion_Only.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion_Only_OnTime.feature.cs</LastGenOutput>
+      <LastGenOutput>OnTime_Completion_Only.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion_OnProg_NoHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
