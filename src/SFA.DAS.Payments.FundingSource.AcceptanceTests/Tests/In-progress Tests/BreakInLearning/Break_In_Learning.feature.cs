@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.In_ProgressTests.
                         "p2",
                         "7",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "1000"});
 #line 9
  testRunner.And("the payments due component generates the following contract type 2 payable earnin" +

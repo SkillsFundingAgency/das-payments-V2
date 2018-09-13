@@ -88,139 +88,139 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.In_ProgressTests.
                         "p1",
                         "1",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "2",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "3",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "4",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "5",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "6",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "7",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "8",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "9",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "10",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p1",
                         "11",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-1000"});
             table1.AddRow(new string[] {
                         "p2",
                         "1",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "2",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "3",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "4",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "5",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "6",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "7",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "8",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "9",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "10",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "11",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
             table1.AddRow(new string[] {
                         "p2",
                         "12",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "800"});
 #line 10
  testRunner.And("the payments due component generates the following contract type 2 payable earnin" +

@@ -89,31 +89,31 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.In_ProgressTests.
                         "p1",
                         "1",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-750"});
             table1.AddRow(new string[] {
                         "p1",
                         "2",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "-750"});
             table1.AddRow(new string[] {
                         "p2",
                         "1",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "0.6667"});
             table1.AddRow(new string[] {
                         "p2",
                         "2",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "0.6667"});
             table1.AddRow(new string[] {
                         "p2",
                         "3",
                         "10000",
-                        "1",
+                        "Learning_1",
                         "0.6667"});
 #line 14
  testRunner.And("the payments due component generates the following contract type 2 payable earnin" +

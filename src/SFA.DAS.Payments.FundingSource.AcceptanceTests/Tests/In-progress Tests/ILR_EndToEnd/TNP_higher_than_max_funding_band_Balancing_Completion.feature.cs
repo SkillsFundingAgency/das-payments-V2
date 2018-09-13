@@ -90,13 +90,13 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.In_ProgressTests.
                         "p1",
                         "13",
                         "10000",
-                        "2",
+                        "Completion_2",
                         "2700"});
             table1.AddRow(new string[] {
                         "p1",
                         "13",
                         "10000",
-                        "3",
+                        "Balancing_3",
                         "2400"});
 #line 10
  testRunner.And("the payments due component generates the following contract type 2 payable earnin" +

@@ -11,7 +11,7 @@ Background:
 
 	And the payments due component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 4      | 10000 | 1               | 1000   |
+	| p1                     | 4      | 10000 | Learning_1      | 1000   |
 
 @Non-DAS
 @minimum_tests
