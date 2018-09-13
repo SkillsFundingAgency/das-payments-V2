@@ -268,6 +268,66 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TNP_higher_than_max_funding_band_Continuing.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_disadvantaged_postcode.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_disadvantaged_postcode.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_Framework_Uplift_Balancing_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_Framework_Uplift_Balancing_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_price_change_during_programme_learning_support.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_price_change_during_programme_learning_support.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\ContractTypeChangesFromAct1ToAct2.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContractTypeChangesFromAct1ToAct2.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct11.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContractTypeChangesFromAct2ToAct1.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\learner_finishes_early_Balancing_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>learner_finishes_early_Balancing_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Refund_price_change_retrospectively_from_beginning.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Refund_price_change_retrospectively_from_beginning.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
