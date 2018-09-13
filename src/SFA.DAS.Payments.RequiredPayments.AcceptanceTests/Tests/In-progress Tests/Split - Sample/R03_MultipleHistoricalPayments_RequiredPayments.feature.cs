@@ -1,0 +1,2 @@
+﻿#error (28:2): expected: #EOF, #Comment, #StepLine, #TagLine, #ExamplesLine, #ScenarioLine, #ScenarioOutlineLine, #Empty, got '| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |'
+#error (29:2): expected: #EOF, #Comment, #StepLine, #TagLine, #ExamplesLine, #ScenarioLine, #ScenarioOutlineLine, #Empty, got '| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |'
