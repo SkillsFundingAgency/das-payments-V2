@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 
@@ -10,10 +11,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
     /// <seealso cref="SFA.DAS.Payments.Messages.Core.Events.IPaymentsEvent" />
     public interface IEarningEvent : IPaymentsEvent
     {
-        long Ukprn { get; }
-        Learner Learner { get; }
-        LearningAim LearningAim { get; }
         short EarningYear { get; }
-        IReadOnlyCollection<PriceEpisode> PriceEpisodes { get; }
+        ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; }
     }
 }

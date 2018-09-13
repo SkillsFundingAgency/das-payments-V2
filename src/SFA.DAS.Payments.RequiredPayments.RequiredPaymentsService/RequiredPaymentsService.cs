@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;

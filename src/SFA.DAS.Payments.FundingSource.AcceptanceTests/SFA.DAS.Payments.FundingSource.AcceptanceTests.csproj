@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props')" />
   <Import Project="..\packages\NUnit.3.10.1\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.10.1\build\NUnit.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -33,12 +34,27 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ShowTrace Condition="'$(ShowTrace)'==''">false</ShowTrace>
+    <OverwriteReadOnlyFiles Condition="'$(OverwriteReadOnlyFiles)'==''">true</OverwriteReadOnlyFiles>
+    <ForceGeneration Condition="'$(ForceGeneration)'==''">true</ForceGeneration>
+    <VerboseOutput Condition="'$(VerboseOutput)'==''">false</VerboseOutput>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Azure.Amqp, Version=2.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Amqp.2.3.0\lib\net45\Microsoft.Azure.Amqp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.ServiceBus, Version=3.1.0.0, Culture=neutral, PublicKeyToken=7e34167dcc6d6d8c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.ServiceBus.3.1.0\lib\netstandard2.0\Microsoft.Azure.ServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.Services.AppAuthentication, Version=1.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\lib\net452\Microsoft.Azure.Services.AppAuthentication.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Edm.5.8.2\lib\net40\Microsoft.Data.Edm.dll</HintPath>
@@ -48,6 +64,18 @@
     </Reference>
     <Reference Include="Microsoft.Data.Services.Client, Version=5.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Services.Client.5.8.2\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.17.2.31801, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.17.2\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.17.2.31801, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.17.2\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.5.2.2\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.2.2\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=8.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.Storage.8.2.0\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
@@ -70,21 +98,75 @@
     <Reference Include="NServiceBus.Persistence.AzureStorage, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Persistence.AzureStorage.2.1.0\lib\net452\NServiceBus.Persistence.AzureStorage.dll</HintPath>
     </Reference>
+    <Reference Include="NServiceBus.Transport.AzureServiceBus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Transport.AzureServiceBus.1.0.0-alpha0160\lib\netstandard2.0\NServiceBus.Transport.AzureServiceBus.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.2.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.1.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.WebSockets, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.WebSockets.4.0.0\lib\net46\System.Net.WebSockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.WebSockets.Client, Version=4.0.0.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.WebSockets.Client.4.0.2\lib\net46\System.Net.WebSockets.Client.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.1.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.Serialization.Primitives.4.1.1\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Security" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.2.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.0.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.0.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.1.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Spatial, Version=5.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.8.2\lib\net40\System.Spatial.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -92,30 +174,286 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TechTalk.SpecFlow, Version=2.3.2.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <HintPath>..\packages\SpecFlow.2.3.2\lib\net45\TechTalk.SpecFlow.dll</HintPath>
+    <Reference Include="TechTalk.SpecFlow, Version=2.4.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpecFlow.2.4.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
-    <Compile Include="Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs">
+    <Compile Include="PaymentFundingSourceIntegrationTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestConfiguration.cs" />
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Break_In_Learning.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Break_In_Learning.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Learner_finishes_early_withdrawal_after_qualifying_period.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learner_finishes_early_withdrawal_after_qualifying_period.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Learner_finishes_early_withdrawal_before_qualifying_period.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learner_finishes_early_withdrawal_before_qualifying_period.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R01_NoHistory.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R01_NoHistory.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R02_NoHistory.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R02_NoHistory.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R02_SingleHistoricalPayment.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R02_SingleHistoricalPayment.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R03_MultipleHistoricalPayments.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R03_MultipleHistoricalPayments.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R04_ChangeInStartDate_Earlier_By_1_month.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R04_ChangeInStartDate_Earlier_By_1_month.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R06_MissingHistoricalPayments.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R06_MissingHistoricalPayments.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_FullHistory_Completion_OnTime.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R12_FullHistory_Completion_OnTime.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_NoHistory_Final_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R12_NoHistory_Final_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_Refund_Delay_in_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>R12_Refund_Delay_in_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_ouside_of_last_6_months.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Redundancy_ouside_of_last_6_months.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_within_last_6_months.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Redundancy_within_last_6_months.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Balancing_Completion1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TNP_higher_than_max_funding_band_Balancing_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Completion1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TNP_higher_than_max_funding_band_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Continuing1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TNP_higher_than_max_funding_band_Continuing.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature</DependentUpon>
     </Compile>
-    <Compile Include="PaymentFundingSourceIntegrationTest.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestConfiguration.cs" />
+    <Compile Include="Tests\Minimum\Additional_Payments_disadvantaged_postcode.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_disadvantaged_postcode.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_Framework_Uplift_Balancing_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_Framework_Uplift_Balancing_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_price_change_during_programme_learning_support.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_price_change_during_programme_learning_support.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\ContractTypeChangesFromAct1ToAct2.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContractTypeChangesFromAct1ToAct2.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct11.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContractTypeChangesFromAct2ToAct1.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\learner_finishes_early_Balancing_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>learner_finishes_early_Balancing_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\Refund_price_change_retrospectively_from_beginning.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Refund_price_change_retrospectively_from_beginning.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature">
+    <None Include="packages.config" />
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Break_In_Learning.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Break_In_Learning.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Learner_finishes_early_withdrawal_after_qualifying_period.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learner_finishes_early_withdrawal_after_qualifying_period.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Learner_finishes_early_withdrawal_before_qualifying_period.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learner_finishes_early_withdrawal_before_qualifying_period.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R01_NoHistory.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R01_NoHistory.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R02_NoHistory.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R02_NoHistory.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R02_SingleHistoricalPayment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R02_SingleHistoricalPayment.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R03_MultipleHistoricalPayments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R03_MultipleHistoricalPayments.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R04_ChangeInStartDate_Earlier_By_1_month.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R04_ChangeInStartDate_Earlier_By_1_month.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R06_MissingHistoricalPayments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R06_MissingHistoricalPayments.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_FullHistory_Completion_OnTime.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R12_FullHistory_Completion_OnTime.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_NoHistory_Final_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R12_NoHistory_Final_Completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\R12_Refund_Delay_in_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>R12_Refund_Delay_in_Completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_ouside_of_last_6_months.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Redundancy_ouside_of_last_6_months.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Redundancy_within_last_6_months.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Redundancy_within_last_6_months.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Balancing_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TNP_higher_than_max_funding_band_Balancing_Completion1.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TNP_higher_than_max_funding_band_Completion1.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Continuing.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TNP_higher_than_max_funding_band_Continuing1.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs</LastGenOutput>
     </None>
-    <None Include="packages.config" />
+    <None Include="Tests\Minimum\Additional_Payments_disadvantaged_postcode.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Additional_Payments_disadvantaged_postcode.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\Additional_Payments_Framework_Uplift_Balancing_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Additional_Payments_Framework_Uplift_Balancing_Completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\Additional_Payments_price_change_during_programme_learning_support.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Additional_Payments_price_change_during_programme_learning_support.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\ContractTypeChangesFromAct1ToAct2.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ContractTypeChangesFromAct1ToAct2.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct1.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ContractTypeChangesFromAct2ToAct11.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\learner_finishes_early_Balancing_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>learner_finishes_early_Balancing_Completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\Refund_price_change_retrospectively_from_beginning.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Refund_price_change_retrospectively_from_beginning.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>small_employers_full_funded_Additional_Payments_EEF2_Completion1.feature.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.AcceptanceTests.Core\SFA.DAS.Payments.AcceptanceTests.Core.csproj">
+      <Project>{0f0beb68-7f9f-4d39-b85a-3fe7701bb6cc}</Project>
+      <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
       <Name>SFA.DAS.Payments.Messages.Core</Name>
@@ -125,13 +463,27 @@
       <Name>SFA.DAS.Payments.RequiredPayments.Messages</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NUnit.3.10.1\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.10.1\build\NUnit.props'))" />
-    <Error Condition="!Exists('..\packages\SpecFlow.2.3.2\build\SpecFlow.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.2.3.2\build\SpecFlow.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets'))" />
+    <Error Condition="!Exists('..\packages\SpecFlow.2.4.0\build\SpecFlow.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.2.4.0\build\SpecFlow.targets'))" />
+    <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props'))" />
+    <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets'))" />
   </Target>
-  <Import Project="..\packages\SpecFlow.2.3.2\build\SpecFlow.targets" Condition="Exists('..\packages\SpecFlow.2.3.2\build\SpecFlow.targets')" />
+  <Target Name="AfterUpdateFeatureFilesInProject">
+    <!-- include any files that specflow generated into the compilation of the project -->
+    <ItemGroup>
+      <Compile Include="**\*.feature.cs" />
+    </ItemGroup>
+  </Target>
+  <Import Project="..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets" Condition="Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets')" />
+  <Import Project="..\packages\SpecFlow.2.4.0\build\SpecFlow.targets" Condition="Exists('..\packages\SpecFlow.2.4.0\build\SpecFlow.targets')" />
+  <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets')" />
 </Project>

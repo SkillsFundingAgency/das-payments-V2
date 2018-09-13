@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using ESFA.DC.Logging;
+using ESFA.DC.Logging.Interfaces;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Logging
 {
@@ -13,9 +14,9 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Logging
             this.scope = scope ?? throw new ArgumentNullException(nameof(scope));
         }
 
-        public ExecutionContext GetExecutionContext()
+        public IExecutionContext GetExecutionContext()
         {
-            return scope.Resolve<ExecutionContext>();
+            return scope.Resolve<IExecutionContext>();
         }
     }
 }

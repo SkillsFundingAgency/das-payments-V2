@@ -18,35 +18,36 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests
         {
             sender = await CreateMessageSender();
 
-            requiredPaymentEvent = new RequiredPaymentEvent
+            requiredPaymentEvent = new ApprenticeshipContractType2RequiredPaymentEvent
             {
                 JobId = "J000595959",
                 EventTime = DateTimeOffset.UtcNow,
-                Amount = 1000
+                AmountDue = 1000.00m
             };
         }
 
         [Test]
         public async Task ShouldSendCalculatedPaymentDueEvent()
         {
-            await sender.Send(requiredPaymentEvent).ConfigureAwait(false);
+            await sender.Publish(requiredPaymentEvent).ConfigureAwait(false);
         }
 
         private async Task<IEndpointInstance> CreateMessageSender()
         {
             var endpointConfiguration = new EndpointConfiguration("nonlevyfundedservice-payments-test-sender");
+
             var conventions = endpointConfiguration.Conventions();
             conventions.DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
-            endpointConfiguration.UsePersistence<AzureStoragePersistence>().ConnectionString(TestConfiguration.StorageConnectionString);
+            conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Commands") ?? false));
+            conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Events") ?? false));
+
             endpointConfiguration.DisableFeature<TimeoutManager>();
-            endpointConfiguration.DisableFeature<MessageDrivenSubscriptions>();
-            endpointConfiguration.UseTransport<AzureStorageQueueTransport>()
-                .ConnectionString(TestConfiguration.StorageConnectionString)
-                .Routing()
-                .RouteToEndpoint(typeof(IRequiredPayment).Assembly, EndpointNames.Nonlevyfundedpaymentsservice);
+            endpointConfiguration.UseTransport<AzureServiceBusTransport>()
+                                 .ConnectionString(TestConfiguration.ServiceBusConnectionString);
+            endpointConfiguration.SendFailedMessagesTo("nonlevyfundedserviceFailedMessagesQueue");
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
+            endpointConfiguration.EnableInstallers();
             endpointConfiguration.UseContainer<AutofacBuilder>();
-            endpointConfiguration.SendOnly();
 
             return await Endpoint.Start(endpointConfiguration);
         }
