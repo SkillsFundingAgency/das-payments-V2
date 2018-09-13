@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.Payments.Model.Core;
+﻿using System.Linq;
 using SFA.DAS.Payments.Model.Core.Incentives;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -12,6 +9,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class EarningSteps
     {
+        private readonly ScenarioContext context;
+
+        public EarningSteps(ScenarioContext context)
+        {
+            this.context = context;
+        }
         [Given(@"the following contract type (.*) on programme earnings for periods (.*)-(.*) are provided in the latest ILR for the academic year (.*):")]
         public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriods(short contractType, byte fromPeriod, byte toPeriod, string academicYear, Table table)
         {
@@ -23,7 +26,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             earning.ToPeriod = toPeriod;
             earning.AcademicYear = academicYear;
 
-            ScenarioContext.Current[$"ContractType{contractType}OnProgrammeEarningsLearning"] = earning;
+            context[$"ContractType{contractType}OnProgrammeEarningsLearning"] = earning;
         }
 
         [Given(@"the following contract type (.*) on programme earnings for period (.*) are provided in the latest ILR for the academic year (.*):")]
@@ -36,7 +39,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             earning.FromPeriod = period;
             earning.ToPeriod = period;
             earning.AcademicYear = academicYear;
-            ScenarioContext.Current[$"ContractType{contractType}OnProgrammeEarningsCompletion"] = earning;
+            context[$"ContractType{contractType}OnProgrammeEarningsCompletion"] = earning;
         }
 
 
@@ -47,7 +50,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
             // var incentiveEarnings = new ContractTypeEarning(contractType, fromPeriod, toPeriod, academicYear, rawEarnings.ToList());
 
-            //ScenarioContext.Current[$"ContractType{contractType}IncentiveEarnings"] = incentiveEarnings;
+            //context[$"ContractType{contractType}IncentiveEarnings"] = incentiveEarnings;
         }
 
         [Given(@"the following contract type (.*) incentive earnings for period (.*):")]

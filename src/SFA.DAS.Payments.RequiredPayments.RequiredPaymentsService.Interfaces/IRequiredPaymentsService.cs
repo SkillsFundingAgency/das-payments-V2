@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces
 {
     public interface IRequiredPaymentsService : IActor
     {
-        Task<RequiredPaymentEvent[]> HandleEarning(IEarningEvent earningEvent, CancellationToken cancellationToken);
+        Task<ApprenticeshipContractType2RequiredPaymentEvent[]> HandleAct2Earning(
+            ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken);
     }
 }

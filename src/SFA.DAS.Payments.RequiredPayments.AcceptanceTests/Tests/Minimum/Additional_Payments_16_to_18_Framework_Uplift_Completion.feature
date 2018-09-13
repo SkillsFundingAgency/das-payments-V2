@@ -52,18 +52,6 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
 
 	Examples: 
 	| transaction_type | amount |
