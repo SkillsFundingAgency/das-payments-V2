@@ -83,25 +83,29 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table1.AddRow(new string[] {
                         "p1",
                         "1",
                         "10000",
                         "1",
-                        "600"});
+                        "600",
+                        "0.90000"});
             table1.AddRow(new string[] {
                         "p1",
                         "2",
                         "10000",
                         "1",
-                        "600"});
+                        "600",
+                        "0.90000"});
             table1.AddRow(new string[] {
                         "p1",
                         "3",
                         "10000",
                         "1",
-                        "600"});
+                        "600",
+                        "0.90000"});
 #line 8
  testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
 #line hidden
@@ -112,7 +116,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -120,7 +125,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "1",
                         "10000",
                         "Learning_1",
-                        "600"});
+                        "600",
+                        "0.90000"});
             table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -128,7 +134,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "2",
                         "10000",
                         "Learning_1",
-                        "600"});
+                        "600",
+                        "0.90000"});
 #line 14
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table2, "And ");
 #line hidden
@@ -166,7 +173,8 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table3.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -174,7 +182,8 @@ this.FeatureBackground();
                         "3",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "0.90000"});
 #line 27
  testRunner.Then("the required payments component will generate the following contract type 2 payab" +
                     "le earnings:", ((string)(null)), table3, "Then ");

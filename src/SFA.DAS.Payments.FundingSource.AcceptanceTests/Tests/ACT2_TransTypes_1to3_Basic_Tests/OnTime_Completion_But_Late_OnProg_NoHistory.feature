@@ -7,20 +7,20 @@ Background:
 
 	And the payments due component generates the following contract type 2 payable earnings:
 
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 1      | 10000 | Learning_1      | 600    |
-	| p1                     | 2      | 10000 | Learning_1      | 600    |
-	| p1                     | 3      | 10000 | Learning_1      | 600    |
-	| p1                     | 4      | 10000 | Learning_1      | 600    |
-	| p1                     | 5      | 10000 | Learning_1      | 600    |
-	| p1                     | 6      | 10000 | Learning_1      | 600    |
-	| p1                     | 7      | 10000 | Learning_1      | 600    |
-	| p1                     | 8      | 10000 | Learning_1      | 600    |
-	| p1                     | 9      | 10000 | Learning_1      | 600    |
-	| p1                     | 10     | 10000 | Learning_1      | 600    |
-	| p1                     | 11     | 10000 | Learning_1      | 600    |
-	| p1                     | 12     | 10000 | Learning_1      | 600    |
-	| p1                     | 13     | 10000 | Completion_2    | 1800   |
+	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount | SfaContributionPercentage |
+	| p1                     | 1      | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 2      | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 3      | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 4      | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 5      | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 6      | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 7      | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 8      | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 9      | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 10     | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 11     | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 12     | 10000 | Learning_1      | 600    | 0.90000                   |
+	| p1                     | 13     | 10000 | Completion_2    | 1800   | 0.90000                   |
 
 @Non-DAS
 @MissingSubmission

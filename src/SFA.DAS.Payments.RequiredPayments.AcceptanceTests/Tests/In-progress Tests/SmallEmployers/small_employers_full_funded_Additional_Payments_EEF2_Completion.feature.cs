@@ -125,13 +125,15 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "EpisodeStartDate",
                         "EpisodeEffectiveTNPStartDate",
                         "TotalNegotiatedPrice",
-                        "Learning_1"});
+                        "Learning_1",
+                        "SfaContributionPercentage"});
             table3.AddRow(new string[] {
                         "p1",
                         "06/08/2017",
                         "06/08/2017",
                         "7500",
-                        "500"});
+                        "500",
+                        "1.0000"});
 #line 28
  testRunner.And("the following contract type 2 on programme earnings for periods 1-12 are provided" +
                     " in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
@@ -141,13 +143,15 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "EpisodeStartDate",
                         "EpisodeEffectiveTNPStartDate",
                         "TotalNegotiatedPrice",
-                        "Completion_2"});
+                        "Completion_2",
+                        "SfaContributionPercentage"});
             table4.AddRow(new string[] {
                         "p1",
                         "06/08/2017",
                         "06/08/2017",
                         "7500",
-                        "1500"});
+                        "1500",
+                        "1.0000"});
 #line 32
  testRunner.And("the following contract type 2 on programme earnings for period 13 are provided in" +
                     " the latest ILR for the academic year 1718:", ((string)(null)), table4, "And ");
@@ -190,7 +194,8 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -198,7 +203,8 @@ this.FeatureBackground();
                         "1",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -206,7 +212,8 @@ this.FeatureBackground();
                         "2",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -214,7 +221,8 @@ this.FeatureBackground();
                         "3",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -222,7 +230,8 @@ this.FeatureBackground();
                         "4",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -230,7 +239,8 @@ this.FeatureBackground();
                         "5",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -238,7 +248,8 @@ this.FeatureBackground();
                         "6",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -246,7 +257,8 @@ this.FeatureBackground();
                         "7",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -254,7 +266,8 @@ this.FeatureBackground();
                         "8",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -262,7 +275,8 @@ this.FeatureBackground();
                         "9",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -270,7 +284,8 @@ this.FeatureBackground();
                         "10",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -278,7 +293,8 @@ this.FeatureBackground();
                         "11",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table5.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -286,7 +302,8 @@ this.FeatureBackground();
                         "12",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
 #line 49
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table5, "And ");
 #line 64
@@ -299,7 +316,8 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -307,7 +325,8 @@ this.FeatureBackground();
                         "1",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -315,7 +334,8 @@ this.FeatureBackground();
                         "2",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -323,7 +343,8 @@ this.FeatureBackground();
                         "3",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -331,7 +352,8 @@ this.FeatureBackground();
                         "4",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -339,7 +361,8 @@ this.FeatureBackground();
                         "5",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -347,7 +370,8 @@ this.FeatureBackground();
                         "6",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -355,7 +379,8 @@ this.FeatureBackground();
                         "7",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -363,7 +388,8 @@ this.FeatureBackground();
                         "8",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -371,7 +397,8 @@ this.FeatureBackground();
                         "9",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -379,7 +406,8 @@ this.FeatureBackground();
                         "10",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -387,7 +415,8 @@ this.FeatureBackground();
                         "11",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
             table6.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -395,7 +424,8 @@ this.FeatureBackground();
                         "12",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
 #line 66
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table6, "Then ");
@@ -424,7 +454,8 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table7.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -432,7 +463,8 @@ this.FeatureBackground();
                         "13",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "1.0000"});
 #line 89
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table7, "Then ");

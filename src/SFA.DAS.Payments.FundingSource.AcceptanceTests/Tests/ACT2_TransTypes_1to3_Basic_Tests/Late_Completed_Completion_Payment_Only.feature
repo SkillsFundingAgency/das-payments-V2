@@ -7,8 +7,8 @@ Background:
 
 	And the payments due component generates the following contract type 2 payable earnings:
 
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 14     | 10000 | 2               | 1800   |
+	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount | SfaContributionPercentage |
+	| p1                     | 14     | 10000 | 2               | 1800   | 0.90000                   |
 
 @Non-DAS
 @LateCompletion

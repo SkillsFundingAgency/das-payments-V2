@@ -110,13 +110,15 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.ACT2_TransType
                         "EpisodeStartDate",
                         "EpisodeEffectiveTNPStartDate",
                         "TotalNegotiatedPrice",
-                        "Learning_1"});
+                        "Learning_1",
+                        "SfaContributionPercentage"});
             table2.AddRow(new string[] {
                         "p1",
                         "06/08/2017",
                         "06/08/2017",
                         "9000",
-                        "600"});
+                        "600",
+                        "0.90000"});
 #line 12
  testRunner.And("the following contract type 2 on programme earnings for periods 1-12 are provided" +
                     " in the latest ILR for the academic year 1718:", ((string)(null)), table2, "And ");
@@ -153,7 +155,8 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table3.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -161,7 +164,8 @@ this.FeatureBackground();
                         "1",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "0.90000"});
             table3.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -169,7 +173,8 @@ this.FeatureBackground();
                         "2",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "0.90000"});
 #line 22
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table3, "And ");
 #line 27
@@ -182,7 +187,8 @@ this.FeatureBackground();
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table4.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -190,7 +196,8 @@ this.FeatureBackground();
                         "1",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "0.90000"});
             table4.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -198,7 +205,8 @@ this.FeatureBackground();
                         "2",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "0.90000"});
             table4.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -206,7 +214,8 @@ this.FeatureBackground();
                         "3",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "0.90000"});
             table4.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -214,7 +223,8 @@ this.FeatureBackground();
                         "4",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "0.90000"});
             table4.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -222,7 +232,8 @@ this.FeatureBackground();
                         "5",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "0.90000"});
             table4.AddRow(new string[] {
                         "learnref1",
                         "10000",
@@ -230,7 +241,8 @@ this.FeatureBackground();
                         "6",
                         "10000",
                         string.Format("{0}", transaction_Type),
-                        string.Format("{0}", amount)});
+                        string.Format("{0}", amount),
+                        "0.90000"});
 #line 29
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
                     "rnings:", ((string)(null)), table4, "Then ");

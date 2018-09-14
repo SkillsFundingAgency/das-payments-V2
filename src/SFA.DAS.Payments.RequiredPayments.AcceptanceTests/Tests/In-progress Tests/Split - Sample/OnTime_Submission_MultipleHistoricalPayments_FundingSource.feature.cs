@@ -83,13 +83,15 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table1.AddRow(new string[] {
                         "p1",
                         "3",
                         "10000",
                         "Learning_1",
-                        "600"});
+                        "600",
+                        "0.90000"});
 #line 8
  testRunner.And("the required payments component generates the following contract type 2 payable e" +
                     "arnings:", ((string)(null)), table1, "And ");

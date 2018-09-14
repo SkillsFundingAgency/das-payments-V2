@@ -26,12 +26,12 @@ Background:
 	#| EmployerRef1 | EEF2         |
 
 	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
-	| p1                     | 06/08/2017       | 06/08/2017                   | 7500                 | 500        |
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 | SfaContributionPercentage |
+	| p1                     | 06/08/2017       | 06/08/2017                   | 7500                 | 500        | 1.0000                    |
 
 	And the following contract type 2 on programme earnings for period 13 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Completion_2 |
-	| p1                     | 06/08/2017       | 06/08/2017                   | 7500                 | 1500         |
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Completion_2 | SfaContributionPercentage |
+	| p1                     | 06/08/2017       | 06/08/2017                   | 7500                 | 1500         | 1.0000                    |
 
 	
 @Non-DAS
@@ -47,36 +47,36 @@ Background:
 Scenario Outline: Contract Type 2 On programme payments
 
 	And the following historical contract type 2 on programme payments exist:   
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   | SfaContributionPercentage |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> | 1.0000                    |
 
 	When a TOBY is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> |
-	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   | SfaContributionPercentage |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 3      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 4      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 5      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 6      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 7      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 8      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 11     | 10000 | <transaction_type> | <amount> | 1.0000                    |
+	| learnref1      | 10000 | p1                     | 12     | 10000 | <transaction_type> | <amount> | 1.0000                    |
 
 	Examples: 
 	| transaction_type | amount |
@@ -87,8 +87,8 @@ Scenario Outline: Contract Type 2 completion payment
 	When a TOBY is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period  | ULN   | TransactionType    | Amount   |
-	| learnref1      | 10000 | p1                     | 13      | 10000 | <transaction_type> | <amount> |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period  | ULN   | TransactionType    | Amount   | SfaContributionPercentage |
+	| learnref1      | 10000 | p1                     | 13      | 10000 | <transaction_type> | <amount> | 1.0000                    |
 	
 	Examples: 
 	| transaction_type | amount |

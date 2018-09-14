@@ -7,10 +7,10 @@ Background:
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
 	And the payments due component generates the following contract type 2 payable earnings:
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 9      | 10000 | Learning_1      | 1000   |
-	| p1                     | 10     | 10000 | Completion_2    | 3000   |
-	| p1                     | 10     | 10000 | Balancing_3     | 3000   |
+	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount | SfaContributionPercentage |
+	| p1                     | 9      | 10000 | Learning_1      | 1000   | 0.90000                   |
+	| p1                     | 10     | 10000 | Completion_2    | 3000   | 0.90000                   |
+	| p1                     | 10     | 10000 | Balancing_3     | 3000   | 0.90000                   |
 	
 @Non-DAS
 @Completion_2

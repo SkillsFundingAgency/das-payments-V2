@@ -85,13 +85,15 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.In_ProgressTests.
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table1.AddRow(new string[] {
                         "p1",
                         "13",
                         "10000",
                         "Completion_2",
-                        "1500"});
+                        "1500",
+                        "1.0000"});
 #line 14
  testRunner.And("the payments due component generates the following contract type 2 payable earnin" +
                     "gs:", ((string)(null)), table1, "And ");
@@ -141,15 +143,6 @@ this.FeatureBackground();
                         "Completion_2",
                         "CoInvestedSfa_2",
                         "1500"});
-            table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "13",
-                        "10000",
-                        "Completion_2",
-                        "CoInvestedEmployer_3",
-                        "0"});
 #line 32
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table2, "Then ");

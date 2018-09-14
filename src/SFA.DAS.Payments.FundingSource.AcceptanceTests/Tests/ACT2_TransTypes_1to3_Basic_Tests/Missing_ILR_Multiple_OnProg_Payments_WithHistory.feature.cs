@@ -83,31 +83,36 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.ACT2_TransTypes_1
                         "Period",
                         "ULN",
                         "TransactionType",
-                        "Amount"});
+                        "Amount",
+                        "SfaContributionPercentage"});
             table1.AddRow(new string[] {
                         "p1",
                         "3",
                         "10000",
                         "Learning_1",
-                        "600"});
+                        "600",
+                        "0.90000"});
             table1.AddRow(new string[] {
                         "p1",
                         "4",
                         "10000",
                         "Learning_1",
-                        "600"});
+                        "600",
+                        "0.90000"});
             table1.AddRow(new string[] {
                         "p1",
                         "5",
                         "10000",
                         "Learning_1",
-                        "600"});
+                        "600",
+                        "0.90000"});
             table1.AddRow(new string[] {
                         "p1",
                         "6",
                         "10000",
                         "Learning_1",
-                        "600"});
+                        "600",
+                        "0.90000"});
 #line 8
  testRunner.And("the payments due component generates the following contract type 2 payable earnin" +
                     "gs:", ((string)(null)), table1, "And ");
