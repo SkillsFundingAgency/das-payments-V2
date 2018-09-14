@@ -5,9 +5,9 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application
 {
-    public interface IPaymentDueEventHanlder
+    public interface IAct2PaymentDueEventHanlder
     {
-        Task<RequiredPaymentEvent> HandlePaymentDue(PaymentDueEvent paymentDue, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ApprenticeshipContractType2RequiredPaymentEvent> HandlePaymentDue(ApprenticeshipContractType2PaymentDueEvent paymentDue, CancellationToken cancellationToken = default(CancellationToken));
 
         Task PopulatePaymentHistoryCache(CancellationToken cancellationToken);
     }

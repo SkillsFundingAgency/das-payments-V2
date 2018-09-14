@@ -3,6 +3,7 @@
   <Section Name="ConnectionStringsSection">
     <Parameter Name="StorageConnectionString" Value="" />
     <Parameter Name="LoggingConnectionString" Value="" />
+    <Parameter Name="PaymentsConnectionString" Value="" />
     <Parameter Name="ServiceBusConnectionString" Value="" />
   </Section>
   <Section Name="Settings">

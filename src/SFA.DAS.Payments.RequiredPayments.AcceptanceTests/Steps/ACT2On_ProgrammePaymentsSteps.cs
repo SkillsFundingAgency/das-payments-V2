@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class ACT2On_ProgrammePaymentsSteps: StepsBase
+    public class ACT2On_ProgrammePaymentsSteps : StepsBase
     {
         protected ApprenticeshipContractType2EarningEvent EarningEvent
         {
@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                         Periods = new List<EarningPeriod>
                         {
                             new EarningPeriod {Amount = 1000, Period = 1},
-                            new EarningPeriod {Amount = 1000, Period = 21},
+                            new EarningPeriod {Amount = 1000, Period = 2},
                             new EarningPeriod {Amount = 1000, Period = 3},
                             new EarningPeriod {Amount = 1000, Period = 4},
                             new EarningPeriod {Amount = 1000, Period = 5},
@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                             new EarningPeriod {Amount = 1000, Period = 9},
                             new EarningPeriod {Amount = 1000, Period = 10},
                             new EarningPeriod {Amount = 1000, Period = 11},
-                            new EarningPeriod {Amount = 1000, Period = 12},
+                            new EarningPeriod {Amount = 1000, Period = 12}
                         }.AsReadOnly()
                     }
                 }.AsReadOnly()
@@ -99,7 +99,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [When(@"the earnings are sent to the required payments service")]
         public async Task WhenTheEarningsAreSentToTheRequiredPaymentsService()
         {
-            await MessageSession.Send(EarningEvent);
+            var paymentDueEvents = EarningToPaymentDue(EarningEvent);
+            foreach (var paymentDueEvent in paymentDueEvents)
+            {
+                await MessageSession.Send(paymentDueEvent).ConfigureAwait(false);
+            }
+            
         }
         
         [Then(@"the service should generate the required payments")]
@@ -108,8 +113,34 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             WaitForIt(() =>
             {
                 var periods = EarningEvent.OnProgrammeEarnings.SelectMany(earning => earning.Periods,(earning,period)=> new {earning,period});
-                return periods.All(earningPeriod => ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent => receivedEvent.AmountDue == earningPeriod.period.Amount && receivedEvent.DeliveryPeriod?.Month == earningPeriod.period.Period));
+                return periods.All(earningPeriod => ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent => receivedEvent.AmountDue == earningPeriod.period.Amount && receivedEvent.DeliveryPeriod?.Period == earningPeriod.period.Period));
             },"Failed to find all the required payment earning events");
+        }
+
+        public static List<ApprenticeshipContractType2PaymentDueEvent> EarningToPaymentDue(ApprenticeshipContractType2EarningEvent earning)
+        {
+            var events = new List<ApprenticeshipContractType2PaymentDueEvent>();
+
+            foreach (var onProgrammeEarning in earning.OnProgrammeEarnings)
+            {
+                foreach (var period in onProgrammeEarning.Periods)
+                {
+                    events.Add(new ApprenticeshipContractType2PaymentDueEvent
+                    {
+                        Learner = earning.Learner,
+                        Ukprn = earning.Ukprn,
+                        TransactionType = (int)earning.OnProgrammeEarnings.First().Type,
+                        DeliveryPeriod = new CalendarPeriod("1819", period.Period),
+                        LearningAim = earning.LearningAim,
+                        PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
+                        CollectionPeriod = new CalendarPeriod("1819-R01"),
+                        AmountDue = period.Amount,
+                        JobId = earning.JobId
+                    });
+                }
+            }
+
+            return events;
         }
     }
 }

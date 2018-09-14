@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests
             var priceEpisodeIdentifier = "1";
             var learnAimRef = "6";
             var transactionType = 3;
-            var deliveryPeriod = new NamedCalendarPeriod {Name = "5"};
+            var deliveryPeriod = new CalendarPeriod {Name = "5"};
 
             // act
             var key = new ApprenticeshipKeyService().GeneratePaymentKey(priceEpisodeIdentifier, learnAimRef, transactionType, deliveryPeriod);

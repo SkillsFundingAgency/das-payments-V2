@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             );
         }
 
-        public string GeneratePaymentKey(string priceEpisodeIdentifier, string learnAimReference, int transactionType, NamedCalendarPeriod deliveryPeriod)
+        public string GeneratePaymentKey(string priceEpisodeIdentifier, string learnAimReference, int transactionType, CalendarPeriod deliveryPeriod)
         {
             return string.Join("-", 
                 new[]

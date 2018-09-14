@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain
     {
         string GenerateApprenticeshipKey(long ukprn, string learnerReferenceNumber, int frameworkCode, int pathwayCode, ProgrammeType programmeType, int standardCode, string learnAimRef);
 
-        string GeneratePaymentKey(string priceEpisodeIdentifier, string learnAimReference, int transactionType, NamedCalendarPeriod deliveryPeriod);
+        string GeneratePaymentKey(string priceEpisodeIdentifier, string learnAimReference, int transactionType, CalendarPeriod deliveryPeriod);
     }
 }

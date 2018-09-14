@@ -3,7 +3,7 @@ using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
-    public class RequiredPaymentEvent : IRequiredPayment
+    public abstract class RequiredPaymentEvent : IRequiredPayment
     {
         public DateTimeOffset EventTime { get; set; }
         public string JobId { get; set; }
@@ -11,8 +11,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
         public Learner Learner { get;set; }
         public LearningAim LearningAim { get; set;}
         public string PriceEpisodeIdentifier { get; set;}
-        public decimal Amount { get; set; }
-        public NamedCalendarPeriod CollectionPeriod { get; set; }
-        public NamedCalendarPeriod DeliveryPeriod { get; set; }
+        public decimal AmountDue { get; set; }
+        public CalendarPeriod CollectionPeriod { get; set; }
+        public CalendarPeriod DeliveryPeriod { get; set; }
     }
 }

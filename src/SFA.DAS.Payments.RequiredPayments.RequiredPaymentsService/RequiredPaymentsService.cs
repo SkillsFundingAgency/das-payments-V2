@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.ServiceFabric.Actors;
+﻿using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
@@ -20,11 +18,10 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
     [StatePersistence(StatePersistence.Volatile)]
     public class RequiredPaymentsService : Actor, IRequiredPaymentsService
     {
-        private PaymentDueEventHanlder _paymentDueEventHanlder;
+        private Act2PaymentDueEventHanlder _act2PaymentDueEventHanlder;
         private ReliableCollectionCache<PaymentEntity[]> _paymentHistoryCache;
 
         private readonly IPaymentLogger _paymentLogger;
-        private readonly IExecutionContextFactory _executionContextFactory;
         private readonly string _apprenticeshipKey;
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly ILifetimeScope _lifetimeScope;
@@ -32,47 +29,42 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         public RequiredPaymentsService(ActorService actorService,
             ActorId actorId,
             IPaymentLogger paymentLogger,
-            IExecutionContextFactory executionContextFactory,
             IApprenticeshipKeyService apprenticeshipKeyService,
             ILifetimeScope lifetimeScope) : base(actorService, actorId)
         {
             _paymentLogger = paymentLogger;
-            _executionContextFactory = executionContextFactory ?? throw new ArgumentNullException(nameof(executionContextFactory));
             _apprenticeshipKeyService = apprenticeshipKeyService;
             _lifetimeScope = lifetimeScope;
             _apprenticeshipKey = actorId.GetStringId();
         }
 
-        public async Task<RequiredPaymentEvent> HandlePaymentDueEvent(PaymentDueEvent paymentDueEvent, CancellationToken cancellationToken)
+        public async Task<ApprenticeshipContractType2RequiredPaymentEvent> HandleAct2PaymentDueEvent(ApprenticeshipContractType2PaymentDueEvent paymentDueEvent, CancellationToken cancellationToken)
         {
-            var executionContext = _executionContextFactory.GetExecutionContext();
-            executionContext.JobId = paymentDueEvent.JobId;
-
             _paymentLogger.LogVerbose($"Handling PaymentDue for {_apprenticeshipKey}");
 
             if (!await IsInitialised().ConfigureAwait(false))
                 await Initialise().ConfigureAwait(false);
 
-            var requiredPaymentEvents = await _paymentDueEventHanlder.HandlePaymentDue(paymentDueEvent, cancellationToken).ConfigureAwait(false);
+            var requiredPaymentEvents = await _act2PaymentDueEventHanlder.HandlePaymentDue(paymentDueEvent, cancellationToken).ConfigureAwait(false);
 
             return requiredPaymentEvents;
         }
 
         protected override async Task OnActivateAsync()
         {
-            if (!await IsInitialised().ConfigureAwait(false))
-                await Initialise().ConfigureAwait(false);
-
             _paymentHistoryCache = new ReliableCollectionCache<PaymentEntity[]>(StateManager);
 
-            _paymentDueEventHanlder = new PaymentDueEventHanlder(
-                _lifetimeScope.Resolve<IPaymentDueProcessor>(),
+            _act2PaymentDueEventHanlder = new Act2PaymentDueEventHanlder(
+                _lifetimeScope.Resolve<IAct2PaymentDueProcessor>(),
                 _paymentHistoryCache,
                 _lifetimeScope.Resolve<IMapper>(),
                 _apprenticeshipKeyService,
                 _lifetimeScope.Resolve<IPaymentHistoryRepository>(),
                 _apprenticeshipKey
             );
+
+            if (!await IsInitialised().ConfigureAwait(false))
+                await Initialise().ConfigureAwait(false);
 
             await base.OnActivateAsync().ConfigureAwait(false);
         }
@@ -81,7 +73,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             _paymentLogger.LogInfo($"Initialising actor for apprenticeship {_apprenticeshipKey}");
 
-            await _paymentDueEventHanlder.PopulatePaymentHistoryCache(CancellationToken.None).ConfigureAwait(false);
+            await _act2PaymentDueEventHanlder.PopulatePaymentHistoryCache(CancellationToken.None).ConfigureAwait(false);
 
             _paymentLogger.LogInfo($"Initialised actor for apprenticeship {_apprenticeshipKey}");
 

@@ -6,7 +6,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
     {
         string PriceEpisodeIdentifier { get; }
         decimal AmountDue { get; }
-        NamedCalendarPeriod CollectionPeriod { get; }
+        CalendarPeriod CollectionPeriod { get; }
         CalendarPeriod DeliveryPeriod { get; }
     }
 }

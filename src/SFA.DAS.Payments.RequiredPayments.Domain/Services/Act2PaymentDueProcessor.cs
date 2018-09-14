@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Linq;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
-    public class PaymentDueProcessor : IPaymentDueProcessor
+    public class Act2PaymentDueProcessor : IAct2PaymentDueProcessor
     {
-        public RequiredPaymentEvent ProcessPaymentDue(PaymentDueEvent paymentDue, Payment[] paymentHistory)
+        public ApprenticeshipContractType2RequiredPaymentEvent ProcessPaymentDue(ApprenticeshipContractType2PaymentDueEvent paymentDue, Payment[] paymentHistory)
         {
             if (paymentDue == null)
                 throw new ArgumentNullException(nameof(paymentDue));
@@ -20,19 +19,20 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             // compare amounts
             var amountPaid = paymentHistory.Sum(p => p.Amount);
 
-            if (amountPaid == paymentDue.Amount)
+            if (amountPaid == paymentDue.AmountDue)
                 return null;
 
             // create payment
-            return new RequiredPaymentEvent
+            return new ApprenticeshipContractType2RequiredPaymentEvent
             {
-                Amount = paymentDue.Amount - amountPaid,
+                AmountDue = paymentDue.AmountDue - amountPaid,
                 Learner = paymentDue.Learner.Clone(),
                 Ukprn = paymentDue.Ukprn,
                 CollectionPeriod = paymentDue.CollectionPeriod.Clone(),
                 DeliveryPeriod = paymentDue.DeliveryPeriod.Clone(),
                 LearningAim = paymentDue.LearningAim.Clone(),
                 PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier,
+                OnProgrammeEarningType = paymentDue.OnProgrammeEarningType,
                 EventTime = DateTimeOffset.UtcNow,
                 JobId = paymentDue.JobId
             };

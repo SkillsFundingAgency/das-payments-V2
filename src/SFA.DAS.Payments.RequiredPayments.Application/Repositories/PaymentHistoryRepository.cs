@@ -12,12 +12,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
     public class PaymentHistoryRepository : IPaymentHistoryRepository
     {
         private readonly IRequiredPaymentsDataContext _requiredPaymentsDataContext;
-        private readonly IMapper _mapper;
 
-        public PaymentHistoryRepository(RequiredPaymentsDataContext requiredPaymentsDataContext, IMapper mapper)
+        public PaymentHistoryRepository(IRequiredPaymentsDataContext requiredPaymentsDataContext)
         {
             _requiredPaymentsDataContext = requiredPaymentsDataContext;
-            _mapper = mapper;
         }
 
         public async Task<PaymentEntity[]> GetPaymentHistory(string apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))

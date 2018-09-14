@@ -16,14 +16,14 @@ using SFA.DAS.Payments.RequiredPayments.Domain;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public class PayableEarningEventHandler : IHandleMessages<PaymentDueEvent>
+    public class Act2PayableEarningEventHandler : IHandleMessages<ApprenticeshipContractType2PaymentDueEvent>
     {
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly IActorProxyFactory _proxyFactory;
         private readonly IPaymentLogger _paymentLogger;
         private readonly ILifetimeScope _lifetimeScope;
 
-        public PayableEarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
+        public Act2PayableEarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
                                         IActorProxyFactory proxyFactory,
                                         IPaymentLogger paymentLogger,
                                         ILifetimeScope lifetimeScope)
@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             _lifetimeScope = lifetimeScope;
         }
 
-        public async Task Handle(PaymentDueEvent message, IMessageHandlerContext context)
+        public async Task Handle(ApprenticeshipContractType2PaymentDueEvent message, IMessageHandlerContext context)
         {
             using (_lifetimeScope.BeginLifetimeScope())
             {
@@ -57,10 +57,10 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
                     var actorId = new ActorId(key);
                     var actor = _proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                    RequiredPaymentEvent requiredPaymentEvent;
+                    ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentEvent;
                     try
                     {
-                        requiredPaymentEvent = await actor.HandlePaymentDueEvent(message, CancellationToken.None).ConfigureAwait(false);
+                        requiredPaymentEvent = await actor.HandleAct2PaymentDueEvent(message, CancellationToken.None).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {

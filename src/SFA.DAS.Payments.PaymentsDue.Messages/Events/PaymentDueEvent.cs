@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
 {
-    public class PaymentDueEvent : IPaymentDueEvent
+    public abstract class PaymentDueEvent : IPaymentDueEvent
     {
         public long Ukprn { get; set; }
 
@@ -16,11 +13,11 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
         public LearningAim LearningAim { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal AmountDue { get; set; }
 
-        public NamedCalendarPeriod CollectionPeriod { get; set; }
+        public CalendarPeriod CollectionPeriod { get; set; }
 
-        public NamedCalendarPeriod DeliveryPeriod { get; set; }
+        public CalendarPeriod DeliveryPeriod { get; set; }
 
         public int TransactionType { get; set; }
     }

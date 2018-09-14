@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMoqCore;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.RequiredPayments.Application.Data;
-using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
@@ -22,18 +19,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Re
         private Mock<DbSet<PaymentEntity>> _paymentSetMock;
         private Mock<RequiredPaymentsDataContext> _dedsContextMock;
         private List<PaymentEntity> _paymentEntities;
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            Mapper.Initialize(cfg => AutoMapperConfigurationFactory.CreateMappingConfig());
-        }
-
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            Mapper.Reset();
-        }
 
         [SetUp]
         public void FixtureSetUp()
@@ -74,7 +59,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Re
             _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
 
             _dedsContextMock.Setup(c => c.PaymentHistory).Returns(_paymentSetMock.Object).Verifiable();
-            _repository = new PaymentHistoryRepository(_dedsContextMock.Object, Mapper.Instance);
+            _repository = new PaymentHistoryRepository(_dedsContextMock.Object);
 
             // act 
             var result = (await _repository.GetPaymentHistory(apprenticeshipKey).ConfigureAwait(false)).ToArray();
