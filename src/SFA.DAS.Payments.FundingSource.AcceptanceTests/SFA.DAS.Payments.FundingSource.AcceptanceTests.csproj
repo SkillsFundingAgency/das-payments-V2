@@ -258,15 +258,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Redundancy_within_last_6_months.feature</DependentUpon>
     </Compile>
+    <Compile Include="Steps\BindingBootstrapper.cs" />
+    <Compile Include="Steps\FundingSourceInputSteps.cs" />
+    <Compile Include="Steps\FundingSourceOutputSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsOutputEarnings.cs" />
     <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Balancing_Completion1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TNP_higher_than_max_funding_band_Balancing_Completion.feature</DependentUpon>
     </Compile>
-    <Compile Include="Steps\BindingBootstrapper.cs" />
-    <Compile Include="Steps\FundingSourceInputSteps.cs" />
-    <Compile Include="Steps\FundingSourceOutputSteps.cs" />
-    <Compile Include="Steps\RequiredPaymentsOutputEarnings.cs" />
     <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\TNP_higher_than_max_funding_band_Completion1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -278,9 +278,9 @@
       <DependentUpon>TNP_higher_than_max_funding_band_Continuing.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Minimum\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs">
-      <DependentUpon>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Minimum\Additional_Payments_disadvantaged_postcode.feature.cs">
       <DependentUpon>Additional_Payments_disadvantaged_postcode.feature</DependentUpon>
@@ -313,9 +313,9 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Tests\Minimum\ContractTypeChangesFromAct2ToAct11.feature.cs">
-      <DependentUpon>ContractTypeChangesFromAct2ToAct1.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContractTypeChangesFromAct2ToAct1.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Minimum\learner_finishes_early_Balancing_Completion.feature.cs">
       <DependentUpon>learner_finishes_early_Balancing_Completion.feature</DependentUpon>
@@ -333,14 +333,24 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Tests\Minimum\small_employers_full_funded_Additional_Payments_EEF2_Completion1.feature.cs">
-      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="App.debug.config" />
+    <None Include="App.config">
+      <TransformOnBuild>true</TransformOnBuild>
+    </None>
+    <None Include="App.Debug.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>true</IsTransformFile>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="App.Release.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>true</IsTransformFile>
+    </None>
     <None Include="packages.config" />
     <None Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Break_In_Learning.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

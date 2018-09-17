@@ -7,12 +7,19 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
     [Binding]
     public class RequiredPaymentsOutputEarnings
     {
-        [Given(@"the payments due component generates the following contract type (.*) payable earnings:")]
-        public void GivenThePaymentsDueComponentGeneratesTheFollowingContractTypeCompletionPayments(short contractType, Table table)
-        {
-            var completionEarnings = table.CreateSet<RequiredPayment>();
+        private readonly ScenarioContext context;
 
-            ScenarioContext.Current[$"RequiredPaymentsContractType{contractType}CompletionPayments"] = completionEarnings;
+        public RequiredPaymentsOutputEarnings(ScenarioContext context)
+        {
+            this.context = context;
+        }
+
+        [Given(@"the payments due component generates the following contract type (.*) payable earnings:")]
+        public void GivenThePaymentsDueComponentGeneratesTheFollowingContractTypePayableEarnings(short contractType, Table table)
+        {
+            var payableEarnings = table.CreateSet<RequiredPayment>();
+
+            context.Set(payableEarnings);
         }
 
     }

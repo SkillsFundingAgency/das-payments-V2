@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.FundingSource.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 
@@ -18,15 +19,11 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         public void WhenAPayableEarningEventIsReceived()
         {
             var payableEarnings =
-                context["RequiredPaymentsContractType2PayableEarnings"] as
-                    IEnumerable<RequiredPayment>;
+                context.Get<IEnumerable<RequiredPayment>>();
 
-            var learnRefNumber = context["LearnRefNumber"].ToString();
-            var uln = (long) context["Uln"];
-            var ukprn = (long) context["Ukprn"];
-            var generatedLearnRefNumber = context["GeneratedLearnRefNumber"].ToString();
+            var learner = context.Get<Learner>();
 
-
+            
         }
 
     }

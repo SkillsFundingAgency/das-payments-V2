@@ -173,7 +173,6 @@
     <Compile Include="Steps\LearnerSteps.cs" />
     <Compile Include="Steps\PaymentsDueInputSteps.cs" />
     <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
-    <Compile Include="Steps\ProcessingPeriodSteps.cs" />
     <Compile Include="Steps\ProviderSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Break_In_Learning.feature.cs">
