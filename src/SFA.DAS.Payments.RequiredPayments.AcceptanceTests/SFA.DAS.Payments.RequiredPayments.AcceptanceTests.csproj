@@ -157,7 +157,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\LearnRefNumberGenerator.cs" />
     <Compile Include="Data\ContractTypeEarning.cs" />
     <Compile Include="Data\Course.cs" />
     <Compile Include="Data\PayableEarning.cs" />
@@ -170,9 +169,8 @@
     <Compile Include="Steps\EarningSteps.cs" />
     <Compile Include="Steps\FundingSteps.cs" />
     <Compile Include="Steps\HistoricalPaymentSteps.cs" />
-    <Compile Include="Steps\LearnerSteps.cs" />
-    <Compile Include="Steps\PaymentsDueInputSteps.cs" />
-    <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsInputSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsOutputSteps.cs" />
     <Compile Include="Steps\ProviderSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="Tests\Additional_ACT2_TransactionType_1to3_Tests\Break_In_Learning.feature.cs">

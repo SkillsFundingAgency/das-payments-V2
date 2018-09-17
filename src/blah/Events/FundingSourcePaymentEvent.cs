@@ -1,7 +1,7 @@
 ﻿using System;
 using SFA.DAS.Payments.Model.Core;
 
-namespace SFA.DAS.Payments.FundingSource.Messages.Events
+namespace blah.Events
 {
     public abstract class FundingSourcePaymentEvent 
     {

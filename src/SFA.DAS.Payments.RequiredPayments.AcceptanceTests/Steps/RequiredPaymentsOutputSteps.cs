@@ -9,13 +9,13 @@ using TechTalk.SpecFlow.Assist;
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class PaymentsDueOutputSteps: StepsBase
+    public class RequiredPaymentsOutputSteps: StepsBase
     {
         private readonly ScenarioContext context;
         private readonly LearnRefNumberGenerator generator;
 
 
-        public PaymentsDueOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator)
+        public RequiredPaymentsOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator)
         {
             this.context = context;
             this.generator = generator;

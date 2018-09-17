@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.FundingSource.Messages.Events
+﻿namespace blah.Events
 {
     public class SfaCoInvestedFundingSourcePaymentEvent : CoInvestedFundingSourcePaymentEvent, IFundingSourcePaymentEvent
     {

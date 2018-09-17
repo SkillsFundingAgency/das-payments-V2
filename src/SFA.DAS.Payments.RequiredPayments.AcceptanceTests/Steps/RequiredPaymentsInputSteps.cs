@@ -12,11 +12,11 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class PaymentsDueInputSteps: StepsBase
+    public class RequiredPaymentsInputSteps: StepsBase
     {
         private readonly ScenarioContext context;
 
-        public PaymentsDueInputSteps(ScenarioContext context)
+        public RequiredPaymentsInputSteps(ScenarioContext context)
         {
             this.context = context;
         }
@@ -26,10 +26,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             // Get all the input data
             var processingPeriod = (short)context["ProcessingPeriod"];
 
-            var learnRefNumber = context["LearnRefNumber"].ToString();
-            var uln = (long)context["Uln"];
-            var ukprn = (long)context["Ukprn"];
-            var generatedLearnRefNumber = context["GeneratedLearnRefNumber"].ToString();
+            var learner = context.Get<Payments.AcceptanceTests.Core.Data.Learner>();
 
             IEnumerable<Course> courses = null;
 
@@ -61,12 +58,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             var earning = new ApprenticeshipContractType2EarningEvent
             {
                 JobId = "job-1234",
-                Ukprn = ukprn,
+                Ukprn = learner.Ukprn,
                 EventTime = DateTimeOffset.UtcNow,
                 Learner = new Learner
                 {
-                    ReferenceNumber = generatedLearnRefNumber,
-                    Uln = uln
+                    ReferenceNumber = learner.GeneratedLearnRefNumber,
+                    Uln = learner.Uln
                 },
                 LearningAim = learningAim,
                 PriceEpisodes = new List<PriceEpisode>

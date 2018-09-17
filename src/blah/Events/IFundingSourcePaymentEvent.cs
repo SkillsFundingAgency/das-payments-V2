@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Payments.Messages.Core.Events;
 
-namespace SFA.DAS.Payments.FundingSource.Messages.Events
+namespace blah.Events
 {
     public interface IFundingSourcePaymentEvent: IPeriodisedEarningEvent
     {

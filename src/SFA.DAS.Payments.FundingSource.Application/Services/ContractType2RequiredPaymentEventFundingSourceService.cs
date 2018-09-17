@@ -1,9 +1,9 @@
 ﻿using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Collections.Generic;
+using blah.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
