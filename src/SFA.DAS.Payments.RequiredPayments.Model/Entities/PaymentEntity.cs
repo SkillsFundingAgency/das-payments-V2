@@ -9,6 +9,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         [DataMember]
         public Guid Id { get; set; }
         [DataMember]
+        public string ApprenticeshipKey { get; set; }
+        [DataMember]
         public long Ukprn { get; set; }
         [DataMember]
         public string LearnerReferenceNumber { get; set; }
@@ -16,8 +18,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         public string LearnAimReference { get; set; }
         [DataMember]
         public int TransactionType { get; set; }
-        [DataMember]
-        public string ApprenticeshipKey { get; set; }
         [DataMember]
         public string PriceEpisodeIdentifier { get; set; }
         [DataMember]

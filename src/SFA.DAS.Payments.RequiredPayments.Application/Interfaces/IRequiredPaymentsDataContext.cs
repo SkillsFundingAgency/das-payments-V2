@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
-namespace SFA.DAS.Payments.RequiredPayments.Application.Data
+namespace SFA.DAS.Payments.RequiredPayments.Application
 {
     public interface IRequiredPaymentsDataContext
     {
