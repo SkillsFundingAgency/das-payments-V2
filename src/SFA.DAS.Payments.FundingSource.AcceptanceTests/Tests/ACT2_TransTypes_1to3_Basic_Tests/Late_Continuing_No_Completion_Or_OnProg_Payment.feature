@@ -5,7 +5,7 @@ Background:
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
-	And the payments due component generates no contract type 2 payable earnings
+	And the required payments component generates no contract type 2 payable earnings
 
 @Non-DAS
 @FinishingLate
@@ -13,6 +13,6 @@ Background:
 
 Scenario: Contract Type 2 no payment
 
-	When MASH is received
+	When no required payments event is received
 
 	Then the payment source component will generate no contract type 2 coinvested payments

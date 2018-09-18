@@ -5,10 +5,9 @@ Background:
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
-	And the payments due component generates the following contract type 2 payable earnings:
-
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount | SfaContributionPercentage |
-	| p1                     | 14     | 10000 | 2               | 1800   | 0.90000                   |
+	And the required payments component generates the following contract type 2 payable earnings:
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount | SfaContributionPercentage |
+	| learnref1      | 10000 | p1                     | 14     | 10000 | Completion_2    | 1800   | 0.90000                   |
 
 @Non-DAS
 @LateCompletion
@@ -16,7 +15,7 @@ Background:
 
 Scenario: Contract Type 2 completion payment
 
-	When MASH is received
+	When required payments event is received
 
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
