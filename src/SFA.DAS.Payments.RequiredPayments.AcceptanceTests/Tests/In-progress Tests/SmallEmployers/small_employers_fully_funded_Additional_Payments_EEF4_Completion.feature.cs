@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
  testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table156 = new TechTalk.SpecFlow.Table(new string[] {
                         "AimSeqNumber",
                         "ProgrammeType",
                         "FrameworkCode",
@@ -92,7 +92,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "LearningPlannedEndDate",
                         "LearningActualEndDate",
                         "CompletionStatus"});
-            table1.AddRow(new string[] {
+            table156.AddRow(new string[] {
                         "1",
                         "2",
                         "403",
@@ -105,29 +105,29 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "08/08/2018",
                         "Completed"});
 #line 15
- testRunner.And("the following course information:", ((string)(null)), table1, "And ");
+ testRunner.And("the following course information:", ((string)(null)), table156, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table157 = new TechTalk.SpecFlow.Table(new string[] {
                         "Employer",
                         "Employment Status",
                         "Employment Status Applies",
                         "Small Employer"});
-            table2.AddRow(new string[] {
+            table157.AddRow(new string[] {
                         "EmployerRef1",
                         "in paid employment",
                         "05/08/2017",
                         "SEM1"});
 #line 20
- testRunner.And("the employment status in the ILR is:", ((string)(null)), table2, "And ");
+ testRunner.And("the employment status in the ILR is:", ((string)(null)), table157, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table158 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "EpisodeStartDate",
                         "EpisodeEffectiveTNPStartDate",
                         "TotalNegotiatedPrice",
                         "Learning_1",
                         "SfaContributionPercentage"});
-            table3.AddRow(new string[] {
+            table158.AddRow(new string[] {
                         "p1",
                         "06/08/2017",
                         "06/08/2017",
@@ -136,9 +136,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "1.0000"});
 #line 28
  testRunner.And("the following contract type 2 on programme earnings for periods 1-12 are provided" +
-                    " in the latest ILR for the academic year 1718:", ((string)(null)), table3, "And ");
+                    " in the latest ILR for the academic year 1718:", ((string)(null)), table158, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table159 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "EpisodeStartDate",
                         "EpisodeEffectiveTNPStartDate",
@@ -146,7 +146,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "Learning_1",
                         "Completion_2",
                         "SfaContributionPercentage"});
-            table4.AddRow(new string[] {
+            table159.AddRow(new string[] {
                         "p1",
                         "06/08/2017",
                         "06/08/2017",
@@ -156,7 +156,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.In_ProgressTes
                         "1.0000"});
 #line 32
  testRunner.And("the following contract type 2 on programme earnings for period 13 are provided in" +
-                    " the latest ILR for the academic year 1718:", ((string)(null)), table4, "And ");
+                    " the latest ILR for the academic year 1718:", ((string)(null)), table159, "And ");
 #line hidden
         }
         
@@ -189,7 +189,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table160 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -198,7 +198,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount",
                         "SfaContributionPercentage"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -207,7 +207,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -216,7 +216,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -225,7 +225,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -234,7 +234,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -243,7 +243,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -252,7 +252,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -261,7 +261,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -270,7 +270,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -279,7 +279,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -288,7 +288,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -297,7 +297,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table5.AddRow(new string[] {
+            table160.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -307,11 +307,11 @@ this.FeatureBackground();
                         string.Format("{0}", amount),
                         "1.0000"});
 #line 48
- testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table5, "And ");
+ testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table160, "And ");
 #line 63
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table161 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -320,7 +320,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount",
                         "SfaContributionPercentage"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -329,7 +329,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -338,7 +338,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -347,7 +347,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -356,7 +356,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -365,7 +365,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -374,7 +374,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -383,7 +383,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -392,7 +392,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -401,7 +401,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -410,7 +410,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -419,7 +419,7 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount),
                         "1.0000"});
-            table6.AddRow(new string[] {
+            table161.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -430,7 +430,7 @@ this.FeatureBackground();
                         "1.0000"});
 #line 65
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
-                    "rnings:", ((string)(null)), table6, "Then ");
+                    "rnings:", ((string)(null)), table161, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -449,7 +449,7 @@ this.FeatureBackground();
 #line 86
  testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table162 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -458,7 +458,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "Amount",
                         "SfaContributionPercentage"});
-            table7.AddRow(new string[] {
+            table162.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -469,7 +469,7 @@ this.FeatureBackground();
                         "1.0000"});
 #line 88
  testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
-                    "rnings:", ((string)(null)), table7, "Then ");
+                    "rnings:", ((string)(null)), table162, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
