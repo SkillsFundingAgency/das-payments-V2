@@ -331,21 +331,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\In-progress Tests\Split - Sample\OnTime_Submission_MultipleHistoricalPayments_FundingSource.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OnTime_Submission_MultipleHistoricalPayments_FundingSource.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Split - Sample\OnTime_Submission_MultipleHistoricalPayments_PaymentsDue.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OnTime_Submission_MultipleHistoricalPayments_PaymentsDue.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Split - Sample\OnTime_Submission_MultipleHistoricalPayments_RequiredPayments.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OnTime_Submission_MultipleHistoricalPayments_RequiredPayments.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\In-progress Tests\Withdrawal\Learner_finishes_early_withdrawal_after_qualifying_period.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -495,18 +480,6 @@
     <None Include="Tests\In-progress Tests\SmallEmployers\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Split - Sample\OnTime_Submission_MultipleHistoricalPayments_FundingSource.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>OnTime_Submission_MultipleHistoricalPayments_FundingSource.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Split - Sample\OnTime_Submission_MultipleHistoricalPayments_PaymentsDue.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>OnTime_Submission_MultipleHistoricalPayments_PaymentsDue.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Split - Sample\OnTime_Submission_MultipleHistoricalPayments_RequiredPayments.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>OnTime_Submission_MultipleHistoricalPayments_RequiredPayments.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\In-progress Tests\Withdrawal\Learner_finishes_early_withdrawal_after_qualifying_period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
