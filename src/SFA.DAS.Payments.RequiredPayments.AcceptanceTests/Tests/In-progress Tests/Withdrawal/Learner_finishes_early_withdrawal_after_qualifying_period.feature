@@ -5,7 +5,7 @@ Background:
 	Given the current processing period is 6
 	
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 01/08/2017		  | 08/08/2018             | 08/12/2017			   | withdrawn        |

@@ -8,13 +8,14 @@ Background:
 	Given the current processing period is 3
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
+	And the SFA contribution percentage is "90%"
 
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 20/08/2018             |                       | continuing       |
 
-	And the following contract type 1 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	And the following contract type 1 On Programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning (TT1) |
 	| p2                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        | 
 	
 @Non-DAS
@@ -24,9 +25,9 @@ Background:
 #@English_Maths
 @partial
 
-Scenario Outline: Contract Type 2 On programme payments
+Scenario Outline: Contract Type 2 On Programme Learning payments
 
-	And the following historical contract type 2 on programme payments exist:   
+	And the following historical contract type 2 On Programme Learning payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
@@ -42,7 +43,7 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 600    |
+	| Learning (TT1)   | 600    |
 
 @DAS
 @minimum_tests
@@ -51,7 +52,7 @@ Scenario Outline: Contract Type 2 On programme payments
 #@English_Maths
 @partial
 
-Scenario Outline: Contract Type 1 On programme payments
+Scenario Outline: Contract Type 1 On Programme Learning payments
 
 	When a TOBY is received
 
@@ -63,7 +64,7 @@ Scenario Outline: Contract Type 1 On programme payments
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 600    |
+	| Learning (TT1)   | 600    |
 
 
 
@@ -84,11 +85,11 @@ Scenario: Contract Type 2 Payable Earnings
 	When a TOBY is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | SfaContributionPercentage | Learning_1 | Completion_2 | Balancing_3 | First16To18EmployerIncentive_4 | First16To18ProviderIncentive_5 | Second16To18EmployerIncentive_6 | Second16To18ProviderIncentive_7 | OnProgramme16To18FrameworkUplift_8 | Completion16To18FrameworkUplift_9 | Balancing16To18FrameworkUplift_10 | FirstDisadvantagePayment_11 | SecondDisadvantagePayment_12 | OnProgrammeMathsAndEnglish_13 | BalancingMathsAndEnglish_14 | LearningSupport_15 |
-	| learnref1      | 10000 | p1                     | 1      | 10000 | 0.90000                   | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
-	| learnref1      | 10000 | p1                     | 2      | 10000 | 0.90000                   | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
-	| learnref1      | 10000 | p1                     | 1      | 10000 | 0.90000                   | -600       | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
-	| learnref1      | 10000 | p1                     | 2      | 10000 | 0.90000                   | -600       | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | Learning (TT1) | Completion (TT2) | Balancing (TT3) | First16To18EmployerIncentive_4 | First16To18ProviderIncentive_5 | Second16To18EmployerIncentive_6 | Second16To18ProviderIncentive_7 | OnProgramme16To18FrameworkUplift_8 | Completion16To18FrameworkUplift_9 | Balancing16To18FrameworkUplift_10 | FirstDisadvantagePayment_11 | SecondDisadvantagePayment_12 | OnProgrammeMathsAndEnglish_13 | BalancingMathsAndEnglish_14 | LearningSupport_15 |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
+	| learnref1      | 10000 | p1                     | 2      | 10000 | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | -600       | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
+	| learnref1      | 10000 | p1                     | 2      | 10000 | -600       | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
 
 @DAS
 @minimum_tests
@@ -101,10 +102,10 @@ Scenario: Contract Type 1 Payable Earnings
 	When a TOBY is received
 
 	Then the payments due component will generate the following contract type 1 payable earnings:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | SfaContributionPercentage | Learning_1 | Completion_2 | Balancing_3 | First16To18EmployerIncentive_4 | First16To18ProviderIncentive_5 | Second16To18EmployerIncentive_6 | Second16To18ProviderIncentive_7 | OnProgramme16To18FrameworkUplift_8 | Completion16To18FrameworkUplift_9 | Balancing16To18FrameworkUplift_10 | FirstDisadvantagePayment_11 | SecondDisadvantagePayment_12 | OnProgrammeMathsAndEnglish_13 | BalancingMathsAndEnglish_14 | LearningSupport_15 |
-	| learnref1      | 10000 | p2                     | 1      | 10000 | 0.90000                   | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
-	| learnref1      | 10000 | p2                     | 2      | 10000 | 0.90000                   | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
-	| learnref1      | 10000 | p2                     | 3      | 10000 | 0.90000                   | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | Learning (TT1) | Completion (TT2) | Balancing (TT3) | First16To18EmployerIncentive_4 | First16To18ProviderIncentive_5 | Second16To18EmployerIncentive_6 | Second16To18ProviderIncentive_7 | OnProgramme16To18FrameworkUplift_8 | Completion16To18FrameworkUplift_9 | Balancing16To18FrameworkUplift_10 | FirstDisadvantagePayment_11 | SecondDisadvantagePayment_12 | OnProgrammeMathsAndEnglish_13 | BalancingMathsAndEnglish_14 | LearningSupport_15 |
+	| learnref1      | 10000 | p2                     | 1      | 10000 | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
+	| learnref1      | 10000 | p2                     | 2      | 10000 | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
+	| learnref1      | 10000 | p2                     | 3      | 10000 | 600        | 0            |             | 0                              | 0                              | 0                               | 0                               | 0                                  | 0                                 | 0                                 | 0                           | 0                            | 0                             | 0                           | 0                  |
  
 #----------------------------------------------------
 #Earlier approach - Following sections can be removed - End
@@ -131,12 +132,12 @@ Scenario: Contract Type 1 Payable Earnings
 #		| 1             | 1          | learner a | 01/08/2017 | 01/08/2018 | 403            | 2              | 1            | 9000         | Active | 01/08/2017     |              |
 #        
 #	When an ILR file is submitted for period R01 with the following data:
-#        | ULN       | learner type           | agreed price | start date | planned end date | actual end date | completion status | aim type         | aim sequence number | aim rate | framework code | programme type | pathway code | contract type | contract type date from |
+#        | ULN       | learner type           | agreed price | start date | planned end date | actual end date | Completion status | aim type         | aim sequence number | aim rate | framework code | programme type | pathway code | contract type | contract type date from |
 #        | learner a | programme only non-DAS | 9000         | 06/08/2017 | 20/08/2018       |                 | continuing        | programme        | 2                   |          | 403            | 2              | 1            | Non-DAS       | 06/08/2017              |
 #        | learner a | programme only non-DAS |              | 06/08/2017 | 20/08/2018       |                 | continuing        | maths or english | 1                   | 471      | 403            | 2              | 1            |               |                         |
 #        
 #    And an ILR file is submitted for period R03 with the following data:
-#        | ULN       | learner type       | agreed price | start date | planned end date | actual end date | completion status | aim type         | aim sequence number | aim rate | framework code | programme type | pathway code | contract type | contract type date from |
+#        | ULN       | learner type       | agreed price | start date | planned end date | actual end date | Completion status | aim type         | aim sequence number | aim rate | framework code | programme type | pathway code | contract type | contract type date from |
 #        | learner a | programme only DAS | 9000         | 06/08/2017 | 20/08/2018       |                 | continuing        | programme        | 2                   |          | 403            | 2              | 1            | DAS           | 06/08/2017              |
 #        | learner a | programme only DAS |              | 06/08/2017 | 20/08/2018       |                 | continuing        | maths or english | 1                   | 471      | 403            | 2              | 1            |               |                         |
 #

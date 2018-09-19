@@ -7,9 +7,11 @@ Background:
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
+	And the SFA contribution percentage is "90%"
+
 	And the payments due component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 3      | 10000 | Learning_1      | 600    |
+	| p1                     | 3      | 10000 | Learning (TT1)  | 600    |
 
 
 @Non-DAS
@@ -24,8 +26,8 @@ Scenario: Contract Type 2 Learning payment
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-	| learnref1      | 10000 | p1                     | 3      | 10000 | Learning_1      | CoInvestedSfa_2      | 540    |
-	| learnref1      | 10000 | p1                     | 3      | 10000 | Learning_1      | CoInvestedEmployer_3 | 60     |
+	| learnref1      | 10000 | p1                     | 3      | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)  | 540    |
+	| learnref1      | 10000 | p1                     | 3      | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3)| 60     |
 
 #------------------------------------------------
 #	V1 - Original test
@@ -35,7 +37,7 @@ Scenario: Contract Type 2 Learning payment
 #	Scenario: 640-AC02-Payment for a non-DAS learner with a negotiated price above the funding band cap
 #    Given the apprenticeship funding band maximum is 15000
 #    When an ILR file is submitted with the following data:
-#        | Provider   | ULN       | learner type           | agreed price | start date | planned end date | actual end date | completion status | standard code |
+#        | Provider   | ULN       | learner type           | agreed price | start date | planned end date | actual end date | Completion status | standard code |
 #        | provider a | learner a | programme only non-DAS | 18000        | 06/08/2017 | 08/08/2018       |                 | continuing        | 50            |
 #    Then the following capping will apply to the price episodes:
 #        | Provider   | price episode | negotiated price | funding cap | previous funding paid | price above cap | effective price for SFA payments |

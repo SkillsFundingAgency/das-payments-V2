@@ -10,12 +10,12 @@ Background:
 	Given the current processing period is 14
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 
 @Non-DAS
 @minimum_tests
 #@additional_payments
-#@completion
+#@Completion
 #@Maths_English
 #@Maths_English_FinshedLate
 @partial
@@ -35,7 +35,7 @@ Scenario: Contract Type 2 no payment
 #scenario:638-ac01 non-das learner, takes an english qualification that has a planned end date that exceeds the actual end date of the programme aim
 #
 #	when an ilr file is submitted with the following data:
-#		| uln       | learner type           | aim type         | agreed price | aim rate | start date | planned end date | actual end date | completion status | 
+#		| uln       | learner type           | aim type         | agreed price | aim rate | start date | planned end date | actual end date | Completion status | 
 #		| learner a | programme only non-das | programme        | 15000        |          | 06/08/2017 | 08/08/2018       | 08/08/2018      | completed         | 
 #		| learner a | programme only non-das | maths or english |              | 471      | 06/08/2017 | 06/10/2018       | 06/10/2018      | completed         |
 #	then the provider earnings and payments break down as follows:
@@ -52,9 +52,9 @@ Scenario: Contract Type 2 no payment
 #    and the transaction types for the payments are:
 #		| payment type                   | 09/17 | 10/17 | ... | 05/18 | 06/18 | 07/18 | 08/18 | 09/18 | 10/18 | 11/18 |
 #		| on-program                     | 900   | 900   | ... | 900   | 900   | 900   | 900   | 0     | 0     | 0     |
-#		| completion                     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 2700  | 0     | 0     |
-#		| balancing                      | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
-#		| english and maths on programme | 33.64 | 33.64 | ... | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 | 0     |
-#		| english and maths balancing    | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
+#		| Completion                     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 2700  | 0     | 0     |
+#		| Balancing                      | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
+#		| english and maths On Programme | 33.64 | 33.64 | ... | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 | 0     |
+#		| english and maths Balancing    | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
 
 #----------------------------------------------------------------------------------------------------------------------------------------

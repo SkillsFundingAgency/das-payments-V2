@@ -1,4 +1,4 @@
-﻿Feature: 807_AC2- Non-DAS learner, is made redundant outside of the last 6 months of planned learning - receives full government funding for the next 12 weeks only 
+﻿Feature: 807_AC2- Non-DAS learner, is made redundant outside of the last 6 months of planned Learning - receives full government funding for the next 12 weeks only 
 #Learner made redundant after 6 months, receives funding for next 3 months and then no further funding 
 #Further test scenarios needs adding for boundary cases
 
@@ -6,7 +6,7 @@ Background:
 	Given the current processing period is 10
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 @Non-DAS
 @Redundancy
 @Review
@@ -26,13 +26,13 @@ Scenario: Contract Type 2 no payment
 #	V1 - version
 #
 #@Redundancy
-#Scenario:807_AC2- Non-DAS learner, is made redundant outside of the last 6 months of planned learning - receives full government funding for the next 12 weeks only 
+#Scenario:807_AC2- Non-DAS learner, is made redundant outside of the last 6 months of planned Learning - receives full government funding for the next 12 weeks only 
 #
 #        Given the apprenticeship funding band maximum is 15000
 #        #And the learner is made redundant less than 6 months before the planned end date
 #            
 #        When an ILR file is submitted with the following data:
-#            | ULN       | learner type           | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | 
+#            | ULN       | learner type           | start date | planned end date | actual end date | Completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | 
 #            | learner a | programme only non-DAS | 03/08/2017 | 20/08/2018       |                 | continuing        | 12000                | 03/08/2017                          | 3000                   | 03/08/2017                            | 
 #        
 #        And the employment status in the ILR is:

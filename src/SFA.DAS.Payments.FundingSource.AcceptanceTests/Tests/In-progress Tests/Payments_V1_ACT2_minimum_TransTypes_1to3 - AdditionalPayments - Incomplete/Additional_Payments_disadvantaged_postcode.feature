@@ -8,10 +8,10 @@ Background:
 	Given the current processing period is 4
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the payments due component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 4      | 10000 | Learning_1      | 1000   |
+	| p1                     | 4      | 10000 | Learning (TT1)  | 1000   |
 
 @Non-DAS
 @minimum_tests
@@ -26,8 +26,8 @@ Scenario: Contract Type 2 Learning payment
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-	| learnref1      | 10000 | p1                     | 4      | 10000 | Learning_1      | CoInvestedSfa_2      | 900    |
-	| learnref1      | 10000 | p1                     | 4      | 10000 | Learning_1      | CoInvestedEmployer_3 | 100    |
+	| learnref1      | 10000 | p1                     | 4      | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)  | 900    |
+	| learnref1      | 10000 | p1                     | 4      | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3)| 100    |
 
 #----------------------------------------------------------------------------------------------------------------------------------------	
 	
@@ -39,7 +39,7 @@ Scenario: Contract Type 2 Learning payment
 #Scenario:AC5- Payment for a non-DAS learner, lives in a disadvantaged postocde area - 1-10% most deprived, funding agreed within band maximum, UNDERTAKING APPRENTICESHIP FRAMEWORK The provider incentive for this postcode group is £600 split equally into 2 payments at 90 and 365 days. INELIGIBLE FOR APPRENTICESHIP STANDARDS
 #  
 #    When an ILR file is submitted with the following data:
-#        | ULN       | learner type             | agreed price | start date | planned end date | actual end date | completion status | framework code | programme type | pathway code | home postcode deprivation |
+#        | ULN       | learner type             | agreed price | start date | planned end date | actual end date | Completion status | framework code | programme type | pathway code | home postcode deprivation |
 #		  | learner a | programme only non-DAS | 15000        | 06/08/2017 | 08/08/2018       |                 | continuing        | 403            | 2              | 1            | 1-10%                     |
 #    Then the provider earnings and payments break down as follows:
 #        | Type                                    | 08/17 | 09/17 | 10/17 | 11/17 | 12/17 | ... | 07/18 | 08/18 | 09/18 |

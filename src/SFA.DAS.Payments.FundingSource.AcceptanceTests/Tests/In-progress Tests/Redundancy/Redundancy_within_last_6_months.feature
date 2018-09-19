@@ -1,14 +1,14 @@
-﻿Feature: 807_AC1- Non-DAS learner, is made redundant within the last 6 months of planned learning - receives full government funding for the rest of the programme 
+﻿Feature: 807_AC1- Non-DAS learner, is made redundant within the last 6 months of planned Learning - receives full government funding for the rest of the programme 
 #What will be the learner status after 12 months
 
 Background:
 	Given the current processing period is 12
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the payments due component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 12     | 10000 | Learning_1      | 1000   |
+	| p1                     | 12     | 10000 | Learning (TT1)  | 1000   |
 
 @Non-DAS
 @Redundancy
@@ -22,10 +22,10 @@ Scenario: Contract Type 2 Learning payment
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-	| learnref1      | 10000 | p1                     | 12     | 10000 | Learning_1      | CoInvestedSfa_2      | 900    |
-	| learnref1      | 10000 | p1                     | 12     | 10000 | Learning_1      | CoInvestedEmployer_3 | 100    |
+	| learnref1      | 10000 | p1                     | 12     | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)  | 900    |
+	| learnref1      | 10000 | p1                     | 12     | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3)| 100    |
 #
-#Scenario Outline: Contract Type 2 completion payment
+#Scenario Outline: Contract Type 2 On Programme Completion payment
 #
 #	When a TOBY is received
 #
@@ -35,7 +35,7 @@ Scenario: Contract Type 2 Learning payment
 #	
 #	Examples: 
 #	| transaction_type | amount |
-#	| Completion_2     | 3000   |
+#	| Completion (TT2) | 3000   |
 
 
 
@@ -46,7 +46,7 @@ Scenario: Contract Type 2 Learning payment
 #	V1 - version
 #
 #	@Redundancy
-#Scenario:807_AC1- Non-DAS learner, is made redundant within the last 6 months of planned learning - receives full government funding for the rest of the programme 
+#Scenario:807_AC1- Non-DAS learner, is made redundant within the last 6 months of planned Learning - receives full government funding for the rest of the programme 
 #
 #        Given the apprenticeship funding band maximum is 15000
 #		#the learner is programme only non-DAS
@@ -54,7 +54,7 @@ Scenario: Contract Type 2 Learning payment
 #        #And the learner is made redundant less than 6 months before the planned end date
 #            
 #        When an ILR file is submitted with the following data:
-#            | ULN       | learner type           | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | 
+#            | ULN       | learner type           | start date | planned end date | actual end date | Completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | 
 #            | learner a | programme only non-DAS | 03/08/2017 | 20/08/2018       |                 | continuing        | 12000                | 03/08/2017                          | 3000                   | 03/08/2017                            | 
 #        
 #        And the employment status in the ILR is:

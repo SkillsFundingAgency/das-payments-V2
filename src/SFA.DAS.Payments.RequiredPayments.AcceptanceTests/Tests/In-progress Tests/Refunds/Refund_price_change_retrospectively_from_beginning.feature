@@ -10,13 +10,13 @@ Background:
 	Given the current processing period is 3
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 04/08/2017        | 20/08/2018             |                       | continuing       |
 
-	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	And the following contract type 2 On Programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning (TT1) |
 	| p2                     | 06/08/2017       | 06/08/2017                   | 10                   | 0.6667     |
 
 @Non-DAS
@@ -25,9 +25,9 @@ Background:
 @price_reduced_retrospectively
 @partial
 
-Scenario Outline: Contract Type 2 On programme payments before price change
+Scenario Outline: Contract Type 2 On Programme Learning payments before price change
 
-	And the following historical contract type 2 on programme payments exist:   
+	And the following historical contract type 2 On Programme Learning payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
@@ -43,14 +43,14 @@ Scenario Outline: Contract Type 2 On programme payments before price change
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 750	|
+	| Learning (TT1)   | 750	|
 
 @Non-DAS
 @minimum_tests
 @Refunds
 @price_reduced_retrospectively
 
-Scenario Outline: Contract Type 2 On programme payments after price change
+Scenario Outline: Contract Type 2 On Programme Learning payments after price change
 	
 	When a TOBY is received
 
@@ -62,7 +62,7 @@ Scenario Outline: Contract Type 2 On programme payments after price change
 	
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 0.6667 |
+	| Learning (TT1)   | 0.6667 |
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -76,8 +76,8 @@ Scenario Outline: Contract Type 2 On programme payments after price change
 #	Given  the apprenticeship funding band maximum is 27000
 #	And levy balance > agreed price for all months
 #	
-#	And following learning has been recorded for previous payments:
-#		| ULN       | employer   | provider   | learner type           | start date | aim sequence number | completion status | programme type | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date |
+#	And following Learning has been recorded for previous payments:
+#		| ULN       | employer   | provider   | learner type           | start date | aim sequence number | Completion status | programme type | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date |
 #		| learner a | employer 0 | provider A | programme only non-DAS | 04/08/2017 | 1                   | continuing        | 25             | 9000                   | 04/08/2017                            | 2250                     | 04/08/2017                              |
 #
 #	And the following earnings and payments have been made to the provider A for learner a:
@@ -93,7 +93,7 @@ Scenario Outline: Contract Type 2 On programme payments after price change
 #		| SFA non-Levy co-funding budget | 675   | 675   | 0     | 0     |
 #        
 #    When an ILR file is submitted for the first time on 10/10/17 with the following data:
-#        | ULN       | employer   | provider   | learner type           | start date | planned end date | agreed price | completion status | programme type | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date |
+#        | ULN       | employer   | provider   | learner type           | start date | planned end date | agreed price | Completion status | programme type | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date |
 #        | learner a | employer 0 | provider A | programme only non-DAS | 04/08/2017 | 20/08/2018       | 10            | continuing        | 25             | 8                      | 04/08/2017                            | 2                        | 04/08/2017                              |
 #	
 #    Then the provider earnings and payments break down as follows:

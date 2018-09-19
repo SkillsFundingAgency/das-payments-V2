@@ -1,4 +1,4 @@
-﻿Feature: Refund - Delay in completion due to change in planned end date in R12.
+﻿Feature: Refund - Delay in Completion due to change in planned end date in R12.
 		 12 months apprenticeship changed to 15 months. 
 		 
 Background:
@@ -6,26 +6,26 @@ Background:
 	Given the current processing period is 12
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 08/11/2018             |			            | continuing       |
 
-	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	And the following contract type 2 On Programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning (TT1) |
 	| p2                     | 06/08/2017       | 06/08/2017                   | 15000                | 800        |
 
 
 @Non-DAS
-@delayed_completion
+@delayed_Completion
 @Changed_Planned_End_Date
 @multiple_price_episodes
 @refunds
 @review
 
-Scenario Outline: Contract Type 2 On programme payments before change in planned end date
+Scenario Outline: Contract Type 2 On Programme Learning payments before change in planned end date
 
-	And the following historical contract type 2 on programme payments exist:   
+	And the following historical contract type 2 On Programme Learning payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
@@ -68,15 +68,15 @@ Scenario Outline: Contract Type 2 On programme payments before change in planned
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 1000	|
+	| Learning (TT1)   | 1000	|
 
 @Non-DAS
-@delayed_completion
+@delayed_Completion
 @Changed_Planned_End_Date
 @multiple_price_episodes
 @refund
 
-Scenario Outline: Contract Type 2 On programme payments after change in planned end date
+Scenario Outline: Contract Type 2 On Programme Learning payments after change in planned end date
 	
 	When a TOBY is received
 
@@ -97,4 +97,4 @@ Scenario Outline: Contract Type 2 On programme payments after change in planned 
 	
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 800    |
+	| Learning (TT1)   | 800    |

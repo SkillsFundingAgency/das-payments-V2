@@ -10,31 +10,31 @@ Background:
 	Given the current processing period is 14
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 08/08/2018             | 08/08/2018            | Completed       |
 	| 2            |               |               |             | 471          | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 06/10/2018             | 06/10/2018            | Completed       |
 
-	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	And the following contract type 2 On Programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning (TT1) |
 	| p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 1000       |
 
-	And the following contract type 2 on programme earnings for period 13 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Completion_2 |
+	And the following contract type 2 On Programme earnings for period 13 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Completion (TT2) |
 	| p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 3000         |
 
 @Non-DAS
 @minimum_tests
 #@additional_payments
-#@completion
+#@Completion
 #@Maths_English
 #@Maths_English_FinshedLate
 @partial
 
-Scenario Outline: Contract Type 2 On programme payments
+Scenario Outline: Contract Type 2 On Programme Learning payments
 
-	And the following historical contract type 2 on programme payments exist:   
+	And the following historical contract type 2 On Programme Learning payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
@@ -68,11 +68,11 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 1000   |	
+	| Learning (TT1)   | 1000   |	
 	
-Scenario Outline: Contract Type 2 completion payment
+Scenario Outline: Contract Type 2 On Programme Completion payment
 
-	And the following historical contract type 2 completion payment exist:   
+	And the following historical contract type 2 On Programme Completion payment exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 13      | 10000 | <transaction_type> | <amount> |
 
@@ -84,7 +84,7 @@ Scenario Outline: Contract Type 2 completion payment
 	
 	Examples: 
 	| transaction_type | amount |
-	| Completion_2     | 3000   |
+	| Completion (TT2) | 3000   |
 	
 
 #----------------------------------------------------------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ Scenario Outline: Contract Type 2 completion payment
 #scenario:638-ac01 non-das learner, takes an english qualification that has a planned end date that exceeds the actual end date of the programme aim
 #
 #	when an ilr file is submitted with the following data:
-#		| uln       | learner type           | aim type         | agreed price | aim rate | start date | planned end date | actual end date | completion status | 
+#		| uln       | learner type           | aim type         | agreed price | aim rate | start date | planned end date | actual end date | Completion status | 
 #		| learner a | programme only non-das | programme        | 15000        |          | 06/08/2017 | 08/08/2018       | 08/08/2018      | completed         | 
 #		| learner a | programme only non-das | maths or english |              | 471      | 06/08/2017 | 06/10/2018       | 06/10/2018      | completed         |
 #	then the provider earnings and payments break down as follows:
@@ -112,9 +112,9 @@ Scenario Outline: Contract Type 2 completion payment
 #    and the transaction types for the payments are:
 #		| payment type                   | 09/17 | 10/17 | ... | 05/18 | 06/18 | 07/18 | 08/18 | 09/18 | 10/18 | 11/18 |
 #		| on-program                     | 900   | 900   | ... | 900   | 900   | 900   | 900   | 0     | 0     | 0     |
-#		| completion                     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 2700  | 0     | 0     |
-#		| balancing                      | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
-#		| english and maths on programme | 33.64 | 33.64 | ... | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 | 0     |
-#		| english and maths balancing    | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
+#		| Completion                     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 2700  | 0     | 0     |
+#		| Balancing                      | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
+#		| english and maths On Programme | 33.64 | 33.64 | ... | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 | 0     |
+#		| english and maths Balancing    | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
 
 #----------------------------------------------------------------------------------------------------------------------------------------

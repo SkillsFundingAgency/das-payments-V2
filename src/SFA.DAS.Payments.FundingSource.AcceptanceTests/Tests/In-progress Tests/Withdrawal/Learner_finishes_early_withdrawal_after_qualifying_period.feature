@@ -5,6 +5,7 @@ Background:
 	Given the current processing period is 6
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
+	And the SFA contribution percentage is "90%"
 
 @Non-DAS
 @Learner_finishes_early
@@ -24,7 +25,7 @@ Scenario: Contract Type 2 no payment
 
 #	Feature: Provider earnings and payments where learner completes earlier than planned
 #
-#    The earnings and payment rules for early completions are the same as for learners finishing on time, except that the completion payment is earned earlier.
+#    The earnings and payment rules for early Completions are the same as for learners finishing on time, except that the On Programme Completion payment is earned earlier.
 #
 #    Background:
 #        Given the apprenticeship funding band maximum for each learner is 20000
@@ -34,7 +35,7 @@ Scenario: Contract Type 2 no payment
 #    Scenario: A non-DAS learner, learner withdraws after qualifying period
 #    
 #        When an ILR file is submitted with the following data:
-#            | ULN       | agreed price | learner type           | start date | planned end date | actual end date | completion status |
+#            | ULN       | agreed price | learner type           | start date | planned end date | actual end date | Completion status |
 #            | learner a | 15000        | programme only non-DAS | 01/09/2017 | 08/09/2018       | 08/01/2018      | withdrawn         |
 #        Then the provider earnings and payments break down as follows:
 #            | Type                          | 09/17 | 10/17 | 11/17 | 12/17 | 01/18 |

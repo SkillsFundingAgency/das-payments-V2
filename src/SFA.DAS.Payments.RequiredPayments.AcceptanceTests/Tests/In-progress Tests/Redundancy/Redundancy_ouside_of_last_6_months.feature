@@ -1,4 +1,4 @@
-﻿Feature: 807_AC2- Non-DAS learner, is made redundant outside of the last 6 months of planned learning - receives full government funding for the next 12 weeks only 
+﻿Feature: 807_AC2- Non-DAS learner, is made redundant outside of the last 6 months of planned Learning - receives full government funding for the next 12 weeks only 
 #Learner made redudundant after 6 months, receives funding for next 3 months and then no further funding 
 #Further test scenarios needs adding for boundary cases
 
@@ -6,7 +6,7 @@ Background:
 	Given the current processing period is 10
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 03/08/2017        | 20/08/2018             |                       | continuing       |
@@ -17,8 +17,8 @@ Background:
     |              | not in paid employment | 19/02/2018                |
 
 	#Should this be 1-12 months or 1-9 months?
-	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	And the following contract type 2 On Programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning (TT1) |
 	| p1                     | 03/08/2017       | 03/08/2017                   | 15000                | 1000       |
 
 @Non-DAS
@@ -27,9 +27,9 @@ Background:
 @minimum_additional
 #Check the months paid
 
-Scenario Outline: Contract Type 2 On programme payments
+Scenario Outline: Contract Type 2 On Programme Learning payments
 
-	And the following historical contract type 2 on programme payments exist:   
+	And the following historical contract type 2 On Programme Learning payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
@@ -58,7 +58,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 1000   |
+	| Learning (TT1)   | 1000   |
 
 
 
@@ -68,13 +68,13 @@ Scenario Outline: Contract Type 2 On programme payments
 #	V1 - version
 #
 #@Redundancy
-#Scenario:807_AC2- Non-DAS learner, is made redundant outside of the last 6 months of planned learning - receives full government funding for the next 12 weeks only 
+#Scenario:807_AC2- Non-DAS learner, is made redundant outside of the last 6 months of planned Learning - receives full government funding for the next 12 weeks only 
 #
 #        Given the apprenticeship funding band maximum is 15000
 #        #And the learner is made redundant less than 6 months before the planned end date
 #            
 #        When an ILR file is submitted with the following data:
-#            | ULN       | learner type           | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | 
+#            | ULN       | learner type           | start date | planned end date | actual end date | Completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | 
 #            | learner a | programme only non-DAS | 03/08/2017 | 20/08/2018       |                 | continuing        | 12000                | 03/08/2017                          | 3000                   | 03/08/2017                            | 
 #        
 #        And the employment status in the ILR is:

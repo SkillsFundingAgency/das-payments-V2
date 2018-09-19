@@ -1,39 +1,39 @@
 ﻿#Additional_Payments_16_to_18_Framework_Uplift_Completion
 #Old name - Additional_Payments - AC3
-Feature: Additional payments 16 to 18 framework uplift completion
-	AC3-Learner finishes on time, earns on-programme and completion payments. 
+Feature: Additional payments 16 to 18 framework uplift Completion
+	AC3-Learner finishes on time, earns on-programme and On Programme Completion payments. 
 	#Original description is with Payments V1 team to review as implementation is different.
-	#AC3-Learner finishes on time, earns on-programme and completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.
+	#AC3-Learner finishes on time, earns on-programme and On Programme Completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.
 
 Background: 
 
 	Given the current processing period is 13
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 09/08/2018             | 09/08/2018            | Completed        |
 
-	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| priceepisodeidentifier | episodestartdate | episodeeffectivetnpstartdate | totalnegotiatedprice | learning_1 |
+	And the following contract type 2 On Programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+	| priceepisodeidentifier | episodestartdate | episodeeffectivetnpstartdate | totalnegotiatedprice | Learning (TT1) |
 	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
 
-	And the following contract type 2 on programme earnings for period 13 are provided in the latest ILR for the academic year 1718:
-	| priceepisodeidentifier | episodestartdate | episodeeffectivetnpstartdate | totalnegotiatedprice | Completion_2 |
+	And the following contract type 2 On Programme earnings for period 13 are provided in the latest ILR for the academic year 1718:
+	| priceepisodeidentifier | episodestartdate | episodeeffectivetnpstartdate | totalnegotiatedprice | Completion (TT2) |
 	| p1                     | 06/08/2017       | 06/08/2017                   | 9000                 | 1800         |
 	
 @Non-DAS
 @minimum_tests
 #@additional_payments
-@completion
+@Completion
 #@16-18 incentive
 #@Framework_uplift -- will require funding band
 @partial
 
-Scenario Outline: Contract Type 2 On programme payments
+Scenario Outline: Contract Type 2 On Programme Learning payments
 
-	And the following historical contract type 2 on programme payments exist:   
+	And the following historical contract type 2 On Programme Learning payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
@@ -55,9 +55,9 @@ Scenario Outline: Contract Type 2 On programme payments
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 600    |	
+	| Learning (TT1)   | 600    |	
 	
-Scenario Outline: Contract Type 2 completion payment
+Scenario Outline: Contract Type 2 On Programme Completion payment
 
 	When a TOBY is received
 
@@ -67,7 +67,7 @@ Scenario Outline: Contract Type 2 completion payment
 	
 	Examples: 
 	| transaction_type | amount |
-	| Completion_2     | 1800   |
+	| Completion (TT2) | 1800   |
 	
 
 
@@ -78,10 +78,10 @@ Scenario Outline: Contract Type 2 completion payment
 #Feature: 16 to 18 learner incentives, framework uplifts, level 2 english or maths payments
 #
 #@_Minimum_Acceptance_
-#Scenario:AC3-Learner finishes on time, earns on-programme and completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.
+#Scenario:AC3-Learner finishes on time, earns on-programme and On Programme Completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.
 #    Given the apprenticeship funding band maximum is 9000
 #    When an ILR file is submitted with the following data:
-#		| ULN    | learner type                 | agreed price | start date | planned end date | actual end date | completion status | framework code | programme type | pathway code |
+#		| ULN    | learner type                 | agreed price | start date | planned end date | actual end date | Completion status | framework code | programme type | pathway code |
 #        | 123456 | 16-18 programme only non-DAS | 9000         | 06/08/2017 | 09/08/2018       | 10/08/2018      | Completed         | 403            | 2              | 1            |
 #
 #    Then the provider earnings and payments break down as follows:
@@ -105,8 +105,8 @@ Scenario Outline: Contract Type 2 completion payment
 #        | Employer 16-18 incentive     | 0     | 0     | 0     | 0     | 500   | ... | 0     | 0     | 0     | 500   |
 #        | Provider 16-18 incentive     | 0     | 0     | 0     | 0     | 500   | ... | 0     | 0     | 0     | 500   |
 #        | Framework uplift on-program  | 0     | 120   | 120   | 120   | 120   | ... | 120   | 120   | 120   | 0     |
-#        | Framework uplift completion  | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 360   |
-#        | Framework uplift balancing   | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     |
+#        | Framework uplift Completion  | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 360   |
+#        | Framework uplift Balancing   | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     |
 #        | Provider disadvantage uplift | 0     | 0     | 0     | 0     | 0     | ..  | 0     | 0     | 0     | 0     |
 
 #----------------------------------------------------------------------------------------------------------------------------------------

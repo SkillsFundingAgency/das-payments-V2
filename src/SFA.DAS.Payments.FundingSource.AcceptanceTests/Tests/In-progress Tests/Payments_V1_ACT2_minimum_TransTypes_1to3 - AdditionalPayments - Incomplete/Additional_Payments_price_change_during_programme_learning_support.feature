@@ -1,21 +1,21 @@
 ﻿#Warning - This test may need reviewing 
 #V1 data values (£315) after price change are incorrect
 
-#New name - AdditionalPayments_price_change_during_programme_learning_support
+#New name - AdditionalPayments_price_change_during_programme_Learning_support
 #Old name - AdditionalPayments_671-AC02
 
-Feature: Additional payments price change during programme learning support
-		 671-AC02 Non-DAS learner, levy available, is taking an English or maths qualification, has learning support and the negotiated price changes during the programme
+Feature: Additional payments price change during programme Learning support
+		 671-AC02 Non-DAS learner, levy available, is taking an English or maths qualification, has Learning support and the negotiated price changes during the programme
 
 Background:
 	
 	Given the current processing period is 5
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the payments due component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p2                     | 5      | 10000 | Learning_1      | 600    |
+	| p2                     | 5      | 10000 | Learning (TT1)  | 600    |
 
 @Non-DAS
 @minimum_tests
@@ -34,8 +34,8 @@ Scenario: Contract Type 2 Learning payment
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-	| learnref1      | 10000 | p2                     | 5      | 10000 | Learning_1      | CoInvestedSfa_2      | 540    |
-	| learnref1      | 10000 | p2                     | 5      | 10000 | Learning_1      | CoInvestedEmployer_3 | 60     |
+	| learnref1      | 10000 | p2                     | 5      | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)  | 540    |
+	| learnref1      | 10000 | p2                     | 5      | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3)| 60     |
 	
 
 #----------------------------------------------------------------------------------------------------------------------------------------
@@ -48,11 +48,11 @@ Scenario: Contract Type 2 Learning payment
 
 #@MathsAndEnglishNonDas
 #@_Minimum_Acceptance_
-#Scenario:671-AC02 Non-DAS learner, levy available, is taking an English or maths qualification, has learning support and the negotiated price changes during the programme
+#Scenario:671-AC02 Non-DAS learner, levy available, is taking an English or maths qualification, has Learning support and the negotiated price changes during the programme
 #    Given the apprenticeship funding band maximum is 18000
 #    
 #    When an ILR file is submitted with the following data:
-#        | ULN       | learner type           | aim type         | start date | planned end date | actual end date | completion status | aim rate | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date | Total training price 2 | Total training price 2 effective date | Total assessment price 2 | Total assessment price 2 effective date | learning support code | learning support date from | learning support date to |
+#        | ULN       | learner type           | aim type         | start date | planned end date | actual end date | Completion status | aim rate | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date | Total training price 2 | Total training price 2 effective date | Total assessment price 2 | Total assessment price 2 effective date | Learning support code | Learning support date from | Learning support date to |
 #        | learner a | programme only non-DAS | programme        | 04/08/2017 | 20/08/2018       |                 | continuing        |          | 9000                   | 04/08/2017                            | 2250                     | 04/08/2017                              | 5400                   | 11/11/2017                            | 1350                     | 11/11/2017                              | 1                     | 06/08/2017                 | 06/10/2018               |
 #        | learner a | programme only non-DAS | maths or english | 04/08/2017 | 06/10/2018       |                 | continuing        | 471      |                        |                                       |                          |                                         |                        |                                       |                          |                                         | 1                     | 06/08/2017                 | 06/10/2018               |        
 #    Then the provider earnings and payments break down as follows: 
@@ -73,9 +73,9 @@ Scenario: Contract Type 2 Learning payment
 #		| On-program                     | 675   | 675   | 675   | 315   | 315   |
 #		| Completion                     | 0     | 0     | 0     | 0     | 0     |
 #		| Balancing                      | 0     | 0     | 0     | 0     | 0     |
-#        | English and maths on programme | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 |
+#        | English and maths On Programme | 33.64 | 33.64 | 33.64 | 33.64 | 33.64 |
 #		| English and maths Balancing    | 0     | 0     | 0     | 0     | 0     |
-#        | Provider learning support      | 150   | 150   | 150   | 150   | 150   |
+#        | Provider Learning support      | 150   | 150   | 150   | 150   | 150   |
 #
 #
 #----------------------------------------------------------------------------------------------------------------------------------------

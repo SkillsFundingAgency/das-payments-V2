@@ -6,13 +6,13 @@ Background:
 	And the apprenticeship funding band maximum is 9000
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
-	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 20/08/2018             | 20/08/2018            | completion       |
+	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 20/08/2018             | 20/08/2018            | Completion       |
 
-	And the following contract type 2 on programme earnings for periods 1-11 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	And the following contract type 2 On Programme earnings for periods 1-11 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning (TT1) |
 	| p1                     | 06/08/2017       | 06/08/2017                   | 15000                | 600        |
 
 
@@ -21,9 +21,9 @@ Background:
 @capping
 @minimum_additional
 
-Scenario Outline: Contract Type 2 On programme payments
+Scenario Outline: Contract Type 2 On Programme Learning payments
 
-	And the following historical contract type 2 on programme payments exist:   
+	And the following historical contract type 2 On Programme Learning payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
@@ -38,7 +38,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 600    |
+	| Learning (TT1)   | 600    |
 
 #------------------------------------------------
 #	V1 - Original test
@@ -48,7 +48,7 @@ Scenario Outline: Contract Type 2 On programme payments
 #	Scenario: 640-AC02-Payment for a non-DAS learner with a negotiated price above the funding band cap
 #    Given the apprenticeship funding band maximum is 15000
 #    When an ILR file is submitted with the following data:
-#        | Provider   | ULN       | learner type           | agreed price | start date | planned end date | actual end date | completion status | standard code |
+#        | Provider   | ULN       | learner type           | agreed price | start date | planned end date | actual end date | Completion status | standard code |
 #        | provider a | learner a | programme only non-DAS | 18000        | 06/08/2017 | 08/08/2018       |                 | continuing        | 50            |
 #    Then the following capping will apply to the price episodes:
 #        | Provider   | price episode | negotiated price | funding cap | previous funding paid | price above cap | effective price for SFA payments |

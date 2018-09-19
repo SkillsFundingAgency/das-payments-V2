@@ -10,14 +10,14 @@ Background:
 	Given the current processing period is 3
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the payments due component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 1      | 10000 | Learning_1      | -750   |
-	| p1                     | 2      | 10000 | Learning_1      | -750   |
-	| p2                     | 1      | 10000 | Learning_1      | 0.6667 |
-	| p2                     | 2      | 10000 | Learning_1      | 0.6667 |
-	| p2                     | 3      | 10000 | Learning_1      | 0.6667 |
+	| p1                     | 1      | 10000 | Learning (TT1)  | -750   |
+	| p1                     | 2      | 10000 | Learning (TT1)  | -750   |
+	| p2                     | 1      | 10000 | Learning (TT1)  | 0.6667 |
+	| p2                     | 2      | 10000 | Learning (TT1)  | 0.6667 |
+	| p2                     | 3      | 10000 | Learning (TT1)  | 0.6667 |
 
 @Non-DAS
 @minimum_tests
@@ -32,16 +32,16 @@ Scenario: Contract Type 2 Learning payment
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-	| learnref1      | 10000 | p1                     | 1      | 10000 | Learning_1      | CoInvestedSfa_2      | -675   |
-	| learnref1      | 10000 | p1                     | 1      | 10000 | Learning_1      | CoInvestedEmployer_3 | -75    |
-	| learnref1      | 10000 | p1                     | 2      | 10000 | Learning_1      | CoInvestedSfa_2      | -675   |
-	| learnref1      | 10000 | p1                     | 2      | 10000 | Learning_1      | CoInvestedEmployer_3 | -75    |
-	| learnref1      | 10000 | p2                     | 1      | 10000 | Learning_1      | CoInvestedSfa_2      | 0.60   |
-	| learnref1      | 10000 | p2                     | 1      | 10000 | Learning_1      | CoInvestedEmployer_3 | 0.0667 |
-	| learnref1      | 10000 | p2                     | 2      | 10000 | Learning_1      | CoInvestedSfa_2      | 0.60   |
-	| learnref1      | 10000 | p2                     | 2      | 10000 | Learning_1      | CoInvestedEmployer_3 | 0.0667 |
-	| learnref1      | 10000 | p2                     | 3      | 10000 | Learning_1      | CoInvestedSfa_2      | 0.60   |
-	| learnref1      | 10000 | p2                     | 3      | 10000 | Learning_1      | CoInvestedEmployer_3 | 0.0667 |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)  | -675   |
+	| learnref1      | 10000 | p1                     | 1      | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3)| -75    |
+	| learnref1      | 10000 | p1                     | 2      | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)  | -675   |
+	| learnref1      | 10000 | p1                     | 2      | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3)| -75    |
+	| learnref1      | 10000 | p2                     | 1      | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)  | 0.60   |
+	| learnref1      | 10000 | p2                     | 1      | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3)| 0.0667 |
+	| learnref1      | 10000 | p2                     | 2      | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)  | 0.60   |
+	| learnref1      | 10000 | p2                     | 2      | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3)| 0.0667 |
+	| learnref1      | 10000 | p2                     | 3      | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)  | 0.60   |
+	| learnref1      | 10000 | p2                     | 3      | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3)| 0.0667 |
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #/* V1 - Original Test
@@ -54,8 +54,8 @@ Scenario: Contract Type 2 Learning payment
 #	Given  the apprenticeship funding band maximum is 27000
 #	And levy balance > agreed price for all months
 #	
-#	And following learning has been recorded for previous payments:
-#		| ULN       | employer   | provider   | learner type           | start date | aim sequence number | completion status | programme type | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date |
+#	And following Learning has been recorded for previous payments:
+#		| ULN       | employer   | provider   | learner type           | start date | aim sequence number | Completion status | programme type | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date |
 #		| learner a | employer 0 | provider A | programme only non-DAS | 04/08/2017 | 1                   | continuing        | 25             | 9000                   | 04/08/2017                            | 2250                     | 04/08/2017                              |
 #
 #	And the following earnings and payments have been made to the provider A for learner a:
@@ -71,7 +71,7 @@ Scenario: Contract Type 2 Learning payment
 #		| SFA non-Levy co-funding budget | 675   | 675   | 0     | 0     |
 #        
 #    When an ILR file is submitted for the first time on 10/10/17 with the following data:
-#        | ULN       | employer   | provider   | learner type           | start date | planned end date | agreed price | completion status | programme type | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date |
+#        | ULN       | employer   | provider   | learner type           | start date | planned end date | agreed price | Completion status | programme type | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date |
 #        | learner a | employer 0 | provider A | programme only non-DAS | 04/08/2017 | 20/08/2018       | 10            | continuing        | 25             | 8                      | 04/08/2017                            | 2                        | 04/08/2017                              |
 #	
 #    Then the provider earnings and payments break down as follows:

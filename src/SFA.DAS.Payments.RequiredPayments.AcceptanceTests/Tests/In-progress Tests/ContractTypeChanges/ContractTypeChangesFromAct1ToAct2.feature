@@ -7,13 +7,14 @@ Background:
 	Given the current processing period is 3
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
+	And the SFA contribution percentage is "90%"
 
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 06/08/2017        | 20/08/2018             |                       | continuing       |
 
-	And the following contract type 2 on programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
-	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning_1 |
+	And the following contract type 2 On Programme earnings for periods 1-12 are provided in the latest ILR for the academic year 1718:
+	| PriceEpisodeIdentifier | EpisodeStartDate | EpisodeEffectiveTNPStartDate | TotalNegotiatedPrice | Learning (TT1) |
 	| p2                     | 06/08/2017       | 06/08/2017                   | 9000                 | 600        |
 
 @DAS
@@ -23,9 +24,9 @@ Background:
 #@English_Maths
 @partial
 
-Scenario Outline: Contract Type 1 On programme payments
+Scenario Outline: Contract Type 1 On Programme Learning payments
 
-	And the following historical contract type 1 on programme payments exist:   
+	And the following historical contract type 1 On Programme Learning payments exist:   
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
@@ -41,7 +42,7 @@ Scenario Outline: Contract Type 1 On programme payments
 
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 600    |
+	| Learning (TT1)   | 600    |
 
 @Non-DAS
 @minimum_tests
@@ -50,7 +51,7 @@ Scenario Outline: Contract Type 1 On programme payments
 #@English_Maths
 @partial
 
-Scenario Outline: Contract Type 2 On programme payments
+Scenario Outline: Contract Type 2 On Programme Learning payments
 
 	When a TOBY is received
 
@@ -62,7 +63,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	
 	Examples: 
 	| transaction_type | amount |
-	| Learning_1       | 600    |
+	| Learning (TT1)   | 600    |
 
 
 
@@ -84,13 +85,13 @@ Scenario Outline: Contract Type 2 On programme payments
 #		| 1             | 1          | learner a | 01/08/2017 | 01/08/2018 | 403            | 2              | 1            | 9000         | Active    | 01/08/2017     |              |
 #        
 #    When an ILR file is submitted for period R01 with the following data:
-#		| ULN       | learner type       | agreed price | start date | planned end date | actual end date | completion status | aim type         | aim sequence number | aim rate | framework code | programme type | pathway code | contract type | contract type date from | contract type date to |
+#		| ULN       | learner type       | agreed price | start date | planned end date | actual end date | Completion status | aim type         | aim sequence number | aim rate | framework code | programme type | pathway code | contract type | contract type date from | contract type date to |
 #		| learner a | programme only DAS | 9000         | 06/08/2017 | 20/08/2018       |                 | continuing        | programme        | 2                   |          | 403            | 2              | 1            | DAS           | 06/08/2017              | 20/08/2018            |
 #		| learner a | programme only DAS |              | 06/08/2017 | 20/08/2018       |                 | continuing        | maths or english | 1                   | 471      | 403            | 2              | 1            |               |                         |                       |
 #
 #
 #    And an ILR file is submitted for period R03 with the following data:
-#        | ULN       | learner type           | agreed price | start date | planned end date | actual end date | completion status | aim type         | aim sequence number | aim rate | framework code | programme type | pathway code | contract type | contract type date from | contract type date to |
+#        | ULN       | learner type           | agreed price | start date | planned end date | actual end date | Completion status | aim type         | aim sequence number | aim rate | framework code | programme type | pathway code | contract type | contract type date from | contract type date to |
 #        | learner a | programme only non-DAS | 9000         | 06/08/2017 | 20/08/2018       |                 | continuing        | programme        | 2                   |          | 403            | 2              | 1            | Non-DAS       | 06/08/2017              | 20/08/2018            |
 #        | learner a | programme only non-DAS |              | 06/08/2017 | 20/08/2018       |                 | continuing        | maths or english | 1                   | 471      | 403            | 2              | 1            |               |                         |                       |
 #  

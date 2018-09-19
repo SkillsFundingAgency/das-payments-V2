@@ -1,37 +1,37 @@
 ﻿#Additional_Payments_16_to_18_Framework_Uplift_Completion
 #Old name - Additional_Payments - AC3
-Feature: Additional payments 16 to 18 framework uplift completion
-	AC3-Learner finishes on time, earns on-programme and completion payments. 
+Feature: Additional payments 16 to 18 framework uplift Completion
+	AC3-Learner finishes on time, earns on-programme and On Programme Completion payments. 
 	#Original description is with Payments V1 team to review as implementation is different.
-	#AC3-Learner finishes on time, earns on-programme and completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.
+	#AC3-Learner finishes on time, earns on-programme and On Programme Completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.
 
 Background: 
 
 	Given the current processing period is 13
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the SFA contribution percentage is "90%"
 	And the payments due component generates the following contract type 2 payable earnings:
 
 	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |
-	| p1                     | 13     | 10000 | Completion_2    | 1800   |
+	| p1                     | 13     | 10000 | Completion (TT2)| 1800   |
 
 @Non-DAS
 @minimum_tests
 #@additional_payments
-@completion
+@Completion
 #@16-18 incentive
 #@Framework_uplift -- will require funding band
 @partial
 
-Scenario: Contract Type 2 completion payment
+Scenario: Contract Type 2 On Programme Completion payment
 
 	When MASH is received
 
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
-	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedSfa_2      | 1620   |
-	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedEmployer_3 | 180    |
+	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion (TT2)| CoInvestedSfa (FS2)  | 1620   |
+	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion (TT2)| CoInvestedEmployer (FS3)| 180    |
 
 #----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -47,13 +47,13 @@ Scenario: Contract Type 2 completion payment
 
 #@_Minimum_Acceptance_
 
-#Scenario:AC3-Learner finishes on time, earns on-programme and completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.
+#Scenario:AC3-Learner finishes on time, earns on-programme and On Programme Completion payments. Assumes 12 month apprenticeship and learner completes after 10 months.
 
 #    Given the apprenticeship funding band maximum is 9000
 
 #    When an ILR file is submitted with the following data:
 
-#		| ULN    | learner type                 | agreed price | start date | planned end date | actual end date | completion status | framework code | programme type | pathway code |
+#		| ULN    | learner type                 | agreed price | start date | planned end date | actual end date | Completion status | framework code | programme type | pathway code |
 
 #        | 123456 | 16-18 programme only non-DAS | 9000         | 06/08/2017 | 09/08/2018       | 10/08/2018      | Completed         | 403            | 2              | 1            |
 
@@ -101,9 +101,9 @@ Scenario: Contract Type 2 completion payment
 
 #        | Framework uplift on-program  | 0     | 120   | 120   | 120   | 120   | ... | 120   | 120   | 120   | 0     |
 
-#        | Framework uplift completion  | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 360   |
+#        | Framework uplift Completion  | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 360   |
 
-#        | Framework uplift balancing   | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     |
+#        | Framework uplift Balancing   | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     |
 
 #        | Provider disadvantage uplift | 0     | 0     | 0     | 0     | 0     | ..  | 0     | 0     | 0     | 0     |
 
