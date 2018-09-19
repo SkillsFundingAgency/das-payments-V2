@@ -25,3 +25,17 @@ Scenario Outline: Contract Type 2 On programme payments
 	Examples: 
 	| transaction_type | amount |
 	| Learning_1       | 600    |
+
+
+Scenario Outline: Contract Type 2 no completion payment
+
+	When a payments due event is received
+
+	Then the required payments component will not generate any contract type 2 transaction type Completion_2 payable earnings
+
+
+Scenario Outline: Contract Type 2 no balancing payment
+
+	When a payments due event is received
+
+	Then the required payments component will not generate any contract type 2 transaction type Balancing_3 payable earnings

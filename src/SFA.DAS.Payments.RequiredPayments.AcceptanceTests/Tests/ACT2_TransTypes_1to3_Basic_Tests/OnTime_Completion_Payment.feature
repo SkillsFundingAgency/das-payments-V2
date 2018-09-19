@@ -45,16 +45,24 @@ Scenario Outline: Contract Type 2 no On programme payments
 
 	When a payments due event is received
 
-	Then the  required payments component will generate no contract type 2 payable earnings
+	Then the required payments component will not generate transaction type Learning_1 payable earnings
+
 
 Scenario Outline: Contract Type 2 completion payment
 
 	When a payments due event is received
 
-	Then the required payments component will generate the following contract type 2 payable earnings:
+	Then the required payments component will generate the following contract type 2 transaction type Completion_2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   | SfaContributionPercentage |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | <transaction_type> | <amount> | 0.90000                   |
 	
 	Examples: 
 	| transaction_type | amount |
 	| Completion_2     | 1800   |
+
+
+Scenario Outline: Contract Type 2 no balancing payment
+
+	When a payments due event is received
+
+	Then the required payments component will not generate any contract type 2 transaction type Balancing_3 payable earnings
