@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 

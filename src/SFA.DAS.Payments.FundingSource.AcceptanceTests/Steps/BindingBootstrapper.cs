@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using blah.Events;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using TechTalk.SpecFlow;

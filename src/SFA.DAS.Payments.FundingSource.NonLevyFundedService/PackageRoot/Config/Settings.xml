@@ -4,7 +4,7 @@
   <Section Name="ConnectionStringsSection">
     <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
     <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"/>
-    <Parameter Name="ServiceBusConnectionString" Value="Endpoint=sb://das-pv2-dev-dh.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=wpuqur9IYelk7mWqSy1NCQpVYi/xIQUUIQXUI5g5MXg="/>
+    <Parameter Name="ServiceBusConnectionString" Value="Endpoint=sb://das-pv2-dev-dh2.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=MhHm67dlE+0+G7N5IKaynpUINpJk4VpnWay/ijyw+aQ="/>
   </Section>
 
   <Section Name="Settings">

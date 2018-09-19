@@ -6,7 +6,7 @@ using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using System;
-using blah.Events;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests

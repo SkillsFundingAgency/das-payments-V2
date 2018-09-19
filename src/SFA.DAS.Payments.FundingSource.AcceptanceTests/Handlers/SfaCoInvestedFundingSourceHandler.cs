@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using blah.Events;
 using NServiceBus;
 using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Handlers
 {

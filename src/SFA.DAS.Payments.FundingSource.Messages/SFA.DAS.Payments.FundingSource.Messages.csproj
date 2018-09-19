@@ -1,20 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Events\" />
   </ItemGroup>
 
 </Project>

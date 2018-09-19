@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 
 namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application
