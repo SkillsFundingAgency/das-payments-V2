@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
 {

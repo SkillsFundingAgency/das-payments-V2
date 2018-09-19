@@ -213,7 +213,7 @@ this.FeatureBackground();
 #line 40
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table125, "And ");
 #line 46
- testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table126 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -285,7 +285,7 @@ this.FeatureBackground();
 #line 61
  testRunner.And("the following historical contract type 2 on programme payments exist:", ((string)(null)), table127, "And ");
 #line 65
- testRunner.When("a TOBY is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table128 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",

@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using TechTalk.SpecFlow;
 
-namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application
+namespace SFA.DAS.Payments.AcceptanceTests.Core.Application
 {
     public class LearnRefNumberGenerator
     {
         private readonly ScenarioContext context;
-        private readonly Dictionary<string, int> learnerLookup;
+        private readonly Dictionary<string, string> learnerLookup;
 
         public LearnRefNumberGenerator(ScenarioContext context)
         {
             this.context = context;
-            learnerLookup = new Dictionary<string, int>();
+            learnerLookup = new Dictionary<string, string>();
         }
 
-        public long Generate(long ukprn, string learnRefNumber)
+        public string Generate(long ukprn, string learnRefNumber)
         {
             if (learnerLookup.ContainsKey(learnRefNumber))
             {
@@ -28,9 +28,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application
                             ^ ukprn.GetHashCode()
                             ^ learnRefNumber.GetHashCode();
 
-            learnerLookup.Add(learnRefNumber, generated);
+            learnerLookup.Add(learnRefNumber, generated.ToString());
 
-            return generated;
+            return generated.ToString();
         }
     }
 }
