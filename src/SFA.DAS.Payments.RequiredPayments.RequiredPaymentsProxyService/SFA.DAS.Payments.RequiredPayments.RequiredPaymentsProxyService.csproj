@@ -18,6 +18,7 @@
     <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureStorageQueues" Version="8.0.1" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
     <PackageReference Include="NServiceBus.Persistence.AzureStorage" Version="2.1.0" />
+    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0-alpha0160" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />

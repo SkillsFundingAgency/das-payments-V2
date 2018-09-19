@@ -16,14 +16,14 @@ using SFA.DAS.Payments.RequiredPayments.Domain;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public class Act2PayableEarningEventHandler : IHandleMessages<ApprenticeshipContractType2PaymentDueEvent>
+    public class Act2PaymentDueEventHandler : IHandleMessages<ApprenticeshipContractType2PaymentDueEvent>
     {
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly IActorProxyFactory _proxyFactory;
         private readonly IPaymentLogger _paymentLogger;
         private readonly ILifetimeScope _lifetimeScope;
 
-        public Act2PayableEarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
+        public Act2PaymentDueEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
                                         IActorProxyFactory proxyFactory,
                                         IPaymentLogger paymentLogger,
                                         ILifetimeScope lifetimeScope)

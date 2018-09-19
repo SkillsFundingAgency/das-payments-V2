@@ -103,8 +103,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             foreach (var paymentDueEvent in paymentDueEvents)
             {
                 await MessageSession.Send(paymentDueEvent).ConfigureAwait(false);
-            }
-            
+            }            
         }
         
         [Then(@"the service should generate the required payments")]
