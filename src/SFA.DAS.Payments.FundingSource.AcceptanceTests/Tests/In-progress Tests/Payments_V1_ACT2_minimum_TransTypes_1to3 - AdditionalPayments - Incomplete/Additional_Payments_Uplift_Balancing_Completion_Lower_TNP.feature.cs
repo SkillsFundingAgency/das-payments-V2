@@ -80,19 +80,19 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.In_ProgressTests.
  testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table55 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Period",
                         "ULN",
                         "TransactionType",
                         "Amount"});
-            table1.AddRow(new string[] {
+            table55.AddRow(new string[] {
                         "p1",
                         "13",
                         "10000",
                         "Completion_2",
                         "1500"});
-            table1.AddRow(new string[] {
+            table55.AddRow(new string[] {
                         "p1",
                         "13",
                         "10000",
@@ -100,7 +100,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.In_ProgressTests.
                         "1200"});
 #line 11
  testRunner.And("the payments due component generates the following contract type 2 payable earnin" +
-                    "gs:", ((string)(null)), table1, "And ");
+                    "gs:", ((string)(null)), table55, "And ");
 #line hidden
         }
         
@@ -129,7 +129,7 @@ this.FeatureBackground();
 #line 28
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table56 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -138,7 +138,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "FundingSource",
                         "Amount"});
-            table2.AddRow(new string[] {
+            table56.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -147,7 +147,7 @@ this.FeatureBackground();
                         "Completion_2",
                         "CoInvestedSfa_2",
                         "1350"});
-            table2.AddRow(new string[] {
+            table56.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -158,7 +158,7 @@ this.FeatureBackground();
                         "150"});
 #line 30
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
-                    "ed payments:", ((string)(null)), table2, "Then ");
+                    "ed payments:", ((string)(null)), table56, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -176,7 +176,7 @@ this.FeatureBackground();
 #line 38
  testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table57 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -185,7 +185,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "FundingSource",
                         "Amount"});
-            table3.AddRow(new string[] {
+            table57.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -194,7 +194,7 @@ this.FeatureBackground();
                         "Balancing_3",
                         "CoInvestedSfa_2",
                         "1080"});
-            table3.AddRow(new string[] {
+            table57.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -205,7 +205,7 @@ this.FeatureBackground();
                         "120"});
 #line 40
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
-                    "ed payments:", ((string)(null)), table3, "Then ");
+                    "ed payments:", ((string)(null)), table57, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

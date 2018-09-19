@@ -19,10 +19,10 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
   </ItemGroup>
 
+
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Application\SFA.DAS.Payments.FundingSource.Application.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Domain\SFA.DAS.Payments.FundingSource.Domain.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj" />
   </ItemGroup>
 
 </Project>
