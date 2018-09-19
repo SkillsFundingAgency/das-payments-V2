@@ -2,13 +2,13 @@
 <Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
  
   <Section Name="ConnectionStringsSection">
-    <Parameter Name="StorageConnectionString" Value="" />
-    <Parameter Name="LoggingConnectionString" Value=""/>
+    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"/>
     <Parameter Name="ServiceBusConnectionString" Value=""/>
   </Section>
 
   <Section Name="Settings">
-    <Parameter Name="EndpointName" Value=""/>
+    <Parameter Name="EndpointName" Value="sfa-das-payments-nonlevyfundedpaymentsservice"/>
     <Parameter Name="FailedMessagesQueue" Value=""/>
   </Section>
 </Settings>

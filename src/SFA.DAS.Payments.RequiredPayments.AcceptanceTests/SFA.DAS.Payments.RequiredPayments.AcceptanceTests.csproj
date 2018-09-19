@@ -157,7 +157,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\LearnRefNumberGenerator.cs" />
     <Compile Include="Data\ContractTypeEarning.cs" />
     <Compile Include="Data\Course.cs" />
     <Compile Include="Data\PayableEarning.cs" />
@@ -170,10 +169,8 @@
     <Compile Include="Steps\EarningSteps.cs" />
     <Compile Include="Steps\FundingSteps.cs" />
     <Compile Include="Steps\HistoricalPaymentSteps.cs" />
-    <Compile Include="Steps\LearnerSteps.cs" />
-    <Compile Include="Steps\PaymentsDueInputSteps.cs" />
-    <Compile Include="Steps\PaymentsDueOutputSteps.cs" />
-    <Compile Include="Steps\ProcessingPeriodSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsInputSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsOutputSteps.cs" />
     <Compile Include="Steps\ProviderSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Completion_Balancing.feature.cs">
@@ -356,7 +353,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Learner_finishes_early_withdrawal_before_qualifying_period.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Minimum\ACT 2 On-Programme Payments.feature.cs" />
+    <Compile Include="Tests\Minimum\ACT 2 On-Programme Payments1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ACT 2 On-Programme Payments.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\RequiredPaymentsIntegrationTest.cs" />
   </ItemGroup>
   <ItemGroup>

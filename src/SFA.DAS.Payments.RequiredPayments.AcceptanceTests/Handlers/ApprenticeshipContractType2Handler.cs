@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using NServiceBus;
-using NUnit.Framework;
 using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers

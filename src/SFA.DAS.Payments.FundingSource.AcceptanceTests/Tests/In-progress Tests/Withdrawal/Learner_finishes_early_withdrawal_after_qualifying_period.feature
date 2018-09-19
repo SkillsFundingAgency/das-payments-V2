@@ -13,7 +13,7 @@ Background:
 
 Scenario: Contract Type 2 no payment
 
-	When MASH is received
+	When a payable earning event is received
 
 	Then the payment source component will generate no contract type 2 coinvested payments
 
