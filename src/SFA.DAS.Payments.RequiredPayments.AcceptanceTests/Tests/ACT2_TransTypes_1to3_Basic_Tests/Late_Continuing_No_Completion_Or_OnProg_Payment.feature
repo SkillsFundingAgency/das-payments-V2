@@ -41,19 +41,19 @@ Background:
 @FinishingLate
 @NoPayment
 
-Scenario Outline: Contract Type 2 no On programme payments
+Scenario: Contract Type 2 no On programme payments
 
 	When a payments due event is received
 
 	Then the required payments component will not generate any contract type 2 transaction type Learning_1 payable earnings
 
-Scenario Outline: Contract Type 2 no completion payment
+Scenario: Contract Type 2 no completion payment
 
 	When a payments due event is received
 
 	Then the required payments component will not generate any contract type 2 transaction type Completion_2 payable earnings
 
-Scenario Outline: Contract Type 2 no balancing payment
+Scenario: Contract Type 2 no balancing payment
 
 	When a payments due event is received
 

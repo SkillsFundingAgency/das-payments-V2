@@ -70,7 +70,7 @@ Scenario: Contract Type 2 completion payment
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedSfa_2      | 1620   |
 	| learnref1      | 10000 | p1                     | 13     | 10000 | Completion_2    | CoInvestedEmployer_3 | 180    |
 
-Scenario Outline: Contract Type 2 no balancing payment
+Scenario: Contract Type 2 no balancing payment
 
 	When required payments event is received
 

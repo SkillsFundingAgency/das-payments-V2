@@ -26,14 +26,14 @@ Scenario: Contract Type 2 Learning payment
 
 
 
-Scenario Outline: Contract Type 2 no completion payment
+Scenario: Contract Type 2 no completion payment
 
 	When required payments event is received
 
 	Then the payment source component will not generate any contract type 2 transaction type Completion_2 coinvested payments
 
 
-Scenario Outline: Contract Type 2 no balancing payment
+Scenario: Contract Type 2 no balancing payment
 
 	When required payments event is received
 

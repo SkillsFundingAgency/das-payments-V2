@@ -64,7 +64,7 @@ Scenario Outline: Contract Type 2 completion payment
 	| Completion_2     | 1800   |
 
 
-Scenario Outline: Contract Type 2 no balancing payment
+Scenario: Contract Type 2 no balancing payment
 
 	When a payments due event is received
 
