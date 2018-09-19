@@ -43,6 +43,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests
 
             endpointConfiguration.DisableFeature<TimeoutManager>();
             endpointConfiguration.UseTransport<AzureServiceBusTransport>()
+                .UseForwardingTopology()
                                  .ConnectionString(TestConfiguration.ServiceBusConnectionString);
             endpointConfiguration.SendFailedMessagesTo("nonlevyfundedserviceFailedMessagesQueue");
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();

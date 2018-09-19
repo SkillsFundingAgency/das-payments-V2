@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
             WaitForIt(() =>
             {
-                var results = CoInvestedFundingSourceHandler.ReceivedEvents;
+                var results = SfaCoInvestedFundingSourceHandler.ReceivedEvents;
 
                 if (results == null || !results.Any())
                 {

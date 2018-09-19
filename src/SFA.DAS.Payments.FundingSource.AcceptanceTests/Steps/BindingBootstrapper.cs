@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using blah.Events;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.Messages.Core;
@@ -13,7 +14,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         public static void AddRoutingConfig()
         {
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<IRequiredPayment>());
+            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<IFundingSourcePaymentEvent>());
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(IRequiredPayment), EndpointNames.NonLevyFundedPaymentsService);
