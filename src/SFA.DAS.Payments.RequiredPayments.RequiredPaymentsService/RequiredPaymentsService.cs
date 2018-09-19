@@ -4,7 +4,6 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
@@ -24,17 +23,21 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly IPaymentLogger _paymentLogger;
         private readonly string _apprenticeshipKey;
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
-        private readonly ILifetimeScope _lifetimeScope;
+        private readonly IAct2PaymentDueProcessor _act2PaymentDueProcessor;
+        private readonly IMapper _mapper;
+        private readonly IPaymentHistoryRepository _paymentHistoryRepository;
 
         public RequiredPaymentsService(ActorService actorService,
             ActorId actorId,
             IPaymentLogger paymentLogger,
             IApprenticeshipKeyService apprenticeshipKeyService,
-            ILifetimeScope lifetimeScope) : base(actorService, actorId)
+            IAct2PaymentDueProcessor act2PaymentDueProcessor, IMapper mapper, IPaymentHistoryRepository paymentHistoryRepository) : base(actorService, actorId)
         {
             _paymentLogger = paymentLogger;
             _apprenticeshipKeyService = apprenticeshipKeyService;
-            _lifetimeScope = lifetimeScope;
+            _act2PaymentDueProcessor = act2PaymentDueProcessor;
+            _mapper = mapper;
+            _paymentHistoryRepository = paymentHistoryRepository;
             _apprenticeshipKey = actorId.GetStringId();
         }
 
@@ -55,11 +58,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             _paymentHistoryCache = new ReliableCollectionCache<PaymentEntity[]>(StateManager);
 
             _act2PaymentDueEventHanlder = new Act2PaymentDueEventHanlder(
-                _lifetimeScope.Resolve<IAct2PaymentDueProcessor>(),
+                _act2PaymentDueProcessor,
                 _paymentHistoryCache,
-                _lifetimeScope.Resolve<IMapper>(),
+                _mapper,
                 _apprenticeshipKeyService,
-                _lifetimeScope.Resolve<IPaymentHistoryRepository>(),
+                _paymentHistoryRepository,
                 _apprenticeshipKey
             );
 

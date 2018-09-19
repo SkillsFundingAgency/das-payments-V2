@@ -9,11 +9,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 {
     public static class ServiceFabricContainerFactory
     {
-        public static ContainerBuilder CreateBuilderForActor<TActor>() where TActor: ActorBase
+        public static IContainer CreateContainerForActor<TActor>() where TActor: ActorBase
         {
             var builder = ContainerFactory.CreateBuilder();
             builder.RegisterActor<TActor>();
-            return builder;
+            return builder.Build();
         }
 
         public static ContainerBuilder CreateBuilderForStatelessService<TStatelessService>() where TStatelessService: StatelessService
