@@ -11,8 +11,20 @@ Background:
 @FinishingLate
 @NoPayment
 
-Scenario: Contract Type 2 no payment
+Scenario: Contract Type 2 no On programme payments
 
 	When no required payments event is received
 
-	Then the payment source component will generate no contract type 2 coinvested payments
+	Then the payment source component will not generate any contract type 2 transaction type Learning_1 coinvested payments
+
+Scenario Outline: Contract Type 2 no completion payment
+
+	When no required payments event is received
+
+	Then the payment source component will not generate any contract type 2 transaction type Completion_2 coinvested payments
+
+Scenario Outline: Contract Type 2 no balancing payment
+
+	When no required payments event is received
+
+	Then the payment source component will not generate any contract type 2 transaction type Balancing_3 coinvested payments

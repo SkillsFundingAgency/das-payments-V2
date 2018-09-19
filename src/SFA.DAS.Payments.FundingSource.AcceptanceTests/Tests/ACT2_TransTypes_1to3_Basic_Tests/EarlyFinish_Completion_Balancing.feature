@@ -17,6 +17,13 @@ Background:
 @FinishedEarly
 @CoInvested
 
+Scenario: Contract Type 2 no On programme payments
+
+	When required payments event is received
+
+	Then the payment source component will not generate any contract type 2 transaction type Learning_1 coinvested payments
+
+
 Scenario: Contract Type 2 completion payment
 
 	When required payments event is received
@@ -36,4 +43,4 @@ Scenario: Contract Type 2 balancing payment
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource        | Amount |
 	| learnref1      | 10000 | p1                     | 10     | 10000 | Balancing_3     | CoInvestedSfa_2      | 2700   |
-	| learnref1      | 10000 | p1                     | 10     | 10000 | Balancing_3     | CoInvestedEmployer_3 | 300    |	
+	| learnref1      | 10000 | p1                     | 10     | 10000 | Balancing_3     | CoInvestedEmployer_3 | 300    |

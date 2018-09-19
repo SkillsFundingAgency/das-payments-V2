@@ -19,6 +19,7 @@ Background:
 	| learnref1      | 10000 | p1                     | 9      | 10000 | Learning_1			| 600    | 0.90000                   |
 	| learnref1      | 10000 | p1                     | 10     | 10000 | Learning_1			| 600    | 0.90000                   |
 	| learnref1      | 10000 | p1                     | 11     | 10000 | Learning_1			| 600    | 0.90000                   |
+	| learnref1      | 10000 | p1                     | 12     | 10000 | Learning_1			| 600    | 0.90000                   |
 
 	And the following historical contract type 2 on programme payments exist:
 

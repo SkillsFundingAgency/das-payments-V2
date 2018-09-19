@@ -18,8 +18,22 @@ Scenario: Contract Type 2 Learning payment
 
 	When required payments event is received
 
-	Then the payment source component will generate the following contract type 2 coinvested payments:
+	Then the payment source component will generate the following contract type 2 transaction type Learning_1 coinvested payments:
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period  | ULN   | TransactionType | FundingSource        | Amount |
 	| learnref1      | 10000 | p1                     | 12      | 10000 | Learning_1      | CoInvestedSfa_2      | 540    |
 	| learnref1      | 10000 | p1                     | 12      | 10000 | Learning_1      | CoInvestedEmployer_3 | 60     |
+
+
+Scenario Outline: Contract Type 2 no completion payment
+
+	When required payments event is received
+
+	Then the payment source component will not generate any contract type 2 transaction type Completion_2 coinvested payments
+
+
+Scenario Outline: Contract Type 2 no balancing payment
+
+	When required payments event is received
+
+	Then the payment source component will not generate any contract type 2 transaction type Balancing_3 coinvested payments
