@@ -1,9 +1,10 @@
 ﻿using System;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Events
 {
-    public abstract class FundingSourcePaymentEvent 
+    public abstract class FundingSourcePaymentEvent : IPaymentsEvent
     {
         public string PriceEpisodeIdentifier { get; set; }
 

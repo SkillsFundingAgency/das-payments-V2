@@ -101,7 +101,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 5
 this.FeatureBackground();
 #line 17
- testRunner.When("MASH is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("a payable earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 19
  testRunner.Then("the payment source component will generate no contract type 2 coinvested payments" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

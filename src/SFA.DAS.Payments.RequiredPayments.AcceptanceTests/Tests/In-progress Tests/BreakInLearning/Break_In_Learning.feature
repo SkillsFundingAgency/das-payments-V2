@@ -33,7 +33,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	| learnref1      | 10000 | p1				      | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1				      | 2      | 10000 | <transaction_type> | <amount> |
 
-	When a TOBY is received
+	When an earning event is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
@@ -52,7 +52,7 @@ Scenario Outline: Contract Type 2 On programme payments changed price
 	| learnref1      | 10000 | p2				      | 5      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p2				      | 6      | 10000 | <transaction_type> | <amount> |
 
-	When a TOBY is received
+	When an earning event is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |

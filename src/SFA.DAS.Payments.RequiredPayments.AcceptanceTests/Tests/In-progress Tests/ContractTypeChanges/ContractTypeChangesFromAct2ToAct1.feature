@@ -31,7 +31,7 @@ Scenario Outline: Contract Type 2 On programme payments
 	| learnref1      | 10000 | p1                     | 1      | 10000 | <transaction_type> | <amount> |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | <transaction_type> | <amount> |
 
-	When a TOBY is received
+	When an earning event is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount    |
@@ -53,7 +53,7 @@ Scenario Outline: Contract Type 2 On programme payments
 
 Scenario Outline: Contract Type 1 On programme payments
 
-	When a TOBY is received
+	When an earning event is received
 
 	Then the payments due component will generate the following contract type 1 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
@@ -81,7 +81,7 @@ Scenario Outline: Contract Type 1 On programme payments
 
 Scenario: Contract Type 2 Payable Earnings
 
-	When a TOBY is received
+	When an earning event is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | SfaContributionPercentage | Learning_1 | Completion_2 | Balancing_3 | First16To18EmployerIncentive_4 | First16To18ProviderIncentive_5 | Second16To18EmployerIncentive_6 | Second16To18ProviderIncentive_7 | OnProgramme16To18FrameworkUplift_8 | Completion16To18FrameworkUplift_9 | Balancing16To18FrameworkUplift_10 | FirstDisadvantagePayment_11 | SecondDisadvantagePayment_12 | OnProgrammeMathsAndEnglish_13 | BalancingMathsAndEnglish_14 | LearningSupport_15 |
@@ -98,7 +98,7 @@ Scenario: Contract Type 2 Payable Earnings
 
 Scenario: Contract Type 1 Payable Earnings
 
-	When a TOBY is received
+	When an earning event is received
 
 	Then the payments due component will generate the following contract type 1 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | SfaContributionPercentage | Learning_1 | Completion_2 | Balancing_3 | First16To18EmployerIncentive_4 | First16To18ProviderIncentive_5 | Second16To18EmployerIncentive_6 | Second16To18ProviderIncentive_7 | OnProgramme16To18FrameworkUplift_8 | Completion16To18FrameworkUplift_9 | Balancing16To18FrameworkUplift_10 | FirstDisadvantagePayment_11 | SecondDisadvantagePayment_12 | OnProgrammeMathsAndEnglish_13 | BalancingMathsAndEnglish_14 | LearningSupport_15 |

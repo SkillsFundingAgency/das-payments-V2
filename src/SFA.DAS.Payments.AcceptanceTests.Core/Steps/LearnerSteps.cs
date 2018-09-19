@@ -1,8 +1,9 @@
 ﻿using System;
-using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application;
+using SFA.DAS.Payments.AcceptanceTests.Core.Application;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using TechTalk.SpecFlow;
 
-namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
+namespace SFA.DAS.Payments.AcceptanceTests.Core.Steps
 {
     [Binding]
     public class LearnerSteps
@@ -25,12 +26,15 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [Given(@"a learner with LearnRefNumber (.*) and Uln (.*) undertaking training with training provider (.*)")]
         public void GivenALearnerWithLearnRefNumberAndUln(string learnRefNumber, long uln, long ukprn)
         {
-            context["LearnRefNumber"] = learnRefNumber;
-            context["Uln"] = uln;
-            context["Ukprn"] = ukprn;
+            var learner = new Learner
+            {
+                Ukprn = ukprn,
+                Uln = uln,
+                LearnRefNumber = learnRefNumber,
+                GeneratedLearnRefNumber = learnRefNumberGenerator.Generate(ukprn, learnRefNumber)
+            };
 
-            context["GeneratedLearnRefNumber"] =
-                learnRefNumberGenerator.Generate(ukprn, learnRefNumber);
+            context.Set(learner);
         }
 
     }

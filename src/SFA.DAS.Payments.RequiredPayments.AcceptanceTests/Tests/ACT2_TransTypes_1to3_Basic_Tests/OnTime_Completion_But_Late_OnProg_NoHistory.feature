@@ -24,7 +24,7 @@ Background:
 
 Scenario Outline: Contract Type 2 On programme payments
 
-	When a TOBY is received
+	When an earning event is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   | SfaContributionPercentage |
@@ -47,7 +47,7 @@ Scenario Outline: Contract Type 2 On programme payments
 
 Scenario Outline: Contract Type 2 completion payment
 
-	When a TOBY is received
+	When an earning event is received
 
 	Then the payments due component will generate the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   | SfaContributionPercentage |
