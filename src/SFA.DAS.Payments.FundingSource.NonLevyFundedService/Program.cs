@@ -14,9 +14,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService
         {
             try
             {
-                var builder = ServiceFabricContainerFactory.CreateBuilderForStatelessService<NonLevyFundedService>();
-
-                using (builder.Build())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<NonLevyFundedService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }

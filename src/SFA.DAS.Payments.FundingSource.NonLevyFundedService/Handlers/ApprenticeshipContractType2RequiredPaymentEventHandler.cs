@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
         private readonly IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService;
 
         public ApprenticeshipContractType2RequiredPaymentEventHandler(IPaymentLogger paymentLogger, 
-                                                                      ILifetimeScope lifetimeScope, 
+                                                                     ILifetimeScope lifetimeScope, 
                                                                       IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService)
         {
             this.paymentLogger = paymentLogger;
