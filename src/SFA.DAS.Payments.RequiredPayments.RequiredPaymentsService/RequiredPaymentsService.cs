@@ -17,13 +17,13 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
     [StatePersistence(StatePersistence.Volatile)]
     public class RequiredPaymentsService : Actor, IRequiredPaymentsService
     {
-        private Act2PaymentDueEventHanlder _act2PaymentDueEventHanlder;
+        private ApprenticeshipContractType2PaymentDueEventHanlder _act2PaymentDueEventHanlder;
         private ReliableCollectionCache<PaymentEntity[]> _paymentHistoryCache;
 
         private readonly IPaymentLogger _paymentLogger;
         private readonly string _apprenticeshipKey;
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
-        private readonly IAct2PaymentDueProcessor _act2PaymentDueProcessor;
+        private readonly IApprenticeshipContractType2PaymentDueProcessor _act2PaymentDueProcessor;
         private readonly IMapper _mapper;
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
 
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             ActorId actorId,
             IPaymentLogger paymentLogger,
             IApprenticeshipKeyService apprenticeshipKeyService,
-            IAct2PaymentDueProcessor act2PaymentDueProcessor, IMapper mapper, IPaymentHistoryRepository paymentHistoryRepository) : base(actorService, actorId)
+            IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor, IMapper mapper, IPaymentHistoryRepository paymentHistoryRepository) : base(actorService, actorId)
         {
             _paymentLogger = paymentLogger;
             _apprenticeshipKeyService = apprenticeshipKeyService;
@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             _paymentHistoryCache = new ReliableCollectionCache<PaymentEntity[]>(StateManager);
 
-            _act2PaymentDueEventHanlder = new Act2PaymentDueEventHanlder(
+            _act2PaymentDueEventHanlder = new ApprenticeshipContractType2PaymentDueEventHanlder(
                 _act2PaymentDueProcessor,
                 _paymentHistoryCache,
                 _mapper,
