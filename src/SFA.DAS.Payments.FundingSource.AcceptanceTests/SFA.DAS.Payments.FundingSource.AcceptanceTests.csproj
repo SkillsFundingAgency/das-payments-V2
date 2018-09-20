@@ -183,306 +183,207 @@
     <Compile Include="PaymentFundingSourceIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestConfiguration.cs" />
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Completion_Balancing.feature.cs">
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature.cs">
+      <DependentUpon>Fully funded - ALL TT1 TT2 and TT3.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Balancing %28TT3%29.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Completion %28TT2%29 and Balancing %28TT3%29.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ALL TT1 TT2 and TT3.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Completion %28TT2%29 only.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Fully funded - Completion %28TT2%29 only.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\No Payment1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>No Payment.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - multiple periods.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learning %28TT1%29 only - multiple periods.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Learning %28TT1%29.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Completion %28TT2%29 and Learning %28TT1%29.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 only.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Completion %28TT2%29 only.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - single period.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learning %28TT1%29 only - single period.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Learning %28TT1%29.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Fully funded - Learning %28TT1%29.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\E2E tests\EarlyFinish_Completion_Balancing.feature.cs">
       <DependentUpon>EarlyFinish_Completion_Balancing.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature.cs">
       <DependentUpon>EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Completed_Completion_Payment_Only.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\Late_Completed_Completion_Payment_Only.feature.cs">
       <DependentUpon>Late_Completed_Completion_Payment_Only.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Continuing_No_Completion_Or_OnProg_Payment.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\Late_Continuing_No_Completion_Or_OnProg_Payment.feature.cs">
       <DependentUpon>Late_Continuing_No_Completion_Or_OnProg_Payment.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature.cs">
       <DependentUpon>Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature.cs">
       <DependentUpon>Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Completion_But_Late_OnProg_NoHistory.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Completion_But_Late_OnProg_NoHistory.feature.cs">
       <DependentUpon>OnTime_Completion_But_Late_OnProg_NoHistory.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Completion_Payment.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Completion_Payment.feature.cs">
       <DependentUpon>OnTime_Completion_Payment.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature.cs">
       <DependentUpon>OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature.cs">
       <DependentUpon>OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Final_OnProg_Payment.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Final_OnProg_Payment.feature.cs">
       <DependentUpon>OnTime_Final_OnProg_Payment.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Submission_MultipleHistoricalPayments.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Submission_MultipleHistoricalPayments.feature.cs">
       <DependentUpon>OnTime_Submission_MultipleHistoricalPayments.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\BreakInLearning\Break_In_Learning.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Break_In_Learning.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\ContractTypeChanges\ContractTypeChangesFromAct1ToAct2.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ContractTypeChangesFromAct1ToAct2.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\ContractTypeChanges\ContractTypeChangesFromAct2ToAct1.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ContractTypeChangesFromAct2ToAct1.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\ILR_Changes\R04_ChangeInStartDate_Earlier_By_1_month.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>R04_ChangeInStartDate_Earlier_By_1_month.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\ILR_EndToEnd\TNP_higher_than_max_funding_band_Balancing_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TNP_higher_than_max_funding_band_Balancing_Completion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\ILR_EndToEnd\TNP_higher_than_max_funding_band_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TNP_higher_than_max_funding_band_Completion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\ILR_EndToEnd\TNP_higher_than_max_funding_band_Continuing.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TNP_higher_than_max_funding_band_Continuing.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_disadvantaged_postcode.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Additional_Payments_disadvantaged_postcode.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_Framework_Uplift_Balancing_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Additional_Payments_Framework_Uplift_Balancing_Completion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_price_change_during_programme_learning_support.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Additional_Payments_price_change_during_programme_learning_support.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Redundancy\Redundancy_ouside_of_last_6_months.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Redundancy_ouside_of_last_6_months.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Redundancy\Redundancy_within_last_6_months.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Redundancy_within_last_6_months.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Refunds\R12_Refund_Delay_in_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>R12_Refund_Delay_in_Completion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Refunds\Refund_price_change_retrospectively_from_beginning.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Refund_price_change_retrospectively_from_beginning.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\SmallEmployers\small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\SmallEmployers\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Withdrawal\Learner_finishes_early_withdrawal_after_qualifying_period.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Learner_finishes_early_withdrawal_after_qualifying_period.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\In-progress Tests\Withdrawal\Learner_finishes_early_withdrawal_before_qualifying_period.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Learner_finishes_early_withdrawal_before_qualifying_period.feature</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Completion_Balancing.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Fully funded - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Balancing %28TT3%29.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Completion %28TT2%29 and Balancing %28TT3%29.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Completion %28TT2%29 only.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Fully funded - Completion %28TT2%29 only.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\No Payment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>No Payment1.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - multiple periods.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learning %28TT1%29 only - multiple periods.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Learning %28TT1%29.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Completion %28TT2%29 and Learning %28TT1%29.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 only.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Completion %28TT2%29 only.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - single period.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learning %28TT1%29 only - single period.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Learning %28TT1%29.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Fully funded - Learning %28TT1%29.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\E2E tests\EarlyFinish_Completion_Balancing.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>EarlyFinish_Completion_Balancing.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature">
+    <None Include="Tests\E2E tests\EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Completed_Completion_Payment_Only.feature">
+    <None Include="Tests\E2E tests\Late_Completed_Completion_Payment_Only.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Late_Completed_Completion_Payment_Only.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Continuing_No_Completion_Or_OnProg_Payment.feature">
+    <None Include="Tests\E2E tests\Late_Continuing_No_Completion_Or_OnProg_Payment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Late_Continuing_No_Completion_Or_OnProg_Payment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature">
+    <None Include="Tests\E2E tests\Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature">
+    <None Include="Tests\E2E tests\Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Completion_But_Late_OnProg_NoHistory.feature">
+    <None Include="Tests\E2E tests\OnTime_Completion_But_Late_OnProg_NoHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Completion_But_Late_OnProg_NoHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Completion_Payment.feature">
+    <None Include="Tests\E2E tests\OnTime_Completion_Payment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Completion_Payment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature">
+    <None Include="Tests\E2E tests\OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature">
+    <None Include="Tests\E2E tests\OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Final_OnProg_Payment.feature">
+    <None Include="Tests\E2E tests\OnTime_Final_OnProg_Payment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Final_OnProg_Payment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Submission_MultipleHistoricalPayments.feature">
+    <None Include="Tests\E2E tests\OnTime_Submission_MultipleHistoricalPayments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Submission_MultipleHistoricalPayments.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\BreakInLearning\Break_In_Learning.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Break_In_Learning.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\ContractTypeChanges\ContractTypeChangesFromAct1ToAct2.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ContractTypeChangesFromAct1ToAct2.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\ContractTypeChanges\ContractTypeChangesFromAct2ToAct1.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ContractTypeChangesFromAct2ToAct1.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\ILR_Changes\R04_ChangeInStartDate_Earlier_By_1_month.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>R04_ChangeInStartDate_Earlier_By_1_month.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\ILR_EndToEnd\TNP_higher_than_max_funding_band_Balancing_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>TNP_higher_than_max_funding_band_Balancing_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\ILR_EndToEnd\TNP_higher_than_max_funding_band_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>TNP_higher_than_max_funding_band_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\ILR_EndToEnd\TNP_higher_than_max_funding_band_Continuing.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>TNP_higher_than_max_funding_band_Continuing.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_16_to_18_Framework_Uplift_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Additional_Payments_16_to_18_Framework_Uplift_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_disadvantaged_postcode.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Additional_Payments_disadvantaged_postcode.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Additional_Payments_Eng_Planned_Date_Exceeds_Programme_aim_End_date.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_Framework_Uplift_Balancing_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Additional_Payments_Framework_Uplift_Balancing_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_price_change_during_programme_learning_support.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Additional_Payments_price_change_during_programme_learning_support.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Payments_V1_ACT2_minimum_TransTypes_1to3 - AdditionalPayments - Incomplete\Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Additional_Payments_Uplift_Balancing_Completion_Lower_TNP.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Redundancy\Redundancy_ouside_of_last_6_months.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Redundancy_ouside_of_last_6_months.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Redundancy\Redundancy_within_last_6_months.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Redundancy_within_last_6_months.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Refunds\R12_Refund_Delay_in_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>R12_Refund_Delay_in_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Refunds\Refund_price_change_retrospectively_from_beginning.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Refund_price_change_retrospectively_from_beginning.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\SmallEmployers\small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>small_employers_fully_funded_Additional_Payments_EEF4_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\SmallEmployers\small_employers_full_funded_Additional_Payments_EEF2_Completion.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>small_employers_full_funded_Additional_Payments_EEF2_Completion.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Withdrawal\Learner_finishes_early_withdrawal_after_qualifying_period.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learner_finishes_early_withdrawal_after_qualifying_period.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\In-progress Tests\Withdrawal\Learner_finishes_early_withdrawal_before_qualifying_period.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learner_finishes_early_withdrawal_before_qualifying_period.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
