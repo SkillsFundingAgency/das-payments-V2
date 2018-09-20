@@ -12,16 +12,16 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
 {
-    public class Act2PaymentDueEventHanlder : IAct2PaymentDueEventHanlder
+    public class ApprenticeshipContractType2PaymentDueEventHanlder : IApprenticeshipContractType2PaymentDueEventHanlder
     {
-        private readonly IAct2PaymentDueProcessor _act2PaymentDueProcessor;
+        private readonly IApprenticeshipContractType2PaymentDueProcessor _act2PaymentDueProcessor;
         private readonly IRepositoryCache<PaymentEntity[]> _paymentHistoryCache;
         private readonly IMapper _mapper;
         private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         private readonly string _apprenticeshipKey;
 
-        public Act2PaymentDueEventHanlder(IAct2PaymentDueProcessor act2PaymentDueProcessor, IRepositoryCache<PaymentEntity[]> paymentHistoryCache, IMapper mapper, IApprenticeshipKeyService apprenticeshipKeyService, IPaymentHistoryRepository paymentHistoryRepository, string apprenticeshipKey)
+        public ApprenticeshipContractType2PaymentDueEventHanlder(IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor, IRepositoryCache<PaymentEntity[]> paymentHistoryCache, IMapper mapper, IApprenticeshipKeyService apprenticeshipKeyService, IPaymentHistoryRepository paymentHistoryRepository, string apprenticeshipKey)
         {
             _act2PaymentDueProcessor = act2PaymentDueProcessor;
             _paymentHistoryCache = paymentHistoryCache;
@@ -42,7 +42,24 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
 
             var payments = paymentHistoryValue.HasValue ? paymentHistoryValue.Value.Select(p => _mapper.Map<PaymentEntity, Payment>(p)).ToArray() : new Payment[0];
 
-            return _act2PaymentDueProcessor.ProcessPaymentDue(paymentDue, payments);
+            var amountDue = _act2PaymentDueProcessor.CalculateRequiredPaymentAmount(paymentDue.AmountDue, payments);
+
+            if (amountDue == 0)
+                return null;
+
+            return new ApprenticeshipContractType2RequiredPaymentEvent
+            {
+                AmountDue = amountDue,
+                Learner = paymentDue.Learner.Clone(),
+                Ukprn = paymentDue.Ukprn,
+                CollectionPeriod = paymentDue.CollectionPeriod.Clone(),
+                DeliveryPeriod = paymentDue.DeliveryPeriod.Clone(),
+                LearningAim = paymentDue.LearningAim.Clone(),
+                PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier,
+                OnProgrammeEarningType = paymentDue.OnProgrammeEarningType,
+                EventTime = DateTimeOffset.UtcNow,
+                JobId = paymentDue.JobId
+            };
         }
 
         public async Task PopulatePaymentHistoryCache(CancellationToken cancellationToken)
