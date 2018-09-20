@@ -20,9 +20,11 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             this.context = context;
         }
+
        [When(@"an earning event is received")]
         public async void WhenAnEarningEventIsReceived()
         {
+            
             // Get all the input data
             var processingPeriod = (short)context["ProcessingPeriod"];
 
