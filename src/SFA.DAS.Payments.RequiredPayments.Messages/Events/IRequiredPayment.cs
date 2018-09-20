@@ -3,11 +3,7 @@ using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
-    public interface IRequiredPayment : IPaymentsEvent
+    public interface IRequiredPayment : IPeriodisedPaymentEvent
     {
-        string PriceEpisodeIdentifier { get; }
-        decimal AmountDue { get; }
-        CalendarPeriod CollectionPeriod { get; }
-        CalendarPeriod DeliveryPeriod { get; }
     }
 }

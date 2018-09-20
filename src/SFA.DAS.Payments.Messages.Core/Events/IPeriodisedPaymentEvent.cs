@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.Messages.Core.Events
 {
-    public interface IPeriodisedEarningEvent: IPaymentsEvent
+    public interface IPeriodisedPaymentEvent: IPaymentsEvent
     {
         string PriceEpisodeIdentifier { get; }
         decimal AmountDue { get; }
