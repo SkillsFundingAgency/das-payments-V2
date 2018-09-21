@@ -5,7 +5,6 @@ using Autofac;
 using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
@@ -13,6 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
     [Binding]
     public abstract class StepsBase
     {
+        public ScenarioContext ScenarioCtx { get; }
         public static ContainerBuilder Builder { get; protected set; }
         public static IContainer Container { get; protected set; }
         public static IMessageSession MessageSession { get; protected set; }
@@ -22,18 +22,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         public bool IsDevEnvironment => (Environment?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) ||
                                         (Environment?.Equals("LOCAL", StringComparison.OrdinalIgnoreCase) ?? false);
 
-        protected List<IEarningEvent> EarningEvents { get => Get<List<IEarningEvent>>(); set => Set(value); }
+        protected StepsBase(ScenarioContext scenarioContext)
+        {
+            ScenarioCtx = scenarioContext;
+        }
+
         public T Get<T>(string key = null)// where T : class
         {
-            return key == null ? ScenarioContext.Current.Get<T>() : ScenarioContext.Current.Get<T>(key);
+            return key == null ? ScenarioCtx.Get<T>() : ScenarioContext.Current.Get<T>(key);
         }
 
         public void Set<T>(T item, string key = null)
         {
             if (key == null)
-                ScenarioContext.Current.Set(item);
+                ScenarioCtx.Set(item);
             else
-                ScenarioContext.Current.Set(item, key);
+                ScenarioCtx.Set(item, key);
         }
 
         protected void WaitForIt(Func<bool> lookForIt, string failText)

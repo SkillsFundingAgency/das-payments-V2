@@ -238,7 +238,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ACT 2 On-Programme Payments.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\RequiredPaymentsIntegrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -317,10 +316,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
       <Project>{f6e38368-c397-488b-b041-d3e8423c1ce1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
-      <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>
-      <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>
