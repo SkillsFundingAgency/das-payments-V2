@@ -1,5 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="" />
+    <Parameter Name="LoggingConnectionString" Value="" />
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+  </Section>
+  <Section Name="Settings">
+    <Parameter Name="EndpointName" Value="" />
+    <Parameter Name="FailedMessagesQueue" Value="" />
+  </Section>
   <Section Name="ProviderPaymentsServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="ProviderPaymentsServiceActorServiceReplicatorEndpoint" />
     <Parameter Name="BatchAcknowledgementInterval" Value="0.005" />
