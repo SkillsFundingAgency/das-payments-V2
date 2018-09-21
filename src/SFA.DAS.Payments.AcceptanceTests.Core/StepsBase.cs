@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         public static IMessageSession MessageSession { get; protected set; }
         public TestsConfiguration Config => Container.Resolve<TestsConfiguration>();
         public string Environment => Config.GetAppSetting("Environment");
-
+        protected string CollectionYear { get => Get<string>("collection_year"); set => Set(value, "collection_year"); }
         public bool IsDevEnvironment => (Environment?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) ||
                                         (Environment?.Equals("LOCAL", StringComparison.OrdinalIgnoreCase) ?? false);
 

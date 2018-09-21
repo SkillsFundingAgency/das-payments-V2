@@ -1,9 +1,11 @@
-﻿using SFA.DAS.Payments.Model.Core;
+﻿using System;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
 {
     public abstract class PaymentDueEvent : IPaymentDueEvent
     {
+        public DateTimeOffset EventTime { get; set; }
         public long Ukprn { get; set; }
 
         public string JobId { get; set; }
@@ -19,6 +21,5 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
 
         public CalendarPeriod DeliveryPeriod { get; set; }
 
-        public int TransactionType { get; set; }
     }
 }

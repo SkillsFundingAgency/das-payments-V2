@@ -310,7 +310,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.AcceptanceTests.Core\SFA.DAS.Payments.AcceptanceTests.Core.csproj">
-      <Project>{0f0beb68-7f9f-4d39-b85a-3fe7701bb6cc}</Project>
+      <Project>{0F0BEB68-7F9F-4D39-B85A-3FE7701BB6CC}</Project>
       <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">

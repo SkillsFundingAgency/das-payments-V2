@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                     AgreedPrice = 10,
                     FundingLineType = "11"
                 },
-                OnProgrammeEarningType = OnProgrammeEarningType.Learning
+                Type = OnProgrammeEarningType.Learning
             };
 
             var paymentHistoryEntities = new[] { new PaymentEntity() }; 
@@ -154,7 +154,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                     AgreedPrice = 10,
                     FundingLineType = "11"
                 },
-                OnProgrammeEarningType = OnProgrammeEarningType.Learning
+                Type = OnProgrammeEarningType.Learning
             };
 
             var paymentHistoryEntities = new PaymentEntity[0]; 

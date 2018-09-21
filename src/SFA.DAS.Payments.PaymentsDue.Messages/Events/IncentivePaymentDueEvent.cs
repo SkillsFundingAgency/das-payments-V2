@@ -4,10 +4,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
 {
     public class IncentivePaymentDueEvent : PaymentDueEvent
     {
-        public IncentiveType IncentiveEarningType
-        {
-            get => (IncentiveType)TransactionType;
-            set => TransactionType = (int)value;
-        }
+        public IncentiveType Type { get; set; }
     }
 }

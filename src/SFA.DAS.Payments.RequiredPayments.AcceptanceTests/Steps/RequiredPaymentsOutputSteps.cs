@@ -15,9 +15,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         private readonly LearnRefNumberGenerator generator;
 
 
-        public RequiredPaymentsOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator)
+        public RequiredPaymentsOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator): base(context)
         {
-            this.context = context;
             this.generator = generator;
 
         }

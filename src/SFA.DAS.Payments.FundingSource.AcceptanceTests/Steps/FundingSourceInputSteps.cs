@@ -17,9 +17,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
     {
         private readonly ScenarioContext context;
 
-        public FundingSourceInputSteps(ScenarioContext context)
+        public FundingSourceInputSteps(ScenarioContext context): base(context)
         {
-            this.context = context;
+            
         }
 
         [When(@"a payable earning event is received")]

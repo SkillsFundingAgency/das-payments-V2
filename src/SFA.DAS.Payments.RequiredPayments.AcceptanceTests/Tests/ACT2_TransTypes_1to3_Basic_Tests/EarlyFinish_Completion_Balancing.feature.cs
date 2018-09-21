@@ -79,6 +79,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.ACT2_TransType
 #line 7
  testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 8
+ testRunner.And("the collection year is 1718", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "AimSeqNumber",

@@ -5,7 +5,7 @@ Background:
 	Given the current processing period is 10
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
+	And the collection year is 1718
 	And the following course information:
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | LearningStartDate | LearningPlannedEndDate | LearningActualEndDate | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 01/09/2017        | 08/09/2018             | 08/06/2018            | Completed       |

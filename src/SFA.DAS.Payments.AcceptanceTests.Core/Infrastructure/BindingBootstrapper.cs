@@ -10,6 +10,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
     [Binding]
     public class BindingBootstrapper : StepsBase
     {
+        public BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
+        {
+        }
+
         public static EndpointConfiguration EndpointConfiguration { get; private set; }
 
         [BeforeTestRun(Order = -1)]
@@ -36,20 +40,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 .ConnectionString(config.ServiceBusConnectionString);
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
-            //strategy.QueuePathSanitization(queuePath => "sanitized queuePath");
-            //strategy.TopicPathSanitization(topicPath => "sanitized topicPath");
-            //strategy.SubscriptionNameSanitization(
-            //    subscriptionNameSanitizer: subscriptionName =>
-            //    {
-            //        return "sanitized subscriptionName";
-            //    });
             strategy.RuleNameSanitization(
                 ruleNameSanitizer: ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
-            //strategy.Hash(
-            //    hash: pathOrName =>
-            //    {
-            //        return "hashed pathOrName";
-            //    });
             EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             EndpointConfiguration.EnableInstallers();
         }

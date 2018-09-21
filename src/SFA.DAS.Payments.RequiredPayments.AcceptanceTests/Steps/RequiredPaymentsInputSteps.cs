@@ -3,32 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class RequiredPaymentsInputSteps: StepsBase
+    public class RequiredPaymentsInputSteps : StepsBase
     {
         private readonly ScenarioContext context;
 
-        public RequiredPaymentsInputSteps(ScenarioContext context)
-        {
-            this.context = context;
-        }
+        public RequiredPaymentsInputSteps(ScenarioContext context) : base(context) { }
 
-       [When(@"an earning event is received")]
+        [When(@"an earning event is received")]
         public async void WhenAnEarningEventIsReceived()
         {
-            
+
             // Get all the input data
             var processingPeriod = (short)context["ProcessingPeriod"];
 
-            var learner = context.Get<Payments.AcceptanceTests.Core.Data.Learner>();
+            var learner = Get<Payments.AcceptanceTests.Core.Data.Learner>();
 
             IEnumerable<Course> courses = null;
 
@@ -56,39 +53,49 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 onProgrammeEarnings.Add(completionEarning);
             }
 
-            // now create an event from all this stuff and sent it off
-            var earning = new ApprenticeshipContractType2EarningEvent
-            {
-                JobId = "job-1234",
-                Ukprn = learner.Ukprn,
-                EventTime = DateTimeOffset.UtcNow,
-                Learner = new Learner
-                {
-                    ReferenceNumber = learner.GeneratedLearnRefNumber,
-                    Uln = learner.Uln
-                },
-                LearningAim = learningAim,
-                PriceEpisodes = new List<PriceEpisode>
-                {
-                    new PriceEpisode
+            var jobId = $"job-{Guid.NewGuid():N}";
+
+            var payments = onProgrammeEarnings
+                .SelectMany(earning => earning.Periods, (earning, period) => new {earning, period})
+                .Select(earningPeriod => new ApprenticeshipContractType2PaymentDueEvent
                     {
-                        StartDate = course.LearningStartDate,
-                        EndDate = course.LearningPlannedEndDate.Value,
-                        AgreedPrice = GetAgreedPrice("ContractType2OnProgrammeEarningsLearning"),
-                        Identifier = GetPriceEpisodeIdentifier("ContractType2OnProgrammeEarningsLearning")
-                    }
-                }
-                .AsReadOnly(),
-                EarningYear = (short)DateTime.Today.Year,
-                SfaContributionPercentage = 0.9M,
-                
-                OnProgrammeEarnings = onProgrammeEarnings.AsReadOnly()
-            };
+                        JobId = jobId,
+                        Ukprn = learner.Ukprn,
+                        EventTime = DateTimeOffset.UtcNow,
+                        AmountDue = earningPeriod.period.Amount,
+                        LearningAim = learningAim,
+                        PriceEpisodeIdentifier = "p-1",
+                        Learner = new Learner
+                        {
+                            ReferenceNumber = learner.GeneratedLearnRefNumber,
+                            Uln = learner.Uln
+                        },
+                        SfaContributionPercentage = 0.9m,
+                        Type = earningPeriod.earning.Type,
+                        DeliveryPeriod = new CalendarPeriod
+                        {
+                            Period = earningPeriod.period.Period,
+                            Month = (byte)(earningPeriod.period.Period >= 5 ? earningPeriod.period.Period - 4 : earningPeriod.period.Period + 8), 
+                            Year = (short) DateTime.Today.Year,
+                            Name = $"{CollectionYear}-R{earningPeriod.period.Period}"
+                        },
+                        CollectionPeriod = new CalendarPeriod
+                        {
+                            Period = earningPeriod.period.Period,
+                            Month = (byte)(earningPeriod.period.Period >= 5 ? earningPeriod.period.Period - 4 : earningPeriod.period.Period + 8),  //TODO: change to current month???
+                            Year = (short) DateTime.Today.Year,
+                            Name = $"{CollectionYear}-R{earningPeriod.period.Period}"
+                        }
+                    })
+                .ToList();
 
             var options = new SendOptions();
             options.RequireImmediateDispatch();
-
-            await MessageSession.Send(earning, options).ConfigureAwait(false);
+            foreach (var paymentEvent in payments)
+            {
+                await MessageSession.Send(paymentEvent, options).ConfigureAwait(false);
+            }
+            
         }
 
         private decimal GetAgreedPrice(string storageName)
@@ -133,7 +140,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     }
 
                     var learningEarning = new OnProgrammeEarning
-                        { Type = earningType, Periods = earningPeriods.AsReadOnly() };
+                    { Type = earningType, Periods = earningPeriods.AsReadOnly() };
 
                     result = learningEarning;
                 }

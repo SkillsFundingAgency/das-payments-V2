@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             if (paymentDue == null)
                 throw new ArgumentNullException(nameof(paymentDue));
 
-            var key = _apprenticeshipKeyService.GeneratePaymentKey(paymentDue.PriceEpisodeIdentifier, paymentDue.LearningAim.Reference, paymentDue.TransactionType, paymentDue.DeliveryPeriod);
+            var key = _apprenticeshipKeyService.GeneratePaymentKey(paymentDue.PriceEpisodeIdentifier, paymentDue.LearningAim.Reference, (int)paymentDue.Type, paymentDue.DeliveryPeriod);
 
             var paymentHistoryValue = await _paymentHistoryCache.TryGet(key, cancellationToken);
 
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
                 DeliveryPeriod = paymentDue.DeliveryPeriod.Clone(),
                 LearningAim = paymentDue.LearningAim.Clone(),
                 PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier,
-                OnProgrammeEarningType = paymentDue.OnProgrammeEarningType,
+                OnProgrammeEarningType = paymentDue.Type,
                 EventTime = DateTimeOffset.UtcNow,
                 JobId = paymentDue.JobId
             };

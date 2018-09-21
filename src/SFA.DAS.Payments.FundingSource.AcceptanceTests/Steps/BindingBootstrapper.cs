@@ -10,6 +10,10 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
     [Binding]
     public class BindingBootstrapper : StepsBase
     {
+        public BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
+        {
+        }
+
         [BeforeTestRun(Order = 51)]
         public static void AddRoutingConfig()
         {

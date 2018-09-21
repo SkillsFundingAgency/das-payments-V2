@@ -6,10 +6,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
     {
         public decimal SfaContributionPercentage { get; set; }
 
-        public OnProgrammeEarningType OnProgrammeEarningType
-        {
-            get => (OnProgrammeEarningType)TransactionType;
-            set => TransactionType = (int)value;
-        }
+        public OnProgrammeEarningType Type { get; set; }
     }
 }
