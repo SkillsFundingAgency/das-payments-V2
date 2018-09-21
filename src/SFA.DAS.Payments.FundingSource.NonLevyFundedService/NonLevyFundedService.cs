@@ -5,6 +5,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ServiceFabric.Core;
 using System.Collections.Generic;
 using System.Fabric;
+using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 
 namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService
 {
@@ -12,11 +13,14 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService
     {
         private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentLogger paymentLogger;
+        private readonly IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService;
 
-        public NonLevyFundedService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
+        public NonLevyFundedService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger,
+            IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService) : base(context)
         {
             this.lifetimeScope = lifetimeScope;
             this.paymentLogger = paymentLogger;
+            this.contractType2RequiredPaymentService = contractType2RequiredPaymentService;
         }
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()

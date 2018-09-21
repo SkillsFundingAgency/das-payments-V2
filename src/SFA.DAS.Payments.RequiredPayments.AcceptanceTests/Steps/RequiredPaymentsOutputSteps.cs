@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
+﻿using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Application;
+using SFA.DAS.Payments.AcceptanceTests.Core.Application;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
 using TechTalk.SpecFlow;
@@ -12,23 +9,17 @@ using TechTalk.SpecFlow.Assist;
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class PaymentsDueOutputSteps: StepsBase
+    public class RequiredPaymentsOutputSteps: StepsBase
     {
         private readonly ScenarioContext context;
         private readonly LearnRefNumberGenerator generator;
 
-        //protected ApprenticeshipContractType2EarningEvent EarningEvent
-        //{
-        //    get => Get<ApprenticeshipContractType2EarningEvent>();
-        //    set => Set(value);
-        //}
 
-        public PaymentsDueOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator)
+        public RequiredPaymentsOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator)
         {
             this.context = context;
             this.generator = generator;
 
-   //         EarningEvent = context.Get<ApprenticeshipContractType2EarningEvent>();
         }
         [Then(@"the payments due component will generate the following payable earnings:")]
         public void ThenThePaymentsDueComponentWillGenerateTheFollowingPayableEarnings(Table table)
