@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             _paymentLogger.LogInfo($"Initialising actor for apprenticeship {_apprenticeshipKey}");
 
-            await _act2PaymentDueEventHanlder.PopulatePaymentHistoryCache(CancellationToken.None).ConfigureAwait(false);
+            //await _act2PaymentDueEventHanlder.PopulatePaymentHistoryCache(CancellationToken.None).ConfigureAwait(false);
 
             _paymentLogger.LogInfo($"Initialised actor for apprenticeship {_apprenticeshipKey}");
 

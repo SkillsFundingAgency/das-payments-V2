@@ -9,6 +9,7 @@ using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -36,7 +37,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
         public async Task Handle(ApprenticeshipContractType2PaymentDueEvent message, IMessageHandlerContext context)
         {
-            using (_lifetimeScope.BeginLifetimeScope())
+//            using (_lifetimeScope.BeginLifetimeScope())
             {
                 _paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
 

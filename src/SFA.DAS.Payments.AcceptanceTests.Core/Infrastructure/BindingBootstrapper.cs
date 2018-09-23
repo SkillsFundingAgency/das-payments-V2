@@ -31,13 +31,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             EndpointConfiguration.UsePersistence<AzureStoragePersistence>()
                 .ConnectionString(config.StorageConnectionString);
             EndpointConfiguration.DisableFeature<TimeoutManager>();
+            
             var transportConfig = EndpointConfiguration.UseTransport<AzureServiceBusTransport>();
             Builder.RegisterInstance(transportConfig)
                 .As<TransportExtensions<AzureServiceBusTransport>>()
                 .SingleInstance();
             transportConfig
                 .UseForwardingTopology()
-                .ConnectionString(config.ServiceBusConnectionString);
+                .ConnectionString(config.ServiceBusConnectionString)
+                .Transactions(TransportTransactionMode.ReceiveOnly);
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
             strategy.RuleNameSanitization(

@@ -77,7 +77,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
                     await _paymentHistoryCache.Add(p.Key, p.Value, CancellationToken.None).ConfigureAwait(false);
                 }
             }
-
         }
     }
 }
