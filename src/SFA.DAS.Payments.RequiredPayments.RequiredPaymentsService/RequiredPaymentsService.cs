@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
     [StatePersistence(StatePersistence.Volatile)]
     public class RequiredPaymentsService : Actor, IRequiredPaymentsService
     {
-        private ApprenticeshipContractType2PaymentDueEventHanlder _act2PaymentDueEventHanlder;
+        private ApprenticeshipContractType2PaymentDueEventHandler _act2PaymentDueEventHandler;
         private ReliableCollectionCache<PaymentEntity[]> _paymentHistoryCache;
 
         private readonly IPaymentLogger _paymentLogger;
@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             if (!await IsInitialised().ConfigureAwait(false))
                 await Initialise().ConfigureAwait(false);
 
-            var requiredPaymentEvents = await _act2PaymentDueEventHanlder.HandlePaymentDue(paymentDueEvent, cancellationToken).ConfigureAwait(false);
+            var requiredPaymentEvents = await _act2PaymentDueEventHandler.HandlePaymentDue(paymentDueEvent, cancellationToken).ConfigureAwait(false);
 
             return requiredPaymentEvents;
         }
@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             _paymentHistoryCache = new ReliableCollectionCache<PaymentEntity[]>(StateManager);
 
-            _act2PaymentDueEventHanlder = new ApprenticeshipContractType2PaymentDueEventHanlder(
+            _act2PaymentDueEventHandler = new ApprenticeshipContractType2PaymentDueEventHandler(
                 _act2PaymentDueProcessor,
                 _paymentHistoryCache,
                 _mapper,

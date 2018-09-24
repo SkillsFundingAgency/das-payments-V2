@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
             _apprenticeshipKeyServiceMock = new Mock<IApprenticeshipKeyService>(MockBehavior.Strict);
             _paymentHistoryRepositoryMock = new Mock<IPaymentHistoryRepository>(MockBehavior.Strict);
 
-            _act2PaymentDueEventHandler = new ApprenticeshipContractType2PaymentDueEventHanlder(
+            _act2PaymentDueEventHandler = new ApprenticeshipContractType2PaymentDueEventHandler(
                 _paymentDueProcessorMock.Object,
                 _paymentHistoryCacheMock.Object,
                 Mapper.Instance,

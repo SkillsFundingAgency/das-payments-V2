@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<ApprenticeshipContractType2PaymentDueEventHanlder>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<ApprenticeshipContractType2PaymentDueEventHandler>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<ApprenticeshipContractType2PaymentDueProcessor>().AsImplementedInterfaces().SingleInstance();
         }
     }

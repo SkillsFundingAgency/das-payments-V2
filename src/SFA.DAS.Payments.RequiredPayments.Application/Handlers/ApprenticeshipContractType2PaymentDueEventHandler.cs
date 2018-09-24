@@ -12,7 +12,7 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
 {
-    public class ApprenticeshipContractType2PaymentDueEventHanlder : IApprenticeshipContractType2PaymentDueEventHanlder
+    public class ApprenticeshipContractType2PaymentDueEventHandler : IApprenticeshipContractType2PaymentDueEventHanlder
     {
         private readonly IApprenticeshipContractType2PaymentDueProcessor _act2PaymentDueProcessor;
         private readonly IRepositoryCache<PaymentEntity[]> _paymentHistoryCache;
@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         private readonly string _apprenticeshipKey;
 
-        public ApprenticeshipContractType2PaymentDueEventHanlder(IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor, IRepositoryCache<PaymentEntity[]> paymentHistoryCache, IMapper mapper, IApprenticeshipKeyService apprenticeshipKeyService, IPaymentHistoryRepository paymentHistoryRepository, string apprenticeshipKey)
+        public ApprenticeshipContractType2PaymentDueEventHandler(IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor, IRepositoryCache<PaymentEntity[]> paymentHistoryCache, IMapper mapper, IApprenticeshipKeyService apprenticeshipKeyService, IPaymentHistoryRepository paymentHistoryRepository, string apprenticeshipKey)
         {
             _act2PaymentDueProcessor = act2PaymentDueProcessor;
             _paymentHistoryCache = paymentHistoryCache;
