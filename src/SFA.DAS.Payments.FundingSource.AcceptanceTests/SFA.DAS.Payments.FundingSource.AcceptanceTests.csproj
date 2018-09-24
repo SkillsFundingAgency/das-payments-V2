@@ -13,6 +13,7 @@
     <AssemblyName>SFA.DAS.Payments.FundingSource.AcceptanceTests</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -76,14 +77,11 @@
     <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.2.2\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ServiceBus, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.ServiceBus.4.1.0\lib\net45-full\Microsoft.ServiceBus.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=8.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.Storage.8.2.0\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus, Version=8.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Azure.Transports.WindowsAzureServiceBus.8.0.3\lib\net452\NServiceBus.Azure.Transports.WindowsAzureServiceBus.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus, Version=8.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Azure.Transports.WindowsAzureServiceBus.8.0.3\lib\net452\NServiceBus.Azure.Transports.WindowsAzureServiceBus.dll</HintPath>
@@ -92,7 +90,7 @@
       <HintPath>..\packages\NServiceBus.Azure.Transports.WindowsAzureStorageQueues.8.0.1\lib\net452\NServiceBus.Azure.Transports.WindowsAzureStorageQueues.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Core, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NServiceBus.7.1.4\lib\net452\NServiceBus.Core.dll</HintPath>
+      <HintPath>..\packages\NServiceBus.7.0.1\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Newtonsoft.Json, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Newtonsoft.Json.2.1.0\lib\net452\NServiceBus.Newtonsoft.Json.dll</HintPath>
@@ -181,137 +179,209 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\RequiredPayment.cs" />
-    <Compile Include="Data\FundingSourcePayment.cs" />
     <Compile Include="EndpointNames.cs" />
-    <Compile Include="Handlers\SfaCoInvestedFundingSourceHandler.cs" />
     <Compile Include="PaymentFundingSourceIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestConfiguration.cs" />
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Completion_Balancing.feature.cs">
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature.cs">
+      <DependentUpon>Fully funded - ALL TT1 TT2 and TT3.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Balancing %28TT3%29.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Completion %28TT2%29 and Balancing %28TT3%29.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ALL TT1 TT2 and TT3.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Completion %28TT2%29 only.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Fully funded - Completion %28TT2%29 only.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\No Payment1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>No Payment.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - multiple periods.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learning %28TT1%29 only - multiple periods.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Learning %28TT1%29.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Completion %28TT2%29 and Learning %28TT1%29.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 only.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Completion %28TT2%29 only.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - single period.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learning %28TT1%29 only - single period.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Learning %28TT1%29.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Fully funded - Learning %28TT1%29.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\E2E tests\EarlyFinish_Completion_Balancing.feature.cs">
       <DependentUpon>EarlyFinish_Completion_Balancing.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature.cs">
       <DependentUpon>EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Completed_Completion_Payment_Only.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\Late_Completed_Completion_Payment_Only.feature.cs">
       <DependentUpon>Late_Completed_Completion_Payment_Only.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Continuing_No_Completion_Or_OnProg_Payment.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\Late_Continuing_No_Completion_Or_OnProg_Payment.feature.cs">
       <DependentUpon>Late_Continuing_No_Completion_Or_OnProg_Payment.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature.cs">
       <DependentUpon>Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature.cs">
       <DependentUpon>Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Completion_But_Late_OnProg_NoHistory.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Completion_But_Late_OnProg_NoHistory.feature.cs">
       <DependentUpon>OnTime_Completion_But_Late_OnProg_NoHistory.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Completion_Payment.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Completion_Payment.feature.cs">
       <DependentUpon>OnTime_Completion_Payment.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature.cs">
       <DependentUpon>OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature.cs">
       <DependentUpon>OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Final_OnProg_Payment.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\E2E tests\OnTime_Final_OnProg_Payment.feature.cs">
       <DependentUpon>OnTime_Final_OnProg_Payment.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Submission_MultipleHistoricalPayments.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>OnTime_Submission_MultipleHistoricalPayments.feature</DependentUpon>
     </Compile>
-    <Compile Include="Steps\BindingBootstrapper.cs" />
-    <Compile Include="Steps\FundingSourceInputSteps.cs" />
-    <Compile Include="Steps\FundingSourceOutputSteps.cs" />
-    <Compile Include="Steps\RequiredPaymentsOutputEarnings.cs" />
+    <Compile Include="Tests\E2E tests\OnTime_Submission_MultipleHistoricalPayments.feature.cs">
+      <DependentUpon>OnTime_Submission_MultipleHistoricalPayments.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <TransformOnBuild>true</TransformOnBuild>
-    </None>
-    <None Include="App.Debug.config">
-      <DependentUpon>App.config</DependentUpon>
-      <IsTransformFile>true</IsTransformFile>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="App.Release.config">
-      <DependentUpon>App.config</DependentUpon>
-      <IsTransformFile>true</IsTransformFile>
-    </None>
+    <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Completion_Balancing.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Fully funded - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Balancing %28TT3%29.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Completion %28TT2%29 and Balancing %28TT3%29.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Completion %28TT2%29 only.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Fully funded - Completion %28TT2%29 only.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\No Payment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>No Payment1.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - multiple periods.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learning %28TT1%29 only - multiple periods.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Learning %28TT1%29.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Completion %28TT2%29 and Learning %28TT1%29.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 only.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Completion %28TT2%29 only.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - single period.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learning %28TT1%29 only - single period.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Learning %28TT1%29.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Fully funded - Learning %28TT1%29.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\E2E tests\EarlyFinish_Completion_Balancing.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>EarlyFinish_Completion_Balancing.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature">
+    <None Include="Tests\E2E tests\EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>EarlyFinish_Missing_ILR_Completion_Balancing_OnProg.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Completed_Completion_Payment_Only.feature">
+    <None Include="Tests\E2E tests\Late_Completed_Completion_Payment_Only.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Late_Completed_Completion_Payment_Only.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Late_Continuing_No_Completion_Or_OnProg_Payment.feature">
+    <None Include="Tests\E2E tests\Late_Continuing_No_Completion_Or_OnProg_Payment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Late_Continuing_No_Completion_Or_OnProg_Payment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature">
+    <None Include="Tests\E2E tests\Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Missing_ILR_Multiple_OnProg_Payments_NoHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature">
+    <None Include="Tests\E2E tests\Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Missing_ILR_Multiple_OnProg_Payments_WithHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Completion_But_Late_OnProg_NoHistory.feature">
+    <None Include="Tests\E2E tests\OnTime_Completion_But_Late_OnProg_NoHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Completion_But_Late_OnProg_NoHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Completion_Payment.feature">
+    <None Include="Tests\E2E tests\OnTime_Completion_Payment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Completion_Payment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature">
+    <None Include="Tests\E2E tests\OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Continuing_Single_OnProg_Payment_FirstSubmission.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature">
+    <None Include="Tests\E2E tests\OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Continuing_Single_OnProg_Payment_WithHistory.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Final_OnProg_Payment.feature">
+    <None Include="Tests\E2E tests\OnTime_Final_OnProg_Payment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Final_OnProg_Payment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\OnTime_Submission_MultipleHistoricalPayments.feature">
+    <None Include="Tests\E2E tests\OnTime_Submission_MultipleHistoricalPayments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Submission_MultipleHistoricalPayments.feature.cs</LastGenOutput>
     </None>
@@ -321,21 +391,9 @@
       <Project>{0f0beb68-7f9f-4d39-b85a-3fe7701bb6cc}</Project>
       <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
-      <Project>{f6e38368-c397-488b-b041-d3e8423c1ce1}</Project>
-      <Name>SFA.DAS.Payments.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj">
-      <Project>{F62CC38C-0659-4D20-843A-CFA9BBF25D77}</Project>
-      <Name>SFA.DAS.Payments.FundingSource.Messages</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
       <Name>SFA.DAS.Payments.Messages.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
-      <Project>{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}</Project>
-      <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj">
       <Project>{21918f17-1310-4276-bef5-64243f9e0c31}</Project>
@@ -345,9 +403,6 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\NServiceBus.7.1.4\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -356,7 +411,6 @@
     <Error Condition="!Exists('..\packages\NUnit.3.10.1\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.10.1\build\NUnit.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets'))" />
     <Error Condition="!Exists('..\packages\SpecFlow.2.4.0\build\SpecFlow.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.2.4.0\build\SpecFlow.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.1.66\build\Microsoft.VisualStudio.SlowCheetah.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SlowCheetah.3.1.66\build\Microsoft.VisualStudio.SlowCheetah.targets'))" />
     <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props'))" />
     <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets'))" />
   </Target>
@@ -368,6 +422,5 @@
   </Target>
   <Import Project="..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets" Condition="Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets')" />
   <Import Project="..\packages\SpecFlow.2.4.0\build\SpecFlow.targets" Condition="Exists('..\packages\SpecFlow.2.4.0\build\SpecFlow.targets')" />
-  <Import Project="..\packages\Microsoft.VisualStudio.SlowCheetah.3.1.66\build\Microsoft.VisualStudio.SlowCheetah.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.1.66\build\Microsoft.VisualStudio.SlowCheetah.targets')" />
   <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets')" />
 </Project>
