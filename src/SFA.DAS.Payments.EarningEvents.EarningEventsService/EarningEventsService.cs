@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
     /// </summary>
-    internal sealed class EarningEventsService : StatelessService
+    public class EarningEventsService : StatelessService
     {
         public EarningEventsService(StatelessServiceContext context)
             : base(context)

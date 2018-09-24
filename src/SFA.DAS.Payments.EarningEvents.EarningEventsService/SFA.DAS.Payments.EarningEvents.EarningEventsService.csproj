@@ -20,4 +20,8 @@
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0-alpha0160" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Service.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
+  </ItemGroup>
+
 </Project>
