@@ -43,7 +43,7 @@ Background:
 @Historical_Payments
 @Completion (TT2)
 
-Scenario Outline: Contract Type 2 no On Programme Learning payments
+Scenario: Contract Type 2 no On Programme Learning payments
 
 	When a payments due event is received
 
