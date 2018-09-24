@@ -17,15 +17,15 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
     [StatePersistence(StatePersistence.Volatile)]
     public class RequiredPaymentsService : Actor, IRequiredPaymentsService
     {
-        private ApprenticeshipContractType2PaymentDueEventHandler _act2PaymentDueEventHandler;
-        private ReliableCollectionCache<PaymentEntity[]> _paymentHistoryCache;
+        private ApprenticeshipContractType2PaymentDueEventHandler act2PaymentDueEventHandler;
+        private ReliableCollectionCache<PaymentEntity[]> paymentHistoryCache;
 
-        private readonly IPaymentLogger _paymentLogger;
-        private readonly string _apprenticeshipKey;
-        private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
-        private readonly IApprenticeshipContractType2PaymentDueProcessor _act2PaymentDueProcessor;
-        private readonly IMapper _mapper;
-        private readonly IPaymentHistoryRepository _paymentHistoryRepository;
+        private readonly IPaymentLogger paymentLogger;
+        private readonly string apprenticeshipKey;
+        private readonly IApprenticeshipKeyService apprenticeshipKeyService;
+        private readonly IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor;
+        private readonly IMapper mapper;
+        private readonly IPaymentHistoryRepository paymentHistoryRepository;
 
         public RequiredPaymentsService(ActorService actorService,
             ActorId actorId,
@@ -33,37 +33,37 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             IApprenticeshipKeyService apprenticeshipKeyService,
             IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor, IMapper mapper, IPaymentHistoryRepository paymentHistoryRepository) : base(actorService, actorId)
         {
-            _paymentLogger = paymentLogger;
-            _apprenticeshipKeyService = apprenticeshipKeyService;
-            _act2PaymentDueProcessor = act2PaymentDueProcessor;
-            _mapper = mapper;
-            _paymentHistoryRepository = paymentHistoryRepository;
-            _apprenticeshipKey = actorId.GetStringId();
+            this.paymentLogger = paymentLogger;
+            this.apprenticeshipKeyService = apprenticeshipKeyService;
+            this.act2PaymentDueProcessor = act2PaymentDueProcessor;
+            this.mapper = mapper;
+            this.paymentHistoryRepository = paymentHistoryRepository;
+            apprenticeshipKey = actorId.GetStringId();
         }
 
         public async Task<ApprenticeshipContractType2RequiredPaymentEvent> HandleAct2PaymentDueEvent(ApprenticeshipContractType2PaymentDueEvent paymentDueEvent, CancellationToken cancellationToken)
         {
-            _paymentLogger.LogVerbose($"Handling PaymentDue for {_apprenticeshipKey}");
+            paymentLogger.LogVerbose($"Handling PaymentDue for {apprenticeshipKey}");
 
             if (!await IsInitialised().ConfigureAwait(false))
                 await Initialise().ConfigureAwait(false);
 
-            var requiredPaymentEvents = await _act2PaymentDueEventHandler.HandlePaymentDue(paymentDueEvent, cancellationToken).ConfigureAwait(false);
+            var requiredPaymentEvents = await act2PaymentDueEventHandler.HandlePaymentDue(paymentDueEvent, cancellationToken).ConfigureAwait(false);
 
             return requiredPaymentEvents;
         }
 
         protected override async Task OnActivateAsync()
         {
-            _paymentHistoryCache = new ReliableCollectionCache<PaymentEntity[]>(StateManager);
+            paymentHistoryCache = new ReliableCollectionCache<PaymentEntity[]>(StateManager);
 
-            _act2PaymentDueEventHandler = new ApprenticeshipContractType2PaymentDueEventHandler(
-                _act2PaymentDueProcessor,
-                _paymentHistoryCache,
-                _mapper,
-                _apprenticeshipKeyService,
-                _paymentHistoryRepository,
-                _apprenticeshipKey
+            act2PaymentDueEventHandler = new ApprenticeshipContractType2PaymentDueEventHandler(
+                act2PaymentDueProcessor,
+                paymentHistoryCache,
+                mapper,
+                apprenticeshipKeyService,
+                paymentHistoryRepository,
+                apprenticeshipKey
             );
 
             if (!await IsInitialised().ConfigureAwait(false))
@@ -74,11 +74,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
         public async Task Initialise()
         {
-            _paymentLogger.LogInfo($"Initialising actor for apprenticeship {_apprenticeshipKey}");
+            paymentLogger.LogInfo($"Initialising actor for apprenticeship {apprenticeshipKey}");
 
             //await _act2PaymentDueEventHanlder.PopulatePaymentHistoryCache(CancellationToken.None).ConfigureAwait(false);
 
-            _paymentLogger.LogInfo($"Initialised actor for apprenticeship {_apprenticeshipKey}");
+            paymentLogger.LogInfo($"Initialised actor for apprenticeship {apprenticeshipKey}");
 
             await StateManager.AddStateAsync("initialised", true).ConfigureAwait(false);
         }

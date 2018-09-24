@@ -8,16 +8,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 {
     public class PaymentHistoryRepository : IPaymentHistoryRepository
     {
-        private readonly IRequiredPaymentsDataContext _requiredPaymentsDataContext;
+        private readonly IRequiredPaymentsDataContext requiredPaymentsDataContext;
 
         public PaymentHistoryRepository(IRequiredPaymentsDataContext requiredPaymentsDataContext)
         {
-            _requiredPaymentsDataContext = requiredPaymentsDataContext;
+            this.requiredPaymentsDataContext = requiredPaymentsDataContext;
         }
 
         public async Task<PaymentEntity[]> GetPaymentHistory(string apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await _requiredPaymentsDataContext.PaymentHistory
+            return await requiredPaymentsDataContext.PaymentHistory
                 .Where(p => p.ApprenticeshipKey == apprenticeshipKey)
                 .ToArrayAsync(cancellationToken);
         }

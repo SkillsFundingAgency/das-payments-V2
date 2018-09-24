@@ -9,7 +9,6 @@ using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -19,34 +18,34 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 {
     public class ApprenticeshipContractType2PaymentDueEventHandler : IHandleMessages<ApprenticeshipContractType2PaymentDueEvent>
     {
-        private readonly IApprenticeshipKeyService _apprenticeshipKeyService;
-        private readonly IActorProxyFactory _proxyFactory;
-        private readonly IPaymentLogger _paymentLogger;
-        private readonly ILifetimeScope _lifetimeScope;
+        private readonly IApprenticeshipKeyService apprenticeshipKeyService;
+        private readonly IActorProxyFactory proxyFactory;
+        private readonly IPaymentLogger paymentLogger;
+        private readonly ILifetimeScope lifetimeScope;
 
         public ApprenticeshipContractType2PaymentDueEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
                                         IActorProxyFactory proxyFactory,
                                         IPaymentLogger paymentLogger,
                                         ILifetimeScope lifetimeScope)
         {
-            _apprenticeshipKeyService = apprenticeshipKeyService;
-            _proxyFactory = proxyFactory ?? new ActorProxyFactory();
-            _paymentLogger = paymentLogger;
-            _lifetimeScope = lifetimeScope;
+            this.apprenticeshipKeyService = apprenticeshipKeyService;
+            this.proxyFactory = proxyFactory ?? new ActorProxyFactory();
+            this.paymentLogger = paymentLogger;
+            this.lifetimeScope = lifetimeScope;
         }
 
         public async Task Handle(ApprenticeshipContractType2PaymentDueEvent message, IMessageHandlerContext context)
         {
 //            using (_lifetimeScope.BeginLifetimeScope())
             {
-                _paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
+                paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
 
-                var executionContext = (ESFA.DC.Logging.ExecutionContext) _lifetimeScope.Resolve<IExecutionContext>();
+                var executionContext = (ESFA.DC.Logging.ExecutionContext) lifetimeScope.Resolve<IExecutionContext>();
                 executionContext.JobId = message.JobId;
 
                 try
                 {
-                    var key = _apprenticeshipKeyService.GenerateApprenticeshipKey(
+                    var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
                         message.Ukprn,
                         message.Learner.ReferenceNumber,
                         message.LearningAim.FrameworkCode,
@@ -57,7 +56,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     );
 
                     var actorId = new ActorId(key);
-                    var actor = _proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
+                    var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
                     ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentEvent;
                     try
                     {
@@ -65,7 +64,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     }
                     catch (Exception ex)
                     {
-                        _paymentLogger.LogError($"Error invoking required payments actor. Error: {ex.Message}", ex);
+                        paymentLogger.LogError($"Error invoking required payments actor. Error: {ex.Message}", ex);
                         throw;
                     }
 
@@ -77,16 +76,16 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     catch (Exception ex)
                     {
                         //TODO: add more details when we flesh out the event.
-                        _paymentLogger.LogError($"Error publishing the event: 'RequiredPaymentEvent'.  Error: {ex.Message}.", ex);
+                        paymentLogger.LogError($"Error publishing the event: 'RequiredPaymentEvent'.  Error: {ex.Message}.", ex);
                         throw;
                         //TODO: update the job
                     }
 
-                    _paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
+                    paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
                 }
                 catch (Exception ex)
                 {
-                    _paymentLogger.LogError("Error while handling RequiredPaymentsProxyService event", ex);
+                    paymentLogger.LogError("Error while handling RequiredPaymentsProxyService event", ex);
                     throw;
                 }
             }

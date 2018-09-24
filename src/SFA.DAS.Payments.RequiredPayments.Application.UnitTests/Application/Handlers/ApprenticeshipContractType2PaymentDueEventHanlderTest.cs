@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
     [TestFixture]
     public class ApprenticeshipContractType2PaymentDueEventHanlderTest
     {
-        private IApprenticeshipContractType2PaymentDueEventHanlder _act2PaymentDueEventHandler;
+        private IApprenticeshipContractType2PaymentDueEventHandler _act2PaymentDueEventHandler;
         private Mock<IApprenticeshipContractType2PaymentDueProcessor> _paymentDueProcessorMock;
         private Mock<IRepositoryCache<PaymentEntity[]>> _paymentHistoryCacheMock;
         private Mock<IApprenticeshipKeyService> _apprenticeshipKeyServiceMock;

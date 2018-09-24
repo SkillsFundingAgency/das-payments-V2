@@ -3,17 +3,14 @@
     // borrowed from ServiceFabric
     public struct ConditionalValue<T>
     {
-        private readonly bool _hasValue;
-        private readonly T _value;
-
         public ConditionalValue(bool hasValue, T value)
         {
-            _hasValue = hasValue;
-            _value = value;
+            this.HasValue = hasValue;
+            this.Value = value;
         }
 
-        public bool HasValue => _hasValue;
+        public bool HasValue { get; }
 
-        public T Value => _value;
+        public T Value { get; }
     }
 }

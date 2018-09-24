@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Data
 {
     public class RequiredPaymentsDataContext : DbContext, IRequiredPaymentsDataContext
     {
-        private readonly string _connectionString;
+        private readonly string connectionString;
 
         public RequiredPaymentsDataContext()
         {
@@ -13,18 +13,18 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Data
 
         public RequiredPaymentsDataContext(string connectionString)
         {
-            _connectionString = connectionString;
+            this.connectionString = connectionString;
         }
 
         public RequiredPaymentsDataContext(DbContextOptions options, string connectionString)
             : base(options)
         {
-            _connectionString = connectionString;
+            this.connectionString = connectionString;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString);
+            optionsBuilder.UseSqlServer(connectionString);
         }
 
         public virtual DbSet<PaymentEntity> PaymentHistory { get; set; }
