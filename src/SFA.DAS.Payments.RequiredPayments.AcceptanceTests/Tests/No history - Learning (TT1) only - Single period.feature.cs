@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.ACT2_TransTypes_1To3_Basic_Tests
+namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 {
     using TechTalk.SpecFlow;
     

@@ -1,5 +1,5 @@
-﻿Feature: Completion (TT2) and Balancing (TT3)
-#Provider earnings and payments where learner completes earlier than planned (3 months early)
+﻿Feature: ALL TT1 TT2 and TT3
+#Provider earnings and payments where learner completes earlier than planned (3 months early) but missing previous submission
 
 Background:
 
@@ -35,24 +35,26 @@ Background:
 	| learnref1      | 10000 | p1                     | 6      | 10000 | Learning (TT1)		| 1000   |
 	| learnref1      | 10000 | p1                     | 7      | 10000 | Learning (TT1)		| 1000   |
 	| learnref1      | 10000 | p1                     | 8      | 10000 | Learning (TT1)		| 1000   |
-	| learnref1      | 10000 | p1                     | 9      | 10000 | Learning (TT1)		| 1000   |
-	
+
 	
 @Non-DAS
+@Learning (TT1)
 @Completion (TT2)
 @Balancing (TT3)
 @Historical_Payments
 
-Scenario Outline: Contract Type 2 no On Programme Learning payments
-
+Scenario Outline: Contract Type 2 On Programme Learning payments	
 	When a payments due event is received
+	Then the required payments component will generate the following contract type 2 payable earnings:
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
+	| learnref1      | 10000 | p1                     | 9      | 10000 | <transaction_type> | <amount> |
 
-	Then the required payments component will not generate Learning (TT1) payable earnings
-
+	Examples: 
+	| transaction_type | amount |
+	| Learning (TT1)   | 1000   |	
+	
 Scenario Outline: Contract Type 2 On Programme Completion payment
-
 	When a payments due event is received
-
 	Then the required payments component will generate the following contract type 2 Completion (TT2) payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 10     | 10000 | <transaction_type> | <amount> |
@@ -63,9 +65,7 @@ Scenario Outline: Contract Type 2 On Programme Completion payment
 	
 	
 Scenario Outline: Contract Type 2 On Programme Balancing payment
-
 	When a payments due event is received
-
 	Then the required payments component will generate the following contract type 2 Balancing (TT3) payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period  | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 10      | 10000 | <transaction_type> | <amount> |
@@ -73,3 +73,4 @@ Scenario Outline: Contract Type 2 On Programme Balancing payment
 	Examples: 
 	| transaction_type | amount |
 	| Balancing (TT3)  | 3000   |	
+

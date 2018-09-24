@@ -2,13 +2,9 @@
 
 Background:
 	Given the current processing period is 14
-
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
 	And the SFA contribution percentage is "90%"
-
 	And the payments due component generates the following contract type 2 payments due:	
-
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | Learning (TT1)		| 600    |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | Learning (TT1)		| 600    |
@@ -25,7 +21,6 @@ Background:
 	| learnref1      | 10000 | p1                     | 14     | 10000 | Completion (TT2)   | 3000   |
 
 	And the following historical contract type 2 On Programme Learning payments exist:
-
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | Learning (TT1)		| 600    |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | Learning (TT1)		| 600    |
@@ -46,17 +41,12 @@ Background:
 @LateCompletion
 @Completion (TT2)
 
-Scenario Outline: Contract Type 2 no On Programme Learning payments
-
+Scenario: Contract Type 2 no On Programme Learning payments
 	When a payments due event is received
-
 	Then the required payments component will not generate Learning (TT1) payable earnings
 
-
 Scenario Outline: Contract Type 2 On Programme Completion payment
-
 	When a payments due event is received
-
 	Then the required payments component will generate the following contract type 2 Completion (TT2) payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount   |
 	| learnref1      | 10000 | p1                     | 14     | 10000 | <transaction_type> | <amount> |
@@ -67,7 +57,5 @@ Scenario Outline: Contract Type 2 On Programme Completion payment
 
 
 Scenario: Contract Type 2 no On Programme Balancing payment
-
 	When a payments due event is received
-
 	Then the required payments component will not generate any contract type 2 Balancing (TT3) payable earnings
