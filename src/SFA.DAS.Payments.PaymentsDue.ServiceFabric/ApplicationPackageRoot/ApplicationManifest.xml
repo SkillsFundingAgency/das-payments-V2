@@ -7,6 +7,7 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsDueService_EndpointName" DefaultValue="" />
     <Parameter Name="FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="StorageConnectionString" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -19,6 +20,7 @@
           <Section Name="ConnectionStringsSection">
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[PaymentsDueService_EndpointName]" />

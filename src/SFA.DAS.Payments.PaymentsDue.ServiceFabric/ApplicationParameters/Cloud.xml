@@ -2,5 +2,10 @@
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.PaymentsDue.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.PaymentsDue.PaymentsDueService_InstanceCount" Value="-1" />
+    <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
+    <Parameter Name="PaymentsDueService_EndpointName" Value="__PaymentsDueService_EndpointName__" />
+    <Parameter Name="FailedMessagesQueue" Value="__FailedMessagesQueue__" />
+    <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
   </Parameters>
 </Application>
