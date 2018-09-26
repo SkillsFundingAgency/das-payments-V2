@@ -156,6 +156,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Automation\RequiredPaymentsServiceAutomationObject.cs" />
     <Compile Include="Data\ContractTypeEarning.cs" />
     <Compile Include="Data\PayableEarning.cs" />
     <Compile Include="Data\OnProgrammePaymentDue.cs" />
@@ -338,9 +339,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.4\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Automation\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

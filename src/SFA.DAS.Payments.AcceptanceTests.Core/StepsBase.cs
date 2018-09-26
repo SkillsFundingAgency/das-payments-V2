@@ -83,5 +83,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             }
             return false;
         }
+
+        protected byte GetMonth(byte period)
+        {
+            return (byte)(period >= 5 ? period - 4 : period + 8);
+        }
+
+        protected short GetYear(byte period, string year)
+        {
+            var part = year.Substring(period < 5 ? 0 : 2, 2);
+            return (short)(short.Parse(part) + 2000);
+        }
     }
 }

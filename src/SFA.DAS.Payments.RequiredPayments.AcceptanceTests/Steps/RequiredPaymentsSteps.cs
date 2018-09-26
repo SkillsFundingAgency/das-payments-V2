@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
@@ -50,17 +48,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return payment;
         }
 
-        private byte GetMonth(byte period)
-        {
-            return (byte)(period >= 5 ? period - 4 : period + 8);
-        }
-
-        private short GetYear(byte period, string year)
-        {
-            var part = year.Substring(period < 5 ? 0 : 2, 2);
-            return (short)(short.Parse(part) + 2000);
-        }
-
         [Then(@"the required payments component will generate the following contract type (.*) payable earnings:")]
         public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypePayableEarnings(string contractType, Table expectedEventsTable)
         {
@@ -83,7 +70,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [Then(@"the required payments component will not generate Learning \(TT(.*)\) payable earnings")]
         public void ThenTheRequiredPaymentsComponentWillNotGenerateLearningTTPayableEarnings(int p0)
         {
-
             WaitForIt(() =>
             {
                 return PaymentsDue.Where(x => x.Type == OnProgrammeEarningType.Learning).All(paymentDue =>
