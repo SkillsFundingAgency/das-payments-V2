@@ -5,7 +5,7 @@ using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.Application
 {
-    public class Act2PayableEarningService : IAct2PayableEarningService
+    public class ApprenticeshipContractType2PayableEarningService : IApprenticeshipContractType2PayableEarningService
     {
         public Task<ApprenticeshipContractType2PaymentDueEvent[]> CreatePaymentsDue(ApprenticeshipContractType2EarningEvent message)
         {

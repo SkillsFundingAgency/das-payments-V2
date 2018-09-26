@@ -14,10 +14,10 @@ namespace SFA.DAS.Payments.PaymentsDue.PaymentsDueService.Handlers
     {
         private readonly IPaymentLogger _paymentLogger;
         private readonly ILifetimeScope _lifetimeScope;
-        private readonly IAct2PayableEarningService _act2PayableEarningService;
+        private readonly IApprenticeshipContractType2PayableEarningService _act2PayableEarningService;
 
         public ApprenticeshipContractType2PayableEarningEventHandler(
-            IAct2PayableEarningService act2PayableEarningService, 
+            IApprenticeshipContractType2PayableEarningService act2PayableEarningService, 
             ILifetimeScope lifetimeScope, 
             IPaymentLogger paymentLogger)
         {
