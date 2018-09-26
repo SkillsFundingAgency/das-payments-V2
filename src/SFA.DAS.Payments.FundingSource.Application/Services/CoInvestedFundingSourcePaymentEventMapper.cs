@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
@@ -17,20 +18,16 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         public CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, CoInvestedPayment payment)
         {
-            var coInvestedPaymentEvent = mapper.Map<CoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent);
-           return  MapCommonCoInvestedPaymentEventData(payment, coInvestedPaymentEvent);
-        }
 
-        public CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, SfaCoInvestedPayment payment)
-        {
-            var coInvestedPaymentEvent = mapper.Map<SfaCoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent);
-            return MapCommonCoInvestedPaymentEventData(payment, coInvestedPaymentEvent);
-        }
-
-        public CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, EmployerCoInvestedPayment payment)
-        {
-            var coInvestedPaymentEvent = mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent);
-            return MapCommonCoInvestedPaymentEventData(payment, coInvestedPaymentEvent);
+            switch (payment.Type)
+            {
+                case Domain.Enum.FundingSourceType.CoInvestedSfa:
+                    return MapCommonCoInvestedPaymentEventData(payment, mapper.Map<SfaCoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent));
+                case Domain.Enum.FundingSourceType.CoInvestedEmployer:
+                    return MapCommonCoInvestedPaymentEventData(payment, mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent));
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         public RequiredCoInvestedPayment MapToRequiredCoInvestedPayment(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent)

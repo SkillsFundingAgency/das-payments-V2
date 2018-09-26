@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TechTalk.SpecFlow;
 
-namespace SFA.DAS.Payments.AcceptanceTests.Core.Application
+namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
     public class LearnRefNumberGenerator
     {

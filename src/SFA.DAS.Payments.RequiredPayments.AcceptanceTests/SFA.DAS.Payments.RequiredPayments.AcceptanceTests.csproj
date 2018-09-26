@@ -156,22 +156,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Automation\RequiredPaymentsServiceAutomationObject.cs" />
     <Compile Include="Data\ContractTypeEarning.cs" />
-    <Compile Include="Data\Course.cs" />
     <Compile Include="Data\PayableEarning.cs" />
+    <Compile Include="Data\OnProgrammePaymentDue.cs" />
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2Handler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\ACT2On_ProgrammePaymentsSteps.cs" />
     <Compile Include="Steps\BindingBootstrapper.cs" />
-    <Compile Include="Steps\CourseSteps.cs" />
     <Compile Include="Steps\EarningSteps.cs" />
     <Compile Include="Steps\FundingSteps.cs" />
     <Compile Include="Steps\HistoricalPaymentSteps.cs" />
     <Compile Include="Steps\LearnerSteps.cs" />
+    <Compile Include="Steps\PaymentDueSteps.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
     <Compile Include="Steps\ProviderSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
+    <Compile Include="Tests\Minimum\ACT 2 On-Programme Payments2.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ACT 2 On-Programme Payments.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\No history - ALL TT1 TT2 and TT3.feature.cs">
       <DependentUpon>No history - ALL TT1 TT2 and TT3.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -232,7 +240,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Learning %28TT1%29 only - Single period.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\RequiredPaymentsIntegrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -247,6 +254,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Minimum\ACT 2 On-Programme Payments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ACT 2 On-Programme Payments2.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\No history - ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>No history - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
@@ -308,10 +319,6 @@
       <Project>{f6e38368-c397-488b-b041-d3e8423c1ce1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
-      <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>
-      <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>
       <Name>SFA.DAS.Payments.Messages.Core</Name>
@@ -319,6 +326,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
       <Project>{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.Messages\SFA.DAS.Payments.PaymentsDue.Messages.csproj">
+      <Project>{58746D22-1336-4EA0-8651-B107471E4035}</Project>
+      <Name>SFA.DAS.Payments.PaymentsDue.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj">
       <Project>{21918F17-1310-4276-BEF5-64243F9E0C31}</Project>
@@ -328,9 +339,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.4\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Application\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

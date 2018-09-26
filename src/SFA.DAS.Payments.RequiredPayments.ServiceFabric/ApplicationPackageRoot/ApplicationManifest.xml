@@ -9,6 +9,7 @@
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
+    <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="FailedMessagesQueue" DefaultValue="" />
   </Parameters>
@@ -21,6 +22,7 @@
       <ConfigOverride Name="Config">
         <Settings>
           <Section Name="ConnectionStringsSection">
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
@@ -41,6 +43,7 @@
           <Section Name="ConnectionStringsSection">
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">

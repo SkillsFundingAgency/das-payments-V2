@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using Autofac;
 using NServiceBus;
 using NUnit.Framework;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
@@ -13,27 +13,36 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
     [Binding]
     public abstract class StepsBase
     {
+        public ScenarioContext ScenarioCtx { get; }
         public static ContainerBuilder Builder { get; protected set; }
         public static IContainer Container { get; protected set; }
         public static IMessageSession MessageSession { get; protected set; }
         public TestsConfiguration Config => Container.Resolve<TestsConfiguration>();
+        public TestSession TestSession { get => Get<TestSession>(); set => Set(value); }
         public string Environment => Config.GetAppSetting("Environment");
-
+        protected string CollectionYear { get => Get<string>("collection_year"); set => Set(value, "collection_year"); }
+        protected byte CollectionPeriod { get => Get<byte>("collection_period"); set => Set(value, "collection_period"); }
         public bool IsDevEnvironment => (Environment?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) ||
                                         (Environment?.Equals("LOCAL", StringComparison.OrdinalIgnoreCase) ?? false);
+        protected decimal SfaContributionPercentage { get => Get<decimal>("sfa_contribution_percentage"); set => Set(value, "sfa_contribution_percentage"); }
+        protected byte ContractType { get => Get<byte>("contract_type"); set => Set(value, "contract_type"); }
 
-        protected List<IEarningEvent> EarningEvents { get => Get<List<IEarningEvent>>(); set => Set(value); }
+        protected StepsBase(ScenarioContext scenarioContext)
+        {
+            ScenarioCtx = scenarioContext;
+        }
+
         public T Get<T>(string key = null)// where T : class
         {
-            return key == null ? ScenarioContext.Current.Get<T>() : ScenarioContext.Current.Get<T>(key);
+            return key == null ? ScenarioCtx.Get<T>() : ScenarioCtx.Get<T>(key);
         }
 
         public void Set<T>(T item, string key = null)
         {
             if (key == null)
-                ScenarioContext.Current.Set(item);
+                ScenarioCtx.Set(item);
             else
-                ScenarioContext.Current.Set(item, key);
+                ScenarioCtx.Set(item, key);
         }
 
         protected void WaitForIt(Func<bool> lookForIt, string failText)
@@ -73,6 +82,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 Thread.Sleep(Config.TimeToPause);
             }
             return false;
+        }
+
+        protected byte GetMonth(byte period)
+        {
+            return (byte)(period >= 5 ? period - 4 : period + 8);
+        }
+
+        protected short GetYear(byte period, string year)
+        {
+            var part = year.Substring(period < 5 ? 0 : 2, 2);
+            return (short)(short.Parse(part) + 2000);
         }
     }
 }

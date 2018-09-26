@@ -15,9 +15,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         private readonly LearnRefNumberGenerator generator;
 
 
-        public RequiredPaymentsOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator)
+        public RequiredPaymentsOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator): base(context)
         {
-            this.context = context;
             this.generator = generator;
 
         }
@@ -40,7 +39,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
                 var payableEarnings = table.CreateSet<PayableEarning>().ToList();
 
-                return payableEarnings.All(x => results.Any(resultEvent => x.Period == resultEvent.Period
+                return payableEarnings.All(x => results.Any(resultEvent => x.Period == resultEvent.DeliveryPeriod.Period
                                                                     && x.Ukprn == resultEvent.Ukprn
                                                                     && generator.Generate(x.Ukprn, x.LearnRefNumber)
                                                                         .ToString() ==

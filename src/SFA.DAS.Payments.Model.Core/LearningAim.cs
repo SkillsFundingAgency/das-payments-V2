@@ -15,5 +15,10 @@
         public decimal AgreedPrice { get; set; }
         
         public string FundingLineType { get; set; }
+
+        public LearningAim Clone()
+        {
+            return (LearningAim)MemberwiseClone();
+        }
     }
 }

@@ -75,10 +75,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 #line 4
  testRunner.Given("the current processing period is 13", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 5
+ testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 6
  testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 6
- testRunner.And("the SFA contribution percentage is \"90%\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 7
+ testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -192,7 +194,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "10000",
                         "Completion (TT2)",
                         "1800"});
-#line 7
+#line 8
  testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -299,7 +301,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-#line 23
+#line 24
  testRunner.And("the following historical contract type 2 On Programme Learning payments exist:", ((string)(null)), table2, "And ");
 #line hidden
         }
@@ -309,14 +311,14 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
         public virtual void ContractType2NoOnProgrammeLearningPayments()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 no On Programme Learning payments", null, ((string[])(null)));
-#line 38
+#line 39
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 39
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 40
+ testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 41
  testRunner.Then("the required payments component will not generate Learning (TT1) payable earnings" +
                     "", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -329,12 +331,12 @@ this.FeatureBackground();
         public virtual void ContractType2OnProgrammeCompletionPayment(string transaction_Type, string amount, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On Programme Completion payment", null, exampleTags);
-#line 42
+#line 43
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 43
+#line 44
  testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -353,7 +355,7 @@ this.FeatureBackground();
                         "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
-#line 44
+#line 45
  testRunner.Then("the required payments component will generate the following contract type 2 Compl" +
                     "etion (TT2) payable earnings:", ((string)(null)), table3, "Then ");
 #line hidden
@@ -365,14 +367,14 @@ this.FeatureBackground();
         public virtual void ContractType2NoOnProgrammeBalancingPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 no On Programme Balancing payment", null, ((string[])(null)));
-#line 52
+#line 53
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 53
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 54
+ testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 55
  testRunner.Then("the required payments component will not generate any contract type 2 Balancing (" +
                     "TT3) payable earnings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
