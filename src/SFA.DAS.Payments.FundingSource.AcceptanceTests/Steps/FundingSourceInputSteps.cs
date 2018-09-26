@@ -17,9 +17,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
     {
         private readonly ScenarioContext context;
 
-        public FundingSourceInputSteps(ScenarioContext context)
+        public FundingSourceInputSteps(ScenarioContext context): base(context)
         {
-            this.context = context;
+            
         }
 
         [When(@"a payable earning event is received")]
@@ -46,7 +46,6 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                 AmountDue = p.Amount,
                 JobId = Guid.NewGuid().ToString(),
                 EventTime = DateTimeOffset.UtcNow,
-                Period = (byte) p.Period,
                 PriceEpisodeIdentifier = p.PriceEpisodeIdentifier,
                 SfaContributionPercentage = 0.9M,
                 Ukprn = learner.Ukprn,
@@ -60,8 +59,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                     Reference = "ZPROG001",
                     StandardCode = 0
                 },
-                CollectionPeriod = new NamedCalendarPeriod {Month = 8, Name = "R01", Year = 2017},
-                DeliveryPeriod = new CalendarPeriod {Month = 8, Year = 8}
+                CollectionPeriod = new CalendarPeriod(2017, 8),
+                DeliveryPeriod = new CalendarPeriod(2017, 8)
             };
 
             var options = new SendOptions();

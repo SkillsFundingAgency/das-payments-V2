@@ -10,6 +10,10 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
     [Binding]
     public class BindingBootstrapper : StepsBase
     {
+        public BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
+        {
+        }
+
         [BeforeTestRun(Order = 51)]
         public static void AddRoutingConfig()
         {
@@ -19,6 +23,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(IRequiredPayment), EndpointNames.NonLevyFundedPaymentsService);
             routing.RouteToEndpoint(typeof(ApprenticeshipContractType2RequiredPaymentEvent), EndpointNames.NonLevyFundedPaymentsService);
+            routing.RouteToEndpoint(typeof(SfaCoInvestedFundingSourcePaymentEvent), EndpointNames.NonLevyFundedPaymentsService);
+            routing.RouteToEndpoint(typeof(EmployerCoInvestedFundingSourcePaymentEvent), EndpointNames.NonLevyFundedPaymentsService);
         }
     }
 }

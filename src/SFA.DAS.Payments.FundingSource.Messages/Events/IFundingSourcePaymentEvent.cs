@@ -2,11 +2,7 @@
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Events
 {
-    public interface IFundingSourcePaymentEvent: IPeriodisedEarningEvent
+    public interface IFundingSourcePaymentEvent: IPeriodisedPaymentEvent
     {
-        
     }
-
-
-
 }

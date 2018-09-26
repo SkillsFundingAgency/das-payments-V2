@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
     {
         private readonly LearnRefNumberGenerator generator;
 
-        public FundingSourceOutputSteps(LearnRefNumberGenerator generator)
+        public FundingSourceOutputSteps(ScenarioContext context, LearnRefNumberGenerator generator): base(context)
         {
             this.generator = generator;
         }

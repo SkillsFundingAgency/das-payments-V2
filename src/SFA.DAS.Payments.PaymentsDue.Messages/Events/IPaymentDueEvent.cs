@@ -1,21 +1,10 @@
-﻿using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
 {
-    public interface IPaymentDueEvent
+    public interface IPaymentDueEvent: IPeriodisedPaymentEvent
     {
-        long Ukprn { get; set; }
 
-        Learner Learner { get; set; }
-
-        LearningAim LearningAim { get; set; }
-
-        string PriceEpisodeIdentifier { get; set; }
-
-        decimal AmountDue { get; set; }
-
-        CalendarPeriod CollectionPeriod { get; set; }
-
-        CalendarPeriod DeliveryPeriod { get; set; }
     }
 }
