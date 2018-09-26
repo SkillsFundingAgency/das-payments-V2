@@ -10,8 +10,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         {
             try
             {
-                var builder = ServiceFabricContainerFactory.CreateBuilderForActor<ProviderPaymentsService>();
-                using (builder.Build())
+                using (ServiceFabricContainerFactory.CreateContainerForActor<ProviderPaymentsService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }
@@ -22,6 +21,5 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
                 throw;
             }
         }
-
     }
 }

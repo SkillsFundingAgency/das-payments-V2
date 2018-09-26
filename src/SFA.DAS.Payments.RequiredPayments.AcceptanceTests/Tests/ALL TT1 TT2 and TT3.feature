@@ -2,15 +2,11 @@
 #Provider earnings and payments where learner completes earlier than planned (3 months early) but missing previous submission
 
 Background:
-
 	Given the current processing period is 10
-
+	And the payments are for the current collection year
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
-
-	And the SFA contribution percentage is "90%"
-
+	And the SFA contribution percentage is 90%
 	And the payments due component generates the following contract type 2 payments due:	
-
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | Learning (TT1)		| 1000   |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | Learning (TT1)		| 1000   |
@@ -25,7 +21,6 @@ Background:
 	| learnref1      | 10000 | p1                     | 10     | 10000 | Balancing (TT3)    | 3000   |
 
 	And the following historical contract type 2 On Programme Learning payments exist:
-
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType    | Amount |
 	| learnref1      | 10000 | p1                     | 1      | 10000 | Learning (TT1)		| 1000   |
 	| learnref1      | 10000 | p1                     | 2      | 10000 | Learning (TT1)		| 1000   |

@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
         {
             builder.Register((c, p) =>
                 {
-                    var configHelper = c.Resolve<IConfigurationHelper >();
+                    var configHelper = c.Resolve<IConfigurationHelper>();
                     return new LoggerOptions
                     {
                         LoggerConnectionString = configHelper.GetConnectionString("LoggingConnectionString")

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NServiceBus;
@@ -9,7 +10,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers
 {
     public class ApprenticeshipContractType2Handler:IHandleMessages<ApprenticeshipContractType2RequiredPaymentEvent>
     {
-        public static List<ApprenticeshipContractType2RequiredPaymentEvent>  ReceivedEvents { get; } = new List<ApprenticeshipContractType2RequiredPaymentEvent>();
+        //public static List<ApprenticeshipContractType2RequiredPaymentEvent>  ReceivedEvents { get; } = new List<ApprenticeshipContractType2RequiredPaymentEvent>();
+        public static ConcurrentBag<ApprenticeshipContractType2RequiredPaymentEvent> ReceivedEvents { get; } = new ConcurrentBag<ApprenticeshipContractType2RequiredPaymentEvent>();
 
         public async Task Handle(ApprenticeshipContractType2RequiredPaymentEvent message, IMessageHandlerContext context)
         {

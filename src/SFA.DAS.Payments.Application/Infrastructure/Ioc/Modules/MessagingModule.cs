@@ -24,7 +24,9 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
 
                 endpointConfiguration.DisableFeature<TimeoutManager>();
                 var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-                transport.ConnectionString(config.ServiceBusConnectionString);
+                transport
+                    .ConnectionString(config.ServiceBusConnectionString)
+                    .Transactions(TransportTransactionMode.ReceiveOnly); 
                 endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
                 endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
                 endpointConfiguration.EnableInstallers();

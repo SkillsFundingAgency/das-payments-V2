@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 
-namespace SFA.DAS.Payments.RequiredPayments.UnitTests.Application
+namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 {
     [TestFixture]
     public class MapperConfigurationTest
