@@ -1,22 +1,26 @@
-﻿using TechTalk.SpecFlow;
+﻿using System;
+using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class ProcessingPeriodSteps
+    public class ProcessingPeriodSteps: RequiredPaymentsStepsBase
     {
-        private readonly ScenarioContext context;
-
-        public ProcessingPeriodSteps(ScenarioContext context)
+        public ProcessingPeriodSteps(ScenarioContext context): base(context)
         {
-            this.context = context;
         }
 
         [Given(@"the current processing period is (.*)")]
-        public void GivenTheCurrentProcessingPeriodIs(short period)
+        public void GivenTheCurrentProcessingPeriodIs(byte period)
         {
-            context["ProcessingPeriod"] = period;
+            CollectionPeriod = period;
         }
 
+        [Given(@"the payments are for the current collection year")]
+        public void GivenThePaymentsAreForTheCurrentCollectionYear()
+        {
+            var year = DateTime.Today.Year - 2000;
+            CollectionYear = DateTime.Today.Month < 9 ? $"{year - 1}{year}" : $"{year}{year + 1}";
+        }
     }
 }

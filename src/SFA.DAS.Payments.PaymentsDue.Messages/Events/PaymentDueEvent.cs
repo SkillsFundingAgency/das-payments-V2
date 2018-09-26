@@ -21,5 +21,10 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
 
         public CalendarPeriod DeliveryPeriod { get; set; }
 
+        protected PaymentDueEvent()
+        {
+            EventTime = DateTimeOffset.UtcNow;
+        }
+
     }
 }

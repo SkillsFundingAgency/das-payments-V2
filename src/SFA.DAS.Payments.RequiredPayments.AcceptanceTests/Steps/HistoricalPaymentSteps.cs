@@ -39,6 +39,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             
         }
 
-
+        [Given(@"the following historical contract type (.*) On Programme Learning payments exist:")]
+        public void GivenTheFollowingHistoricalContractTypeOnProgrammeLearningPaymentsExist(byte contractType, Table table)
+        {
+            
+        }
     }
 }

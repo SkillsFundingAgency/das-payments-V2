@@ -37,6 +37,9 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Bogus, Version=24.0.0.0, Culture=neutral, PublicKeyToken=fa1bb3f3f218129a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bogus.24.0.0\lib\net40\Bogus.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.Amqp, Version=2.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.Amqp.2.3.0\lib\net45\Microsoft.Azure.Amqp.dll</HintPath>
     </Reference>
@@ -173,9 +176,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\LearnRefNumberGenerator.cs" />
+    <Compile Include="Automation\LearnRefNumberGenerator.cs" />
+    <Compile Include="Automation\TestSession.cs" />
     <Compile Include="Data\Learner.cs" />
+    <Compile Include="Data\DataExtensions.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
+    <Compile Include="Data\Course.cs" />
     <Compile Include="Infrastructure\TestsConfiguration.cs" />
     <Compile Include="StepsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -192,6 +198,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>
       <Name>SFA.DAS.Payments.Messages.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
+      <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
+      <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj">
       <Project>{21918f17-1310-4276-bef5-64243f9e0c31}</Project>

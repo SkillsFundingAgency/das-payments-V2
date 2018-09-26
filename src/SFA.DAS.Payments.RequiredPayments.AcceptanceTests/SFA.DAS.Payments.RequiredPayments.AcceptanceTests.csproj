@@ -157,21 +157,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\ContractTypeEarning.cs" />
-    <Compile Include="Data\Course.cs" />
     <Compile Include="Data\PayableEarning.cs" />
+    <Compile Include="Data\OnProgrammePaymentDue.cs" />
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2Handler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\ACT2On_ProgrammePaymentsSteps.cs" />
     <Compile Include="Steps\BindingBootstrapper.cs" />
-    <Compile Include="Steps\CourseSteps.cs" />
     <Compile Include="Steps\EarningSteps.cs" />
     <Compile Include="Steps\FundingSteps.cs" />
     <Compile Include="Steps\HistoricalPaymentSteps.cs" />
     <Compile Include="Steps\LearnerSteps.cs" />
+    <Compile Include="Steps\PaymentDueSteps.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
     <Compile Include="Steps\ProviderSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsSteps.cs" />
+    <Compile Include="Steps\RequiredPaymentsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
+    <Compile Include="Tests\Minimum\ACT 2 On-Programme Payments2.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ACT 2 On-Programme Payments.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\No history - ALL TT1 TT2 and TT3.feature.cs">
       <DependentUpon>No history - ALL TT1 TT2 and TT3.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -246,6 +253,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Minimum\ACT 2 On-Programme Payments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ACT 2 On-Programme Payments2.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\No history - ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>No history - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
@@ -328,7 +339,7 @@
     <Analyzer Include="..\packages\NServiceBus.7.1.4\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application\" />
+    <Folder Include="Automation\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
