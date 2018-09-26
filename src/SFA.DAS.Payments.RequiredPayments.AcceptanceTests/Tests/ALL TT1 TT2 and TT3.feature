@@ -67,5 +67,4 @@ Scenario Outline: Contract Type 2 On Programme Balancing payment
 
 	Examples: 
 	| transaction_type | amount |
-	| Balancing (TT3)  | 3000   |	
-
+	| Balancing (TT3)  | 3000   |
