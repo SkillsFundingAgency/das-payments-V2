@@ -7,6 +7,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using System;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
@@ -25,16 +26,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             requiredPaymentEvent = new ApprenticeshipContractType2RequiredPaymentEvent
             {
                 AmountDue = 1000.00m,
-                CollectionPeriod = new Model.Core.NamedCalendarPeriod
+                CollectionPeriod = new Model.Core.CalendarPeriod
                 {
                     Month = 8,
                     Name = "1819-R01",
                     Year = 2018
                 },
-                DeliveryPeriod = new Model.Core.CalendarPeriod
+                DeliveryPeriod = new CalendarPeriod
                 {
                     Month = 8,
-                    Year = 2018
+                    Year = 2018,
+                    Name = "1819R01"
                 },
                 EventTime = DateTime.UtcNow,
                 JobId = "001",
@@ -48,7 +50,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 {
                     FrameworkCode = 403
                 },
-                Period = 1,
                 PriceEpisodeIdentifier = "1819-P01",
                 SfaContributionPercentage = 0.9m,
                 Ukprn = 10000
@@ -80,7 +81,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 Learner = requiredPaymentEvent.Learner,
                 OnProgrammeEarningType = requiredPaymentEvent.OnProgrammeEarningType,
                 LearningAim = requiredPaymentEvent.LearningAim,
-                Period = requiredPaymentEvent.Period,
                 PriceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier,
                 Ukprn = requiredPaymentEvent.Ukprn
             };
@@ -113,7 +113,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 Learner = requiredPaymentEvent.Learner,
                 OnProgrammeEarningType = requiredPaymentEvent.OnProgrammeEarningType,
                 LearningAim = requiredPaymentEvent.LearningAim,
-                Period = requiredPaymentEvent.Period,
                 PriceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier,
                 Ukprn = requiredPaymentEvent.Ukprn
             };

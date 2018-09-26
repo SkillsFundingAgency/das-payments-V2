@@ -3,14 +3,11 @@
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Steps
 {
     [Binding]
-    public class ProcessingPeriodSteps
+    public class ProcessingPeriodSteps: StepsBase
     {
         private readonly ScenarioContext context;
 
-        public ProcessingPeriodSteps(ScenarioContext context)
-        {
-            this.context = context;
-        }
+        public ProcessingPeriodSteps(ScenarioContext context): base(context) { }
 
         [Given(@"the current processing period is (.*)")]
         public void GivenTheCurrentProcessingPeriodIs(short period)
@@ -18,5 +15,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Steps
             context["ProcessingPeriod"] = period;
         }
 
+        [Given(@"the collection year is (.*)")]
+        public void GivenTheCollectionYearIs(string collectionYear)
+        {
+            CollectionYear = collectionYear;
+        }
     }
 }

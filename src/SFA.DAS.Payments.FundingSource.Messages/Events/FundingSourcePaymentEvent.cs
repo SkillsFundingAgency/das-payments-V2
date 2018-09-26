@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
 
         public decimal AmountDue { get; set; }
 
-        public NamedCalendarPeriod CollectionPeriod { get; set; }
+        public CalendarPeriod CollectionPeriod { get; set; }
 
         public CalendarPeriod DeliveryPeriod { get; set; }
 

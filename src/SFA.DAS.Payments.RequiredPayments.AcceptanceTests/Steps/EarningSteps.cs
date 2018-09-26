@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
@@ -7,14 +9,20 @@ using TechTalk.SpecFlow.Assist;
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class EarningSteps
+    public class EarningSteps: StepsBase
     {
-        private readonly ScenarioContext context;
-
-        public EarningSteps(ScenarioContext context)
+        public EarningSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
-            this.context = context;
         }
+
+        [Given(@"the SFA contribution percentage is (.*)%")]
+        public void GivenTheSFAContributionPercentageIs(decimal sfaContributionPercentage)
+        {
+            Console.WriteLine($"Got sfa contribution percentage: {sfaContributionPercentage}");
+            SfaContributionPercentage = sfaContributionPercentage;
+        }
+
+
         [Given(@"the following contract type (.*) on programme earnings for periods (.*)-(.*) are provided in the latest ILR for the academic year (.*):")]
         public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriods(short contractType, byte fromPeriod, byte toPeriod, string academicYear, Table table)
         {
@@ -26,21 +34,21 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             earning.ToPeriod = toPeriod;
             earning.AcademicYear = academicYear;
 
-            context[$"ContractType{contractType}OnProgrammeEarningsLearning"] = earning;
+            ScenarioCtx[$"ContractType{contractType}OnProgrammeEarningsLearning"] = earning;
         }
 
-        [Given(@"the following contract type (.*) on programme earnings for period (.*) are provided in the latest ILR for the academic year (.*):")]
-        public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriod(short contractType, byte period, string academicYear, Table table)
-        {
-            var rawEarnings = table.CreateSet<ContractTypeEarning>();
+        //[Given(@"the following contract type (.*) on programme earnings for period (.*) are provided in the latest ILR for the academic year (.*):")]
+        //public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriod(short contractType, byte period, string academicYear, Table table)
+        //{
+        //    var rawEarnings = table.CreateSet<ContractTypeEarning>();
 
-            var earning = rawEarnings.FirstOrDefault();
+        //    var earning = rawEarnings.FirstOrDefault();
 
-            earning.FromPeriod = period;
-            earning.ToPeriod = period;
-            earning.AcademicYear = academicYear;
-            context[$"ContractType{contractType}OnProgrammeEarningsCompletion"] = earning;
-        }
+        //    earning.FromPeriod = period;
+        //    earning.ToPeriod = period;
+        //    earning.AcademicYear = academicYear;
+        //    context[$"ContractType{contractType}OnProgrammeEarningsCompletion"] = earning;
+        //}
 
 
         [Given(@"the following contract type (.*) incentive earnings for periods (.*)-(.*) are provided in the latest ILR for the academic year (.*):")]
