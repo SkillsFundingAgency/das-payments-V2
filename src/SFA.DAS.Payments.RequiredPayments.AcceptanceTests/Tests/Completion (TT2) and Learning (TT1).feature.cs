@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
  testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 8
- testRunner.And("the SFA contribution percentage is \"90%\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -333,8 +333,8 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
 #line 32
- testRunner.Then("the payments due component will generate the following contract type 2 payable ea" +
-                    "rnings:", ((string)(null)), table2, "Then ");
+ testRunner.Then("the required payments component will generate the following contract type 2 payab" +
+                    "le earnings:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
