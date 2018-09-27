@@ -382,6 +382,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Submission_MultipleHistoricalPayments.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\SmallEmployers.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>SmallEmployers.feature.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.AcceptanceTests.Core\SFA.DAS.Payments.AcceptanceTests.Core.csproj">
