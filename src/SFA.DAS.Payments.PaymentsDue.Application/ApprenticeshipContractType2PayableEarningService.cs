@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application
     {
         public Task<ApprenticeshipContractType2PaymentDueEvent[]> CreatePaymentsDue(ApprenticeshipContractType2EarningEvent message)
         {
-            // TODO: call domain service
+            var 
             return Task.FromResult(new ApprenticeshipContractType2PaymentDueEvent[0]);
         }
     }
