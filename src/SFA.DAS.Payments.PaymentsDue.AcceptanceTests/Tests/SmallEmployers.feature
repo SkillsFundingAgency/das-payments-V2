@@ -14,20 +14,20 @@ Background:
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 7500                 | completed	    |
 
 	And the following contract type 2 On Programme earnings are provided in the latest ILR for the current academic year:
-	| PriceEpisodeIdentifier | Period | TransactionType | Amount |
-	| p1                     | 1      | Learning (TT1)  | 500    |
-	| p1                     | 2      | Learning (TT1)  | 500    |
-	| p1                     | 3      | Learning (TT1)  | 500    |
-	| p1                     | 4      | Learning (TT1)  | 500    |
-	| p1                     | 5      | Learning (TT1)  | 500    |
-	| p1                     | 6      | Learning (TT1)  | 500    |
-	| p1                     | 7      | Learning (TT1)  | 500    |
-	| p1                     | 8      | Learning (TT1)  | 500    |
-	| p1                     | 9      | Learning (TT1)  | 500    |
-	| p1                     | 10     | Learning (TT1)  | 500    |
-	| p1                     | 11     | Learning (TT1)  | 500    |
-	| p1                     | 12     | Learning (TT1)  | 500    |
-	| p1                     | 12     | Completion (TT2)| 1500   |
+	| PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
+	| p1                     | 1				| Learning (TT1)  | 500    |
+	| p1                     | 2				| Learning (TT1)  | 500    |
+	| p1                     | 3				| Learning (TT1)  | 500    |
+	| p1                     | 4				| Learning (TT1)  | 500    |
+	| p1                     | 5				| Learning (TT1)  | 500    |
+	| p1                     | 6				| Learning (TT1)  | 500    |
+	| p1                     | 7				| Learning (TT1)  | 500    |
+	| p1                     | 8				| Learning (TT1)  | 500    |
+	| p1                     | 9				| Learning (TT1)  | 500    |
+	| p1                     | 10				| Learning (TT1)  | 500    |
+	| p1                     | 11				| Learning (TT1)  | 500    |
+	| p1                     | 12				| Learning (TT1)  | 500    |
+	| p1                     | 12				| Completion (TT2)| 1500   |
 
 
 @Non-DAS
