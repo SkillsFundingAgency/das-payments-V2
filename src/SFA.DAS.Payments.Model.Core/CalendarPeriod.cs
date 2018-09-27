@@ -4,12 +4,13 @@ namespace SFA.DAS.Payments.Model.Core
 {
     public class CalendarPeriod
     {
-        public short Year { get; set; }
-        public byte Month { get; set; }
-        public byte Period { get; set; }
+        public short Year { get; }
+        public byte Month { get; }
+        public byte Period { get; }
         public string Name { get; set; }
 
-        public CalendarPeriod()
+        public CalendarPeriod() 
+            : this((short) DateTime.UtcNow.Year, (byte) DateTime.UtcNow.Month)
         {
         }
 
@@ -48,11 +49,13 @@ namespace SFA.DAS.Payments.Model.Core
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            if (name.Length == 8 && name[4] == '-')
-                name = name.Replace("-", null);
+            if (name.Length == 7)
+                name = string.Concat(name.Substring(0, 4), "-", name.Substring(4));
 
-            if (name.Length != 7
-                || !int.TryParse(name.Substring(5), out var period)
+            if (name.Length != 8
+                || name[4] != '-'
+                || name[5] != 'R'
+                || !int.TryParse(name.Substring(6), out var period)
                 || !int.TryParse(name.Substring(0, 2), out var year)
                 || period < 1
                 || period > 14
@@ -71,7 +74,6 @@ namespace SFA.DAS.Payments.Model.Core
             Period = (byte)period;
         }
 
-
         public override string ToString()
         {
             return string.Concat(Name, " ", Year, "-", Month);
@@ -80,6 +82,35 @@ namespace SFA.DAS.Payments.Model.Core
         public CalendarPeriod Clone()
         {
             return (CalendarPeriod) MemberwiseClone();
+        }
+
+        public override int GetHashCode()
+        {
+            return string.Concat(Year, Month, Period).GetHashCode();
+        }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as CalendarPeriod);
+        }
+
+        public bool Equals(CalendarPeriod other)
+        {
+            if (other == null) return false;
+            return Year == other.Year && Month == other.Month && Period == other.Period;
+        }
+
+        public static bool operator ==(CalendarPeriod a, CalendarPeriod b)
+        {
+            if ((object)a == null)
+                return (object)b == null;
+
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(CalendarPeriod a, CalendarPeriod b)
+        {
+            return !(a == b);
         }
     }
 }
