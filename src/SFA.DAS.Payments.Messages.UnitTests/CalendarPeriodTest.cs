@@ -124,5 +124,13 @@ namespace SFA.DAS.Payments.Messages.UnitTests
             Assert.AreEqual(expectedYear, subj.Year);
             Assert.AreEqual(expectedMonth, subj.Month);
         }
+
+        [Test]
+        public void TestEquals()
+        {
+            Assert.IsTrue(new CalendarPeriod("1819-R01") == new CalendarPeriod("1819-R01"));
+            Assert.IsTrue(new CalendarPeriod("1819-R01") == new CalendarPeriod(2018, 8));
+            Assert.IsTrue(new CalendarPeriod("1819-R01") == new CalendarPeriod("1819", 1));
+        }
     }
 }
