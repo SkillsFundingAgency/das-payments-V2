@@ -9,7 +9,7 @@
 	[PriceEpisodeIdentifier] [nvarchar](50) NOT NULL,
 	[DeliveryPeriod] [char](8) NOT NULL,
 	[CollectionPeriod] [char](8) NOT NULL,
-	[Amount] [decimal](18, 4) NOT NULL
+	[Amount] [decimal](15, 5) NOT NULL
 )
 
 GO
