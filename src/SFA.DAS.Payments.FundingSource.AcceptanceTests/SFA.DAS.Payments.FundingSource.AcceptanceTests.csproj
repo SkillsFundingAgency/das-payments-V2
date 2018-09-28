@@ -176,9 +176,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SFA.DAS.Payments.PaymentsDue.AcceptanceTests\Steps\SmallEmployerPaymentsSteps.cs">
-      <Link>SmallEmployerPaymentsSteps.cs</Link>
-    </Compile>
     <Compile Include="EndpointNames.cs" />
     <Compile Include="PaymentFundingSourceIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
