@@ -5,7 +5,7 @@ Background:
 
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 	
-	And the SFA contribution percentage is "90%"
+	And the SFA contribution percentage is 90%"
 	
 	And the required payments component generates the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period | ULN   | TransactionType | Amount |

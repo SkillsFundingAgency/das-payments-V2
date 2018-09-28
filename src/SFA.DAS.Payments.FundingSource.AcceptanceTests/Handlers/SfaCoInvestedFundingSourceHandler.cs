@@ -7,14 +7,15 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Handlers
 {
-    public class SfaCoInvestedFundingSourceHandler:IHandleMessages<SfaCoInvestedFundingSourcePaymentEvent>
+    public class CoInvestedFundingSourceHandler : IHandleMessages<CoInvestedFundingSourcePaymentEvent>
     {
-        public static List<SfaCoInvestedFundingSourcePaymentEvent>  ReceivedEvents { get; } = new List<SfaCoInvestedFundingSourcePaymentEvent>();
+        public static List<CoInvestedFundingSourcePaymentEvent> ReceivedEvents { get; } = new List<CoInvestedFundingSourcePaymentEvent>();
 
-        public async Task Handle(SfaCoInvestedFundingSourcePaymentEvent message, IMessageHandlerContext context)
+        public async Task Handle(CoInvestedFundingSourcePaymentEvent message, IMessageHandlerContext context)
         {
             Console.WriteLine(message.ToJson());
             ReceivedEvents.Add(message);
         }
     }
+
 }

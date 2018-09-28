@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using NUnit.Framework;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
@@ -20,7 +20,7 @@ using NUnit.Framework;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c799f94d-f281-43a5-a322-e79da806c3d1")]
+[assembly: Guid("11dfd25f-521a-471b-b3db-4ea57be62b55")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,5 +34,3 @@ using NUnit.Framework;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-[assembly: Parallelizable(ParallelScope.Fixtures)]

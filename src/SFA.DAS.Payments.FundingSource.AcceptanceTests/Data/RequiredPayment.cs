@@ -4,7 +4,7 @@
     {
         public string PriceEpisodeIdentifier { get; set; }
 
-        public short Period { get; set; }
+        public byte Period { get; set; }
 
         public long Uln { get; set; }
 
