@@ -1,7 +1,9 @@
 ﻿Feature: non-DAS learner employed with a small employer, is fully funded for on programme and completion payments
-@SmallEmployerNonDas
+#Non-DAS learner employed with a small employer, is fully funded for on programme and completion payments
+
 Background:
 	Given the current collection period is R13
+	And the payments are for the current collection year
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 	And the SFA contribution percentage is 100%
 	And planned course duration is 12 months
@@ -24,6 +26,8 @@ Background:
 	| p1                     | 11				| Learning (TT1)  | 500    |
 	| p1                     | 12				| Learning (TT1)  | 500    |
 	| p1                     | 12				| Completion (TT2)| 1500   |
+
+@SmallEmployerNonDas
 
 Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	When an earnings event is received
