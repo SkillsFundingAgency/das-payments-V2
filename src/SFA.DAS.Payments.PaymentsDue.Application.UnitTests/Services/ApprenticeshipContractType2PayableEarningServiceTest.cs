@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Moq;
 using NUnit.Framework;
@@ -34,7 +35,16 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
         public void TestCreatePaymentsDue()
         {
             // arrange
-            var earningEvent = new ApprenticeshipContractType2EarningEvent();
+            var earningEvent = new ApprenticeshipContractType2EarningEvent
+            {
+                Learner = new Learner(),
+                LearningAim = new LearningAim(),
+                CollectionPeriod = new CalendarPeriod("1819R01"),
+                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new OnProgrammeEarning[]
+                {
+                    new OnProgrammeEarning()
+                })
+            };
             var paymentDueEvents = new[] {new ApprenticeshipContractType2PaymentDueEvent()};
             
             domainServiceMock.Setup(d => d.HandleOnProgrammeEarning(It.IsAny<OnProgrammeEarning>(), It.IsAny<CalendarPeriod>(), It.IsAny<Learner>(), It.IsAny<LearningAim>(), It.IsAny<decimal>()))
@@ -46,7 +56,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
 
             // assert
             Assert.IsNotNull(actualPaymentsDue);
-            Assert.AreSame(paymentDueEvents, actualPaymentsDue);
+            Assert.AreEqual(1, actualPaymentsDue.Length);
+            Assert.AreSame(paymentDueEvents[0], actualPaymentsDue[0]);
         }
     }
 }
