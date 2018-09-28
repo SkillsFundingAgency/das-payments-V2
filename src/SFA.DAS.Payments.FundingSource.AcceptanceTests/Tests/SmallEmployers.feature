@@ -7,6 +7,7 @@ Background:
 	And the required payments component generates the following contract type 2 payable earnings:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType   | Amount	|
 	| learnref1      | 10000 | p1                     | 1				| 10000 | Learning (TT1)	| 500		|
+	| learnref1      | 10000 | p1                     | 2				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 3				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 4				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 5				| 10000 | Learning (TT1)	| 500		|

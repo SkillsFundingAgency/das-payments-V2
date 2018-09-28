@@ -30,6 +30,7 @@ Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	Then the payments due component will generate the following contract type 2 payments due:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType   | Amount	|
 	| learnref1      | 10000 | p1                     | 1				| 10000 | Learning (TT1)	| 500		|
+	| learnref1      | 10000 | p1                     | 2				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 3				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 4				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 5				| 10000 | Learning (TT1)	| 500		|
@@ -48,6 +49,7 @@ Scenario: AC5- Payment for a 16-18 non-DAS learner, employer is not small
 	Then the payments due component will generate the following contract type 2 payments due:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType   | Amount	|
 	| learnref1      | 10000 | p1                     | 1				| 10000 | Learning (TT1)	| 500		|
+	| learnref1      | 10000 | p1                     | 2				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 3				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 4				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 5				| 10000 | Learning (TT1)	| 500		|
