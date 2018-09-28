@@ -54,6 +54,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Tests\1_non_levy_learner_finishes_OnTime - v1.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>1_non_levy_learner_finishes_OnTime - v1.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\1_non_levy_learner_finishes_OnTime - v2.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>1_non_levy_learner_finishes_OnTime - v2.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\SmallEmployers.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SmallEmployers.feature.cs</LastGenOutput>
