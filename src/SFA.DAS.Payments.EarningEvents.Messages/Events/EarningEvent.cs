@@ -17,5 +17,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public LearningAim LearningAim { get; set; }
         public short EarningYear { get; set; }
         public ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; set; }
+        public CalendarPeriod CollectionPeriod { get; set; }
     }
 }

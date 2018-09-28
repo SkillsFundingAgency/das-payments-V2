@@ -26,27 +26,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             requiredPaymentEvent = new ApprenticeshipContractType2RequiredPaymentEvent
             {
                 AmountDue = 1000.00m,
-                CollectionPeriod = new Model.Core.CalendarPeriod
-                {
-                    Month = 8,
-                    Name = "1819-R01",
-                    Year = 2018
-                },
-                DeliveryPeriod = new CalendarPeriod
-                {
-                    Month = 8,
-                    Year = 2018,
-                    Name = "1819R01"
-                },
+                CollectionPeriod = new CalendarPeriod("1819-R01"),
+                DeliveryPeriod = new CalendarPeriod("1819R01"),
                 EventTime = DateTime.UtcNow,
                 JobId = "001",
-                Learner = new Model.Core.Learner
+                Learner = new Learner
                 {
                     ReferenceNumber = "001",
                     Uln = 1234567890
                 },
                 OnProgrammeEarningType = OnProgrammeEarningType.Learning,
-                LearningAim = new Model.Core.LearningAim
+                LearningAim = new LearningAim
                 {
                     FrameworkCode = 403
                 },

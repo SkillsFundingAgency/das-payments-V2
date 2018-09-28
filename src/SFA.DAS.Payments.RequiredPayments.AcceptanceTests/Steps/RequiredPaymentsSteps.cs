@@ -40,8 +40,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             payment.SfaContributionPercentage = SfaContributionPercentage;
             payment.Type = paymentDue.Type;
             payment.AmountDue = paymentDue.Amount;
-            payment.CollectionPeriod = new CalendarPeriod { Name = $"{CollectionYear}-R{CollectionPeriod}", Month = GetMonth(CollectionPeriod), Period = CollectionPeriod, Year = GetYear(CollectionPeriod, CollectionYear) };
-            payment.DeliveryPeriod = new CalendarPeriod { Name = $"{CollectionYear}-R{paymentDue.Period}", Month = GetMonth(paymentDue.Period), Period = paymentDue.Period, Year = GetYear(paymentDue.Period, CollectionYear) };
+            payment.CollectionPeriod = new CalendarPeriod($"{CollectionYear}-R{CollectionPeriod}");
+            payment.DeliveryPeriod = new CalendarPeriod($"{CollectionYear}-R{paymentDue.Period}");
             payment.JobId = TestSession.JobId;
             payment.LearningAim = TestSession.Learner.Course.ToLearningAim();
             payment.PriceEpisodeIdentifier = "p-1"; //TODO: will need to change if scenario specifies different identifier
