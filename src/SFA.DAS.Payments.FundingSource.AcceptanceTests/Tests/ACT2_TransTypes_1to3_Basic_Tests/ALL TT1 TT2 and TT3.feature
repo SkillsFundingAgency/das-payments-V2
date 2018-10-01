@@ -24,7 +24,7 @@ Scenario: Contract Type 2 Learning payment
 
 	When required payments event is received
 
-	Then the payment source component will generate the following contract type 2 Learning (TT1) coinvested payments:
+	Then the payment source component will generate the following contract type 2 coinvested payments:
 
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Period  | ULN   | TransactionType | FundingSource			| Amount |
 	| learnref1      | 10000 | p1                     | 9       | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)		| 900    |

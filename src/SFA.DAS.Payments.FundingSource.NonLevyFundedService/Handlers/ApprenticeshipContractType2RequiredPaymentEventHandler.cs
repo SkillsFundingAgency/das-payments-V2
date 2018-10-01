@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
         {
             using (var scope = lifetimeScope.BeginLifetimeScope())
             {
-                paymentLogger.LogInfo($"Processing CalculatedPaymentDueEvent Service event. Message Id : {context.MessageId}");
+                paymentLogger.LogInfo($"Processing Required Payment Service event for Message Id : {context.MessageId}");
 
                 var executionContext = (ESFA.DC.Logging.ExecutionContext)scope.Resolve<IExecutionContext>();
                 executionContext.JobId = message.JobId;
@@ -42,6 +42,8 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
                         try
                         {
                             await context.Publish(recordablePaymentEvent);
+
+                            paymentLogger.LogInfo($"Successfully published CoInvestedPayment of Type  {recordablePaymentEvent.GetType().Name}");
                         }
                         catch (Exception ex)
                         {
@@ -50,7 +52,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
                         }
                     }
 
-                    paymentLogger.LogInfo($"Successfully processed NonLevyFunded Service event for Actor Id {message.JobId}");
+                    paymentLogger.LogInfo($"Successfully processed NonLevyFunded Service event for Job Id {message.JobId}");
                 }
                 catch (Exception ex)
                 {

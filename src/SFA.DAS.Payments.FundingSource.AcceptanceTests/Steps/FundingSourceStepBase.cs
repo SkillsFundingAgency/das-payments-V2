@@ -10,7 +10,6 @@ using TechTalk.SpecFlow.Assist;
 
 namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
 {
-    [Binding]
     public class FundingSourceStepBase: StepsBase
     {
 
@@ -20,12 +19,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         }
 
 
-        [Given(@"the required payments component generates the following contract type (.*) payable earnings:")]
-        public void GivenTheRequiredPaymentsComponentGeneratesTheFollowingContractTypePayableEarnings(byte contractType, Table payments)
-        {
-            ContractType = contractType;
-            RequiredPayments = payments.CreateSet<RequiredPayment>().ToList();
-        }
+       
 
     }
 }

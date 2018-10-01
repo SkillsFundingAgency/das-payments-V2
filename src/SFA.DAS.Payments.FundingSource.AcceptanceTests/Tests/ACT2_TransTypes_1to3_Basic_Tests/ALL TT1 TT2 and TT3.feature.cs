@@ -175,8 +175,8 @@ this.FeatureBackground();
                         "CoInvestedEmployer (FS3)",
                         "100"});
 #line 27
- testRunner.Then("the payment source component will generate the following contract type 2 Learning" +
-                    " (TT1) coinvested payments:", ((string)(null)), table2, "Then ");
+ testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
+                    "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
