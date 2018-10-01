@@ -5,7 +5,7 @@
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsDueService_EndpointName" Value="__PaymentsDueService_EndpointName__" />
-    <Parameter Name="FailedMessagesQueue" Value="__FailedMessagesQueue__" />
+    <Parameter Name="FailedMessagesQueue" Value="__PaymentsDueService_FailedMessagesQueue__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
   </Parameters>
 </Application>
