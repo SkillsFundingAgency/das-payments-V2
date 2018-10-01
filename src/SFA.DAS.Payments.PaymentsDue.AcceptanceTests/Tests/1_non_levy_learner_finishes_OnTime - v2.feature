@@ -18,6 +18,6 @@ And the following contract type 2 On Programme earnings are provided in the late
 Scenario: 1_non_levy_learner_finishes_OnTime
 	When an earnings event is received
 	Then the payments due component will generate the following contract type 2 payments due:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType   | Amount	|
-	| learnref1      | 10000 | p2                     | 1 				| 10000 | Learning (TT1)	| 1000		|
-	| learnref1      | 10000 | p2                     | 1 				| 10000 | Completion (TT2)	| 3000		|
+	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
+	| p2                     | 1 				| Learning (TT1)	| 1000		|
+	| p2                     | 1 				| Completion (TT2)	| 3000		|
