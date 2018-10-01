@@ -5,50 +5,50 @@ Background:
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 	And the SFA contribution percentage is 100%
 	And the payments due component generates the following contract type 2 payments due:	
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType   | Amount	|
-	| learnref1      | 10000 | p1                     | 1				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 3				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 4				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 5				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 6				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 7				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 8				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 9				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 10				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 11				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 12				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 12				| 10000 | Completion (TT2)	| 1500		|
+	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
+	| p1                     | 1				| Learning (TT1)	| 500		|
+	| p1                     | 3				| Learning (TT1)	| 500		|
+	| p1                     | 4				| Learning (TT1)	| 500		|
+	| p1                     | 5				| Learning (TT1)	| 500		|
+	| p1                     | 6				| Learning (TT1)	| 500		|
+	| p1                     | 7				| Learning (TT1)	| 500		|
+	| p1                     | 8				| Learning (TT1)	| 500		|
+	| p1                     | 9				| Learning (TT1)	| 500		|
+	| p1                     | 10				| Learning (TT1)	| 500		|
+	| p1                     | 11				| Learning (TT1)	| 500		|
+	| p1                     | 12				| Learning (TT1)	| 500		|
+	| p1                     | 12				| Completion (TT2)	| 1500		|
 
 Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	When a payments due event is received
 	Then the required payments component will generate the following contract type 2 payable earnings:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType   | Amount	|
-	| learnref1      | 10000 | p1                     | 1				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 3				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 4				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 5				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 6				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 7				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 8				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 9				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 10				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 11				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 12				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 12				| 10000 | Completion (TT2)	| 1500		|
+	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
+	| p1                     | 1				| Learning (TT1)	| 500		|
+	| p1                     | 3				| Learning (TT1)	| 500		|
+	| p1                     | 4				| Learning (TT1)	| 500		|
+	| p1                     | 5				| Learning (TT1)	| 500		|
+	| p1                     | 6				| Learning (TT1)	| 500		|
+	| p1                     | 7				| Learning (TT1)	| 500		|
+	| p1                     | 8				| Learning (TT1)	| 500		|
+	| p1                     | 9				| Learning (TT1)	| 500		|
+	| p1                     | 10				| Learning (TT1)	| 500		|
+	| p1                     | 11				| Learning (TT1)	| 500		|
+	| p1                     | 12				| Learning (TT1)	| 500		|
+	| p1                     | 12				| Completion (TT2)	| 1500		|
 
 Scenario: AC5- Payment for a 16-18 non-DAS learner, employer is not small
 	When a payments due event is received
 	Then the required payments component will generate the following contract type 2 payable earnings:
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType   | Amount	|
-	| learnref1      | 10000 | p1                     | 1				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 3				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 4				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 5				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 6				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 7				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 8				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 9				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 10				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 11				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 12				| 10000 | Learning (TT1)	| 500		|
-	| learnref1      | 10000 | p1                     | 12				| 10000 | Completion (TT2)	| 1500		|
+	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
+	| p1                     | 1				| Learning (TT1)	| 500		|
+	| p1                     | 3				| Learning (TT1)	| 500		|
+	| p1                     | 4				| Learning (TT1)	| 500		|
+	| p1                     | 5				| Learning (TT1)	| 500		|
+	| p1                     | 6				| Learning (TT1)	| 500		|
+	| p1                     | 7				| Learning (TT1)	| 500		|
+	| p1                     | 8				| Learning (TT1)	| 500		|
+	| p1                     | 9				| Learning (TT1)	| 500		|
+	| p1                     | 10				| Learning (TT1)	| 500		|
+	| p1                     | 11				| Learning (TT1)	| 500		|
+	| p1                     | 12				| Learning (TT1)	| 500		|
+	| p1                     | 12				| Completion (TT2)	| 1500		|
