@@ -18,8 +18,5 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
         }
 
-
-       
-
     }
 }

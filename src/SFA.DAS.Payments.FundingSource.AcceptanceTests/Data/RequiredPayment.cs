@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Data
+﻿using SFA.DAS.Payments.Model.Core.OnProgramme;
+
+namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Data
 {
     public class RequiredPayment
     {
@@ -8,7 +10,11 @@
 
         public long Uln { get; set; }
 
-        public short TransactionType { get; set; }
+        public OnProgrammeEarningType Type => TransactionType.Contains("Learning") ?
+            OnProgrammeEarningType.Learning : TransactionType.Contains("Completion") ?
+                OnProgrammeEarningType.Completion : OnProgrammeEarningType.Balancing;
+
+        public string TransactionType { get; set; }
 
         public decimal Amount { get; set; }
     }

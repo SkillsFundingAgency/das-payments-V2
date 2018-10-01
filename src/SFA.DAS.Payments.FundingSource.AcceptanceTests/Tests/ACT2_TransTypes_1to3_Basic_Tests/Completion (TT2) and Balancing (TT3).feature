@@ -3,7 +3,7 @@
 Background:
 
 	Given the current processing period is 10
-
+	And the payments are for the current collection year
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 
 	And the SFA contribution percentage is 90%"

@@ -8,4 +8,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Model\SFA.DAS.Payments.FundingSource.Model.csproj" />
+  </ItemGroup>
+
 </Project>

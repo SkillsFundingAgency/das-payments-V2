@@ -74,6 +74,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.ACT2_TransTypes_1
 #line 3
 #line 4
  testRunner.Given("the current processing period is 2", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 5
+ testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 6
  testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -177,8 +179,8 @@ this.FeatureBackground();
                         "CoInvestedEmployer (FS3)",
                         "60"});
 #line 24
- testRunner.Then("the payment source component will generate the following contract type 2 Learning" +
-                    " (TT1) coinvested payments:", ((string)(null)), table2, "Then ");
+ testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
+                    "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

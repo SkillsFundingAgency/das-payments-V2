@@ -4,6 +4,8 @@ using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Model.Enum;
+
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
@@ -21,9 +23,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
             switch (payment.Type)
             {
-                case Domain.Enum.FundingSourceType.CoInvestedSfa:
+                case FundingSourceType.CoInvestedSfa:
                     return MapCommonCoInvestedPaymentEventData(payment, mapper.Map<SfaCoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent));
-                case Domain.Enum.FundingSourceType.CoInvestedEmployer:
+                case FundingSourceType.CoInvestedEmployer:
                     return MapCommonCoInvestedPaymentEventData(payment, mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent));
                 default:
                     throw new NotImplementedException();

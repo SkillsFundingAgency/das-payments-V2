@@ -154,11 +154,11 @@
     <Compile Include="Data\FundingSourcePayment.cs" />
     <Compile Include="Data\RequiredPayment.cs" />
     <Compile Include="EndpointNames.cs" />
-    <Compile Include="Handlers\SfaCoInvestedFundingSourceHandler.cs" />
+    <Compile Include="Handlers\CoInvestedFundingSourceHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\BindingBootstrapper.cs" />
     <Compile Include="Steps\FundingSourceStepBase.cs" />
-    <Compile Include="Steps\FundingSourceSteps.cs" />
+    <Compile Include="Steps\ACT2TransTypes1to3BasicTestsSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature.cs">
       <AutoGen>True</AutoGen>
@@ -204,11 +204,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Learning %28TT1%29 only - single period.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\No Payment.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>No Payment.feature</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -256,10 +251,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learning %28TT1%29 only - single period.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\No Payment.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>No Payment.feature.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.4\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
@@ -276,6 +267,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj">
       <Project>{43861469-71a2-4128-b35a-fb680f1e8bca}</Project>
       <Name>SFA.DAS.Payments.FundingSource.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Model\SFA.DAS.Payments.FundingSource.Model.csproj">
+      <Project>{906d925f-eda0-44a6-b276-e32e87230f69}</Project>
+      <Name>SFA.DAS.Payments.FundingSource.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
