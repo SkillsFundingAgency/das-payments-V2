@@ -14,52 +14,52 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
         private readonly IPaymentLogger paymentLogger;
         private readonly ILifetimeScope lifetimeScope;
         private readonly IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService;
+        private readonly IExecutionContext executionContext;
 
-        public ApprenticeshipContractType2RequiredPaymentEventHandler(IPaymentLogger paymentLogger, 
-                                                                     ILifetimeScope lifetimeScope, 
-                                                                      IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService)
+        public ApprenticeshipContractType2RequiredPaymentEventHandler(IPaymentLogger paymentLogger,
+                                                                      IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService,
+                                                                      IExecutionContext executionContext)
         {
-            this.paymentLogger = paymentLogger;
-            this.lifetimeScope = lifetimeScope;
-            this.contractType2RequiredPaymentService = contractType2RequiredPaymentService;
+            this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
+            this.contractType2RequiredPaymentService = contractType2RequiredPaymentService ?? throw new ArgumentNullException(nameof(contractType2RequiredPaymentService));
+            this.executionContext = executionContext ?? throw  new ArgumentNullException(nameof(executionContext));
         }
 
         public async Task Handle(ApprenticeshipContractType2RequiredPaymentEvent message, IMessageHandlerContext context)
         {
-            using (var scope = lifetimeScope.BeginLifetimeScope())
+
+            paymentLogger.LogInfo($"Processing Required Payment Service event for Message Id : {context.MessageId}");
+
+            var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
+            currentExecutionContext.JobId = message.JobId;
+
+            try
             {
-                paymentLogger.LogInfo($"Processing Required Payment Service event for Message Id : {context.MessageId}");
+                var payments = contractType2RequiredPaymentService.GetFundedPayments(message);
 
-                var executionContext = (ESFA.DC.Logging.ExecutionContext)scope.Resolve<IExecutionContext>();
-                executionContext.JobId = message.JobId;
-
-                try
+                foreach (var recordablePaymentEvent in payments)
                 {
-                    var payments = contractType2RequiredPaymentService.GetFundedPayments(message);
-
-                    foreach (var recordablePaymentEvent in payments)
+                    try
                     {
-                        try
-                        {
-                            await context.Publish(recordablePaymentEvent);
+                        await context.Publish(recordablePaymentEvent);
 
-                            paymentLogger.LogInfo($"Successfully published CoInvestedPayment of Type  {recordablePaymentEvent.GetType().Name}");
-                        }
-                        catch (Exception ex)
-                        {
-                            paymentLogger.LogError($"Error publishing the event: RecordablePaymentEvent", ex);
-                            throw;
-                        }
+                        paymentLogger.LogInfo($"Successfully published CoInvestedPayment of Type  {recordablePaymentEvent.GetType().Name}");
                     }
+                    catch (Exception ex)
+                    {
+                        paymentLogger.LogError($"Error publishing the event: RecordablePaymentEvent", ex);
+                        throw;
+                    }
+                }
 
-                    paymentLogger.LogInfo($"Successfully processed NonLevyFunded Service event for Job Id {message.JobId}");
-                }
-                catch (Exception ex)
-                {
-                    paymentLogger.LogError($"Error while handling NonLevyFundedService event", ex);
-                    throw;
-                }
+                paymentLogger.LogInfo($"Successfully processed NonLevyFunded Service event for Job Id {message.JobId}");
             }
+            catch (Exception ex)
+            {
+                paymentLogger.LogError($"Error while handling NonLevyFundedService event", ex);
+                throw;
+            }
+
         }
     }
 }
