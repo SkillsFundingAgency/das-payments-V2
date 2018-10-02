@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.PaymentsDue.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.PaymentsDue.PaymentsDueService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="PaymentsDueService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsDueService_EndpointName" DefaultValue="" />
-    <Parameter Name="FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="PaymentsDueService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
@@ -24,7 +23,7 @@
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[PaymentsDueService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[FailedMessagesQueue]" />
+            <Parameter Name="FailedMessagesQueue" Value="[PaymentsDueService_FailedMessagesQueue]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -37,7 +36,7 @@
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.PaymentsDue.PaymentsDueService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.PaymentsDue.PaymentsDueServiceType" InstanceCount="[SFA.DAS.Payments.PaymentsDue.PaymentsDueService_InstanceCount]">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.PaymentsDue.PaymentsDueServiceType" InstanceCount="[PaymentsDueService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>

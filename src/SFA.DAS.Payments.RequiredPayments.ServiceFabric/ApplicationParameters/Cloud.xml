@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService_InstanceCount" Value="__RequiredPaymentsProxyService_InstanceCount__" />
+    <Parameter Name="RequiredPaymentsProxyService_InstanceCount" Value="__RequiredPaymentsProxyService_InstanceCount__" />
     <Parameter Name="RequiredPaymentsServiceActorService_PartitionCount" Value="__RequiredPaymentsServiceActorService_PartitionCount__" />
     <Parameter Name="RequiredPaymentsServiceActorService_TargetReplicaSetSize" Value="__RequiredPaymentsServiceActorService_TargetReplicaSetSize__" />
     <Parameter Name="RequiredPaymentsServiceActorService_MinReplicaSetSize" Value="__RequiredPaymentsServiceActorService_MinReplicaSetSize__" />
@@ -9,7 +9,7 @@
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
-    <Parameter Name="FailedMessagesQueue" Value="__RequiredPaymentsService_FailedMessagesQueue__" />
+    <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" Value="__RequiredPaymentsService_FailedMessagesQueue__" />
     <Parameter Name="RequiredPaymentsService_EndpointName" Value="__RequiredPaymentsService_EndpointName__" />
   </Parameters>
 </Application>
