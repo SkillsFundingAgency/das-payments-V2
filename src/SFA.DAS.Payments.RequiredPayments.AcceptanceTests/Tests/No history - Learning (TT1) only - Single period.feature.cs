@@ -135,8 +135,8 @@ this.FeatureBackground();
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
 #line 19
- testRunner.Then("the required payments component will generate the following contract type 2 payab" +
-                    "le earnings:", ((string)(null)), table2, "Then ");
+ testRunner.Then("the required payments component will generate the following contract type 2 Learn" +
+                    "ing (TT1) payable earnings:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

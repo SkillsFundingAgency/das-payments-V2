@@ -41,7 +41,7 @@ Background:
 
 Scenario: Contract Type 2 no On Programme Learning payments
 	When a payments due event is received
-	Then the required payments component will not generate Learning (TT1) payable earnings
+	Then the required payments component will not generate any contract type 2 Learning (TT1) payable earnings
 
 Scenario Outline: Contract Type 2 On Programme Completion payment
 	When a payments due event is received

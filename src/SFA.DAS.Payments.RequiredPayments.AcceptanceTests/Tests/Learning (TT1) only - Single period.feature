@@ -41,7 +41,7 @@ Background:
 
 Scenario Outline: Contract Type 2 On Programme Learning payments
 	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 payable earnings:
+	Then the required payments component will generate the following contract type 2 Learning (TT1) payable earnings:
 	| PriceEpisodeIdentifier | Period | TransactionType    | Amount   |
 	| p1                     | 12     | <transaction_type> | <amount> |
 	
