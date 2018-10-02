@@ -2,7 +2,7 @@
 @NonDas_BasicDay
 Background:
 	Given the current collection period is R13
-	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
+	And a learner is undertaking a training with a training provider
 	And the SFA contribution percentage is 90%
 	And planned course duration is 12 months
 	And the following course information:

@@ -62,10 +62,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>1_non_levy_learner_finishes_OnTime - v2.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\SmallEmployers.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>SmallEmployers.feature.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

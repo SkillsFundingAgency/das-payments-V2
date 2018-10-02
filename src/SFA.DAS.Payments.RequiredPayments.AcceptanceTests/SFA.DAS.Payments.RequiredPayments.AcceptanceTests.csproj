@@ -314,10 +314,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learning %28TT1%29 only - Single period.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\SmallEmployers.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>SmallEmployers.feature.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
