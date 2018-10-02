@@ -240,6 +240,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Learning %28TT1%29 only - Single period.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\SmallEmployers.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SmallEmployers.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

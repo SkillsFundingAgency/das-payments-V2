@@ -1,4 +1,4 @@
-﻿Feature: non-DAS learner employed with a small employer, is fully funded for on programme and completion payments
+﻿Feature: Small Employer
 #Non-DAS learner employed with a small employer, is fully funded for on programme and completion payments
 
 Background:

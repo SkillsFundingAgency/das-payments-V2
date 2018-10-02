@@ -10,7 +10,6 @@ using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
-    [Binding]
     public abstract class StepsBase
     {
         public ScenarioContext ScenarioCtx { get; }

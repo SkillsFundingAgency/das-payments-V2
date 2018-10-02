@@ -1,9 +1,10 @@
-﻿using TechTalk.SpecFlow;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core;
+using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 {
     [Binding]
-    public class SmallEmployerPaymentsSteps : ProcessingPeriodSteps
+    public class SmallEmployerPaymentsSteps : StepsBase
     {
         public SmallEmployerPaymentsSteps(ScenarioContext context) : base(context)
         {

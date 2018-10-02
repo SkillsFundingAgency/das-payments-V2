@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.Logging.Interfaces;
@@ -52,7 +54,7 @@ namespace SFA.DAS.Payments.PaymentsDue.PaymentsDueService.Handlers
                     try
                     {
                         if (paymentsDue != null)
-                            await context.Publish(paymentsDue).ConfigureAwait(false);
+                            await Task.WhenAll(paymentsDue.Select(context.Publish)).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -6,7 +7,7 @@ using TechTalk.SpecFlow.Assist;
 namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 {
     [Binding]
-    public class CourseSteps : LearnerSteps
+    public class CourseSteps : StepsBase
     {
         public CourseSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {

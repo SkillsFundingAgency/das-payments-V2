@@ -5,11 +5,11 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 {
     [Binding]
-    public class LearnerSteps : StepsBase
+    public class LearnerSteps
     {
         private LearnRefNumberGenerator learnRefNumberGenerator;
 
-        public LearnerSteps(ScenarioContext context) : base(context)
+        public LearnerSteps(ScenarioContext context)
         {
             this.learnRefNumberGenerator = new LearnRefNumberGenerator(context);
         }

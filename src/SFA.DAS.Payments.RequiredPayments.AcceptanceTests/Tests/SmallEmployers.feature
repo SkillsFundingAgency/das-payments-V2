@@ -1,5 +1,6 @@
 ﻿Feature: non-DAS learner employed with a small employer, is fully funded for on programme and completion payments
-@SmallEmployerNonDas
+#Non-DAS learner employed with a small employer, is fully funded for on programme and completion payments
+
 Background:
 	Given the current collection period is R13
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
@@ -20,6 +21,8 @@ Background:
 	| learnref1      | 10000 | p1                     | 12				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 12				| 10000 | Completion (TT2)	| 1500		|
 
+@SmallEmployerNonDas
+
 Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	When a payments due event is received
 	Then the required payments component will generate the following contract type 2 payable earnings:
@@ -37,6 +40,8 @@ Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	| learnref1      | 10000 | p1                     | 11				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 12				| 10000 | Learning (TT1)	| 500		|
 	| learnref1      | 10000 | p1                     | 12				| 10000 | Completion (TT2)	| 1500		|
+
+@SmallEmployerNonDas
 
 Scenario: AC5- Payment for a 16-18 non-DAS learner, employer is not small
 	When a payments due event is received

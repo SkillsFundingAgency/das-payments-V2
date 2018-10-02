@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests
+namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 {
     using TechTalk.SpecFlow;
     
@@ -18,8 +18,9 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Small Employer")]
-    public partial class SmallEmployerFeature
+    [NUnit.Framework.DescriptionAttribute("non-DAS learner employed with a small employer, is fully funded for on programme " +
+        "and completion payments")]
+    public partial class Non_DASLearnerEmployedWithASmallEmployerIsFullyFundedForOnProgrammeAndCompletionPaymentsFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +32,8 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Small Employer", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "non-DAS learner employed with a small employer, is fully funded for on programme " +
+                    "and completion payments", null, ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -75,111 +77,125 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests
 #line 5
  testRunner.Given("the current collection period is R13", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 6
- testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 7
  testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
                     "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 8
+#line 7
  testRunner.And("the SFA contribution percentage is 100%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 9
- testRunner.And("planned course duration is 12 months", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "AimSeqNumber",
-                        "ProgrammeType",
-                        "FrameworkCode",
-                        "PathwayCode",
-                        "StandardCode",
-                        "FundingLineType",
-                        "LearnAimRef",
-                        "TotalNegotiatedPrice",
-                        "CompletionStatus"});
-            table1.AddRow(new string[] {
-                        "1",
-                        "2",
-                        "403",
-                        "1",
-                        "",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "ZPROG001",
-                        "7500",
-                        "completed"});
-#line 10
- testRunner.And("the following course information:", ((string)(null)), table1, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "LearnRefNumber",
+                        "Ukprn",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
+                        "ULN",
                         "TransactionType",
                         "Amount"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "1",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "2",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "3",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "4",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "5",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "6",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "7",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "8",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "9",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "10",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "11",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "12",
+                        "10000",
                         "Learning (TT1)",
                         "500"});
-            table2.AddRow(new string[] {
+            table1.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
                         "p1",
                         "12",
+                        "10000",
                         "Completion (TT2)",
                         "1500"});
-#line 14
- testRunner.And("the following contract type 2 On Programme earnings are provided in the latest IL" +
-                    "R for the current academic year:", ((string)(null)), table2, "And ");
+#line 8
+ testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
 #line hidden
         }
         
@@ -190,13 +206,147 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC1-Payment for a 16-18 non-DAS learner, small employer at start", null, new string[] {
                         "SmallEmployerNonDas"});
-#line 32
+#line 26
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
 this.FeatureBackground();
-#line 33
- testRunner.When("an earnings event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 27
+ testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "LearnRefNumber",
+                        "Ukprn",
+                        "PriceEpisodeIdentifier",
+                        "Delivery Period",
+                        "ULN",
+                        "TransactionType",
+                        "Amount"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "1",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "2",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "3",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "4",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "5",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "6",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "7",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "8",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "9",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "10",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "11",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "12",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table2.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "12",
+                        "10000",
+                        "Completion (TT2)",
+                        "1500"});
+#line 28
+ testRunner.Then("the required payments component will generate the following contract type 2 payab" +
+                    "le earnings:", ((string)(null)), table2, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("AC5- Payment for a 16-18 non-DAS learner, employer is not small")]
+        [NUnit.Framework.CategoryAttribute("SmallEmployerNonDas")]
+        public virtual void AC5_PaymentForA16_18Non_DASLearnerEmployerIsNotSmall()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC5- Payment for a 16-18 non-DAS learner, employer is not small", null, new string[] {
+                        "SmallEmployerNonDas"});
+#line 46
+this.ScenarioInitialize(scenarioInfo);
+            this.ScenarioStart();
+#line 4
+this.FeatureBackground();
+#line 47
+ testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -310,143 +460,9 @@ this.FeatureBackground();
                         "10000",
                         "Completion (TT2)",
                         "1500"});
-#line 34
- testRunner.Then("the payments due component will generate the following contract type 2 payments d" +
-                    "ue:", ((string)(null)), table3, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("AC5- Payment for a 16-18 non-DAS learner, employer is not small")]
-        public virtual void AC5_PaymentForA16_18Non_DASLearnerEmployerIsNotSmall()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC5- Payment for a 16-18 non-DAS learner, employer is not small", null, ((string[])(null)));
-#line 50
-this.ScenarioInitialize(scenarioInfo);
-            this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line 51
- testRunner.When("an earnings event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 52
- testRunner.And("the SFA contribution percentage changes to 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
-                        "PriceEpisodeIdentifier",
-                        "Delivery Period",
-                        "ULN",
-                        "TransactionType",
-                        "Amount"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "1",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "2",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "3",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "4",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "5",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "6",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "7",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "8",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "9",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "10",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "11",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "12",
-                        "10000",
-                        "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
-                        "p1",
-                        "12",
-                        "10000",
-                        "Completion (TT2)",
-                        "1500"});
-#line 53
- testRunner.Then("the payments due component will generate the following contract type 2 payments d" +
-                    "ue:", ((string)(null)), table4, "Then ");
+#line 48
+ testRunner.Then("the required payments component will generate the following contract type 2 payab" +
+                    "le earnings:", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

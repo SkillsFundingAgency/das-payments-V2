@@ -13,47 +13,20 @@ using TechTalk.SpecFlow.Assist;
 namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 {
     [Binding]
-    public class EarningSteps: PaymentsDueStepsBase
+    public class EarningSteps: StepsBase
     {
         public EarningSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
 
         [Given(@"the SFA contribution percentage is (.*)%")]
-        public void GivenTheSFAContributionPercentageIs(decimal sfaContributionPercentage)
+        [When(@"the SFA contribution percentage changes to (.*)%")]
+        public void SFAContributionPercentageIs(decimal sfaContributionPercentage)
         {
             Console.WriteLine($"Got sfa contribution percentage: {sfaContributionPercentage}");
             SfaContributionPercentage = sfaContributionPercentage;
         }
 
-        [Given(@"the following contract type (.*) On Programme earnings are provided in the latest ILR for the current academic year:")]
-        public void GivenTheFollowingContractTypeOnProgrammeEarningsAreProvidedInTheLatestILRForTheCurrentAcademicYear(int p0, Table table)
-        {
-            var rawEarnings = table.CreateSet<ContractTypeEarning>().ToArray();
-            var transactionType = rawEarnings[0].TransactionType;
-
-            this.Act2EarningEvents = new List<ApprenticeshipContractType2EarningEvent>
-            {
-                new ApprenticeshipContractType2EarningEvent
-                {
-                    OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new []
-                    {
-                        new OnProgrammeEarning
-                        {
-                            Type = transactionType,
-                            Periods = new ReadOnlyCollection<EarningPeriod>(rawEarnings.Select(e => new EarningPeriod
-                            {
-                                Period = new CalendarPeriod(this.CollectionYear, e.Delivery_Period),
-                                Amount = e.Amount,
-                                PriceEpisodeIdentifier = e.PriceEpisodeIdentifier
-                            }).ToList())
-                        }
-                    })
-                }
-            };
-
-            //yesScenarioCtx[$"ContractType{this.ContractType}OnProgrammeEarningsLearning"] = earning;
-        }
 
         //[Given(@"the following contract type (.*) on programme earnings for periods (.*)-(.*) are provided in the latest ILR for the academic year (.*):")]
         //public void GivenTheFollowingContractTypeOnProgrammeEarningsForPeriods(short contractType, byte fromPeriod, byte toPeriod, string academicYear, Table table)

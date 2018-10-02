@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.PaymentsDue.Application.Services;
 using SFA.DAS.Payments.PaymentsDue.Domain;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 

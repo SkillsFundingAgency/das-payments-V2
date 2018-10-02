@@ -3,7 +3,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.PaymentsDue.Domain;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
-namespace SFA.DAS.Payments.PaymentsDue.Application
+namespace SFA.DAS.Payments.PaymentsDue.Application.Services
 {
     public class ApprenticeshipContractType2PayableEarningService : IApprenticeshipContractType2PayableEarningService
     {
