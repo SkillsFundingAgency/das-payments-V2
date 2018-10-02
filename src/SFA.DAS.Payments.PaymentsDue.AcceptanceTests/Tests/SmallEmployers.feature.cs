@@ -79,8 +79,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests
 #line 6
  testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 7
- testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
-                    "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("a learner is undertaking a training with a training provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 8
  testRunner.And("the SFA contribution percentage is 100%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 9
@@ -220,6 +219,14 @@ this.FeatureBackground();
                         "learnref1",
                         "10000",
                         "p1",
+                        "2",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table3.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
                         "3",
                         "10000",
                         "Learning (TT1)",
@@ -316,15 +323,15 @@ this.FeatureBackground();
         public virtual void AC5_PaymentForA16_18Non_DASLearnerEmployerIsNotSmall()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC5- Payment for a 16-18 non-DAS learner, employer is not small", null, ((string[])(null)));
-#line 49
+#line 50
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
 this.FeatureBackground();
-#line 50
- testRunner.When("an earnings event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 51
- testRunner.And("the SFA contribution percentage changes to 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Given("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 52
+ testRunner.When("an earnings event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
@@ -339,6 +346,14 @@ this.FeatureBackground();
                         "10000",
                         "p1",
                         "1",
+                        "10000",
+                        "Learning (TT1)",
+                        "500"});
+            table4.AddRow(new string[] {
+                        "learnref1",
+                        "10000",
+                        "p1",
+                        "2",
                         "10000",
                         "Learning (TT1)",
                         "500"});
@@ -430,7 +445,7 @@ this.FeatureBackground();
                         "10000",
                         "Completion (TT2)",
                         "1500"});
-#line 52
+#line 53
  testRunner.Then("the payments due component will generate the following contract type 2 payments d" +
                     "ue:", ((string)(null)), table4, "Then ");
 #line hidden

@@ -2,7 +2,7 @@
 @SmallEmployerNonDas
 Background:
 	Given the current collection period is R13
-	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
+	And a learner is undertaking a training with a training provider
 	And the SFA contribution percentage is 100%
 	And the required payments component generates the following contract type 2 payable earnings:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
@@ -39,6 +39,7 @@ Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	| p1                     | 12				| Completion (TT2)| CoInvestedSfa (FS2)		| 1500   |
 
 Scenario: AC5- Payment for a 16-18 non-DAS learner, employer is not small
+	Given the SFA contribution percentage is 90%
 	When required payments event is received
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
