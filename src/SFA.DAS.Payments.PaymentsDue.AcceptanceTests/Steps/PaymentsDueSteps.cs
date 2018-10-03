@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using TechTalk.SpecFlow;
 using NServiceBus;
-using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data;
@@ -37,62 +34,30 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 
             this.WaitForIt(() =>
             {
-                var outcome = new StringBuilder();
-                if (expectedPaymentsEvents.Count < ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Count)
-                {
-                    outcome.AppendLine($"No match. Received {ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Count} out of {expectedPaymentsEvents.Count}.");
-                    return false;
-                }
-
-                outcome.AppendLine($"Count match. Comparing items. Received {ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Count} out of {expectedPaymentsEvents.Count}");
-                var result = expectedPaymentsEvents.All(payment => act == 1 ? Act1Matcher(payment, outcome) : Act2Matcher(payment, outcome));
-                Debug.Write(outcome);
-                return result;
+                return expectedPaymentsEvents.All(payment => act == 1 ? Act1Matcher(payment) : Act2Matcher(payment));
             }, "Failed to find all the payment due events");
         }
 
-        private bool Act1Matcher(OnProgrammePaymentDue expectedEvent, StringBuilder outcome)
+        private bool Act1Matcher(OnProgrammePaymentDue expectedEvent)
         {
             throw new NotImplementedException();
         }
 
-        private bool Act2Matcher(OnProgrammePaymentDue expectedEvent, StringBuilder outcome)
+        private bool Act2Matcher(OnProgrammePaymentDue expectedEvent)
         {
-            var result = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Any(receivedEvent =>
+            return ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Any(receivedEvent =>
                 expectedEvent.Amount == receivedEvent.AmountDue &&
                 TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber &&
                 expectedEvent.Type == receivedEvent.Type &&
                 TestSession.Ukprn == receivedEvent.Ukprn &&
                 expectedEvent.Delivery_Period == receivedEvent.DeliveryPeriod?.Period &&
                 receivedEvent.CollectionPeriod == new CalendarPeriod(CollectionYear, CollectionPeriod));
-
-            if (result)
-                outcome.AppendLine($"Found match for AmountDue:{expectedEvent.Amount}, LearnRefNo:{TestSession.Learner.LearnRefNumber}, Type:{expectedEvent.Type}, Ukprn:{TestSession.Ukprn}, DeliveryPeriod:{expectedEvent.Delivery_Period}, Collection Period:{new CalendarPeriod(CollectionYear, CollectionPeriod).Name}");
-            else
-            {
-                outcome.AppendLine($"Not found match for AmountDue:{expectedEvent.Amount}, LearnRefNo:{TestSession.Learner.LearnRefNumber}, Type:{expectedEvent.Type}, Ukprn:{TestSession.Ukprn}, DeliveryPeriod:{expectedEvent.Delivery_Period}, Collection Period:{new CalendarPeriod(CollectionYear, CollectionPeriod).Name}");
-                outcome.AppendLine("Candidates:");
-                foreach (var receivedEvent in ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents)
-                {                    
-                    outcome.Append($"------------------- AmountDue:{receivedEvent.AmountDue}, LearnRefNo:{receivedEvent.Learner?.ReferenceNumber}, Type:{receivedEvent.Type}, Ukprn:{receivedEvent.Ukprn}, DeliveryPeriod:{receivedEvent.DeliveryPeriod?.Period}, CollectionPeriod:{receivedEvent.CollectionPeriod.Name}. Mismatch on ");
-                    if (expectedEvent.Amount != receivedEvent.AmountDue) outcome.Append("AmountDue ");
-                    if (TestSession.Learner.LearnRefNumber != receivedEvent.Learner?.ReferenceNumber) outcome.Append("LearnRefNumber ");
-                    if (expectedEvent.Type != receivedEvent.Type) outcome.Append("Type ");
-                    if (TestSession.Ukprn != receivedEvent.Ukprn) outcome.Append("Ukprn ");
-                    if (expectedEvent.Delivery_Period != receivedEvent.DeliveryPeriod?.Period) outcome.Append("DeliveryPeriod ");
-                    if (receivedEvent.CollectionPeriod != new CalendarPeriod(CollectionYear, CollectionPeriod)) outcome.Append("CollectionPeriod");
-                    outcome.AppendLine();
-                }
-            }
-
-            return result;
         }
 
         [Given(@"the following contract type (.*) On Programme earnings are provided in the latest ILR for the current academic year:")]
         public void GivenTheFollowingContractTypeOnProgrammeEarningsAreProvidedInTheLatestILRForTheCurrentAcademicYear(int p0, Table table)
         {
             var rawEarnings = table.CreateSet<ContractTypeEarning>().ToArray();
-            var transactionType = rawEarnings[0].Type;
 
             this.Act2EarningEvents = new List<ApprenticeshipContractType2EarningEvent>
             {
@@ -133,7 +98,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
             //yesScenarioCtx[$"ContractType{this.ContractType}OnProgrammeEarningsLearning"] = earning;
         }
 
-        public List<ApprenticeshipContractType2EarningEvent> Act2EarningEvents
+        private List<ApprenticeshipContractType2EarningEvent> Act2EarningEvents
         {
             get => Get<List<ApprenticeshipContractType2EarningEvent>>();
             set => Set(value);
