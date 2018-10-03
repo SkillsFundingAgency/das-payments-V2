@@ -266,6 +266,7 @@ src/Tools/PhantomJS/tools/phantomjs/ChangeLog
 *.stackdump
 desktop.ini
 App.Debug.config
+App.Release.config
 
 # service fabric local config
 **/ApplicationParameters/Local.1Node.xml

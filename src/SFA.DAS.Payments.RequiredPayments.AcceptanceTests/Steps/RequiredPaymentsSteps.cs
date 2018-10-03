@@ -48,14 +48,14 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return payment;
         }
 
-        [Then(@"the required payments component will generate the following contract type (.*) payable earnings:")]
-        public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypePayableEarnings(string contractType, Table expectedEventsTable)
+        [Then(@"the required payments component will generate the following contract type (.*) Completion \(TT(.*)\) payable earnings:")]
+        public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypeCompletionPayableEarnings(byte contractType, int transactionType, Table expectedEventsTable)
         {
             var expectedPaymentsEvents = expectedEventsTable
                 .CreateSet<OnProgrammePaymentDue>();//TODO: fix to use a required payments model
             WaitForIt(() =>
             {
-                return expectedPaymentsEvents.All(expectedEvent =>
+                return expectedPaymentsEvents.Where(x => x.Type == OnProgrammeEarningType.Completion).All(expectedEvent =>
                     ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
                         expectedEvent.Amount == receivedEvent.AmountDue
                         && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
@@ -63,25 +63,63 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                         && TestSession.Ukprn == receivedEvent.Ukprn
                         && expectedEvent.Period == receivedEvent.DeliveryPeriod?.Period
                         && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
-                        ));
+                    ));
             }, "Failed to find all the required payment events");
         }
 
-        [Then(@"the required payments component will not generate Learning \(TT(.*)\) payable earnings")]
-        public void ThenTheRequiredPaymentsComponentWillNotGenerateLearningTTPayableEarnings(int p0)
+        [Then(@"the required payments component will generate the following contract type (.*) Learning \(TT(.*)\) payable earnings:")]
+        public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypeLearningPayableEarnings(byte contractType, int transactionType, Table expectedEventsTable)
+        {
+            var expectedPaymentsEvents = expectedEventsTable
+                .CreateSet<OnProgrammePaymentDue>();//TODO: fix to use a required payments model
+            WaitForIt(() =>
+            {
+                return expectedPaymentsEvents.Where(x => x.Type == OnProgrammeEarningType.Learning).All(expectedEvent =>
+                    ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
+                        expectedEvent.Amount == receivedEvent.AmountDue
+                        && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
+                        && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
+                        && TestSession.Ukprn == receivedEvent.Ukprn
+                        && expectedEvent.Period == receivedEvent.DeliveryPeriod?.Period
+                        && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
+                    ));
+            }, "Failed to find all the required payment events");
+        }
+
+        [Then(@"the required payments component will generate the following contract type (.*) Balancing \(TT(.*)\) payable earnings:")]
+        public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypeBalancingPayableEarnings(byte contractType, int transactionType, Table expectedEventsTable)
+        {
+            var expectedPaymentsEvents = expectedEventsTable
+                .CreateSet<OnProgrammePaymentDue>();//TODO: fix to use a required payments model
+            WaitForIt(() =>
+            {
+                return expectedPaymentsEvents.Where(x => x.Type == OnProgrammeEarningType.Balancing).All(expectedEvent =>
+                    ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
+                        expectedEvent.Amount == receivedEvent.AmountDue
+                        && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
+                        && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
+                        && TestSession.Ukprn == receivedEvent.Ukprn
+                        && expectedEvent.Period == receivedEvent.DeliveryPeriod?.Period
+                        && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
+                    ));
+            }, "Failed to find all the required payment events");
+        }
+
+        [Then(@"the required payments component will not generate any contract type (.*) Learning \(TT(.*)\) payable earnings")]
+        public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeLearningTTPayableEarnings(int p0, int p1)
         {
             WaitForIt(() =>
             {
                 return PaymentsDue.Where(x => x.Type == OnProgrammeEarningType.Learning).All(paymentDue =>
-                            !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
-                            paymentDue.Amount == receivedEvent.AmountDue
-                            && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
-                            && paymentDue.Type == receivedEvent.OnProgrammeEarningType
-                            && TestSession.Ukprn == receivedEvent.Ukprn
-                            && paymentDue.Period == receivedEvent.DeliveryPeriod?.Period
-                    && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
+                    !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
+                        paymentDue.Amount == receivedEvent.AmountDue
+                        && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
+                        && paymentDue.Type == receivedEvent.OnProgrammeEarningType
+                        && TestSession.Ukprn == receivedEvent.Ukprn
+                        && paymentDue.Period == receivedEvent.DeliveryPeriod?.Period
+                        && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                     ));
-            }, "Found some un-expected required payment events");
+            }, "Found some unexpected required payment events");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) Completion \(TT(.*)\) payable earnings")]
@@ -98,7 +136,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                             && paymentDue.Period == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                     ));
-            }, "Found some un-expected required payment events");
+            }, "Found some unexpected required payment events");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) Balancing \(TT(.*)\) payable earnings")]
@@ -115,7 +153,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                             && paymentDue.Period == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                     ));
-            }, "Found some un-expected required payment events");
+            }, "Found some unexpected required payment events");
         }
     }
 }

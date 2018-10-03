@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
+using SFA.DAS.Payments.FundingSource.Model.Enum;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
@@ -18,8 +19,8 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             return new SfaCoInvestedPayment
             {
                 AmountDue = amountToPay,
-                 Type = Enum.FundingSourceType.CoInvestedSfa,
-                 
+                Type = FundingSourceType.CoInvestedSfa,
+
             };
         }
     }
