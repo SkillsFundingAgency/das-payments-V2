@@ -294,9 +294,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Tests\1_non_levy_learner_finishes_OnTime - v2.feature">
+    <None Include="Tests\1_non_levy_learner_finishes_OnTime.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>1_non_levy_learner_finishes_OnTime - v2.feature.cs</LastGenOutput>
+      <LastGenOutput>1_non_levy_learner_finishes_OnTime.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -385,10 +385,6 @@
     <None Include="Tests\E2E tests\OnTime_Submission_MultipleHistoricalPayments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>OnTime_Submission_MultipleHistoricalPayments.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\1_non_levy_learner_finishes_OnTime - v1.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>1_non_levy_learner_finishes_OnTime - v1.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
