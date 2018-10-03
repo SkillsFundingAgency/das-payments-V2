@@ -14,18 +14,15 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
             this.learnRefNumberGenerator = new LearnRefNumberGenerator(context);
         }
 
-        [BeforeScenario]
-        public void BeforeScenario()
-        {
+        //[BeforeScenario]
+        //public void BeforeScenario()
+        //{
 
-        }
+        //}
 
-        [Given(@"a learner with LearnRefNumber learnref(.*) and Uln (.*) undertaking training with training provider (.*)")]
-        public void GivenALearnerWithLearnRefNumberAndUln(int learnRefNumber, long uln, long ukprn)
+        [Given(@"a learner is undertaking a training with a training provider")]
+        public void GivenALearnerIsUndertakingATrainingWithATrainingProvider()
         {
-            //TestSession.Learner.LearnRefNumber = learnRefNumberGenerator.Generate(ukprn, learnRefNumber.ToString());
-            //TestSession.Ukprn = ukprn;
-            //TestSession.Learner.Uln = do I care?
         }
     }
 }
