@@ -4,7 +4,7 @@
 Background:
 	Given the current collection period is R13
 	And the payments are for the current collection year
-	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
+	And a learner is undertaking a training with a training provider
 	And the SFA contribution percentage is 100%
 	And planned course duration is 12 months
 	And the following course information:
@@ -48,8 +48,8 @@ Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	| learnref1      | 10000 | p1                     | 12				| 10000 | Completion (TT2)	| 1500		|
 
 Scenario: AC5- Payment for a 16-18 non-DAS learner, employer is not small
+	Given the SFA contribution percentage is 90%
 	When an earnings event is received
-	And the SFA contribution percentage changes to 90%
 	Then the payments due component will generate the following contract type 2 payments due:
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType   | Amount	|
 	| learnref1      | 10000 | p1                     | 1				| 10000 | Learning (TT1)	| 500		|
