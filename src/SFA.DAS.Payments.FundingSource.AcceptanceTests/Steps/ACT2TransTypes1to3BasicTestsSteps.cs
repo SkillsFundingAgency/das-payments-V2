@@ -20,8 +20,6 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
     [Binding]
     public class ACT2TransTypes1to3BasicTestsSteps : FundingSourceStepBase
     {
-
-
         protected ACT2TransTypes1to3BasicTestsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
@@ -45,7 +43,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
            //TODO map to TestContextProvider
         }
 
-        [Given(@"the SFA contribution percentage is (.*)%""")]
+        [Given(@"the SFA contribution percentage is (.*)%")]
         public void GivenTheSFAContributionPercentageIs(decimal sfaContribution)
         {
             SfaContributionPercentage = sfaContribution / 100;
@@ -132,7 +130,6 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                 );
             }, "Failed to find all the funding source payment events");
         }
-
 
         private ApprenticeshipContractTypeRequiredPaymentEvent CreateRequiredPaymentEvent(RequiredPayment requiredPayment)
         {
