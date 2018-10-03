@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Domain\SFA.DAS.Payments.FundingSource.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Model\SFA.DAS.Payments.FundingSource.Model.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj" />
   </ItemGroup>
 
