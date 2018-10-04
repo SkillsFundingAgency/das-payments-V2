@@ -39,7 +39,6 @@ Scenario: A non-DAS learner, learner withdraws after planned end date
 	And the following contract type 2 On Programme earnings are provided in the latest ILR for the current academic year:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 1				| Learning (TT1)	| 1000		|
-	| p2                     | 5				| Completion (TT2)	| 0			|
 
 	When an earnings event is received
 	Then the payments due component will generate the following contract type 2 payments due:
