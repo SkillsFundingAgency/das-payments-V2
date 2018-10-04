@@ -18,9 +18,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("non-DAS learner employed with a small employer, is fully funded for on programme " +
-        "and completion payments")]
-    public partial class Non_DASLearnerEmployedWithASmallEmployerIsFullyFundedForOnProgrammeAndCompletionPaymentsFeature
+    [NUnit.Framework.DescriptionAttribute("Small Employers")]
+    public partial class SmallEmployersFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -32,8 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "non-DAS learner employed with a small employer, is fully funded for on programme " +
-                    "and completion payments", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Small Employers", null, ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -77,8 +75,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 #line 5
  testRunner.Given("the current collection period is R13", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 6
- testRunner.And("a learner is undertaking a training with a training provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 7
+ testRunner.And("a learner is undertaking a training with a training provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 8
  testRunner.And("the SFA contribution percentage is 100%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -151,7 +151,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "12",
                         "Completion (TT2)",
                         "1500"});
-#line 8
+#line 9
  testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
 #line hidden
         }
@@ -163,12 +163,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC1-Payment for a 16-18 non-DAS learner, small employer at start", null, new string[] {
                         "SmallEmployerNonDas"});
-#line 26
+#line 27
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
 this.FeatureBackground();
-#line 27
+#line 28
  testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -241,7 +241,7 @@ this.FeatureBackground();
                         "12",
                         "Completion (TT2)",
                         "1500"});
-#line 28
+#line 29
  testRunner.Then("the required payments component will generate the following contract type 2 payab" +
                     "le earnings:", ((string)(null)), table2, "Then ");
 #line hidden
@@ -255,14 +255,14 @@ this.FeatureBackground();
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC5- Payment for a 16-18 non-DAS learner, employer is not small", null, new string[] {
                         "SmallEmployerNonDas"});
-#line 46
+#line 47
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
 this.FeatureBackground();
-#line 47
- testRunner.Given("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 48
+ testRunner.Given("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 49
  testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -335,7 +335,7 @@ this.FeatureBackground();
                         "12",
                         "Completion (TT2)",
                         "1500"});
-#line 49
+#line 50
  testRunner.Then("the required payments component will generate the following contract type 2 payab" +
                     "le earnings:", ((string)(null)), table3, "Then ");
 #line hidden
@@ -349,7 +349,7 @@ this.FeatureBackground();
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC1-Payment for a 16-18 non-DAS learner, small employer at start and historical p" +
                     "ayments exist", null, ((string[])(null)));
-#line 66
+#line 67
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
@@ -415,9 +415,9 @@ this.FeatureBackground();
                         "11",
                         "Learning (TT1)",
                         "500"});
-#line 68
+#line 69
  testRunner.Given("the following historical contract type 2 payments exist:", ((string)(null)), table4, "Given ");
-#line 82
+#line 83
  testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -435,7 +435,7 @@ this.FeatureBackground();
                         "12",
                         "Completion (TT2)",
                         "1500"});
-#line 83
+#line 84
  testRunner.Then("the required payments component will generate the following contract type 2 payab" +
                     "le earnings:", ((string)(null)), table5, "Then ");
 #line hidden

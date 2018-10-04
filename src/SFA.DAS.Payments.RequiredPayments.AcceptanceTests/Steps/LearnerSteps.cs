@@ -19,6 +19,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             
         }
 
+        [Given(@"a learner is undertaking a training with a training provider")]
+        public void GivenALearnerIsUndertakingATrainingWithATrainingProvider()
+        {
+            // TODO: redundant, remove this
+        }
+
         [Given(@"a learner with LearnRefNumber (.*) and Uln (.*) undertaking training with training provider (.*)")]
         public void GivenALearnerWithLearnRefNumberAndUln(string learnRefNumber, long uln, long ukprn)
         {

@@ -45,11 +45,19 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             payment.Type = paymentDue.Type;
             payment.AmountDue = paymentDue.Amount;
             payment.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
-            payment.DeliveryPeriod = new CalendarPeriod(CollectionYear, paymentDue.Period);
+            payment.DeliveryPeriod = new CalendarPeriod(CollectionYear, paymentDue.Delivery_Period);
             payment.JobId = TestSession.JobId;
             payment.LearningAim = TestSession.Learner.Course.ToLearningAim();
             payment.PriceEpisodeIdentifier = "p-1"; //TODO: will need to change if scenario specifies different identifier
             return payment;
+        }
+
+        [Then(@"the required payments component will generate the following contract type (.*) payable earnings:")]
+        public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypePayableEarnings(int p0, Table table)
+        {
+            var expectedPaymentsEvents = table
+                .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
+            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events");
         }
 
         [Then(@"the required payments component will generate the following contract type (.*) Completion \(TT(.*)\) payable earnings:")]
@@ -68,7 +76,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                     && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && expectedEvent.Period == receivedEvent.DeliveryPeriod?.Period
+                    && expectedEvent.Delivery_Period == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                 ));
 #if DEBUG
@@ -78,21 +86,23 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 for (var i = 0; i < expectedPaymentsEvents.Length; i++)
                 {
                     var expectedEvent = expectedPaymentsEvents[i];
-                    foreach (var receivedEvent in ApprenticeshipContractType2Handler.ReceivedEvents)
+                    var array = ApprenticeshipContractType2Handler.ReceivedEvents.ToArray();
+                    for (var k = 0; k < array.Length; k++)
                     {
+                        var receivedEvent = array[k];
                         var mismatchedFields = new List<string>();
 
                         if (expectedEvent.Amount != receivedEvent.AmountDue) mismatchedFields.Add($" Amount({expectedEvent.Amount}!={receivedEvent.AmountDue})");
                         if (TestSession.Learner.LearnRefNumber != receivedEvent?.Learner?.ReferenceNumber) mismatchedFields.Add($"LearnRefNumber({TestSession.Learner.LearnRefNumber}!={receivedEvent?.Learner?.ReferenceNumber})");
                         if (expectedEvent.Type != receivedEvent.OnProgrammeEarningType) mismatchedFields.Add($"Type({expectedEvent.Type}!={receivedEvent.OnProgrammeEarningType})");
                         if (TestSession.Ukprn != receivedEvent.Ukprn) mismatchedFields.Add($"Ukprn({TestSession.Ukprn}!={receivedEvent.Ukprn})");
-                        if (expectedEvent.Period != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.Period}!={receivedEvent.DeliveryPeriod?.Period})");
+                        if (expectedEvent.Delivery_Period != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.Delivery_Period}!={receivedEvent.DeliveryPeriod?.Period})");
                         if (!receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)) mismatchedFields.Add($"CollectionPeriod({receivedEvent.CollectionPeriod} does not contain {CollectionYear})");
 
                         if (mismatchedFields.Count == 0)
-                            Debug.WriteLine($"Event {i} of {expectedPaymentsEvents.Length}: match");
+                            Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Length}: match {k+1}");
                         else
-                            Debug.WriteLine($"Event {i} of {expectedPaymentsEvents.Length}: mismatch on {string.Join(",", mismatchedFields)}");
+                            Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Length}: mismatch {k+1} on {string.Join(",", mismatchedFields)}");
                     }
                 }
             }
@@ -127,7 +137,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                         && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                         && paymentDue.Type == receivedEvent.OnProgrammeEarningType
                         && TestSession.Ukprn == receivedEvent.Ukprn
-                        && paymentDue.Period == receivedEvent.DeliveryPeriod?.Period
+                        && paymentDue.Delivery_Period == receivedEvent.DeliveryPeriod?.Period
                         && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                     ));
             }, "Found some unexpected required payment events");
@@ -144,7 +154,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                             && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                             && paymentDue.Type == receivedEvent.OnProgrammeEarningType
                             && TestSession.Ukprn == receivedEvent.Ukprn
-                            && paymentDue.Period == receivedEvent.DeliveryPeriod?.Period
+                            && paymentDue.Delivery_Period == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                     ));
             }, "Found some unexpected required payment events");
@@ -161,7 +171,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                             && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                             && paymentDue.Type == receivedEvent.OnProgrammeEarningType
                             && TestSession.Ukprn == receivedEvent.Ukprn
-                            && paymentDue.Period == receivedEvent.DeliveryPeriod?.Period
+                            && paymentDue.Delivery_Period == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                     ));
             }, "Found some unexpected required payment events");
