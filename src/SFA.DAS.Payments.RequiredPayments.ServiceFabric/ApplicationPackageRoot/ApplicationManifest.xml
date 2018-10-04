@@ -29,7 +29,7 @@
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsProxyService_FailedMessagesQueue]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -48,7 +48,7 @@
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[ProviderPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsProxyService_FailedMessagesQueue]" />
           </Section>
         </Settings>
       </ConfigOverride>
