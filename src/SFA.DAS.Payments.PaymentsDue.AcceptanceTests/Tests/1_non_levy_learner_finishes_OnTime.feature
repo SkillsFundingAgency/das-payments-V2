@@ -1,5 +1,4 @@
 ﻿Feature: Non-Levy learner - Basic Day
-@NonDas_BasicDay
 Background:
 	Given the current collection period is R03
 	And a learner is undertaking a training with a training provider
@@ -14,7 +13,7 @@ And the following contract type 2 On Programme earnings are provided in the late
 	| p2                     | 1				| Learning (TT1)  | 1000   |
 	| p2                     | 2				| Completion (TT2)| 3000   |
 
-
+@NonDas_BasicDay
 Scenario: 1_non_levy_learner_finishes_OnTime
 	When an earnings event is received
 	Then the payments due component will generate the following contract type 2 payments due:
