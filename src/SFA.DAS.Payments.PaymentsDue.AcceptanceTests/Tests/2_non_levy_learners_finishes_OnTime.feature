@@ -19,8 +19,8 @@ And the following contract type 2 On Programme earnings are provided:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
 	| L1		| p2                     | 2				| Completion (TT2)| 3000   |
-	| L2		| p2                     | 1				| Learning (TT1)  | 500    |
-	| L2		| p2                     | 2				| Completion (TT2)| 1500   |
+	| L2		| p2                     | 1				| Learning (TT1)  | 800    |
+	| L2		| p2                     | 2				| Completion (TT2)| 2400   |
 
 Scenario: 2_non_levy_learner_finishes_OnTime
 	When an earnings event is received
@@ -28,5 +28,5 @@ Scenario: 2_non_levy_learner_finishes_OnTime
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
 	| L1		| p2                     | 2				| Completion (TT2)| 3000   |
-	| L2		| p2                     | 1				| Learning (TT1)  | 500    |
-	| L2		| p2                     | 2				| Completion (TT2)| 1500   |
+	| L2		| p2                     | 1				| Learning (TT1)  | 800    |
+	| L2		| p2                     | 2				| Completion (TT2)| 2400   |
