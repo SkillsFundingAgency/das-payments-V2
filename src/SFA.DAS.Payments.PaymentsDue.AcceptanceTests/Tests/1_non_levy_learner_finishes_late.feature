@@ -13,7 +13,7 @@ Scenario: A non-DAS learner, learner finishes late
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | TotalNegotiatedPrice | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 15000                | completed	    |
 
-	And the following contract type 2 On Programme earnings are provided in the latest ILR for the current academic year:
+	And the following contract type 2 On Programme earnings are provided:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| p2                     | 1				| Learning (TT1)  | 1000   |
 	| p2                     | 5				| Completion (TT2)| 3000   |
@@ -36,7 +36,7 @@ Scenario: A non-DAS learner, learner withdraws after planned end date
 	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | TotalNegotiatedPrice | CompletionStatus |
 	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 15000                | withdrawn	    |
 
-	And the following contract type 2 On Programme earnings are provided in the latest ILR for the current academic year:
+	And the following contract type 2 On Programme earnings are provided:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 1				| Learning (TT1)	| 1000		|
 
