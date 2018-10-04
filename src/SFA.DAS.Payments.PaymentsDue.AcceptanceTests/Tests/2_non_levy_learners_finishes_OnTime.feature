@@ -6,16 +6,16 @@ Background:
 	Given the current collection period is R03
 	And the SFA contribution percentage is 90%
 	And planned course duration is 12 months
-	And learner L1 is undertaking a training with a training provider TP1
-	And learner L2 is undertaking a training with a training provider TP2
-	And the following course information for Learner L1:
-	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | TotalNegotiatedPrice | CompletionStatus |
-	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 15000                | completed	    |
-	And the following course information for Learner L2:
-	| AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | TotalNegotiatedPrice | CompletionStatus |
-	| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 7500                 | completed	    |
+	And following learners are undertaking training with a training provider
+	| LearnerId | 
+	| L1		|
+	| L2		|
+	And the following course information for Learners:
+	| LearnerId | AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | TotalNegotiatedPrice | CompletionStatus |
+	| L1		| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 15000                | completed	    |
+	| L2		| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 7500                 | completed	    |
 
-And the following contract type 2 On Programme earnings are provided in the latest ILR for the current academic year:
+And the following contract type 2 On Programme earnings are provided:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
 	| L1		| p2                     | 2				| Completion (TT2)| 3000   |

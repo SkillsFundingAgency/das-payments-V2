@@ -294,6 +294,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Tests\2_non_levy_learners_finishes_OnTime.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>2_non_levy_learners_finishes_OnTime.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\1_non_levy_learner_finishes_OnTime.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>1_non_levy_learner_finishes_OnTime.feature.cs</LastGenOutput>
