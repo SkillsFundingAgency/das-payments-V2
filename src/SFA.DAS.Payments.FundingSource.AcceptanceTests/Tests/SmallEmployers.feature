@@ -22,7 +22,6 @@ Background:
 	| p1                     | 12				| Completion (TT2)	| 1500		|
 
 @SmallEmployerNonDas
-
 Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	When required payments event is received
 	Then the payment source component will generate the following contract type 2 coinvested payments:
