@@ -1,9 +1,6 @@
-﻿Feature: Non-Levy learner - Basic Day - 2 learners
-
-@NonDas_BasicDay
-@MultipleLearners
+﻿Feature: Non-Levy - Basic Day - 2 learners - Both finishes on time
 Background:
-	Given the current collection period is R03
+	Given the current collection period is R02
 	And the SFA contribution percentage is 90%
 	And planned course duration is 12 months
 	And following learners are undertaking training with a training provider
@@ -21,6 +18,9 @@ And the following contract type 2 On Programme earnings are provided:
 	| L1		| p2                     | 2				| Completion (TT2)| 3000   |
 	| L2		| p2                     | 1				| Learning (TT1)  | 800    |
 	| L2		| p2                     | 2				| Completion (TT2)| 2400   |
+
+@NonDas_BasicDay
+@MultipleLearners
 
 Scenario: 2_non_levy_learner_finishes_OnTime
 	When an earnings event is received

@@ -1,7 +1,6 @@
-﻿Feature: Non-Levy learner - Basic Day - 2 learners
-
+﻿Feature: Non-Levy - Basic Day - 2 learners - Both finishes on time
 Background:
-	Given the current collection period is R03
+	Given the current collection period is R02
 	And the SFA contribution percentage is 90%
 	And following learners are undertaking training with a training provider
 	| LearnerId | 
