@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class RequiredPaymentsSteps : RequiredPaymentsStepsBase
     {
-        private static bool trace = false;
+        private static bool trace = true;
 
         public RequiredPaymentsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
@@ -66,48 +66,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             var expectedPaymentsEvents = expectedEventsTable
                 .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
             WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events");
-        }
-
-        private bool MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents)
-        {
-            var result = expectedPaymentsEvents.Where(x => x.Type == OnProgrammeEarningType.Completion).All(expectedEvent =>
-                ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
-                    expectedEvent.Amount == receivedEvent.AmountDue
-                    && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
-                    && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
-                    && TestSession.Ukprn == receivedEvent.Ukprn
-                    && expectedEvent.Delivery_Period == receivedEvent.DeliveryPeriod?.Period
-                    && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
-                ));
-#if DEBUG
-            if (!result && trace)
-            {
-                Debug.WriteLine("Did not find all expected events. Trace:");
-                for (var i = 0; i < expectedPaymentsEvents.Length; i++)
-                {
-                    var expectedEvent = expectedPaymentsEvents[i];
-                    var array = ApprenticeshipContractType2Handler.ReceivedEvents.ToArray();
-                    for (var k = 0; k < array.Length; k++)
-                    {
-                        var receivedEvent = array[k];
-                        var mismatchedFields = new List<string>();
-
-                        if (expectedEvent.Amount != receivedEvent.AmountDue) mismatchedFields.Add($" Amount({expectedEvent.Amount}!={receivedEvent.AmountDue})");
-                        if (TestSession.Learner.LearnRefNumber != receivedEvent?.Learner?.ReferenceNumber) mismatchedFields.Add($"LearnRefNumber({TestSession.Learner.LearnRefNumber}!={receivedEvent?.Learner?.ReferenceNumber})");
-                        if (expectedEvent.Type != receivedEvent.OnProgrammeEarningType) mismatchedFields.Add($"Type({expectedEvent.Type}!={receivedEvent.OnProgrammeEarningType})");
-                        if (TestSession.Ukprn != receivedEvent.Ukprn) mismatchedFields.Add($"Ukprn({TestSession.Ukprn}!={receivedEvent.Ukprn})");
-                        if (expectedEvent.Delivery_Period != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.Delivery_Period}!={receivedEvent.DeliveryPeriod?.Period})");
-                        if (!receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)) mismatchedFields.Add($"CollectionPeriod({receivedEvent.CollectionPeriod} does not contain {CollectionYear})");
-
-                        if (mismatchedFields.Count == 0)
-                            Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Length}: match {k+1}");
-                        else
-                            Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Length}: mismatch {k+1} on {string.Join(",", mismatchedFields)}");
-                    }
-                }
-            }
-#endif
-            return result;
         }
 
         [Then(@"the required payments component will generate the following contract type (.*) Learning \(TT(.*)\) payable earnings:")]
@@ -175,6 +133,48 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                     ));
             }, "Found some unexpected required payment events");
+        }
+
+        private bool MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents)
+        {
+            var result = expectedPaymentsEvents.Where(x => x.Type == OnProgrammeEarningType.Completion).All(expectedEvent =>
+                ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
+                    expectedEvent.Amount == receivedEvent.AmountDue
+                    && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
+                    && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
+                    && TestSession.Ukprn == receivedEvent.Ukprn
+                    && expectedEvent.Delivery_Period == receivedEvent.DeliveryPeriod?.Period
+                    && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
+                ));
+#if DEBUG
+            if (!result && trace)
+            {
+                Debug.WriteLine("Did not find all expected events. Trace:");
+                for (var i = 0; i < expectedPaymentsEvents.Length; i++)
+                {
+                    var expectedEvent = expectedPaymentsEvents[i];
+                    var array = ApprenticeshipContractType2Handler.ReceivedEvents.ToArray();
+                    for (var k = 0; k < array.Length; k++)
+                    {
+                        var receivedEvent = array[k];
+                        var mismatchedFields = new List<string>();
+
+                        if (expectedEvent.Amount != receivedEvent.AmountDue) mismatchedFields.Add($" Amount({expectedEvent.Amount}!={receivedEvent.AmountDue})");
+                        if (TestSession.Learner.LearnRefNumber != receivedEvent?.Learner?.ReferenceNumber) mismatchedFields.Add($"LearnRefNumber({TestSession.Learner.LearnRefNumber}!={receivedEvent?.Learner?.ReferenceNumber})");
+                        if (expectedEvent.Type != receivedEvent.OnProgrammeEarningType) mismatchedFields.Add($"Type({expectedEvent.Type}!={receivedEvent.OnProgrammeEarningType})");
+                        if (TestSession.Ukprn != receivedEvent.Ukprn) mismatchedFields.Add($"Ukprn({TestSession.Ukprn}!={receivedEvent.Ukprn})");
+                        if (expectedEvent.Delivery_Period != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.Delivery_Period}!={receivedEvent.DeliveryPeriod?.Period})");
+                        if (!receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)) mismatchedFields.Add($"CollectionPeriod({receivedEvent.CollectionPeriod} does not contain {CollectionYear})");
+
+                        if (mismatchedFields.Count == 0)
+                            Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Length}: match {k+1}");
+                        else
+                            Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Length}: mismatch {k+1} on {string.Join(",", mismatchedFields)}");
+                    }
+                }
+            }
+#endif
+            return result;
         }
     }
 }
