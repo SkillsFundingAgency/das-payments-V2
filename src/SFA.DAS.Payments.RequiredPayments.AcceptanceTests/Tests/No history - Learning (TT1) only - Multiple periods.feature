@@ -7,9 +7,9 @@ Background:
 	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 	And the SFA contribution percentage is 90%
 	And the payments due component generates the following contract type 2 payments due:	
-	| PriceEpisodeIdentifier | Period | TransactionType | Amount |
-	| p1                     | 1      | Learning (TT1)  | 600    |
-	| p1                     | 2      | Learning (TT1)  | 600    |
+	| PriceEpisodeIdentifier | Delivery Period | TransactionType | Amount |
+	| p1                     | 1               | Learning (TT1)  | 600    |
+	| p1                     | 2               | Learning (TT1)  | 600    |
 
 @Non-DAS
 @Learning (TT1)

@@ -9,6 +9,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
+using SFA.DAS.Payments.RequiredPayments.Application;
 using SFA.DAS.Payments.RequiredPayments.Application.Data;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 using TechTalk.SpecFlow;
@@ -19,16 +20,21 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class HistoricalPaymentSteps : StepsBase
     {
-        private static RequiredPaymentsDataContext paymentHistoryDataContext;
-
         public HistoricalPaymentSteps(ScenarioContext context) : base(context)
         {
         }
 
-        [BeforeTestRun]
+        [BeforeTestRun(Order = 40)]
         public static void SetUpPaymentsDb()
         {
-            var config = Container.Resolve<TestsConfiguration>();
+            var config = new TestsConfiguration();
+            var env = config.GetAppSetting("Environment");
+            if (!(env?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) 
+                && !(env?.Equals("LOCAL", StringComparison.OrdinalIgnoreCase) ?? false))
+            {
+                return;
+            }
+
             var instance = new DacServices(config.PaymentsConnectionString);
             var path = Path.GetFullPath(Path.Combine(
                 Path.GetDirectoryName(typeof(HistoricalPaymentSteps).Assembly.Location) ?? throw new InvalidOperationException("Failed to get assembly location path"),
@@ -39,7 +45,13 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 instance.Deploy(dacpac, "SFA.DAS.Payments.Database", true);
             }
 
-            paymentHistoryDataContext = new RequiredPaymentsDataContext(config.PaymentsConnectionString);
+            Builder.Register((c, p) =>
+            {
+                var configHelper = c.Resolve<TestsConfiguration>();
+                return new RequiredPaymentsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+            }).As<IRequiredPaymentsDataContext>().InstancePerDependency();
+
+//            paymentHistoryDataContext = new RequiredPaymentsDataContext(config.PaymentsConnectionString);
         }
 
         private void AddHistoricalPayments(IList<HistoricalPayment> payments)
@@ -54,7 +66,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 TestSession.Learner.Course.LearnAimRef.ToString(CultureInfo.InvariantCulture)
             );
             var collectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod).Name;
-
+            var paymentHistoryDataContext = Container.Resolve<IRequiredPaymentsDataContext>();
             var paymentEntities = paymentHistoryDataContext.PaymentHistory.Where(p => p.ApprenticeshipKey == apprenticeshipKey);
             paymentHistoryDataContext.PaymentHistory.RemoveRange(paymentEntities);
 
