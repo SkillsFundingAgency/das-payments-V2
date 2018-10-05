@@ -86,11 +86,6 @@
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
     <Compile Include="Steps\PaymentsDueSteps.cs" />
     <Compile Include="Steps\SmallEmployerPaymentsSteps.cs" />
-    <Compile Include="Tests\SmallEmployers.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SmallEmployers.feature</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
