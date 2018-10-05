@@ -77,8 +77,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.ACT2_TransTypes_1
 #line 6
  testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 7
- testRunner.And("a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with t" +
-                    "raining provider 10000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("a learner is undertaking a training with a training provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 9
  testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -86,7 +85,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.ACT2_TransTypes_1
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
-                        "Period",
+                        "Delivery Period",
                         "ULN",
                         "TransactionType",
                         "Amount"});
@@ -160,7 +159,7 @@ this.FeatureBackground();
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
-                        "Period",
+                        "Delivery Period",
                         "ULN",
                         "TransactionType",
                         "FundingSource",
@@ -207,7 +206,7 @@ this.FeatureBackground();
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
-                        "Period",
+                        "Delivery Period",
                         "ULN",
                         "TransactionType",
                         "FundingSource",

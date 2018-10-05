@@ -1,7 +1,8 @@
 ﻿Feature: non-DAS learner employed with a small employer, is fully funded for on programme and completion payments
-@SmallEmployerNonDas
+
 Background:
-	Given the current collection period is R13
+	Given the current collection period is R1
+	And the payments are for the current collection year
 	And a learner is undertaking a training with a training provider
 	And the SFA contribution percentage is 100%
 	And the required payments component generates the following contract type 2 payable earnings:
@@ -19,6 +20,8 @@ Background:
 	| p1                     | 11				| Learning (TT1)	| 500		|
 	| p1                     | 12				| Learning (TT1)	| 500		|
 	| p1                     | 12				| Completion (TT2)	| 1500		|
+
+@SmallEmployerNonDas
 
 Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	When required payments event is received

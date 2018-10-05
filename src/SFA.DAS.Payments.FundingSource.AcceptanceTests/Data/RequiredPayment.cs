@@ -8,6 +8,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Data
 
         public byte Period { get; set; }
 
+        public byte DeliveryPeriod { get; set; }
+
         public OnProgrammeEarningType Type => TransactionType.Contains("Learning") ?
                 OnProgrammeEarningType.Learning : TransactionType.Contains("Completion") ?
                 OnProgrammeEarningType.Completion : OnProgrammeEarningType.Balancing;
