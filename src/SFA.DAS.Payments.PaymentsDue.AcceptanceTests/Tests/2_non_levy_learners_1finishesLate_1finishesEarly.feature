@@ -1,6 +1,6 @@
 ﻿Feature: Non-Levy - Basic Day - 2 learners - 1 finishes early and 1 finishes late
 
-Background:`
+Background:
 	Given the SFA contribution percentage is 90%
 	And following learners are undertaking training with a training provider
 	| LearnerId | 
@@ -25,7 +25,7 @@ And the following contract type 2 On Programme earnings are provided:
 @NonDas_BasicDay
 @Finishes_Early
 
-Scenario: 2_non_levy_learner_finishes_Early
+Scenario: 2_non_levy_learners_1finishes_Early
 	Given the current collection period is R02
 	And planned course duration is 15 months
 	When an earnings event is received
@@ -38,7 +38,7 @@ Scenario: 2_non_levy_learner_finishes_Early
 @NonDas_BasicDay
 @Finishes_Late
 
-Scenario: 2_non_levy_learner_finishes_Late
+Scenario: 2_non_levy_learners_1finishes_Late
 	Given the current collection period is R05
 	And planned course duration is 12 months
 	When an earnings event is received

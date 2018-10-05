@@ -302,6 +302,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>1_non_levy_learner_finishes_OnTime.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\2_non_levy_learners_1finishesLate_1finishesEarly.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>2_non_levy_learners_1finishesLate_1finishesEarly.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Fully funded - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
