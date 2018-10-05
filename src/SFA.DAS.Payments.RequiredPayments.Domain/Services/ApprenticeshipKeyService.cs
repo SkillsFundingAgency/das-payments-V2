@@ -12,12 +12,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 new[]
                 {
                     ukprn.ToString(CultureInfo.InvariantCulture),
-                    learnerReferenceNumber,
+                    learnerReferenceNumber.ToLowerInvariant(),
                     frameworkCode.ToString(CultureInfo.InvariantCulture),
                     pathwayCode.ToString(CultureInfo.InvariantCulture),
                     ((int)programmeType).ToString(CultureInfo.InvariantCulture),
                     standardCode.ToString(CultureInfo.InvariantCulture),
-                    learnAimRef.ToString(CultureInfo.InvariantCulture) // we may need to remove this as apprenticeship should handle both zprog and maths&eng
+                    learnAimRef.ToLowerInvariant() // we may need to remove this as apprenticeship should handle both zprog and maths&eng
                 }
             );
         }
@@ -27,8 +27,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             return string.Join("-", 
                 new[]
                 {
-                    priceEpisodeIdentifier,
-                    learnAimReference,
+                    priceEpisodeIdentifier.ToLowerInvariant(),
+                    learnAimReference.ToLowerInvariant(),
                     transactionType.ToString(CultureInfo.InvariantCulture),
                     deliveryPeriod.Name
                 }
