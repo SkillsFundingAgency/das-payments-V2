@@ -17,9 +17,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     pathwayCode.ToString(CultureInfo.InvariantCulture),
                     ((int)programmeType).ToString(CultureInfo.InvariantCulture),
                     standardCode.ToString(CultureInfo.InvariantCulture),
-                    learnAimRef.ToString(CultureInfo.InvariantCulture) // we may need to remove this as apprenticeship should handle both zprog and maths&eng
+                    learnAimRef // we may need to remove this as apprenticeship should handle both zprog and maths&eng
                 }
-            );
+            ).ToLowerInvariant();
         }
 
         public string GeneratePaymentKey(string priceEpisodeIdentifier, string learnAimReference, int transactionType, CalendarPeriod deliveryPeriod)
@@ -27,8 +27,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             return string.Join("-", 
                 new[]
                 {
-                    priceEpisodeIdentifier,
-                    learnAimReference,
+                    priceEpisodeIdentifier.ToLowerInvariant(),
+                    learnAimReference.ToLowerInvariant(),
                     transactionType.ToString(CultureInfo.InvariantCulture),
                     deliveryPeriod.Name
                 }

@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.Model.Core
             Year = (short)(2000 + year + (period < 6 ? 0 : 1));
             Month = (byte)(period < 6 ? period + 7 : period - 5);
             Period = period;
-            Name = string.Concat(year, year, "-R", period.ToString("00"));
+            Name = string.Concat(year, year + 1, "-R", period.ToString("00"));
         }
 
         public CalendarPeriod(string name)

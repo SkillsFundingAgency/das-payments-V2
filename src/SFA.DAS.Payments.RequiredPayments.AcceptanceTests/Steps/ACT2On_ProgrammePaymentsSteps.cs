@@ -42,8 +42,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                         Reference = "Ref-1234",
                         StandardCode = 1
                     },
-                DeliveryPeriod = new CalendarPeriod("R10-1718"),
-                CollectionPeriod = new CalendarPeriod("R10-1718"),
+                DeliveryPeriod = new CalendarPeriod("1718-R10"),
+                CollectionPeriod = new CalendarPeriod("1718-R10"),
                 AmountDue = 1000,
                 Type = OnProgrammeEarningType.Learning,
                 PriceEpisodeIdentifier = "p1-1",
