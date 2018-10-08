@@ -9,7 +9,7 @@
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
-    <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" Value="__RequiredPaymentsService_FailedMessagesQueue__" />
     <Parameter Name="RequiredPaymentsService_EndpointName" Value="__RequiredPaymentsService_EndpointName__" />
+    <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" Value="__RequiredPaymentsService_FailedMessagesQueue__" />
   </Parameters>
 </Application>
