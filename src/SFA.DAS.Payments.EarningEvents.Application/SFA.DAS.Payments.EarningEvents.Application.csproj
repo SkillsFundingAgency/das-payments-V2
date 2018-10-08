@@ -6,6 +6,21 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.181" />
+    <PackageReference Include="ESFA.DC.IO.Interfaces" Version="0.1.12-beta0001" />
+    <PackageReference Include="ESFA.DC.IO.Redis" Version="0.1.14-beta0001" />
+    <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.1-beta0001" />
+    <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.Serialization.Xml" Version="0.1.4-beta0001" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
   </ItemGroup>
 
 </Project>

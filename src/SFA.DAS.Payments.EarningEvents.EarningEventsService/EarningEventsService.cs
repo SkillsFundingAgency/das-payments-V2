@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Fabric;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
 {
@@ -14,38 +13,25 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
     /// </summary>
     public class EarningEventsService : StatelessService
     {
-        public EarningEventsService(StatelessServiceContext context)
-            : base(context)
-        { }
+        private readonly ILifetimeScope lifetimeScope;
+        private readonly IPaymentLogger paymentLogger;
 
-        /// <summary>
-        /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
-        /// </summary>
-        /// <returns>A collection of listeners.</returns>
-        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+        public EarningEventsService(StatelessServiceContext context, ILifetimeScope lifetimeScope,
+            IPaymentLogger paymentLogger)
+            : base(context)
         {
-            return new ServiceInstanceListener[0];
+            this.lifetimeScope = lifetimeScope;
+            this.paymentLogger = paymentLogger;
         }
 
-        /// <summary>
-        /// This is the main entry point for your service instance.
-        /// </summary>
-        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
-        protected override async Task RunAsync(CancellationToken cancellationToken)
+        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            // TODO: Replace the following sample code with your own logic 
-            //       or remove this RunAsync override if it's not needed in your service.
+            paymentLogger.LogInfo("Creating Service Instance Listeners For EarningEventsService");
 
-            long iterations = 0;
-
-            while (true)
+            return new List<ServiceInstanceListener>
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
-
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-            }
+                new ServiceInstanceListener(context => lifetimeScope.Resolve<IEndpointCommunicationListener>())
+            };
         }
     }
 }

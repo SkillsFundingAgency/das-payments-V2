@@ -21,7 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Application\SFA.DAS.Payments.EarningEvents.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Service.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ESFA.DC.JobContextManager">
+      <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.jobcontextmanager\0.2.1-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

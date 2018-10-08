@@ -4,9 +4,13 @@
     <Parameter Name="EarningEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService_EndpointName" DefaultValue="" />
     <Parameter Name="EarningEventsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="SubscriptionName" DefaultValue="subscriptionName" />
+    <Parameter Name="JobStatusQueueName" DefaultValue="jobStatusQueue" />
+    <Parameter Name="AuditQueueName" DefaultValue="AuditQueue" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
+    <Parameter Name="AzureRedisConnectionString" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -20,6 +24,10 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="AzureRedisConnectionString" Value="[AzureRedisConnectionString]" />
+            <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
+            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueue]" />
+            <Parameter Name="AuditQueueName" Value="[AuditQueue]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[EarningEventsService_EndpointName]" />
