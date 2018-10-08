@@ -2,7 +2,6 @@
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System.Linq;
 using TechTalk.SpecFlow;
-using SFA.DAS.Payments.AcceptanceTests.Core;
 
 namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
 {

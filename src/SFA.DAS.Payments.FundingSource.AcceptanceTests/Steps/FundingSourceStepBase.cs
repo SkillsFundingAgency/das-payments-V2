@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
     public class FundingSourceStepBase: StepsBase
     {
 
-        public List<RequiredPayment> RequiredPayments { get ; set; }
+        public List<RequiredPayment> RequiredPayments { get => Get<List<RequiredPayment>>(); set => Set(value); }
         protected FundingSourceStepBase(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }

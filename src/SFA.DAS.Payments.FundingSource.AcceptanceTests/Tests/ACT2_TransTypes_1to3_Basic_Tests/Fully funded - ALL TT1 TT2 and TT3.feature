@@ -26,8 +26,8 @@ Scenario: Contract Type 2 Learning payment
 
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period	  | ULN   | TransactionType | FundingSource			| Amount |
-	| learnref1      | 10000 | p1                     | 9					| 10000 | Learning (TT1)  | CoInvestedSfa (FS2)		| 1000   |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType | FundingSource       | Amount |
+	| learnref1      | 10000 | p1                     | 9               | 10000 | Learning (TT1)  | CoInvestedSfa (FS2) | 1000   |
 
 Scenario: Contract Type 2 On Programme Completion payment
 
@@ -45,5 +45,5 @@ Scenario: Contract Type 2 On Programme Balancing payment
 
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 
-	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period	 | ULN   | TransactionType | FundingSource			| Amount |
-	| learnref1      | 10000 | p1                     | 10				 | 10000 | Balancing (TT3) | CoInvestedSfa (FS2)		| 3000   |
+	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType | FundingSource       | Amount |
+	| learnref1      | 10000 | p1                     | 10              | 10000 | Balancing (TT3) | CoInvestedSfa (FS2) | 3000   |
