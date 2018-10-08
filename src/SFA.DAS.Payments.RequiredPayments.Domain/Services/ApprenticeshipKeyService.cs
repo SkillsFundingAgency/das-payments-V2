@@ -12,14 +12,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 new[]
                 {
                     ukprn.ToString(CultureInfo.InvariantCulture),
-                    learnerReferenceNumber.ToLowerInvariant(),
+                    learnerReferenceNumber,
                     frameworkCode.ToString(CultureInfo.InvariantCulture),
                     pathwayCode.ToString(CultureInfo.InvariantCulture),
                     ((int)programmeType).ToString(CultureInfo.InvariantCulture),
                     standardCode.ToString(CultureInfo.InvariantCulture),
-                    learnAimRef.ToLowerInvariant() // we may need to remove this as apprenticeship should handle both zprog and maths&eng
+                    learnAimRef // we may need to remove this as apprenticeship should handle both zprog and maths&eng
                 }
-            );
+            ).ToLowerInvariant();
         }
 
         public string GeneratePaymentKey(string priceEpisodeIdentifier, string learnAimReference, int transactionType, CalendarPeriod deliveryPeriod)
