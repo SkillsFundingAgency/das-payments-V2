@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
                     Amount = payment.Amount,
                     TransactionType = (int)payment.Type,
-                    DeliveryPeriod = new CalendarPeriod(CollectionYear, payment.Delivery_Period).Name,
+                    DeliveryPeriod = new CalendarPeriod(CollectionYear, payment.DeliveryPeriod).Name,
 
                     ApprenticeshipKey = apprenticeshipKey,
                     CollectionPeriod = collectionPeriod,
