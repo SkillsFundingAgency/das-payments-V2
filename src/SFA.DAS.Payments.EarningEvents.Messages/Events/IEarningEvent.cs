@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
     /// <seealso cref="SFA.DAS.Payments.Messages.Core.Events.IPaymentsEvent" />
     public interface IEarningEvent : IPaymentsEvent
     {
-        short EarningYear { get; }
+        short CollectionYear { get; }
         ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; }
     }
 }

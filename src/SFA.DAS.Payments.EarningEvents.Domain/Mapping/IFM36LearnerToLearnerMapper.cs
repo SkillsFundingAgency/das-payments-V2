@@ -1,11 +1,11 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.Mapping
 {
-    public interface ILearnerToEarningsEventMapper
+    // ReSharper disable once InconsistentNaming
+    public interface IFM36LearnerToLearnerMapper
     {
-        IEarningEvent Map(FM36Learner learner);
+        Learner Map(int ukprn, string collectionYear, FM36Learner learner);
     }
 }
