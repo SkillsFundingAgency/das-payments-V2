@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             payment.Type = paymentDue.Type;
             payment.AmountDue = paymentDue.Amount;
             payment.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
-            payment.DeliveryPeriod = new CalendarPeriod(CollectionYear, paymentDue.Delivery_Period);
+            payment.DeliveryPeriod = new CalendarPeriod(CollectionYear, paymentDue.DeliveryPeriod);
             payment.JobId = TestSession.JobId;
             payment.LearningAim = TestSession.Learner.Course.ToLearningAim();
             payment.PriceEpisodeIdentifier = "p-1"; //TODO: will need to change if scenario specifies different identifier
@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                     && paymentDue.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && paymentDue.Delivery_Period == receivedEvent.DeliveryPeriod?.Period
+                    && paymentDue.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                 ));
 #if DEBUG
@@ -131,7 +131,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                     && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && expectedEvent.Delivery_Period == receivedEvent.DeliveryPeriod?.Period
+                    && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                 ));
 #if DEBUG
@@ -159,7 +159,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     if (TestSession.Learner.LearnRefNumber != receivedEvent?.Learner?.ReferenceNumber) mismatchedFields.Add($"LearnRefNumber({TestSession.Learner.LearnRefNumber}!={receivedEvent?.Learner?.ReferenceNumber})");
                     if (expectedEvent.Type != receivedEvent.OnProgrammeEarningType) mismatchedFields.Add($"Type({expectedEvent.Type}!={receivedEvent.OnProgrammeEarningType})");
                     if (TestSession.Ukprn != receivedEvent.Ukprn) mismatchedFields.Add($"Ukprn({TestSession.Ukprn}!={receivedEvent.Ukprn})");
-                    if (expectedEvent.Delivery_Period != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.Delivery_Period}!={receivedEvent.DeliveryPeriod?.Period})");
+                    if (expectedEvent.DeliveryPeriod != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.DeliveryPeriod}!={receivedEvent.DeliveryPeriod?.Period})");
                     if (!receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)) mismatchedFields.Add($"CollectionPeriod({receivedEvent.CollectionPeriod} does not contain {CollectionYear})");
 
                     if (mismatchedFields.Count == 0)
