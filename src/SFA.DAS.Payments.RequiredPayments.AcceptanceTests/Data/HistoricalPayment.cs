@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data
 
         public string PriceEpisodeIdentifier { get; set; }
 
-        public byte DeliveryPeriod { get; set; }
+        public byte Delivery_Period { get; set; }
 
         public long Uln { get; set; }
 
