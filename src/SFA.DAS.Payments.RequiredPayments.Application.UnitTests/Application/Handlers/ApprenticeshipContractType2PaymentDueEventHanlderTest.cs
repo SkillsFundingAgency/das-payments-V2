@@ -205,6 +205,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
             _apprenticeshipKeyServiceMock.Setup(s => s.GeneratePaymentKey("2", "2", 3, It.IsAny<CalendarPeriod>())).Returns("1").Verifiable();
             _apprenticeshipKeyServiceMock.Setup(s => s.GeneratePaymentKey("3", "2", 3, It.IsAny<CalendarPeriod>())).Returns("2").Verifiable();
 
+            _paymentHistoryCacheMock.Setup(c => c.Contains("1", It.IsAny<CancellationToken>())).ReturnsAsync(false).Verifiable();
+            _paymentHistoryCacheMock.Setup(c => c.Contains("2", It.IsAny<CancellationToken>())).ReturnsAsync(true).Verifiable();
+            _paymentHistoryCacheMock.Setup(c => c.Clear("2", It.IsAny<CancellationToken>())).Returns(Task.CompletedTask).Verifiable();
             _paymentHistoryCacheMock.Setup(c => c.Add("1", It.Is<PaymentEntity[]>(p => p.Length == 2 && p[0].PriceEpisodeIdentifier == "1" && p[1].PriceEpisodeIdentifier == "2"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(0)).Verifiable();
             _paymentHistoryCacheMock.Setup(c => c.Add("2", It.Is<PaymentEntity[]>(p => p.Length == 1 && p[0].PriceEpisodeIdentifier == "3"), It.IsAny<CancellationToken>())).Returns(Task.FromResult(0)).Verifiable();
 
