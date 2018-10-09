@@ -10,6 +10,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
         }
 
+        [Given(@"the current collection period is R(.*)")]
         [Given(@"the current processing period is (.*)")]
         public void GivenTheCurrentProcessingPeriodIs(byte period)
         {

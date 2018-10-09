@@ -124,6 +124,7 @@ namespace SFA.DAS.Payments.Messages.UnitTests
             var subj = new CalendarPeriod(years, period);
             Assert.AreEqual(expectedYear, subj.Year);
             Assert.AreEqual(expectedMonth, subj.Month);
+            Assert.AreEqual(expectedName, subj.Name);
         }
 
         [TestCase("1819-R01", 1, 2018, 8)]

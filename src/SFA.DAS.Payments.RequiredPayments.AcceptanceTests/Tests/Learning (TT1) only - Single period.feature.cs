@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
-                        "Period",
+                        "Delivery Period",
                         "TransactionType",
                         "Amount"});
             table1.AddRow(new string[] {
@@ -152,7 +152,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
-                        "Period",
+                        "Delivery Period",
                         "TransactionType",
                         "Amount"});
             table2.AddRow(new string[] {
@@ -211,7 +211,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "Learning (TT1)",
                         "600"});
 #line 24
- testRunner.And("the following historical contract type 2 On Programme Learning payments exist:", ((string)(null)), table2, "And ");
+ testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table2, "And ");
 #line hidden
         }
         
@@ -244,7 +244,7 @@ this.FeatureBackground();
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
-                        "Period",
+                        "Delivery Period",
                         "TransactionType",
                         "Amount"});
             table3.AddRow(new string[] {

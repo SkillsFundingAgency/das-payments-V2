@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
+namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests
 {
     using TechTalk.SpecFlow;
     
@@ -18,8 +18,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Small Employers")]
-    public partial class SmallEmployersFeature
+    [NUnit.Framework.DescriptionAttribute("non-DAS learner employed with a small employer, is fully funded for on programme " +
+        "and completion payments")]
+    public partial class Non_DASLearnerEmployedWithASmallEmployerIsFullyFundedForOnProgrammeAndCompletionPaymentsFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +32,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Small Employers", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "non-DAS learner employed with a small employer, is fully funded for on programme " +
+                    "and completion payments", null, ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -71,14 +73,14 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
         
         public virtual void FeatureBackground()
         {
+#line 3
 #line 4
+ testRunner.Given("the current collection period is R1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 5
- testRunner.Given("the current collection period is R13", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 6
  testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 7
+#line 6
  testRunner.And("a learner is undertaking a training with a training provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 8
+#line 7
  testRunner.And("the SFA contribution percentage is 100%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -151,8 +153,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "12",
                         "Completion (TT2)",
                         "1500"});
-#line 9
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
+#line 8
+ testRunner.And("the required payments component generates the following contract type 2 payable e" +
+                    "arnings:", ((string)(null)), table1, "And ");
 #line hidden
         }
         
@@ -163,281 +166,285 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC1-Payment for a 16-18 non-DAS learner, small employer at start", null, new string[] {
                         "SmallEmployerNonDas"});
-#line 27
+#line 26
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 4
+#line 3
 this.FeatureBackground();
-#line 28
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 27
+ testRunner.When("required payments event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
+                        "FundingSource",
                         "Amount"});
             table2.AddRow(new string[] {
                         "p1",
                         "1",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "2",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "3",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "4",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "5",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "6",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "7",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "8",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "9",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "10",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "11",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "12",
                         "Learning (TT1)",
+                        "CoInvestedSfa (FS2)",
                         "500"});
             table2.AddRow(new string[] {
                         "p1",
                         "12",
                         "Completion (TT2)",
+                        "CoInvestedSfa (FS2)",
                         "1500"});
-#line 29
- testRunner.Then("the required payments component will generate the following contract type 2 payab" +
-                    "le earnings:", ((string)(null)), table2, "Then ");
+#line 28
+ testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
+                    "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("AC5- Payment for a 16-18 non-DAS learner, employer is not small")]
-        [NUnit.Framework.CategoryAttribute("SmallEmployerNonDas")]
         public virtual void AC5_PaymentForA16_18Non_DASLearnerEmployerIsNotSmall()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC5- Payment for a 16-18 non-DAS learner, employer is not small", null, new string[] {
-                        "SmallEmployerNonDas"});
-#line 47
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC5- Payment for a 16-18 non-DAS learner, employer is not small", null, ((string[])(null)));
+#line 44
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 4
+#line 3
 this.FeatureBackground();
-#line 48
+#line 45
  testRunner.Given("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 49
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 46
+ testRunner.When("required payments event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
+                        "FundingSource",
                         "Amount"});
             table3.AddRow(new string[] {
                         "p1",
                         "1",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "2",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "3",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "4",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "5",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "6",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "7",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "8",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "9",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "10",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "11",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "12",
                         "Learning (TT1)",
-                        "500"});
+                        "CoInvestedSfa (FS2)",
+                        "450"});
             table3.AddRow(new string[] {
                         "p1",
                         "12",
                         "Completion (TT2)",
-                        "1500"});
-#line 50
- testRunner.Then("the required payments component will generate the following contract type 2 payab" +
-                    "le earnings:", ((string)(null)), table3, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("AC1-Payment for a 16-18 non-DAS learner, small employer at start and historical p" +
-            "ayments exist")]
-        public virtual void AC1_PaymentForA16_18Non_DASLearnerSmallEmployerAtStartAndHistoricalPaymentsExist()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC1-Payment for a 16-18 non-DAS learner, small employer at start and historical p" +
-                    "ayments exist", null, ((string[])(null)));
-#line 67
-this.ScenarioInitialize(scenarioInfo);
-            this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line hidden
-            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "PriceEpisodeIdentifier",
-                        "Delivery Period",
-                        "TransactionType",
-                        "Amount"});
-            table4.AddRow(new string[] {
+                        "CoInvestedSfa (FS2)",
+                        "1350"});
+            table3.AddRow(new string[] {
                         "p1",
                         "1",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "2",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "3",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "4",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "5",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "6",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "7",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "8",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "9",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "10",
                         "Learning (TT1)",
-                        "500"});
-            table4.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "11",
                         "Learning (TT1)",
-                        "500"});
-#line 69
- testRunner.Given("the following historical contract type 2 payments exist:", ((string)(null)), table4, "Given ");
-#line 83
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
-                        "PriceEpisodeIdentifier",
-                        "Delivery Period",
-                        "TransactionType",
-                        "Amount"});
-            table5.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "12",
                         "Learning (TT1)",
-                        "500"});
-            table5.AddRow(new string[] {
+                        "CoInvestedEmployer (FS3)",
+                        "50"});
+            table3.AddRow(new string[] {
                         "p1",
                         "12",
                         "Completion (TT2)",
-                        "1500"});
-#line 84
- testRunner.Then("the required payments component will generate the following contract type 2 payab" +
-                    "le earnings:", ((string)(null)), table5, "Then ");
+                        "CoInvestedEmployer (FS3)",
+                        "150"});
+#line 47
+ testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
+                    "ed payments:", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
