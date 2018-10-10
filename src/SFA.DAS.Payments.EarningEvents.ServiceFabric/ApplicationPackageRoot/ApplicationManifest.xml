@@ -4,9 +4,9 @@
     <Parameter Name="EarningEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService_EndpointName" DefaultValue="" />
     <Parameter Name="EarningEventsService_FailedMessagesQueue" DefaultValue="" />
-    <Parameter Name="SubscriptionName" DefaultValue="subscriptionName" />
-    <Parameter Name="JobStatusQueueName" DefaultValue="jobStatusQueue" />
-    <Parameter Name="AuditQueueName" DefaultValue="AuditQueue" />
+    <Parameter Name="SubscriptionName" DefaultValue="" />
+    <Parameter Name="JobStatusQueueName" DefaultValue="" />
+    <Parameter Name="AuditQueueName" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
@@ -25,13 +25,13 @@
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="AzureRedisConnectionString" Value="[AzureRedisConnectionString]" />
-            <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
-            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueue]" />
-            <Parameter Name="AuditQueueName" Value="[AuditQueue]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[EarningEventsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService_FailedMessagesQueue]" />
+            <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
+            <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
+            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
           </Section>
         </Settings>
       </ConfigOverride>

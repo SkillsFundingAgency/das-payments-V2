@@ -5,11 +5,15 @@
     <Parameter Name="StorageConnectionString" Value="" />
     <Parameter Name="LoggingConnectionString" Value=""/>
     <Parameter Name="ServiceBusConnectionString" Value=""/>
+    <Parameter Name="AzureRedisConnectionString" Value=""/>
   </Section>
 
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value=""/>
     <Parameter Name="FailedMessagesQueue" Value=""/>
+    <Parameter Name="AuditQueueName" Value="" />
+    <Parameter Name="SubscriptionName" Value="" />
+    <Parameter Name="JobStatusQueueName" Value="" />
   </Section>
 
 </Settings>

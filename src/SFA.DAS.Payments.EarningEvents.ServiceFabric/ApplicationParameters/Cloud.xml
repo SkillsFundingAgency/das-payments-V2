@@ -10,6 +10,6 @@
     <Parameter Name="AuditQueueName" Value="__AuditQueue__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
-    <Parameter Name="AzureRedisConnectionString" />
+    <Parameter Name="AzureRedisConnectionString" Value="__AzureRedisConnectionString__" />
   </Parameters>
 </Application>
