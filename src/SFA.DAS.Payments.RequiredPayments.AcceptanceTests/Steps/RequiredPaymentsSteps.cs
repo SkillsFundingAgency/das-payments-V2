@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             }
         }
 
-        private ApprenticeshipContractTypePaymentDueEvent CreatePaymentDueEvent(Data.OnProgrammePaymentDue paymentDue)
+        private ApprenticeshipContractTypePaymentDueEvent CreatePaymentDueEvent(OnProgrammePaymentDue paymentDue)
         {
             var payment = ContractType == 1
                 ? (ApprenticeshipContractTypePaymentDueEvent)new ApprenticeshipContractType1PaymentDueEvent()
@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             var expectedPaymentsEvents = table
                 .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents, null), "Failed to find all the required payment events");
+            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events");
         }
 
         [Then(@"the required payments component will generate the following contract type (.*) Completion \(TT(.*)\) payable earnings:")]
@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             var result = PaymentsDue.Where(x => !type.HasValue || x.Type == type).ToList().All(paymentDue =>
                 !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
                     paymentDue.Amount == receivedEvent.AmountDue
-                    && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
+                    && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                     && paymentDue.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
                     && paymentDue.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
@@ -124,7 +124,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return result;
         }
 
-        private bool MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type)
+        private bool MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
         {
             OnProgrammePaymentDue[] events;
 
@@ -143,7 +143,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             var allFound = events.All(expectedEvent =>
                 ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
                     expectedEvent.Amount == receivedEvent.AmountDue
-                    && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
+                    && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                     && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
                     && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
@@ -151,8 +151,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 ));
 
             var nothingExtra = !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
-                TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
-                && TestSession.Ukprn == receivedEvent?.Ukprn
+                TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
+                && TestSession.Ukprn == receivedEvent.Ukprn
                 && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
             );
 #if DEBUG

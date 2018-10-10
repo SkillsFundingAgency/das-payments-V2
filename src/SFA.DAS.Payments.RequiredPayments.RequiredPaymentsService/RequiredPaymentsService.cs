@@ -45,6 +45,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             paymentLogger.LogVerbose($"Handling PaymentDue for {apprenticeshipKey}");
 
+            // TODO: uncomment this when RequiredPayments actors are capable of updating payment history cache
             //if (!await IsInitialised().ConfigureAwait(false))
                 await Initialise().ConfigureAwait(false);
 
