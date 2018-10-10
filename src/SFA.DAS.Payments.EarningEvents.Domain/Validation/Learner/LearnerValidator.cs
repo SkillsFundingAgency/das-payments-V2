@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.Core.Validation;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner
 {
@@ -11,11 +12,11 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner
             new OverlappingPriceEpisodeValidationRule()
         };
 
-        public List<ValidationRuleResult> Validate(FM36Learner learner)
+        public ValidationResult Validate(FM36Learner learner)
         {
-            return LearnerRules
+            return new ValidationResult( LearnerRules
                 .Select(rule => rule.IsValid(learner))
-                .ToList();
+                .ToList());
         }
     }
 }

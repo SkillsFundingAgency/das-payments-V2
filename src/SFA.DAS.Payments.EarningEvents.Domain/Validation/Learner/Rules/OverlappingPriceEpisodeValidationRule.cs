@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.Core.Validation;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner
 {
@@ -15,7 +16,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner
                         priceEpisode.PriceEpisodeValues.PriceEpisodePlannedEndDate > pe.PriceEpisodeValues?.EpisodeStartDate &&
                         priceEpisode.PriceEpisodeValues.EpisodeStartDate < pe.PriceEpisodeValues?.PriceEpisodePlannedEndDate);
                 if (overlappingPriceEpisode != null)
-                    return ValidationRuleResult.Failed($"Found overlapping price episodes.  Price Episode {priceEpisode.PriceEpisodeIdentifier} overlapped with price episode {overlappingPriceEpisode.PriceEpisodeIdentifier}.");
+                    return ValidationRuleResult.Failure($"Found overlapping price episodes.  Price Episode {priceEpisode.PriceEpisodeIdentifier} overlapped with price episode {overlappingPriceEpisode.PriceEpisodeIdentifier}.");
             }
             return  ValidationRuleResult.Ok();
         }

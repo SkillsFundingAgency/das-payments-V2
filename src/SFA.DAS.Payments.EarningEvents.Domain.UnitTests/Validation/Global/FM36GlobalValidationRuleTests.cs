@@ -12,16 +12,17 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Global
         [Test]
         public void Fails_Validation_If_Ukprn_Is_Not_Populated()
         {
-            var global = new FM36Global {UKPRN = 0, Year = "1718"};
+            var global = new FM36Global { UKPRN = 0, Year = "1718" };
             var result = new FM36GlobalValidationRule().IsValid(global);
-            Assert.IsFalse(result.IsValid);
+            Assert.IsFalse(result.Failed);
         }
+
         [Test]
         public void Fails_Validation_If_Collection_Year_Is_Not_Populated()
         {
             var global = new FM36Global { UKPRN = 12345, Year = null };
             var result = new FM36GlobalValidationRule().IsValid(global);
-            Assert.IsFalse(result.IsValid);
+            Assert.IsFalse(result.Failed);
         }
 
         [Test]
@@ -29,7 +30,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Global
         {
             var global = new FM36Global { UKPRN = 12345, Year = "1718" };
             var result = new FM36GlobalValidationRule().IsValid(global);
-            Assert.IsTrue(result.IsValid);
+            Assert.IsTrue(result.Failed);
         }
     }
 }

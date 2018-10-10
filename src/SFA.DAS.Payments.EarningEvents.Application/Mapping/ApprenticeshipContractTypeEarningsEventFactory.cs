@@ -1,7 +1,7 @@
 ﻿using System;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
-namespace SFA.DAS.Payments.EarningEvents.Domain.Mapping
+namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public class ApprenticeshipContractTypeEarningsEventFactory
     {

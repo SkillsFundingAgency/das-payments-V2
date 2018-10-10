@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Learner
             var rule = new OverlappingPriceEpisodeValidationRule();
             var result = rule.IsValid(learner);
 
-            Assert.IsFalse(result.IsValid,result.FailureReason);
+            Assert.IsFalse(result.Failed,result.FailureReason);
         }
     }
 }
