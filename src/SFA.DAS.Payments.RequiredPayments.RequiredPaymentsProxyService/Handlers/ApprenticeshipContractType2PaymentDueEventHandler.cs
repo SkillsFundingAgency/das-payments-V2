@@ -13,7 +13,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 
-
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
     public class ApprenticeshipContractType2PaymentDueEventHandler : IHandleMessages<ApprenticeshipContractType2PaymentDueEvent>
@@ -24,9 +23,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
         private readonly ILifetimeScope lifetimeScope;
 
         public ApprenticeshipContractType2PaymentDueEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
-                                        IActorProxyFactory proxyFactory,
-                                        IPaymentLogger paymentLogger,
-                                        ILifetimeScope lifetimeScope)
+            IActorProxyFactory proxyFactory,
+            IPaymentLogger paymentLogger,
+            ILifetimeScope lifetimeScope)
         {
             this.apprenticeshipKeyService = apprenticeshipKeyService;
             this.proxyFactory = proxyFactory ?? new ActorProxyFactory();
@@ -36,58 +35,55 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
         public async Task Handle(ApprenticeshipContractType2PaymentDueEvent message, IMessageHandlerContext context)
         {
-//            using (_lifetimeScope.BeginLifetimeScope())
+            paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
+
+            var executionContext = (ESFA.DC.Logging.ExecutionContext) lifetimeScope.Resolve<IExecutionContext>();
+            executionContext.JobId = message.JobId;
+
+            try
             {
-                paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
+                var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
+                    message.Ukprn,
+                    message.Learner.ReferenceNumber,
+                    message.LearningAim.FrameworkCode,
+                    message.LearningAim.PathwayCode,
+                    (ProgrammeType) message.LearningAim.ProgrammeType,
+                    message.LearningAim.StandardCode,
+                    message.LearningAim.Reference
+                );
 
-                var executionContext = (ESFA.DC.Logging.ExecutionContext) lifetimeScope.Resolve<IExecutionContext>();
-                executionContext.JobId = message.JobId;
-
+                var actorId = new ActorId(key);
+                var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
+                ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentEvent;
                 try
                 {
-                    var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
-                        message.Ukprn,
-                        message.Learner.ReferenceNumber,
-                        message.LearningAim.FrameworkCode,
-                        message.LearningAim.PathwayCode,
-                        (ProgrammeType) message.LearningAim.ProgrammeType,
-                        message.LearningAim.StandardCode,
-                        message.LearningAim.Reference
-                    );
-
-                    var actorId = new ActorId(key);
-                    var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                    ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentEvent;
-                    try
-                    {
-                        requiredPaymentEvent = await actor.HandleAct2PaymentDueEvent(message, CancellationToken.None).ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
-                    {
-                        paymentLogger.LogError($"Error invoking required payments actor. Error: {ex.Message}", ex);
-                        throw;
-                    }
-
-                    try
-                    {
-                        if (requiredPaymentEvent != null)
-                            await context.Publish(requiredPaymentEvent).ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
-                    {
-                        //TODO: add more details when we flesh out the event.
-                        paymentLogger.LogError($"Error publishing the event: 'RequiredPaymentEvent'.  Error: {ex.Message}.", ex);
-                        throw;
-                        //TODO: update the job
-                    }
-
-                    paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
+                    requiredPaymentEvent = await actor.HandleAct2PaymentDueEvent(message, CancellationToken.None).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    paymentLogger.LogError("Error while handling RequiredPaymentsProxyService event", ex);
+                    paymentLogger.LogError($"Error invoking required payments actor. Error: {ex.Message}", ex);
                     throw;
                 }
+
+                try
+                {
+                    if (requiredPaymentEvent != null)
+                        await context.Publish(requiredPaymentEvent).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    //TODO: add more details when we flesh out the event.
+                    paymentLogger.LogError($"Error publishing the event: 'RequiredPaymentEvent'.  Error: {ex.Message}.", ex);
+                    throw;
+                    //TODO: update the job
+                }
+
+                paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
+            }
+            catch (Exception ex)
+            {
+                paymentLogger.LogError("Error while handling RequiredPaymentsProxyService event", ex);
+                throw;
             }
         }
     }

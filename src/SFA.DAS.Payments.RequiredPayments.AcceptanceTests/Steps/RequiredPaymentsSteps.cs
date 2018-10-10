@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             }
         }
 
-        private ApprenticeshipContractTypePaymentDueEvent CreatePaymentDueEvent(Data.OnProgrammePaymentDue paymentDue)
+        private ApprenticeshipContractTypePaymentDueEvent CreatePaymentDueEvent(OnProgrammePaymentDue paymentDue)
         {
             var payment = ContractType == 1
                 ? (ApprenticeshipContractTypePaymentDueEvent)new ApprenticeshipContractType1PaymentDueEvent()
@@ -48,7 +49,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             payment.DeliveryPeriod = new CalendarPeriod(CollectionYear, paymentDue.DeliveryPeriod);
             payment.JobId = TestSession.JobId;
             payment.LearningAim = TestSession.Learner.Course.ToLearningAim();
-            payment.PriceEpisodeIdentifier = "p-1"; //TODO: will need to change if scenario specifies different identifier
+            payment.PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier;
             return payment;
         }
 
@@ -65,7 +66,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             var expectedPaymentsEvents = expectedEventsTable
                 .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events");
+            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents, OnProgrammeEarningType.Completion), "Failed to find all the required payment events");
         }
 
         [Then(@"the required payments component will generate the following contract type (.*) Learning \(TT(.*)\) payable earnings:")]
@@ -73,7 +74,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             var expectedPaymentsEvents = expectedEventsTable
                 .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events");
+            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents, OnProgrammeEarningType.Learning), "Failed to find all the required payment events");
         }
 
         [Then(@"the required payments component will generate the following contract type (.*) Balancing \(TT(.*)\) payable earnings:")]
@@ -81,33 +82,33 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             var expectedPaymentsEvents = expectedEventsTable
                 .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events");
+            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents, OnProgrammeEarningType.Balancing), "Failed to find all the required payment events");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) Learning \(TT(.*)\) payable earnings")]
         public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeLearningTTPayableEarnings(int p0, int p1)
         {
-            WaitForIt(() => MatchUnexpectedRequiredPayment(), "Found some unexpected required payment events");
+            WaitForIt(() => MatchUnexpectedRequiredPayment(OnProgrammeEarningType.Learning), "Found some unexpected required payment events");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) Completion \(TT(.*)\) payable earnings")]
         public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeCompletionTTPayableEarnings(int p0, int p1)
         {
-            WaitForIt(() => MatchUnexpectedRequiredPayment(), "Found some unexpected required payment events");
+            WaitForIt(() => MatchUnexpectedRequiredPayment(OnProgrammeEarningType.Completion), "Found some unexpected required payment events");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) Balancing \(TT(.*)\) payable earnings")]
         public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeBalancingTTPayableEarnings(int p0, int p1)
         {
-            WaitForIt(() => MatchUnexpectedRequiredPayment(), "Found some unexpected required payment events");
+            WaitForIt(() => MatchUnexpectedRequiredPayment(OnProgrammeEarningType.Balancing), "Found some unexpected required payment events");
         }
 
-        private bool MatchUnexpectedRequiredPayment()
+        private bool MatchUnexpectedRequiredPayment(OnProgrammeEarningType? type)
         {
-            var result = PaymentsDue.Where(x => x.Type == OnProgrammeEarningType.Balancing).All(paymentDue =>
+            var result = PaymentsDue.Where(x => !type.HasValue || x.Type == type).ToList().All(paymentDue =>
                 !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
                     paymentDue.Amount == receivedEvent.AmountDue
-                    && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
+                    && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                     && paymentDue.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
                     && paymentDue.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
@@ -123,25 +124,49 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return result;
         }
 
-        private bool MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents)
+        private bool MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
         {
-            var result = expectedPaymentsEvents.Where(x => x.Type == OnProgrammeEarningType.Completion).All(expectedEvent =>
+            OnProgrammePaymentDue[] events;
+
+            if (type.HasValue)
+            {
+                events = expectedPaymentsEvents.Where(x => x.Type == type.Value).ToArray();
+
+                if (events.Length == 0)
+                    throw new ArgumentException("expectedPayments have no items of requested type");
+            }
+            else
+            {
+                events = expectedPaymentsEvents;
+            }
+
+            var allFound = events.All(expectedEvent =>
                 ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
                     expectedEvent.Amount == receivedEvent.AmountDue
-                    && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
+                    && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                     && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
                     && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                 ));
+
+            var nothingExtra = !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
+                TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
+                && TestSession.Ukprn == receivedEvent.Ukprn
+                && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
+            );
 #if DEBUG
-            if (!result && trace)
+            if ((!allFound || !nothingExtra) && trace)
             {
-                Debug.WriteLine("Did not find all expected events. Trace:");
+                if (!allFound)
+                    Debug.WriteLine("Did not find all expected events. Trace:");
+                else
+                    Debug.WriteLine("Found some unexpected events. Trace:");
+
                 TraceMatch(expectedPaymentsEvents);
             }
 #endif
-            return result;
+            return allFound;
         }
 
         private void TraceMatch(OnProgrammePaymentDue[] expectedPaymentsEvents)
