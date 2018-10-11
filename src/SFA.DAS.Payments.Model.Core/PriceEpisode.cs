@@ -5,9 +5,21 @@ namespace SFA.DAS.Payments.Model.Core
     public class PriceEpisode
     {
         public string Identifier { get; set; }
+        /// <summary>
+        /// Training price
+        /// </summary>
         public decimal TotalNegotiatedPrice1 { get; set; }
+        /// <summary>
+        /// Assessment price
+        /// </summary>
         public decimal? TotalNegotiatedPrice2 { get; set; }
+        /// <summary>
+        /// Residual training price
+        /// </summary>
         public decimal? TotalNegotiatedPrice3 { get; set; }
+        /// <summary>
+        /// Residual assessment price
+        /// </summary>
         public decimal? TotalNegotiatedPrice4 { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }

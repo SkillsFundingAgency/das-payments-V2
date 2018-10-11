@@ -2,6 +2,7 @@
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.Core.Validation;
+using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner.Rules;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner
 {

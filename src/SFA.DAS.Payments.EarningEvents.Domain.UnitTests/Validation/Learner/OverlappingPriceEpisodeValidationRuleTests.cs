@@ -4,6 +4,7 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
+using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner.Rules;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Learner
 {
