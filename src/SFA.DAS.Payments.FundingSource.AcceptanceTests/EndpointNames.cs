@@ -2,6 +2,6 @@
 {
     public class EndpointNames
     {
-        public static string NonLevyFundedPaymentsService = "sfa-das-payments-nonlevyfundedpayments";
+        public static string NonLevyFundedPaymentsService = "sfa-das-payments-fundingsource-nonlevy";
     }
 }
