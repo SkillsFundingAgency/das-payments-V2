@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using TechTalk.SpecFlow;
-using NServiceBus;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data;
 using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Handlers;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
 namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
@@ -54,8 +54,9 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                 receivedEvent.CollectionPeriod == new CalendarPeriod(CollectionYear, CollectionPeriod));
         }
 
-        [Given(@"the following contract type (.*) On Programme earnings are provided in the latest ILR for the current academic year:")]
-        public void GivenTheFollowingContractTypeOnProgrammeEarningsAreProvidedInTheLatestILRForTheCurrentAcademicYear(int p0, Table table)
+
+        [Given(@"the following contract type (.*) On Programme earnings are provided:")]
+        public void GivenTheFollowingContractTypeOnProgrammeEarningsAreProvided(int p0, Table table)
         {
             var rawEarnings = table.CreateSet<ContractTypeEarning>().ToArray();
 
