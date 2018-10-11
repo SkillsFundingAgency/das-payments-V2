@@ -210,6 +210,14 @@
     <None Include="App.config" />
     <None Include="App.Debug.config">
       <DependentUpon>App.config</DependentUpon>
+    <None Include="packages.config" />
+    <None Include="Tests\1_non_levy_learner_finishes_early.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>1_non_levy_learner_finishes_early.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Fully funded - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
     </None>
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
