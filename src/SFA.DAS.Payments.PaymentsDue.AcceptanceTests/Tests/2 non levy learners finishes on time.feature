@@ -1,4 +1,6 @@
-﻿Feature: Non-Levy - Basic Day - 2 learners - Both finishes on time
+﻿Feature: Basic Day
+	Non-Levy - 2 learners - Both finishes on time
+
 Background:
 	Given the current collection period is R02
 	And the SFA contribution percentage is 90%
@@ -19,10 +21,10 @@ And the following contract type 2 On Programme earnings are provided:
 	| L2		| p2                     | 1				| Learning (TT1)  | 800    |
 	| L2		| p2                     | 2				| Completion (TT2)| 2400   |
 
-@NonDas_BasicDay
+@NonLevy_BasicDay
 @MultipleLearners
 
-Scenario: 2_non_levy_learner_finishes_OnTime
+Scenario: Learning and Completion
 	When an earnings event is received
 	Then the payments due component will generate the following contract type 2 payments due:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
