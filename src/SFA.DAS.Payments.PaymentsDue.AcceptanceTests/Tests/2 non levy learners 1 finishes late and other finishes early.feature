@@ -1,4 +1,5 @@
-﻿Feature: Non-Levy - Basic Day - 2 learners - 1 finishes early and 1 finishes late
+﻿Feature: Basic Day - 2 learners
+	Non-Levy - 1 finishes early and 1 finishes late
 
 Background:
 	Given the SFA contribution percentage is 90%
