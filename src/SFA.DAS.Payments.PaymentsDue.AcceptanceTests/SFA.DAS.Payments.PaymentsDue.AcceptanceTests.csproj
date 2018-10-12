@@ -74,7 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\ContractTypeEarning.cs" />
+    <Compile Include="Data\OnProgrammeEarning.cs" />
     <Compile Include="Data\OnProgrammePaymentDue.cs" />
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2PaymentDueEventHandler.cs" />
@@ -83,9 +83,7 @@
     <Compile Include="Steps\EarningSteps.cs" />
     <Compile Include="Steps\LearnerSteps.cs" />
     <Compile Include="Steps\PaymentsDueBootstrapper.cs" />
-    <Compile Include="Steps\ProcessingPeriodSteps.cs" />
     <Compile Include="Steps\PaymentsDueSteps.cs" />
-    <Compile Include="Steps\SmallEmployerPaymentsSteps.cs" />
     <Compile Include="Tests\SmallEmployers.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

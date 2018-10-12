@@ -4,7 +4,6 @@ using Autofac;
 using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using TechTalk.SpecFlow;
 
@@ -92,6 +91,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             var part = year.Substring(period < 5 ? 0 : 2, 2);
             return (short)(short.Parse(part) + 2000);
+        }
+
+        protected void SetCurrentCollectionYear()
+        {
+            var year = DateTime.Today.Year - 2000;
+            CollectionYear = DateTime.Today.Month < 9 ? $"{year - 1}{year}" : $"{year}{year + 1}";
         }
     }
 }

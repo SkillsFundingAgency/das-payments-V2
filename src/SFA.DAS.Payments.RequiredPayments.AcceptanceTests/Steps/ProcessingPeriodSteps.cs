@@ -20,8 +20,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [Given(@"the payments are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
         {
-            var year = DateTime.Today.Year - 2000;
-            CollectionYear = DateTime.Today.Month < 9 ? $"{year - 1}{year}" : $"{year}{year + 1}";
+            SetCurrentCollectionYear();
         }
     }
 }

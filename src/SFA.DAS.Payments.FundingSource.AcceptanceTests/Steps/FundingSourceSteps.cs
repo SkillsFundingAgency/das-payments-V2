@@ -22,8 +22,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         [Given(@"the payments are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
         {
-            var year = DateTime.Today.Year - 2000;
-            CollectionYear = DateTime.Today.Month < 9 ? $"{year - 1}{year}" : $"{year}{year + 1}";
+            SetCurrentCollectionYear();
         }
 
         [Given(@"the current processing period is (.*)")]

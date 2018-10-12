@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using NServiceBus;
-using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Handlers
@@ -13,7 +11,6 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Handlers
 
         public Task Handle(ApprenticeshipContractType2PaymentDueEvent message, IMessageHandlerContext context)
         {
-            Console.WriteLine(message.ToJson());
             ReceivedEvents.Add(message);
             return Task.FromResult(0);
         }
