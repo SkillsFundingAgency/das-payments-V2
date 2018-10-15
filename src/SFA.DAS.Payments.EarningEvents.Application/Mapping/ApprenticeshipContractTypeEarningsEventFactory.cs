@@ -3,7 +3,12 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public class ApprenticeshipContractTypeEarningsEventFactory
+    public interface IApprenticeshipContractTypeEarningsEventFactory
+    {
+        ApprenticeshipContractTypeEarningsEvent Create(string contractType);
+    }
+
+    public class ApprenticeshipContractTypeEarningsEventFactory: IApprenticeshipContractTypeEarningsEventFactory
     {
         public const string SfaContractType = "ContractWithSfa";
         public const string EmployerContractType = "ContractWithEmployer";

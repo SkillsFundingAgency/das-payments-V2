@@ -7,6 +7,8 @@ using FluentAssertions;
 using FluentAssertions.Common;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.Messages;
+using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -14,13 +16,13 @@ using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.
 
 namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
 {
-    public class LearnerResolver : IValueResolver<FM36Learner, EarningEvent, Learner>
-    {
-        public Learner Resolve(FM36Learner source, EarningEvent destination, Learner destMember, ResolutionContext context)
-        {
-            return Mapper.Instance.Map<FM36Learner, Learner>(source);
-        }
-    }
+    //public class LearnerResolver : IValueResolver<FM36Learner, EarningEvent, Learner>
+    //{
+    //    public Learner Resolve(FM36Learner source, EarningEvent destination, Learner destMember, ResolutionContext context)
+    //    {
+    //        return Mapper.Instance.Map<FM36Learner, Learner>(source);
+    //    }
+    //}
 
     [TestFixture]
     public class MappingTest
@@ -78,6 +80,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         //    Assert_Mappings();
         //}
         private FM36Learner fm36Learner;
+        private ProcessLearnerCommand processLearnerCommand;
 
         [OneTimeSetUp]
         public void InitialiseMapper()
@@ -92,8 +95,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [SetUp]
         public void SetUp()
         {
-
-
             fm36Learner = new FM36Learner
             {
                 LearnRefNumber = "learner-a",
@@ -153,12 +154,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     }
                 }
             };
+
+            processLearnerCommand = new ProcessLearnerCommand
+            {
+                Learner = fm36Learner,
+                CollectionYear = "1819",
+                Ukprn = 12345,
+                JobId = "job-1"
+            };
         }
 
         [Test]
         public void Maps_Learner()
         {
-            var earningEvent = Mapper.Instance.Map<FM36Learner, ApprenticeshipContractType2EarningEvent>(fm36Learner);
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
             earningEvent.Learner.Should().NotBeNull();
             earningEvent.Learner.ReferenceNumber.Should().Be(fm36Learner.LearnRefNumber);
         }
@@ -166,7 +175,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_Price_Episodes()
         {
-            var earningEvent = Mapper.Instance.Map<FM36Learner, ApprenticeshipContractType2EarningEvent>(fm36Learner);
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
             earningEvent.PriceEpisodes.Should().NotBeEmpty();
             earningEvent.PriceEpisodes.First().Identifier.Should().Be("pe-1");
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice1.Should().Be(15000);
@@ -180,7 +189,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_Price_Episode_Periodised_Values_To_Earning_Periods()
         {
-            var earningEvent = Mapper.Instance.Map<FM36Learner, ApprenticeshipContractType2EarningEvent>(fm36Learner);
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
             earningEvent.OnProgrammeEarnings.Should().NotBeNullOrEmpty();
             earningEvent.OnProgrammeEarnings.Should().HaveCount(2);
         }
@@ -188,7 +197,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_On_Programme_Earnings()
         {
-            var earningEvent = Mapper.Instance.Map<FM36Learner, ApprenticeshipContractType2EarningEvent>(fm36Learner);
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
             var learning =
                 earningEvent.OnProgrammeEarnings.FirstOrDefault(earnings =>
                     earnings.Type == OnProgrammeEarningType.Learning);
@@ -200,7 +209,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_Completion_Earnings()
         {
-            var earningEvent = Mapper.Instance.Map<FM36Learner, ApprenticeshipContractType2EarningEvent>(fm36Learner);
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
             var completion =
                 earningEvent.OnProgrammeEarnings.FirstOrDefault(earnings =>
                     earnings.Type == OnProgrammeEarningType.Completion);

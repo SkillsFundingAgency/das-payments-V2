@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Mapping
 {
     public interface IFunctionalSkillEarningsEventBuilder
     {
-        FunctionalSkillEarningsEvent Build(long ukprn, string collectionYear, string jobId, FM36Learner fm36Learner);
+        FunctionalSkillEarningsEvent Build(IIlrLearnerSubmission learnerSubmission);
     }
 }

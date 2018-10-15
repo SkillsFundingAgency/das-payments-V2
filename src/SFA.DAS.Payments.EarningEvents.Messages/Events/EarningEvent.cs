@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public long Ukprn { get; set; }
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
-        public short CollectionYear { get; set; }
+        public string CollectionYear { get; set; }
         public List<PriceEpisode> PriceEpisodes { get; set; }
     }
 }
