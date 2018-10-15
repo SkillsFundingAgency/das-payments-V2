@@ -270,6 +270,11 @@
     <Compile Include="Steps\RequiredPaymentsSteps.cs" />
     <Compile Include="Steps\RequiredPaymentsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
+    <Compile Include="Tests\1_non_levy_learner_finishes_OnTime.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>1_non_levy_learner_finishes_OnTime.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Minimum\ACT 2 On-Programme Payments2.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -409,6 +414,10 @@
     <None Include="Tests\Learning %28TT1%29 only - Single period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learning %28TT1%29 only - Single period.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\SmallEmployers.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>SmallEmployers.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
