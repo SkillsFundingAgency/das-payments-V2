@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -39,15 +40,16 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         public static void SetUpPaymentsDb()
         {
             if (!IsDevEnvironment) return;
-
             var instance = new DacServices(Config.PaymentsConnectionString);
             var path = Path.GetFullPath(Path.Combine(
                 Path.GetDirectoryName(typeof(HistoricalPaymentSteps).Assembly.Location) ?? throw new InvalidOperationException("Failed to get assembly location path"),
                 @"..\..\..\SFA.DAS.Payments.Database\bin\Debug\SFA.DAS.Payments.Database.dacpac"));
 
+            var builder = new SqlConnectionStringBuilder(Config.PaymentsConnectionString);
+
             using (var dacpac = DacPackage.Load(path))
             {
-                instance.Deploy(dacpac, "SFA.DAS.Payments", true);
+                instance.Deploy(dacpac, builder.InitialCatalog, true);
             }
         }
 #endif
