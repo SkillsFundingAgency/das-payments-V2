@@ -74,6 +74,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
 
                 foreach (var p in groupedEntities)
                 {
+                    if (await paymentHistoryCache.Contains(p.Key, cancellationToken).ConfigureAwait(false))
+                        await paymentHistoryCache.Clear(p.Key, cancellationToken).ConfigureAwait(false);
+
                     await paymentHistoryCache.Add(p.Key, p.Value, CancellationToken.None).ConfigureAwait(false);
                 }
             }
