@@ -161,6 +161,11 @@
     <Compile Include="Steps\ACT2TransTypes1to3BasicTestsSteps.cs" />
     <Compile Include="Steps\FundingSourceSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
+    <Compile Include="Tests\1_non_levy_learner_finishes_OnTime.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>1_non_levy_learner_finishes_OnTime.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -231,6 +236,10 @@
     </None>
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
+    </None>
+    <None Include="Tests\1_non_levy_learner_finishes_OnTime.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>1_non_levy_learner_finishes_OnTime.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
