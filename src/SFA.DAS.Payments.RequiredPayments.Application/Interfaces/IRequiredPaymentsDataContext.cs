@@ -6,5 +6,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application
     public interface IRequiredPaymentsDataContext
     {
         DbSet<PaymentEntity> PaymentHistory { get; }
+        int SaveChanges();
+
     }
 }

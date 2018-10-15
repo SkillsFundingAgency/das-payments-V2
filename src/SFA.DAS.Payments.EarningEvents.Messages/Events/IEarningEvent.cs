@@ -12,5 +12,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
     {
         short EarningYear { get; }
         ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; }
+
+        CalendarPeriod CollectionPeriod { get; }
     }
 }

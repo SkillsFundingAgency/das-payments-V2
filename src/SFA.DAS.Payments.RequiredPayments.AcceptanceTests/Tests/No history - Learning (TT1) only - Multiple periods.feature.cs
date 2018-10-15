@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
-                        "Period",
+                        "Delivery Period",
                         "TransactionType",
                         "Amount"});
             table1.AddRow(new string[] {
@@ -131,7 +131,7 @@ this.FeatureBackground();
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
-                        "Period",
+                        "Delivery Period",
                         "TransactionType",
                         "Amount"});
             table2.AddRow(new string[] {

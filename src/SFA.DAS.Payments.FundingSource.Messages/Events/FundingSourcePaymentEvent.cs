@@ -24,8 +24,6 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
 
         public string JobId { get; set; }
 
-        public byte Period { get; set; }
-
         public byte ContractType { get; set; }
     }
 }

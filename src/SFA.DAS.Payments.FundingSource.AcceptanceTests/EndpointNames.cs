@@ -1,7 +1,9 @@
-﻿namespace SFA.DAS.Payments.FundingSource.AcceptanceTests
+﻿using System.Configuration;
+
+namespace SFA.DAS.Payments.FundingSource.AcceptanceTests
 {
     public class EndpointNames
     {
-        public static string NonLevyFundedPaymentsService = "sfa-das-payments-fundingsource-nonlevy";
+        public static string NonLevyFundedPaymentsService => ConfigurationManager.AppSettings["NonLevyFundedPaymentsServiceEndpointName"];
     }
 }
