@@ -206,6 +206,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Learning %28TT1%29 only - single period.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Non-Levy Learner Finishes Late.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\SmallEmployers.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -217,10 +222,8 @@
     <None Include="App.Debug.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
-    <None Include="packages.config" />
-    <None Include="Tests\1_non_levy_learner_finishes_late.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>1_non_levy_learner_finishes_late.feature.cs</LastGenOutput>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -229,7 +232,6 @@
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
-    <None Include="packages.config" />
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
@@ -265,6 +267,10 @@
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - single period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learning %28TT1%29 only - single period.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-Levy Learner Finishes Late.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\SmallEmployers.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

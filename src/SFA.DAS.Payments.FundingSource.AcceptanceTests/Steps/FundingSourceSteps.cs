@@ -44,6 +44,11 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             SfaContributionPercentage = sfaContribution / 100;
         }
 
+        [Given(@"the required payments component generated no contract type (.*) payable earnings")]
+        public void GivenTheRequiredPaymentsComponentGeneratedNoContractTypePayableEarnings(int p0)
+        {
+        }
+
         [Given(@"the required payments component generates the following contract type (.*) payable earnings:")]
         public void GivenTheRequiredPaymentsComponentGeneratesTheFollowingContractTypePayableEarnings(byte contractType, Table payments)
         {
