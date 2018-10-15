@@ -96,10 +96,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EndpointNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\BindingBootstrapper.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
     <Compile Include="Steps\EarningEventsSteps.cs" />
     <Compile Include="Steps\EarningEventsStepsBase.cs" />
+    <Compile Include="TestConfiguration.cs" />
     <Compile Include="Tests\ALL TT1 TT2 and TT3.feature.cs">
       <DependentUpon>ALL TT1 TT2 and TT3.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -136,6 +139,14 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
       <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
+      <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>
+      <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
+      <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>
+      <Name>SFA.DAS.Payments.Messages.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
       <Project>{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}</Project>
