@@ -270,6 +270,11 @@
     <Compile Include="Steps\RequiredPaymentsSteps.cs" />
     <Compile Include="Steps\RequiredPaymentsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
+    <Compile Include="Tests\1_non_levy_learner_finishes_OnTime.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>1_non_levy_learner_finishes_OnTime.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Minimum\ACT 2 On-Programme Payments2.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -354,6 +359,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\1_non_levy_learner_finishes_OnTime.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>1_non_levy_learner_finishes_OnTime.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Minimum\ACT 2 On-Programme Payments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ACT 2 On-Programme Payments2.feature.cs</LastGenOutput>
