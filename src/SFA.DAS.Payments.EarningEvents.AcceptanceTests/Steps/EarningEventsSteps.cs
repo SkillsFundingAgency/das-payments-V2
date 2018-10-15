@@ -1,6 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using ESFA.DC.IO.Interfaces;
+using ESFA.DC.IO.Redis.Config.Interfaces;
+using ESFA.DC.JobContextManager.Model;
+using ESFA.DC.JobContextManager.Model.Interface;
+using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
+using SFA.DAS.Payments.Core.Configuration;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
@@ -8,8 +15,15 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
     [Binding]
     public class EarningEventsSteps : EarningEventsStepsBase
     {
-        public EarningEventsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
+        private readonly IKeyValuePersistenceService redisService;
+        private readonly IJsonSerializationService serializationService;
+        private readonly IConfigurationHelper configurationHelper;
+
+        public EarningEventsSteps(ScenarioContext scenarioContext, IKeyValuePersistenceService redisService, IJsonSerializationService serializationService, IConfigurationHelper configurationHelper) : base(scenarioContext)
         {
+            this.redisService = redisService;
+            this.serializationService = serializationService;
+            this.configurationHelper = configurationHelper;
         }
 
         [Given(@"the earnings calculator generates the following FM36 price episodes:")]
@@ -55,7 +69,27 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             learner.PriceEpisodes.Add(priceEpisode);
             input.Learners.Add(learner);
 
-            await MessageSession.Send(input).ConfigureAwait(false);
+            var messagePointer = Guid.NewGuid().ToString();
+
+            await redisService.SaveAsync(messagePointer, serializationService.Serialize(input));
+
+            var inputMessage = new JobContextMessage
+            {
+                JobId = 1,
+                KeyValuePairs = new Dictionary<string, object> {{"FundingFm36Output", messagePointer}},
+                SubmissionDateTimeUtc = DateTime.Now,
+                TopicPointer = 1,
+                Topics = new List<ITopicItem>
+                {
+                    new TopicItem
+                    {
+                        SubscriptionName = configurationHelper.GetSetting("SubscriptionName"),
+                        SubscriptionSqlFilterValue = string.Empty,
+                    }
+                }
+            };
+
+            await MessageSession.Send(inputMessage).ConfigureAwait(false);
         }
 
         [Then(@"the earning events component will generate the following earning events:")]
