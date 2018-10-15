@@ -83,186 +83,120 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
  testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
                         "PriceEpisodeIdentifier",
-                        "Period",
-                        "ULN",
+                        "Delivery Period",
                         "TransactionType",
                         "Amount"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "1",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "2",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "3",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "4",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "5",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "6",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "7",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "8",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "9",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "10",
-                        "10000",
                         "Completion (TT2)",
                         "3000"});
             table1.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "10",
-                        "10000",
                         "Balancing (TT3)",
                         "3000"});
 #line 10
  testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
                         "PriceEpisodeIdentifier",
-                        "Period",
-                        "ULN",
+                        "Delivery Period",
                         "TransactionType",
                         "Amount"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "1",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "2",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "3",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "4",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "5",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "6",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "7",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "8",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
             table2.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "9",
-                        "10000",
                         "Learning (TT1)",
                         "1000"});
 #line 24
- testRunner.And("the following historical contract type 2 On Programme Learning payments exist:", ((string)(null)), table2, "And ");
+ testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table2, "And ");
 #line hidden
         }
         
@@ -312,19 +246,13 @@ this.FeatureBackground();
  testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
                         "PriceEpisodeIdentifier",
-                        "Period",
-                        "ULN",
+                        "Delivery Period",
                         "TransactionType",
                         "Amount"});
             table3.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "10",
-                        "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
 #line 48
@@ -349,19 +277,13 @@ this.FeatureBackground();
  testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "LearnRefNumber",
-                        "Ukprn",
                         "PriceEpisodeIdentifier",
-                        "Period",
-                        "ULN",
+                        "Delivery Period",
                         "TransactionType",
                         "Amount"});
             table4.AddRow(new string[] {
-                        "learnref1",
-                        "10000",
                         "p1",
                         "10",
-                        "10000",
                         string.Format("{0}", transaction_Type),
                         string.Format("{0}", amount)});
 #line 59

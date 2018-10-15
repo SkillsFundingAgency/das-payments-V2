@@ -22,6 +22,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Data
             this.connectionString = connectionString;
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasDefaultSchema("Payments2");
+            modelBuilder.Entity<PaymentEntity>().ToTable("Payment");
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(connectionString);

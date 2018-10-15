@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
 #line 8
  testRunner.And("the SFA contribution percentage is \"90%\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "ULN",
                         "TransactionType",
                         "Amount"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -120,7 +120,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -136,7 +136,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -144,7 +144,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -152,7 +152,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -160,7 +160,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -168,7 +168,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -176,7 +176,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -184,7 +184,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "10000",
                         "Learning (TT1)",
                         "600"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -194,7 +194,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Tests.E2ETests
                         "1800"});
 #line 10
  testRunner.And("the required payments component generates the following contract type 2 payable e" +
-                    "arnings:", ((string)(null)), table22, "And ");
+                    "arnings:", ((string)(null)), table1, "And ");
 #line hidden
         }
         
@@ -225,7 +225,7 @@ this.FeatureBackground();
 #line 36
  testRunner.When("required payments event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -234,7 +234,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "FundingSource",
                         "Amount"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -243,7 +243,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -252,7 +252,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -261,7 +261,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -270,7 +270,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -279,7 +279,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -288,7 +288,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -297,7 +297,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -306,7 +306,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -315,7 +315,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -324,7 +324,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -333,7 +333,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -342,7 +342,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -351,7 +351,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -360,7 +360,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -369,7 +369,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -378,7 +378,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -387,7 +387,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -396,7 +396,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -405,7 +405,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -414,7 +414,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -423,7 +423,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -432,7 +432,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "60"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -441,7 +441,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedSfa (FS2)",
                         "540"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -452,7 +452,7 @@ this.FeatureBackground();
                         "60"});
 #line 38
  testRunner.Then("the payment source component will generate the following contract type 2 Learning" +
-                    " (TT1) coinvested payments:", ((string)(null)), table23, "Then ");
+                    " (TT1) coinvested payments:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -470,7 +470,7 @@ this.FeatureBackground();
 #line 68
  testRunner.When("required payments event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnRefNumber",
                         "Ukprn",
                         "PriceEpisodeIdentifier",
@@ -479,7 +479,7 @@ this.FeatureBackground();
                         "TransactionType",
                         "FundingSource",
                         "Amount"});
-            table24.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -488,7 +488,7 @@ this.FeatureBackground();
                         "Completion (TT2)",
                         "CoInvestedSfa (FS2)",
                         "1620"});
-            table24.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "learnref1",
                         "10000",
                         "p1",
@@ -499,7 +499,7 @@ this.FeatureBackground();
                         "180"});
 #line 70
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
-                    "ed payments:", ((string)(null)), table24, "Then ");
+                    "ed payments:", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

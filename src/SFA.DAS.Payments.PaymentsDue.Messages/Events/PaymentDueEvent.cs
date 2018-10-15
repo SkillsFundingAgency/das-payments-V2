@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
         public Learner Learner {get; set; }
 
         public LearningAim LearningAim { get; set; }
+
         public string PriceEpisodeIdentifier { get; set; }
 
         public decimal AmountDue { get; set; }

@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Linq;
+using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Core.Configuration;
@@ -26,10 +27,13 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
                 transport
                     .ConnectionString(config.ServiceBusConnectionString)
-                    .Transactions(TransportTransactionMode.ReceiveOnly); 
+                    .Transactions(TransportTransactionMode.ReceiveOnly)
+                    .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+
                 endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
                 endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
                 endpointConfiguration.EnableInstallers();
+
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()

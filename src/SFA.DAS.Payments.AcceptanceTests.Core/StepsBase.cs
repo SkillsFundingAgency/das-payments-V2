@@ -4,25 +4,23 @@ using Autofac;
 using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
-    [Binding]
     public abstract class StepsBase
     {
         public ScenarioContext ScenarioCtx { get; }
-        public static ContainerBuilder Builder { get; protected set; }
-        public static IContainer Container { get; protected set; }
+        public static ContainerBuilder Builder { get; protected set; } // -1
+        public static IContainer Container { get; protected set; } // 50
         public static IMessageSession MessageSession { get; protected set; }
-        public TestsConfiguration Config => Container.Resolve<TestsConfiguration>();
+        public static TestsConfiguration Config => Container.Resolve<TestsConfiguration>();
         public TestSession TestSession { get => Get<TestSession>(); set => Set(value); }
-        public string Environment => Config.GetAppSetting("Environment");
+        public static string Environment => Config.GetAppSetting("Environment");
         protected string CollectionYear { get => Get<string>("collection_year"); set => Set(value, "collection_year"); }
         protected byte CollectionPeriod { get => Get<byte>("collection_period"); set => Set(value, "collection_period"); }
-        public bool IsDevEnvironment => (Environment?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) ||
+        public static bool IsDevEnvironment => (Environment?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) ||
                                         (Environment?.Equals("LOCAL", StringComparison.OrdinalIgnoreCase) ?? false);
         protected decimal SfaContributionPercentage { get => Get<decimal>("sfa_contribution_percentage"); set => Set(value, "sfa_contribution_percentage"); }
         protected byte ContractType { get => Get<byte>("contract_type"); set => Set(value, "contract_type"); }
@@ -93,6 +91,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             var part = year.Substring(period < 5 ? 0 : 2, 2);
             return (short)(short.Parse(part) + 2000);
+        }
+
+        protected void SetCurrentCollectionYear()
+        {
+            var year = DateTime.Today.Year - 2000;
+            CollectionYear = DateTime.Today.Month < 9 ? $"{year - 1}{year}" : $"{year}{year + 1}";
         }
     }
 }
