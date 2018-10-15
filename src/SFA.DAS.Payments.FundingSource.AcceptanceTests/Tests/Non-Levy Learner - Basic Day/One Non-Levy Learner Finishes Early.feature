@@ -1,7 +1,10 @@
-﻿Feature: Provider earnings and payments where learner completes earlier than planned
+﻿Feature: One Non-Levy Learner Finishes Early
+Provider earnings and payments where learner completes earlier than planned
+
 Background:
 	Given a learner is undertaking a training with a training provider
 	And the SFA contribution percentage is 90%
+	And the payments are for the current collection year
 
 @NonDas_BasicDay
 @finishes_early
@@ -48,11 +51,11 @@ Scenario: A non-DAS learner, learner finishes early - no history
 
 @withdrawal
 
-Scenario: A non-DAS learner, learner withdraws after qualifying period
-	Given the current collection period is R06
-	And the required payments component generated no contract type 2 payable earnings
-	When no required payments event is received
-	Then the payment source component will not generate any contract type 2 coinvested payments
+#Scenario: A non-DAS learner, learner withdraws after qualifying period
+#	Given the current collection period is R06
+#	And the required payments component generated no contract type 2 payable earnings
+#	When no required payments event is received
+#	Then the payment source component will not generate any contract type 2 coinvested payments
 
 @withdrawal
 @PartialHistory
