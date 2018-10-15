@@ -1,4 +1,6 @@
-﻿Feature: Provider earnings and payments where learner completes earlier than planned
+﻿Feature: One Non-Levy Learner Finishes Early
+Provider earnings and payments where learner completes earlier than planned
+
 Background:
 	Given a learner is undertaking a training with a training provider
 	And the SFA contribution percentage is 90%
@@ -8,6 +10,7 @@ Background:
 
 Scenario: A non-DAS learner, learner finishes early
 	Given the current collection period is R02
+	And the payments are for the current collection year
 
 	And the payments due component generates the following contract type 2 payments due:	
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
@@ -32,6 +35,7 @@ Scenario: A non-DAS learner, learner finishes early
 
 Scenario: A non-DAS learner, learner finishes early - no history
 	Given the current collection period is R02
+	And the payments are for the current collection year
 
 	And the payments due component generates the following contract type 2 payments due:	
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
@@ -50,6 +54,7 @@ Scenario: A non-DAS learner, learner finishes early - no history
 
 Scenario: A non-DAS learner, learner withdraws after qualifying period
 	Given the current collection period is R06
+	And the payments are for the current collection year
 
 	And the payments due component generates the following contract type 2 payments due:	
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
@@ -73,6 +78,7 @@ Scenario: A non-DAS learner, learner withdraws after qualifying period
 
 Scenario: A non-DAS learner, learner withdraws after qualifying period - partial history
 	Given the current collection period is R06
+	And the payments are for the current collection year
 
 	And the payments due component generates the following contract type 2 payments due:	
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
