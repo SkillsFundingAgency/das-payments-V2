@@ -45,7 +45,8 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             paymentLogger.LogVerbose($"Handling PaymentDue for {apprenticeshipKey}");
 
-            if (!await IsInitialised().ConfigureAwait(false))
+            // TODO: uncomment this when RequiredPayments actors are capable of updating payment history cache
+            //if (!await IsInitialised().ConfigureAwait(false))
                 await Initialise().ConfigureAwait(false);
 
             var requiredPaymentEvents = await act2PaymentDueEventHandler.HandlePaymentDue(paymentDueEvent, cancellationToken).ConfigureAwait(false);
@@ -76,11 +77,17 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             paymentLogger.LogInfo($"Initialising actor for apprenticeship {apprenticeshipKey}");
 
-            //await _act2PaymentDueEventHanlder.PopulatePaymentHistoryCache(CancellationToken.None).ConfigureAwait(false);
+            await act2PaymentDueEventHandler.PopulatePaymentHistoryCache(CancellationToken.None).ConfigureAwait(false);
 
             paymentLogger.LogInfo($"Initialised actor for apprenticeship {apprenticeshipKey}");
 
-            await StateManager.AddStateAsync("initialised", true).ConfigureAwait(false);
+            await StateManager.TryAddStateAsync("initialised", true).ConfigureAwait(false);
+        }
+
+        public async Task Reset()
+        {
+            paymentLogger.LogInfo($"Resetting actor for apprenticeship {apprenticeshipKey}");
+            await StateManager.AddStateAsync("initialised", false).ConfigureAwait(false);
         }
 
         // TODO: update payment history when new payments created

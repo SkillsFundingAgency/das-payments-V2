@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
@@ -45,20 +42,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                         Reference = "Ref-1234",
                         StandardCode = 1
                     },
-                DeliveryPeriod = new CalendarPeriod
-                {
-                    Period = 1,
-                    Month = 4,
-                    Name = "R10-1718",
-                    Year = 2018
-                },
-                CollectionPeriod = new CalendarPeriod
-                {
-                    Period = 1,
-                    Month = 4,
-                    Name = "R10-1718",
-                    Year = 2018
-                },
+                DeliveryPeriod = new CalendarPeriod("1718-R10"),
+                CollectionPeriod = new CalendarPeriod("1718-R10"),
                 AmountDue = 1000,
                 Type = OnProgrammeEarningType.Learning,
                 PriceEpisodeIdentifier = "p1-1",

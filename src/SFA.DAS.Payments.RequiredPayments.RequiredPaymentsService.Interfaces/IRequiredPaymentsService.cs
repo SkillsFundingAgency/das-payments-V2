@@ -14,5 +14,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces
         Task<ApprenticeshipContractType2RequiredPaymentEvent> HandleAct2PaymentDueEvent(ApprenticeshipContractType2PaymentDueEvent paymentDueEvent, CancellationToken cancellationToken);
 
         Task Initialise();
+
+        Task Reset();
     }
 }

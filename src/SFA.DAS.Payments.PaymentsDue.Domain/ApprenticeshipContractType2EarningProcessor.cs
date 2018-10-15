@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using SFA.DAS.Payments.PaymentsDue.Domain.Entities;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.Domain

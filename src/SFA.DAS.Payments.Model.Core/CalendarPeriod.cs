@@ -4,10 +4,16 @@ namespace SFA.DAS.Payments.Model.Core
 {
     public class CalendarPeriod
     {
-        public short Year { get; }
-        public byte Month { get; }
-        public byte Period { get; }
-        public string Name { get; set; }
+        private string name;
+        public short Year { get; set; }
+        public byte Month { get; set; }
+        public byte Period { get; set; }
+
+        public string Name
+        {
+            get => name;
+            set => FromName(value);
+        }
 
         public CalendarPeriod() 
             : this((short) DateTime.UtcNow.Year, (byte) DateTime.UtcNow.Month)
@@ -41,37 +47,42 @@ namespace SFA.DAS.Payments.Model.Core
             Year = (short)(2000 + year + (period < 6 ? 0 : 1));
             Month = (byte)(period < 6 ? period + 7 : period - 5);
             Period = period;
-            Name = string.Concat(2000 + year, 2001 + year, "-R", period.ToString("00"));
+            Name = string.Concat(year, year + 1, "-R", period.ToString("00"));
         }
 
         public CalendarPeriod(string name)
         {
-            if (name == null)
-                throw new ArgumentNullException(nameof(name));
+            FromName(name);
+        }
 
-            if (name.Length == 7)
-                name = string.Concat(name.Substring(0, 4), "-", name.Substring(4));
+        private void FromName(string newName)
+        {
+            if (newName == null)
+                throw new ArgumentNullException("name");
 
-            if (name.Length != 8
-                || name[4] != '-'
-                || name[5] != 'R'
-                || !int.TryParse(name.Substring(6), out var period)
-                || !int.TryParse(name.Substring(0, 2), out var year)
+            if (newName.Length == 7)
+                newName = string.Concat(newName.Substring(0, 4), "-", newName.Substring(4));
+
+            if (newName.Length != 8
+                || newName[4] != '-'
+                || newName[5] != 'R'
+                || !int.TryParse(newName.Substring(6), out var period)
+                || !int.TryParse(newName.Substring(0, 2), out var year)
                 || period < 1
                 || period > 14
                 || year < 0
                 || year > 99
             )
             {
-                throw new ArgumentException("Invalid period name", nameof(name));
+                throw new ArgumentException("Invalid period name", "name");
             }
 
             var increment = period < 6 ? 0 : 1;
 
             Year = (short) (2000 + year + increment);
             Month = (byte) (period < 6 ? period + 7 : period - 5);
-            Name = name;
-            Period = (byte)period;
+            name = newName;
+            Period = (byte) period;
         }
 
         public override string ToString()

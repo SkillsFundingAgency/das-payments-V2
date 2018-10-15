@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Payments.FundingSource.Domain.Enum;
+﻿using   SFA.DAS.Payments.FundingSource.Model.Enum;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Models
 {

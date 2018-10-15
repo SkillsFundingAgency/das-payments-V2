@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var priceEpisodeIdentifier = "1";
             var learnAimRef = "6";
             var transactionType = 3;
-            var deliveryPeriod = new CalendarPeriod {Name = "5"};
+            var deliveryPeriod = new CalendarPeriod("1819", 5);
 
             // act
             var key = new ApprenticeshipKeyService().GeneratePaymentKey(priceEpisodeIdentifier, learnAimRef, transactionType, deliveryPeriod);
@@ -51,6 +51,47 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             Assert.Less(key.IndexOf("1", StringComparison.Ordinal), key.IndexOf("6", StringComparison.Ordinal), "LearnAimRef should be after PriceEpisodeIdentifier");
             Assert.Less(key.IndexOf("6", StringComparison.Ordinal), key.IndexOf("3", StringComparison.Ordinal), "TransactionType should be after LearnAimRef");
             Assert.Less(key.IndexOf("3", StringComparison.Ordinal), key.IndexOf("5", StringComparison.Ordinal), "DeliveryPeriod should be after TransactionType");
+        }
+
+        [Test]
+        public void TestApprenticeshipKeyChangesCase()
+        {
+            // arrange
+            var learnerReferenceNumber = "A";
+            var ukprn = 2;
+            var frameworkCode = 3;
+            var pathwayCode = 4;
+            var programmeType = ProgrammeType.None;
+            var standardCode = 5;
+            var learnAimRef = "B";
+
+            // act
+            var key = new ApprenticeshipKeyService().GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef);
+
+            // assert
+            Assert.IsFalse(key.Contains("A"));
+            Assert.IsFalse(key.Contains("B"));
+            Assert.IsTrue(key.Contains("a"));
+            Assert.IsTrue(key.Contains("b"));
+        }
+
+        [Test]
+        public void TestPaymentKeyChangesCase()
+        {
+            // arrange
+            var priceEpisodeIdentifier = "A";
+            var learnAimRef = "B";
+            var transactionType = 3;
+            var deliveryPeriod = new CalendarPeriod("1819", 5);
+
+            // act
+            var key = new ApprenticeshipKeyService().GeneratePaymentKey(priceEpisodeIdentifier, learnAimRef, transactionType, deliveryPeriod);
+
+            // assert
+            Assert.IsFalse(key.Contains("A"));
+            Assert.IsFalse(key.Contains("B"));
+            Assert.IsTrue(key.Contains("a"));
+            Assert.IsTrue(key.Contains("b"));
         }
     }
 }
