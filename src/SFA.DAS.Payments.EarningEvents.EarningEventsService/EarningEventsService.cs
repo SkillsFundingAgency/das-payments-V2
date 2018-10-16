@@ -4,8 +4,11 @@ using System.Fabric;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
 {
@@ -14,9 +17,15 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
     /// </summary>
     public class EarningEventsService : StatelessService
     {
-        public EarningEventsService(StatelessServiceContext context)
+        private readonly ILifetimeScope lifetimeScope;
+        private readonly IPaymentLogger logger;
+
+        public EarningEventsService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger logger)
             : base(context)
-        { }
+        {
+            this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         /// <summary>
         /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
@@ -24,7 +33,10 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            return new ServiceInstanceListener[0];
+            return new List<ServiceInstanceListener>
+            {
+                new ServiceInstanceListener(context =>lifetimeScope.Resolve<IEndpointCommunicationListener>())
+            };
         }
 
         /// <summary>
