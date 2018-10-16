@@ -7,6 +7,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using System;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Model.Enum;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
@@ -26,27 +27,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             requiredPaymentEvent = new ApprenticeshipContractType2RequiredPaymentEvent
             {
                 AmountDue = 1000.00m,
-                CollectionPeriod = new Model.Core.CalendarPeriod
-                {
-                    Month = 8,
-                    Name = "1819-R01",
-                    Year = 2018
-                },
-                DeliveryPeriod = new CalendarPeriod
-                {
-                    Month = 8,
-                    Year = 2018,
-                    Name = "1819R01"
-                },
+                CollectionPeriod = new CalendarPeriod("1819-R01"),
+                DeliveryPeriod = new CalendarPeriod("1819R01"),
                 EventTime = DateTime.UtcNow,
                 JobId = "001",
-                Learner = new Model.Core.Learner
+                Learner = new Learner
                 {
                     ReferenceNumber = "001",
                     Uln = 1234567890
                 },
                 OnProgrammeEarningType = OnProgrammeEarningType.Learning,
-                LearningAim = new Model.Core.LearningAim
+                LearningAim = new LearningAim
                 {
                     FrameworkCode = 403
                 },
@@ -66,7 +57,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             var coInvestedPayment = new SfaCoInvestedPayment
             {
                 AmountDue = 900.00m,
-                Type = Domain.Enum.FundingSourceType.CoInvestedSfa,
+                Type = FundingSourceType.CoInvestedSfa,
             };
 
             var expectedPayment = new SfaCoInvestedFundingSourcePaymentEvent
@@ -82,7 +73,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 OnProgrammeEarningType = requiredPaymentEvent.OnProgrammeEarningType,
                 LearningAim = requiredPaymentEvent.LearningAim,
                 PriceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier,
-                Ukprn = requiredPaymentEvent.Ukprn
+                Ukprn = requiredPaymentEvent.Ukprn,
+                FundingSourceType =FundingSourceType.CoInvestedSfa
             };
 
             var actualSfaCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredPaymentEvent, coInvestedPayment);
@@ -98,7 +90,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             var coInvestedPayment = new EmployerCoInvestedPayment
             {
                 AmountDue = 100.00m,
-                Type = Domain.Enum.FundingSourceType.CoInvestedEmployer
+                Type = FundingSourceType.CoInvestedEmployer
             };
 
             var expectedPayment = new EmployerCoInvestedFundingSourcePaymentEvent
@@ -114,7 +106,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 OnProgrammeEarningType = requiredPaymentEvent.OnProgrammeEarningType,
                 LearningAim = requiredPaymentEvent.LearningAim,
                 PriceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier,
-                Ukprn = requiredPaymentEvent.Ukprn
+                Ukprn = requiredPaymentEvent.Ukprn,
+                FundingSourceType = FundingSourceType.CoInvestedEmployer
             };
 
           

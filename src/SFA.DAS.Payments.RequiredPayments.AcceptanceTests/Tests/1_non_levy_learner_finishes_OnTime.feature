@@ -2,6 +2,7 @@
 
 Background:
 	Given the current collection period is R03
+	And the payments are for the current collection year
 	And a learner is undertaking a training with a training provider
 	And the SFA contribution percentage is 90%
 
