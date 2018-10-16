@@ -253,20 +253,18 @@ this.FeatureBackground();
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("A non-DAS learner, learner withdraws after qualifying period - partial history")]
         [NUnit.Framework.CategoryAttribute("withdrawal")]
-        [NUnit.Framework.CategoryAttribute("withdrawal")]
         [NUnit.Framework.CategoryAttribute("PartialHistory")]
         public virtual void ANon_DASLearnerLearnerWithdrawsAfterQualifyingPeriod_PartialHistory()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-DAS learner, learner withdraws after qualifying period - partial history", null, new string[] {
                         "withdrawal",
-                        "withdrawal",
                         "PartialHistory"});
-#line 63
+#line 56
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
 this.FeatureBackground();
-#line 64
+#line 57
  testRunner.Given("the current collection period is R06", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -284,10 +282,10 @@ this.FeatureBackground();
                         "5",
                         "Learning (TT1)",
                         "1000"});
-#line 66
+#line 59
  testRunner.And("the required payments component generates the following contract type 2 payable e" +
                     "arnings:", ((string)(null)), table5, "And ");
-#line 71
+#line 64
  testRunner.When("required payments event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -320,7 +318,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmploer (FS3)",
                         "100"});
-#line 72
+#line 65
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table6, "Then ");
 #line hidden
