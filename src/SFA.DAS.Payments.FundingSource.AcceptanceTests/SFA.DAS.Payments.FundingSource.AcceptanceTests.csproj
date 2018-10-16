@@ -161,10 +161,10 @@
     <Compile Include="Steps\ACT2TransTypes1to3BasicTestsSteps.cs" />
     <Compile Include="Steps\FundingSourceSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
-    <Compile Include="Tests\1_non_levy_learner_finishes_OnTime.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-193.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>1_non_levy_learner_finishes_OnTime.feature</DependentUpon>
+      <DependentUpon>One Non-Levy Learner Finishes On Time PV2-193.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature.cs">
       <AutoGen>True</AutoGen>
@@ -211,6 +211,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Learning %28TT1%29 only - single period.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Non-Levy Learner Finishes Early PV2-195.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\SmallEmployers.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -222,13 +227,19 @@
     <None Include="App.Debug.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Fully funded - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
+    </None>
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
-    <None Include="packages.config" />
-    <None Include="Tests\1_non_levy_learner_finishes_OnTime.feature">
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-193.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>1_non_levy_learner_finishes_OnTime.feature.cs</LastGenOutput>
+      <LastGenOutput>One Non-Levy Learner Finishes On Time PV2-193.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -265,6 +276,10 @@
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - single period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learning %28TT1%29 only - single period.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-Levy Learner Finishes Early PV2-195.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\SmallEmployers.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

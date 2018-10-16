@@ -1,4 +1,5 @@
-﻿Feature: Non-Levy learner - Basic Day
+﻿Feature: One Non-Levy Learner Finishes On Time PV2-193
+
 Background:
 	Given the current collection period is R03
 	And the payments are for the current collection year
