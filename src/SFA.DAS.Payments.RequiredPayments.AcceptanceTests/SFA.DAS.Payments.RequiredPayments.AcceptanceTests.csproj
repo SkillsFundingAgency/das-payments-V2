@@ -270,15 +270,15 @@
     <Compile Include="Steps\RequiredPaymentsSteps.cs" />
     <Compile Include="Steps\RequiredPaymentsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner Finishes Early.feature</DependentUpon>
+      <DependentUpon>One Non-Levy Learner Finishes Early PV2-195.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\1_non_levy_learner_finishes_OnTime.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-193.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>1_non_levy_learner_finishes_OnTime.feature</DependentUpon>
+      <DependentUpon>One Non-Levy Learner Finishes On Time PV2-193.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Minimum\ACT 2 On-Programme Payments2.feature.cs">
       <AutoGen>True</AutoGen>
@@ -364,13 +364,13 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
-    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early.feature">
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner Finishes Early.feature.cs</LastGenOutput>
+      <LastGenOutput>One Non-Levy Learner Finishes Early PV2-195.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\1_non_levy_learner_finishes_OnTime.feature">
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-193.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>1_non_levy_learner_finishes_OnTime.feature.cs</LastGenOutput>
+      <LastGenOutput>One Non-Levy Learner Finishes On Time PV2-193.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Minimum\ACT 2 On-Programme Payments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
