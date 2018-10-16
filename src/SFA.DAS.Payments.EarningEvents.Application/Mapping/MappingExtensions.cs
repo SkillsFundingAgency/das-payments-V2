@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.Model.Core;
+using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -29,6 +31,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             result.AddPeriodValue(values.Period11, 11, priceEpisodeIdentifier);
             result.AddPeriodValue(values.Period12, 12, priceEpisodeIdentifier);
             return result;
+        }
+
+        public static PriceEpisode GetLatestPriceEpisode(this List<PriceEpisode> priceEpisodes)
+        {
+            return priceEpisodes
+                .Where(priceEpisode => priceEpisode.PriceEpisodeValues?.EpisodeStartDate.HasValue ?? false)
+                .OrderByDescending(priceEpisode => priceEpisode.PriceEpisodeValues?.EpisodeStartDate)
+                .FirstOrDefault();
         }
     }
 }

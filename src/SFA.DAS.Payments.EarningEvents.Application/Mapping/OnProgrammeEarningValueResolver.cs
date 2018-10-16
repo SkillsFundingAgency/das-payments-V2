@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.EarningEvents.Application.Messages;
+using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public class OnProgrammeEarningValueResolver : IValueResolver<FM36Learner, ApprenticeshipContractTypeEarningsEvent, List<OnProgrammeEarning>>
+    public class OnProgrammeEarningValueResolver : IValueResolver<IIlrLearnerSubmission, ApprenticeshipContractTypeEarningsEvent, List<OnProgrammeEarning>>
     {
 
+        // ReSharper disable once InconsistentNaming
         private static string OnProgrammeEarningTypeToFM36AttributeName(OnProgrammeEarningType onProgrammeEarningType)
         {
             switch (onProgrammeEarningType)
@@ -44,10 +47,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         }
 
         private static readonly OnProgrammeEarningType[] OnProgrammeEarningTypes = new OnProgrammeEarningType[] { OnProgrammeEarningType.Balancing, OnProgrammeEarningType.Completion, OnProgrammeEarningType.Learning };
-        public List<OnProgrammeEarning> Resolve(FM36Learner source, ApprenticeshipContractTypeEarningsEvent destination, List<OnProgrammeEarning> destMember, ResolutionContext context)
+        public List<OnProgrammeEarning> Resolve(IIlrLearnerSubmission source, ApprenticeshipContractTypeEarningsEvent destination, List<OnProgrammeEarning> destMember, ResolutionContext context)
         {
             return OnProgrammeEarningTypes
-                .Select(type => CreateOnProgrammeEarning(source, type))
+                .Select(type => CreateOnProgrammeEarning(source.Learner, type))
                 .Where(earning => earning.Periods.Any())
                 .ToList();
         }

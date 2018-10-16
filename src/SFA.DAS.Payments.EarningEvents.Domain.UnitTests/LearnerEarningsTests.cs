@@ -22,9 +22,9 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             learner = new FM36Learner();
         }
 
-        protected LearnerEarnings GenerateEarnings(long ukprn = 12345, string jobId = "job-1234")
+        protected LearnerSubmissionProcessor GenerateEarnings(long ukprn = 12345, string jobId = "job-1234")
         {
-            return mocker.Create<LearnerEarnings>();
+            return mocker.Create<LearnerSubmissionProcessor>();
         }
 
         [Test]
@@ -32,8 +32,13 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
         {
             mocker.Mock<ILearnerValidator>().Setup(x => x.Validate(It.IsAny<FM36Learner>()))
                 .Returns(new ValidationResult(new List<ValidationRuleResult> { ValidationRuleResult.Failure("some failure") }));
-            var result = mocker.Create<LearnerEarnings>().GenerateEarnings(12345, "1819", "job-1234", new FM36Learner());
-            Assert.IsTrue(result.Failed);
+            var learnerSubmission = mocker.Mock<IIlrLearnerSubmission>()
+                .SetupProperty(x => x.Learner, learner)
+                .SetupProperty(x => x.CollectionYear, "1819")
+                .SetupProperty(x => x.JobId, "job-1")
+                .SetupProperty(x => x.Ukprn, 12345);
+            var result = mocker.Create<LearnerSubmissionProcessor>().GenerateEarnings(learnerSubmission.Object);
+            Assert.IsTrue(result.Validation.Failed);
         }
 
         [Test]

@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Mapping
 {
     public interface IApprenticeshipContractTypeEarningsEventBuilder
     {
-        ApprenticeshipContractTypeEarningsEvent Build(long ukprn, string collectionYear, string jobId, FM36Learner fm36Learner);
+        ApprenticeshipContractTypeEarningsEvent Build(IIlrLearnerSubmission learnerSubmission);
     }
 }
