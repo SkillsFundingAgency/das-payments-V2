@@ -3,10 +3,17 @@ using SFA.DAS.Payments.Core.Validation;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain
 {
-    public class LearnerSubmissionProcessor
+    public interface ILearnerSubmissionProcessor
+    {
+        (ValidationResult Validation, ApprenticeshipContractTypeEarningsEvent EarningsEvent) GenerateEarnings(
+            ProcessLearnerCommand learnerSubmission);
+    }
+
+    public class LearnerSubmissionProcessor: ILearnerSubmissionProcessor
     {
         private readonly ILearnerValidator learnerValidator;
         private readonly IApprenticeshipContractTypeEarningsEventBuilder apprenticeshipContractTypeEarningsEventBuilder;
@@ -16,7 +23,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
             this.apprenticeshipContractTypeEarningsEventBuilder = apprenticeshipContractTypeEarningsEventBuilder ?? throw new ArgumentNullException(nameof(apprenticeshipContractTypeEarningsEventBuilder));
         }
 
-        public (ValidationResult Validation, ApprenticeshipContractTypeEarningsEvent EarningsEvent)  GenerateEarnings(IIlrLearnerSubmission learnerSubmission)
+        public (ValidationResult Validation, ApprenticeshipContractTypeEarningsEvent EarningsEvent)  GenerateEarnings(ProcessLearnerCommand learnerSubmission)
         {
             var validationResult = learnerValidator.Validate(learnerSubmission.Learner);
             if (validationResult.Failed)

@@ -4,6 +4,7 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -18,7 +19,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public ApprenticeshipContractTypeEarningsEvent Build(IIlrLearnerSubmission learnerSubmission)
+        public ApprenticeshipContractTypeEarningsEvent Build(ProcessLearnerCommand learnerSubmission)
         {
             var contractType = learnerSubmission.Learner.PriceEpisodes.GetLatestPriceEpisode()
                 ?.PriceEpisodeValues.PriceEpisodeContractType ?? throw new InvalidOperationException($"Failed to find the contract type for ilr learner: {learnerSubmission.Learner.LearnRefNumber}");
