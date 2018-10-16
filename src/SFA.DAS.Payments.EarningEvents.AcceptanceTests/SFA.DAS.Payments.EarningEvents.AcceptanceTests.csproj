@@ -37,6 +37,12 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.DateTimeProvider">
+      <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.datetimeprovider\0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.DateTimeProvider.Interface">
+      <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.datetimeprovider.interface\0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.Interface.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model">
       <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.ilr.fundingservice.fm36.fundingoutput.model\0.1.181\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
     </Reference>
@@ -48,6 +54,9 @@
     </Reference>
     <Reference Include="ESFA.DC.JobContextManager">
       <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.jobcontextmanager\0.2.1-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Mapping.Interface">
+      <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.mapping.interface\0.1.0-beta0001\lib\netstandard2.0\ESFA.DC.Mapping.Interface.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Serialization.Interfaces">
       <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.serialization.interfaces\0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>

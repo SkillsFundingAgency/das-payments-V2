@@ -7,6 +7,7 @@ using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
+using SFA.DAS.Payments.EarningEvents.Application.Messages;
 
 namespace SFA.DAS.Payments.EarningEvents.EarningEventsService.Handlers
 {
@@ -39,28 +40,35 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService.Handlers
                 var fm36Output = serializationService.Deserialize<FM36Global>(redisService
                     .GetAsync(message.KeyValuePairs["FundingFm36Output"].ToString()).Result);
 
-                var earningEvents = earningEventsProcessingService.GetEarningEvents(fm36Output);
-
-                foreach (var earningEvent in earningEvents)
+                foreach (var learner in fm36Output.Learners)
                 {
                     try
                     {
-                        await context.Publish(earningEvent);
+                        var learnerCommand = new ProcessLearnerCommand
+                    {
+                        JobId = message.JobId.ToString(),
+                        Learner = learner,
+                        RequestTime = message.SubmissionDateTimeUtc
+                    };
 
-                        paymentLogger.LogInfo($"Successfully published EarningEvent");
+                        await context.SendLocal(learnerCommand);
+
+                        paymentLogger.LogInfo("Successfully published EarningEvent");
                     }
                     catch (Exception ex)
                     {
-                        paymentLogger.LogError($"Error publishing the event: EarningEvent", ex);
+                        paymentLogger.LogError("Error publishing the event: EarningEvent", ex);
                         throw;
                     }
 
-                    paymentLogger.LogInfo($"Successfully processed Earning event for Job Id {message.JobId}");
+                    
                 }
+
+                paymentLogger.LogInfo($"Successfully processed Earning event for Job Id {message.JobId}");
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError($"Error while handling EarningService event", ex);
+                paymentLogger.LogError("Error while handling EarningService event", ex);
                 throw;
             }
             

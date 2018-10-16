@@ -1,7 +1,12 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
+using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Application.Services;
+using SFA.DAS.Payments.EarningEvents.Domain;
+using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
+using SFA.DAS.Payments.EarningEvents.Domain.Validation.Global;
+using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
 {
