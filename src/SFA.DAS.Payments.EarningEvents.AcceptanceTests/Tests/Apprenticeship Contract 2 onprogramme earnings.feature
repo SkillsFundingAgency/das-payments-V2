@@ -6,7 +6,7 @@ Background:
 	And the earnings are for a test learner and a test provider
 	And the SFA contribution percentage is 90%
 	And the Earnings Calc has generated the following learner earnings
-	| Price Episode Identifier | Periods | completion status | Total training price | Total assessment price | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                      | Epsiode Start Date     | Learner Start Date     | Number Of Installments |
+	| Price Episode Identifier | Periods | completion status | Total training price | Total assessment price | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                      | Episode Start Date     | Learner Start Date     | Number Of Installments |
 	| p1                       | 1-12    | continuing        | 9000                 | 6000                   | 1                   | ZPROG001      | 25            | 25             | 16-18 Apprenticeship Non-Levy Contract | start of academic year | start of academic year | 12                     |
 	
 Scenario: Contract Type 2 Learning payment
