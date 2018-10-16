@@ -15,5 +15,9 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests
 
         public static string AzureRedisConnectionString =>
             ConfigurationManager.ConnectionStrings["AzureRedisConnectionString"]?.ConnectionString;
+
+        public static string TopicName => ConfigurationManager.AppSettings["TopicName"];
+
+        public static string SubscriptionName => ConfigurationManager.AppSettings["SubscriptionName"];
     }
 }
