@@ -1,4 +1,4 @@
-﻿Feature: One Non-Levy Learner Finishes Late
+﻿Feature: One Non-Levy Learner Finishes Late PV2-196
 Provider earnings and payments where learner completes later than planned
 
 Background:
@@ -24,19 +24,6 @@ Scenario: A non-DAS learner, learner finishes late
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
 	| p2                     | 5				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
 	| p2                     | 5				| Completion (TT2)| CoInvestedEmploer (FS3)	| 300    |
-
-@NonDas_BasicDay
-@finishes_late
-@withdrawal
-@NoCompletionPayment
-
-# This is left here for Pawan not to forget when he does E2E tests
-#
-#Scenario: A non-DAS learner, learner withdraws after planned end date
-#	Given the current collection period is R05
-#	And the required payments component generated no contract type 2 payable earnings
-#	When no required payments event is received
-#	Then the payment source component will not generate any contract type 2 coinvested payments
 
 
 @NonDas_BasicDay

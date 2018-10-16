@@ -211,10 +211,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Learning %28TT1%29 only - single period.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-196.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner Finishes Late.feature</DependentUpon>
+      <DependentUpon>One Non-Levy Learner Finishes Late PV2-196.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\SmallEmployers.feature.cs">
       <AutoGen>True</AutoGen>
@@ -277,9 +277,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learning %28TT1%29 only - single period.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late.feature">
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-196.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner Finishes Late.feature.cs</LastGenOutput>
+      <LastGenOutput>One Non-Levy Learner Finishes Late PV2-196.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\SmallEmployers.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
