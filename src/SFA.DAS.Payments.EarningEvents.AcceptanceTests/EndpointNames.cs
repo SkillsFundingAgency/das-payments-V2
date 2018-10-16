@@ -2,6 +2,6 @@
 {
     public class EndpointNames
     {
-        public static string EarningEvents = "sfa-das-payments-earningevents";
+        public static string EarningEventsService = "sfa-das-payments-earningevents";
     }
 }

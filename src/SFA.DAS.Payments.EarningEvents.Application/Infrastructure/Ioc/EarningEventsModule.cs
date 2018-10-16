@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<LearnerSubmissionProcessor>()
+                .As<ILearnerSubmissionProcessor>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<LearnerValidator>()
                 .As<ILearnerValidator>()

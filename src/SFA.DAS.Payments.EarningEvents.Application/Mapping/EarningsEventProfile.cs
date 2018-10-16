@@ -1,9 +1,9 @@
 ﻿using System;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using SFA.DAS.Payments.EarningEvents.Application.Messages;
 using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
@@ -12,40 +12,29 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     {
         public EarningsEventProfile()
         {
-            CreateMap<IIlrLearnerSubmission, EarningEvent>()
-                .Include<IIlrLearnerSubmission, ApprenticeshipContractTypeEarningsEvent>()
-                .Include<IIlrLearnerSubmission, FunctionalSkillEarningsEvent>()
+            CreateMap<ProcessLearnerCommand, EarningEvent>()
+                .Include<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent>()
+                .Include<ProcessLearnerCommand, FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.MapFrom(source => source.CollectionYear))
                 .ForMember(destinationMember => destinationMember.EventTime, opt => opt.UseValue(DateTimeOffset.UtcNow))
                 .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.Ignore())
                 .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(destinationMember => destinationMember.PriceEpisodes, opt => opt.MapFrom(source => source.Learner.PriceEpisodes))
                 .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId));
-            //.ForMember(destinationMember => destinationMember.Learner, opt => opt.ResolveUsing((l, ee) => Mapper.Map<FM36Learner, Learner>(l)));
 
-            //CreateMap<FM36Learner, EarningEvent>()
-            //    .Include<FM36Learner, ApprenticeshipContractTypeEarningsEvent>()
-            //    .Include<FM36Learner, FunctionalSkillEarningsEvent>()
-            //    .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.Ignore())
-            //    .ForMember(destinationMember => destinationMember.EventTime, opt => opt.UseValue(DateTimeOffset.UtcNow))
-            //    .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.Ignore())
-            //    .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.Ignore())
-            //    .ForMember(destinationMember => destinationMember.JobId, opt => opt.Ignore())
-            //    .ForMember(destinationMember => destinationMember.Learner, opt => opt.ResolveUsing((l, ee) => Mapper.Map<FM36Learner, Learner>(l)));
-
-            CreateMap<IIlrLearnerSubmission, ApprenticeshipContractTypeEarningsEvent>()
-                .Include<IIlrLearnerSubmission, ApprenticeshipContractType1EarningEvent>()
-                .Include<IIlrLearnerSubmission, ApprenticeshipContractType2EarningEvent>()
+            CreateMap<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent>()
+                .Include<ProcessLearnerCommand, ApprenticeshipContractType1EarningEvent>()
+                .Include<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>()
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.Ignore())
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.SfaContributionPercentage, opt => opt.ResolveUsing((cmd, ev) => cmd.Learner.PriceEpisodes.GetLatestPriceEpisode()?.PriceEpisodeValues.PriceEpisodeSFAContribPct));
 
-            CreateMap<IIlrLearnerSubmission, ApprenticeshipContractType1EarningEvent>()
+            CreateMap<ProcessLearnerCommand, ApprenticeshipContractType1EarningEvent>()
                 .ForMember(destinationMember => destinationMember.AgreementId, opt => opt.Ignore());
 
-            CreateMap<IIlrLearnerSubmission, ApprenticeshipContractType2EarningEvent>();
+            CreateMap<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>();
 
-            CreateMap<IIlrLearnerSubmission, FunctionalSkillEarningsEvent>()
+            CreateMap<ProcessLearnerCommand, FunctionalSkillEarningsEvent>()
                 .ForMember(dest => dest.Earnings, opt => opt.Ignore());
 
             CreateMap<FM36Learner, Learner>()

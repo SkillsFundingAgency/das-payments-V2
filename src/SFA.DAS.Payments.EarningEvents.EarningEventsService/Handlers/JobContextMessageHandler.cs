@@ -7,24 +7,21 @@ using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
-using SFA.DAS.Payments.EarningEvents.Application.Messages;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.EarningEventsService.Handlers
 {
     public class JobContextMessageHandler: IHandleMessages<JobContextMessage>
     {
         private readonly IPaymentLogger paymentLogger;
-        private readonly IEarningEventsProcessingService earningEventsProcessingService;
         private readonly IKeyValuePersistenceService redisService;
         private readonly IJsonSerializationService serializationService;
 
         public JobContextMessageHandler(IPaymentLogger paymentLogger, 
-            IEarningEventsProcessingService earningEventsProcessingService,
             IKeyValuePersistenceService redisService,
             IJsonSerializationService serializationService)
         {
             this.paymentLogger = paymentLogger;
-            this.earningEventsProcessingService = earningEventsProcessingService;
             this.redisService = redisService;
             this.serializationService = serializationService;
         }
