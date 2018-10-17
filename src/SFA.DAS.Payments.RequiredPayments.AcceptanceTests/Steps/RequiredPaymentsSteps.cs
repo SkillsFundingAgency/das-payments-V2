@@ -87,6 +87,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents, OnProgrammeEarningType.Balancing), "Failed to find all the required payment events");
         }
 
+        [Then(@"the required payments component will not generate any contract type (.*) payable earnings")]
+        public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypePayableEarnings(int p0)
+        {
+            WaitForIt(() => MatchUnexpectedRequiredPayment(null), "Found some unexpected required payment events");
+        }
+
         [Then(@"the required payments component will not generate any contract type (.*) Learning \(TT(.*)\) payable earnings")]
         public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeLearningTTPayableEarnings(int p0, int p1)
         {
