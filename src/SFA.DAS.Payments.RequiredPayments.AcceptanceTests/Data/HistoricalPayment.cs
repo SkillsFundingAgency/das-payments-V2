@@ -4,6 +4,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data
 {
     public class HistoricalPayment
     {
+        public string LearnerId { get; set; }
+
         public string LearnRefNumber { get; set; }
 
         public long Ukprn { get; set; }

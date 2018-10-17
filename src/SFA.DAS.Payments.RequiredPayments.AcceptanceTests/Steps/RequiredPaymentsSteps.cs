@@ -10,6 +10,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -41,6 +42,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 : new ApprenticeshipContractType2PaymentDueEvent();
 
             payment.Learner = TestSession.Learner.ToLearner();
+            payment.Learner.ReferenceNumber = TestSession.GenerateLearnerReference(paymentDue.LearnerId);
             payment.Ukprn = TestSession.Ukprn;
             payment.SfaContributionPercentage = SfaContributionPercentage;
             payment.Type = paymentDue.Type;
@@ -124,7 +126,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             if (!result && trace)
             {
                 Debug.WriteLine("Found unexpected events. Trace:");
-                TraceMatch(PaymentsDue.ToArray());
+                TraceMatch(PaymentsDue.ToArray(), ApprenticeshipContractType2Handler.ReceivedEvents.ToArray());
             }
 #endif
             return result;
@@ -146,21 +148,21 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 events = expectedPaymentsEvents;
             }
 
-            var allFound = events.All(expectedEvent =>
-                ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
+            var sessionEvents = ApprenticeshipContractType2Handler.ReceivedEvents.Where(e => e.Ukprn == TestSession.Ukprn).ToArray();
+
+            var matchedExpectations = sessionEvents
+                .Where(receivedEvent => events.Any(expectedEvent =>
                     expectedEvent.Amount == receivedEvent.AmountDue
                     && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                     && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
                     && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
-                ));
+                )).ToList();
 
-            var nothingExtra = !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
-                TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
-                && TestSession.Ukprn == receivedEvent.Ukprn
-                && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
-            );
+            var allFound = matchedExpectations.Count == expectedPaymentsEvents.Length;
+            var nothingExtra = sessionEvents.Length == matchedExpectations.Count;
+
 #if DEBUG
             if ((!allFound || !nothingExtra) && trace)
             {
@@ -169,21 +171,20 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 else
                     Debug.WriteLine("Found some unexpected events. Trace:");
 
-                TraceMatch(expectedPaymentsEvents);
+                TraceMatch(expectedPaymentsEvents, sessionEvents);
             }
 #endif
-            return allFound;
+            return allFound && nothingExtra;
         }
 
-        private void TraceMatch(OnProgrammePaymentDue[] expectedPaymentsEvents)
+        private void TraceMatch(OnProgrammePaymentDue[] expectedPaymentsEvents, ApprenticeshipContractType2RequiredPaymentEvent[] receivedEvents)
         {
             for (var i = 0; i < expectedPaymentsEvents.Length; i++)
             {
                 var expectedEvent = expectedPaymentsEvents[i];
-                var array = ApprenticeshipContractType2Handler.ReceivedEvents.ToArray();
-                for (var k = 0; k < array.Length; k++)
+                for (var k = 0; k < receivedEvents.Length; k++)
                 {
-                    var receivedEvent = array[k];
+                    var receivedEvent = receivedEvents[k];
                     var mismatchedFields = new List<string>();
 
                     if (expectedEvent.Amount != receivedEvent.AmountDue) mismatchedFields.Add($" Amount({expectedEvent.Amount}!={receivedEvent.AmountDue})");
