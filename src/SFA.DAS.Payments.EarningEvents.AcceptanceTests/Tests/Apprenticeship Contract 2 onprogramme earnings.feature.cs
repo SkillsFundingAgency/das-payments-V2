@@ -92,7 +92,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests
                         "Standard Code",
                         "Programme Type",
                         "Funding Line Type",
-                        "Epsiode Start Date",
+                        "Episode Start Date",
                         "Learner Start Date",
                         "Number Of Installments"});
             table1.AddRow(new string[] {

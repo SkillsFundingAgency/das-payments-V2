@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Core.Validation;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 {
@@ -32,12 +33,15 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
         {
             mocker.Mock<ILearnerValidator>().Setup(x => x.Validate(It.IsAny<FM36Learner>()))
                 .Returns(new ValidationResult(new List<ValidationRuleResult> { ValidationRuleResult.Failure("some failure") }));
-            var learnerSubmission = mocker.Mock<IIlrLearnerSubmission>()
-                .SetupProperty(x => x.Learner, learner)
-                .SetupProperty(x => x.CollectionYear, "1819")
-                .SetupProperty(x => x.JobId, "job-1")
-                .SetupProperty(x => x.Ukprn, 12345);
-            var result = mocker.Create<LearnerSubmissionProcessor>().GenerateEarnings(learnerSubmission.Object);
+            var learnerSubmission =new ProcessLearnerCommand
+            {
+                Learner = learner,
+                CollectionYear = "1819",
+                CollectionPeriod = 1,
+                Ukprn = 12345,
+                JobId = "job-1",
+            };
+            var result = mocker.Create<LearnerSubmissionProcessor>().GenerateEarnings(learnerSubmission);
             Assert.IsTrue(result.Validation.Failed);
         }
 
