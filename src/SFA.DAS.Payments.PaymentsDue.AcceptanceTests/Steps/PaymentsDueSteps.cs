@@ -46,11 +46,9 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
             {
                 return expectedPaymentsEvents.Any(expectedEvent =>
                 {
-                    var learnRefNumber = string.IsNullOrEmpty(expectedEvent.LearnerId) ? TestSession.Learner.LearnRefNumber : TestSession.LearnRefNumberGenerator.Generate(TestSession.Ukprn, expectedEvent.LearnerId);
-
                     return expectedEvent.PriceEpisodeIdentifier == receivedEvent.PriceEpisodeIdentifier &&
                            expectedEvent.Amount == receivedEvent.AmountDue &&
-                           learnRefNumber == receivedEvent.Learner?.ReferenceNumber &&
+                           TestSession.GenerateLearnerReference(expectedEvent.LearnerId) == receivedEvent.Learner?.ReferenceNumber &&
                            expectedEvent.Type == receivedEvent.Type &&
                            TestSession.Ukprn == receivedEvent.Ukprn &&
                            expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period &&
@@ -98,10 +96,6 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 
             foreach (var learnerId in allEarnings.Select(e => e.LearnerId).Distinct())
             {
-                var learnRefNumber = string.IsNullOrEmpty(learnerId) ? 
-                    TestSession.Learner.LearnRefNumber : 
-                    TestSession.LearnRefNumberGenerator.Generate(TestSession.Ukprn, learnerId);
-
                 var learnerEarnings = allEarnings.Where(e => e.LearnerId == learnerId).ToList();
 
                 Act2EarningEvents.Add(new ApprenticeshipContractType2EarningEvent
@@ -109,7 +103,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                     CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
                     Learner = new Learner
                     {
-                        ReferenceNumber = learnRefNumber,
+                        ReferenceNumber = TestSession.GenerateLearnerReference(learnerId),
                         Ukprn = TestSession.Ukprn,
                         Uln = TestSession.Learner.Uln
                     },

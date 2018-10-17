@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     CollectionPeriod = collectionPeriod,
                     Ukprn = TestSession.Ukprn,
                     LearnAimReference = TestSession.Learner.Course.LearnAimRef,
-                    LearnerReferenceNumber = TestSession.Learner.LearnRefNumber
+                    LearnerReferenceNumber = TestSession.GenerateLearnerReference(payment.LearnerId)
                 });
             }
 

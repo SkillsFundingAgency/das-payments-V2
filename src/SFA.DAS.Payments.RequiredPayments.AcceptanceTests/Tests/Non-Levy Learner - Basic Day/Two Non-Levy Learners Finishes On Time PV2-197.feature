@@ -1,8 +1,9 @@
-﻿Feature: Basic Day
+﻿Feature: Two Non-Levy Learners Finishes On Time PV2-197
 	Non-Levy - 2 learners - Both finishes on time
 
 Background:
 	Given the current collection period is R02
+	And the payments are for the current collection year
 	And the SFA contribution percentage is 90%
 	And following learners are undertaking training with a training provider
 	| LearnerId | 
