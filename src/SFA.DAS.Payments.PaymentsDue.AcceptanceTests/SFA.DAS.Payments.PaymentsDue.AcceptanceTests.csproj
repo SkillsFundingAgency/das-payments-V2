@@ -95,6 +95,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Non-Levy Learners Finishes On Time PV2-197.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finishes On Time PV2-197.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two Non-Levy Learners Finishes On Time PV2-197.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\SmallEmployers.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -122,6 +127,10 @@
     <None Include="Tests\1_non_levy_learner_finishes_OnTime.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>1_non_levy_learner_finishes_OnTime.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finishes On Time PV2-197.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two Non-Levy Learners Finishes On Time PV2-197.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\SmallEmployers.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
