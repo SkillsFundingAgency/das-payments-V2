@@ -31,18 +31,18 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.EarningEventsService);
         }
 
-        [BeforeTestRun(Order = 25)]
-        public static void AddTopicSubscription()
-        {
-            Builder.Register(c =>
-            {
-                var topicSubscriptionConfig = new TopicConfiguration(TestConfiguration.ServiceBusConnectionString, TestConfiguration.TopicName, TestConfiguration.SubscriptionName, 1, maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
+        //[BeforeTestRun(Order = 25)]
+        //public static void AddTopicSubscription()
+        //{
+        //    Builder.Register(c =>
+        //    {
+        //        var topicSubscriptionConfig = new TopicConfiguration(TestConfiguration.ServiceBusConnectionString, TestConfiguration.TopicName, TestConfiguration.SubscriptionName, 1, maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
 
-                return new TopicSubscriptionSevice<JobContextDto>(
-                    topicSubscriptionConfig,
-                    c.Resolve<IJsonSerializationService>(),
-                    c.Resolve<IPaymentLogger>());
-            }).As<ITopicSubscriptionService<JobContextDto>>();
-        }
+        //        return new TopicSubscriptionSevice<JobContextDto>(
+        //            topicSubscriptionConfig,
+        //            c.Resolve<IJsonSerializationService>(),
+        //            c.Resolve<IPaymentLogger>());
+        //    }).As<ITopicSubscriptionService<JobContextDto>>();
+        //}
     }
 }

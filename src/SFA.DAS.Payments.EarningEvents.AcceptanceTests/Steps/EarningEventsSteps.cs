@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.IO.Redis.Config.Interfaces;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
+using Microsoft.ServiceBus.Messaging;
 using NServiceBus;
 using SFA.DAS.Payments.Core.Configuration;
 using TechTalk.SpecFlow;
@@ -79,17 +81,15 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 KeyValuePairs = new Dictionary<string, object> {{"FundingFm36Output", messagePointer}},
                 SubmissionDateTimeUtc = DateTime.Now,
                 TopicPointer = 1,
-                Topics = new List<ITopicItem>
-                {
-                    new TopicItem
-                    {
-                        SubscriptionName = configurationHelper.GetSetting("SubscriptionName"),
-                        SubscriptionSqlFilterValue = string.Empty,
-                    }
-                }
             };
 
-            await MessageSession.Send(inputMessage).ConfigureAwait(false);
+            var serialisedMessage = serializationService.Serialize(inputMessage);
+
+            var topicClient = TopicClient.CreateFromConnectionString(TestConfiguration.ServiceBusConnectionString,
+                TestConfiguration.TopicName);
+            var brokeredMessage = new BrokeredMessage(serialisedMessage);
+
+            await topicClient.SendAsync(brokeredMessage).ConfigureAwait(false);
         }
 
         [Then(@"the earning events component will generate the following earning events:")]

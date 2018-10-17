@@ -11,5 +11,6 @@
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="AzureRedisConnectionString" Value="__AzureRedisConnectionString__" />
+    <Parameter Name="TopicName" Value="__TopicName__" />
   </Parameters>
 </Application>

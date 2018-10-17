@@ -11,6 +11,7 @@
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="AzureRedisConnectionString" DefaultValue="" />
+    <Parameter Name="TopicName" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -32,6 +33,7 @@
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
+            <Parameter Name="TopicName" Value="[TopicName]" />
           </Section>
         </Settings>
       </ConfigOverride>

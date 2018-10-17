@@ -14,6 +14,7 @@
     <Parameter Name="AuditQueueName" Value="" />
     <Parameter Name="SubscriptionName" Value="" />
     <Parameter Name="JobStatusQueueName" Value="" />
+    <Parameter Name="TopicName" Value="" />
   </Section>
 
 </Settings>

@@ -1,74 +1,80 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.IO.Interfaces;
+using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
-namespace SFA.DAS.Payments.EarningEvents.EarningEventsService.Handlers
+namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 {
-    public class JobContextMessageHandler: IHandleMessages<JobContextMessage>
+    public class JobContextMessageHandler: IMessageHandler<JobContextMessage>
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly IKeyValuePersistenceService redisService;
         private readonly IJsonSerializationService serializationService;
+        private readonly IMessageSession session;
 
         public JobContextMessageHandler(IPaymentLogger paymentLogger, 
             IKeyValuePersistenceService redisService,
-            IJsonSerializationService serializationService)
+            IJsonSerializationService serializationService,
+            IMessageSession session)
         {
             this.paymentLogger = paymentLogger;
             this.redisService = redisService;
             this.serializationService = serializationService;
+            this.session = session;
         }
-        public async Task Handle(JobContextMessage message, IMessageHandlerContext context)
+       
+
+        public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
         {
-            paymentLogger.LogInfo($"Processing Earning Event Service event for Message Id : {context.MessageId}");
-
-            var currentExecutionContext = context as ESFA.DC.Logging.ExecutionContext;
-            currentExecutionContext.JobId = message.JobId.ToString();
-
+            paymentLogger.LogDebug($"Processing Earning Event Service event for Job Id : {message.JobId}");
+         
             try
             {
-                var fm36Output = serializationService.Deserialize<FM36Global>(redisService
-                    .GetAsync(message.KeyValuePairs["FundingFm36Output"].ToString()).Result);
+                var fm36Json = await redisService
+                    .GetAsync(message.KeyValuePairs["FundingFm36Output"].ToString(), cancellationToken);
+
+                var fm36Output = serializationService.Deserialize<FM36Global>(fm36Json);
 
                 foreach (var learner in fm36Output.Learners)
                 {
                     try
                     {
                         var learnerCommand = new ProcessLearnerCommand
-                    {
-                        JobId = message.JobId.ToString(),
-                        Learner = learner,
-                        RequestTime = message.SubmissionDateTimeUtc
-                    };
+                        {
+                            JobId = message.JobId.ToString(),
+                            Learner = learner,
+                            RequestTime = DateTimeOffset.UtcNow,
+                            SubmissionTime = message.SubmissionDateTimeUtc
+                        };
 
-                        await context.SendLocal(learnerCommand);
+                        await session.SendLocal(learnerCommand);
 
-                        paymentLogger.LogInfo("Successfully published EarningEvent");
+                        paymentLogger.LogInfo(
+                            $"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}");
                     }
                     catch (Exception ex)
                     {
                         paymentLogger.LogError("Error publishing the event: EarningEvent", ex);
                         throw;
                     }
-
-                    
                 }
 
                 paymentLogger.LogInfo($"Successfully processed Earning event for Job Id {message.JobId}");
+
+                return true;
             }
             catch (Exception ex)
             {
                 paymentLogger.LogError("Error while handling EarningService event", ex);
                 throw;
             }
-            
         }
     }
 }
