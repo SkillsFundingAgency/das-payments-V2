@@ -1,8 +1,9 @@
 ﻿Feature: Basic Day
-	Non-Levy - 2 learners - Both finishes on time
+Non-Levy - 2 learners - Both finishes on time
 
 Background:
 	Given the current collection period is R02
+	And the payments are for the current collection year
 	And the SFA contribution percentage is 90%
 	And following learners are undertaking training with a training provider
 	| LearnerId | 
@@ -15,14 +16,14 @@ Scenario: Completion for both
 	Given the required payments component generates the following contract type 2 payable earnings:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L1		| p2                     | 2 				| Completion (TT2)	| 3000		|
-	| L2		| p2                     | 2 				| Completion (TT2)	| 2400		|
+	| L2		| p3                     | 2 				| Completion (TT2)	| 2400		|
 	When required payments event is received
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
 	| L1		| p2                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
 	| L1		| p2                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)| 300    |
-	| L2		| p2                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 2160   |
-	| L2		| p2                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)| 240    |
+	| L2		| p3                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 2160   |
+	| L2		| p3                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)| 240    |
 
 @NonLevy_BasicDay
 @OnTime
@@ -32,8 +33,8 @@ Scenario: Learning and Completion for both - No history
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L1		| p2                     | 1 				| Learning (TT1)	| 1000		|
 	| L1		| p2                     | 2 				| Completion (TT2)	| 3000		|
-	| L2		| p2                     | 1				| Learning (TT1)	| 800		|
-	| L2		| p2                     | 2				| Completion (TT2)	| 2400		|
+	| L2		| p3                     | 1				| Learning (TT1)	| 800		|
+	| L2		| p3                     | 2				| Completion (TT2)	| 2400		|
 	When required payments event is received
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
@@ -41,10 +42,10 @@ Scenario: Learning and Completion for both - No history
 	| L1		| p2                     | 1				| Learning (TT1)  | CoInvestedEmployer (FS3)| 100    |
 	| L1		| p2                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
 	| L1		| p2                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)| 300    |
-	| L2		| p2                     | 1				| Learning (TT1)  | CoInvestedSfa (FS2)		| 720    |
-	| L2		| p2                     | 1				| Learning (TT1)  | CoInvestedEmployer (FS3)| 80     |
-	| L2		| p2                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 2160   |
-	| L2		| p2                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)| 240    |
+	| L2		| p3                     | 1				| Learning (TT1)  | CoInvestedSfa (FS2)		| 720    |
+	| L2		| p3                     | 1				| Learning (TT1)  | CoInvestedEmployer (FS3)| 80     |
+	| L2		| p3                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 2160   |
+	| L2		| p3                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)| 240    |
 
 @NonLevy_BasicDay
 @OnTime	
