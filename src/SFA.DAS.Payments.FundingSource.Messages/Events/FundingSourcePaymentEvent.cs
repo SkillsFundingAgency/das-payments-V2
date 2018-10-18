@@ -1,10 +1,12 @@
 ﻿using System;
+using SFA.DAS.Payments.FundingSource.Model.Enum;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Events
 {
-    public abstract class FundingSourcePaymentEvent : IPaymentsEvent
+    public abstract class FundingSourcePaymentEvent : IFundingSourcePaymentEvent
     {
         public string PriceEpisodeIdentifier { get; set; }
 
@@ -25,5 +27,13 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
         public string JobId { get; set; }
 
         public byte ContractType { get; set; }
+
+        public decimal SfaContributionPercentage { get; set; }
+
+        public OnProgrammeEarningType OnProgrammeEarningType { get; set; }
+
+        public FundingSourceType FundingSourceType { get; set; }
+
+
     }
 }

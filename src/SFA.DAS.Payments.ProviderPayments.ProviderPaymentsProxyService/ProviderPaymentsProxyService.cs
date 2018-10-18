@@ -1,39 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Fabric;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.ServiceFabric.Core;
+using System.Collections.Generic;
+using System.Fabric;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService
 {
     public class ProviderPaymentsProxyService : StatelessService
     {
-        public ProviderPaymentsProxyService(StatelessServiceContext context) : base(context)
-        {
+        private readonly ILifetimeScope lifetimeScope;
+        private readonly IPaymentLogger paymentLogger;
 
+        public ProviderPaymentsProxyService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
+        {
+            this.lifetimeScope = lifetimeScope;
+            this.paymentLogger = paymentLogger;
         }
-        
+
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            return new ServiceInstanceListener[0];
-        }
+            paymentLogger.LogInfo("Creating Service Instance Listeners For Provider Payments Proxy Service");
 
-        protected override async Task RunAsync(CancellationToken cancellationToken)
-        {
-          
-            long iterations = 0;
-
-            while (true)
+            return new List<ServiceInstanceListener>
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
-
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-            }
+                new ServiceInstanceListener(context =>lifetimeScope.Resolve<IEndpointCommunicationListener>())
+            };
         }
+
     }
 }
