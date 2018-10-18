@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.IO.Redis.Config.Interfaces;
 using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using Microsoft.ServiceBus.Messaging;
-using NServiceBus;
 using SFA.DAS.Payments.Core.Configuration;
 using TechTalk.SpecFlow;
 
