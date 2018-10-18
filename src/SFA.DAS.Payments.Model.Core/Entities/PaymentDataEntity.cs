@@ -22,8 +22,10 @@ namespace SFA.DAS.Payments.Model.Core.Entities
 
         public string LearnerReferenceNumber { get; set; }
         public string LearnAimReference { get; set; }
+
         public int FrameworkCode { get; set; }
         public int PathwayCode { get; set; }
         public int StandardCode { get; set; }
+        public int ProgrammeType { get; set; }
     }
 }
