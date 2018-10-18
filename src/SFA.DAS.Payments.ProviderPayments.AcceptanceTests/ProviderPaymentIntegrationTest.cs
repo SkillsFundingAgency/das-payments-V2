@@ -45,8 +45,14 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                     Ukprn = 100000,
                     ReferenceNumber = "A1000",
                     Uln = 10000000
-                }
-            };
+                },
+                SfaContributionPercentage = 0.9m,
+                Ukprn = 100000,
+                AmountDue = 5000m,
+                PriceEpisodeIdentifier = "2018-P1",
+                EventTime = DateTime.UtcNow,
+                JobId = "6000"
+             };
         }
 
         [Test]
