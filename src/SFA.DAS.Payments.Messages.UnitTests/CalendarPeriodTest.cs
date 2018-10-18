@@ -107,6 +107,7 @@ namespace SFA.DAS.Payments.Messages.UnitTests
         [TestCase(2018, 12, "1819-R05", 5)]
         [TestCase(2019, 1, "1819-R06", 6)]
         [TestCase(2019, 7, "1819-R12", 12)]
+        [TestCase(2018, 6, "1718-R11", 11)]
         public void TestYearMonthConstructor(short year, byte month, string expectedName, byte expectedPeriod)
         {
             var period = new CalendarPeriod(year, month);
@@ -114,15 +115,36 @@ namespace SFA.DAS.Payments.Messages.UnitTests
             Assert.AreEqual(expectedPeriod, period.Period);
         }
 
-        [TestCase(2018, 8, "1819", 1)]
-        [TestCase(2018, 12, "1819", 5)]
-        [TestCase(2019, 1, "1819", 6)]
-        [TestCase(2019, 7, "1819", 12)]
-        public void TestPeriodConstructor(short expectedYear, byte expectedMonth, string years, byte period)
+        [TestCase("1819", 1, 2018, 8, "1819-R01")]
+        [TestCase("1819", 5, 2018, 12, "1819-R05")]
+        [TestCase("1819", 6, 2019, 1, "1819-R06")]
+        [TestCase("1819", 12, 2019, 7, "1819-R12")]
+        public void TestPeriodConstructor(string years, byte period, short expectedYear, byte expectedMonth, string expectedName)
         {
             var subj = new CalendarPeriod(years, period);
             Assert.AreEqual(expectedYear, subj.Year);
             Assert.AreEqual(expectedMonth, subj.Month);
+            Assert.AreEqual(expectedName, subj.Name);
+        }
+
+        [TestCase("1819-R01", 1, 2018, 8)]
+        [TestCase("1819-R05", 5, 2018, 12)]
+        [TestCase("1819-R06", 6, 2019, 1)]
+        [TestCase("1819-R12", 12, 2019, 7)]
+        public void TestPeriodNameConstructor(string name, byte expectedPeriod, short expectedYear, byte expectedMonth)
+        {
+            var subj = new CalendarPeriod(name);
+            Assert.AreEqual(expectedYear, subj.Year);
+            Assert.AreEqual(expectedMonth, subj.Month);
+            Assert.AreEqual(expectedPeriod, subj.Period);
+            Assert.AreEqual(name, subj.Name);
+
+            var updated = new CalendarPeriod("1617-R04");
+            updated.Name = name;
+            Assert.AreEqual(expectedYear, updated.Year);
+            Assert.AreEqual(expectedMonth, updated.Month);
+            Assert.AreEqual(expectedPeriod, updated.Period);
+            Assert.AreEqual(name, updated.Name);
         }
 
         [Test]
