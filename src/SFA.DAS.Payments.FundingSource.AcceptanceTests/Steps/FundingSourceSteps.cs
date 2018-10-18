@@ -51,6 +51,18 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             RequiredPayments = payments.CreateSet<RequiredPayment>().ToList();
         }
 
+        [Given(@"following learners are undertaking training with a training provider")]
+        public void GivenFollowingLearnersAreUndertakingTrainingWithATrainingProvider(Table table)
+        {
+            TestSession.Learners.Clear();
+            foreach (var row in table.Rows)
+            {
+                var learner = TestSession.GenerateLearner();
+                learner.LearnRefNumber = TestSession.LearnRefNumberGenerator.Generate(learner.Ukprn, row["LearnerId"]);
+                TestSession.Learners.Add(learner);
+            }
+        }
+
         [When(@"required payments event is received")]
         public async Task WhenRequiredPaymentsEventIsReceived()
         {

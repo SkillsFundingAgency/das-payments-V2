@@ -161,6 +161,11 @@
     <Compile Include="Steps\ACT2TransTypes1to3BasicTestsSteps.cs" />
     <Compile Include="Steps\FundingSourceSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finishes On Time PV2-197.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two Non-Levy Learners Finishes On Time PV2-197.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-193.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -236,6 +241,10 @@
     </None>
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finishes On Time PV2-197.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two Non-Levy Learners Finishes On Time PV2-197.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-193.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
