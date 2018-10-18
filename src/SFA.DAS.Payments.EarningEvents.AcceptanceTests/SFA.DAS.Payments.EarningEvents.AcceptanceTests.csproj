@@ -37,6 +37,9 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Auditing.Interface, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Auditing.Interface.0.2.0-beta0001\lib\netstandard2.0\ESFA.DC.Auditing.Interface.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.DateTimeProvider">
       <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.datetimeprovider\0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.dll</HintPath>
     </Reference>
@@ -49,17 +52,20 @@
     <Reference Include="ESFA.DC.IO.Redis, Version=0.1.14.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.IO.Redis.0.1.14-beta0001\lib\netstandard2.0\ESFA.DC.IO.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobContext.Interface">
-      <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.jobcontext.interface\0.2.1-beta0001\lib\netstandard2.0\ESFA.DC.JobContext.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.JobContext.Interface, Version=0.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobContext.Interface.0.2.2-beta0001\lib\netstandard2.0\ESFA.DC.JobContext.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobContextManager">
-      <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.jobcontextmanager\0.2.1-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
+    <Reference Include="ESFA.DC.JobContextManager, Version=0.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobContextManager.0.2.2-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.2-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Logging, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Logging.0.1.1-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Mapping.Interface">
-      <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.mapping.interface\0.1.0-beta0001\lib\netstandard2.0\ESFA.DC.Mapping.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.Mapping.Interface, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Mapping.Interface.0.1.0-beta0001\lib\netstandard2.0\ESFA.DC.Mapping.Interface.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Queueing, Version=0.1.14.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Queueing.0.1.14-beta0001\lib\netstandard2.0\ESFA.DC.Queueing.dll</HintPath>
