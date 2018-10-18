@@ -1,5 +1,5 @@
 ﻿Feature: Completion (TT2) and Balancing (TT3)
-#Provider earnings and payments where learner completes earlier than planned (3 months early)
+Provider earnings and payments where learner completes earlier than planned (3 months early)
 
 Background:
 
@@ -39,27 +39,9 @@ Background:
 @Balancing (TT3)
 @Historical_Payments
 
-Scenario: Contract Type 2 no On Programme Learning payments
+Scenario: Contract Type 2 no On Programme payments
 	When a payments due event is received
-	Then the required payments component will not generate any contract type 2 Learning (TT1) payable earnings
-
-Scenario Outline: Contract Type 2 On Programme Completion payment
-	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 Completion (TT2) payable earnings:
-	| PriceEpisodeIdentifier | Delivery Period | TransactionType    | Amount   |
-	| p1                     | 10              | <transaction_type> | <amount> |
-	
-	Examples: 
-	| transaction_type | amount |
-	| Completion (TT2) | 3000   |
-	
-	
-Scenario Outline: Contract Type 2 On Programme Balancing payment
-	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 Balancing (TT3) payable earnings:
-	| PriceEpisodeIdentifier | Delivery Period | TransactionType    | Amount   |
-	| p1                     | 10              | <transaction_type> | <amount> |
-
-	Examples: 
-	| transaction_type | amount |
-	| Balancing (TT3)  | 3000   |	
+	Then the required payments component will only generate contract type 2 required payments
+	| PriceEpisodeIdentifier | Delivery Period | TransactionType  | Amount |
+	| p1                     | 10              | Completion (TT2) | 3000   |
+	| p1                     | 10              | Balancing (TT3)  | 3000   |

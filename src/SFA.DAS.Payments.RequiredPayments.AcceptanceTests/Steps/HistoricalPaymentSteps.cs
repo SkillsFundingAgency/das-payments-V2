@@ -56,36 +56,42 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
         private void AddHistoricalPayments(IList<HistoricalPayment> payments)
         {
-            var apprenticeshipKey = string.Join("-",
-                TestSession.Ukprn.ToString(CultureInfo.InvariantCulture),
-                TestSession.Learner.LearnRefNumber,
-                TestSession.Learner.Course.FrameworkCode.ToString(CultureInfo.InvariantCulture),
-                TestSession.Learner.Course.PathwayCode.ToString(CultureInfo.InvariantCulture),
-                ((int) TestSession.Learner.Course.ProgrammeType).ToString(CultureInfo.InvariantCulture),
-                TestSession.Learner.Course.StandardCode.ToString(CultureInfo.InvariantCulture),
-                TestSession.Learner.Course.LearnAimRef.ToString(CultureInfo.InvariantCulture)
-            );
-            var collectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod).Name;
             var paymentHistoryDataContext = Container.Resolve<IRequiredPaymentsDataContext>();
-            var paymentEntities = paymentHistoryDataContext.PaymentHistory.Where(p => p.ApprenticeshipKey == apprenticeshipKey);
-            paymentHistoryDataContext.PaymentHistory.RemoveRange(paymentEntities);
 
-            foreach (var payment in payments)
+            foreach (var learnerId in payments.Select(p => p.LearnerId).Distinct().ToList())
             {
-                paymentHistoryDataContext.PaymentHistory.Add(new PaymentEntity
-                {
-                    Id = Guid.NewGuid(),
-                    PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
-                    Amount = payment.Amount,
-                    TransactionType = (int)payment.Type,
-                    DeliveryPeriod = new CalendarPeriod(CollectionYear, payment.Delivery_Period).Name,
+                var learnRefNumber = TestSession.GenerateLearnerReference(learnerId);
 
-                    ApprenticeshipKey = apprenticeshipKey,
-                    CollectionPeriod = collectionPeriod,
-                    Ukprn = TestSession.Ukprn,
-                    LearnAimReference = TestSession.Learner.Course.LearnAimRef,
-                    LearnerReferenceNumber = TestSession.GenerateLearnerReference(payment.LearnerId)
-                });
+                var apprenticeshipKey = string.Join("-",
+                    TestSession.Ukprn.ToString(CultureInfo.InvariantCulture),
+                    learnRefNumber,
+                    TestSession.Learner.Course.FrameworkCode.ToString(CultureInfo.InvariantCulture),
+                    TestSession.Learner.Course.PathwayCode.ToString(CultureInfo.InvariantCulture),
+                    ((int) TestSession.Learner.Course.ProgrammeType).ToString(CultureInfo.InvariantCulture),
+                    TestSession.Learner.Course.StandardCode.ToString(CultureInfo.InvariantCulture),
+                    TestSession.Learner.Course.LearnAimRef.ToString(CultureInfo.InvariantCulture)
+                );
+                var collectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod).Name;
+                var paymentEntities = paymentHistoryDataContext.PaymentHistory.Where(p => p.ApprenticeshipKey == apprenticeshipKey);
+                paymentHistoryDataContext.PaymentHistory.RemoveRange(paymentEntities);
+
+                foreach (var payment in payments)
+                {
+                    paymentHistoryDataContext.PaymentHistory.Add(new PaymentEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
+                        Amount = payment.Amount,
+                        TransactionType = (int) payment.Type,
+                        DeliveryPeriod = new CalendarPeriod(CollectionYear, payment.Delivery_Period).Name,
+
+                        ApprenticeshipKey = apprenticeshipKey,
+                        CollectionPeriod = collectionPeriod,
+                        Ukprn = TestSession.Ukprn,
+                        LearnAimReference = TestSession.Learner.Course.LearnAimRef,
+                        LearnerReferenceNumber = learnRefNumber
+                    });
+                }
             }
 
             paymentHistoryDataContext.SaveChanges();

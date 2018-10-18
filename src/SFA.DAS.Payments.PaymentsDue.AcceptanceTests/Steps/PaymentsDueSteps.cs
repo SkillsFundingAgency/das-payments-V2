@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                     for (var i = 0; i < unexpected.Count; i++)
                     {
                         var e = unexpected[i];
-                        Debug.WriteLine($"{i}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
+                        Debug.WriteLine($"{i+1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
                     }
                 }
             }

@@ -424,6 +424,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Learning %28TT1%29 only - Single period.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finishes On Time PV2-197.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two Non-Levy Learners Finishes On Time PV2-197.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\SmallEmployers.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SmallEmployers.feature.cs</LastGenOutput>
