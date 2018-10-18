@@ -44,7 +44,7 @@ Scenario: A non-DAS learner, learner finishes early - no history
 	| p2                     | 2				| Balancing (TT3)	| 3000		|
 
 	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 payable earnings:
+	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 1				| Learning (TT1)	| 1000		|
 	| p2                     | 2				| Completion (TT2)	| 3750		|
@@ -93,7 +93,7 @@ Scenario: A non-DAS learner, learner withdraws after qualifying period - partial
 	| p1                     | 3				| Learning (TT1)	| 1000		|
 
 	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 payable earnings:
+	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p1                     | 4				| Learning (TT1)	| 1000		|
 	| p1                     | 5				| Learning (TT1)	| 1000		|

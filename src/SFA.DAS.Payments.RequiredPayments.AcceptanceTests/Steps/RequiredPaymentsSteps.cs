@@ -55,36 +55,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return payment;
         }
 
-        [Then(@"the required payments component will generate the following contract type (.*) payable earnings:")]
-        public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypePayableEarnings(int p0, Table table)
+        [Then(@"the required payments component will only generate contract type (.*) required payments")]
+        public void ThenTheRequiredPaymentsComponentWillOnlyGenerateContractTypeRequiredPayments(int p0, Table table)
         {
             var expectedPaymentsEvents = table
                 .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events");
-        }
-
-        [Then(@"the required payments component will generate the following contract type (.*) Completion \(TT(.*)\) payable earnings:")]
-        public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypeCompletionPayableEarnings(byte contractType, int transactionType, Table expectedEventsTable)
-        {
-            var expectedPaymentsEvents = expectedEventsTable
-                .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents, OnProgrammeEarningType.Completion), "Failed to find all the required payment events");
-        }
-
-        [Then(@"the required payments component will generate the following contract type (.*) Learning \(TT(.*)\) payable earnings:")]
-        public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypeLearningPayableEarnings(byte contractType, int transactionType, Table expectedEventsTable)
-        {
-            var expectedPaymentsEvents = expectedEventsTable
-                .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents, OnProgrammeEarningType.Learning), "Failed to find all the required payment events");
-        }
-
-        [Then(@"the required payments component will generate the following contract type (.*) Balancing \(TT(.*)\) payable earnings:")]
-        public void ThenTheRequiredPaymentsComponentWillGenerateTheFollowingContractTypeBalancingPayableEarnings(byte contractType, int transactionType, Table expectedEventsTable)
-        {
-            var expectedPaymentsEvents = expectedEventsTable
-                .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents, OnProgrammeEarningType.Balancing), "Failed to find all the required payment events");
+            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events or unexpected events found");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) payable earnings")]
@@ -126,7 +102,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             if (!result && trace)
             {
                 Debug.WriteLine("Found unexpected events. Trace:");
-                TraceMatch(PaymentsDue.ToArray(), ApprenticeshipContractType2Handler.ReceivedEvents.ToArray());
+                TraceMismatch(PaymentsDue.ToArray(), ApprenticeshipContractType2Handler.ReceivedEvents.ToArray());
             }
 #endif
             return result;
@@ -153,7 +129,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             var matchedExpectations = sessionEvents
                 .Where(receivedEvent => events.Any(expectedEvent =>
                     expectedEvent.Amount == receivedEvent.AmountDue
-                    && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
+                    && TestSession.GenerateLearnerReference(expectedEvent.LearnerId) == receivedEvent.Learner?.ReferenceNumber
                     && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
                     && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
@@ -167,17 +143,32 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             if ((!allFound || !nothingExtra) && trace)
             {
                 if (!allFound)
+                {
                     Debug.WriteLine("Did not find all expected events. Trace:");
-                else
-                    Debug.WriteLine("Found some unexpected events. Trace:");
+                    TraceMismatch(expectedPaymentsEvents, sessionEvents);
+                }
 
-                TraceMatch(expectedPaymentsEvents, sessionEvents);
+                if (!nothingExtra)
+                {
+                    Debug.WriteLine("Found some unexpected events. Trace:");
+                    TraceUnexpected(sessionEvents, matchedExpectations);
+                }
             }
 #endif
             return allFound && nothingExtra;
         }
 
-        private void TraceMatch(OnProgrammePaymentDue[] expectedPaymentsEvents, ApprenticeshipContractType2RequiredPaymentEvent[] receivedEvents)
+        private static void TraceUnexpected(ApprenticeshipContractType2RequiredPaymentEvent[] sessionEvents, List<ApprenticeshipContractType2RequiredPaymentEvent> matchedExpectations)
+        {
+            var unexpected = sessionEvents.Where(e => !matchedExpectations.Contains(e)).ToList();
+            for (var i = 0; i < unexpected.Count; i++)
+            {
+                var e = unexpected[i];
+                Debug.WriteLine($"{i + 1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.OnProgrammeEarningType}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
+            }
+        }
+
+        private void TraceMismatch(OnProgrammePaymentDue[] expectedPaymentsEvents, ApprenticeshipContractType2RequiredPaymentEvent[] receivedEvents)
         {
             for (var i = 0; i < expectedPaymentsEvents.Length; i++)
             {
@@ -186,11 +177,11 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 {
                     var receivedEvent = receivedEvents[k];
                     var mismatchedFields = new List<string>();
+                    var learnerReference = TestSession.GenerateLearnerReference(expectedEvent.LearnerId);
 
                     if (expectedEvent.Amount != receivedEvent.AmountDue) mismatchedFields.Add($" Amount({expectedEvent.Amount}!={receivedEvent.AmountDue})");
-                    if (TestSession.Learner.LearnRefNumber != receivedEvent?.Learner?.ReferenceNumber) mismatchedFields.Add($"LearnRefNumber({TestSession.Learner.LearnRefNumber}!={receivedEvent?.Learner?.ReferenceNumber})");
+                    if (learnerReference != receivedEvent.Learner?.ReferenceNumber) mismatchedFields.Add($"LearnRefNumber({learnerReference}!={receivedEvent.Learner?.ReferenceNumber})");
                     if (expectedEvent.Type != receivedEvent.OnProgrammeEarningType) mismatchedFields.Add($"Type({expectedEvent.Type}!={receivedEvent.OnProgrammeEarningType})");
-                    if (TestSession.Ukprn != receivedEvent.Ukprn) mismatchedFields.Add($"Ukprn({TestSession.Ukprn}!={receivedEvent.Ukprn})");
                     if (expectedEvent.DeliveryPeriod != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.DeliveryPeriod}!={receivedEvent.DeliveryPeriod?.Period})");
                     if (!receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)) mismatchedFields.Add($"CollectionPeriod({receivedEvent.CollectionPeriod} does not contain {CollectionYear})");
 

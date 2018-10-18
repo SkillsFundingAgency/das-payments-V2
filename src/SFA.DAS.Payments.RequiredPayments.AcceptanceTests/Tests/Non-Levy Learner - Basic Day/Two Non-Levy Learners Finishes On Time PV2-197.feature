@@ -14,8 +14,8 @@ Background:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
 	| L1		| p2                     | 2				| Completion (TT2)| 3000   |
-	| L2		| p2                     | 1				| Learning (TT1)  | 800    |
-	| L2		| p2                     | 2				| Completion (TT2)| 2400   |
+	| L2		| p3                     | 1				| Learning (TT1)  | 800    |
+	| L2		| p3                     | 2				| Completion (TT2)| 2400   |
 
 @NonLevy_BasicDay
 @OnTime
@@ -23,13 +23,13 @@ Scenario: Completion for both
 	Given the following historical contract type 2 payments exist:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L1		| p2                     | 1				| Learning (TT1)	| 1000		|
-	| L2		| p2                     | 1				| Learning (TT1)	| 800		|
+	| L2		| p3                     | 1				| Learning (TT1)	| 800		|
 
 	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 payable earnings:
+	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L1		| p2                     | 2 				| Completion (TT2)	| 3000		|
-	| L2		| p2                     | 2 				| Completion (TT2)	| 2400		|
+	| L2		| p3                     | 2 				| Completion (TT2)	| 2400		|
 
 @NonLevy_BasicDay
 @OnTime
@@ -37,7 +37,7 @@ Scenario: Completion for both
 
 Scenario: Learning and Completion for both
 	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 payable earnings:
+	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L1		| p2                     | 1 				| Learning (TT1)	| 1000		|
 	| L1		| p2                     | 2 				| Completion (TT2)	| 3000		|
@@ -54,7 +54,7 @@ Scenario: Learning for 1 and Completion for both - 1 learner has history
 	| L1		| p2                     | 1				| Learning (TT1)	| 1000		|
 
 	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 payable earnings:
+	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L2		| p2                     | 1				| Learning (TT1)	| 800		|
 	| L1		| p2                     | 2 				| Completion (TT2)	| 3000		|

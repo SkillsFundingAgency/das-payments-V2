@@ -108,13 +108,13 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Non_LevyLearne
                         "3000"});
             table2.AddRow(new string[] {
                         "L2",
-                        "p2",
+                        "p3",
                         "1",
                         "Learning (TT1)",
                         "800"});
             table2.AddRow(new string[] {
                         "L2",
-                        "p2",
+                        "p3",
                         "2",
                         "Completion (TT2)",
                         "2400"});
@@ -152,7 +152,7 @@ this.FeatureBackground();
                         "1000"});
             table3.AddRow(new string[] {
                         "L2",
-                        "p2",
+                        "p3",
                         "1",
                         "Learning (TT1)",
                         "800"});
@@ -175,13 +175,13 @@ this.FeatureBackground();
                         "3000"});
             table4.AddRow(new string[] {
                         "L2",
-                        "p2",
+                        "p3",
                         "2",
                         "Completion (TT2)",
                         "2400"});
 #line 29
- testRunner.Then("the required payments component will generate the following contract type 2 payab" +
-                    "le earnings:", ((string)(null)), table4, "Then ");
+ testRunner.Then("the required payments component will only generate contract type 2 required payme" +
+                    "nts", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -236,8 +236,8 @@ this.FeatureBackground();
                         "Completion (TT2)",
                         "2400"});
 #line 40
- testRunner.Then("the required payments component will generate the following contract type 2 payab" +
-                    "le earnings:", ((string)(null)), table5, "Then ");
+ testRunner.Then("the required payments component will only generate contract type 2 required payme" +
+                    "nts", ((string)(null)), table5, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -301,8 +301,8 @@ this.FeatureBackground();
                         "Completion (TT2)",
                         "2400"});
 #line 57
- testRunner.Then("the required payments component will generate the following contract type 2 payab" +
-                    "le earnings:", ((string)(null)), table7, "Then ");
+ testRunner.Then("the required payments component will only generate contract type 2 required payme" +
+                    "nts", ((string)(null)), table7, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
