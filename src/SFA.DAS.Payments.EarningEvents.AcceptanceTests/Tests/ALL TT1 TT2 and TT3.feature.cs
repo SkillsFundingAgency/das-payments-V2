@@ -126,23 +126,12 @@ this.FeatureBackground();
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Period",
-                        "ULN",
                         "TransactionType",
-                        "FundingSource",
                         "Amount"});
             table2.AddRow(new string[] {
                         "p1",
                         "9",
-                        "10000",
                         "Learning (TT1)",
-                        "CoInvestedSfa (FS2)",
-                        "900"});
-            table2.AddRow(new string[] {
-                        "p1",
-                        "9",
-                        "10000",
-                        "Learning (TT1)",
-                        "CoInvestedEmployer (FS3)",
                         "100"});
 #line 22
  testRunner.Then("the earning events component will generate the following earning events:", ((string)(null)), table2, "Then ");
@@ -155,36 +144,25 @@ this.FeatureBackground();
         public virtual void ContractType2OnProgrammeCompletionPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On Programme Completion payment", null, ((string[])(null)));
-#line 27
+#line 26
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 29
+#line 28
  testRunner.When("earning calculator event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Period",
-                        "ULN",
                         "TransactionType",
-                        "FundingSource",
                         "Amount"});
             table3.AddRow(new string[] {
                         "p1",
                         "10",
-                        "10000",
                         "Completion (TT2)",
-                        "CoInvestedSfa (FS2)",
-                        "2700"});
-            table3.AddRow(new string[] {
-                        "p1",
-                        "10",
-                        "10000",
-                        "Completion (TT2)",
-                        "CoInvestedEmployer (FS3)",
-                        "300"});
-#line 31
+                        "100"});
+#line 30
  testRunner.Then("the earning events component will generate the following earning events:", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -195,36 +173,25 @@ this.FeatureBackground();
         public virtual void ContractType2OnProgrammeBalancingPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On Programme Balancing payment", null, ((string[])(null)));
-#line 37
+#line 35
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 39
+#line 37
  testRunner.When("earning calculator event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Period",
-                        "ULN",
                         "TransactionType",
-                        "FundingSource",
                         "Amount"});
             table4.AddRow(new string[] {
                         "p1",
                         "10",
-                        "10000",
                         "Balancing (TT3)",
-                        "CoInvestedSfa (FS2)",
-                        "2700"});
-            table4.AddRow(new string[] {
-                        "p1",
-                        "10",
-                        "10000",
-                        "Balancing (TT3)",
-                        "CoInvestedEmployer (FS3)",
-                        "300"});
-#line 41
+                        "100"});
+#line 39
  testRunner.Then("the earning events component will generate the following earning events:", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();

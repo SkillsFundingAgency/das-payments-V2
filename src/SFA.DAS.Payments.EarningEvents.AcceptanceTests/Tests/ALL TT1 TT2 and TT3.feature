@@ -20,18 +20,16 @@ Scenario: Contract Type 2 Learning payment
 	When earning calculator event is received
 
 	Then the earning events component will generate the following earning events:
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource            | Amount |
-	| p1                     | 9      | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)      | 900    |
-	| p1                     | 9      | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3) | 100    |
+	| PriceEpisodeIdentifier | Period | TransactionType | Amount |
+	| p1                     | 9      | Learning (TT1)  | 100    |
 
 Scenario: Contract Type 2 On Programme Completion payment
 
 	When earning calculator event is received
 
 	Then the earning events component will generate the following earning events:
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType  | FundingSource            | Amount |
-	| p1                     | 10     | 10000 | Completion (TT2) | CoInvestedSfa (FS2)      | 2700   |
-	| p1                     | 10     | 10000 | Completion (TT2) | CoInvestedEmployer (FS3) | 300    |
+	| PriceEpisodeIdentifier | Period | TransactionType  | Amount |
+	| p1                     | 10     | Completion (TT2) | 100    |
 
 
 Scenario: Contract Type 2 On Programme Balancing payment
@@ -39,6 +37,5 @@ Scenario: Contract Type 2 On Programme Balancing payment
 	When earning calculator event is received
 
 	Then the earning events component will generate the following earning events:
-	| PriceEpisodeIdentifier | Period | ULN   | TransactionType | FundingSource            | Amount |
-	| p1                     | 10     | 10000 | Balancing (TT3) | CoInvestedSfa (FS2)      | 2700   |
-	| p1                     | 10     | 10000 | Balancing (TT3) | CoInvestedEmployer (FS3) | 300    |
+	| PriceEpisodeIdentifier | Period | TransactionType | Amount |
+	| p1                     | 10     | Balancing (TT3) | 100    |
