@@ -8,6 +8,7 @@
     <Parameter Name="JobStatusQueueName" DefaultValue="" />
     <Parameter Name="AuditQueueName" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="DCServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="AzureRedisConnectionString" DefaultValue="" />
@@ -25,6 +26,7 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="DCServiceBusConnectionString" Value="[DCServiceBusConnectionString]" />
             <Parameter Name="AzureRedisConnectionString" Value="[AzureRedisConnectionString]" />
           </Section>
           <Section Name="Settings">

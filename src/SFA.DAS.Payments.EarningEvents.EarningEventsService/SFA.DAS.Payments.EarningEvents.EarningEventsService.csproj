@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Handlers\**" />
+    <EmbeddedResource Remove="Handlers\**" />
+    <None Remove="Handlers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Autofac.ServiceFabric" Version="2.0.0" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.1-beta0001" />
@@ -33,10 +39,6 @@
     <Reference Include="ESFA.DC.JobContextManager">
       <HintPath>C:\Users\dave_\.nuget\packages\esfa.dc.jobcontextmanager\0.2.1-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Handlers\" />
   </ItemGroup>
 
 </Project>

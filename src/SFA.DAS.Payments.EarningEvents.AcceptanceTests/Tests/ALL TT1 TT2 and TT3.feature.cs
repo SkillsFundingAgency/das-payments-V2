@@ -72,9 +72,9 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests
         public virtual void FeatureBackground()
         {
 #line 3
-#line 5
+#line 4
  testRunner.Given("the current processing period is 10", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 6
+#line 5
  testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests
                         "06/08/2018",
                         "",
                         "05/08/2019"});
-#line 8
+#line 6
  testRunner.And("the earnings calculator generates the following FM36 price episodes:", ((string)(null)), table1, "And ");
 #line hidden
         }
@@ -115,12 +115,12 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests
                         "Balancing",
                         "(TT3)",
                         "CoInvested"});
-#line 18
+#line 16
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 20
+#line 17
  testRunner.When("earning calculator event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -133,7 +133,7 @@ this.FeatureBackground();
                         "9",
                         "Learning (TT1)",
                         "100"});
-#line 22
+#line 18
  testRunner.Then("the earning events component will generate the following earning events:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -144,12 +144,12 @@ this.FeatureBackground();
         public virtual void ContractType2OnProgrammeCompletionPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On Programme Completion payment", null, ((string[])(null)));
-#line 26
+#line 22
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 28
+#line 23
  testRunner.When("earning calculator event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -162,7 +162,7 @@ this.FeatureBackground();
                         "10",
                         "Completion (TT2)",
                         "100"});
-#line 30
+#line 24
  testRunner.Then("the earning events component will generate the following earning events:", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -173,12 +173,12 @@ this.FeatureBackground();
         public virtual void ContractType2OnProgrammeBalancingPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On Programme Balancing payment", null, ((string[])(null)));
-#line 35
+#line 28
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 37
+#line 29
  testRunner.When("earning calculator event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -191,7 +191,7 @@ this.FeatureBackground();
                         "10",
                         "Balancing (TT3)",
                         "100"});
-#line 39
+#line 30
  testRunner.Then("the earning events component will generate the following earning events:", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();

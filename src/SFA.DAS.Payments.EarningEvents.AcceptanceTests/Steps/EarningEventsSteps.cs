@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.IO.Interfaces;
@@ -72,7 +73,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             {
                 var messagePointer = Guid.NewGuid().ToString();
 
-                await redisService.SaveAsync(messagePointer, serializationService.Serialize(input));
+                await redisService.SaveAsync(messagePointer, serializationService.Serialize(input)).ConfigureAwait(true);
 
                 var inputMessage = new JobContextMessage
                 {
@@ -84,7 +85,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
 
                 var serialisedMessage = serializationService.Serialize(inputMessage);
 
-                var topicClient = TopicClient.CreateFromConnectionString(TestConfiguration.ServiceBusConnectionString,
+                var topicClient = TopicClient.CreateFromConnectionString(TestConfiguration.DcServiceBusConnectionString,
                     TestConfiguration.TopicName);
                 var brokeredMessage = new BrokeredMessage(serialisedMessage);
 
@@ -103,10 +104,10 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         {
             var expectedFundingSourcePaymentEvents = table.CreateSet<EarningEvent>();
             WaitForIt(() =>
-            {
-                Assert.That(true);
-                return true;
-            }, "Failed to find all the earning events");
+                {
+                    return Handlers.ApprenticeshipContractType2EarningEventHandler.ReceivedEvents.Any(ev =>
+                        ev.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber);
+                }, "Failed to find all the earning events");
         }
     }
 }
