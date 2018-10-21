@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 ?.PriceEpisodeValues.PriceEpisodeContractType ?? throw new InvalidOperationException($"Failed to find the contract type for ilr learner: {learnerSubmission.Learner.LearnRefNumber}");
 
             var earningEvent = factory.Create(contractType);
-            mapper.Map(learnerSubmission,earningEvent);
+             mapper.Map(learnerSubmission,earningEvent);
             return earningEvent;
         }
     }
