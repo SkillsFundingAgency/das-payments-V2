@@ -32,30 +32,39 @@ Scenario: 2_non_levy_learners_1finishes_Late
 	Given the current collection period is R05
 	And the required payments component generates the following contract type 2 payable earnings:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount |
-	| L2		| p2                     | 5				| Completion (TT2)	| 3000   |
+	| L2		| p4                     | 5				| Completion (TT2)	| 3000   |
 
 	When required payments event is received
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
-	| L2		| p2                     | 5				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
-	| L2		| p2                     | 5				| Completion (TT2)| CoInvestedEmployer (FS3)| 300    |
+	| L2		| p4                     | 5				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
+	| L2		| p4                     | 5				| Completion (TT2)| CoInvestedEmployer (FS3)| 300    |
 	
 
 @NonDas_BasicDay
 @Finishes_Late
 @NoHistory
 
-Scenario: 2_non_levy_learners_1finishes_Late - No history
+Scenario: 2_non_levy_learners_1finishes_Late - No history - Both learners together
 	Given the current collection period is R05
 	And the required payments component generates the following contract type 2 payable earnings:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount |
-	| L2		| p2                     | 1				| Learning (TT1)	| 1000   |
-	| L2		| p2                     | 5				| Completion (TT2)	| 3000   |
+	| L1		| p2                     | 1				| Learning (TT1)	| 1000   |
+	| L1		| p2                     | 2				| Completion (TT2)  | 3750   |
+	| L1		| p2                     | 2				| Balancing (TT3)   | 3000   |
+	| L2		| p4                     | 1				| Learning (TT1)	| 1000   |
+	| L2		| p4                     | 5				| Completion (TT2)	| 3000   |
 
 	When required payments event is received
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
-	| L2		| p2                     | 1				| Learning (TT1)  | CoInvestedSfa (FS2)		| 900    |
-	| L2		| p2                     | 1				| Learning (TT1)  | CoInvestedEmployer (FS3)| 100    |
-	| L2		| p2                     | 5				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
-	| L2		| p2                     | 5				| Completion (TT2)| CoInvestedEmployer (FS3)| 300    |
+	| L1		| p2                     | 1				| Learning (TT1)  | CoInvestedSfa (FS2)		| 900    |
+	| L1		| p2                     | 1				| Learning (TT1)  | CoInvestedEmployer (FS3)| 100    |
+	| L1		| p2                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 3375   |
+	| L1		| p2                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)| 375    |
+	| L1		| p2                     | 2				| Balancing (TT3) | CoInvestedSfa (FS2)		| 2700   |
+	| L1		| p2                     | 2				| Balancing (TT3) | CoInvestedEmployer (FS3)| 300    |
+	| L2		| p4                     | 1				| Learning (TT1)  | CoInvestedSfa (FS2)		| 900    |
+	| L2		| p4                     | 1				| Learning (TT1)  | CoInvestedEmployer (FS3)| 100    |
+	| L2		| p4                     | 5				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
+	| L2		| p4                     | 5				| Completion (TT2)| CoInvestedEmployer (FS3)| 300    |
