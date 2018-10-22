@@ -115,10 +115,10 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Contract Type 2 Learning payment")]
-        public virtual void ContractType2LearningPayment()
+        [NUnit.Framework.DescriptionAttribute("Contract Type 2 learner submission")]
+        public virtual void ContractType2LearnerSubmission()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 Learning payment", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 learner submission", null, ((string[])(null)));
 #line 12
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
@@ -132,7 +132,7 @@ this.FeatureBackground();
                     " learner", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "PriceEpisodeIdentifier",
+                        "Price Episode Identifier",
                         "Period",
                         "OnProgramme Earning Type",
                         "Amount"});

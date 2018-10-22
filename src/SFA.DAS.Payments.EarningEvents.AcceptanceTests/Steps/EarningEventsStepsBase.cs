@@ -72,8 +72,8 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 .LastOrDefault();
             if (!string.IsNullOrEmpty(lastPeriod))
             {
-                var periodProperty = learningValues.GetType().GetProperty($"Period{lastPeriod}");
-                periodProperty?.SetValue(learningValues, learnerEarnings.CompletionAmount);
+                var periodProperty = completionEarnings.GetType().GetProperty($"Period{lastPeriod}");
+                periodProperty?.SetValue(completionEarnings, learnerEarnings.CompletionAmount);
                 priceEpisode.PriceEpisodePeriodisedValues.Add(completionEarnings);
             }
 
