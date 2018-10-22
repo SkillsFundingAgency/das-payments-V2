@@ -26,7 +26,9 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Application\SFA.DAS.Payments.ProviderPayments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Domain\SFA.DAS.Payments.ProviderPayments.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces\SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>

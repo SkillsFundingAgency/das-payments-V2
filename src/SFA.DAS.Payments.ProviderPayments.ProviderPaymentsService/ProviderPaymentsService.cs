@@ -1,6 +1,12 @@
 ﻿using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
+using SFA.DAS.Payments.ProviderPayments.Application.Services;
+using SFA.DAS.Payments.ProviderPayments.Domain;
 using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,37 +16,29 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
     [StatePersistence(StatePersistence.Volatile)]
     public class ProviderPaymentsService : Actor, IProviderPaymentsService
     {
+        private readonly IProviderPaymentsRepository providerPaymentsRepository;
+        private readonly IValidatePaymentMessage validatePaymentMessage;
+        private IFundingSourceEventHandlerService fundingSourceEventHandlerService;
 
-        public ProviderPaymentsService(ActorService actorService, ActorId actorId)
+        public ProviderPaymentsService(ActorService actorService, ActorId actorId, IProviderPaymentsRepository providerPaymentsRepository, IValidatePaymentMessage validatePaymentMessage)
             : base(actorService, actorId)
         {
+            this.providerPaymentsRepository = providerPaymentsRepository;
+            this.validatePaymentMessage = validatePaymentMessage;
         }
 
-
-        protected override Task OnActivateAsync()
+        public async Task HandleEvent(FundingSourcePaymentEvent message, CancellationToken cancellationToken)
         {
-            ActorEventSource.Current.ActorMessage(this, "Actor activated.");
-
-            // The StateManager is this actor's private state store.
-            // Data stored in the StateManager will be replicated for high-availability for actors that use volatile or persisted state storage.
-            // Any serializable object can be saved in the StateManager.
-            // For more information, see https://aka.ms/servicefabricactorsstateserialization
-
-            return this.StateManager.TryAddStateAsync("count", 0);
+            await fundingSourceEventHandlerService.ProcessEvent(message, cancellationToken);
         }
 
-
-        Task<int> IProviderPaymentsService.GetCountAsync(CancellationToken cancellationToken)
+        protected override async Task OnActivateAsync()
         {
-            return this.StateManager.GetStateAsync<int>("count", cancellationToken);
+            var reliableCollectionCache = new ReliableCollectionCache<IlrSubmittedEvent>(StateManager);
+            fundingSourceEventHandlerService = new FundingSourceEventHandlerService(providerPaymentsRepository, reliableCollectionCache, validatePaymentMessage);
+
+            await base.OnActivateAsync().ConfigureAwait(false);
         }
 
-
-        Task IProviderPaymentsService.SetCountAsync(int count, CancellationToken cancellationToken)
-        {
-            // Requests are not guaranteed to be processed in order nor at most once.
-            // The update function here verifies that the incoming count is greater than the current count to preserve order.
-            return this.StateManager.AddOrUpdateStateAsync("count", count, (key, value) => count > value ? count : value, cancellationToken);
-        }
     }
 }
