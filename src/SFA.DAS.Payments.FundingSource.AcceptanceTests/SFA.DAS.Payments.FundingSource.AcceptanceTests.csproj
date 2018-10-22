@@ -35,6 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
@@ -263,10 +264,6 @@
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 only.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Completion %28TT2%29 only.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Fully funded - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Completion %28TT2%29 only.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

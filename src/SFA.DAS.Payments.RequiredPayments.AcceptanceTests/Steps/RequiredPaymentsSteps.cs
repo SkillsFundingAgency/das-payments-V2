@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class RequiredPaymentsSteps : RequiredPaymentsStepsBase
     {
-        private static bool trace = true;
+        private const bool trace = true;
 
         public RequiredPaymentsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
