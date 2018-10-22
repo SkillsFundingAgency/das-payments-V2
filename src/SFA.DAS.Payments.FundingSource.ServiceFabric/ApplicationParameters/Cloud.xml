@@ -7,5 +7,6 @@
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="NonLevyFundedService_EndpointName" Value="__NonLevyFundedService_EndpointName__" />
     <Parameter Name="NonLevyFundedService_FailedMessagesQueue" Value="__NonLevyFundedService_FailedMessagesQueue__" />
+    <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRW__" />
   </Parameters>
 </Application>
