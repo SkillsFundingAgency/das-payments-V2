@@ -1,8 +1,10 @@
-﻿Feature: Basic Day - 2 learners
-	Non-Levy - 1 finishes early and 1 finishes late
+﻿Feature: Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199
+Non-Levy - 1 finishes early and 1 finishes late
 
 Background:
 	Given the SFA contribution percentage is 90%
+	And the current collection period is R05
+	And the payments are for the current collection year
 	And following learners are undertaking training with a training provider
 	| LearnerId | 
 	| L1		|
@@ -12,16 +14,16 @@ Background:
 	| L1		| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 18750                | completed	    |
 	| L2		| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 12000                | completed	    |
 
-And the following contract type 2 On Programme earnings are provided:
+	And the following contract type 2 On Programme earnings are provided:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
 	| L1		| p2                     | 2				| Completion (TT2)| 3750   |
 	| L1		| p2                     | 2				| Balancing (TT3) | 3000   |
-	| L2		| p2                     | 1				| Learning (TT1)  | 1000   |
-	| L2		| p2                     | 2				| Learning (TT1)  | 0      |
-	| L2		| p2                     | 3				| Learning (TT1)  | 0      |
-	| L2		| p2                     | 4				| Learning (TT1)  | 0      |
-	| L2		| p2                     | 5				| Completion (TT2)| 3000   |
+	| L2		| p3                     | 1				| Learning (TT1)  | 1000   |
+	| L2		| p3                     | 2				| Learning (TT1)  | 0      |
+	| L2		| p3                     | 3				| Learning (TT1)  | 0      |
+	| L2		| p3                     | 4				| Learning (TT1)  | 0      |
+	| L2		| p3                     | 5				| Completion (TT2)| 3000   |
 
 @NonDas_BasicDay
 @Finishes_Early
@@ -35,6 +37,7 @@ Scenario: 2_non_levy_learners_1finishes_Early
 	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
 	| L1		| p2                     | 2				| Completion (TT2)| 3750   |
 	| L1		| p2                     | 2				| Balancing (TT3) | 3000   |
+	| L2		| p3                     | 1				| Learning (TT1)  | 1000   |
 
 @NonDas_BasicDay
 @Finishes_Late
@@ -45,5 +48,8 @@ Scenario: 2_non_levy_learners_1finishes_Late
 	When an earnings event is received
 	Then the payments due component will generate the following contract type 2 payments due:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
-	| L2		| p2                     | 1				| Learning (TT1)  | 1000   |
-	| L2		| p2                     | 5				| Completion (TT2)| 3000   |
+	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
+	| L1		| p2                     | 2				| Completion (TT2)| 3750   |
+	| L1		| p2                     | 2				| Balancing (TT3) | 3000   |
+	| L2		| p3                     | 1				| Learning (TT1)  | 1000   |
+	| L2		| p3                     | 5				| Completion (TT2)| 3000   |

@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using OnProgrammeEarning = SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data.OnProgrammeEarning;
@@ -29,6 +30,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         {
             foreach (var act2EarningEvent in Act2EarningEvents)
             {
+                act2EarningEvent.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
                 await MessageSession.Send(act2EarningEvent);
             }
         }
@@ -42,7 +44,9 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 
         private bool MatchPaymentDue(List<OnProgrammePaymentDue> expectedPaymentsEvents)
         {
-            var matchedReceivedEvents = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Where(receivedEvent =>
+            var sessionEvents = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Where(r => r.Ukprn == TestSession.Ukprn).ToList();
+
+            var matchedReceivedEvents = sessionEvents.Where(receivedEvent =>
             {
                 return expectedPaymentsEvents.Any(expectedEvent =>
                 {
@@ -50,39 +54,61 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                            expectedEvent.Amount == receivedEvent.AmountDue &&
                            TestSession.GenerateLearnerReference(expectedEvent.LearnerId) == receivedEvent.Learner?.ReferenceNumber &&
                            expectedEvent.Type == receivedEvent.Type &&
-                           TestSession.Ukprn == receivedEvent.Ukprn &&
-                           expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period &&
-                           receivedEvent.CollectionPeriod == new CalendarPeriod(CollectionYear, CollectionPeriod);
+                           expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period;
                 });
             }).ToList();
 
-            if (!trace && matchedReceivedEvents.Count < expectedPaymentsEvents.Count)
-                return false;
+            var allFound = matchedReceivedEvents.Count == expectedPaymentsEvents.Count;
+            var nothingExtra = sessionEvents.Count == matchedReceivedEvents.Count;
 
-            var unexpected = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents
-                .Where(receivedEvent => !matchedReceivedEvents.Contains(receivedEvent) &&
-                                         TestSession.Ukprn == receivedEvent.Ukprn).ToList();
 #if DEBUG
-            if (trace)
+            if ((!allFound || !nothingExtra) && trace)
             {
-                if (matchedReceivedEvents.Count < expectedPaymentsEvents.Count)
+                if (!allFound)
                 {
-                    Debug.WriteLine($"{expectedPaymentsEvents.Count - matchedReceivedEvents.Count} events did not arrive:");
+                    Debug.WriteLine("Did not find all expected events. Trace:");
+                    TraceMismatch(expectedPaymentsEvents, sessionEvents);
                 }
 
-                if (unexpected.Count > 0)
+                if (!nothingExtra)
                 {
+                    var unexpected = sessionEvents.Where(e => !matchedReceivedEvents.Contains(e)).ToList();
                     Debug.WriteLine($"{unexpected.Count} unexpected events:");
                     for (var i = 0; i < unexpected.Count; i++)
                     {
                         var e = unexpected[i];
-                        Debug.WriteLine($"{i+1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
+                        Debug.WriteLine($"{i + 1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
                     }
                 }
             }
 #endif
+            return allFound && nothingExtra;
+        }
 
-            return matchedReceivedEvents.Count == expectedPaymentsEvents.Count && unexpected.Count == 0;
+        private void TraceMismatch(IList<OnProgrammePaymentDue> expectedPaymentsEvents, IList<ApprenticeshipContractType2PaymentDueEvent> receivedEvents)
+        {
+            for (var i = 0; i < expectedPaymentsEvents.Count; i++)
+            {
+                var expectedEvent = expectedPaymentsEvents[i];
+                for (var k = 0; k < receivedEvents.Count; k++)
+                {
+                    var receivedEvent = receivedEvents[k];
+                    var mismatchedFields = new List<string>();
+                    var learnerReference = TestSession.GenerateLearnerReference(expectedEvent.LearnerId);
+
+                    if (expectedEvent.PriceEpisodeIdentifier != receivedEvent.PriceEpisodeIdentifier) mismatchedFields.Add($" PriceEpisodeIdentifier({expectedEvent.PriceEpisodeIdentifier}!={receivedEvent.PriceEpisodeIdentifier})");
+                    if (expectedEvent.Amount != receivedEvent.AmountDue) mismatchedFields.Add($" Amount({expectedEvent.Amount}!={receivedEvent.AmountDue})");
+                    if (learnerReference != receivedEvent.Learner?.ReferenceNumber) mismatchedFields.Add($"LearnRefNumber({learnerReference}!={receivedEvent.Learner?.ReferenceNumber})");
+                    if (expectedEvent.Type != receivedEvent.Type) mismatchedFields.Add($"Type({expectedEvent.Type}!={receivedEvent.Type})");
+                    if (expectedEvent.DeliveryPeriod != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.DeliveryPeriod}!={receivedEvent.DeliveryPeriod?.Period})");
+                    if (!receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)) mismatchedFields.Add($"CollectionPeriod({receivedEvent.CollectionPeriod} does not contain {CollectionYear})");
+
+                    if (mismatchedFields.Count == 0)
+                        Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Count}: match {k + 1}");
+                    else
+                        Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Count}: mismatch {k + 1} on {string.Join(",", mismatchedFields)}");
+                }
+            }
         }
 
         [Given(@"the following contract type (.*) On Programme earnings are provided:")]

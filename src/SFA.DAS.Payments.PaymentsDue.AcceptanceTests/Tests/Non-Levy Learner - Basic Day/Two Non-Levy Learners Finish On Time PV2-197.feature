@@ -1,4 +1,4 @@
-﻿Feature: Two Non-Levy Learners Finishes On Time PV2-197
+﻿Feature: Two Non-Levy Learners Finish On Time PV2-197
 
 Background:
 	Given the current collection period is R02
