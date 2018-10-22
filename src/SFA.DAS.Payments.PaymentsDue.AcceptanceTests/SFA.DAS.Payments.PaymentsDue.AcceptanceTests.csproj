@@ -85,6 +85,7 @@
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2PaymentDueEventHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SmokeTests\SmokeTest.cs" />
     <Compile Include="Steps\CourseSteps.cs" />
     <Compile Include="Steps\EarningSteps.cs" />
     <Compile Include="Steps\LearnerSteps.cs" />
