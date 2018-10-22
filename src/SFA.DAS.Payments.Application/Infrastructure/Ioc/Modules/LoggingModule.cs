@@ -52,7 +52,9 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.RegisterType<ExecutionContext>().As<IExecutionContext>().InstancePerLifetimeScope();
             builder.RegisterType<ExecutionContextFactory>().As<IExecutionContextFactory>().InstancePerLifetimeScope();
             builder.RegisterType<SerilogLoggerFactory>().As<ISerilogLoggerFactory>().InstancePerLifetimeScope();
-            builder.RegisterType<PaymentLogger>().As<IPaymentLogger>().InstancePerLifetimeScope();
+            builder.RegisterType<PaymentLogger>()
+                .As<IPaymentLogger,ILogger>()
+                .InstancePerLifetimeScope();
         }
     }
 }

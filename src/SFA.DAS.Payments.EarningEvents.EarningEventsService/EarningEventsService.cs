@@ -19,10 +19,10 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
     public class EarningEventsService : StatelessService
     {
         private readonly ILifetimeScope lifetimeScope;
-        //private readonly IJobContextManager<JobContextMessage> jobContextManager;
+        private IJobContextManager<JobContextMessage> jobContextManager;
         private readonly IPaymentLogger logger;
 
-        public EarningEventsService(StatelessServiceContext context, ILifetimeScope lifetimeScope, /*IJobContextManager<JobContextMessage> jobContextManager,*/ IPaymentLogger logger)
+        public EarningEventsService(StatelessServiceContext context, ILifetimeScope lifetimeScope,/* IJobContextManager<JobContextMessage> jobContextManager,*/ IPaymentLogger logger)
             : base(context)
         {
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
@@ -42,35 +42,36 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
             };
         }
 
-        ///// <summary>
-        ///// This is the main entry point for your service instance.
-        ///// </summary>
-        ///// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
-        //protected override async Task RunAsync(CancellationToken cancellationToken)
-        //{
-        //    var initialised = false;
+        /// <summary>
+        /// This is the main entry point for your service instance.
+        /// </summary>
+        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
+        protected override async Task RunAsync(CancellationToken cancellationToken)
+        {
+            var initialised = false;
 
-        //    try
-        //    {
-        //        logger.LogInfo("Earning Events Stateless Service Start");
+            try
+            {
+                logger.LogInfo("Earning Events Stateless Service Start");
+                this.jobContextManager = lifetimeScope.Resolve<IJobContextManager<JobContextMessage>>();
 
-        //        jobContextManager.OpenAsync(cancellationToken);
-        //        initialised = true;
-        //        await Task.Delay(Timeout.Infinite, cancellationToken);
-        //    }
-        //    catch (Exception exception) when (!(exception is TaskCanceledException))
-        //    {
-        //        // Ignore, as an exception is only really thrown on cancellation of the token.
-        //        logger.LogError("Reference Data Stateless Service Exception", exception);
-        //    }
-        //    finally
-        //    {
-        //        if (initialised)
-        //        {
-        //            logger.LogInfo("Earning Events Stateless Service End");
-        //            await jobContextManager.CloseAsync();
-        //        }
-        //    }
-        //}
+                jobContextManager.OpenAsync(cancellationToken);
+                initialised = true;
+                await Task.Delay(Timeout.Infinite, cancellationToken);
+            }
+            catch (Exception exception) when (!(exception is TaskCanceledException))
+            {
+                // Ignore, as an exception is only really thrown on cancellation of the token.
+                logger.LogError("Reference Data Stateless Service Exception", exception);
+            }
+            finally
+            {
+                if (initialised)
+                {
+                    logger.LogInfo("Earning Events Stateless Service End");
+                    await jobContextManager.CloseAsync();
+                }
+            }
+        }
     }
 }

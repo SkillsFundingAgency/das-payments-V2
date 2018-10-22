@@ -8,6 +8,7 @@ using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
@@ -17,17 +18,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IPaymentLogger paymentLogger;
         private readonly IKeyValuePersistenceService redisService;
         private readonly IJsonSerializationService serializationService;
-        private readonly IMessageSession session;
+        private readonly IEndpointInstanceFactory factory;
+        //private readonly IMessageSession session;
+        
 
         public JobContextMessageHandler(IPaymentLogger paymentLogger, 
             IKeyValuePersistenceService redisService,
             IJsonSerializationService serializationService,
-            IMessageSession session)
+            IEndpointInstanceFactory factory)
         {
             this.paymentLogger = paymentLogger;
             this.redisService = redisService;
             this.serializationService = serializationService;
-            this.session = session;
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            //this.session = session;
         }
        
 
@@ -53,8 +57,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                             RequestTime = DateTimeOffset.UtcNow,
                             SubmissionTime = message.SubmissionDateTimeUtc
                         };
-
-                        await session.SendLocal(learnerCommand);
+                        var endpointInstance = await factory.GetEndpointInstance();
+                        await endpointInstance.SendLocal(learnerCommand);
 
                         paymentLogger.LogInfo(
                             $"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}");

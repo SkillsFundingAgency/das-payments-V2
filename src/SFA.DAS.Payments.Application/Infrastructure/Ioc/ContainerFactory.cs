@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc
 {
     public class ContainerFactory
     {
-        public static IContainer Container { get; private set; } //Needed bo automapper to resolve instances, yuck...
+        public static IContainer Container { get; private set; } //Needed to automapper to resolve instances, yuck...
         //TODO: make non static
         public static IContainer CreateContainer()
         {
