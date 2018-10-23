@@ -12,7 +12,7 @@ Background:
 	And the following course information for Learners:
 	| LearnerId | AimSeqNumber | ProgrammeType | FrameworkCode | PathwayCode | StandardCode | FundingLineType                                                       | LearnAimRef | TotalNegotiatedPrice | CompletionStatus |
 	| L1		| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 18750                | completed	    |
-	| L2		| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 12000                | completed	    |
+	| L2		| 1            | 2             | 403           | 1           |              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | ZPROG001    | 15000                | completed	    |
 
 	And the following contract type 2 On Programme earnings are provided:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
