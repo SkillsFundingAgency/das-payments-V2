@@ -300,11 +300,6 @@
     <Compile Include="Steps\EarningEventsSteps.cs" />
     <Compile Include="Steps\EarningEventsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
-    <Compile Include="Tests\ALL TT1 TT2 and TT3.feature.cs">
-      <DependentUpon>ALL TT1 TT2 and TT3.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Steps\LearnerEarnings.cs" />
     <Compile Include="Tests\Apprenticeship Contract 2 onprogramme earnings.feature.cs">
       <DependentUpon>Apprenticeship Contract 2 onprogramme earnings.feature</DependentUpon>
@@ -326,10 +321,6 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
-    <None Include="Tests\ALL TT1 TT2 and TT3.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
-    </None>
     <None Include="Tests\Apprenticeship Contract 2 onprogramme earnings.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Apprenticeship Contract 2 onprogramme earnings.feature.cs</LastGenOutput>

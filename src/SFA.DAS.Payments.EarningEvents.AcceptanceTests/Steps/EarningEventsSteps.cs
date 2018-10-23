@@ -1,27 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using FluentAssertions;
-using Microsoft.Azure.ServiceBus;
-using Microsoft.ServiceBus.Messaging;
-using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
-using EarningEvent = SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data.EarningEvent;
-using TopicClient = Microsoft.ServiceBus.Messaging.TopicClient;
 
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
 {
@@ -81,25 +73,6 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         [When(@"the ILR is submitted and the learner earnings are sent to the earning events service")]
         public async Task WhenTheILRIsSubmittedAndTheLearnerEarningsAreSentToTheEarningEventsService()
         {
-            //var command = new ProcessLearnerCommand
-            //{
-            //    Ukprn = TestSession.Ukprn,
-            //    CollectionYear = CollectionYear,
-            //    CollectionPeriod = CollectionPeriod,
-            //    JobId = TestSession.JobId,
-            //    RequestTime = DateTime.UtcNow,
-            //    Learner = new FM36Learner
-            //    {
-            //        LearnRefNumber = TestSession.Learner.LearnRefNumber,
-            //        PriceEpisodes = new List<PriceEpisode>(),
-            //        LearningDeliveries = new List<LearningDelivery>()
-            //    }
-            //};
-            //IlrLearnerEarnings.ForEach(earnings =>
-            //{
-            //    AddLearnerEarnings(command.Learner, earnings);
-            //});
-            //await MessageSession.Send(command, new SendOptions());
             var learner = CreateLearner();
             await SendIlrSubmission(learner).ConfigureAwait(true);
         }
@@ -180,9 +153,9 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                     KeyValuePairs = new Dictionary<string, object>
                     {
                         {"FundingFm36Output", messagePointer},
-                        { "Filename", "blah blah"},
-                        {"UkPrn", TestSession.Ukprn },
-                        {"Username", "Bob" }
+                        {"Filename", "blah blah"},
+                        {"UkPrn", TestSession.Ukprn},
+                        {"Username", "Bob"}
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
                     TopicPointer = 0,
@@ -198,13 +171,6 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 };
 
                 await topicPublishingService.PublishAsync(dto, new Dictionary<string, object>(), "Validation");
-
-                //var serialisedMessage = serializationService.Serialize(jobContextMessage);
-                //Console.WriteLine($"Job context message: {serialisedMessage}");
-                //var topicClient = new Microsoft.Azure.ServiceBus.TopicClient(TestConfiguration.DcServiceBusConnectionString,
-                //    TestConfiguration.TopicName);
-                //var brokeredMessage = new Message(Encoding.UTF8.GetBytes(serialisedMessage));
-                //await topicClient.SendAsync(brokeredMessage).ConfigureAwait(true);
             }
             catch (Exception e)
             {
@@ -213,73 +179,6 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             }
         }
 
-
-        [When(@"earning calculator event is received")]
-        public async void WhenEarningCalculatorEventIsReceived()
-        {
-            var input = new FM36Global();
-            input.Learners = new List<FM36Learner>();
-
-            var learner = new FM36Learner
-            {
-                LearnRefNumber = TestSession.Learner.LearnRefNumber,
-                PriceEpisodes = new List<PriceEpisode>()
-            };
-
-            var priceEpisode = new PriceEpisode
-            {
-                PriceEpisodeIdentifier = "p1",
-                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
-                {
-                    new PriceEpisodePeriodisedValues
-                    {
-                        Period1 = 100M,
-                        Period2 = 100M,
-                        Period3 = 100M,
-                        Period4 = 100M,
-                        Period5 = 100M,
-                        Period6 = 100M,
-                        Period7 = 100M,
-                        Period8 = 100M,
-                        Period9 = 100M,
-                        Period10 = 100M,
-                        Period11 = 100M,
-                        Period12 = 100M
-                    }
-                }
-            };
-
-            learner.PriceEpisodes.Add(priceEpisode);
-            input.Learners.Add(learner);
-            try
-            {
-                var messagePointer = Guid.NewGuid().ToString();
-
-                await redisService.SaveAsync(messagePointer, serializationService.Serialize(input)).ConfigureAwait(true);
-
-                var inputMessage = new JobContextMessage
-                {
-                    JobId = 1,
-                    KeyValuePairs = new Dictionary<string, object> { { "FundingFm36Output", messagePointer } },
-                    SubmissionDateTimeUtc = DateTime.Now,
-                    TopicPointer = 1,
-                };
-
-                var serialisedMessage = serializationService.Serialize(inputMessage);
-
-                var topicClient = TopicClient.CreateFromConnectionString(TestConfiguration.DcServiceBusConnectionString,
-                    TestConfiguration.TopicName);
-                var brokeredMessage = new BrokeredMessage(serialisedMessage);
-
-                await topicClient.SendAsync(brokeredMessage).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-        }
 
         [Then(@"the earning events component will generate the following earning events:")]
         public void ThenTheEarningEventsComponentWillGenerateTheFollowingEarningEvents(Table table)
