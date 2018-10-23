@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
@@ -8,6 +9,7 @@ using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.Serialization.Interfaces;
 using FluentAssertions;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using NServiceBus;
 using NUnit.Framework;
@@ -17,6 +19,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using EarningEvent = SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data.EarningEvent;
+using TopicClient = Microsoft.ServiceBus.Messaging.TopicClient;
 
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
 {
@@ -176,10 +179,15 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
 
                 var serialisedMessage = serializationService.Serialize(jobContextMessage);
                 Console.WriteLine($"Job context message: {serialisedMessage}");
-                var topicClient = TopicClient.CreateFromConnectionString(TestConfiguration.DcServiceBusConnectionString,
-                    TestConfiguration.TopicName);
-                var brokeredMessage = new BrokeredMessage(serialisedMessage);
-                await topicClient.SendAsync(brokeredMessage).ConfigureAwait(true);
+
+                //var topicClient = TopicClient.CreateFromConnectionString(TestConfiguration.DcServiceBusConnectionString,
+                //    TestConfiguration.TopicName);
+                var topicClient = new Microsoft.Azure.ServiceBus.TopicClient(TestConfiguration.DcServiceBusConnectionString, TestConfiguration.TopicName);
+                //var topicClient = TopicClient.CreateFromConnectionString(TestConfiguration.DcServiceBusConnectionString,
+                //    TestConfiguration.TopicName);
+
+                //var brokeredMessage = new BrokeredMessage(serialisedMessage);
+                await topicClient.SendAsync(new Message(Encoding.UTF8.GetBytes(serialisedMessage))).ConfigureAwait(true);
             }
             catch (Exception e)
             {
