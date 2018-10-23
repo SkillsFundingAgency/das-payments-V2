@@ -5,6 +5,11 @@ using ESFA.DC.IO.Interfaces;
 using ESFA.DC.IO.Redis;
 using ESFA.DC.IO.Redis.Config;
 using ESFA.DC.IO.Redis.Config.Interfaces;
+using ESFA.DC.JobContext.Interface;
+using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Queueing;
+using ESFA.DC.Queueing.Interface;
+using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using NServiceBus;
@@ -13,6 +18,7 @@ using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Configuration;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
@@ -40,12 +46,26 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             Builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
             Builder.Register(c => new RedisKeyValuePersistenceServiceConfig
             {
-                ConnectionString = ConfigurationManager.ConnectionStrings["AzureRedisConnectionString"].ConnectionString,
+                ConnectionString = ConfigurationManager.ConnectionStrings["AzureRedisConnectionString"]?.ConnectionString,
                 KeyExpiry = new TimeSpan(14, 0, 0, 0)
             }).As<IRedisKeyValuePersistenceServiceConfig>().SingleInstance();
 
             Builder.RegisterType<RedisKeyValuePersistenceService>().As<IKeyValuePersistenceService>()
                 .InstancePerLifetimeScope();
+
+            Builder.Register(c => new TopicConfiguration(
+                    ConfigurationManager.ConnectionStrings["DCServiceBusConnectionString"]?.ConnectionString,
+                    ConfigurationManager.AppSettings["TopicName"],
+                    ConfigurationManager.AppSettings["SubscriptionName"], 1,
+                    maximumCallbackTimeSpan: TimeSpan.FromMinutes(40)))
+                .As<ITopicConfiguration>();
+           
+            Builder.Register(c =>
+            {
+                var config = c.Resolve<ITopicConfiguration>();
+                var serialisationService = c.Resolve<IJsonSerializationService>();
+                return new TopicPublishService<JobContextDto>(config, serialisationService);
+            }).As<ITopicPublishService<JobContextDto>>();
         }
     }
 }

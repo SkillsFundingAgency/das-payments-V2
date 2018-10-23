@@ -32,9 +32,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>();
 
             builder.Register(c =>
+                    {
+                        var configHelper = c.Resolve<IConfigurationHelper>();
+                        return new TopicConfiguration(configHelper.GetConnectionString("DCServiceBusConnectionString"), configHelper.GetSetting("TopicName"), configHelper.GetSetting("SubscriptionName"), 1, maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
+                    }
+                )
+                .As<ITopicConfiguration>();
+
+            builder.Register(c =>
             {
-                var configHelper = c.Resolve<IConfigurationHelper>();
-                var topicSubscriptionConfig = new TopicConfiguration(configHelper.GetConnectionString("DCServiceBusConnectionString"), configHelper.GetSetting("TopicName"), configHelper.GetSetting("SubscriptionName"), 1, maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
+                var topicSubscriptionConfig = c.Resolve<ITopicConfiguration>();
 
                 return new TopicSubscriptionSevice<JobContextDto>(
                     topicSubscriptionConfig,
@@ -43,13 +50,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             }).As<ITopicSubscriptionService<JobContextDto>>();
 
             builder.Register(c =>
-                {
-                    var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new TopicConfiguration(configHelper.GetConnectionString("DCServiceBusConnectionString"), configHelper.GetSetting("TopicName"), configHelper.GetSetting("SubscriptionName"), 1, maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
-                }
-                )
-                .As<ITopicConfiguration>();
-            builder.RegisterType<TopicPublishService<JobContextDto>>().As<ITopicPublishService<JobContextDto>>();
+            {
+                var config = c.Resolve<ITopicConfiguration>();
+                var serialisationService = c.Resolve<IJsonSerializationService>();
+                return new TopicPublishService<JobContextDto>(config, serialisationService);
+            }).As<ITopicPublishService<JobContextDto>>();
 
             builder.Register(c =>
             {
