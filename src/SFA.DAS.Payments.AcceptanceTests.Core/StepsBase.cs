@@ -58,10 +58,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         protected void WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
-            var reason = "";
-            var pass = false;
+            var reason = string.Empty;
             while (DateTime.Now < endTime)
             {
+                bool pass;
                 (pass, reason) = lookForIt();
                 if (pass)
                     return;

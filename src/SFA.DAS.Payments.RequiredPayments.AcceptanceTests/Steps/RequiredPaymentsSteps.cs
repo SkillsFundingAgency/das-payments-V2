@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             var expectedPaymentsEvents = table
                 .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events or unexpected events found");
+            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Expectation not met");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) payable earnings")]
@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return result;
         }
 
-        private bool MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
+        private Tuple<bool, string> MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
         {
             OnProgrammePaymentDue[] events;
 
@@ -139,6 +139,13 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             var allFound = matchedExpectations.Count == expectedPaymentsEvents.Length;
             var nothingExtra = sessionEvents.Length == matchedExpectations.Count;
 
+            var reason = new List<string>();
+            if (!allFound)
+                reason.Add($"{expectedPaymentsEvents.Length - matchedExpectations.Count} out of {expectedPaymentsEvents.Length} event(s) did not arrive");
+
+            if (!nothingExtra)
+                reason.Add($"{sessionEvents.Length - matchedExpectations.Count} unexpected event(s) arrived");
+
 #if DEBUG
             if ((!allFound || !nothingExtra) && trace)
             {
@@ -155,7 +162,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 }
             }
 #endif
-            return allFound && nothingExtra;
+            return Tuple.Create(allFound && nothingExtra, string.Join(" and ", reason));
         }
 
         private static void TraceUnexpected(ApprenticeshipContractType2RequiredPaymentEvent[] sessionEvents, List<ApprenticeshipContractType2RequiredPaymentEvent> matchedExpectations)
