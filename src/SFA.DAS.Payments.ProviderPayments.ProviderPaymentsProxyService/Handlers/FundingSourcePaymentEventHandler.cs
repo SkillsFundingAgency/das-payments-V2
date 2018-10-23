@@ -8,6 +8,8 @@ using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handlers
 {
@@ -16,14 +18,17 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
         private readonly IPaymentLogger paymentLogger;
         private readonly IExecutionContext executionContext;
         private readonly IActorProxyFactory proxyFactory;
+        private readonly IMapper mapper;
 
         public FundingSourcePaymentEventHandler(IPaymentLogger paymentLogger,
             IExecutionContext executionContext,
-            IActorProxyFactory proxyFactory)
+            IActorProxyFactory proxyFactory,
+            IMapper mapper)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
             this.proxyFactory = proxyFactory;
+            this.mapper = mapper;
         }
 
         public async Task Handle(FundingSourcePaymentEvent message, IMessageHandlerContext context)
@@ -38,8 +43,9 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
                 var actorId = new ActorId(message.Ukprn.ToString());
                 var actor = proxyFactory.CreateActorProxy<IProviderPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.ProviderPayments.ServiceFabric/ProviderPaymentsServiceActorService"), actorId);
 
+                var paymentModel = mapper.Map<ProviderPeriodicPayment>(message);
 
-                await actor.HandleEvent(message, new CancellationToken());
+                await actor.HandleEvent(paymentModel, new CancellationToken());
                 paymentLogger.LogInfo($"Successfully processed Funding Source Payment Event for Job Id {message.JobId} and Message Type {message.GetType().Name}");
             }
             catch (Exception ex)

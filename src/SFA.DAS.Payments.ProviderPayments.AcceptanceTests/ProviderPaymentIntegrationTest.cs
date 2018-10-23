@@ -2,12 +2,11 @@
 using NServiceBus.Features;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
-using System;
-using System.Threading.Tasks;
 using SFA.DAS.Payments.FundingSource.Model.Enum;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
 {
@@ -23,7 +22,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
         {
             sender = await CreateMessageSender();
 
-             fundingSourcePaymentEvent = new SfaCoInvestedFundingSourcePaymentEvent
+            fundingSourcePaymentEvent = new SfaCoInvestedFundingSourcePaymentEvent
             {
                 ContractType = 2,
                 FundingSourceType = FundingSourceType.CoInvestedSfa,
@@ -52,7 +51,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                 PriceEpisodeIdentifier = "2018-P1",
                 EventTime = DateTime.UtcNow,
                 JobId = "6000"
-             };
+            };
         }
 
         [Test]

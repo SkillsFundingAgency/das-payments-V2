@@ -1,10 +1,10 @@
 ﻿using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Domain;
+using SFA.DAS.Payments.ProviderPayments.Model;
 using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System.Threading;
@@ -20,14 +20,16 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         private readonly IValidatePaymentMessage validatePaymentMessage;
         private IFundingSourceEventHandlerService fundingSourceEventHandlerService;
 
-        public ProviderPaymentsService(ActorService actorService, ActorId actorId, IProviderPaymentsRepository providerPaymentsRepository, IValidatePaymentMessage validatePaymentMessage)
+        public ProviderPaymentsService(ActorService actorService, ActorId actorId,
+            IProviderPaymentsRepository providerPaymentsRepository,
+            IValidatePaymentMessage validatePaymentMessage)
             : base(actorService, actorId)
         {
             this.providerPaymentsRepository = providerPaymentsRepository;
             this.validatePaymentMessage = validatePaymentMessage;
         }
 
-        public async Task HandleEvent(FundingSourcePaymentEvent message, CancellationToken cancellationToken)
+        public async Task HandleEvent(ProviderPeriodicPayment message, CancellationToken cancellationToken)
         {
             await fundingSourceEventHandlerService.ProcessEvent(message, cancellationToken);
         }

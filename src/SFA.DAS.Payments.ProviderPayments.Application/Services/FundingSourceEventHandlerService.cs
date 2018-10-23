@@ -1,10 +1,10 @@
 ﻿using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Domain;
 using SFA.DAS.Payments.ProviderPayments.Domain.Models;
+using SFA.DAS.Payments.ProviderPayments.Model;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.validatePaymentMessage = validatePaymentMessage;
         }
 
-        public async Task ProcessEvent(FundingSourcePaymentEvent message, CancellationToken cancellationToken)
+        public async Task ProcessEvent(ProviderPeriodicPayment message, CancellationToken cancellationToken)
         {
             var currentIlr = await GetCurrentIlrSubmissionEvent(message.Ukprn.ToString(), cancellationToken);
 
@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
         }
 
-        private PaymentDataEntity MapToPaymentEntity(FundingSourcePaymentEvent message)
+        private PaymentDataEntity MapToPaymentEntity(ProviderPeriodicPayment message)
         {
             var payment = new PaymentDataEntity
             {

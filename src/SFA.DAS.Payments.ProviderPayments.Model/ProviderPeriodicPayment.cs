@@ -1,11 +1,11 @@
-﻿using SFA.DAS.Payments.FundingSource.Model.Enum;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
+﻿using SFA.DAS.Payments.Model.Core;
 using System;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.FundingSource.Model.Enum;
 
-namespace SFA.DAS.Payments.FundingSource.Messages.Events
+namespace SFA.DAS.Payments.ProviderPayments.Model
 {
-    public abstract class FundingSourcePaymentEvent : IFundingSourcePaymentEvent
+    public class ProviderPeriodicPayment
     {
         public string PriceEpisodeIdentifier { get; set; }
 
@@ -32,6 +32,5 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
         public OnProgrammeEarningType OnProgrammeEarningType { get; set; }
 
         public FundingSourceType FundingSourceType { get; set; }
-
     }
 }

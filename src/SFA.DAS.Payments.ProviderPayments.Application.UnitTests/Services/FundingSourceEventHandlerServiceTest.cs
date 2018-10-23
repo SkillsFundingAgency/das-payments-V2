@@ -14,6 +14,7 @@ using SFA.DAS.Payments.ProviderPayments.Domain.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
@@ -28,14 +29,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
         private long ukprn = 10000;
         private string jobId = "1000";
-        private SfaCoInvestedFundingSourcePaymentEvent fundingSourceEvent;
+        private ProviderPeriodicPayment fundingSourceEvent;
 
 
         [OneTimeSetUp]
         public void SetUp()
         {
-
-            fundingSourceEvent = new SfaCoInvestedFundingSourcePaymentEvent
+            fundingSourceEvent = new ProviderPeriodicPayment
             {
                 ContractType = 2,
                 FundingSourceType = FundingSourceType.CoInvestedSfa,
@@ -63,7 +63,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 AmountDue = 1000m,
                 JobId = jobId
             };
-
 
             providerPaymentsRepository = new Mock<IProviderPaymentsRepository>();
             providerPaymentsRepository
