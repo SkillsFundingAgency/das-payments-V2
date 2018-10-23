@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Non_LevyLearner_Bas
                         "",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "ZPROG001",
-                        "12000",
+                        "15000",
                         "completed"});
 #line 12
  testRunner.And("the following course information for Learners:", ((string)(null)), table2, "And ");
