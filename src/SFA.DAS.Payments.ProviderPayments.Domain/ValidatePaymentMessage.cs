@@ -9,7 +9,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain
         {
             return request.CurrentIlr == null ||
                    (request.IncomingPaymentJobId.Equals(request.CurrentIlr.JobId, StringComparison.OrdinalIgnoreCase) &&
-                   request.IncomingPaymentUkprn == request.CurrentIlr.Ukprn);
+                    request.IncomingPaymentUkprn == request.CurrentIlr.Ukprn) &&
+                    request.IncomingPaymentSubmissionDate.CompareTo(request.CurrentIlr.SubmissionDate) == 0;
         }
 
     }

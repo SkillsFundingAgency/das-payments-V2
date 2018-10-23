@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.EarningEvents.Messages.Events;
+﻿using System;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.ProviderPayments.Domain.Models
 {
@@ -8,6 +9,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Models
 
         public string IncomingPaymentJobId { get; set; }
         public long IncomingPaymentUkprn { get; set; }
+        public DateTime IncomingPaymentSubmissionDate { get; set; }
 
     }
 }

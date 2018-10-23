@@ -24,6 +24,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
         public LearningAim LearningAim { get; set; }
 
         public string JobId { get; set; }
+        public DateTime SubmissionDate { get; set; }
 
         public byte ContractType { get; set; }
 

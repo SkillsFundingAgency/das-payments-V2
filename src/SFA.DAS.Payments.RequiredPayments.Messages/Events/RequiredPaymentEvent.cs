@@ -14,5 +14,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
         public decimal AmountDue { get; set; }
         public CalendarPeriod CollectionPeriod { get; set; }
         public CalendarPeriod DeliveryPeriod { get; set; }
+        public DateTime SubmissionDate { get; set; }
     }
 }

@@ -40,10 +40,35 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
             {
                 CurrentIlr = currentIlr,
                 IncomingPaymentUkprn = currentIlr.Ukprn,
-                IncomingPaymentJobId = currentIlr.JobId
+                IncomingPaymentJobId = currentIlr.JobId,
+                IncomingPaymentSubmissionDate = DateTime.MaxValue
             });
 
             Assert.IsTrue(result);
+        }
+
+
+        [Test]
+        public void ShouldBeInValidIfCurrentIlrDoNotMatchIncomingMessage()
+        {
+            var currentIlr = new IlrSubmittedEvent
+            {
+                Ukprn = 1000,
+                JobId = "1000",
+                SubmissionDate = DateTime.MaxValue
+            };
+
+            validatePaymentMessage = new ValidatePaymentMessage();
+
+            var result = validatePaymentMessage.IsLatestIlrPayment(new PaymentMessageValidationRequest
+            {
+                CurrentIlr = currentIlr,
+                IncomingPaymentUkprn = currentIlr.Ukprn,
+                IncomingPaymentJobId = currentIlr.JobId,
+                IncomingPaymentSubmissionDate = DateTime.MinValue
+            });
+
+            Assert.IsFalse(result);
         }
 
     }

@@ -9,6 +9,7 @@ using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
 {
@@ -18,15 +19,18 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
     {
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
         private readonly IValidatePaymentMessage validatePaymentMessage;
+        private readonly IPaymentLogger paymentLogger;
         private IFundingSourceEventHandlerService fundingSourceEventHandlerService;
 
         public ProviderPaymentsService(ActorService actorService, ActorId actorId,
             IProviderPaymentsRepository providerPaymentsRepository,
-            IValidatePaymentMessage validatePaymentMessage)
+            IValidatePaymentMessage validatePaymentMessage,
+            IPaymentLogger paymentLogger)
             : base(actorService, actorId)
         {
             this.providerPaymentsRepository = providerPaymentsRepository;
             this.validatePaymentMessage = validatePaymentMessage;
+            this.paymentLogger = paymentLogger;
         }
 
         public async Task HandleEvent(ProviderPeriodicPayment message, CancellationToken cancellationToken)
@@ -37,7 +41,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         protected override async Task OnActivateAsync()
         {
             var reliableCollectionCache = new ReliableCollectionCache<IlrSubmittedEvent>(StateManager);
-            fundingSourceEventHandlerService = new FundingSourceEventHandlerService(providerPaymentsRepository, reliableCollectionCache, validatePaymentMessage);
+            fundingSourceEventHandlerService = new FundingSourceEventHandlerService(providerPaymentsRepository, reliableCollectionCache, validatePaymentMessage, paymentLogger);
 
             await base.OnActivateAsync().ConfigureAwait(false);
         }

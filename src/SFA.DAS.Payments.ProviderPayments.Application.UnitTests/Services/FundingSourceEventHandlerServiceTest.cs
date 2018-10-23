@@ -14,6 +14,7 @@ using SFA.DAS.Payments.ProviderPayments.Domain.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
@@ -26,6 +27,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
         private Mock<IDataCache<IlrSubmittedEvent>> ilrSubmittedEventCache;
         private Mock<IValidatePaymentMessage> validatePaymentMessage;
+        private Mock<IPaymentLogger> paymentLogger;
 
         private long ukprn = 10000;
         private string jobId = "1000";
@@ -87,7 +89,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(o => o.IsLatestIlrPayment(It.IsAny<PaymentMessageValidationRequest>()))
                 .Returns(true);
 
-            fundingSourceEventHandlerService = new FundingSourceEventHandlerService(providerPaymentsRepository.Object, ilrSubmittedEventCache.Object, validatePaymentMessage.Object);
+            paymentLogger = new Mock<IPaymentLogger>();
+            paymentLogger
+                .Setup(o => o.LogDebug(It.IsAny<string>(), It.IsAny<object[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Verifiable();
+
+            paymentLogger
+                .Setup(o => o.LogWarning(It.IsAny<string>(), It.IsAny<object[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Verifiable();
+
+            fundingSourceEventHandlerService = new FundingSourceEventHandlerService(providerPaymentsRepository.Object, ilrSubmittedEventCache.Object, validatePaymentMessage.Object, paymentLogger.Object);
         }
 
         [Test]
@@ -118,6 +129,22 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
             providerPaymentsRepository
                 .Verify(o => o.SavePayment(It.IsAny<PaymentDataEntity>(), default(CancellationToken)), Times.Never);
+
+            paymentLogger.Verify();
+        }
+
+        [Test]
+        public async Task ProcessEventShouldWriteToLogIfPaymentEventIsInvalid()
+        {
+
+            validatePaymentMessage
+                .Setup(o => o.IsLatestIlrPayment(It.IsAny<PaymentMessageValidationRequest>()))
+                .Returns(false);
+
+            await fundingSourceEventHandlerService.ProcessEvent(fundingSourceEvent, default(CancellationToken));
+
+            paymentLogger
+                .Verify(o => o.LogWarning(It.IsAny<string>(), It.IsAny<object[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
 
         }
 

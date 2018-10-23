@@ -8,6 +8,7 @@ using SFA.DAS.Payments.ProviderPayments.Model;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
@@ -16,12 +17,17 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
         private readonly IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache;
         private readonly IValidatePaymentMessage validatePaymentMessage;
+        private readonly IPaymentLogger paymentLogger;
 
-        public FundingSourceEventHandlerService(IProviderPaymentsRepository providerPaymentsRepository, IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache, IValidatePaymentMessage validatePaymentMessage)
+        public FundingSourceEventHandlerService(IProviderPaymentsRepository providerPaymentsRepository, 
+            IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache, 
+            IValidatePaymentMessage validatePaymentMessage,
+            IPaymentLogger paymentLogger)
         {
             this.providerPaymentsRepository = providerPaymentsRepository;
             this.ilrSubmittedEventCache = ilrSubmittedEventCache;
             this.validatePaymentMessage = validatePaymentMessage;
+            this.paymentLogger = paymentLogger;
         }
 
         public async Task ProcessEvent(ProviderPeriodicPayment message, CancellationToken cancellationToken)
@@ -32,14 +38,21 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             {
                 IncomingPaymentJobId = message.JobId,
                 IncomingPaymentUkprn = message.Ukprn,
+                IncomingPaymentSubmissionDate = message.SubmissionDate,
                 CurrentIlr = currentIlr
             });
 
             if (savePayment)
             {
+                paymentLogger.LogDebug($"Received valid payment with Job Id {message.JobId} for Ukprn {message.Ukprn} ");
+
                 await providerPaymentsRepository.SavePayment(MapToPaymentEntity(message), cancellationToken);
             }
-
+            else
+            {
+                paymentLogger.LogWarning($"Received out of sequence payment with Job Id {message.JobId} for Ukprn {message.Ukprn} ");
+            }
+       
         }
 
         private PaymentDataEntity MapToPaymentEntity(ProviderPeriodicPayment message)

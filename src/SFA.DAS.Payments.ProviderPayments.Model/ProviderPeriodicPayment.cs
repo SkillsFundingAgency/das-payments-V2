@@ -2,10 +2,11 @@
 using System;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.FundingSource.Model.Enum;
+using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payments.ProviderPayments.Model
 {
-    public class ProviderPeriodicPayment
+    public class ProviderPeriodicPayment:IPaymentsMessage
     {
         public string PriceEpisodeIdentifier { get; set; }
 
@@ -32,5 +33,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Model
         public OnProgrammeEarningType OnProgrammeEarningType { get; set; }
 
         public FundingSourceType FundingSourceType { get; set; }
+
+        public DateTime SubmissionDate { get; set; }
     }
 }
