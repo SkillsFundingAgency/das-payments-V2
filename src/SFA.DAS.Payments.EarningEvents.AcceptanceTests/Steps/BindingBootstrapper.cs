@@ -6,7 +6,6 @@ using ESFA.DC.IO.Redis;
 using ESFA.DC.IO.Redis.Config;
 using ESFA.DC.IO.Redis.Config.Interfaces;
 using ESFA.DC.JobContext.Interface;
-using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Queueing;
 using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
@@ -14,11 +13,9 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
-using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
-using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Configuration;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps

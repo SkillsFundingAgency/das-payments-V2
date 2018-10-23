@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data
     public class OnProgrammePaymentDue
     {
         public string PriceEpisodeIdentifier { get; set; }
-        public  byte Period { get; set; }
+        public  byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
         public OnProgrammeEarningType Type => TransactionType.Contains("Learning") ? 
             OnProgrammeEarningType.Learning :

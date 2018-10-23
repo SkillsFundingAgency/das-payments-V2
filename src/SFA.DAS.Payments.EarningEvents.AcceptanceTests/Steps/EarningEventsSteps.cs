@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                     Act2EarningEvent.OnProgrammeEarnings
                         .Where(onProgEarning => onProgEarning.Type == expectedEarning.OnProgrammeEarningType)
                         .SelectMany(onProgEarning => onProgEarning.Periods)
-                        .Any(period => period.Period == expectedEarning.Period &&
+                        .Any(period => period.Period.Period == expectedEarning.Period &&
                                        period.Amount == expectedEarning.Amount &&
                                        period.PriceEpisodeIdentifier == expectedEarning.PriceEpisodeIdentifier)
                     , $"Failed to find expected earning. Price Episode: {expectedEarning.PriceEpisodeIdentifier}, Period: {expectedEarning.Period}, Type: {expectedEarning.OnProgrammeEarningType:G}, Amount: {expectedEarning.Amount}.");

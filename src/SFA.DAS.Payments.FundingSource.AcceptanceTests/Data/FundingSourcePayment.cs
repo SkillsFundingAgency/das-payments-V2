@@ -19,7 +19,6 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Data
 
         public string FundingSource { get; set; }
 
-        public byte Period { get; set; }
-
+        public byte DeliveryPeriod { get; set; }
     }
 }
