@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             //});
             //await MessageSession.Send(command, new SendOptions());
             var learner = CreateLearner();
-            await SendIlrSubmission(learner);
+            await SendIlrSubmission(learner).ConfigureAwait(true);
         }
 
         [Then(@"the earning events service will generate a contract type 2 earnings event for the learner")]
@@ -127,8 +127,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                     , $"Failed to find expected earning. Price Episode: {expectedEarning.PriceEpisodeIdentifier}, Period: {expectedEarning.Period}, Type: {expectedEarning.OnProgrammeEarningType:G}, Amount: {expectedEarning.Amount}.");
             }
         }
-
-
+        
         [Given(@"the earnings calculator generates the following FM36 price episodes:")]
         public void GivenTheEarningsCalculatorGeneratesTheFollowingFMPriceEpisodes(Table table)
         {
@@ -146,6 +145,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             {
                 AddLearnerEarnings(learner, earnings);
             });
+            Console.WriteLine($"Created learner: {learner.ToJson()}");
             return learner;
         }
 
@@ -158,10 +158,12 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 {
                     UKPRN = (int)TestSession.Ukprn,
                     Year = CollectionYear,
-                    Learners = new List<FM36Learner> { CreateLearner() }
+                    Learners = new List<FM36Learner> { learner }
                 };
+                var json = serializationService.Serialize(ilrSubmission);
+                Console.WriteLine($"ILR Submission: {json}");
                 await redisService
-                    .SaveAsync(messagePointer, serializationService.Serialize(ilrSubmission))
+                    .SaveAsync(messagePointer, json)
                     .ConfigureAwait(true);
 
                 var jobContextMessage = new JobContextMessage
@@ -173,12 +175,11 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 };
 
                 var serialisedMessage = serializationService.Serialize(jobContextMessage);
-
+                Console.WriteLine($"Job context message: {serialisedMessage}");
                 var topicClient = TopicClient.CreateFromConnectionString(TestConfiguration.DcServiceBusConnectionString,
                     TestConfiguration.TopicName);
                 var brokeredMessage = new BrokeredMessage(serialisedMessage);
-
-                await topicClient.SendAsync(brokeredMessage).ConfigureAwait(false);
+                await topicClient.SendAsync(brokeredMessage).ConfigureAwait(true);
             }
             catch (Exception e)
             {
