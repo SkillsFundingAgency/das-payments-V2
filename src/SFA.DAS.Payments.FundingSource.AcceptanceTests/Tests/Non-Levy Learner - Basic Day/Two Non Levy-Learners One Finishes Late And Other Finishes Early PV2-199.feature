@@ -1,8 +1,10 @@
-﻿Feature: Basic Day - 2 learners
+﻿Feature: Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199
 	Non-Levy - 1 finishes early and 1 finishes late
 
 Background:
-	Given the SFA contribution percentage is 90%
+	Given the current collection period is R02
+	And the payments are for the current collection year
+	And the SFA contribution percentage is 90%
 	And following learners are undertaking training with a training provider
 	| LearnerId | 
 	| L1		|
