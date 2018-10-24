@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 CollectionPeriod = new CalendarPeriod("1819-R01"),
                 DeliveryPeriod = new CalendarPeriod("1819R01"),
                 EventTime = DateTime.UtcNow,
-                JobId = "001",
+                JobId = 1,
                 Learner = new Learner
                 {
                     ReferenceNumber = "001",

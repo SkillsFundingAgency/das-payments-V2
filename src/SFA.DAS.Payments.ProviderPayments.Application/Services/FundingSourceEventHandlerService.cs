@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Application.Repositories;
+﻿using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
@@ -8,7 +9,6 @@ using SFA.DAS.Payments.ProviderPayments.Model;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
@@ -19,8 +19,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IValidatePaymentMessage validatePaymentMessage;
         private readonly IPaymentLogger paymentLogger;
 
-        public FundingSourceEventHandlerService(IProviderPaymentsRepository providerPaymentsRepository, 
-            IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache, 
+        public FundingSourceEventHandlerService(IProviderPaymentsRepository providerPaymentsRepository,
+            IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache,
             IValidatePaymentMessage validatePaymentMessage,
             IPaymentLogger paymentLogger)
         {
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             {
                 IncomingPaymentJobId = message.JobId,
                 IncomingPaymentUkprn = message.Ukprn,
-                IncomingPaymentSubmissionDate = message.SubmissionDate,
+                IncomingPaymentSubmissionDate = message.IlrSubmissionDateTime,
                 CurrentIlr = currentIlr
             });
 
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             {
                 paymentLogger.LogWarning($"Received out of sequence payment with Job Id {message.JobId} for Ukprn {message.Ukprn} ");
             }
-       
+
         }
 
         private PaymentDataEntity MapToPaymentEntity(ProviderPeriodicPayment message)
@@ -70,13 +70,19 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
                 CollectionPeriodYear = message.CollectionPeriod.Year,
                 DeliveryPeriodMonth = message.DeliveryPeriod.Month,
                 DeliveryPeriodYear = message.DeliveryPeriod.Year,
-                FrameworkCode = message.LearningAim.FrameworkCode,
-                StandardCode = message.LearningAim.StandardCode,
-                LearnAimReference = message.LearningAim.Reference,
+                LearningAimFrameworkCode = message.LearningAim.FrameworkCode,
+                LearningAimStandardCode = message.LearningAim.StandardCode,
+                LearningAimReference = message.LearningAim.Reference,
                 LearnerReferenceNumber = message.Learner.ReferenceNumber,
-                PathwayCode = message.LearningAim.PathwayCode,
-                ProgrammeType = message.LearningAim.ProgrammeType,
-                Ukprn = message.Ukprn
+                LearningAimPathwayCode = message.LearningAim.PathwayCode,
+                LearningAimProgrammeType = message.LearningAim.ProgrammeType,
+                Ukprn = message.Ukprn,
+                SfaContributionPercentage = message.SfaContributionPercentage,
+                JobId = message.JobId,
+                IlrSubmissionDateTime = message.IlrSubmissionDateTime,
+                LearnerUln = message.Learner.Uln,
+                LearningAimAgreedPrice = message.LearningAim.AgreedPrice,
+                LearningAimFundingLineType = message.LearningAim.FundingLineType
             };
 
             return payment;
@@ -87,7 +93,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             var currentSubmittedIlrConditionalValue = await ilrSubmittedEventCache.TryGet(ukprn, cancellationToken);
             return currentSubmittedIlrConditionalValue.HasValue ? currentSubmittedIlrConditionalValue.Value : null;
         }
-
 
     }
 }

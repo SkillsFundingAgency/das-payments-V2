@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                 AmountDue = 5000m,
                 PriceEpisodeIdentifier = "2018-P1",
                 EventTime = DateTime.UtcNow,
-                JobId = "6000"
+                JobId = 6000
             };
         }
 

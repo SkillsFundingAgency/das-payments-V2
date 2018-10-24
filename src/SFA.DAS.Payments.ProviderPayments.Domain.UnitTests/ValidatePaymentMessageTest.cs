@@ -30,8 +30,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
             var currentIlr = new IlrSubmittedEvent
             {
                 Ukprn = 1000,
-                JobId = "1000",
-                SubmissionDate = DateTime.MaxValue
+                JobId = 1000,
+                IlrSubmissionDateTime = DateTime.MaxValue
             };
 
             validatePaymentMessage = new ValidatePaymentMessage();
@@ -54,8 +54,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
             var currentIlr = new IlrSubmittedEvent
             {
                 Ukprn = 1000,
-                JobId = "1000",
-                SubmissionDate = DateTime.MaxValue
+                JobId = 1000,
+                IlrSubmissionDateTime  = DateTime.MaxValue
             };
 
             validatePaymentMessage = new ValidatePaymentMessage();

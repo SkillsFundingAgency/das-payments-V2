@@ -1,8 +1,8 @@
 ﻿using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Model.Enum;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -11,11 +11,10 @@ using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Domain;
 using SFA.DAS.Payments.ProviderPayments.Domain.Models;
+using SFA.DAS.Payments.ProviderPayments.Model;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
@@ -30,7 +29,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         private Mock<IPaymentLogger> paymentLogger;
 
         private long ukprn = 10000;
-        private string jobId = "1000";
+        private long jobId = 10000;
         private ProviderPeriodicPayment fundingSourceEvent;
 
 
@@ -76,7 +75,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             {
                 Ukprn = ukprn,
                 JobId = jobId,
-                SubmissionDate = DateTime.UtcNow
+                IlrSubmissionDateTime = DateTime.MaxValue
             };
 
             ilrSubmittedEventCache = new Mock<IDataCache<IlrSubmittedEvent>>();
@@ -124,7 +123,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(o => o.IsLatestIlrPayment(It.IsAny<PaymentMessageValidationRequest>()))
                 .Returns(false);
 
-         
+
             await fundingSourceEventHandlerService.ProcessEvent(fundingSourceEvent, default(CancellationToken));
 
             providerPaymentsRepository

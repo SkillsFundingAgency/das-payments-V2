@@ -1,10 +1,7 @@
-﻿using System;
-
-namespace SFA.DAS.Payments.Messages.Core
+﻿namespace SFA.DAS.Payments.Messages.Core
 {
     public interface IPaymentsMessage
     {
-        string JobId { get; }
-        DateTime SubmissionDate { get; }
+        long JobId { get; }
     }
 }
