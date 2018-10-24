@@ -35,7 +35,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         [Given(@"a learner is undertaking a training with a training provider")]
         public void GivenALearnerIsUndertakingATrainingWithATrainingProvider()
         {
-            // Use Auto Generated Learning Ref
+            TestSession.Learners.Clear();
+            TestSession.Learners.Add(TestSession.GenerateLearner());
         }
 
         [Given(@"the SFA contribution percentage is (.*)%")]

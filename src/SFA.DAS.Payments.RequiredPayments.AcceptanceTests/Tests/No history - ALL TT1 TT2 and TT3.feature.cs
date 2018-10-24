@@ -76,8 +76,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 #line 6
  testRunner.Given("the current processing period is 10", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 7
- testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("a learner is undertaking a training with a training provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 8
+ testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 9
  testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -140,7 +142,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "10",
                         "Balancing (TT3)",
                         "3000"});
-#line 9
+#line 10
  testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
 #line hidden
         }
@@ -166,12 +168,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "Balancing",
                         "(TT3)",
                         "NoHistory"});
-#line 29
+#line 30
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
 this.FeatureBackground();
-#line 30
+#line 31
  testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -234,7 +236,7 @@ this.FeatureBackground();
                         "10",
                         "Balancing (TT3)",
                         "3000"});
-#line 31
+#line 32
  testRunner.Then("the required payments component will only generate contract type 2 required payme" +
                     "nts", ((string)(null)), table2, "Then ");
 #line hidden

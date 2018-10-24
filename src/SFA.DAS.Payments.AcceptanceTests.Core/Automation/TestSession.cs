@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
             Ukprn = GenerateId("ukprn");
-            Learners = new List<Learner> { GenerateLearner() };
+            Learners = new List<Learner>();// { GenerateLearner() };
             JobId = Guid.NewGuid().ToString("N");
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
         }
@@ -49,13 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public string GenerateLearnerReference(string learnerId)
         {
-        return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
-        }
-        {
-            if (string.IsNullOrEmpty(learnerId))
-                return Learner.LearnRefNumber;
-
-            return LearnRefNumberGenerator.Generate(Ukprn, learnerId);
+            return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
         public Learner GenerateLearner()

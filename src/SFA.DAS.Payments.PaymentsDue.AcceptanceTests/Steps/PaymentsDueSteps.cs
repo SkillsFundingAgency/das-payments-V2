@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
             WaitForIt(() => MatchPaymentDue(expectedPaymentsEvents), "Failed to find all the payment due events");
         }
 
-        private bool MatchPaymentDue(List<OnProgrammePaymentDue> expectedPaymentsEvents)
+        private bool MatchPaymentDue(IReadOnlyCollection<OnProgrammePaymentDue> expectedPaymentsEvents)
         {
             var matchedReceivedEvents = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Where(receivedEvent =>
             {

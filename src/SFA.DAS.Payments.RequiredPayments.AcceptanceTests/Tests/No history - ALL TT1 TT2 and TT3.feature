@@ -4,6 +4,7 @@ Provider earnings and payments where learner completes earlier than planned (3 m
 Background:
 
 	Given the current processing period is 10
+	And a learner is undertaking a training with a training provider
 	And the payments are for the current collection year
 	And the SFA contribution percentage is 90%
 	And the payments due component generates the following contract type 2 payments due:	

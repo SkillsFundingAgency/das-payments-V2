@@ -75,8 +75,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 #line 5
  testRunner.Given("the current processing period is 6", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 6
- testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("a learner is undertaking a training with a training provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 7
+ testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 8
  testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -114,7 +116,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "6",
                         "Learning (TT1)",
                         "600"});
-#line 8
+#line 9
  testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -132,7 +134,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "2",
                         "Learning (TT1)",
                         "600"});
-#line 17
+#line 18
  testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table2, "And ");
 #line hidden
         }
@@ -150,12 +152,12 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "Learning",
                         "(TT1)",
                         "Historical_Payments"});
-#line 26
+#line 27
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
 this.FeatureBackground();
-#line 27
+#line 28
  testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -183,7 +185,7 @@ this.FeatureBackground();
                         "6",
                         "Learning (TT1)",
                         "600"});
-#line 28
+#line 29
  testRunner.Then("the required payments component will only generate contract type 2 required payme" +
                     "nts", ((string)(null)), table3, "Then ");
 #line hidden

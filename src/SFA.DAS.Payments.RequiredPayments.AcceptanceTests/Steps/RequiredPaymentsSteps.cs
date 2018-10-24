@@ -19,8 +19,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class RequiredPaymentsSteps : RequiredPaymentsStepsBase
     {
-        private static bool trace = true;
-
         public RequiredPaymentsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
@@ -99,7 +97,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                 ));
 #if DEBUG
-            if (!result && trace)
+            if (!result)
             {
                 Debug.WriteLine("Found unexpected events. Trace:");
                 TraceMismatch(PaymentsDue.ToArray(), ApprenticeshipContractType2Handler.ReceivedEvents.ToArray());
@@ -140,7 +138,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             var nothingExtra = sessionEvents.Length == matchedExpectations.Count;
 
 #if DEBUG
-            if ((!allFound || !nothingExtra) && trace)
+            if ((!allFound || !nothingExtra))
             {
                 if (!allFound)
                 {
