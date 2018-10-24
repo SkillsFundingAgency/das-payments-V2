@@ -49,6 +49,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public string GenerateLearnerReference(string learnerId)
         {
+        return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
+        }
+        {
             if (string.IsNullOrEmpty(learnerId))
                 return Learner.LearnRefNumber;
 
