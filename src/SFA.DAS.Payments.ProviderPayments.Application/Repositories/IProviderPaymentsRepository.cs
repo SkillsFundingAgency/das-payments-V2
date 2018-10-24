@@ -8,6 +8,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
     public interface IProviderPaymentsRepository
     {
         Task SavePayment(PaymentDataEntity paymentData, CancellationToken cancellationToken = default(CancellationToken));
-        Task<List<PaymentDataEntity>> GetMonthEndPaymentsAsync(short collectionYear, byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<PaymentDataEntity>> GetMonthEndPayments(short collectionYear, byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

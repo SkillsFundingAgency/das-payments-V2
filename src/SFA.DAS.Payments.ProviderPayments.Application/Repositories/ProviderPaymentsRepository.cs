@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             this.paymentsDataContext = paymentsDataContext;
         }
 
-        public async Task<List<PaymentDataEntity>> GetMonthEndPaymentsAsync(short collectionYear,byte collectionPeriodMonth, long ukprn,
+        public async Task<List<PaymentDataEntity>> GetMonthEndPayments(short collectionYear,byte collectionPeriodMonth, long ukprn,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var payments = await paymentsDataContext

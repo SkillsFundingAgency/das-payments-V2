@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
 
             var executionContext = (ESFA.DC.Logging.ExecutionContext) lifetimeScope.Resolve<IExecutionContext>();
-            executionContext.JobId = message.JobId;
+            executionContext.JobId = message.JobId.ToString();
 
             try
             {

@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
         private readonly IValidatePaymentMessage validatePaymentMessage;
         private readonly IPaymentLogger paymentLogger;
-        private IFundingSourceEventHandlerService fundingSourceEventHandlerService;
+        private  IProviderPaymentsHandlerService paymentsHandlerService;
         private readonly long ukprn;
 
         public ProviderPaymentsService(ActorService actorService, ActorId actorId,
@@ -36,23 +36,25 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
             ukprn = actorId.GetLongId();
         }
 
-        public async Task HandleEvent(ProviderPeriodicPayment message, CancellationToken cancellationToken)
+        public async Task ProcessPayment(ProviderPeriodicPayment message, CancellationToken cancellationToken)
         {
-            await fundingSourceEventHandlerService.ProcessEvent(message, cancellationToken);
+            await paymentsHandlerService.ProcessPayment(message, cancellationToken);
         }
 
-        public async Task HandleMonthEvent(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task HandleMonthEnd(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var payments = await fundingSourceEventHandlerService.(collectionYear,
-                                                                        collectionPeriod,
-                                                                        ukprn,
-                                                                        cancellationToken);
+            var providerPayments = await paymentsHandlerService.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
+
+
+            //TODO Publish Events
+
+
         }
 
         protected override async Task OnActivateAsync()
         {
             var reliableCollectionCache = new ReliableCollectionCache<IlrSubmittedEvent>(StateManager);
-            fundingSourceEventHandlerService = new FundingSourceEventHandlerService(providerPaymentsRepository, reliableCollectionCache, validatePaymentMessage, paymentLogger);
+            paymentsHandlerService = new ProviderPaymentsHandlerService(providerPaymentsRepository, reliableCollectionCache, validatePaymentMessage, paymentLogger);
 
             await base.OnActivateAsync().ConfigureAwait(false);
         }

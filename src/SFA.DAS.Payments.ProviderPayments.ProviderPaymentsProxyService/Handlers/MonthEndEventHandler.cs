@@ -21,13 +21,13 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
         private readonly IExecutionContext executionContext;
         private readonly IActorProxyFactory proxyFactory;
         private readonly IMapper mapper;
-        private readonly IMonthEndEventHandlerService monthEndEventHandlerService;
+        private readonly Application.Services.IMonthEndEventHandlerService monthEndEventHandlerService;
 
         public MonthEndEventHandler(IPaymentLogger paymentLogger,
             IExecutionContext executionContext,
             IActorProxyFactory proxyFactory,
             IMapper mapper,
-            IMonthEndEventHandlerService  monthEndEventHandlerService)
+            Application.Services.IMonthEndEventHandlerService  monthEndEventHandlerService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             try
             {
                 var actorId = new ActorId(message.Ukprn.ToString());
-                var actor = proxyFactory.CreateActorProxy<IProviderPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.ProviderPayments.ServiceFabric/ProviderPaymentsServiceActorService"), actorId);
+                var actor = proxyFactory.CreateActorProxy<ProviderPaymentsService.Interfaces.IProviderPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.ProviderPayments.ServiceFabric/ProviderPaymentsServiceActorService"), actorId);
 
                 var paymentModel = mapper.Map<ProviderPeriodicPayment>(message);
 
