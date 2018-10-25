@@ -66,7 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Earning.cs" />
+    <Compile Include="Data\OnProgrammeEarning.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\Training.cs" />
@@ -103,6 +103,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
       <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>
       <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
+      <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
+      <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.Messages\SFA.DAS.Payments.PaymentsDue.Messages.csproj">
       <Project>{58746D22-1336-4EA0-8651-B107471E4035}</Project>

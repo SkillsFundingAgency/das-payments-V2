@@ -36,8 +36,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"the following learner earnings should be generated")]
         public void ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
-            var expectedEarnings = table.CreateSet<Earning>().ToList();
-            WaitForIt(() => EarningEventMatcher.MatchEarnings(expectedEarnings, TestSession.Ukprn), "Earning event check failure");
+            var expectedEarnings = table.CreateSet<OnProgrammeEarning>().ToList();
+            WaitForIt(() => EarningEventMatcher.MatchEarnings(expectedEarnings, TestSession.Ukprn), "OnProgrammeEarning event check failure");
         }
 
         [Then(@"the following payments will be calculated")]
