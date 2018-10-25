@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             var expectedPayment = new SfaCoInvestedFundingSourcePaymentEvent
             {
                 AmountDue = 900.00m,
-                ContractType = 2,
+                ContractType = ContractType.ContractWithSfa,
                 SfaContributionPercentage = requiredPaymentEvent.SfaContributionPercentage,
                 CollectionPeriod = requiredPaymentEvent.CollectionPeriod,
                 DeliveryPeriod = requiredPaymentEvent.DeliveryPeriod,
@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             var expectedPayment = new EmployerCoInvestedFundingSourcePaymentEvent
             {
                 AmountDue = 100.00m,
-                ContractType = 2,
+                ContractType = ContractType.ContractWithSfa,
                 SfaContributionPercentage = requiredPaymentEvent.SfaContributionPercentage,
                 CollectionPeriod = requiredPaymentEvent.CollectionPeriod,
                 DeliveryPeriod = requiredPaymentEvent.DeliveryPeriod,

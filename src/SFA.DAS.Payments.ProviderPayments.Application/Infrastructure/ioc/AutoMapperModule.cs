@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using AutoMapper;
-using SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+using Module = Autofac.Module;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
 {
@@ -8,24 +9,28 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(ctx =>
-                {
-                    var config = AutoMapperConfigurationFactory.CreateMappingConfig();
-                    return config;
-                })
-                .SingleInstance() // We only need one instance
-                .AutoActivate() // Create it on ContainerBuilder.Build()
-                .AsSelf(); // Bind it to its own type
+            //TODO: Refactor to make it it more reusable
+            var assembly = GetType().Assembly; //TODO: Use all referenced assemblies that have profile classes
+            builder.RegisterAssemblyTypes(assembly)
+                .Where(type => type.IsClass && type.IsPublic && !type.IsAbstract && type.IsAssignableTo<Profile>())
+                .As<Profile>()
+                .SingleInstance();
 
-            builder.Register(tempContext =>
-                {
-                    var ctx = tempContext.Resolve<IComponentContext>();
-                    var config = ctx.Resolve<MapperConfiguration>();
+            builder.RegisterAssemblyTypes(assembly)
+                .AsClosedTypesOf(typeof(IValueResolver<,,>))
+                .AsSelf()
+                .SingleInstance();
 
-                    // Create our mapper using our configuration above
-                    return config.CreateMapper();
-                })
-                .As<IMapper>(); // Bind it to the IMapper interface
+            builder.Register(c => new MapperConfiguration(
+                    cfg =>
+                    {
+                        cfg.AddProfiles(GetType().Assembly);
+                    }))
+                .AsSelf()
+                .SingleInstance();
+
+            builder.Register(c => new Mapper(c.Resolve<MapperConfiguration>(), ContainerFactory.Container.Resolve))
+                .As<IMapper>();
         }
     }
 }

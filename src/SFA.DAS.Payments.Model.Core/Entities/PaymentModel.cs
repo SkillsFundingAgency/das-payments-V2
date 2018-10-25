@@ -18,14 +18,13 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public int LearningAimStandardCode { get; set; }
         public int LearningAimFrameworkCode { get; set; }
         public int LearningAimPathwayCode { get; set; }
-        public decimal LearningAimAgreedPrice { get; set; }
         public string LearningAimFundingLineType { get; set; }
         public ContractType ContractType { get; set; }
         public TransactionType TransactionType { get; set; }
         public FundingSourceType FundingSource { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
         public decimal SfaContributionPercentage { get; set; }
-        public virtual EarningsModel Earnings { get; set; }
+        //public virtual EarningsModel Earnings { get; set; }
         public long JobId { get; set; }
     }
 }

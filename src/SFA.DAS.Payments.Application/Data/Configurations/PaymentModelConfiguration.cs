@@ -4,7 +4,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
-    public class PaymentConfiguration : IEntityTypeConfiguration<PaymentModel>
+    public class PaymentModelConfiguration : IEntityTypeConfiguration<PaymentModel>
     {
         public void Configure(EntityTypeBuilder<PaymentModel> builder)
         {
@@ -28,20 +28,19 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.LearningAimStandardCode).HasColumnName(@"LearningAimStandardCode").IsRequired();
             builder.Property(x => x.LearningAimFrameworkCode).HasColumnName(@"LearningAimFrameworkCode").IsRequired();
             builder.Property(x => x.LearningAimPathwayCode).HasColumnName(@"LearningAimPathwayCode").IsRequired();
-            builder.Property(x => x.LearningAimAgreedPrice).HasColumnName(@"LearningAimAgreedPrice").IsRequired();
             builder.Property(x => x.LearningAimFundingLineType).HasColumnName(@"LearningAimFundingLineType").IsRequired();
             builder.Property(x => x.ContractType).HasColumnName(@"ContractType").IsRequired();
             builder.Property(x => x.TransactionType).HasColumnName(@"TransactionType").IsRequired();
             builder.Property(x => x.FundingSource).HasColumnName(@"FundingSource").IsRequired();
             builder.Property(x => x.IlrSubmissionDateTime).HasColumnName(@"IlrSubmissionDateTime").IsRequired();
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage").IsRequired();
-            builder.Property(x => x.Earnings.StartDate).HasColumnName(@"EarningsStartDate").IsRequired();
-            builder.Property(x => x.Earnings.PlannedEndDate).HasColumnName(@"EarningsPlannedEndDate").IsRequired();
-            builder.Property(x => x.Earnings.ActualEndDate).HasColumnName(@"EarningsActualEndDate");
-            builder.Property(x => x.Earnings.CompletionStatus).HasColumnName(@"EarningsCompletionStatus").IsRequired();
-            builder.Property(x => x.Earnings.CompletionAmount).HasColumnName(@"EarningsCompletionAmount").IsRequired();
-            builder.Property(x => x.Earnings.InstalmentAmount).HasColumnName(@"EarningsInstalmentAmount").IsRequired();
-            builder.Property(x => x.Earnings.NumberOfInstalments).HasColumnName(@"EarningsNumberOfInstalments").IsRequired();
+            //builder.Property(x => x.Earnings.StartDate).HasColumnName(@"EarningsStartDate").IsRequired();
+            //builder.Property(x => x.Earnings.PlannedEndDate).HasColumnName(@"EarningsPlannedEndDate").IsRequired();
+            //builder.Property(x => x.Earnings.ActualEndDate).HasColumnName(@"EarningsActualEndDate");
+            //builder.Property(x => x.Earnings.CompletionStatus).HasColumnName(@"EarningsCompletionStatus").IsRequired();
+            //builder.Property(x => x.Earnings.CompletionAmount).HasColumnName(@"EarningsCompletionAmount").IsRequired();
+            //builder.Property(x => x.Earnings.InstalmentAmount).HasColumnName(@"EarningsInstalmentAmount").IsRequired();
+            //builder.Property(x => x.Earnings.NumberOfInstalments).HasColumnName(@"EarningsNumberOfInstalments").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();
         }
     }

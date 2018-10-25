@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
 {
@@ -24,7 +25,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
         {
             fundingSourcePaymentEvent = new SfaCoInvestedFundingSourcePaymentEvent
             {
-                ContractType = 2,
+                ContractType = ContractType.ContractWithSfa,
                 FundingSourceType = FundingSourceType.CoInvestedSfa,
                 OnProgrammeEarningType = OnProgrammeEarningType.Learning,
                 CollectionPeriod = new CalendarPeriod(2018, 10),

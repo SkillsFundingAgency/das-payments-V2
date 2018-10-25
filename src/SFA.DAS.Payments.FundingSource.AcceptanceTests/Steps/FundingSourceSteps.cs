@@ -7,6 +7,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -62,7 +63,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         }
 
         [Then(@"the payment source component will generate the following contract type (.*) coinvested payments:")]
-        public void ThenThePaymentSourceComponentWillGenerateTheFollowingContractTypeCoinvestedPayments(byte expectedContractType, Table expectedFundingSourcePaymentTable)
+        public void ThenThePaymentSourceComponentWillGenerateTheFollowingContractTypeCoinvestedPayments(ContractType expectedContractType, Table expectedFundingSourcePaymentTable)
         {
             var expectedFundingSourcePaymentEvents = expectedFundingSourcePaymentTable.CreateSet<FundingSourcePayment>();
             WaitForIt(() =>

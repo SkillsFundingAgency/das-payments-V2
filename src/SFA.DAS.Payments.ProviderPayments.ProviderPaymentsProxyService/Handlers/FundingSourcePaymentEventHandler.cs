@@ -9,6 +9,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handlers
@@ -43,7 +44,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
                 var actorId = new ActorId(message.Ukprn.ToString());
                 var actor = proxyFactory.CreateActorProxy<IProviderPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.ProviderPayments.ServiceFabric/ProviderPaymentsServiceActorService"), actorId);
 
-                var paymentModel = mapper.Map<ProviderPeriodicPayment>(message);
+                var paymentModel = mapper.Map<PaymentModel>(message);
 
                 await actor.ProcessPayment(paymentModel, new CancellationToken());
                 paymentLogger.LogInfo($"Successfully processed Funding Source Payment Event for Job Id {message.JobId} and Message Type {message.GetType().Name}");

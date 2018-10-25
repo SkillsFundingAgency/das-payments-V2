@@ -13,14 +13,18 @@ using SFA.DAS.Payments.ProviderPayments.Domain.Models;
 using SFA.DAS.Payments.ProviderPayments.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Extras.Moq;
+using AutoMapper;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
     [TestFixture]
     public class ProviderPaymentsHandlerServiceTest
     {
+        private AutoMock mocker;
         private ProviderPaymentsHandlerService providerPaymentsHandlerService;
 
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
@@ -33,10 +37,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
         private ProviderPeriodicPayment fundingSourceEvent;
         private List<PaymentModel> payments;
+        
 
         [SetUp]
         public void SetUp()
         {
+            mocker = AutoMock.GetLoose();
             fundingSourceEvent = new ProviderPeriodicPayment
             {
                 ContractType = 2,
@@ -72,33 +78,41 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 new PaymentModel()
                 {
                     Ukprn = 1000,
-                    FundingSource = (int)FundingSourceType.CoInvestedEmployer,
+                    FundingSource = FundingSourceType.CoInvestedEmployer,
                     SfaContributionPercentage = 0.9m,
                     JobId = 1,
-                    DeliveryPeriodYear = 2018,
-                    IlrSubmissionDateTime = DateTime.MinValue,
-                    DeliveryPeriodMonth = 2,
-                    ContractType = 2,
-                    CollectionPeriodYear = 2018,
+                    DeliveryPeriod = new CalendarPeriod
+                    {
+                        Year = 2018, 
+                        Month = 2,
+                        Period = 7, 
+                        Name = "1819-R07"
+                    },
+                    CollectionPeriod = new CalendarPeriod
+                    {
+                        Year = 2018,
+                        Month = 3,
+                        Period = 8,
+                        Name = "1819-R08"
+                    },
+                    IlrSubmissionDateTime = DateTime.UtcNow,
+                    ContractType = ContractType.ContractWithSfa,
                     PriceEpisodeIdentifier = "P-1",
                     LearnerReferenceNumber = "100500",
-                    CollectionPeriodMonth = 10,
                     ExternalId = Guid.NewGuid(),
                     LearningAimFundingLineType = "16-18",
                     LearningAimPathwayCode = 1,
                     LearningAimReference = "1",
                     LearningAimFrameworkCode = 1,
-                    LearningAimAgreedPrice = 200.05m,
-                    TransactionType = 1,
+                    TransactionType = TransactionType.Learning,
                     LearnerUln = 1000,
                     LearningAimProgrammeType = 1,
-                    CollectionPeriodName = "1819-R03",
                     LearningAimStandardCode = 1,
                     Amount = 2000.00m
                 }
             };
 
-            providerPaymentsRepository = new Mock<IProviderPaymentsRepository>();
+            providerPaymentsRepository = mocker.Mock<IProviderPaymentsRepository>();
             providerPaymentsRepository
                 .Setup(t => t.SavePayment(It.IsAny<PaymentModel>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask)
@@ -117,32 +131,24 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 IlrSubmissionDateTime = DateTime.MaxValue
             };
 
-            ilrSubmittedEventCache = new Mock<IDataCache<IlrSubmittedEvent>>();
+            ilrSubmittedEventCache = mocker.Mock<IDataCache<IlrSubmittedEvent>>();
             ilrSubmittedEventCache
                 .Setup(o => o.TryGet(ukprn.ToString(), default(CancellationToken)))
                 .Returns(Task.FromResult(new ConditionalValue<IlrSubmittedEvent>(true, ilrSubmittedEvent)));
 
-            validatePaymentMessage = new Mock<IValidatePaymentMessage>();
+            validatePaymentMessage = mocker.Mock<IValidatePaymentMessage>();
             validatePaymentMessage
                 .Setup(o => o.IsLatestIlrPayment(It.IsAny<PaymentMessageValidationRequest>()))
                 .Returns(true);
 
-            paymentLogger = new Mock<IPaymentLogger>();
-            paymentLogger
-                .Setup(o => o.LogDebug(It.IsAny<string>(), It.IsAny<object[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
-                .Verifiable();
-
-            paymentLogger
-                .Setup(o => o.LogWarning(It.IsAny<string>(), It.IsAny<object[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
-                .Verifiable();
-            
-            providerPaymentsHandlerService = new ProviderPaymentsHandlerService(providerPaymentsRepository.Object, ilrSubmittedEventCache.Object, validatePaymentMessage.Object, paymentLogger.Object);
+     
+            providerPaymentsHandlerService = mocker.Create<ProviderPaymentsHandlerService>();
         }
 
         [Test]
         public async Task ProcessEventShouldCallRequiredServices()
         {
-            await providerPaymentsHandlerService.ProcessPayment(fundingSourceEvent, default(CancellationToken));
+            await providerPaymentsHandlerService.ProcessPayment(payments.First(), default(CancellationToken));
 
             providerPaymentsRepository
                 .Verify(o => o.SavePayment(It.IsAny<PaymentModel>(), default(CancellationToken)), Times.Once);
@@ -163,27 +169,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(false);
 
 
-            await providerPaymentsHandlerService.ProcessPayment(fundingSourceEvent, default(CancellationToken));
+            await providerPaymentsHandlerService.ProcessPayment(payments.First(), default(CancellationToken));
 
             providerPaymentsRepository
                 .Verify(o => o.SavePayment(It.IsAny<PaymentModel>(), default(CancellationToken)), Times.Never);
 
         }
 
-        [Test]
-        public async Task ProcessEventShouldWriteToLogIfPaymentEventIsInvalid()
-        {
-
-            validatePaymentMessage
-                .Setup(o => o.IsLatestIlrPayment(It.IsAny<PaymentMessageValidationRequest>()))
-                .Returns(false);
-
-            await providerPaymentsHandlerService.ProcessPayment(fundingSourceEvent, default(CancellationToken));
-
-            paymentLogger
-                .Verify(o => o.LogWarning(It.IsAny<string>(), It.IsAny<object[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
-
-        }
 
 
         [Test]

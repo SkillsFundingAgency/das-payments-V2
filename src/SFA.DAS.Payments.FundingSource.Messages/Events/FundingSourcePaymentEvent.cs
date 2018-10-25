@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
 
         public CalendarPeriod DeliveryPeriod { get; set; }
         
-        public byte ContractType { get; set; }
+        public ContractType ContractType { get; set; }
 
         public decimal SfaContributionPercentage { get; set; }
 
