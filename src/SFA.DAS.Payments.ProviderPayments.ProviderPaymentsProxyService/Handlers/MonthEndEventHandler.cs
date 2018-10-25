@@ -1,17 +1,13 @@
-﻿using ESFA.DC.Logging.Interfaces;
-using Microsoft.ServiceFabric.Actors;
+﻿using AutoMapper;
+using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
-using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
-using SFA.DAS.Payments.ProviderPayments.Model;
+using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handlers
 {
@@ -21,18 +17,16 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
         private readonly IExecutionContext executionContext;
         private readonly IActorProxyFactory proxyFactory;
         private readonly IMapper mapper;
-        private readonly Application.Services.IMonthEndEventHandlerService monthEndEventHandlerService;
+        private readonly IMonthEndEventHandlerService monthEndEventHandlerService;
 
         public MonthEndEventHandler(IPaymentLogger paymentLogger,
             IExecutionContext executionContext,
             IActorProxyFactory proxyFactory,
-            IMapper mapper,
-            Application.Services.IMonthEndEventHandlerService  monthEndEventHandlerService)
+            IMonthEndEventHandlerService monthEndEventHandlerService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
             this.proxyFactory = proxyFactory;
-            this.mapper = mapper;
             this.monthEndEventHandlerService = monthEndEventHandlerService;
         }
 
@@ -45,23 +39,32 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
 
             try
             {
-                var actorId = new ActorId(message.Ukprn.ToString());
-                var actor = proxyFactory.CreateActorProxy<ProviderPaymentsService.Interfaces.IProviderPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.ProviderPayments.ServiceFabric/ProviderPaymentsServiceActorService"), actorId);
+                var monthEndUkprns = await monthEndEventHandlerService.GetMonthEndUkprns(message.CollectionPeriod.Year, message.CollectionPeriod.Month);
 
-                var paymentModel = mapper.Map<ProviderPeriodicPayment>(message);
+                if (monthEndUkprns == null)
+                {
+                    paymentLogger.LogWarning("No Provider Ukprn found for month end payment");
+                    return;
+                }
 
-                await actor.ha(paymentModel, new CancellationToken());
-
+                foreach (var ukprn in monthEndUkprns)
+                {
+                    await context.SendLocal(new ProcessProviderMonthEndCommand
+                    {
+                        Ukprn = ukprn,
+                        JobId = message.JobId,
+                        CollectionPeriod = message.CollectionPeriod.Clone()
+                    });
+                }
 
                 paymentLogger.LogInfo($"Successfully processed Month End Event for Job Id {message.JobId} and Message Type {message.GetType().Name}");
+
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError($"Error while handling Provider Payments ProxyService Month End Event ", ex);
+                paymentLogger.LogError($"Error while handling Provider Payments Month End  ProxyService Event ", ex);
                 throw;
             }
-
-            await Task.CompletedTask;
         }
     }
 }

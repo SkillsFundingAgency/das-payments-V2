@@ -3,15 +3,15 @@ using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
+using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.PaymentsDue.Messages.Events;
-using SFA.DAS.Payments.RequiredPayments.Domain;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
         {
             paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
 
-            var executionContext = (ESFA.DC.Logging.ExecutionContext) lifetimeScope.Resolve<IExecutionContext>();
+            var executionContext = (ESFA.DC.Logging.ExecutionContext)lifetimeScope.Resolve<IExecutionContext>();
             executionContext.JobId = message.JobId.ToString();
 
             try
@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     message.Learner.ReferenceNumber,
                     message.LearningAim.FrameworkCode,
                     message.LearningAim.PathwayCode,
-                    (ProgrammeType) message.LearningAim.ProgrammeType,
+                    (ProgrammeType)message.LearningAim.ProgrammeType,
                     message.LearningAim.StandardCode,
                     message.LearningAim.Reference
                 );

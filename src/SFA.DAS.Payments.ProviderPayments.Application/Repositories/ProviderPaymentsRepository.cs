@@ -17,17 +17,23 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             this.paymentsDataContext = paymentsDataContext;
         }
 
-        public async Task<List<PaymentDataEntity>> GetMonthEndPayments(short collectionYear,byte collectionPeriodMonth, long ukprn,
-            CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentDataEntity>> GetMonthEndPayments(short collectionYear,byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
             var payments = await paymentsDataContext
-                .Payment
-                .Where(p => p.Ukprn == ukprn &&
+                .Payment.Where(p => p.Ukprn == ukprn &&
                             p.CollectionPeriodYear == collectionYear &&
                             p.CollectionPeriodMonth == collectionPeriodMonth)
                 .ToListAsync(cancellationToken);
             return payments;
 
+        }
+
+        public async  Task<List<long>> GetMonthEndUkprns(short collectionYear, byte collectionPeriodMonth,CancellationToken cancellationToken = default(CancellationToken))
+        {
+         return  await paymentsDataContext
+                .Payment.Where(p => p.CollectionPeriodYear == collectionYear &&  p.CollectionPeriodMonth == collectionPeriodMonth)
+                .Select(o => o.Ukprn)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task SavePayment(PaymentDataEntity paymentData, CancellationToken cancellationToken)

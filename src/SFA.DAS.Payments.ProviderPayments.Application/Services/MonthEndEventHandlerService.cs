@@ -1,4 +1,7 @@
 ﻿using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
@@ -11,7 +14,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.providerPaymentsRepository = providerPaymentsRepository;
         }
 
-
-
+        public Task<List<long>> GetMonthEndUkprns(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return providerPaymentsRepository.GetMonthEndUkprns(collectionYear, collectionPeriod, cancellationToken);
+        }
     }
 }

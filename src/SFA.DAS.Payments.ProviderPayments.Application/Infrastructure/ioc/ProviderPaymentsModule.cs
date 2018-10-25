@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
         {
             builder.RegisterType<ValidatePaymentMessage>().AsImplementedInterfaces();
             builder.RegisterType<ProviderPaymentsRepository>().AsImplementedInterfaces();
-            builder.RegisterType<FundingSourceEventHandlerService>().AsImplementedInterfaces();
+            builder.RegisterType<MonthEndEventHandlerService>().AsImplementedInterfaces();
         }
 
     }

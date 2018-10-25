@@ -44,11 +44,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         public async Task HandleMonthEnd(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             var providerPayments = await paymentsHandlerService.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
-
-
             //TODO Publish Events
-
-
         }
 
         protected override async Task OnActivateAsync()
