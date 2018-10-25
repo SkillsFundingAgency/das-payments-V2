@@ -7,6 +7,8 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
 {
@@ -16,12 +18,11 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
     {
         private IEndpointInstance sender;
         private SfaCoInvestedFundingSourcePaymentEvent fundingSourcePaymentEvent;
+        private MonthEndEvent monthEndEvent;
 
         [SetUp]
-        public async Task SetUpAsync()
+        public void SetUpAsync()
         {
-            sender = await CreateMessageSender();
-
             fundingSourcePaymentEvent = new SfaCoInvestedFundingSourcePaymentEvent
             {
                 ContractType = 2,
@@ -50,14 +51,29 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                 AmountDue = 5000m,
                 PriceEpisodeIdentifier = "2018-P1",
                 EventTime = DateTime.UtcNow,
-                JobId = 6000
+                JobId = 6000,
+                IlrSubmissionDateTime = DateTime.UtcNow
+            };
+
+            monthEndEvent = new MonthEndEvent
+            {
+                JobId = 1,
+                CollectionPeriod = new CalendarPeriod(2018,1)
             };
         }
 
         [Test]
-        public async Task ShouldSendPayment()
+        public async Task ShouldReceiveFundingSourcePaymentEvent()
         {
+            sender = await CreateMessageSender();
             await sender.Send(fundingSourcePaymentEvent).ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task ShouldReceiveMonthEndEvent()
+        {
+            ///sender = await CreateMessageSender<MonthEndEvent>();
+            await sender.Send(monthEndEvent).ConfigureAwait(false);
         }
 
         private async Task<IEndpointInstance> CreateMessageSender()

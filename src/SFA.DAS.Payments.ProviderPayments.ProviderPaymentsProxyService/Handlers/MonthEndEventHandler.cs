@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using ESFA.DC.Logging.Interfaces;
-using Microsoft.ServiceFabric.Actors.Client;
+﻿using ESFA.DC.Logging.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -15,18 +13,14 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly IExecutionContext executionContext;
-        private readonly IActorProxyFactory proxyFactory;
-        private readonly IMapper mapper;
         private readonly IMonthEndEventHandlerService monthEndEventHandlerService;
 
         public MonthEndEventHandler(IPaymentLogger paymentLogger,
             IExecutionContext executionContext,
-            IActorProxyFactory proxyFactory,
             IMonthEndEventHandlerService monthEndEventHandlerService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
-            this.proxyFactory = proxyFactory;
             this.monthEndEventHandlerService = monthEndEventHandlerService;
         }
 

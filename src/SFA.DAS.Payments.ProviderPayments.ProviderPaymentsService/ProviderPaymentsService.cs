@@ -1,4 +1,5 @@
-﻿using Microsoft.ServiceFabric.Actors;
+﻿using System;
+using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -17,11 +18,12 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
     [StatePersistence(StatePersistence.Volatile)]
     public class ProviderPaymentsService : Actor, IProviderPaymentsService
     {
+        private readonly ActorId actorId;
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
         private readonly IValidatePaymentMessage validatePaymentMessage;
         private readonly IPaymentLogger paymentLogger;
         private  IProviderPaymentsHandlerService paymentsHandlerService;
-        private readonly long ukprn;
+        private long ukprn;
 
         public ProviderPaymentsService(ActorService actorService, ActorId actorId,
             IProviderPaymentsRepository providerPaymentsRepository,
@@ -29,11 +31,10 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
             IPaymentLogger paymentLogger)
             : base(actorService, actorId)
         {
+            this.actorId = actorId;
             this.providerPaymentsRepository = providerPaymentsRepository;
             this.validatePaymentMessage = validatePaymentMessage;
             this.paymentLogger = paymentLogger;
-
-            ukprn = actorId.GetLongId();
         }
 
         public async Task ProcessPayment(ProviderPeriodicPayment message, CancellationToken cancellationToken)
@@ -49,6 +50,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
 
         protected override async Task OnActivateAsync()
         {
+            if (!long.TryParse(actorId.GetStringId(), out ukprn)) throw new Exception($"Unable to cast Actor Id to Ukprn");
+
             var reliableCollectionCache = new ReliableCollectionCache<IlrSubmittedEvent>(StateManager);
             paymentsHandlerService = new ProviderPaymentsHandlerService(providerPaymentsRepository, reliableCollectionCache, validatePaymentMessage, paymentLogger);
 

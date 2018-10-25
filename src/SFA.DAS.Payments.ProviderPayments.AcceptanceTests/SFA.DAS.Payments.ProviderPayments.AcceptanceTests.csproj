@@ -244,6 +244,10 @@
       <Project>{0f0beb68-7f9f-4d39-b85a-3fe7701bb6cc}</Project>
       <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
+      <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>
+      <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj">
       <Project>{43861469-71a2-4128-b35a-fb680f1e8bca}</Project>
       <Name>SFA.DAS.Payments.FundingSource.Messages</Name>

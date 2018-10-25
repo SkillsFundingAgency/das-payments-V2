@@ -6,5 +6,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
     {
         public static string AcceptanceTestEndpointName => ConfigurationManager.AppSettings["EndpointName"];
         public static string ProviderPaymentEndPointName => ConfigurationManager.AppSettings["ProviderPaymentsServiceEndpointName"];
+
     }
 }
