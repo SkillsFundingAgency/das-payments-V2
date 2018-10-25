@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
     public class TestSession
     {
+        public LearnRefNumberGenerator LearnRefNumberGenerator { get; }
         public string SessionId { get; }
         public long Ukprn { get; }
         public List<Learner> Learners { get; }
@@ -34,8 +35,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
             Ukprn = GenerateId("ukprn");
-            Learners = new List<Learner> { GenerateLearner() };
+            Learners = new List<Learner>();// { GenerateLearner() };
             JobId = Guid.NewGuid().ToString("N");
+            LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
         }
 
         public long GenerateId(string idKey, int maxValue = 1000000)
@@ -43,6 +45,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var id = random.Next(maxValue);
             //TODO: make sure that the id isn't already in use.
             return id;
+        }
+
+        public string GenerateLearnerReference(string learnerId)
+        {
+            return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
         public Learner GenerateLearner()

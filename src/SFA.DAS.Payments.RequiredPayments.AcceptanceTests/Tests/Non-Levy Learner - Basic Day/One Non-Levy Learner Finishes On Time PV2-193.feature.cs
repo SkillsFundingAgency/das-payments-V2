@@ -142,8 +142,8 @@ this.FeatureBackground();
                         "Completion (TT2)",
                         "3000"});
 #line 22
- testRunner.Then("the required payments component will generate the following contract type 2 payab" +
-                    "le earnings:", ((string)(null)), table3, "Then ");
+ testRunner.Then("the required payments component will only generate contract type 2 required payme" +
+                    "nts", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -183,8 +183,8 @@ this.FeatureBackground();
                         "Completion (TT2)",
                         "3000"});
 #line 32
- testRunner.Then("the required payments component will generate the following contract type 2 payab" +
-                    "le earnings:", ((string)(null)), table4, "Then ");
+ testRunner.Then("the required payments component will only generate contract type 2 required payme" +
+                    "nts", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

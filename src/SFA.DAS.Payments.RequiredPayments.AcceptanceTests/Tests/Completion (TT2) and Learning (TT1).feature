@@ -1,5 +1,5 @@
 ﻿Feature: Completion (TT2) and Learning (TT1)
-#R13 - First payment, no previous payments. Also Completion.
+R13 - First payment, no previous payments. Also Completion.
 
 Background:
 	Given the current processing period is 13
@@ -27,38 +27,20 @@ Background:
 @Completion
 @Historical_Payments
 
-Scenario Outline: Contract Type 2 On Programme Learning payments
+Scenario: Contract Type 2 On Programme Learning payments
 	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 Learning (TT1) payable earnings:
-	| PriceEpisodeIdentifier | Delivery Period | TransactionType    | Amount   |
-	| p1                     | 1               | <transaction_type> | <amount> |
-	| p1                     | 2               | <transaction_type> | <amount> |
-	| p1                     | 3               | <transaction_type> | <amount> |
-	| p1                     | 4               | <transaction_type> | <amount> |
-	| p1                     | 5               | <transaction_type> | <amount> |
-	| p1                     | 6               | <transaction_type> | <amount> |
-	| p1                     | 7               | <transaction_type> | <amount> |
-	| p1                     | 8               | <transaction_type> | <amount> |
-	| p1                     | 9               | <transaction_type> | <amount> |
-	| p1                     | 10              | <transaction_type> | <amount> |
-	| p1                     | 11              | <transaction_type> | <amount> |
-	| p1                     | 12              | <transaction_type> | <amount> |
-	
-	Examples: 
-	| transaction_type | amount |
-	| Learning (TT1)   | 600    |
-
-Scenario Outline: Contract Type 2 On Programme Completion payment
-	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 Completion (TT2) payable earnings:
-	| PriceEpisodeIdentifier | Delivery Period | TransactionType    | Amount   |
-	| p1                     | 13              | <transaction_type> | <amount> |
-	
-	Examples: 
-	| transaction_type | amount |
-	| Completion (TT2) | 1800   |
-
-
-Scenario: Contract Type 2 no On Programme Balancing payment
-	When a payments due event is received
-	Then the required payments component will not generate any contract type 2 Balancing (TT3) payable earnings
+	Then the required payments component will only generate contract type 2 required payments
+	| PriceEpisodeIdentifier | Delivery Period | TransactionType  | Amount |
+	| p1                     | 1               | Learning (TT1)   | 600    |
+	| p1                     | 2               | Learning (TT1)   | 600    |
+	| p1                     | 3               | Learning (TT1)   | 600    |
+	| p1                     | 4               | Learning (TT1)   | 600    |
+	| p1                     | 5               | Learning (TT1)   | 600    |
+	| p1                     | 6               | Learning (TT1)   | 600    |
+	| p1                     | 7               | Learning (TT1)   | 600    |
+	| p1                     | 8               | Learning (TT1)   | 600    |
+	| p1                     | 9               | Learning (TT1)   | 600    |
+	| p1                     | 10              | Learning (TT1)   | 600    |
+	| p1                     | 11              | Learning (TT1)   | 600    |
+	| p1                     | 12              | Learning (TT1)   | 600    |
+	| p1                     | 13              | Completion (TT2) | 1800   |

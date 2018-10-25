@@ -1,10 +1,10 @@
 ﻿Feature: Completion (TT2) only - Late completion
-#R14 - Delayed Completion, No OnProgram payment
+R14 - Delayed Completion, No OnProgram payment
 
 Background:
 	Given the current processing period is 14
+	And a learner is undertaking a training with a training provider
 	And the payments are for the current collection year
-	And a learner with LearnRefNumber learnref1 and Uln 10000 undertaking training with training provider 10000
 	And the SFA contribution percentage is 90%
 	And the payments due component generates the following contract type 2 payments due:	
 	| PriceEpisodeIdentifier | Delivery Period | TransactionType  | Amount |
@@ -41,21 +41,8 @@ Background:
 @Completion (TT2)
 @Historical_Payments
 
-Scenario: Contract Type 2 no On Programme Learning payments
+Scenario: Contract Type 2 no On Programme payments
 	When a payments due event is received
-	Then the required payments component will not generate any contract type 2 Learning (TT1) payable earnings
-
-Scenario Outline: Contract Type 2 On Programme Completion payment
-	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 Completion (TT2) payable earnings:
-	| PriceEpisodeIdentifier | Delivery Period | TransactionType    | Amount   |
-	| p1                     | 14              | <transaction_type> | <amount> |
-	
-	Examples: 
-	| transaction_type | amount |
-	| Completion (TT2) | 3000   |
-
-
-Scenario: Contract Type 2 no On Programme Balancing payment
-	When a payments due event is received
-	Then the required payments component will not generate any contract type 2 Balancing (TT3) payable earnings
+	Then the required payments component will only generate contract type 2 required payments
+	| PriceEpisodeIdentifier | Delivery Period | TransactionType  | Amount |
+	| p1                     | 14              | Completion (TT2) | 3000   |
