@@ -19,7 +19,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IKeyValuePersistenceService redisService;
         private readonly IJsonSerializationService serializationService;
         private readonly IEndpointInstanceFactory factory;
-        //private readonly IMessageSession session;
         
 
         public JobContextMessageHandler(IPaymentLogger paymentLogger, 
@@ -31,7 +30,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.redisService = redisService;
             this.serializationService = serializationService;
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            //this.session = session;
         }
        
 
@@ -73,7 +71,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     }
                 }
 
-                paymentLogger.LogInfo($"Successfully processed Earning event for Job Id {message.JobId}");
+                paymentLogger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
 
                 return true;
             }
