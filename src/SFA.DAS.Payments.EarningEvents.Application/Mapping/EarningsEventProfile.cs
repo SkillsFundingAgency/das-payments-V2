@@ -14,13 +14,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             CreateMap<ProcessLearnerCommand, EarningEvent>()
                 .Include<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent>()
                 .Include<ProcessLearnerCommand, FunctionalSkillEarningsEvent>()
-                .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.MapFrom(source => source.CollectionYear))
+                .ForMember(destinationMember => destinationMember.CollectionYear,
+                    opt => opt.MapFrom(source => source.CollectionYear))
                 .ForMember(destinationMember => destinationMember.EventTime, opt => opt.UseValue(DateTimeOffset.UtcNow))
                 .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.Ignore())
                 .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
-                .ForMember(destinationMember => destinationMember.PriceEpisodes, opt => opt.MapFrom(source => source.Learner.PriceEpisodes))
-                .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId));
-
+                .ForMember(destinationMember => destinationMember.PriceEpisodes,
+                    opt => opt.MapFrom(source => source.Learner.PriceEpisodes))
+                .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId))
+                .ForMember(dest => dest.CollectionPeriod,
+                    opt => opt.ResolveUsing(src =>
+                        new CalendarPeriod(src.CollectionYear, (byte)src.CollectionPeriod)));
+                
             CreateMap<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent>()
                 .Include<ProcessLearnerCommand, ApprenticeshipContractType1EarningEvent>()
                 .Include<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>()

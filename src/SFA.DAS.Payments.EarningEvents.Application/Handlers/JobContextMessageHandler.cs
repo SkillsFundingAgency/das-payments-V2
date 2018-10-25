@@ -55,7 +55,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                             JobId = message.JobId.ToString(),
                             Learner = learner,
                             RequestTime = DateTimeOffset.UtcNow,
-                            SubmissionTime = message.SubmissionDateTimeUtc
+                            SubmissionTime = message.SubmissionDateTimeUtc,
+                            CollectionYear = fm36Output.Year,
+                            CollectionPeriod = 1,
+                            Ukprn = fm36Output.UKPRN
                         };
                         var endpointInstance = await factory.GetEndpointInstance();
                         await endpointInstance.SendLocal(learnerCommand);

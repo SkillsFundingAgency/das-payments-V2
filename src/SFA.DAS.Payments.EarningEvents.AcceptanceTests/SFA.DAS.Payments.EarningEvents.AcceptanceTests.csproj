@@ -301,6 +301,11 @@
     <Compile Include="Steps\EarningEventsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="Steps\LearnerEarnings.cs" />
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-244.feature.cs">
+      <DependentUpon>One Non-Levy Learner Finishes On Time PV2-244.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Apprenticeship Contract 2 onprogramme earnings.feature.cs">
       <DependentUpon>Apprenticeship Contract 2 onprogramme earnings.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -321,6 +326,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-244.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-Levy Learner Finishes On Time PV2-244.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Apprenticeship Contract 2 onprogramme earnings.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Apprenticeship Contract 2 onprogramme earnings.feature.cs</LastGenOutput>
