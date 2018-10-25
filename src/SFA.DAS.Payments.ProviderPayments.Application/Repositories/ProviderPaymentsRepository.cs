@@ -17,12 +17,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             this.paymentsDataContext = paymentsDataContext;
         }
 
-        public async Task<List<PaymentDataEntity>> GetMonthEndPayments(short collectionYear,byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear,byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
             var payments = await paymentsDataContext
                 .Payment.Where(p => p.Ukprn == ukprn &&
-                            p.CollectionPeriodYear == collectionYear &&
-                            p.CollectionPeriodMonth == collectionPeriodMonth)
+                            p.CollectionPeriod.Year == collectionYear &&
+                            p.CollectionPeriod.Month == collectionPeriodMonth)
                 .ToListAsync(cancellationToken);
             return payments;
 
@@ -31,16 +31,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
         public async  Task<List<long>> GetMonthEndUkprns(short collectionYear, byte collectionPeriodMonth,CancellationToken cancellationToken = default(CancellationToken))
         {
          return  await paymentsDataContext
-                .Payment.Where(p => p.CollectionPeriodYear == collectionYear &&  p.CollectionPeriodMonth == collectionPeriodMonth)
+                .Payment.Where(p => p.CollectionPeriod.Year == collectionYear &&  p.CollectionPeriod.Month == collectionPeriodMonth)
                 .Select(o => o.Ukprn)
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task SavePayment(PaymentDataEntity paymentData, CancellationToken cancellationToken)
+        public async Task SavePayment(PaymentModel paymentData, CancellationToken cancellationToken)
         {
             await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);
             await paymentsDataContext.SaveChangesAsync(cancellationToken);
         }
-
     }
 }

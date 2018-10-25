@@ -2,11 +2,11 @@
 using NServiceBus.Features;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
-using SFA.DAS.Payments.FundingSource.Model.Enum;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
 {

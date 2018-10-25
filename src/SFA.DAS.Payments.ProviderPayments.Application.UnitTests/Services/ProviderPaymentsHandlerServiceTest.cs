@@ -3,7 +3,6 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.FundingSource.Model.Enum;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -33,7 +32,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         private long jobId = 10000;
 
         private ProviderPeriodicPayment fundingSourceEvent;
-        private List<PaymentDataEntity> payments;
+        private List<PaymentModel> payments;
 
         [SetUp]
         public void SetUp()
@@ -68,9 +67,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             };
 
 
-            payments = new List<PaymentDataEntity>
+            payments = new List<PaymentModel>
             {
-                new PaymentDataEntity()
+                new PaymentModel()
                 {
                     Ukprn = 1000,
                     FundingSource = (int)FundingSourceType.CoInvestedEmployer,
@@ -84,7 +83,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     PriceEpisodeIdentifier = "P-1",
                     LearnerReferenceNumber = "100500",
                     CollectionPeriodMonth = 10,
-                    Id = Guid.NewGuid(),
+                    ExternalId = Guid.NewGuid(),
                     LearningAimFundingLineType = "16-18",
                     LearningAimPathwayCode = 1,
                     LearningAimReference = "1",
@@ -101,7 +100,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
             providerPaymentsRepository = new Mock<IProviderPaymentsRepository>();
             providerPaymentsRepository
-                .Setup(t => t.SavePayment(It.IsAny<PaymentDataEntity>(), It.IsAny<CancellationToken>()))
+                .Setup(t => t.SavePayment(It.IsAny<PaymentModel>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
@@ -146,7 +145,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             await providerPaymentsHandlerService.ProcessPayment(fundingSourceEvent, default(CancellationToken));
 
             providerPaymentsRepository
-                .Verify(o => o.SavePayment(It.IsAny<PaymentDataEntity>(), default(CancellationToken)), Times.Once);
+                .Verify(o => o.SavePayment(It.IsAny<PaymentModel>(), default(CancellationToken)), Times.Once);
 
             ilrSubmittedEventCache
                 .Verify(o => o.TryGet(ukprn.ToString(), default(CancellationToken)), Times.Once);
@@ -167,7 +166,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             await providerPaymentsHandlerService.ProcessPayment(fundingSourceEvent, default(CancellationToken));
 
             providerPaymentsRepository
-                .Verify(o => o.SavePayment(It.IsAny<PaymentDataEntity>(), default(CancellationToken)), Times.Never);
+                .Verify(o => o.SavePayment(It.IsAny<PaymentModel>(), default(CancellationToken)), Times.Never);
 
         }
 

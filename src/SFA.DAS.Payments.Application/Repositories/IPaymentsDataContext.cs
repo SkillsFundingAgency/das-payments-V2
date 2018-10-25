@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.Application.Repositories
 {
     public interface IPaymentsDataContext
     {
-        DbSet<PaymentDataEntity> Payment { get; }
+        DbSet<PaymentModel> Payment { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

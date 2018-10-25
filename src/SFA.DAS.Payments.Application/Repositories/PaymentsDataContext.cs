@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("Payments2");
-            modelBuilder.Entity<PaymentDataEntity>().ToTable("Payment");
+            modelBuilder.Entity<PaymentModel>().ToTable("Payment");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -32,6 +32,6 @@ namespace SFA.DAS.Payments.Application.Repositories
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public virtual DbSet<PaymentDataEntity> Payment { get; set; }
+        public virtual DbSet<PaymentModel> Payment { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.FundingSource.Model.Enum
+﻿namespace SFA.DAS.Payments.Model.Core.Entities
 {
     public enum FundingSourceType
     {

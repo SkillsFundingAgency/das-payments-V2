@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.FundingSource.Model.Enum;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
@@ -68,21 +67,18 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             return payments.Select(MapToPeriodicPayment).ToList();
         }
 
-        private PaymentDataEntity MapToPaymentEntity(ProviderPeriodicPayment message)
+        private PaymentModel MapToPaymentEntity(ProviderPeriodicPayment message)
         {
-            var payment = new PaymentDataEntity
+            var payment = new PaymentModel
             {
-                Id = Guid.NewGuid(),
+                ExternalId = Guid.NewGuid(),
                 FundingSource = (int)message.FundingSourceType,
                 ContractType = message.ContractType,
                 TransactionType = (int)message.OnProgrammeEarningType,
                 Amount = message.AmountDue,
                 PriceEpisodeIdentifier = message.PriceEpisodeIdentifier,
-                CollectionPeriodMonth = message.CollectionPeriod.Month,
-                CollectionPeriodName = message.CollectionPeriod.Name,
-                CollectionPeriodYear = message.CollectionPeriod.Year,
-                DeliveryPeriodMonth = message.DeliveryPeriod.Month,
-                DeliveryPeriodYear = message.DeliveryPeriod.Year,
+                CollectionPeriod = message.CollectionPeriod,
+                DeliveryPeriod = message.DeliveryPeriod,
                 LearningAimFrameworkCode = message.LearningAim.FrameworkCode,
                 LearningAimStandardCode = message.LearningAim.StandardCode,
                 LearningAimReference = message.LearningAim.Reference,
@@ -95,13 +91,18 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
                 IlrSubmissionDateTime = message.IlrSubmissionDateTime,
                 LearnerUln = message.Learner.Uln,
                 LearningAimAgreedPrice = message.LearningAim.AgreedPrice,
-                LearningAimFundingLineType = message.LearningAim.FundingLineType
+                LearningAimFundingLineType = message.LearningAim.FundingLineType,
+                Earnings = new EarningsModel
+                {
+
+                }
+
             };
 
             return payment;
         }
 
-        private ProviderPaymentEvent MapToPeriodicPayment(PaymentDataEntity payment)
+        private ProviderPaymentEvent MapToPeriodicPayment(PaymentModel payment)
         {
             return new ProviderPaymentEvent
             {
