@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Non_LevyLearner_BasicDay
+namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Non_LevyLearner_BasicDay
 {
     using TechTalk.SpecFlow;
     
