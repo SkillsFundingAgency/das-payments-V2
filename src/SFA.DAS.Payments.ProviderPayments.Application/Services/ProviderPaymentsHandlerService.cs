@@ -72,9 +72,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             var payment = new PaymentModel
             {
                 ExternalId = Guid.NewGuid(),
-                FundingSource = (int)message.FundingSourceType,
-                ContractType = message.ContractType,
-                TransactionType = (int)message.OnProgrammeEarningType,
+                FundingSource = message.FundingSourceType,
+                ContractType = (ContractType)message.ContractType,
+                TransactionType = (TransactionType)message.OnProgrammeEarningType,
                 Amount = message.AmountDue,
                 PriceEpisodeIdentifier = message.PriceEpisodeIdentifier,
                 CollectionPeriod = message.CollectionPeriod,

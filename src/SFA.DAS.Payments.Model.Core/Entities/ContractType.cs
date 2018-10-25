@@ -1,8 +1,8 @@
 ﻿namespace SFA.DAS.Payments.Model.Core.Entities
 {
-    public enum ContractType
+    public enum ContractType: byte
     {
-        ContractWithSfa = 1,
-        ContactWithEmployer
+        ContractWithEmployer = 1,
+        ContractWithSfa = 2
     }
 }
