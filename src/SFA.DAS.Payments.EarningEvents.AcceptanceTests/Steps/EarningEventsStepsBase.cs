@@ -77,6 +77,18 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 priceEpisode.PriceEpisodePeriodisedValues.Add(completionEarnings);
             }
 
+            var balancingEarnings = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeBalancePayment",
+            };
+           
+            if (!string.IsNullOrEmpty(lastPeriod))
+            {
+                var periodProperty = balancingEarnings.GetType().GetProperty($"Period{lastPeriod}");
+                periodProperty?.SetValue(balancingEarnings, learnerEarnings.BalancingPayment);
+                priceEpisode.PriceEpisodePeriodisedValues.Add(balancingEarnings);
+            }
+
             var learningDelivery = learner.LearningDeliveries.FirstOrDefault(delivery => delivery.AimSeqNumber == 1); //TODO: will need to change to handle incentives
             if (learningDelivery == null)
             {

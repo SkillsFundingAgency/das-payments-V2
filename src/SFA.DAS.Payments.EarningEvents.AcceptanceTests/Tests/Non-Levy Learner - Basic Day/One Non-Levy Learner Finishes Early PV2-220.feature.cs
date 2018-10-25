@@ -18,8 +18,8 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests.Non_LevyLearner_B
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("One Non-Levy Learner Finishes On Time PV2-244")]
-    public partial class OneNon_LevyLearnerFinishesOnTimePV2_244Feature
+    [NUnit.Framework.DescriptionAttribute("One Non-Levy Learner Finishes Early PV2-220")]
+    public partial class OneNon_LevyLearnerFinishesEarlyPV2_220Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests.Non_LevyLearner_B
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "One Non-Levy Learner Finishes On Time PV2-244", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "One Non-Levy Learner Finishes Early PV2-220", "Provider earnings and payments where learner completes earlier than planned", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -69,16 +69,25 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests.Non_LevyLearner_B
             testRunner.CollectScenarioErrors();
         }
         
-        public virtual void FeatureBackground()
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("A non-DAS learner, learner finishes early")]
+        [NUnit.Framework.CategoryAttribute("NonDas_BasicDay")]
+        [NUnit.Framework.CategoryAttribute("finishes_early")]
+        public virtual void ANon_DASLearnerLearnerFinishesEarly()
         {
-#line 3
-#line 4
- testRunner.Given("the current collection period is 3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 5
- testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-DAS learner, learner finishes early", null, new string[] {
+                        "NonDas_BasicDay",
+                        "finishes_early"});
 #line 6
- testRunner.And("the earnings are for a test learner and a test provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+this.ScenarioInitialize(scenarioInfo);
+            this.ScenarioStart();
 #line 7
+ testRunner.Given("the current collection period is 2", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 8
+ testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 9
+ testRunner.And("the earnings are for a test learner and a test provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 10
  testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -87,6 +96,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests.Non_LevyLearner_B
                         "completion status",
                         "Total training price",
                         "Total assessment price",
+                        "Balancing Payment",
                         "Aim Sequence Number",
                         "Aim Reference",
                         "Framework Code",
@@ -100,8 +110,9 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests.Non_LevyLearner_B
                         "p1",
                         "1-12",
                         "completed",
-                        "9000",
-                        "6000",
+                        "12000",
+                        "3000",
+                        "3000",
                         "1",
                         "ZPROG001",
                         "403",
@@ -111,27 +122,12 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests.Non_LevyLearner_B
                         "start of academic year",
                         "start of academic year",
                         "12"});
-#line 8
+#line 11
  testRunner.And("the Earnings Calc has generated the following learner earnings", ((string)(null)), table1, "And ");
-#line hidden
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("1_non_levy_learner_finishes_OnTime")]
-        [NUnit.Framework.CategoryAttribute("NonDas_BasicDay")]
-        public virtual void _1_Non_Levy_Learner_Finishes_OnTime()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("1_non_levy_learner_finishes_OnTime", null, new string[] {
-                        "NonDas_BasicDay"});
-#line 13
-this.ScenarioInitialize(scenarioInfo);
-            this.ScenarioStart();
-#line 3
-this.FeatureBackground();
-#line 14
-testRunner.When("the ILR is submitted and the learner earnings are sent to the earning events serv" +
-                    "ice", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 15
+ testRunner.When("the ILR is submitted and the learner earnings are sent to the earning events serv" +
+                    "ice", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 16
  testRunner.Then("the earning events service will generate a contract type 2 earnings event for the" +
                     " learner", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -148,65 +144,104 @@ testRunner.When("the ILR is submitted and the learner earnings are sent to the e
             table2.AddRow(new string[] {
                         "p1",
                         "2",
+                        "Completion",
+                        "3000"});
+            table2.AddRow(new string[] {
+                        "p1",
+                        "2",
+                        "Balancing",
+                        "3000"});
+#line 17
+ testRunner.And("the earnings event will contain the following earnings", ((string)(null)), table2, "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("A non-DAS learner, learner withdraws after qualifying period")]
+        [NUnit.Framework.CategoryAttribute("withdrawal")]
+        public virtual void ANon_DASLearnerLearnerWithdrawsAfterQualifyingPeriod()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-DAS learner, learner withdraws after qualifying period", null, new string[] {
+                        "withdrawal"});
+#line 24
+this.ScenarioInitialize(scenarioInfo);
+            this.ScenarioStart();
+#line 25
+testRunner.Given("the current collection period is 6", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 26
+ testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 27
+ testRunner.And("the earnings are for a test learner and a test provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 28
+ testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Price Episode Identifier",
+                        "Periods",
+                        "completion status",
+                        "Total training price",
+                        "Total assessment price",
+                        "Aim Sequence Number",
+                        "Aim Reference",
+                        "Framework Code",
+                        "Pathway Code",
+                        "Programme Type",
+                        "Funding Line Type",
+                        "Episode Start Date",
+                        "Learner Start Date",
+                        "Number Of Installments"});
+            table3.AddRow(new string[] {
+                        "p1",
+                        "1-12",
+                        "withdrawn",
+                        "9000",
+                        "6000",
+                        "1",
+                        "ZPROG001",
+                        "403",
+                        "1",
+                        "2",
+                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
+                        "start of academic year",
+                        "start of academic year",
+                        "12"});
+#line 29
+ testRunner.And("the Earnings Calc has generated the following learner earnings", ((string)(null)), table3, "And ");
+#line 33
+ testRunner.When("the ILR is submitted and the learner earnings are sent to the earning events serv" +
+                    "ice", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 34
+ testRunner.Then("the earning events service will generate a contract type 2 earnings event for the" +
+                    " learner", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Price Episode Identifier",
+                        "Period",
+                        "OnProgramme Earning Type",
+                        "Amount"});
+            table4.AddRow(new string[] {
+                        "p1",
+                        "2",
                         "Learning",
                         "1000"});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "p1",
                         "3",
                         "Learning",
                         "1000"});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "p1",
                         "4",
                         "Learning",
                         "1000"});
-            table2.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "p1",
                         "5",
                         "Learning",
                         "1000"});
-            table2.AddRow(new string[] {
-                        "p1",
-                        "6",
-                        "Learning",
-                        "1000"});
-            table2.AddRow(new string[] {
-                        "p1",
-                        "7",
-                        "Learning",
-                        "1000"});
-            table2.AddRow(new string[] {
-                        "p1",
-                        "8",
-                        "Learning",
-                        "1000"});
-            table2.AddRow(new string[] {
-                        "p1",
-                        "9",
-                        "Learning",
-                        "1000"});
-            table2.AddRow(new string[] {
-                        "p1",
-                        "10",
-                        "Learning",
-                        "1000"});
-            table2.AddRow(new string[] {
-                        "p1",
-                        "11",
-                        "Learning",
-                        "1000"});
-            table2.AddRow(new string[] {
-                        "p1",
-                        "12",
-                        "Learning",
-                        "1000"});
-            table2.AddRow(new string[] {
-                        "p1",
-                        "12",
-                        "Completion",
-                        "3000"});
-#line 16
- testRunner.And("the earnings event will contain the following earnings", ((string)(null)), table2, "And ");
+#line 35
+ testRunner.And("the earnings event will contain the following earnings", ((string)(null)), table4, "And ");
 #line hidden
             this.ScenarioCleanup();
         }
