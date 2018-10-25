@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
-using SFA.DAS.Payments.EarningEvents.Domain.Validation;
-using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner.Rules;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Learner
@@ -42,7 +40,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Learner
             var rule = new OverlappingPriceEpisodeValidationRule();
             var result = rule.IsValid(learner);
 
-            Assert.IsFalse(result.Failed,result.FailureReason);
+            Assert.IsTrue(result.Failed,result.FailureReason);
         }
     }
 }

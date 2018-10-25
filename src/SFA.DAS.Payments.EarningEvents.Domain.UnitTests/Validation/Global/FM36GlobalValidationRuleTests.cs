@@ -1,6 +1,5 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Global;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Global
@@ -14,7 +13,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Global
         {
             var global = new FM36Global { UKPRN = 0, Year = "1718" };
             var result = new FM36GlobalValidationRule().IsValid(global);
-            Assert.IsFalse(result.Failed);
+            Assert.IsTrue(result.Failed);
         }
 
         [Test]
@@ -22,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Global
         {
             var global = new FM36Global { UKPRN = 12345, Year = null };
             var result = new FM36GlobalValidationRule().IsValid(global);
-            Assert.IsFalse(result.Failed);
+            Assert.IsTrue(result.Failed);
         }
 
         [Test]
@@ -30,7 +29,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Global
         {
             var global = new FM36Global { UKPRN = 12345, Year = "1718" };
             var result = new FM36GlobalValidationRule().IsValid(global);
-            Assert.IsTrue(result.Failed);
+            Assert.IsFalse(result.Failed);
         }
     }
 }

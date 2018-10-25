@@ -98,7 +98,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 Learner = fm36Learner,
                 CollectionYear = "1819",
                 Ukprn = 12345,
-                JobId = "job-1"
+                JobId = "job-1",
+                CollectionPeriod = 1
             };
         }
 
