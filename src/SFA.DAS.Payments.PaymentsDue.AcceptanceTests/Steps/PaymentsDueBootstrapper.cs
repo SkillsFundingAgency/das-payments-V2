@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
@@ -9,7 +10,7 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 {
     [Binding]
-    public class PaymentsDueBootstrapper : StepsBase
+    public class PaymentsDueBootstrapper : ScenarioScopedBootstrapper
     {
         public PaymentsDueBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
         {

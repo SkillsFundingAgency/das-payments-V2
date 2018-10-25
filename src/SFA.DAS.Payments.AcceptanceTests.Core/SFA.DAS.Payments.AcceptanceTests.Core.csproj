@@ -182,6 +182,8 @@
     <Compile Include="Data\DataExtensions.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
     <Compile Include="Data\Course.cs" />
+    <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
+    <Compile Include="Infrastructure\ScenarioScopedBootstrapper.cs" />
     <Compile Include="Infrastructure\TestsConfiguration.cs" />
     <Compile Include="StepsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

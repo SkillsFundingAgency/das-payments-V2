@@ -139,6 +139,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.FundingSou
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.Payments.Database", "SFA.DAS.Payments.Database\SFA.DAS.Payments.Database.sqlproj", "{A99EDA09-50B8-439D-AFB5-323FEAA5CA4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.AcceptanceTests.EndToEnd", "SFA.DAS.Payments.AcceptanceTests.EndToEnd\SFA.DAS.Payments.AcceptanceTests.EndToEnd.csproj", "{EA55A5F0-CF98-4A19-A827-5344216974DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -617,6 +619,14 @@ Global
 		{A99EDA09-50B8-439D-AFB5-323FEAA5CA4D}.Release|x64.ActiveCfg = Release|Any CPU
 		{A99EDA09-50B8-439D-AFB5-323FEAA5CA4D}.Release|x64.Build.0 = Release|Any CPU
 		{A99EDA09-50B8-439D-AFB5-323FEAA5CA4D}.Release|x64.Deploy.0 = Release|Any CPU
+		{EA55A5F0-CF98-4A19-A827-5344216974DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA55A5F0-CF98-4A19-A827-5344216974DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA55A5F0-CF98-4A19-A827-5344216974DA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA55A5F0-CF98-4A19-A827-5344216974DA}.Debug|x64.Build.0 = Debug|Any CPU
+		{EA55A5F0-CF98-4A19-A827-5344216974DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA55A5F0-CF98-4A19-A827-5344216974DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA55A5F0-CF98-4A19-A827-5344216974DA}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA55A5F0-CF98-4A19-A827-5344216974DA}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

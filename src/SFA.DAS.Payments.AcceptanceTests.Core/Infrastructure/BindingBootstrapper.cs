@@ -9,9 +9,9 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 {
     [Binding]
-    public class BindingBootstrapper : StepsBase
+    public abstract class BindingBootstrapper : StepsBase
     {
-        public BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
+        protected BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
 
@@ -63,16 +63,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             MessageSession = Endpoint.Start(endpointConfiguration).Result;
         }
 
-        [BeforeScenario(Order = 0)]
-        public void SetUpTestSession()
+        protected virtual void SetUpTestSession()
         {
             var scope = Container.BeginLifetimeScope();
             Set((ILifetimeScope)scope,"container_scope");
             TestSession = new TestSession();
         }
 
-        [AfterScenario(Order = 99)]
-        public void CleanUpTestSession()
+        protected virtual void CleanUpTestSession()
         {
             if (!ScenarioCtx.ContainsKey("container_scope"))
                 return;
