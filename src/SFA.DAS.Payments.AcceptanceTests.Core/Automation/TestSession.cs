@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn { get; }
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
-        public string JobId { get; }
+        public long JobId { get; }
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             random = new Random(Guid.NewGuid().GetHashCode());
             Ukprn = GenerateId("ukprn");
             Learners = new List<Learner> { GenerateLearner() };
-            JobId = Guid.NewGuid().ToString("N");
+            JobId = GenerateId(Guid.NewGuid().ToString());
         }
 
         public long GenerateId(string idKey, int maxValue = 1000000)

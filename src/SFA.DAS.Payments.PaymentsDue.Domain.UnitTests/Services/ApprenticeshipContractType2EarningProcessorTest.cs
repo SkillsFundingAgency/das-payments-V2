@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                     Reference = "9",
                     StandardCode = 10
                 },
-                JobId = "11",
+                JobId = 11,
                 PriceEpisodes = new ReadOnlyCollection<PriceEpisode>(new[]
                 {
                     new PriceEpisode

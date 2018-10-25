@@ -70,4 +70,7 @@
     <Build Include="Tables\Payment.sql" />
     <None Include="Views\Payments2.PaymentHistory.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="SFA.DAS.Payments.Database.refactorlog" />
+  </ItemGroup>
 </Project>

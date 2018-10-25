@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Models
     {
         public IlrSubmittedEvent CurrentIlr { get; set; }
 
-        public string IncomingPaymentJobId { get; set; }
+        public long IncomingPaymentJobId { get; set; }
         public long IncomingPaymentUkprn { get; set; }
         public DateTime IncomingPaymentSubmissionDate { get; set; }
 

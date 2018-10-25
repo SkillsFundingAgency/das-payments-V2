@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             paymentLogger.LogInfo($"Processing Funding Source Payment Event for Message Id : {context.MessageId}");
 
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
-            currentExecutionContext.JobId = message.JobId;
+            currentExecutionContext.JobId = message.JobId.ToString();
 
             try
             {
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
 
                 var paymentModel = mapper.Map<ProviderPeriodicPayment>(message);
 
-                await actor.HandleEvent(paymentModel, new CancellationToken());
+                await actor.ProcessPayment(paymentModel, new CancellationToken());
                 paymentLogger.LogInfo($"Successfully processed Funding Source Payment Event for Job Id {message.JobId} and Message Type {message.GetType().Name}");
             }
             catch (Exception ex)

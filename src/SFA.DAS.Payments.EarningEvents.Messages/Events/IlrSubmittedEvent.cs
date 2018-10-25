@@ -1,13 +1,10 @@
-﻿using System;
+﻿using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
-    public class IlrSubmittedEvent
+    public class IlrSubmittedEvent : PaymentsEvent, IPaymentsMessage
     {
-        public string JobId { get; set; }
 
-        public DateTime SubmissionDate { get; set; }
-
-        public long Ukprn { get; set; }
     }
 }

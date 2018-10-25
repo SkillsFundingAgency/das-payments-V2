@@ -1,7 +1,10 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 {
@@ -12,6 +15,25 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
         public ProviderPaymentsRepository(IPaymentsDataContext paymentsDataContext)
         {
             this.paymentsDataContext = paymentsDataContext;
+        }
+
+        public async Task<List<PaymentDataEntity>> GetMonthEndPayments(short collectionYear,byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var payments = await paymentsDataContext
+                .Payment.Where(p => p.Ukprn == ukprn &&
+                            p.CollectionPeriodYear == collectionYear &&
+                            p.CollectionPeriodMonth == collectionPeriodMonth)
+                .ToListAsync(cancellationToken);
+            return payments;
+
+        }
+
+        public async  Task<List<long>> GetMonthEndUkprns(short collectionYear, byte collectionPeriodMonth,CancellationToken cancellationToken = default(CancellationToken))
+        {
+         return  await paymentsDataContext
+                .Payment.Where(p => p.CollectionPeriodYear == collectionYear &&  p.CollectionPeriodMonth == collectionPeriodMonth)
+                .Select(o => o.Ukprn)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task SavePayment(PaymentDataEntity paymentData, CancellationToken cancellationToken)
