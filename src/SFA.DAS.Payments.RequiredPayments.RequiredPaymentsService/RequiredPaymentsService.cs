@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
     public class RequiredPaymentsService : Actor, IRequiredPaymentsService
     {
         private ApprenticeshipContractType2PaymentDueEventHandler act2PaymentDueEventHandler;
-        private ReliableCollectionCache<PaymentEntity[]> paymentHistoryCache;
+        private ReliableCollectionCache<PaymentHistoryEntity[]> paymentHistoryCache;
 
         private readonly IPaymentLogger paymentLogger;
         private readonly string apprenticeshipKey;
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
         protected override async Task OnActivateAsync()
         {
-            paymentHistoryCache = new ReliableCollectionCache<PaymentEntity[]>(StateManager);
+            paymentHistoryCache = new ReliableCollectionCache<PaymentHistoryEntity[]>(StateManager);
 
             act2PaymentDueEventHandler = new ApprenticeshipContractType2PaymentDueEventHandler(
                 act2PaymentDueProcessor,

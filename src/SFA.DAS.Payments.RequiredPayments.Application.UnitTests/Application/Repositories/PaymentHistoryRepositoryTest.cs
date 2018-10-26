@@ -16,28 +16,28 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Re
     public class PaymentHistoryRepositoryTest
     {
         private PaymentHistoryRepository _repository;
-        private Mock<DbSet<PaymentEntity>> _paymentSetMock;
+        private Mock<DbSet<PaymentHistoryEntity>> _paymentSetMock;
         private Mock<RequiredPaymentsDataContext> _dedsContextMock;
-        private List<PaymentEntity> _paymentEntities;
+        private List<PaymentHistoryEntity> _paymentEntities;
 
         [SetUp]
         public void FixtureSetUp()
         {
-            _paymentEntities = new List<PaymentEntity>();
+            _paymentEntities = new List<PaymentHistoryEntity>();
 
-            _paymentSetMock = new Mock<DbSet<PaymentEntity>>();
+            _paymentSetMock = new Mock<DbSet<PaymentHistoryEntity>>();
 
-            _paymentSetMock.As<IAsyncEnumerable<PaymentEntity>>()
+            _paymentSetMock.As<IAsyncEnumerable<PaymentHistoryEntity>>()
                 .Setup(m => m.GetEnumerator())
-                .Returns(new TestAsyncEnumerator<PaymentEntity>(_paymentEntities.GetEnumerator()));
+                .Returns(new TestAsyncEnumerator<PaymentHistoryEntity>(_paymentEntities.GetEnumerator()));
 
-            _paymentSetMock.As<IQueryable<PaymentEntity>>()
+            _paymentSetMock.As<IQueryable<PaymentHistoryEntity>>()
                 .Setup(m => m.Provider)
-                .Returns(new TestAsyncQueryProvider<PaymentEntity>(_paymentEntities.AsQueryable().Provider));
+                .Returns(new TestAsyncQueryProvider<PaymentHistoryEntity>(_paymentEntities.AsQueryable().Provider));
 
-            _paymentSetMock.As<IQueryable<PaymentEntity>>().Setup(m => m.Expression).Returns(_paymentEntities.AsQueryable().Expression);
-            _paymentSetMock.As<IQueryable<PaymentEntity>>().Setup(m => m.ElementType).Returns(_paymentEntities.AsQueryable().ElementType);
-            _paymentSetMock.As<IQueryable<PaymentEntity>>().Setup(m => m.GetEnumerator()).Returns(() => _paymentEntities.AsQueryable().GetEnumerator());
+            _paymentSetMock.As<IQueryable<PaymentHistoryEntity>>().Setup(m => m.Expression).Returns(_paymentEntities.AsQueryable().Expression);
+            _paymentSetMock.As<IQueryable<PaymentHistoryEntity>>().Setup(m => m.ElementType).Returns(_paymentEntities.AsQueryable().ElementType);
+            _paymentSetMock.As<IQueryable<PaymentHistoryEntity>>().Setup(m => m.GetEnumerator()).Returns(() => _paymentEntities.AsQueryable().GetEnumerator());
 
             _dedsContextMock = new Mock<RequiredPaymentsDataContext>(MockBehavior.Loose);
         }
@@ -55,8 +55,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Re
             // arrange
             var apprenticeshipKey = "key";
 
-            _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
-            _paymentEntities.Add(new PaymentEntity {Id = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
+            _paymentEntities.Add(new PaymentHistoryEntity {ExternalId = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
+            _paymentEntities.Add(new PaymentHistoryEntity {ExternalId = Guid.NewGuid(), ApprenticeshipKey = apprenticeshipKey});
 
             _dedsContextMock.Setup(c => c.PaymentHistory).Returns(_paymentSetMock.Object).Verifiable();
             _repository = new PaymentHistoryRepository(_dedsContextMock.Object);
@@ -67,8 +67,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Re
             // assert
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Length);
-            Assert.AreEqual(_paymentEntities.First().Id, result.First().Id);
-            Assert.AreEqual(_paymentEntities.Last().Id, result.Last().Id);
+            Assert.AreEqual(_paymentEntities.First().ExternalId, result.First().ExternalId);
+            Assert.AreEqual(_paymentEntities.Last().ExternalId, result.Last().ExternalId);
         }
     }
 }

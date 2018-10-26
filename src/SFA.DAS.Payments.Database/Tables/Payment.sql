@@ -31,6 +31,7 @@
 	--EarningsInstalmentAmount DECIMAL (15,5),
 	--EarningsNumberOfInstalments SMALLINT NOT NULL,
 	JobId  BIGINT NOT NULL,
+	CreationDate DATETIME NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (GETDATE())
 )
 GO
 

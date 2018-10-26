@@ -9,5 +9,6 @@ namespace SFA.DAS.Payments.Application.Repositories
     {
         DbSet<PaymentModel> Payment { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+        int SaveChanges();
     }
 }

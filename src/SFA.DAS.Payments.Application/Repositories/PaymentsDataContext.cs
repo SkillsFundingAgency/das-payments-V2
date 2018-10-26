@@ -34,6 +34,5 @@ namespace SFA.DAS.Payments.Application.Repositories
         {
             optionsBuilder.UseSqlServer(connectionString);
         }
-
     }
 }

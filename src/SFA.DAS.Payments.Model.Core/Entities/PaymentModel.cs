@@ -26,5 +26,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public decimal SfaContributionPercentage { get; set; }
         //public virtual EarningsModel Earnings { get; set; }
         public long JobId { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }

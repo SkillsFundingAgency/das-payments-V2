@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
         {
             return new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<PaymentEntity, Payment>()
+                cfg.CreateMap<PaymentHistoryEntity, Payment>()
                     .ForMember(dest => dest.DeliveryPeriod, opt => opt.ResolveUsing(src => new CalendarPeriod(src.DeliveryPeriod)))
                     .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => new CalendarPeriod(src.CollectionPeriod)));
             });

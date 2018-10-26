@@ -446,6 +446,10 @@
       <Project>{0f0beb68-7f9f-4d39-b85a-3fe7701bb6cc}</Project>
       <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj">
+      <Project>{23551CD8-7554-4F2C-9B42-A67B9E0C261D}</Project>
+      <Name>SFA.DAS.Payments.Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
       <Project>{f6e38368-c397-488b-b041-d3e8423c1ce1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>

@@ -42,6 +42,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             //builder.Property(x => x.Earnings.InstalmentAmount).HasColumnName(@"EarningsInstalmentAmount").IsRequired();
             //builder.Property(x => x.Earnings.NumberOfInstalments).HasColumnName(@"EarningsNumberOfInstalments").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();
+            builder.Property(x => x.CreationDate).HasColumnName(@"CreationDate");
         }
     }
 }
