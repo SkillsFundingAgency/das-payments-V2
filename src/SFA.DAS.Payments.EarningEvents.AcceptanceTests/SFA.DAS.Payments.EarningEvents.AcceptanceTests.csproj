@@ -296,11 +296,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\BindingBootstrapper.cs" />
     <Compile Include="Steps\ExpectedEarning.cs" />
+    <Compile Include="Steps\LearnerSteps.cs" />
     <Compile Include="Steps\ProcessingPeriodSteps.cs" />
     <Compile Include="Steps\EarningEventsSteps.cs" />
     <Compile Include="Steps\EarningEventsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="Steps\LearnerEarnings.cs" />
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learner Finish On Time PV2-234.feature.cs">
+      <DependentUpon>Two Non-Levy Learner Finish On Time PV2-234.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-227.feature.cs">
+      <DependentUpon>One Non-Levy Learner Finishes Late PV2-227.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-220.feature.cs">
       <DependentUpon>One Non-Levy Learner Finishes Early PV2-220.feature</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -331,6 +342,14 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learner Finish On Time PV2-234.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two Non-Levy Learner Finish On Time PV2-234.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-227.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-Levy Learner Finishes Late PV2-227.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-220.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner Finishes Early PV2-220.feature.cs</LastGenOutput>

@@ -3,7 +3,7 @@
 Background:
 	Given the current collection period is 3
 	And the payments are for the current collection year
-	And the earnings are for a test learner and a test provider
+	And a learner is undertaking a training with a training provider
 	And the SFA contribution percentage is 90%
 	And the Earnings Calc has generated the following learner earnings
 	| Price Episode Identifier | Periods | completion status | Total training price | Total assessment price | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | Episode Start Date     | Learner Start Date     | Number Of Installments |
