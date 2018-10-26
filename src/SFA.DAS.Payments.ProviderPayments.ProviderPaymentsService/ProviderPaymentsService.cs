@@ -36,9 +36,9 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
             : base(actorService, actorId)
         {
             this.actorId = actorId;
-            this.providerPaymentsRepository = providerPaymentsRepository;
-            this.validatePaymentMessage = validatePaymentMessage;
-            this.paymentLogger = paymentLogger;
+            this.providerPaymentsRepository = providerPaymentsRepository ?? throw new ArgumentNullException(nameof(providerPaymentsRepository));
+            this.validatePaymentMessage = validatePaymentMessage ?? throw new ArgumentNullException(nameof(validatePaymentMessage));
+            this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.paymentFactory = paymentFactory ?? throw new ArgumentNullException(nameof(paymentFactory));
         }
@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
             await paymentsHandlerService.ProcessPayment(message, cancellationToken);
         }
 
-        public async Task<List<PaymentModel>> HandleMonthEnd(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             return await paymentsHandlerService.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
         }

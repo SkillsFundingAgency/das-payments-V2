@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Autofac.Extras.Moq;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
@@ -14,7 +15,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Extras.Moq;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
@@ -27,48 +27,17 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
         private Mock<IDataCache<IlrSubmittedEvent>> ilrSubmittedEventCache;
         private Mock<IValidatePaymentMessage> validatePaymentMessage;
-        private Mock<IPaymentLogger> paymentLogger;
+        private readonly Mock<IPaymentLogger> paymentLogger;
 
         private long ukprn = 10000;
         private long jobId = 10000;
-
-//        private ProviderPeriodicPayment fundingSourceEvent;
         private List<PaymentModel> payments;
-        
+
 
         [SetUp]
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            //fundingSourceEvent = new ProviderPeriodicPayment
-            //{
-            //    ContractType = 2,
-            //    FundingSourceType = FundingSourceType.CoInvestedSfa,
-            //    OnProgrammeEarningType = OnProgrammeEarningType.Learning,
-            //    CollectionPeriod = new CalendarPeriod(2018, 10),
-            //    DeliveryPeriod = new CalendarPeriod(2018, 11),
-            //    LearningAim = new LearningAim
-            //    {
-            //        FrameworkCode = 1,
-            //        Reference = "100",
-            //        PathwayCode = 1,
-            //        StandardCode = 1,
-            //        ProgrammeType = 1,
-            //        AgreedPrice = 1000m,
-            //        FundingLineType = "T"
-            //    },
-            //    Learner = new Learner
-            //    {
-            //        Ukprn = ukprn,
-            //        ReferenceNumber = "A1000",
-            //        Uln = 10000000
-            //    },
-            //    Ukprn = ukprn,
-            //    SfaContributionPercentage = 0.9m,
-            //    AmountDue = 1000m,
-            //    JobId = jobId
-            //};
-
 
             payments = new List<PaymentModel>
             {
@@ -80,9 +49,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     JobId = 1,
                     DeliveryPeriod = new CalendarPeriod
                     {
-                        Year = 2018, 
+                        Year = 2018,
                         Month = 2,
-                        Period = 7, 
+                        Period = 7,
                         Name = "1819-R07"
                     },
                     CollectionPeriod = new CalendarPeriod
@@ -138,7 +107,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(o => o.IsLatestIlrPayment(It.IsAny<PaymentMessageValidationRequest>()))
                 .Returns(true);
 
-     
+
             providerPaymentsHandlerService = mocker.Create<ProviderPaymentsHandlerService>();
         }
 
@@ -186,8 +155,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             var results = await providerPaymentsHandlerService.GetMonthEndPayments(year, month, ukprn, cancellationToken);
 
             Assert.IsNotNull(results);
-            providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.IsAny<short>(), 
-                                                    It.IsAny<byte>(), 
+            providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.IsAny<short>(),
+                                                    It.IsAny<byte>(),
                                                     It.IsAny<long>(),
                                                     It.IsAny<CancellationToken>()), Times.Once);
         }

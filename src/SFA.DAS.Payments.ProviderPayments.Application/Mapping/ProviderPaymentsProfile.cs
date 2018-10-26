@@ -11,28 +11,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
     {
         public ProviderPaymentsProfile()
         {
-            //CreateMap<FundingSourcePaymentEvent, ProviderPaymentEvent>()
-            //    .Include<EmployerCoInvestedFundingSourcePaymentEvent, EmployerCoInvestedProviderPaymentEvent>()
-            //    .Include<SfaCoInvestedFundingSourcePaymentEvent, SfaCoInvestedProviderPaymentEvent>()
-
-            //    .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod))
-            //    .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
-            //    .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(source => source.AmountDue))
-            //    .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
-            //    .ForMember(dest => dest.EventTime, opt => opt.UseValue(DateTime.UtcNow))
-            //    .ForMember(dest => dest.FundingSourceType, opt => opt.MapFrom(source => source.FundingSourceType))
-            //    .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
-            //    .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))
-            //    .ForMember(dest => dest.Learner, opt => opt.MapFrom(source => source.Learner))
-            //    .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source => source.LearningAim))
-            //    .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier))
-            //    .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
-            //    .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => source.OnProgrammeEarningType))
-            //    .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn));
-
-            //CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, EmployerCoInvestedProviderPaymentEvent>();
-            //CreateMap<SfaCoInvestedFundingSourcePaymentEvent, SfaCoInvestedProviderPaymentEvent>();
-
+           
             CreateMap<FundingSourcePaymentEvent, PaymentModel>()
                 .Include<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>()
                 .Include<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>()
