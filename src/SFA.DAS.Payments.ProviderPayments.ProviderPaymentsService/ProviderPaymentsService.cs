@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -47,10 +48,9 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
             await paymentsHandlerService.ProcessPayment(message, cancellationToken);
         }
 
-        public async Task HandleMonthEnd(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<PaymentModel>> HandleMonthEnd(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var providerPayments = await paymentsHandlerService.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
-            //TODO Publish Events
+            return await paymentsHandlerService.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
         }
 
         protected override async Task OnActivateAsync()

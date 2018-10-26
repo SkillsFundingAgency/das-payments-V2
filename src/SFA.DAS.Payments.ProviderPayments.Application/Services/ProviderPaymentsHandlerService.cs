@@ -65,20 +65,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             await providerPaymentsRepository.SavePayment(payment, cancellationToken);
         }
 
-        public async Task<List<ProviderPaymentEvent>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
             var payments = await providerPaymentsRepository.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
-            return payments.Select(MapToProviderPaymentEvent).ToList();
-        }
-
-        private ProviderPaymentEvent MapToProviderPaymentEvent(PaymentModel payment)
-        {
-            paymentLogger.LogDebug($"Mapping payment id: {payment.Id}, funding source: {payment.FundingSource}");
-            var providerPayment = paymentFactory.Create(payment.FundingSource);
-            paymentLogger.LogDebug($"Got {providerPayment.GetType().Name} payment message type. Now mapping to provider payment.");
-            mapper.Map(payment, providerPayment);
-            paymentLogger.LogDebug($"Finished mapping payment. Id: {providerPayment.ExternalId}");
-            return providerPayment;
+            return payments.ToList();
         }
 
         private async Task<IlrSubmittedEvent> GetCurrentIlrSubmissionEvent(string ukprn, CancellationToken cancellationToken)

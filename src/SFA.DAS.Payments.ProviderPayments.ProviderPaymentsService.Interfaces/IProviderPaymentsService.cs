@@ -1,4 +1,5 @@
-﻿using Microsoft.ServiceFabric.Actors;
+﻿using System.Collections.Generic;
+using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Remoting;
 using SFA.DAS.Payments.ProviderPayments.Model;
@@ -13,6 +14,6 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces
     {
         Task ProcessPayment(PaymentModel message, CancellationToken cancellationToken);
 
-        Task HandleMonthEnd(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<PaymentModel>> HandleMonthEnd(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 }
