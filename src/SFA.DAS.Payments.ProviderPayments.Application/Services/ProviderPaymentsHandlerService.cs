@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
         public async Task ProcessPayment(PaymentModel payment, CancellationToken cancellationToken)
         {
-            var currentIlr = await GetCurrentIlrSubmissionEvent(payment.Ukprn.ToString(), cancellationToken);
+            var currentIlr = await GetCurrentIlrSubmissionEvent(payment.Ukprn, cancellationToken);
 
             var allowPayment = validatePaymentMessage.IsLatestIlrPayment(new PaymentMessageValidationRequest
             {
@@ -55,12 +55,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
             if (!allowPayment)
             {
-                paymentLogger.LogWarning(
-                    $"Received out of sequence payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
+                paymentLogger.LogWarning($"Received out of sequence payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
                 return;
             }
-            paymentLogger.LogDebug(
-                $"Received valid payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
+
+            paymentLogger.LogDebug($"Received valid payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
 
             await providerPaymentsRepository.SavePayment(payment, cancellationToken);
         }
@@ -71,9 +70,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             return payments.ToList();
         }
 
-        private async Task<IlrSubmittedEvent> GetCurrentIlrSubmissionEvent(string ukprn, CancellationToken cancellationToken)
+        private async Task<IlrSubmittedEvent> GetCurrentIlrSubmissionEvent(long ukprn, CancellationToken cancellationToken)
         {
-            var currentSubmittedIlrConditionalValue = await ilrSubmittedEventCache.TryGet(ukprn, cancellationToken);
+            var currentSubmittedIlrConditionalValue = await ilrSubmittedEventCache.TryGet(ukprn.ToString(), cancellationToken);
             return currentSubmittedIlrConditionalValue.HasValue ? currentSubmittedIlrConditionalValue.Value : null;
         }
     }

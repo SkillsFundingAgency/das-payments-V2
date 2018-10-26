@@ -1,27 +1,11 @@
-﻿using System;
-using SFA.DAS.Payments.Messages.Core.Events;
+﻿using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
+using System;
 
 namespace SFA.DAS.Payments.ProviderPayments.Messages
 {
-    public class EmployerCoInvestedProviderPaymentEvent: CoInvestedProviderPaymentEvent
-    {
-
-    }
-
-    public class SfaCoInvestedProviderPaymentEvent: CoInvestedProviderPaymentEvent
-    {
-
-    }
-
-    public abstract class CoInvestedProviderPaymentEvent: ProviderPaymentEvent
-    {
-
-    }
-
-    public abstract class ProviderPaymentEvent: IPeriodisedPaymentEvent
+    public abstract class ProviderPaymentEvent : IPeriodisedPaymentEvent
     {
         public Guid ExternalId { get; set; }
         public string PriceEpisodeIdentifier { get; set; }

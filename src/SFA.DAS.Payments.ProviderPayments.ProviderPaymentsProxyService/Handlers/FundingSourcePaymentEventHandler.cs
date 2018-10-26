@@ -1,16 +1,15 @@
-﻿using ESFA.DC.Logging.Interfaces;
+﻿using AutoMapper;
+using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handlers
 {
