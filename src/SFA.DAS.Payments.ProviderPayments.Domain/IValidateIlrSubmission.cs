@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.Payments.ProviderPayments.Domain
 {
-    public interface IValidatePaymentMessage
+    public interface IValidateIlrSubmission
     {
-        bool IsLatestIlrPayment(PaymentMessageValidationRequest request);
+        bool IsLatestIlrPayment(IlrSubmissionValidationRequest request);
     }
 }

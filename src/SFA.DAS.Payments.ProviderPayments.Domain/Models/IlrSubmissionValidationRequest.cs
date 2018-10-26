@@ -3,7 +3,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.ProviderPayments.Domain.Models
 {
-    public class PaymentMessageValidationRequest
+    public class IlrSubmissionValidationRequest
     {
         public IlrSubmittedEvent CurrentIlr { get; set; }
 
