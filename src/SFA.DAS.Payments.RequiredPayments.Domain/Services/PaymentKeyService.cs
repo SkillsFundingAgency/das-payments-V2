@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
     {
         public string GeneratePaymentKey(string priceEpisodeIdentifier, string learnAimReference, int transactionType, CalendarPeriod deliveryPeriod)
         {
-            return string.Join("-",
+            return string.Join("~",
                 new[]
                 {
                     priceEpisodeIdentifier.ToLowerInvariant(),
