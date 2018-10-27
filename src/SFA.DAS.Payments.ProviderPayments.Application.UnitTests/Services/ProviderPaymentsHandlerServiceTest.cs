@@ -26,13 +26,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
         private Mock<IDataCache<IlrSubmittedEvent>> ilrSubmittedEventCache;
-        private Mock<IValidatePaymentMessage> validatePaymentMessage;
+        private Mock<IValidateIlrSubmission> validateIlrSubmission;
         private readonly Mock<IPaymentLogger> paymentLogger;
 
         private long ukprn = 10000;
         private long jobId = 10000;
         private List<PaymentModel> payments;
-
+        private IlrSubmittedEvent ilrSubmittedEvent;
 
         [SetUp]
         public void SetUp()
@@ -89,12 +89,21 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                           .ReturnsAsync(payments)
                           .Verifiable();
 
-
-            var ilrSubmittedEvent = new IlrSubmittedEvent
+            providerPaymentsRepository
+                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(), 
+                                                        It.IsAny<byte>(), 
+                                                        It.IsAny<long>(),
+                                                        It.IsAny<DateTime>(),
+                                                        It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+            
+            ilrSubmittedEvent = new IlrSubmittedEvent
             {
                 Ukprn = ukprn,
                 JobId = jobId,
-                IlrSubmissionDateTime = DateTime.MaxValue
+                IlrSubmissionDateTime = DateTime.MaxValue,
+                CollectionPeriod = new CalendarPeriod(2018, 2)
             };
 
             ilrSubmittedEventCache = mocker.Mock<IDataCache<IlrSubmittedEvent>>();
@@ -102,9 +111,17 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(o => o.TryGet(ukprn.ToString(), default(CancellationToken)))
                 .Returns(Task.FromResult(new ConditionalValue<IlrSubmittedEvent>(true, ilrSubmittedEvent)));
 
-            validatePaymentMessage = mocker.Mock<IValidatePaymentMessage>();
-            validatePaymentMessage
-                .Setup(o => o.IsLatestIlrPayment(It.IsAny<PaymentMessageValidationRequest>()))
+            ilrSubmittedEventCache
+                .Setup(o => o.Clear(ukprn.ToString(), default(CancellationToken)))
+                .Returns(Task.CompletedTask);
+
+            ilrSubmittedEventCache
+                .Setup(o => o.Add(ukprn.ToString(),It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)))
+                .Returns(Task.CompletedTask);
+
+            validateIlrSubmission = mocker.Mock<IValidateIlrSubmission>();
+            validateIlrSubmission
+                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(true);
 
 
@@ -122,18 +139,17 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             ilrSubmittedEventCache
                 .Verify(o => o.TryGet(ukprn.ToString(), default(CancellationToken)), Times.Once);
 
-            validatePaymentMessage
-                .Verify(o => o.IsLatestIlrPayment(It.IsAny<PaymentMessageValidationRequest>()), Times.Once);
+            validateIlrSubmission
+                .Verify(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()), Times.Once);
         }
 
         [Test]
         public async Task ProcessEventShouldNotCallRepositoryIfPaymentEventIsInvalid()
         {
 
-            validatePaymentMessage
-                .Setup(o => o.IsLatestIlrPayment(It.IsAny<PaymentMessageValidationRequest>()))
+            validateIlrSubmission
+                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(false);
-
 
             await providerPaymentsHandlerService.ProcessPayment(payments.First(), default(CancellationToken));
 
@@ -141,8 +157,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verify(o => o.SavePayment(It.IsAny<PaymentModel>(), default(CancellationToken)), Times.Never);
 
         }
-
-
 
         [Test]
         public async Task GetMonthEndPaymentsShouldReturnPaymentsFromRepository()
@@ -161,6 +175,68 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                                                     It.IsAny<CancellationToken>()), Times.Once);
         }
 
+        [Test]
+        public async Task HandleIlrSubMissionShouldCallRequiredServices()
+        {
+            validateIlrSubmission
+                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
+                .Returns(true);
+
+            await providerPaymentsHandlerService.HandleIlrSubMission(ilrSubmittedEvent, default(CancellationToken));
+
+            ilrSubmittedEventCache
+                .Verify(o => o.TryGet(ukprn.ToString(), default(CancellationToken)), Times.Once);
+
+            validateIlrSubmission
+                .Verify(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()), Times.Once);
+
+        }
+
+        [Test]
+        public async Task HandleIlrSubMissionShouldNotClearCacheAndDeletePaymentForOldIlrSubmission()
+        {
+            validateIlrSubmission
+                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
+                .Returns(true);
+
+            await providerPaymentsHandlerService.HandleIlrSubMission(ilrSubmittedEvent, default(CancellationToken));
+
+            ilrSubmittedEventCache
+                .Verify(o => o.Clear(ukprn.ToString(), default(CancellationToken)), Times.Never);
+
+            ilrSubmittedEventCache
+                .Verify(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)), Times.Never);
+
+            providerPaymentsRepository
+                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(),
+                    It.IsAny<byte>(),
+                    It.IsAny<long>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Test]
+        public async Task HandleIlrSubMissionShouldClearCacheAndDeletePaymentForNewIlrSubmission()
+        { 
+            validateIlrSubmission
+                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
+                .Returns(false);
+
+            await providerPaymentsHandlerService.HandleIlrSubMission(ilrSubmittedEvent, default(CancellationToken));
+
+            ilrSubmittedEventCache
+                .Verify(o => o.Clear(ukprn.ToString(), default(CancellationToken)), Times.Once);
+
+            ilrSubmittedEventCache
+                .Verify(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)), Times.Once);
+
+            providerPaymentsRepository
+                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(),
+                    It.IsAny<byte>(),
+                    It.IsAny<long>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+        }
 
 
     }

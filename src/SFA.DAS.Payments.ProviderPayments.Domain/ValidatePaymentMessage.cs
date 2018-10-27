@@ -2,9 +2,9 @@
 
 namespace SFA.DAS.Payments.ProviderPayments.Domain
 {
-    public class ValidatePaymentMessage : IValidatePaymentMessage
+    public class ValidateIlrSubmission : IValidateIlrSubmission
     {
-        public bool IsLatestIlrPayment(PaymentMessageValidationRequest request)
+        public bool IsLatestIlrPayment(IlrSubmissionValidationRequest request)
         {
             return request.CurrentIlr == null ||
                    (request.IncomingPaymentJobId == request.CurrentIlr.JobId &&

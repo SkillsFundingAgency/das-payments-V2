@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             this.paymentsDataContext = paymentsDataContext;
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear,byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
             var payments = await paymentsDataContext
                 .Payment.Where(p => p.Ukprn == ukprn &&
@@ -28,14 +29,30 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 
         }
 
-        public async  Task<List<long>> GetMonthEndUkprns(short collectionYear, byte collectionPeriodMonth,CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<long>> GetMonthEndUkprns(short collectionYear, byte collectionPeriodMonth, CancellationToken cancellationToken = default(CancellationToken))
         {
-         return  await paymentsDataContext
-                .Payment.Where(p => p.CollectionPeriod.Year == collectionYear &&  p.CollectionPeriod.Month == collectionPeriodMonth)
-                .Select(o => o.Ukprn)
-                .ToListAsync(cancellationToken);
+            return await paymentsDataContext
+                   .Payment.Where(p => p.CollectionPeriod.Year == collectionYear && p.CollectionPeriod.Month == collectionPeriodMonth)
+                   .Select(o => o.Ukprn)
+                   .ToListAsync(cancellationToken);
         }
+        
+        public async Task DeleteOldMonthEndPayment(short collectionYear,
+                                                    byte collectionPeriodMonth, 
+                                                    long ukprn, 
+                                                    DateTime currentIlrSubmissionDateTime, 
+                                                    CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var oldSubmittedIlrPayments = paymentsDataContext.Payment
+                .Where(p => p.CollectionPeriod.Year == collectionYear &&
+                            p.CollectionPeriod.Month == collectionPeriodMonth &&
+                            p.Ukprn == ukprn &&
+                            p.IlrSubmissionDateTime < currentIlrSubmissionDateTime);
 
+            paymentsDataContext.Payment.RemoveRange(oldSubmittedIlrPayments);
+            await paymentsDataContext.SaveChangesAsync(cancellationToken);
+        }
+        
         public async Task SavePayment(PaymentModel paymentData, CancellationToken cancellationToken)
         {
             await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);

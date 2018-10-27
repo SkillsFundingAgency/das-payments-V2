@@ -9,14 +9,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
     [TestFixture]
     public class ValidatePaymentMessageTest
     {
-        private ValidatePaymentMessage validatePaymentMessage;
+        private ValidateIlrSubmission validateIlrSubmission;
 
         [Test]
         public void ShouldBeValidIfCurrentIlrIsNull()
         {
-            validatePaymentMessage = new ValidatePaymentMessage();
+            validateIlrSubmission = new ValidateIlrSubmission();
 
-            var result = validatePaymentMessage.IsLatestIlrPayment(new PaymentMessageValidationRequest
+            var result = validateIlrSubmission.IsLatestIlrPayment(new IlrSubmissionValidationRequest
             {
                 CurrentIlr = null,
             });
@@ -34,9 +34,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
                 IlrSubmissionDateTime = DateTime.MaxValue
             };
 
-            validatePaymentMessage = new ValidatePaymentMessage();
+            validateIlrSubmission = new ValidateIlrSubmission();
 
-            var result = validatePaymentMessage.IsLatestIlrPayment(new PaymentMessageValidationRequest
+            var result = validateIlrSubmission.IsLatestIlrPayment(new IlrSubmissionValidationRequest
             {
                 CurrentIlr = currentIlr,
                 IncomingPaymentUkprn = currentIlr.Ukprn,
@@ -58,9 +58,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
                 IlrSubmissionDateTime  = DateTime.MaxValue
             };
 
-            validatePaymentMessage = new ValidatePaymentMessage();
+            validateIlrSubmission = new ValidateIlrSubmission();
 
-            var result = validatePaymentMessage.IsLatestIlrPayment(new PaymentMessageValidationRequest
+            var result = validateIlrSubmission.IsLatestIlrPayment(new IlrSubmissionValidationRequest
             {
                 CurrentIlr = currentIlr,
                 IncomingPaymentUkprn = currentIlr.Ukprn,
