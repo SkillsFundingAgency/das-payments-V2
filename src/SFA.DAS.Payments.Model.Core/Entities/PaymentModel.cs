@@ -11,8 +11,8 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public long LearnerUln { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
         public decimal Amount { get; set; }
-        public virtual CalendarPeriod CollectionPeriod { get; set; }
-        public virtual CalendarPeriod DeliveryPeriod { get; set; }
+        public CalendarPeriod CollectionPeriod { get; set; }
+        public CalendarPeriod DeliveryPeriod { get; set; }
         public string LearningAimReference { get; set; }
         public int LearningAimProgrammeType { get; set; }
         public int LearningAimStandardCode { get; set; }
@@ -26,6 +26,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public decimal SfaContributionPercentage { get; set; }
         //public virtual EarningsModel Earnings { get; set; }
         public long JobId { get; set; }
-        public DateTime CreationDate { get; set; }
+        //public DateTime CreationDate { get; set; }
     }
 }

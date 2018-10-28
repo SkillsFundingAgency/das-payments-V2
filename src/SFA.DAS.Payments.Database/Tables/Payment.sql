@@ -21,7 +21,7 @@
 	ContractType  TINYINT NOT NULL,
 	TransactionType  TINYINT NOT NULL,
 	FundingSource  TINYINT NOT NULL,
-	IlrSubmissionDateTime DATETIME NOT NULL,
+	IlrSubmissionDateTime DATETIME2 NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5),
 	--EarningsStartDate DATETIME NOT NULL, 
 	--EarningsPlannedEndDate DATETIME NOT NULL, 

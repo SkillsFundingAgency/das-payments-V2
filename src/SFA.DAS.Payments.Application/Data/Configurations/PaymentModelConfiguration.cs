@@ -15,11 +15,20 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.ExternalId).HasColumnName(@"ExternalId").IsRequired();
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier");
             builder.Property(x => x.Amount).HasColumnName(@"Amount");
-            builder.Property(x => x.CollectionPeriod.Name).HasColumnName(@"CollectionPeriodName").IsRequired();
-            builder.Property(x => x.CollectionPeriod.Month).HasColumnName(@"CollectionPeriodMonth").IsRequired();
-            builder.Property(x => x.CollectionPeriod.Year).HasColumnName(@"CollectionPeriodYear").IsRequired();
-            builder.Property(x => x.DeliveryPeriod.Month).HasColumnName(@"DeliveryPeriodMonth").IsRequired();
-            builder.Property(x => x.DeliveryPeriod.Year).HasColumnName(@"DeliveryPeriodYear").IsRequired();
+            builder.OwnsOne(p => p.CollectionPeriod, cp =>
+            {
+                cp.Property(x => x.Month).HasColumnName(@"CollectionPeriodMonth").IsRequired();
+                cp.Property(x => x.Name).HasColumnName(@"CollectionPeriodName").IsRequired();
+                cp.Property(x => x.Year).HasColumnName(@"CollectionPeriodYear").IsRequired();
+                cp.Ignore(x => x.Period);
+            });
+            builder.OwnsOne(p => p.DeliveryPeriod, cp =>
+            {
+                cp.Property(x => x.Month).HasColumnName(@"DeliveryPeriodMonth").IsRequired();
+                cp.Property(x => x.Year).HasColumnName(@"DeliveryPeriodYear").IsRequired();
+                cp.Ignore(x => x.Period);
+                cp.Ignore(x => x.Name);
+            });
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();
             builder.Property(x => x.LearnerReferenceNumber).HasColumnName(@"LearnerReferenceNumber").IsRequired();
             builder.Property(x => x.LearnerUln).HasColumnName(@"LearnerUln").IsRequired();
@@ -42,7 +51,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             //builder.Property(x => x.Earnings.InstalmentAmount).HasColumnName(@"EarningsInstalmentAmount").IsRequired();
             //builder.Property(x => x.Earnings.NumberOfInstalments).HasColumnName(@"EarningsNumberOfInstalments").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();
-            builder.Property(x => x.CreationDate).HasColumnName(@"CreationDate");
+            //builder.Property(x => x.CreationDate).HasColumnName(@"CreationDate");
         }
     }
 }
