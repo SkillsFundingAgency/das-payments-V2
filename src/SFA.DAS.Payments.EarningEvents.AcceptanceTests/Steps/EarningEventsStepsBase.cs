@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using TechTalk.SpecFlow;
 
@@ -70,7 +71,9 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             var lastPeriod = learnerEarnings
                 .GetPeriodsList()
                 .LastOrDefault();
-            if (!string.IsNullOrEmpty(lastPeriod))
+            if (string.IsNullOrEmpty(lastPeriod))
+                Assert.Fail("No periods defined.");
+
             {
                 var periodProperty = completionEarnings.GetType().GetProperty($"Period{lastPeriod}");
                 periodProperty?.SetValue(completionEarnings, learnerEarnings.CompletionAmount);
@@ -92,7 +95,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             var learningDelivery = learner.LearningDeliveries.FirstOrDefault(delivery => delivery.AimSeqNumber == 1); //TODO: will need to change to handle incentives
             if (learningDelivery == null)
             {
-                learner.LearningDeliveries.Add(learningDelivery = new LearningDelivery
+                learner.LearningDeliveries.Add(new LearningDelivery
                 {
                     AimSeqNumber = 1,
                     LearningDeliveryValues = new LearningDeliveryValues

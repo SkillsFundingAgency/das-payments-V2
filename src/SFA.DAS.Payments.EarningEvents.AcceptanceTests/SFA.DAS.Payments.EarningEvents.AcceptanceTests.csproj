@@ -302,11 +302,6 @@
     <Compile Include="Steps\EarningEventsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
     <Compile Include="Steps\LearnerEarnings.cs" />
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learner Finish On Time PV2-234.feature.cs">
-      <DependentUpon>Two Non-Levy Learner Finish On Time PV2-234.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-227.feature.cs">
       <DependentUpon>One Non-Levy Learner Finishes Late PV2-227.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -347,10 +342,6 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
-    <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learner Finish On Time PV2-234.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Two Non-Levy Learner Finish On Time PV2-234.feature.cs</LastGenOutput>
-    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-227.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner Finishes Late PV2-227.feature.cs</LastGenOutput>

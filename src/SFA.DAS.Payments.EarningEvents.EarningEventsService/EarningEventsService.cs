@@ -22,11 +22,10 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
         private IJobContextManager<JobContextMessage> jobContextManager;
         private readonly IPaymentLogger logger;
 
-        public EarningEventsService(StatelessServiceContext context, ILifetimeScope lifetimeScope,/* IJobContextManager<JobContextMessage> jobContextManager,*/ IPaymentLogger logger)
+        public EarningEventsService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger logger)
             : base(context)
         {
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
-            //this.jobContextManager = jobContextManager;
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -52,11 +51,11 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
 
             try
             {
-                logger.LogInfo("Earning Events Stateless Service Start");
+                logger.LogDebug("Starting the Earning Events service.");
                 this.jobContextManager = lifetimeScope.Resolve<IJobContextManager<JobContextMessage>>();
-
                 jobContextManager.OpenAsync(cancellationToken);
                 initialised = true;
+                logger.LogInfo("Started the Earning Events service.");
                 await Task.Delay(Timeout.Infinite, cancellationToken);
             }
             catch (Exception exception) when (!(exception is TaskCanceledException))

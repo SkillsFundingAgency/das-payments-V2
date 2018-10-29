@@ -43,17 +43,16 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             Builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
             Builder.Register(c => new RedisKeyValuePersistenceServiceConfig
             {
-                ConnectionString = ConfigurationManager.ConnectionStrings["AzureRedisConnectionString"]?.ConnectionString,
+                ConnectionString = TestConfiguration.AzureRedisConnectionString,
                 KeyExpiry = new TimeSpan(14, 0, 0, 0)
             }).As<IRedisKeyValuePersistenceServiceConfig>().SingleInstance();
 
             Builder.RegisterType<RedisKeyValuePersistenceService>().As<IKeyValuePersistenceService>()
                 .InstancePerLifetimeScope();
 
-            Builder.Register(c => new TopicConfiguration(
-                    ConfigurationManager.ConnectionStrings["DCServiceBusConnectionString"]?.ConnectionString,
-                    ConfigurationManager.AppSettings["TopicName"],
-                    ConfigurationManager.AppSettings["SubscriptionName"], 1,
+            Builder.Register(c => new TopicConfiguration(TestConfiguration.DcServiceBusConnectionString,
+                    TestConfiguration.TopicName,
+                    TestConfiguration.SubscriptionName, 1,
                     maximumCallbackTimeSpan: TimeSpan.FromMinutes(40)))
                 .As<ITopicConfiguration>();
            

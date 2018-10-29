@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using SFA.DAS.Payments.Model.Core;
 
@@ -17,7 +16,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
         public string CollectionYear { get; set; }
-        //public List<PriceEpisode> PriceEpisodes { get; set; }
         public short EarningYear { get; set; }
         public ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; set; }
         public CalendarPeriod CollectionPeriod { get; set; }

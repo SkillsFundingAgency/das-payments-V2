@@ -73,8 +73,8 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         [When(@"the ILR is submitted and the learner earnings are sent to the earning events service")]
         public async Task WhenTheILRIsSubmittedAndTheLearnerEarningsAreSentToTheEarningEventsService()
         {
-            var learner = CreateLearner();
-            await SendIlrSubmission(learner).ConfigureAwait(true);
+            var learners = CreateLearners();
+            await SendIlrSubmission(learners).ConfigureAwait(true);
         }
 
         [Then(@"the earning events service will generate a contract type 2 earnings event for the learner")]
@@ -103,35 +103,42 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                         .Where(onProgEarning => onProgEarning.Type == expectedEarning.OnProgrammeEarningType)
                         .SelectMany(onProgEarning => onProgEarning.Periods)
                         .Any(period =>
-                           // period.Period.Period == expectedEarning.Period &&
+                            // period.Period.Period == expectedEarning.Period &&
                             period.Amount == expectedEarning.Amount &&
                             period.PriceEpisodeIdentifier == expectedEarning.PriceEpisodeIdentifier)
                     , $"Failed to find expected earning. Price Episode: {expectedEarning.PriceEpisodeIdentifier}, Period: {expectedEarning.Period}, Type: {expectedEarning.OnProgrammeEarningType:G}, Amount: {expectedEarning.Amount}.");
             }
         }
-        
+
         [Given(@"the earnings calculator generates the following FM36 price episodes:")]
         public void GivenTheEarningsCalculatorGeneratesTheFollowingFMPriceEpisodes(Table table)
         {
         }
 
-        private FM36Learner CreateLearner()
+        private List<FM36Learner> CreateLearners()
         {
-            var learner = new FM36Learner
+            var learners = TestSession.Learners.Select(testLearner => new FM36Learner
             {
                 LearnRefNumber = TestSession.Learner.LearnRefNumber,
                 PriceEpisodes = new List<PriceEpisode>(),
                 LearningDeliveries = new List<LearningDelivery>()
-            };
-            IlrLearnerEarnings.ForEach(earnings =>
+            })
+                .ToList();
+
+            learners.ForEach(learner =>
             {
-                AddLearnerEarnings(learner, earnings);
+                IlrLearnerEarnings.ForEach(earnings =>
+                {
+                    AddLearnerEarnings(learner, earnings);
+                });
+                Console.WriteLine($"Created learner: {learner.ToJson()}");
+
             });
-            Console.WriteLine($"Created learner: {learner.ToJson()}");
-            return learner;
+
+            return learners;
         }
 
-        private async Task SendIlrSubmission(FM36Learner learner)
+        private async Task SendIlrSubmission(List<FM36Learner> learners)
         {
             try
             {
@@ -140,7 +147,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 {
                     UKPRN = (int)TestSession.Ukprn,
                     Year = CollectionYear,
-                    Learners = new List<FM36Learner> { learner }
+                    Learners = learners
                 };
                 var json = serializationService.Serialize(ilrSubmission);
                 Console.WriteLine($"ILR Submission: {json}");
