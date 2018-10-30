@@ -7,9 +7,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class ApprenticeshipKeyService : IApprenticeshipKeyService
     {
+        private const string keyDelimiter = "~";
+
+
         public string GenerateApprenticeshipKey(long ukprn, string learnerReferenceNumber, int frameworkCode, int pathwayCode, ProgrammeType programmeType, int standardCode, string learnAimRef)
         {
-            return string.Join("~",
+            return string.Join(keyDelimiter,
                 new[]
                 {
                     ukprn.ToString(CultureInfo.InvariantCulture),
@@ -25,7 +28,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
         public ApprenticeshipKey ParseApprenticeshipKey(string apprenticeshipKey)
         {
-            var keyParts = apprenticeshipKey.Split('~');
+            var keyParts = apprenticeshipKey.Split(Convert.ToChar(keyDelimiter));
             if (keyParts.Length != 7)
                 throw new InvalidOperationException($"Cannot parse the apprenticeship key. invalid number of parts.  Expected 7 but was {keyParts.Length}. Key: {apprenticeshipKey}");
             return new ApprenticeshipKey

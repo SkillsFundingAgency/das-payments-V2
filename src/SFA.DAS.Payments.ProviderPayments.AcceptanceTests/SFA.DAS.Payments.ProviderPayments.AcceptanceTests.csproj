@@ -202,6 +202,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Steps\BindingBootstrapper.cs" />
     <Compile Include="Steps\ProviderPaymentsSteps.cs" />
     <Compile Include="Steps\ProviderPaymentsStepsBase.cs" />
     <Compile Include="TestConfiguration.cs" />
