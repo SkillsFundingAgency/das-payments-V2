@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using TechTalk.SpecFlow;
+﻿using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
     public class LearnRefNumberGenerator
     {
-        private readonly ScenarioContext context;
+        private readonly int sessionIdHash;
         private readonly Dictionary<string, string> learnerLookup;
 
-        public LearnRefNumberGenerator(ScenarioContext context)
+        public LearnRefNumberGenerator(string sessionId)
         {
-            this.context = context;
+            sessionIdHash = sessionId.GetHashCode();
             learnerLookup = new Dictionary<string, string>();
         }
 
@@ -22,9 +20,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 return learnerLookup[learnRefNumber];
             }
 
-            var sessionId = (Guid)context["SessionId"];
-
-            var generated = sessionId.GetHashCode()
+            var generated = sessionIdHash
                             ^ ukprn.GetHashCode()
                             ^ learnRefNumber.GetHashCode();
 

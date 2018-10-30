@@ -2,19 +2,20 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
     public class EndpointCommunicationListener: IEndpointCommunicationListener
     {
-        private readonly EndpointConfiguration endpointConfiguration;
+        private readonly IEndpointInstanceFactory endpointInstanceFactory;
         private readonly IApplicationConfiguration config;
         private IEndpointInstance endpointInstance;
 
-        public EndpointCommunicationListener(EndpointConfiguration endpointConfiguration, IApplicationConfiguration config)
+        public EndpointCommunicationListener(IEndpointInstanceFactory endpointInstanceFactory, IApplicationConfiguration config)
         {
-            this.endpointConfiguration = endpointConfiguration ?? throw new ArgumentNullException(nameof(endpointConfiguration));
+            this.endpointInstanceFactory = endpointInstanceFactory ?? throw new ArgumentNullException(nameof(endpointInstanceFactory));
             this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
@@ -25,13 +26,13 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         /// <returns></returns>
         public async Task<string> OpenAsync(CancellationToken cancellationToken)
         {
-            endpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
+            endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
             return config.EndpointName;
         }
 
         public Task CloseAsync(CancellationToken cancellationToken)
         {
-            return endpointInstance.Stop();
+            return endpointInstance?.Stop();
         }
 
         public void Abort()

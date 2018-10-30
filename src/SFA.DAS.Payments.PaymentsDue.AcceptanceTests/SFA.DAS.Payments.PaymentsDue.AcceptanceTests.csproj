@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\LearnerOnCourse.cs" />
     <Compile Include="Data\OnProgrammeEarning.cs" />
     <Compile Include="Data\OnProgrammePaymentDue.cs" />
     <Compile Include="EndpointNames.cs" />
@@ -98,6 +99,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner Finishes On Time PV2-193.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finishes On Time PV2-197.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two Non-Levy Learners Finishes On Time PV2-197.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\SmallEmployers.feature.cs">
       <AutoGen>True</AutoGen>
@@ -130,6 +136,10 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-193.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner Finishes On Time PV2-193.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finishes On Time PV2-197.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two Non-Levy Learners Finishes On Time PV2-197.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\SmallEmployers.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

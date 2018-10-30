@@ -17,5 +17,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data
         public string TransactionType { get; set; }
 
         public decimal Amount { get; set; }
+
+        public string LearnerId { get; set; }
     }
 }

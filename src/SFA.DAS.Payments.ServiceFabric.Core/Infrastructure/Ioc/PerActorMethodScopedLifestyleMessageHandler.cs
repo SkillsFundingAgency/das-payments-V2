@@ -15,13 +15,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
  
         public override void HandleOneWayMessage(IServiceRemotingRequestMessage requestMessage)
         {
-
             base.HandleOneWayMessage(requestMessage);
         }
  
         public override Task<IServiceRemotingResponseMessage> HandleRequestResponseAsync(IServiceRemotingRequestContext requestContext, IServiceRemotingRequestMessage requestMessage)
         {
-
             return base.HandleRequestResponseAsync(requestContext, requestMessage);
         }
     }

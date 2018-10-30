@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
     public class TestSession
     {
+        public LearnRefNumberGenerator LearnRefNumberGenerator { get; }
         public string SessionId { get; }
         public long Ukprn { get; }
         public List<Learner> Learners { get; }
@@ -23,7 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 .RuleFor(course => course.AimSeqNumber, faker => faker.Random.Short(1))
                 .RuleFor(course => course.FrameworkCode, faker => faker.Random.Short(1))
                 .RuleFor(course => course.FundingLineType, faker => faker.Name.JobDescriptor())
-                .RuleFor(course => course.LearnAimRef, faker => "ZPROG001")
+                .RuleFor(course => course.LearnAimRef, faker => faker.Random.AlphaNumeric(10))
                 .RuleFor(course => course.LearningPlannedEndDate, DateTime.Today.AddMonths(12))
                 .RuleFor(course => course.LearningStartDate, DateTime.Today)
                 .RuleFor(course => course.PathwayCode, faker => faker.Random.Short(1))
@@ -34,8 +35,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
             Ukprn = GenerateId("ukprn");
-            Learners = new List<Learner> { GenerateLearner() };
-            JobId = GenerateId(Guid.NewGuid().ToString());
+            Learners = new List<Learner>();
+            JobId = GenerateId("JobId");
+            LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
         }
 
         public long GenerateId(string idKey, int maxValue = 1000000)
@@ -43,6 +45,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var id = random.Next(maxValue);
             //TODO: make sure that the id isn't already in use.
             return id;
+        }
+
+        public string GenerateLearnerReference(string learnerId)
+        {
+            return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
         public Learner GenerateLearner()

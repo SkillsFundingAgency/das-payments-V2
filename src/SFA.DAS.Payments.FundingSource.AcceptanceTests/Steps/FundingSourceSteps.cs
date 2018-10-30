@@ -36,7 +36,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         [Given(@"a learner is undertaking a training with a training provider")]
         public void GivenALearnerIsUndertakingATrainingWithATrainingProvider()
         {
-            // Use Auto Generated Learning Ref
+            TestSession.Learners.Clear();
+            TestSession.Learners.Add(TestSession.GenerateLearner());
         }
 
         [Given(@"the SFA contribution percentage is (.*)%")]
@@ -50,6 +51,18 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
             ContractType = contractType;
             RequiredPayments = payments.CreateSet<RequiredPayment>().ToList();
+        }
+
+        [Given(@"following learners are undertaking training with a training provider")]
+        public void GivenFollowingLearnersAreUndertakingTrainingWithATrainingProvider(Table table)
+        {
+            TestSession.Learners.Clear();
+            foreach (var row in table.Rows)
+            {
+                var learner = TestSession.GenerateLearner();
+                learner.LearnRefNumber = TestSession.LearnRefNumberGenerator.Generate(learner.Ukprn, row["LearnerId"]);
+                TestSession.Learners.Add(learner);
+            }
         }
 
         [When(@"required payments event is received")]

@@ -19,7 +19,7 @@ Scenario: 1_non_levy_learner_finishes_OnTime
 	| p2                     | 1				| Learning (TT1)	| 1000		|
 
 	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 payable earnings:
+	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 2 				| Completion (TT2)	| 3000		|
 
@@ -29,7 +29,7 @@ Scenario: 1_non_levy_learner_finishes_OnTime
 
 Scenario: 1_non_levy_learner_finishes_OnTime - No history
 	When a payments due event is received
-	Then the required payments component will generate the following contract type 2 payable earnings:
+	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 1 				| Learning (TT1)	| 1000		|
 	| p2                     | 2 				| Completion (TT2)	| 3000		|
