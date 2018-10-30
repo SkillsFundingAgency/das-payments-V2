@@ -9,7 +9,7 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
 {
     [Binding]
-    public abstract class EarningEventsStepsBase: StepsBase
+    public abstract class EarningEventsStepsBase : StepsBase
     {
         public List<PriceEpisode> PriceEpisodes { get => Get<List<PriceEpisode>>(); set => Set(value); }
         protected EarningEventsStepsBase(ScenarioContext scenarioContext) : base(scenarioContext)
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             {
                 AttributeName = "PriceEpisodeBalancePayment",
             };
-           
+
             if (!string.IsNullOrEmpty(lastPeriod))
             {
                 var periodProperty = balancingEarnings.GetType().GetProperty($"Period{lastPeriod}");
@@ -92,18 +92,14 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 priceEpisode.PriceEpisodePeriodisedValues.Add(balancingEarnings);
             }
 
-            var learningDelivery = learner.LearningDeliveries.FirstOrDefault(delivery => delivery.AimSeqNumber == 1); //TODO: will need to change to handle incentives
-            if (learningDelivery == null)
+            learner.LearningDeliveries.Add(new LearningDelivery
             {
-                learner.LearningDeliveries.Add(new LearningDelivery
+                AimSeqNumber = learnerEarnings.AimSequenceNumber,
+                LearningDeliveryValues = new LearningDeliveryValues
                 {
-                    AimSeqNumber = 1,
-                    LearningDeliveryValues = new LearningDeliveryValues
-                    {
-                        LearnAimRef = "ZPROG001",
-                    }
-                });
-            }
+                    LearnAimRef = learnerEarnings.AimReference,
+                }
+            });
         }
     }
 }
