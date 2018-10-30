@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
             try
             {
                 logger.LogDebug("Starting the Earning Events service.");
-                this.jobContextManager = lifetimeScope.Resolve<IJobContextManager<JobContextMessage>>();
+                jobContextManager = lifetimeScope.Resolve<IJobContextManager<JobContextMessage>>();
                 jobContextManager.OpenAsync(cancellationToken);
                 initialised = true;
                 logger.LogInfo("Started the Earning Events service.");
