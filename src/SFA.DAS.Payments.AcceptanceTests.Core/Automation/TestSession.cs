@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
             Ukprn = GenerateId("ukprn");
-            Learners = new List<Learner>();// { GenerateLearner() };
+            Learners = new List<Learner>();
             JobId = Guid.NewGuid().ToString("N");
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
         }

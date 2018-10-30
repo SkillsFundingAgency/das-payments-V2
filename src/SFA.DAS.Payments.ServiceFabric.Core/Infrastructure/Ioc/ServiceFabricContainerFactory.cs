@@ -13,7 +13,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
         {
             var builder = ContainerFactory.CreateBuilder();
             builder.RegisterActor<TActor>();
-            return builder.Build();
+            var container = ContainerFactory.CreateContainer(builder);
+            return container;
         }
 
         public static ContainerBuilder CreateBuilderForStatelessService<TStatelessService>() where TStatelessService: StatelessService
@@ -24,7 +25,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
         public static IContainer CreateContainerForStatelessService<TStatelessService>() where TStatelessService : StatelessService
         {
             var builder = CreateBuilderForStatelessService<TStatelessService>();
-            var container = builder.Build();
+            var container = ContainerFactory.CreateContainer(builder);
             var endpointConfiguration = container.Resolve<EndpointConfiguration>();
             endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
             {

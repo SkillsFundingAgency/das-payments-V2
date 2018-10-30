@@ -134,9 +134,9 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                 {
                     new PriceEpisode
                     {
-                        AgreedPrice = 120,
+                        TotalNegotiatedPrice1 = 120,
                         StartDate = new DateTime(2018, 8, 1),
-                        EndDate = new DateTime(2019, 7, 31),
+                        PlannedEndDate = new DateTime(2019, 7, 31),
                         Identifier = "13"
                     }
                 }),
