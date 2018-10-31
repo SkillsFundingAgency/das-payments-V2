@@ -24,7 +24,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                                         (Environment?.Equals("LOCAL", StringComparison.OrdinalIgnoreCase) ?? false);
         protected decimal SfaContributionPercentage { get => Get<decimal>("sfa_contribution_percentage"); set => Set(value, "sfa_contribution_percentage"); }
         protected byte ContractType { get => Get<byte>("contract_type"); set => Set(value, "contract_type"); }
-
         protected StepsBase(ScenarioContext scenarioContext)
         {
             ScenarioCtx = scenarioContext;
