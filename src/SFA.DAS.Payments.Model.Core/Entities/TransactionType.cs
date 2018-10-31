@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.Model.Core.Entities
 {
-    public enum TransactionType
+    public enum TransactionType :byte
     {
         Learning = 1,
         Completion = 2,

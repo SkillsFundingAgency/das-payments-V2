@@ -179,7 +179,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         public async Task HandleIlrSubMissionShouldCallRequiredServices()
         {
             validateIlrSubmission
-                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
+                .Setup(o => o.IsNewIlrSubmission(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(true);
 
             await providerPaymentsHandlerService.HandleIlrSubMission(ilrSubmittedEvent, default(CancellationToken));
@@ -188,7 +188,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verify(o => o.TryGet(ukprn.ToString(), default(CancellationToken)), Times.Once);
 
             validateIlrSubmission
-                .Verify(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()), Times.Once);
+                .Verify(o => o.IsNewIlrSubmission(It.IsAny<IlrSubmissionValidationRequest>()), Times.Once);
 
         }
 
@@ -196,8 +196,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         public async Task HandleIlrSubMissionShouldNotClearCacheAndDeletePaymentForOldIlrSubmission()
         {
             validateIlrSubmission
-                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
-                .Returns(true);
+                .Setup(o => o.IsNewIlrSubmission(It.IsAny<IlrSubmissionValidationRequest>()))
+                .Returns(false);
 
             await providerPaymentsHandlerService.HandleIlrSubMission(ilrSubmittedEvent, default(CancellationToken));
 
@@ -219,8 +219,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         public async Task HandleIlrSubMissionShouldClearCacheAndDeletePaymentForNewIlrSubmission()
         { 
             validateIlrSubmission
-                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
-                .Returns(false);
+                .Setup(o => o.IsNewIlrSubmission(It.IsAny<IlrSubmissionValidationRequest>()))
+                .Returns(true);
 
             await providerPaymentsHandlerService.HandleIlrSubMission(ilrSubmittedEvent, default(CancellationToken));
 

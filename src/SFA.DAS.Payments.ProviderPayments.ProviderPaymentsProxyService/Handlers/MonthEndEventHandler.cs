@@ -6,6 +6,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handlers
 {
@@ -35,7 +36,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             {
                 var monthEndUkprns = await monthEndEventHandlerService.GetMonthEndUkprns(message.CollectionPeriod.Year, message.CollectionPeriod.Month);
 
-                if (monthEndUkprns == null)
+                if (monthEndUkprns == null || !monthEndUkprns.Any())
                 {
                     paymentLogger.LogWarning("No Provider Ukprn found for month end payment");
                     return;

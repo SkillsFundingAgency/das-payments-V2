@@ -23,13 +23,6 @@
 	FundingSource  TINYINT NOT NULL,
 	IlrSubmissionDateTime DATETIME2 NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5),
-	--EarningsStartDate DATETIME NOT NULL, 
-	--EarningsPlannedEndDate DATETIME NOT NULL, 
-	--EarningsActualEndDate DATETIME NULL,
-	--EarningsCompletionStatus TINYINT NOT NULL,
-	--EarningsCompletionAmount DECIMAL (15,5),
-	--EarningsInstalmentAmount DECIMAL (15,5),
-	--EarningsNumberOfInstalments SMALLINT NOT NULL,
 	JobId  BIGINT NOT NULL,
 	CreationDate DATETIME NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (GETDATE())
 )

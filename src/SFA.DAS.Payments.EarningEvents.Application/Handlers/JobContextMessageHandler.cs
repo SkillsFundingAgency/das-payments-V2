@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                             JobId = message.JobId,
                             Learner = learner,
                             RequestTime = DateTimeOffset.UtcNow,
-                            SubmissionTime = message.SubmissionDateTimeUtc,
+                            IlrSubmissionDateTime = message.SubmissionDateTimeUtc,
                             CollectionYear = fm36Output.Year,
                             CollectionPeriod = 1,
                             Ukprn = fm36Output.UKPRN

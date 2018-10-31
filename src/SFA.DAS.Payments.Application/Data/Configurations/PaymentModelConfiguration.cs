@@ -43,15 +43,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.FundingSource).HasColumnName(@"FundingSource").IsRequired();
             builder.Property(x => x.IlrSubmissionDateTime).HasColumnName(@"IlrSubmissionDateTime").IsRequired();
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage").IsRequired();
-            //builder.Property(x => x.Earnings.StartDate).HasColumnName(@"EarningsStartDate").IsRequired();
-            //builder.Property(x => x.Earnings.PlannedEndDate).HasColumnName(@"EarningsPlannedEndDate").IsRequired();
-            //builder.Property(x => x.Earnings.ActualEndDate).HasColumnName(@"EarningsActualEndDate");
-            //builder.Property(x => x.Earnings.CompletionStatus).HasColumnName(@"EarningsCompletionStatus").IsRequired();
-            //builder.Property(x => x.Earnings.CompletionAmount).HasColumnName(@"EarningsCompletionAmount").IsRequired();
-            //builder.Property(x => x.Earnings.InstalmentAmount).HasColumnName(@"EarningsInstalmentAmount").IsRequired();
-            //builder.Property(x => x.Earnings.NumberOfInstalments).HasColumnName(@"EarningsNumberOfInstalments").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();
-            //builder.Property(x => x.CreationDate).HasColumnName(@"CreationDate");
         }
     }
 }

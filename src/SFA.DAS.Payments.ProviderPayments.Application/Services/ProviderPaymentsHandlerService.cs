@@ -49,25 +49,36 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
         public async Task HandleIlrSubMission(IlrSubmittedEvent message, CancellationToken cancellationToken)
         {
-            var isCurrentProviderIlr = await IsCurrentProviderIlr(message.JobId, message.Ukprn, message.IlrSubmissionDateTime, cancellationToken);
-
-            if (!isCurrentProviderIlr)
+            var currentIlr = await GetCurrentIlrSubmissionEvent(message.Ukprn, cancellationToken);
+            var isNewIlrSubmission = validateIlrSubmission.IsNewIlrSubmission(new IlrSubmissionValidationRequest
             {
-                paymentLogger.LogInfo($"Updating current Ilr Submission Data for Ukprn {message.Ukprn} and Job Id {message.JobId}");
-
-                await ilrSubmittedEventCache.Clear(message.Ukprn.ToString(), cancellationToken);
-                await ilrSubmittedEventCache.Add(message.Ukprn.ToString(), message, cancellationToken);
-
-                paymentLogger.LogDebug($"Successfully Updated current Ilr Submission Data for Ukprn {message.Ukprn} and Job Id {message.JobId}");
-
-                await providerPaymentsRepository.DeleteOldMonthEndPayment(message.CollectionPeriod.Year,
-                                                                           message.CollectionPeriod.Month,
-                                                                            message.Ukprn,
-                                                                            message.IlrSubmissionDateTime,
-                                                                            cancellationToken);
-
-                paymentLogger.LogInfo($"Successfully Deleted Old Month End Payment for Ukprn {message.Ukprn} and Job Id {message.JobId}");
+                IncomingPaymentJobId = message.JobId,
+                IncomingPaymentUkprn = message.Ukprn,
+                IncomingPaymentSubmissionDate = message.IlrSubmissionDateTime,
+                CurrentIlr = currentIlr
+            });
+          
+            if (!isNewIlrSubmission)
+            {
+                paymentLogger.LogInfo($"Ignored same Ilr Submission Data for Ukprn {message.Ukprn} and Job Id {message.JobId} Submission already processed");
+                return;
             }
+            
+            paymentLogger.LogInfo($"Updating current Ilr Submission Data for Ukprn {message.Ukprn} and Job Id {message.JobId}");
+
+            await ilrSubmittedEventCache.Clear(message.Ukprn.ToString(), cancellationToken);
+            await ilrSubmittedEventCache.Add(message.Ukprn.ToString(), message, cancellationToken);
+
+            paymentLogger.LogDebug($"Successfully Updated current Ilr Submission Data for Ukprn {message.Ukprn} and Job Id {message.JobId}");
+
+            await providerPaymentsRepository.DeleteOldMonthEndPayment(message.CollectionPeriod.Year,
+                                                                       message.CollectionPeriod.Month,
+                                                                        message.Ukprn,
+                                                                        message.IlrSubmissionDateTime,
+                                                                        cancellationToken);
+
+            paymentLogger.LogInfo($"Successfully Deleted Old Month End Payment for Ukprn {message.Ukprn} and Job Id {message.JobId}");
+
 
         }
         public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken = default(CancellationToken))

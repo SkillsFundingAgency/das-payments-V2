@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.Model.Core.Entities
 {
-    public enum FundingSourceType
+    public enum FundingSourceType : byte
     {
         Levy = 1,
         CoInvestedSfa = 2,

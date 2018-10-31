@@ -76,6 +76,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.SmallEmployer
 #line 3
 #line 4
  testRunner.Given("a learner is undertaking a training with a training provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 5
+ testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
         }
         
@@ -86,14 +88,14 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.SmallEmployer
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC1-Payment for a 16-18 non-DAS learner, small employer at start", null, new string[] {
                         "SmallEmployerNonDas"});
-#line 7
+#line 8
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 8
- testRunner.Given("the SFA contribution percentage is 100%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 9
+ testRunner.Given("the SFA contribution percentage is 100%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 10
  testRunner.And("the current collection period is R01", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -106,9 +108,9 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "Co-Invested Sfa",
                         "500"});
-#line 10
+#line 11
  testRunner.And("the funding source service generates the following contract type 2 payments:", ((string)(null)), table1, "And ");
-#line 13
+#line 14
  testRunner.When("the funding source payments event are received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -121,7 +123,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "Co-Invested Sfa",
                         "500"});
-#line 14
+#line 15
  testRunner.Then("the provider payments service will store the following payments:", ((string)(null)), table2, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -134,7 +136,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "Co-Invested Sfa",
                         "500"});
-#line 17
+#line 18
  testRunner.And("at month end the provider payments service will publish the following payments", ((string)(null)), table3, "And ");
 #line hidden
             this.ScenarioCleanup();
@@ -145,14 +147,14 @@ this.FeatureBackground();
         public virtual void AC5_PaymentForA16_18Non_DASLearnerEmployerIsNotSmall()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("AC5- Payment for a 16-18 non-DAS learner, employer is not small", null, ((string[])(null)));
-#line 22
+#line 23
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 23
- testRunner.Given("the SFA contribution percentage is 100%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 24
+ testRunner.Given("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 25
  testRunner.And("the current collection period is R01", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -170,9 +172,9 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "Co-Invested Employer",
                         "50"});
-#line 25
+#line 26
  testRunner.And("the funding source service generates the following contract type 2 payments:", ((string)(null)), table4, "And ");
-#line 29
+#line 30
  testRunner.When("the funding source payments event are received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -190,7 +192,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "Co-Invested Employer",
                         "50"});
-#line 30
+#line 31
  testRunner.Then("the provider payments service will store the following payments:", ((string)(null)), table5, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -208,7 +210,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "Co-Invested Employer",
                         "50"});
-#line 34
+#line 35
  testRunner.And("at month end the provider payments service will publish the following payments", ((string)(null)), table6, "And ");
 #line hidden
             this.ScenarioCleanup();

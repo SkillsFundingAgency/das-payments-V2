@@ -1,14 +1,13 @@
 ﻿using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Messages.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
 {
@@ -19,10 +18,12 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
         private IEndpointInstance sender;
         private SfaCoInvestedFundingSourcePaymentEvent fundingSourcePaymentEvent;
         private MonthEndEvent monthEndEvent;
+        private IlrSubmittedEvent ilrSubmittedEvent;
 
         [SetUp]
         public void SetUpAsync()
         {
+
             fundingSourcePaymentEvent = new SfaCoInvestedFundingSourcePaymentEvent
             {
                 ContractType = ContractType.ContractWithSfa,
@@ -40,7 +41,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                     AgreedPrice = 1000m,
                     FundingLineType = "T"
                 },
-                Learner = new Model.Core.Learner
+                Learner = new Learner
                 {
                     Ukprn = 100000,
                     ReferenceNumber = "A1000",
@@ -58,25 +59,44 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
             monthEndEvent = new MonthEndEvent
             {
                 JobId = 1,
-                CollectionPeriod = new CalendarPeriod(2018,1)
+                CollectionPeriod = new CalendarPeriod(2018, 10)
             };
+
+            ilrSubmittedEvent = new IlrSubmittedEvent
+            {
+                Ukprn = fundingSourcePaymentEvent.Ukprn,
+                EventTime = fundingSourcePaymentEvent.EventTime,
+                JobId = fundingSourcePaymentEvent.JobId,
+                IlrSubmissionDateTime = DateTime.UtcNow,
+                Learner = fundingSourcePaymentEvent.Learner,
+                LearningAim = fundingSourcePaymentEvent.LearningAim,
+                CollectionPeriod = fundingSourcePaymentEvent.CollectionPeriod
+            };
+
         }
 
         [Test]
         public async Task ShouldReceiveFundingSourcePaymentEvent()
         {
-            sender = await CreateMessageSender();
+            sender = await CreateMessageSender<SfaCoInvestedFundingSourcePaymentEvent>();
             await sender.Send(fundingSourcePaymentEvent).ConfigureAwait(false);
         }
 
         [Test]
         public async Task ShouldReceiveMonthEndEvent()
         {
-            ///sender = await CreateMessageSender<MonthEndEvent>();
+            sender = await CreateMessageSender<MonthEndEvent>();
             await sender.Send(monthEndEvent).ConfigureAwait(false);
         }
 
-        private async Task<IEndpointInstance> CreateMessageSender()
+        [Test]
+        public async Task ShouldReceiveIlrSubmissionEvent()
+        {
+            sender = await CreateMessageSender<IlrSubmittedEvent>();
+            await sender.Send(ilrSubmittedEvent).ConfigureAwait(false);
+        }
+
+        private async Task<IEndpointInstance> CreateMessageSender<T>()
         {
             var endpointConfiguration = new EndpointConfiguration(EndpointNames.AcceptanceTestEndpointName);
 
@@ -91,7 +111,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                 .ConnectionString(TestConfiguration.ServiceBusConnectionString)
                 .UseForwardingTopology()
                 .Routing()
-                .RouteToEndpoint(typeof(SfaCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
+                .RouteToEndpoint(typeof(T), EndpointNames.ProviderPaymentEndPointName);
 
             endpointConfiguration.SendFailedMessagesTo("sfa-das-payments-providerpayments-errors");
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();

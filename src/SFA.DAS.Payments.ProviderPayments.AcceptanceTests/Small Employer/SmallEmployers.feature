@@ -2,6 +2,7 @@
 
 Background:
 	Given a learner is undertaking a training with a training provider
+	And the payments are for the current collection year
 
 @SmallEmployerNonDas
 Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
@@ -20,7 +21,7 @@ Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 
 	   
 Scenario: AC5- Payment for a 16-18 non-DAS learner, employer is not small
-	Given the SFA contribution percentage is 100%
+	Given the SFA contribution percentage is 90%
 	And the current collection period is R01
 	And the funding source service generates the following contract type 2 payments:
 	| Delivery Period | Transaction Type | Funding Source       | Amount |
