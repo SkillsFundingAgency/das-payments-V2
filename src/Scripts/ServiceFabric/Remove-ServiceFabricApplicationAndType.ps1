@@ -13,7 +13,7 @@ Param(
 
 if (-not $connection){
     write-verbose "Connection to local service fabric cluster: $endpoint"
-    Connect-ServiceFabricCluster -ConnectionEndpoint $endpoint
+    $connection = Connect-ServiceFabricCluster -ConnectionEndpoint $endpoint
 }
     
 
@@ -38,5 +38,5 @@ if ((Get-ServiceFabricApplication -ApplicationTypeName $applicationTypeName)) {
     Unregister-ServiceFabricApplicationType -ApplicationTypeName $applicationTypeName  -ApplicationTypeVersion $applicationTypeVersion -Force
 }
 else {
-    write-host "Application type not found."
+    write-host "Application type not found. "
 }
