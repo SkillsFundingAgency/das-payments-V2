@@ -33,7 +33,8 @@ else {
     write-host "Application not found."
 }
 
-if ((Get-ServiceFabricApplication -ApplicationTypeName $applicationTypeName)) {
+$sfAppType = Get-ServiceFabricApplicationType -ApplicationTypeName $applicationTypeName
+if ($sfAppType) {
     # Unregister the application type
     Unregister-ServiceFabricApplicationType -ApplicationTypeName $applicationTypeName  -ApplicationTypeVersion $applicationTypeVersion -Force
 }
