@@ -5,10 +5,11 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
+using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -24,7 +25,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [Given(@"a learner is undertaking a training with a training provider")]
         public void GivenALearnerIsUndertakingATrainingWithATrainingProvider()
         {
-            // Use Auto Generated Learning Ref
+            TestSession.Learners.Clear();
+            TestSession.Learners.Add(TestSession.GenerateLearner());
         }
 
         [Given(@"the payments are for the current collection year")]
@@ -63,14 +65,16 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [Then(@"the provider payments service will store the following payments:")]
-        public async Task ThenTheProviderPaymentsServiceWillStoreTheFollowingPaymentsAsync(Table expectedPaymentsTable)
+        public void ThenTheProviderPaymentsServiceWillStoreTheFollowingPaymentsAsync(Table expectedPaymentsTable)
         {
             var expectedContract = (Model.Core.Entities.ContractType)ContractType;
             var expectedPaymentsEvent = expectedPaymentsTable.CreateSet<FundingSourcePayment>();
-            var savedPayments = await GetPayemntsAsync(TestSession.JobId);
 
-            WaitForIt(() =>
+
+            WaitForIt( () =>
             {
+                var savedPayments = GetPaymentsAsync(TestSession.JobId).Result;
+
                 return expectedPaymentsEvent.All(expectedEvent =>
                     savedPayments.Any(payment =>
                         expectedContract == payment.ContractType
@@ -81,7 +85,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         && expectedEvent.FundingSourceType == payment.FundingSource
                         && expectedEvent.Amount == payment.Amount
                     ));
-
 
             }, "Failed to find all payment in database");
 
@@ -98,7 +101,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
 
             var expectedProviderPaymentEvents = expectedProviderPayments.CreateSet<FundingSourcePayment>();
-  
+
             WaitForIt(() =>
             {
                 return expectedProviderPaymentEvents.All(expectedEvent =>

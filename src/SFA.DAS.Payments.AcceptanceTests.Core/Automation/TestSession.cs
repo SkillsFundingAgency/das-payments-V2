@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             {
                 Ukprn = Ukprn,
                 Uln = uln,
-                LearnRefNumber = $"ref-{uln}",
+                LearnRefNumber = uln.ToString(),
                 Course = courseFaker.Generate(1).FirstOrDefault()
             };
         }

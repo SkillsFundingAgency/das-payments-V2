@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         {
         }
 
-        protected async Task<List<PaymentModel>> GetPayemntsAsync(long jobId)
+        protected async Task<List<PaymentModel>> GetPaymentsAsync(long jobId)
         {
             var paymentDataContext = Container.Resolve<IPaymentsDataContext>();
             return await paymentDataContext.Payment

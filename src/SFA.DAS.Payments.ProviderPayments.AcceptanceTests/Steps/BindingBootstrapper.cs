@@ -16,20 +16,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         {
         }
 
-        [BeforeTestRun(Order = 51)]
-        public static void AddRoutingConfig()
-        {
-            var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.Conventions().DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
 
-            var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
-            var routing = transportConfig.Routing();
-            routing.RouteToEndpoint(typeof(FundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
-            routing.RouteToEndpoint(typeof(MonthEndEvent), EndpointNames.ProviderPaymentEndPointName);
-            routing.RouteToEndpoint(typeof(IlrSubmittedEvent), EndpointNames.ProviderPaymentEndPointName);
-        }
-
-        [BeforeTestRun(Order = 52)]
+        [BeforeTestRun(Order = 40)]
         public static void SetUpPaymentsDataContext()
         {
             Builder.Register((c, p) =>
@@ -39,5 +27,21 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             }).As<IPaymentsDataContext>().InstancePerDependency();
         }
 
+
+        [BeforeTestRun(Order = 51)]
+        public static void AddRoutingConfig()
+        {
+            var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
+            endpointConfiguration.Conventions().DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
+
+            var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
+            var routing = transportConfig.Routing();
+            routing.RouteToEndpoint(typeof(SfaCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
+            routing.RouteToEndpoint(typeof(EmployerCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
+            routing.RouteToEndpoint(typeof(MonthEndEvent), EndpointNames.ProviderPaymentEndPointName);
+            routing.RouteToEndpoint(typeof(IlrSubmittedEvent), EndpointNames.ProviderPaymentEndPointName);
+        }
+
+       
     }
 }
