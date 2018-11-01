@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
         }
 
         [Test]
-        public void Can_Map_From_Employer_CoInvested_Funding_Source_Event_To_Payment()
+        public void CanMapFromEmployerCoInvestedFundingSourceEventToPayment()
         {
             var employerCoInvested = new EmployerCoInvestedFundingSourcePaymentEvent
             {
@@ -60,6 +60,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.CollectionPeriod.Month.Should().Be(employerCoInvested.CollectionPeriod.Month);
             payment.CollectionPeriod.Year.Should().Be(employerCoInvested.CollectionPeriod.Year);
             payment.CollectionPeriod.Period.Should().Be(employerCoInvested.CollectionPeriod.Period);
+
+
+            payment.DeliveryPeriod.Name.Should().BeEquivalentTo(employerCoInvested.CollectionPeriod.Name);
+            payment.DeliveryPeriod.Month.Should().Be(employerCoInvested.CollectionPeriod.Month);
+            payment.DeliveryPeriod.Year.Should().Be(employerCoInvested.CollectionPeriod.Year);
+            payment.DeliveryPeriod.Period.Should().Be(employerCoInvested.CollectionPeriod.Period);
         }
     }
 }

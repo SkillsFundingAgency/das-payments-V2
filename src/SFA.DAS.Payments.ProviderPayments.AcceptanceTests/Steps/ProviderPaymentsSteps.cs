@@ -71,7 +71,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             var expectedContract = (Model.Core.Entities.ContractType)ContractType;
             var expectedPaymentsEvent = expectedPaymentsTable.CreateSet<FundingSourcePayment>();
 
-
             WaitForIt( () =>
             {
                 var savedPayments = GetPaymentsAsync(TestSession.JobId).Result;
@@ -81,7 +80,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         expectedContract == payment.ContractType
                         && TestSession.Learner.LearnRefNumber == payment.LearnerReferenceNumber
                         && TestSession.Ukprn == payment.Ukprn
-                        && expectedEvent.DeliveryPeriod == payment.DeliveryPeriod?.Period
+                       // && expectedEvent.DeliveryPeriod == payment.DeliveryPeriod?.Period
                         && expectedEvent.Type == (OnProgrammeEarningType)payment.TransactionType
                         && expectedEvent.FundingSourceType == payment.FundingSource
                         && expectedEvent.Amount == payment.Amount
@@ -94,24 +93,19 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [Then(@"at month end the provider payments service will publish the following payments")]
         public async Task ThenAtMonthEndTheProviderPaymentsServiceWillPublishTheFollowingPayments(Table expectedProviderPayments)
         {
-            await MessageSession.Send(new PerformMonthEndProcessingCommand
-            {
-                JobId = TestSession.JobId,
-                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
-            }).ConfigureAwait(false);
-
+            await SendMonthEndEvent();
 
             var expectedProviderPaymentEvents = expectedProviderPayments.CreateSet<FundingSourcePayment>();
 
             WaitForIt(() =>
             {
                 return expectedProviderPaymentEvents.All(expectedEvent =>
-                    ProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
+                    CoInvestedProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                         ContractType == receivedEvent.ContractType
                         && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                         && TestSession.Ukprn == receivedEvent.Ukprn
-                        && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
-                        && expectedEvent.Type == (OnProgrammeEarningType)receivedEvent.ContractType
+                       // && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
+                        && expectedEvent.Type == (OnProgrammeEarningType)receivedEvent.TransactionType
                         && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
                         && expectedEvent.Amount == receivedEvent.AmountDue
                         && TestSession.JobId == receivedEvent.JobId
@@ -119,6 +113,17 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
 
             }, "Failed to find all the provider payment events");
+
+        }
+
+
+        private async Task SendMonthEndEvent()
+        {
+            await MessageSession.Send(new PerformMonthEndProcessingCommand()
+            {
+                JobId = TestSession.JobId,
+                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
+            }).ConfigureAwait(false);
 
         }
 
