@@ -277,7 +277,7 @@
   <ItemGroup>
     <Compile Include="Data\FundingSourcePayment.cs" />
     <Compile Include="EndpointNames.cs" />
-    <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
+    <Compile Include="Handlers\CoInvestedProviderPaymentEventHandler.cs" />
     <Compile Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
