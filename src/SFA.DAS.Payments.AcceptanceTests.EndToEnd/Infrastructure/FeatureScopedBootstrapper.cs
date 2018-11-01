@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
@@ -8,6 +9,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
     {
         public FeatureScopedBootstrapper(FeatureContext context) : base(context)
         {
+        }
+
+        [BeforeTestRun(Order = 2)]
+        public static void AddDcConfig()
+        {
+            DcHelper.AddDcConfig(Builder);
         }
 
         [BeforeFeature(Order = 0)]

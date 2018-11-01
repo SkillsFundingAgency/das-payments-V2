@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using TechTalk.SpecFlow;
@@ -16,10 +17,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     public class EndToEndSteps : StepsBase
     {
+        private readonly DcHelper dcHelper;
         private List<Training> ILR;
 
         public EndToEndSteps(FeatureContext context) : base(context)
         {
+            dcHelper = new DcHelper(Container);
         }
 
         [Given(@"the provider is providing trainging for the following learners")]
@@ -31,7 +34,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
 
         [When(@"the ILR file is submitted for the learners for collection period R(.*)/Current Academic Year")]
-        public void WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(int period)
+        public async Task WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(int period)
         {
             SetCurrentCollectionYear();
             CollectionPeriod = (byte) period;
@@ -43,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 fm36Learners.Add(learner);
             }
 
-
+            await dcHelper.SendIlrSubmission(fm36Learners, TestSession.Ukprn, CollectionYear);
         }
 
         private void PopulateLearner(FM36Learner learner, Training learnerEarnings)
