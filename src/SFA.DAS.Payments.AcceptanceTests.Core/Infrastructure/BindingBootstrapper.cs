@@ -14,6 +14,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         protected BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
+        protected BindingBootstrapper(FeatureContext featureContext) : base(featureContext)
+        {
+        }
 
         public static EndpointConfiguration EndpointConfiguration { get; private set; }
 
@@ -63,19 +66,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             MessageSession = Endpoint.Start(endpointConfiguration).Result;
         }
 
-        protected virtual void SetUpTestSession()
+        protected static void SetUpTestSession(SpecFlowContext context)
         {
             var scope = Container.BeginLifetimeScope();
-            Set((ILifetimeScope)scope,"container_scope");
-            TestSession = new TestSession();
+            context.Set(scope,"container_scope");
+            context.Set(new TestSession());
         }
 
-        protected virtual void CleanUpTestSession()
+        protected static void CleanUpTestSession(SpecFlowContext context)
         {
-            if (!ScenarioCtx.ContainsKey("container_scope"))
+            if (!context.ContainsKey("container_scope"))
                 return;
-            var scope = Get<ILifetimeScope>("container_scope");
-            ScenarioCtx.Remove("container_scope");
+            var scope = context.Get<ILifetimeScope>("container_scope");
+            context.Remove("container_scope");
             scope.Dispose();
         }
     }

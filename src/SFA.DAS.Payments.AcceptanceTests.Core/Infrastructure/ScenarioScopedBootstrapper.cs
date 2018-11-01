@@ -1,4 +1,5 @@
-﻿using TechTalk.SpecFlow;
+﻿using System.Linq;
+using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 {
@@ -9,15 +10,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         }
 
         [BeforeScenario(Order = 0)]
-        protected override void SetUpTestSession()
+        public void SetUpTestSession()
         {
-            base.SetUpTestSession();
+            if (ScenarioContext.Current.ScenarioInfo.Tags.Contains("EndToEnd"))
+                return;
+            SetUpTestSession(Context);
         }
 
         [AfterScenario(Order = 99)]
-        protected override void CleanUpTestSession()
+        public void CleanUpTestSession()
         {
-            base.CleanUpTestSession();
+            if (ScenarioContext.Current.ScenarioInfo.Tags.Contains("EndToEnd"))
+                return;
+            CleanUpTestSession(Context);
         }
     }
 }

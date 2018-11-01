@@ -71,19 +71,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("A non-levy learner withdraws after qualifying period")]
+        [NUnit.Framework.CategoryAttribute("EndToEnd")]
         [NUnit.Framework.TestCaseAttribute("R01/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R02/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R03/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R04/Current Academic Year", null)]
         public virtual void ANon_LevyLearnerWithdrawsAfterQualifyingPeriod(string collection_Period, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-levy learner withdraws after qualifying period", null, exampleTags);
-#line 3
+            string[] @__tags = new string[] {
+                    "EndToEnd"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-levy learner withdraws after qualifying period", null, @__tags);
+#line 5
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "ULN",
+                        "LearnerId",
                         "Priority",
                         "Start Date",
                         "Planned Duration",
@@ -104,9 +111,9 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "withdrawn",
                         "90%"});
-#line 4
+#line 6
  testRunner.Given("the provider is providing trainging for the following learners", ((string)(null)), table1, "Given ");
-#line 7
+#line 9
     testRunner.When(string.Format("the ILR file is submitted for the learners for collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -174,7 +181,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0"});
-#line 8
+#line 10
  testRunner.Then("the following learner earnings should be generated", ((string)(null)), table2, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -207,7 +214,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "1000",
                         "0",
                         "0"});
-#line 22
+#line 24
     testRunner.And("the following payments will be calculated", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -235,7 +242,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Nov/Current Academic Year",
                         "900",
                         "100"});
-#line 28
+#line 30
  testRunner.And("the following provider payments will be generated", ((string)(null)), table4, "And ");
 #line hidden
             this.ScenarioCleanup();

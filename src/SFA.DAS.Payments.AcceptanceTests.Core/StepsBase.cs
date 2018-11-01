@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
     public abstract class StepsBase
     {
-        public ScenarioContext ScenarioCtx { get; }
+        public SpecFlowContext Context { get; }
         public static ContainerBuilder Builder { get; protected set; } // -1
         public static IContainer Container { get; protected set; } // 50
         public static IMessageSession MessageSession { get; protected set; }
@@ -24,22 +24,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                                         (Environment?.Equals("LOCAL", StringComparison.OrdinalIgnoreCase) ?? false);
         protected decimal SfaContributionPercentage { get => Get<decimal>("sfa_contribution_percentage"); set => Set(value, "sfa_contribution_percentage"); }
         protected byte ContractType { get => Get<byte>("contract_type"); set => Set(value, "contract_type"); }
-        protected StepsBase(ScenarioContext scenarioContext)
+
+        protected StepsBase(FeatureContext context)
         {
-            ScenarioCtx = scenarioContext;
+            Context = context;
+        }
+        protected StepsBase(ScenarioContext context)
+        {
+            Context = context;
         }
 
         public T Get<T>(string key = null)// where T : class
         {
-            return key == null ? ScenarioCtx.Get<T>() : ScenarioCtx.Get<T>(key);
+            return key == null ? Context.Get<T>() : Context.Get<T>(key);
         }
 
         public void Set<T>(T item, string key = null)
         {
             if (key == null)
-                ScenarioCtx.Set(item);
+                Context.Set(item);
             else
-                ScenarioCtx.Set(item, key);
+                Context.Set(item, key);
         }
 
         protected void WaitForIt(Func<bool> lookForIt, string failText)

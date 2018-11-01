@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             earning.ToPeriod = toPeriod;
             earning.AcademicYear = academicYear;
 
-            ScenarioCtx[$"ContractType{contractType}OnProgrammeEarningsLearning"] = earning;
+            Context[$"ContractType{contractType}OnProgrammeEarningsLearning"] = earning;
         }
 
         //[Given(@"the following contract type (.*) on programme earnings for period (.*) are provided in the latest ILR for the academic year (.*):")]

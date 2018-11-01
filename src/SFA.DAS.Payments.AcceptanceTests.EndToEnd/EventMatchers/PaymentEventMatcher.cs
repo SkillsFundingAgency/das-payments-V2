@@ -36,9 +36,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var nothingExtra = sessionEvents.Length == matchedExpectations.Count;
 
             var reason = new List<string>();
-            if (allFound) 
+            if (!allFound) 
                 reason.Add($"Did not find {expectedPayments.Count - matchedExpectations.Count} out of {expectedPayments.Count} expected payments");
-            if (nothingExtra) 
+            if (!nothingExtra) 
                 reason.Add($"Found {sessionEvents.Length - matchedExpectations.Count} unexpected payments");
 
             return new Tuple<bool, string>(allFound && nothingExtra, string.Join(" and ", reason));

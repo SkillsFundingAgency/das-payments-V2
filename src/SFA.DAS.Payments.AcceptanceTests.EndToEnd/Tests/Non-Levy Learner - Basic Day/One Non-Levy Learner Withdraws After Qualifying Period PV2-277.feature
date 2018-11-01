@@ -1,8 +1,10 @@
 ﻿Feature: One Non-Levy Learner Withdraws After Qualifying Period PV2-277
 
+@EndToEnd
+
 Scenario Outline: A non-levy learner withdraws after qualifying period
 	Given the provider is providing trainging for the following learners
-		| ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Assesment Price | Actual Duration | Programme Type | Completion Status | SFA Contribution Percentage |
+		| LearnerId | Priority | Start Date             | Planned Duration | Total Training Price | Total Assesment Price | Actual Duration | Programme Type | Completion Status | SFA Contribution Percentage |
 		| learner a | 1        | start of academic year | 12 months        | 12000                | 3000                  | 4 months        | 25             | withdrawn         | 90%                         |
     When the ILR file is submitted for the learners for collection period <collection_period>
 	Then the following learner earnings should be generated
