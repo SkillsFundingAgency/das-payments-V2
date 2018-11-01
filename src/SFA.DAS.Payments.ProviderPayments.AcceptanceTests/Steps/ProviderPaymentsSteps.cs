@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [When(@"the funding source payments event are received")]
         public async Task WhenTheFundingSourcePaymentsEventAreReceivedAsync()
         {
-            var payments = FundingSourcePayments.Select(CreateFundingSourcePaymentEvent).ToList();
+            var payments = FundingSourcePayments.Select(p => CreateFundingSourcePaymentEvent(p)).ToList();
             foreach (var payment in payments)
             {
                 await MessageSession.Send(payment).ConfigureAwait(false);

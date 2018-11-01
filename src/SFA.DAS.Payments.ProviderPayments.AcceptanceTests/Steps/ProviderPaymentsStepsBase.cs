@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
         }
 
-        protected FundingSourcePaymentEvent CreateFundingSourcePaymentEvent(FundingSourcePayment fundingSourcePayment)
+        protected FundingSourcePaymentEvent CreateFundingSourcePaymentEvent(FundingSourcePayment fundingSourcePayment, DateTime? submissionTime = null)
         {
             FundingSourcePaymentEvent paymentEvent;
 
@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             }
 
             paymentEvent.FundingSourceType = fundingSourcePayment.FundingSourceType;
-            paymentEvent.IlrSubmissionDateTime = DateTime.UtcNow;
+            paymentEvent.IlrSubmissionDateTime = submissionTime ?? DateTime.UtcNow;
             paymentEvent.ContractType = (ContractType)ContractType;
             paymentEvent.Learner = TestSession.Learner.ToLearner();
             paymentEvent.Ukprn = TestSession.Ukprn;

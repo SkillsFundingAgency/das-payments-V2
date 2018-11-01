@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 JobId = PreviousJobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear), CollectionPeriod)
+                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
@@ -80,20 +80,21 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [When(@"the provider re-submits an ILR file which triggers the following contract type ""(.*)"" funding source payments:")]
         public async Task WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePayments(byte contractType, Table table)
         {
+            var submissionTime = DateTime.UtcNow;
             var jobId = TestSession.JobId;
             var ilrSubmissionEvent = new IlrSubmittedEvent
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = jobId,
                 EventTime = DateTimeOffset.UtcNow,
-                IlrSubmissionDateTime = DateTime.UtcNow,
-                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear), CollectionPeriod)
+                IlrSubmissionDateTime = submissionTime,
+                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
 
             ContractType = contractType;
-            var fundingSourcePayments = table.CreateSet<FundingSourcePayment>().Select(CreateFundingSourcePaymentEvent).ToList();
+            var fundingSourcePayments = table.CreateSet<FundingSourcePayment>().Select(p => CreateFundingSourcePaymentEvent(p, submissionTime)).ToList();
             foreach (var fundingSourcePaymentEvent in fundingSourcePayments)
             {
                 Console.WriteLine($"Sending funding source event: {fundingSourcePaymentEvent.ToJson()}");

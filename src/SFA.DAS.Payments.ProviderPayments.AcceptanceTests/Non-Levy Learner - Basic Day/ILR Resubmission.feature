@@ -27,3 +27,4 @@ Scenario: ILR resubmission after original ILR submission payments have been stor
 	| 1               | Learning (TT1)   | Co-Invested Employer | 100    |
 	| 1               | Completion (TT2) | Co-Invested Employer | 300    |
 	| 1               | Balancing (TT3)  | Co-Invested Employer | 1350   |
+
