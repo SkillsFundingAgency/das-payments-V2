@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
         private async Task SendMonthEndEvent()
         {
-            await MessageSession.Send(new MonthEndEvent
+            await MessageSession.Send(new PerformMonthEndProcessingCommand()
             {
                 JobId = TestSession.JobId,
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)

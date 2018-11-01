@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [When(@"the provider re-submits an ILR file which triggers the following contract type ""(.*)"" funding source payments:")]
-        public void WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePayments(byte contractType, Table table)
+        public async Task WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePaymentsAsync(byte contractType, Table table)
         {
             var jobId = TestSession.JobId;
             var ilrSubmissionEvent = new IlrSubmittedEvent
