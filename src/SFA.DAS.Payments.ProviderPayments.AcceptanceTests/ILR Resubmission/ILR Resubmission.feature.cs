@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Non_LevyLearner_BasicDay
+namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.ILRResubmission
 {
     using TechTalk.SpecFlow;
     
@@ -183,6 +183,124 @@ this.ScenarioInitialize(scenarioInfo);
                         "1350"});
 #line 22
  testRunner.And("the provider payments service will store the following payments:", ((string)(null)), table3, "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("ILR resubmission with payments received prior to ILR Submission event")]
+        public virtual void ILRResubmissionWithPaymentsReceivedPriorToILRSubmissionEvent()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ILR resubmission with payments received prior to ILR Submission event", null, ((string[])(null)));
+#line 32
+this.ScenarioInitialize(scenarioInfo);
+            this.ScenarioStart();
+#line 33
+ testRunner.Given("the current collection period is R02", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 34
+ testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 35
+ testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Delivery Period",
+                        "Transaction Type",
+                        "Funding Source",
+                        "Amount"});
+            table4.AddRow(new string[] {
+                        "1",
+                        "Learning (TT1)",
+                        "Co-Invested Sfa",
+                        "900"});
+            table4.AddRow(new string[] {
+                        "1",
+                        "Learning (TT1)",
+                        "Co-Invested Employer",
+                        "100"});
+#line 36
+ testRunner.And("the provider has submitted an ILR file which has generated the following contract" +
+                    " type \"2\" payments:", ((string)(null)), table4, "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Delivery Period",
+                        "Transaction Type",
+                        "Funding Source",
+                        "Amount"});
+            table5.AddRow(new string[] {
+                        "1",
+                        "Learning (TT1)",
+                        "Co-Invested Sfa",
+                        "900"});
+            table5.AddRow(new string[] {
+                        "1",
+                        "Completion (TT2)",
+                        "Co-Invested Sfa",
+                        "2700"});
+            table5.AddRow(new string[] {
+                        "1",
+                        "Balancing (TT3)",
+                        "Co-Invested Sfa",
+                        "1800"});
+            table5.AddRow(new string[] {
+                        "1",
+                        "Learning (TT1)",
+                        "Co-Invested Employer",
+                        "100"});
+            table5.AddRow(new string[] {
+                        "1",
+                        "Completion (TT2)",
+                        "Co-Invested Employer",
+                        "300"});
+            table5.AddRow(new string[] {
+                        "1",
+                        "Balancing (TT3)",
+                        "Co-Invested Employer",
+                        "1350"});
+#line 40
+ testRunner.When("the provider re-submits an ILR file which triggers the following contract type \"2" +
+                    "\" funding source payments with the ILR Submission event sent after the payments:" +
+                    "", ((string)(null)), table5, "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Delivery Period",
+                        "TransactionType",
+                        "FundingSource",
+                        "Amount"});
+            table6.AddRow(new string[] {
+                        "1",
+                        "Learning (TT1)",
+                        "Co-Invested Sfa",
+                        "900"});
+            table6.AddRow(new string[] {
+                        "1",
+                        "Completion (TT2)",
+                        "Co-Invested Sfa",
+                        "2700"});
+            table6.AddRow(new string[] {
+                        "1",
+                        "Balancing (TT3)",
+                        "Co-Invested Sfa",
+                        "1800"});
+            table6.AddRow(new string[] {
+                        "1",
+                        "Learning (TT1)",
+                        "Co-Invested Employer",
+                        "100"});
+            table6.AddRow(new string[] {
+                        "1",
+                        "Completion (TT2)",
+                        "Co-Invested Employer",
+                        "300"});
+            table6.AddRow(new string[] {
+                        "1",
+                        "Balancing (TT3)",
+                        "Co-Invested Employer",
+                        "1350"});
+#line 48
+ testRunner.Then("the provider payments service will store the following payments:", ((string)(null)), table6, "Then ");
+#line 56
+ testRunner.And("the provider payments service should remove all payments for the previous Ilr sub" +
+                    "mission", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }
