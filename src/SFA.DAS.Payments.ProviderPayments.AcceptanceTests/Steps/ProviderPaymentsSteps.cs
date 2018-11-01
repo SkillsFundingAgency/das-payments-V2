@@ -69,11 +69,10 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             var expectedContract = (Model.Core.Entities.ContractType)ContractType;
             var expectedPaymentsEvent = expectedPaymentsTable.CreateSet<FundingSourcePayment>();
 
-            WaitForIt( () =>
+            WaitForIt(() =>
             {
-                var savedPayments = GetPaymentsAsync(TestSession.JobId).Result;
-
-                return expectedPaymentsEvent.All(expectedEvent =>
+                var savedPayments = GetPayments(TestSession.JobId);
+                var found = expectedPaymentsEvent.All(expectedEvent =>
                     savedPayments.Any(payment =>
                         expectedContract == payment.ContractType
                         && TestSession.Learner.LearnRefNumber == payment.LearnerReferenceNumber
@@ -83,9 +82,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         && expectedEvent.FundingSourceType == payment.FundingSource
                         && expectedEvent.Amount == payment.Amount
                     ));
-
+                return found;
             }, "Failed to find all payment in database");
-
         }
 
         [Then(@"at month end the provider payments service will publish the following payments")]

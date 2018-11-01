@@ -19,21 +19,20 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
     {
 
         public List<FundingSourcePayment> FundingSourcePayments { get => Get<List<FundingSourcePayment>>(); set => Set(value); }
-        public IPaymentsDataContext DataContext => Container.Resolve<IPaymentsDataContext>();
 
         protected ProviderPaymentsStepsBase(ScenarioContext scenarioContext) : base(scenarioContext)
         {
 
         }
 
-        protected async Task<List<PaymentModel>> GetPaymentsAsync(long jobId)
+        protected List<PaymentModel> GetPayments(long jobId)
         {
             var paymentDataContext = Container.Resolve<IPaymentsDataContext>();
-            var payments = await paymentDataContext.Payment
+            var payments = paymentDataContext.Payment
                                   .Where(o => o.JobId == jobId)
-                                  .ToListAsync().ConfigureAwait(false);
+                .ToList();
 
-            payments?.ForEach(o =>
+            payments.ForEach(o =>
             {
                 o.CollectionPeriod = new CalendarPeriod(o.CollectionPeriod.Year, o.CollectionPeriod.Month);
                 o.DeliveryPeriod = new CalendarPeriod(o.DeliveryPeriod.Year, o.DeliveryPeriod.Month);

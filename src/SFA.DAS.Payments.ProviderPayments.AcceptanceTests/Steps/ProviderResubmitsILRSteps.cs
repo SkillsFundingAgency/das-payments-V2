@@ -2,6 +2,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -30,12 +32,13 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             ContractType = contractType;
             var previousPayments = table.CreateSet<FundingSourcePayment>().ToList();
             var payments = previousPayments.Select(p => CreatePayment(p, PreviousJobId, submissionTime)).ToList();
+            var paymentDataContext = Container.Resolve<IPaymentsDataContext>();
             foreach (var payment in payments)
             {
-                DataContext.Payment.Add(payment);
+                paymentDataContext.Payment.Add(payment);
             }
 
-            DataContext.SaveChanges();
+            paymentDataContext.SaveChanges();
             Console.WriteLine("Stored previous submission payments to the db.");
             var ilrSubmissionEvent = new IlrSubmittedEvent
             {
@@ -131,7 +134,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [Then(@"the provider payments service should remove all payments for the previous Ilr submission")]
         public void ThenTheProviderPaymentsServiceShouldRemoveAllPaymentsForJobId()
         {
-            WaitForIt(() => !DataContext.Payment.Any(p => p.JobId == PreviousJobId),
+            var dataContext = Container.Resolve<IPaymentsDataContext>();
+            WaitForIt(() => !dataContext.Payment.Any(p => p.JobId == PreviousJobId),
                 $"The payments for the previous ILR submission were not removed.  Previous Job Id: {PreviousJobId}.");
         }
     }
