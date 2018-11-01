@@ -17,7 +17,5 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers
             ReceivedEvents.Add(message);
             await Task.CompletedTask;
         }
-
     }
-
 }

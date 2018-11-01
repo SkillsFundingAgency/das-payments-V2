@@ -31,11 +31,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 .RuleFor(course => course.ProgrammeType, faker => faker.Random.Short(1))
                 .RuleFor(course => course.StandardCode, faker => faker.Random.Int(1))
                 .RuleFor(course => course.AgreedPrice, 15000);
-            
+
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
             Ukprn = GenerateId("ukprn");
-            Learners = new List<Learner>();
+            Learners = new List<Learner> { GenerateLearner() };
             JobId = GenerateId("JobId");
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
         }

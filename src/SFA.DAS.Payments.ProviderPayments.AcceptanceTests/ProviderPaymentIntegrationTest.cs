@@ -69,8 +69,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                 EventTime = fundingSourcePaymentEvent.EventTime,
                 JobId = fundingSourcePaymentEvent.JobId,
                 IlrSubmissionDateTime = DateTime.UtcNow,
-                Learner = fundingSourcePaymentEvent.Learner,
-                LearningAim = fundingSourcePaymentEvent.LearningAim,
                 CollectionPeriod = fundingSourcePaymentEvent.CollectionPeriod
             };
 
