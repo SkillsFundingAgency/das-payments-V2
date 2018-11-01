@@ -18,20 +18,21 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Non_LevyLearner_Basi
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("One Non-Levy Learner Finishes Early PV2-195")]
-    public partial class OneNon_LevyLearnerFinishesEarlyPV2_195Feature
+    [NUnit.Framework.DescriptionAttribute("Provider resubmits ILR")]
+    public partial class ProviderResubmitsILRFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "One Non-Levy Learner Finishes Early PV2-195.feature"
+#line 1 "ILR Resubmission.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "One Non-Levy Learner Finishes Early PV2-195", "Provider earnings and payments where learner completes earlier than planned", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Provider resubmits ILR", "\tAs a Provider \r\n\tI would like to be able to submit my ILR files multiple times i" +
+                    "n the same period", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -69,31 +70,17 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Non_LevyLearner_Basi
             testRunner.CollectScenarioErrors();
         }
         
-        public virtual void FeatureBackground()
-        {
-#line 4
-#line 5
- testRunner.Given("a learner is undertaking a training with a training provider", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 6
- testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-        }
-        
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("A non-DAS learner, learner finishes early")]
-        [NUnit.Framework.CategoryAttribute("NonDas_BasicDay")]
-        public virtual void ANon_DASLearnerLearnerFinishesEarly()
+        [NUnit.Framework.DescriptionAttribute("ILR resubmission after original ILR submission payments have been stored")]
+        public virtual void ILRResubmissionAfterOriginalILRSubmissionPaymentsHaveBeenStored()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-DAS learner, learner finishes early", null, new string[] {
-                        "NonDas_BasicDay"});
-#line 9
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("ILR resubmission after original ILR submission payments have been stored", null, ((string[])(null)));
+#line 5
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 4
-this.FeatureBackground();
-#line 10
+#line 6
  testRunner.Given("the current collection period is R02", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 11
+#line 7
  testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -108,38 +95,17 @@ this.FeatureBackground();
                         "900"});
             table1.AddRow(new string[] {
                         "1",
-                        "Completion (TT2)",
-                        "Co-Invested Sfa",
-                        "2700"});
-            table1.AddRow(new string[] {
-                        "1",
-                        "Balancing (TT3)",
-                        "Co-Invested Sfa",
-                        "1800"});
-            table1.AddRow(new string[] {
-                        "1",
                         "Learning (TT1)",
                         "Co-Invested Employer",
                         "100"});
-            table1.AddRow(new string[] {
-                        "1",
-                        "Completion (TT2)",
-                        "Co-Invested Employer",
-                        "300"});
-            table1.AddRow(new string[] {
-                        "1",
-                        "Balancing (TT3)",
-                        "Co-Invested Employer",
-                        "1350"});
-#line 12
- testRunner.And("the funding source service generates the following contract type 2 payments:", ((string)(null)), table1, "And ");
-#line 20
- testRunner.When("the funding source payments event are received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 8
+ testRunner.And("the provider has submitted an ILR file with job id \"12345\" which has generated th" +
+                    "e following payments:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
-                        "TransactionType",
-                        "FundingSource",
+                        "Transaction Type",
+                        "Funding Source",
                         "Amount"});
             table2.AddRow(new string[] {
                         "1",
@@ -171,8 +137,11 @@ this.FeatureBackground();
                         "Balancing (TT3)",
                         "Co-Invested Employer",
                         "1350"});
-#line 21
- testRunner.Then("the provider payments service will store the following payments:", ((string)(null)), table2, "Then ");
+#line 12
+ testRunner.When("the provider re-submits an ILR file with job id \"67890\" which triggers the follow" +
+                    "ing funding source payments:", ((string)(null)), table2, "When ");
+#line 20
+ testRunner.Then("the provider payments service should remove all payments for job id \"12345\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -209,8 +178,8 @@ this.FeatureBackground();
                         "Balancing (TT3)",
                         "Co-Invested Employer",
                         "1350"});
-#line 29
- testRunner.And("at month end the provider payments service will publish the following payments", ((string)(null)), table3, "And ");
+#line 21
+ testRunner.And("the provider payments service will store the following payments:", ((string)(null)), table3, "And ");
 #line hidden
             this.ScenarioCleanup();
         }

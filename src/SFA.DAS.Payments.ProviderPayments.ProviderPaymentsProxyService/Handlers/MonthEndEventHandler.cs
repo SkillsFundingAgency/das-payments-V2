@@ -7,10 +7,11 @@ using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Internal;
+using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handlers
 {
-    public class MonthEndEventHandler : IHandleMessages<MonthEndEvent>
+    public class MonthEndEventHandler : IHandleMessages<PerformMonthEndProcessingCommand>
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly IExecutionContext executionContext;
@@ -25,7 +26,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             this.monthEndEventHandlerService = monthEndEventHandlerService;
         }
 
-        public async Task Handle(MonthEndEvent message, IMessageHandlerContext context)
+        public async Task Handle(PerformMonthEndProcessingCommand message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing Month End Event for Message Id : {context.MessageId}");
 

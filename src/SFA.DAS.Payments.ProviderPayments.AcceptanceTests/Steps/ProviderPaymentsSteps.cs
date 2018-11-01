@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -93,7 +94,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [Then(@"at month end the provider payments service will publish the following payments")]
         public async Task ThenAtMonthEndTheProviderPaymentsServiceWillPublishTheFollowingPayments(Table expectedProviderPayments)
         {
-            await MessageSession.Send(new MonthEndEvent
+            await MessageSession.Send(new PerformMonthEndProcessingCommand
             {
                 JobId = TestSession.JobId,
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
