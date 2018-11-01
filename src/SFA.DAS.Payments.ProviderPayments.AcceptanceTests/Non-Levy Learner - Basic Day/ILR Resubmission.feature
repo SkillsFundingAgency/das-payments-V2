@@ -4,12 +4,13 @@
 
 Scenario: ILR resubmission after original ILR submission payments have been stored
 	Given the current collection period is R02
+	And the SFA contribution percentage is 90%
 	And the payments are for the current collection year
-	And the provider has submitted an ILR file with job id "12345" which has generated the following payments:
+	And the provider has submitted an ILR file which has generated the following contract type "2" payments:
 	| Delivery Period | Transaction Type | Funding Source       | Amount |
 	| 1               | Learning (TT1)   | Co-Invested Sfa      | 900    |
 	| 1               | Learning (TT1)   | Co-Invested Employer | 100    |
-	When the provider re-submits an ILR file with job id "67890" which triggers the following funding source payments:
+	When the provider re-submits an ILR file which triggers the following contract type "2" funding source payments:
 	| Delivery Period | Transaction Type | Funding Source       | Amount |
 	| 1               | Learning (TT1)   | Co-Invested Sfa      | 900    |
 	| 1               | Completion (TT2) | Co-Invested Sfa      | 2700   |

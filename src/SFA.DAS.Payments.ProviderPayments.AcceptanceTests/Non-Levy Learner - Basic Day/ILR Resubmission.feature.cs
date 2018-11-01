@@ -81,6 +81,8 @@ this.ScenarioInitialize(scenarioInfo);
 #line 6
  testRunner.Given("the current collection period is R02", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 7
+ testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 8
  testRunner.And("the payments are for the current collection year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -98,9 +100,9 @@ this.ScenarioInitialize(scenarioInfo);
                         "Learning (TT1)",
                         "Co-Invested Employer",
                         "100"});
-#line 8
- testRunner.And("the provider has submitted an ILR file with job id \"12345\" which has generated th" +
-                    "e following payments:", ((string)(null)), table1, "And ");
+#line 9
+ testRunner.And("the provider has submitted an ILR file which has generated the following contract" +
+                    " type \"2\" payments:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -137,10 +139,10 @@ this.ScenarioInitialize(scenarioInfo);
                         "Balancing (TT3)",
                         "Co-Invested Employer",
                         "1350"});
-#line 12
- testRunner.When("the provider re-submits an ILR file with job id \"67890\" which triggers the follow" +
-                    "ing funding source payments:", ((string)(null)), table2, "When ");
-#line 20
+#line 13
+ testRunner.When("the provider re-submits an ILR file which triggers the following contract type \"2" +
+                    "\" funding source payments:", ((string)(null)), table2, "When ");
+#line 21
  testRunner.Then("the provider payments service should remove all payments for job id \"12345\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -178,7 +180,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Balancing (TT3)",
                         "Co-Invested Employer",
                         "1350"});
-#line 21
+#line 22
  testRunner.And("the provider payments service will store the following payments:", ((string)(null)), table3, "And ");
 #line hidden
             this.ScenarioCleanup();
