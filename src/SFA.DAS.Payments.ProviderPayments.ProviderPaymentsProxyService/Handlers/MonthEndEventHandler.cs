@@ -1,7 +1,6 @@
 ﻿using ESFA.DC.Logging.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
@@ -58,7 +57,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError($"Error while handling Provider Payments Month End  ProxyService Event ", ex);
+                paymentLogger.LogError("Error while handling Provider Payments Month End  ProxyService Event ", ex);
                 throw;
             }
         }

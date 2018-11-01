@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError($"Error while handling Provider Payments Ilr Submitted ProxyService Event ", ex);
+                paymentLogger.LogError("Error while handling Provider Payments Ilr Submitted ProxyService Event ", ex);
                 throw;
             }
 

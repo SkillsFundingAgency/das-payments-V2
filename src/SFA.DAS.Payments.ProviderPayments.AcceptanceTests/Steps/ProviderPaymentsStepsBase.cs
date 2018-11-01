@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
             paymentEvent.FundingSourceType = fundingSourcePayment.FundingSourceType;
             paymentEvent.IlrSubmissionDateTime = DateTime.UtcNow;
-            paymentEvent.ContractType = (Model.Core.Entities.ContractType)ContractType;
+            paymentEvent.ContractType = (ContractType)ContractType;
             paymentEvent.Learner = TestSession.Learner.ToLearner();
             paymentEvent.Ukprn = TestSession.Ukprn;
             paymentEvent.OnProgrammeEarningType = fundingSourcePayment.Type;
