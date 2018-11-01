@@ -281,17 +281,12 @@
     <Compile Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>ILR Resubmission.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner Finishes Early PV2-195.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-196.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner Finishes Late PV2-196.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-193.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner Finishes On Time PV2-193.feature</DependentUpon>
     </Compile>
     <Compile Include="ProviderPaymentIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -317,17 +312,13 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
+    <None Include="Non-Levy Learner - Basic Day\ILR Resubmission.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ILR Resubmission.feature.cs</LastGenOutput>
+    </None>
     <None Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner Finishes Early PV2-195.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-196.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner Finishes Late PV2-196.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes On Time PV2-193.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner Finishes On Time PV2-193.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <None Include="Small Employer\SmallEmployers.feature">

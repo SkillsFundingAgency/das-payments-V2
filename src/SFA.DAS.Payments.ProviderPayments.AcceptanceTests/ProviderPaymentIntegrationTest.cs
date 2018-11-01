@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
 {
@@ -17,7 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
     {
         private IEndpointInstance sender;
         private SfaCoInvestedFundingSourcePaymentEvent fundingSourcePaymentEvent;
-        private MonthEndEvent monthEndEvent;
+        private PerformMonthEndProcessingCommand performMonthEndProcessingCommand;
         private IlrSubmittedEvent ilrSubmittedEvent;
 
         [SetUp]
@@ -56,7 +57,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                 IlrSubmissionDateTime = DateTime.UtcNow
             };
 
-            monthEndEvent = new MonthEndEvent
+            performMonthEndProcessingCommand = new PerformMonthEndProcessingCommand
             {
                 JobId = 1,
                 CollectionPeriod = new CalendarPeriod(2018, 10)
@@ -85,8 +86,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
         [Test]
         public async Task ShouldReceiveMonthEndEvent()
         {
-            sender = await CreateMessageSender<MonthEndEvent>();
-            await sender.Send(monthEndEvent).ConfigureAwait(false);
+            sender = await CreateMessageSender<PerformMonthEndProcessingCommand>();
+            await sender.Send(performMonthEndProcessingCommand).ConfigureAwait(false);
         }
 
         [Test]
