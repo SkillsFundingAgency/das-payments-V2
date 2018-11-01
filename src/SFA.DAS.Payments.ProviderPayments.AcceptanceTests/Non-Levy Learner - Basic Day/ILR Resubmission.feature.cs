@@ -143,7 +143,8 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.When("the provider re-submits an ILR file which triggers the following contract type \"2" +
                     "\" funding source payments:", ((string)(null)), table2, "When ");
 #line 21
- testRunner.Then("the provider payments service should remove all payments for job id \"12345\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the provider payments service should remove all payments for the previous Ilr sub" +
+                    "mission", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",

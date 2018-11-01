@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [When(@"the provider re-submits an ILR file which triggers the following contract type ""(.*)"" funding source payments:")]
-        public void WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePayments(byte contractType, Table table)
+        public async Task WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePayments(byte contractType, Table table)
         {
             var jobId = TestSession.JobId;
             var ilrSubmissionEvent = new IlrSubmittedEvent
@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 Ukprn = TestSession.Ukprn,
                 JobId = jobId,
                 EventTime = DateTimeOffset.UtcNow,
-                IlrSubmissionDateTime = DateTime.UtcNow.AddMinutes(-10),
+                IlrSubmissionDateTime = DateTime.UtcNow,
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear), CollectionPeriod)
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");

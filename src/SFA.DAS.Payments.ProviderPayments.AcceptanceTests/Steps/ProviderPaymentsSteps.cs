@@ -155,6 +155,5 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             paymentEvent.PriceEpisodeIdentifier = "P1";
             return paymentEvent;
         }
-
     }
 }

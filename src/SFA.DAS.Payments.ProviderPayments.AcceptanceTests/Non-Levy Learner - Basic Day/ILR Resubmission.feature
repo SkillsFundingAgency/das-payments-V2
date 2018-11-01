@@ -18,7 +18,7 @@ Scenario: ILR resubmission after original ILR submission payments have been stor
 	| 1               | Learning (TT1)   | Co-Invested Employer | 100    |
 	| 1               | Completion (TT2) | Co-Invested Employer | 300    |
 	| 1               | Balancing (TT3)  | Co-Invested Employer | 1350   |
-	Then the provider payments service should remove all payments for job id "12345"
+	Then the provider payments service should remove all payments for the previous Ilr submission
 	And the provider payments service will store the following payments:
 	| Delivery Period | TransactionType  | FundingSource        | Amount |
 	| 1               | Learning (TT1)   | Co-Invested Sfa      | 900    |
