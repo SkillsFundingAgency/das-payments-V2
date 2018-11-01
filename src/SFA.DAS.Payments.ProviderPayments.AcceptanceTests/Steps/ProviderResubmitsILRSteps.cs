@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [When(@"the provider re-submits an ILR file which triggers the following contract type ""(.*)"" funding source payments:")]
-        public async Task WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePaymentsAsync(byte contractType, Table table)
+        public async Task WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePayments(byte contractType, Table table)
         {
             var jobId = TestSession.JobId;
             var ilrSubmissionEvent = new IlrSubmittedEvent
@@ -80,24 +80,27 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 Ukprn = TestSession.Ukprn,
                 JobId = jobId,
                 EventTime = DateTimeOffset.UtcNow,
-                IlrSubmissionDateTime = DateTime.UtcNow.AddMinutes(-10),
+                IlrSubmissionDateTime = DateTime.UtcNow,
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear), CollectionPeriod)
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
 
             ContractType = contractType;
-            var previousPayments = table.CreateSet<FundingSourcePayment>().ToList();
-            DataContext.Payment.AddRange(previousPayments.Select(p => CreatePayment(p, jobId)).ToList());
-            DataContext.SaveChanges();
-            Console.WriteLine("Stored previous submission payments to the db.");
+            var fundingSourcePayments = table.CreateSet<FundingSourcePayment>().Select(CreateFundingSourcePaymentEvent).ToList();
+            foreach (var fundingSourcePaymentEvent in fundingSourcePayments)
+            {
+                Console.WriteLine($"Sending funding source event: {fundingSourcePaymentEvent.ToJson()}");
+                await MessageSession.Send(fundingSourcePaymentEvent).ConfigureAwait(false);
+            }
+            Console.WriteLine("sent submission payments.");
         }
 
         [Then(@"the provider payments service should remove all payments for the previous Ilr submission")]
-        public void ThenTheProviderPaymentsServiceShouldRemoveAllPaymentsForJobId(int p0)
+        public void ThenTheProviderPaymentsServiceShouldRemoveAllPaymentsForJobId()
         {
-            ScenarioContext.Current.Pending();
+            WaitForIt(() => !DataContext.Payment.Any(p => p.JobId == PreviousJobId),
+                $"The payments for the previous ILR submission were not removed.  Previous Job Id: {PreviousJobId}.");
         }
-
     }
 }
