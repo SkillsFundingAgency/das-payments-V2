@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
     public class ProviderResubmitsILRSteps : ProviderPaymentsStepsBase
     {
 
-        protected long PreviousJobId { get => Get<long>("previous_job_id");  set => Set(value, "previous_job_id"); }
+        protected long PreviousJobId { get => Get<long>("previous_job_id"); set => Set(value, "previous_job_id"); }
 
         public ProviderResubmitsILRSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
@@ -25,10 +25,16 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [Given(@"the provider has submitted an ILR file which has generated the following contract type ""(.*)"" payments:")]
         public async Task GivenTheProviderHasSubmittedAnILRFileWithJobIdWhichHasGeneratedTheFollowingPayments(byte contractType, Table table)
         {
+            var submissionTime = DateTime.UtcNow.AddMinutes(-10);
             PreviousJobId = TestSession.GenerateId("previous_job_id");
             ContractType = contractType;
             var previousPayments = table.CreateSet<FundingSourcePayment>().ToList();
-            DataContext.Payment.AddRange(previousPayments.Select(p => CreatePayment(p, PreviousJobId)).ToList());
+            var payments = previousPayments.Select(p => CreatePayment(p, PreviousJobId, submissionTime)).ToList();
+            foreach (var payment in payments)
+            {
+                DataContext.Payment.Add(payment);
+            }
+
             DataContext.SaveChanges();
             Console.WriteLine("Stored previous submission payments to the db.");
             var ilrSubmissionEvent = new IlrSubmittedEvent
@@ -36,19 +42,19 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 Ukprn = TestSession.Ukprn,
                 JobId = PreviousJobId,
                 EventTime = DateTimeOffset.UtcNow,
-                IlrSubmissionDateTime = DateTime.UtcNow.AddMinutes(-10),
+                IlrSubmissionDateTime = submissionTime,
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear), CollectionPeriod)
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
         }
 
-        private PaymentModel CreatePayment(FundingSourcePayment fundingSourcePayment, long jobId)
+        private PaymentModel CreatePayment(FundingSourcePayment fundingSourcePayment, long jobId, DateTime? ilrSubmissionDate = null)
         {
             return new PaymentModel
             {
                 FundingSource = fundingSourcePayment.FundingSourceType,
-                IlrSubmissionDateTime = DateTime.UtcNow,
+                IlrSubmissionDateTime = ilrSubmissionDate ?? DateTime.UtcNow,
                 ContractType = (ContractType)ContractType,
                 LearnerReferenceNumber = TestSession.Learner.LearnRefNumber,
                 Ukprn = TestSession.Ukprn,
