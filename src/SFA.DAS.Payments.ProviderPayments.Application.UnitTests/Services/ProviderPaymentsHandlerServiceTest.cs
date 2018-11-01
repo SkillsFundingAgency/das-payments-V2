@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
         private Mock<IDataCache<IlrSubmittedEvent>> ilrSubmittedEventCache;
         private Mock<IValidateIlrSubmission> validateIlrSubmission;
-        private readonly Mock<IPaymentLogger> paymentLogger;
+
 
         private long ukprn = 10000;
         private long jobId = 10000;
@@ -163,7 +163,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         {
             short year = 2018;
             byte month = 9;
-            long ukprn = 1000;
             var cancellationToken = new CancellationToken();
 
             var results = await providerPaymentsHandlerService.GetMonthEndPayments(year, month, ukprn, cancellationToken);

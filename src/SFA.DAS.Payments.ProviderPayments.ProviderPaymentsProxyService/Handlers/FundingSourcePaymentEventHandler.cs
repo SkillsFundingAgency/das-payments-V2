@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError($"Error while handling Provider PaymentsProxyService handler Event", ex);
+                paymentLogger.LogError("Error while handling Provider PaymentsProxyService handler Event", ex);
                 throw;
             }
 

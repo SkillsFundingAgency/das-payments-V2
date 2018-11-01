@@ -1,6 +1,5 @@
 ﻿using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -8,7 +7,6 @@ using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using TechTalk.SpecFlow;

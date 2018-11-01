@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError($"Error while processing Process Provider Month End Command", ex);
+                paymentLogger.LogError("Error while processing Process Provider Month End Command", ex);
                 throw;
             }
         }

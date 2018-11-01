@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
 
         protected override async Task OnActivateAsync()
         {
-            if (!long.TryParse(actorId.GetStringId(), out ukprn)) throw new Exception($"Unable to cast Actor Id to Ukprn");
+            if (!long.TryParse(actorId.GetStringId(), out ukprn)) throw new Exception("Unable to cast Actor Id to Ukprn");
 
             var reliableCollectionCache = new ReliableCollectionCache<IlrSubmittedEvent>(StateManager);
             paymentsHandlerService = new ProviderPaymentsHandlerService(providerPaymentsRepository, reliableCollectionCache, validateIlrSubmission, paymentLogger);
