@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         expectedContract == payment.ContractType
                         && TestSession.Learner.LearnRefNumber == payment.LearnerReferenceNumber
                         && TestSession.Ukprn == payment.Ukprn
-                       // && expectedEvent.DeliveryPeriod == payment.DeliveryPeriod?.Period
+                        && expectedEvent.DeliveryPeriod == payment.DeliveryPeriod?.Period
                         && expectedEvent.Type == (OnProgrammeEarningType)payment.TransactionType
                         && expectedEvent.FundingSourceType == payment.FundingSource
                         && expectedEvent.Amount == payment.Amount
@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         ContractType == receivedEvent.ContractType
                         && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                         && TestSession.Ukprn == receivedEvent.Ukprn
-                       // && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
+                        && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
                         && expectedEvent.Type == (OnProgrammeEarningType)receivedEvent.TransactionType
                         && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
                         && expectedEvent.Amount == receivedEvent.AmountDue
