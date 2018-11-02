@@ -13,5 +13,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data
                 OnProgrammeEarningType.Completion :
                 OnProgrammeEarningType.Balancing;
         public string TransactionType { get; set; }
+
+        public string LearnerId { get; set; }
     }
 }

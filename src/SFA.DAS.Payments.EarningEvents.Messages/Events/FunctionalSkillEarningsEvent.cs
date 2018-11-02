@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
     public class FunctionalSkillEarningsEvent : EarningEvent
     {
         /// <summary>
-        /// Gets or sets the earnings.  Earnings can be 
+        /// Gets or sets the earnings.
         /// </summary>
         /// <value>
         /// The earnings.

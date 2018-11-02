@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Payments.AcceptanceTests.Core;
-using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 

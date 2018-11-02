@@ -4,9 +4,15 @@
     <Parameter Name="EarningEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService_EndpointName" DefaultValue="" />
     <Parameter Name="EarningEventsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="SubscriptionName" DefaultValue="" />
+    <Parameter Name="JobStatusQueueName" DefaultValue="" />
+    <Parameter Name="AuditQueueName" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="DCServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
+    <Parameter Name="AzureRedisConnectionString" DefaultValue="" />
+    <Parameter Name="TopicName" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -20,10 +26,16 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="DCServiceBusConnectionString" Value="[DCServiceBusConnectionString]" />
+            <Parameter Name="AzureRedisConnectionString" Value="[AzureRedisConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[EarningEventsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService_FailedMessagesQueue]" />
+            <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
+            <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
+            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
+            <Parameter Name="TopicName" Value="[TopicName]" />
           </Section>
         </Settings>
       </ConfigOverride>

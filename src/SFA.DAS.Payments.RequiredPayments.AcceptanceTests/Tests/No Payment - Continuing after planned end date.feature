@@ -1,5 +1,5 @@
 ﻿Feature: No Payment - Continuing after planned end date
-#R13 - Continuing after planned end date, No OnProgram payment
+R13 - Continuing after planned end date, No OnProgram payment
 
 Background:
 	Given the current processing period is 13

@@ -6,6 +6,7 @@ using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data;
 using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Handlers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
@@ -17,6 +18,8 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
     [Binding]
     public class PaymentsDueSteps : StepsBase
     {
+        private static bool trace = true;
+
         public PaymentsDueSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
@@ -34,61 +37,100 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         public void ThenThePaymentsDueComponentWillGenerateTheFollowingContractTypePaymentsDue(int act, Table table)
         {
             var expectedPaymentsEvents = table.CreateSet<OnProgrammePaymentDue>().ToList();
-            WaitForIt(() => expectedPaymentsEvents.All(EventMatcher), "Failed to find all the payment due events");
+            WaitForIt(() => MatchPaymentDue(expectedPaymentsEvents), "Failed to find all the payment due events");
         }
 
-        private bool EventMatcher(OnProgrammePaymentDue expectedEvent)
+        private bool MatchPaymentDue(IReadOnlyCollection<OnProgrammePaymentDue> expectedPaymentsEvents)
         {
-            return ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Any(receivedEvent =>
-                expectedEvent.PriceEpisodeIdentifier == receivedEvent.PriceEpisodeIdentifier &&
-                expectedEvent.Amount == receivedEvent.AmountDue &&
-                TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber &&
-                expectedEvent.Type == receivedEvent.Type &&
-                TestSession.Ukprn == receivedEvent.Ukprn &&
-                expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period &&
-                receivedEvent.CollectionPeriod == new CalendarPeriod(CollectionYear, CollectionPeriod));
+            var matchedReceivedEvents = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Where(receivedEvent =>
+            {
+                return expectedPaymentsEvents.Any(expectedEvent =>
+                {
+                    return expectedEvent.PriceEpisodeIdentifier == receivedEvent.PriceEpisodeIdentifier &&
+                           expectedEvent.Amount == receivedEvent.AmountDue &&
+                           TestSession.GenerateLearnerReference(expectedEvent.LearnerId) == receivedEvent.Learner?.ReferenceNumber &&
+                           expectedEvent.Type == receivedEvent.Type &&
+                           TestSession.Ukprn == receivedEvent.Ukprn &&
+                           expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period &&
+                           receivedEvent.CollectionPeriod == new CalendarPeriod(CollectionYear, CollectionPeriod);
+                });
+            }).ToList();
+
+            if (!trace && matchedReceivedEvents.Count < expectedPaymentsEvents.Count)
+                return false;
+
+            var unexpected = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents
+                .Where(receivedEvent => !matchedReceivedEvents.Contains(receivedEvent) &&
+                                         TestSession.Ukprn == receivedEvent.Ukprn).ToList();
+#if DEBUG
+            if (trace)
+            {
+                if (matchedReceivedEvents.Count < expectedPaymentsEvents.Count)
+                {
+                    Debug.WriteLine($"{expectedPaymentsEvents.Count - matchedReceivedEvents.Count} events did not arrive:");
+                }
+
+                if (unexpected.Count > 0)
+                {
+                    Debug.WriteLine($"{unexpected.Count} unexpected events:");
+                    for (var i = 0; i < unexpected.Count; i++)
+                    {
+                        var e = unexpected[i];
+                        Debug.WriteLine($"{i+1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
+                    }
+                }
+            }
+#endif
+
+            return matchedReceivedEvents.Count == expectedPaymentsEvents.Count && unexpected.Count == 0;
         }
 
         [Given(@"the following contract type (.*) On Programme earnings are provided:")]
         public void GivenTheFollowingContractTypeOnProgrammeEarningsAreProvided(int p0, Table table)
         {
-            var rawEarnings = table.CreateSet<OnProgrammeEarning>().ToArray();
+            var allEarnings = table.CreateSet<OnProgrammeEarning>().ToArray();
 
-            this.Act2EarningEvents = new List<ApprenticeshipContractType2EarningEvent>
+            Act2EarningEvents = new List<ApprenticeshipContractType2EarningEvent>();
+
+            // create separate earning for each mentioned learner
+
+            foreach (var learnerId in allEarnings.Select(e => e.LearnerId).Distinct())
             {
-                new ApprenticeshipContractType2EarningEvent
+                var learnerEarnings = allEarnings.Where(e => e.LearnerId == learnerId).ToList();
+
+                Act2EarningEvents.Add(new ApprenticeshipContractType2EarningEvent
                 {
-                    CollectionPeriod = new CalendarPeriod(this.CollectionYear, this.CollectionPeriod),
+                    CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
                     Learner = new Learner
                     {
-                        ReferenceNumber = this.TestSession.Learner.LearnRefNumber,
-                        Ukprn = this.TestSession.Ukprn,
-                        Uln = this.TestSession.Learner.Uln
+                        ReferenceNumber = TestSession.GenerateLearnerReference(learnerId),
+                        Ukprn = TestSession.Ukprn,
+                        Uln = TestSession.Learner.Uln
                     },
                     LearningAim = new LearningAim
                     {
-                        AgreedPrice = this.TestSession.Learner.Course.AgreedPrice,
-                        FrameworkCode = this.TestSession.Learner.Course.FrameworkCode,
-                        FundingLineType = this.TestSession.Learner.Course.FundingLineType,
-                        Reference = this.TestSession.Learner.Course.LearnAimRef,
-                        PathwayCode = this.TestSession.Learner.Course.PathwayCode,
-                        StandardCode = this.TestSession.Learner.Course.StandardCode,
-                        ProgrammeType = this.TestSession.Learner.Course.ProgrammeType
+                        AgreedPrice = TestSession.Learner.Course.AgreedPrice,
+                        FrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                        FundingLineType = TestSession.Learner.Course.FundingLineType,
+                        Reference = TestSession.Learner.Course.LearnAimRef,
+                        PathwayCode = TestSession.Learner.Course.PathwayCode,
+                        StandardCode = TestSession.Learner.Course.StandardCode,
+                        ProgrammeType = TestSession.Learner.Course.ProgrammeType
                     },
                     OnProgrammeEarnings = new ReadOnlyCollection<Model.Core.OnProgramme.OnProgrammeEarning>(
-                        rawEarnings.GroupBy(e => e.Type).Select(group =>
+                        learnerEarnings.GroupBy(e => e.Type).Select(group =>
                             new Model.Core.OnProgramme.OnProgrammeEarning
                             {
                                 Type = group.Key,
                                 Periods = new ReadOnlyCollection<EarningPeriod>(group.Select(e => new EarningPeriod
                                 {
-                                    Period = new CalendarPeriod(this.CollectionYear, e.DeliveryPeriod),
+                                    Period = new CalendarPeriod(CollectionYear, e.DeliveryPeriod),
                                     Amount = e.Amount,
                                     PriceEpisodeIdentifier = e.PriceEpisodeIdentifier
                                 }).ToList())
                             }).ToArray())
-                }
-            };
+                });
+            }
         }
 
 
