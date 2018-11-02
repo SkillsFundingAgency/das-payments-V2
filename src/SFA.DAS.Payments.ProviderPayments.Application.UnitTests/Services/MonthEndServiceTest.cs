@@ -19,10 +19,10 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
     [TestFixture]
-    public class ProviderPaymentsHandlerServiceTest
+    public class MonthEndServiceTests
     {
         private AutoMock mocker;
-        private ProviderPaymentsService providerPaymentsService;
+        private MonthEndService monthEndService;
 
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
         private Mock<IDataCache<IlrSubmittedEvent>> ilrSubmittedEventCache;
@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
             providerPaymentsRepository
                 .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(), 
-                                                        //It.IsAny<byte>(), 
+                                                        It.IsAny<byte>(), 
                                                         It.IsAny<long>(),
                                                         It.IsAny<DateTime>(),
                                                         It.IsAny<CancellationToken>()))
@@ -125,39 +125,24 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(true);
 
 
-            providerPaymentsService = mocker.Create<ProviderPaymentsService>();
+            monthEndService = mocker.Create<MonthEndService>();
         }
 
         [Test]
-        public async Task ProcessEventShouldCallRequiredServices()
+        public async Task GetMonthEndPaymentsShouldReturnPaymentsFromRepository()
         {
-            await providerPaymentsService.ProcessPayment(payments.First(), default(CancellationToken));
+            short year = 2018;
+            byte month = 9;
+            var cancellationToken = new CancellationToken();
 
-            providerPaymentsRepository
-                .Verify(o => o.SavePayment(It.IsAny<PaymentModel>(), default(CancellationToken)), Times.Once);
+            var results = await monthEndService.GetMonthEndPayments(year, month, ukprn, cancellationToken);
 
-            ilrSubmittedEventCache
-                .Verify(o => o.TryGet(ukprn.ToString(), default(CancellationToken)), Times.Once);
-
-            validateIlrSubmission
-                .Verify(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()), Times.Once);
+            Assert.IsNotNull(results);
+            providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.IsAny<short>(),
+                                                    It.IsAny<byte>(),
+                                                    It.IsAny<long>(),
+                                                    It.IsAny<CancellationToken>()), Times.Once);
         }
-
-        [Test]
-        public async Task ProcessEventShouldNotCallRepositoryIfPaymentEventIsInvalid()
-        {
-
-            validateIlrSubmission
-                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
-                .Returns(false);
-
-            await providerPaymentsService.ProcessPayment(payments.First(), default(CancellationToken));
-
-            providerPaymentsRepository
-                .Verify(o => o.SavePayment(It.IsAny<PaymentModel>(), default(CancellationToken)), Times.Never);
-
-        }
-
 
 
     }

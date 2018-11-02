@@ -27,7 +27,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
                 return new PaymentsDataContext(configHelper.PaymentsConnectionString);
-            }).As<IPaymentsDataContext>().InstancePerDependency();
+            })
+                .As<IPaymentsDataContext>()
+                .InstancePerDependency(); //TODO: Yuck!!
         }
 
 
@@ -36,8 +38,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         {
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
             endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<ProviderPaymentEvent>());
-
-
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(SfaCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
