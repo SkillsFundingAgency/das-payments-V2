@@ -43,16 +43,16 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
         }
 
-        protected FundingSourcePaymentEvent CreateFundingSourcePaymentEvent(FundingSourcePayment fundingSourcePayment, DateTime? submissionTime = null)
+        protected FundingSourcePaymentEvent CreateFundingSourcePaymentEvent(FundingSourcePayment fundingSourcePayment)
         {
             FundingSourcePaymentEvent paymentEvent;
 
             switch (fundingSourcePayment.FundingSourceType)
             {
-                case Model.Core.Entities.FundingSourceType.CoInvestedSfa:
+                case FundingSourceType.CoInvestedSfa:
                     paymentEvent = new SfaCoInvestedFundingSourcePaymentEvent();
                     break;
-                case Model.Core.Entities.FundingSourceType.CoInvestedEmployer:
+                case FundingSourceType.CoInvestedEmployer:
                     paymentEvent = new EmployerCoInvestedFundingSourcePaymentEvent();
                     break;
                 default:
@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             }
 
             paymentEvent.FundingSourceType = fundingSourcePayment.FundingSourceType;
-            paymentEvent.IlrSubmissionDateTime = submissionTime ?? DateTime.UtcNow;
+            paymentEvent.IlrSubmissionDateTime = DateTime.UtcNow;
             paymentEvent.ContractType = (ContractType)ContractType;
             paymentEvent.Learner = TestSession.Learner.ToLearner();
             paymentEvent.Ukprn = TestSession.Ukprn;
