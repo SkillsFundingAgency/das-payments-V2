@@ -7,15 +7,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain
         public bool IsLatestIlrPayment(IlrSubmissionValidationRequest request)
         {
             return request.CurrentIlr == null ||
-                   (request.IncomingPaymentJobId == request.CurrentIlr.JobId &&
-                    request.IncomingPaymentUkprn == request.CurrentIlr.Ukprn &&
+                    (request.IncomingPaymentUkprn == request.CurrentIlr.Ukprn &&
                     request.IncomingPaymentSubmissionDate.CompareTo(request.CurrentIlr.IlrSubmissionDateTime) >= 0);
         }
 
         public bool IsNewIlrSubmission(IlrSubmissionValidationRequest request)
         {
             return request.CurrentIlr == null ||
-                   request.IncomingPaymentJobId != request.CurrentIlr.JobId ||
                    request.IncomingPaymentUkprn != request.CurrentIlr.Ukprn ||
                    request.IncomingPaymentSubmissionDate.CompareTo(request.CurrentIlr.IlrSubmissionDateTime) != 0;
         }

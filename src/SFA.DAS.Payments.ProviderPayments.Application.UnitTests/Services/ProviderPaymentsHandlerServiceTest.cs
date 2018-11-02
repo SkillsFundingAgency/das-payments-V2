@@ -1,7 +1,6 @@
 ﻿using Autofac.Extras.Moq;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -89,15 +88,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                           .ReturnsAsync(payments)
                           .Verifiable();
 
-            providerPaymentsRepository
-                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(), 
-                                                        //It.IsAny<byte>(), 
-                                                        It.IsAny<long>(),
-                                                        It.IsAny<DateTime>(),
-                                                        It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask)
-                .Verifiable();
-            
             ilrSubmittedEvent = new IlrSubmittedEvent
             {
                 Ukprn = ukprn,
@@ -116,7 +106,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(Task.CompletedTask);
 
             ilrSubmittedEventCache
-                .Setup(o => o.Add(ukprn.ToString(),It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)))
+                .Setup(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)))
                 .Returns(Task.CompletedTask);
 
             validateIlrSubmission = mocker.Mock<IValidateIlrSubmission>();

@@ -1,16 +1,14 @@
-﻿using System;
-using Autofac;
-using Microsoft.EntityFrameworkCore;
+﻿using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core;
-using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
@@ -42,7 +40,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
         }
 
-        protected FundingSourcePaymentEvent CreateFundingSourcePaymentEvent(FundingSourcePayment fundingSourcePayment)
+        protected FundingSourcePaymentEvent CreateFundingSourcePaymentEvent(FundingSourcePayment fundingSourcePayment, DateTime? submissionTime )
         {
             FundingSourcePaymentEvent paymentEvent;
 
@@ -60,7 +58,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             }
 
             paymentEvent.FundingSourceType = fundingSourcePayment.FundingSourceType;
-            paymentEvent.IlrSubmissionDateTime = DateTime.UtcNow;
+            paymentEvent.IlrSubmissionDateTime = submissionTime?? DateTime.UtcNow;
             paymentEvent.ContractType = (ContractType)ContractType;
             paymentEvent.Learner = TestSession.Learner.ToLearner();
             paymentEvent.Ukprn = TestSession.Ukprn;

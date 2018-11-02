@@ -44,9 +44,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                 },
                 Learner = new Learner
                 {
-                    Ukprn = 100000,
+                    Ukprn = 99999999999,
                     ReferenceNumber = "A1000",
-                    Uln = 10000000
+                    Uln = 99999999999
                 },
                 SfaContributionPercentage = 0.9m,
                 Ukprn = 100000,

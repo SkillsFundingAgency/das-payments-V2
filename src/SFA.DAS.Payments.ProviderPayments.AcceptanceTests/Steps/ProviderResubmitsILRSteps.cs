@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
 
             ContractType = contractType;
-            var fundingSourcePayments = table.CreateSet<FundingSourcePayment>().Select(CreateFundingSourcePaymentEvent).ToList();
+            var fundingSourcePayments = table.CreateSet<FundingSourcePayment>().Select(p => CreateFundingSourcePaymentEvent(p, submissionTime)).ToList();
             foreach (var fundingSourcePaymentEvent in fundingSourcePayments)
             {
                 Console.WriteLine($"Sending funding source event: {fundingSourcePaymentEvent.ToJson()}");

@@ -33,7 +33,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             var currentIlr = await GetCurrentIlrSubmissionEvent(message.Ukprn, cancellationToken);
             var isNewIlrSubmission = validateIlrSubmission.IsNewIlrSubmission(new IlrSubmissionValidationRequest
             {
-                IncomingPaymentJobId = message.JobId,
                 IncomingPaymentUkprn = message.Ukprn,
                 IncomingPaymentSubmissionDate = message.IlrSubmissionDateTime,
                 CurrentIlr = currentIlr

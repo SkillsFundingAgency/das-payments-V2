@@ -47,7 +47,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
             {
                 CurrentIlr = currentIlr,
                 IncomingPaymentUkprn = currentIlr.Ukprn,
-                IncomingPaymentJobId = currentIlr.JobId,
                 IncomingPaymentSubmissionDate = DateTime.MaxValue
             });
 
@@ -64,7 +63,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
             {
                 CurrentIlr = currentIlr,
                 IncomingPaymentUkprn = currentIlr.Ukprn,
-                IncomingPaymentJobId = currentIlr.JobId,
                 IncomingPaymentSubmissionDate = DateTime.MinValue
             });
 
@@ -93,7 +91,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
             {
                 CurrentIlr = currentIlr,
                 IncomingPaymentUkprn = currentIlr.Ukprn,
-                IncomingPaymentJobId = currentIlr.JobId,
                 IncomingPaymentSubmissionDate = DateTime.MinValue
             });
 
@@ -109,7 +106,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
             {
                 CurrentIlr = currentIlr,
                 IncomingPaymentUkprn = currentIlr.Ukprn,
-                IncomingPaymentJobId = currentIlr.JobId,
                 IncomingPaymentSubmissionDate = currentIlr.IlrSubmissionDateTime
             });
             Assert.IsFalse(result);

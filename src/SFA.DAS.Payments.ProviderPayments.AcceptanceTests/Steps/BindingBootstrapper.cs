@@ -18,8 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         public BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
-
-
+        
         [BeforeTestRun(Order = 40)]
         public static void SetUpPaymentsDataContext()
         {
@@ -27,12 +26,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
                 return new PaymentsDataContext(configHelper.PaymentsConnectionString);
-            })
-                .As<IPaymentsDataContext>()
-                .InstancePerDependency(); //TODO: Yuck!!
+            }).As<IPaymentsDataContext>().InstancePerDependency();
         }
-
-
+        
         [BeforeTestRun(Order = 51)]
         public static void AddRoutingConfig()
         {
