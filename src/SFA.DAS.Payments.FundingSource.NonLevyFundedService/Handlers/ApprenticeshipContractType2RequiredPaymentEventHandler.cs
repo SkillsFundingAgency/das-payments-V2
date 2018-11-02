@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
     public class ApprenticeshipContractType2RequiredPaymentEventHandler : IHandleMessages<ApprenticeshipContractType2RequiredPaymentEvent>
     {
         private readonly IPaymentLogger paymentLogger;
-        private readonly ILifetimeScope lifetimeScope;
+        //private readonly ILifetimeScope lifetimeScope;
         private readonly IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService;
         private readonly IExecutionContext executionContext;
 

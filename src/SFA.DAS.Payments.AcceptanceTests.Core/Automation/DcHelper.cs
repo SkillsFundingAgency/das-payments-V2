@@ -63,9 +63,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     {
                         new TopicItemDto
                         {
-                            SubscriptionName = "Validation",
+                            SubscriptionName = DcConfiguration.SubscriptionName,
                             Tasks = new List<TaskItemDto>
-                                {new TaskItemDto {SupportsParallelExecution = false, Tasks = new List<string>()}}
+                            {
+                                new TaskItemDto
+                                {
+                                    SupportsParallelExecution = false, 
+                                    Tasks = new List<string>()
+                                }
+                            }
                         }
                     }
                 };
