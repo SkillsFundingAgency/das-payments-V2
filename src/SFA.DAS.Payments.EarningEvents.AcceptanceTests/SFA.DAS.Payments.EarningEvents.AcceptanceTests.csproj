@@ -318,6 +318,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-levy learner provider retrospectively notifies a withdrawal.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\SmallEmployers.feature.cs">
       <DependentUpon>SmallEmployers.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -353,6 +358,10 @@
     <None Include="Tests\Apprenticeship Contract 2 onprogramme earnings.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Apprenticeship Contract 2 onprogramme earnings.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner provider retrospectively notifies a withdrawal.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\SmallEmployers.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
