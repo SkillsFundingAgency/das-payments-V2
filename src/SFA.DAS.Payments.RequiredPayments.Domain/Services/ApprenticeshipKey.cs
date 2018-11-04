@@ -1,0 +1,15 @@
+﻿using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
+
+namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
+{
+    public class ApprenticeshipKey
+    {
+        public long Ukprn { get; set; }
+        public string LearnerReferenceNumber { get; set; }
+        public int FrameworkCode { get; set; }
+        public int PathwayCode { get; set; }
+        public ProgrammeType ProgrammeType { get; set; }
+        public int StandardCode { get; set; }
+        public string LearnAimRef { get; set; }
+    }
+}

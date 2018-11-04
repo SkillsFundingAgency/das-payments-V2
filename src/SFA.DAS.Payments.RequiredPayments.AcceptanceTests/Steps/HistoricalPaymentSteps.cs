@@ -8,10 +8,10 @@ using Autofac;
 using Microsoft.SqlServer.Dac;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
-using SFA.DAS.Payments.RequiredPayments.Application;
-using SFA.DAS.Payments.RequiredPayments.Application.Data;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -31,8 +31,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             Builder.Register((c, p) =>
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
-                return new RequiredPaymentsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
-            }).As<IRequiredPaymentsDataContext>().InstancePerDependency();
+                return new PaymentsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+            }).As<IPaymentsDataContext>().InstancePerDependency();
         }
 
 #if DEBUG
@@ -56,44 +56,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
         private void AddHistoricalPayments(IList<HistoricalPayment> payments)
         {
-            var paymentHistoryDataContext = Container.Resolve<IRequiredPaymentsDataContext>();
-
-            foreach (var learnerId in payments.Select(p => p.LearnerId).Distinct().ToList())
-            {
-                var learnRefNumber = TestSession.GenerateLearnerReference(learnerId);
-
-                var apprenticeshipKey = string.Join("-",
-                    TestSession.Ukprn.ToString(CultureInfo.InvariantCulture),
-                    learnRefNumber,
-                    TestSession.Learner.Course.FrameworkCode.ToString(CultureInfo.InvariantCulture),
-                    TestSession.Learner.Course.PathwayCode.ToString(CultureInfo.InvariantCulture),
-                    ((int) TestSession.Learner.Course.ProgrammeType).ToString(CultureInfo.InvariantCulture),
-                    TestSession.Learner.Course.StandardCode.ToString(CultureInfo.InvariantCulture),
-                    TestSession.Learner.Course.LearnAimRef.ToString(CultureInfo.InvariantCulture)
-                );
-                var collectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod).Name;
-                var paymentEntities = paymentHistoryDataContext.PaymentHistory.Where(p => p.ApprenticeshipKey == apprenticeshipKey);
-                paymentHistoryDataContext.PaymentHistory.RemoveRange(paymentEntities);
-
-                foreach (var payment in payments)
-                {
-                    paymentHistoryDataContext.PaymentHistory.Add(new PaymentEntity
-                    {
-                        Id = Guid.NewGuid(),
-                        PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
-                        Amount = payment.Amount,
-                        TransactionType = (int) payment.Type,
-                        DeliveryPeriod = new CalendarPeriod(CollectionYear, payment.Delivery_Period).Name,
-
-                        ApprenticeshipKey = apprenticeshipKey,
-                        CollectionPeriod = collectionPeriod,
-                        Ukprn = TestSession.Ukprn,
-                        LearnAimReference = TestSession.Learner.Course.LearnAimRef,
-                        LearnerReferenceNumber = learnRefNumber
-                    });
-                }
-            }
-
+            var paymentHistoryDataContext = Container.Resolve<IPaymentsDataContext>();
+            paymentHistoryDataContext.Payment.AddRange(payments.SelectMany(ToPayments));
             paymentHistoryDataContext.SaveChanges();
         }
 
@@ -101,6 +65,54 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         public void GivenTheFollowingHistoricalContractTypePaymentsExist(int p0, Table table)
         {
             AddHistoricalPayments(table.CreateSet<HistoricalPayment>().ToList());
+        }
+
+        private List<PaymentModel> ToPayments(HistoricalPayment payment)
+        {
+            return new List<PaymentModel>
+            {
+                ToPayment(payment, FundingSourceType.CoInvestedEmployer),
+                ToPayment(payment, FundingSourceType.CoInvestedSfa)
+            };
+        }
+
+        private PaymentModel ToPayment(HistoricalPayment payment, FundingSourceType fundingSource)
+        {
+            return new PaymentModel
+            {
+                ExternalId = Guid.NewGuid(),
+                Ukprn = TestSession.Ukprn,
+                LearnerReferenceNumber = TestSession.Learner.LearnRefNumber,
+                LearnerUln = TestSession.Learner.Uln,
+                PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
+                Amount = GetFundingAmount(payment.Amount, fundingSource),
+                CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
+                DeliveryPeriod = new CalendarPeriod(CollectionYear, payment.Delivery_Period),
+                LearningAimReference = TestSession.Learner.Course.LearnAimRef,
+                LearningAimProgrammeType = TestSession.Learner.Course.ProgrammeType,
+                LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
+                LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
+                LearningAimFundingLineType = TestSession.Learner.Course.FundingLineType,
+                FundingSource = fundingSource,
+                ContractType = Payments.Model.Core.Entities.ContractType.ContractWithEmployer,
+                SfaContributionPercentage = SfaContributionPercentage,
+                JobId = TestSession.JobId,
+                TransactionType = (TransactionType)payment.Type,
+            };
+        }
+
+        private decimal GetFundingAmount(decimal amount, FundingSourceType fundingSource)
+        {
+            switch (fundingSource)
+            {
+                case FundingSourceType.CoInvestedEmployer:
+                    return amount * .2m;
+                case FundingSourceType.CoInvestedSfa:
+                    return amount * .8m;
+                default:
+                    return amount;
+            }
         }
     }
 }

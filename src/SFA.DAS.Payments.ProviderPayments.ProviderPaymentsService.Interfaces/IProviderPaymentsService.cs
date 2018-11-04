@@ -1,6 +1,9 @@
 ﻿using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Remoting;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,8 +12,10 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces
 {
     public interface IProviderPaymentsService : IActor
     {
-        Task<int> GetCountAsync(CancellationToken cancellationToken);
+        Task ProcessPayment(PaymentModel message, CancellationToken cancellationToken);
 
-        Task SetCountAsync(int count, CancellationToken cancellationToken);
+        Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken);
+
+        Task HandleIlrSubMissionAsync(IlrSubmittedEvent message, CancellationToken cancellationToken);
     }
 }

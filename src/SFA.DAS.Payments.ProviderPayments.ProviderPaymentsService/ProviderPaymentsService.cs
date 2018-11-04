@@ -1,46 +1,69 @@
 ﻿using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
-using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
+using SFA.DAS.Payments.ProviderPayments.Application.Services;
+using SFA.DAS.Payments.ProviderPayments.Domain;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using IProviderPaymentsService = SFA.DAS.Payments.ProviderPayments.Application.Services.IProviderPaymentsService;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
 {
 
     [StatePersistence(StatePersistence.Volatile)]
-    public class ProviderPaymentsService : Actor, IProviderPaymentsService
+    public class ProviderPaymentsService : Actor, Interfaces.IProviderPaymentsService
     {
+        private readonly ActorId actorId;
+        private readonly IProviderPaymentsRepository providerPaymentsRepository;
+        private readonly IValidateIlrSubmission validateIlrSubmission;
+        private readonly IPaymentLogger paymentLogger;
+        private IProviderPaymentsService paymentsService;
+        private IIlrSubmissionService ilrSubmissionService;
+        private IMonthEndService monthEndService;
+        private long ukprn;
 
-        public ProviderPaymentsService(ActorService actorService, ActorId actorId)
+        public ProviderPaymentsService(ActorService actorService, ActorId actorId,
+            IProviderPaymentsRepository providerPaymentsRepository,
+            IValidateIlrSubmission validateIlrSubmission,
+            IPaymentLogger paymentLogger)
             : base(actorService, actorId)
         {
+            this.actorId = actorId;
+            this.providerPaymentsRepository = providerPaymentsRepository ?? throw new ArgumentNullException(nameof(providerPaymentsRepository));
+            this.validateIlrSubmission = validateIlrSubmission ?? throw new ArgumentNullException(nameof(validateIlrSubmission));
+            this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
         }
 
-
-        protected override Task OnActivateAsync()
+        public async Task ProcessPayment(PaymentModel message, CancellationToken cancellationToken)
         {
-            ActorEventSource.Current.ActorMessage(this, "Actor activated.");
-
-            // The StateManager is this actor's private state store.
-            // Data stored in the StateManager will be replicated for high-availability for actors that use volatile or persisted state storage.
-            // Any serializable object can be saved in the StateManager.
-            // For more information, see https://aka.ms/servicefabricactorsstateserialization
-
-            return this.StateManager.TryAddStateAsync("count", 0);
+            await paymentsService.ProcessPayment(message, cancellationToken);
         }
 
-
-        Task<int> IProviderPaymentsService.GetCountAsync(CancellationToken cancellationToken)
+        public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            return this.StateManager.GetStateAsync<int>("count", cancellationToken);
+            return await monthEndService.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
         }
 
-
-        Task IProviderPaymentsService.SetCountAsync(int count, CancellationToken cancellationToken)
+        public async Task HandleIlrSubMissionAsync(IlrSubmittedEvent message, CancellationToken cancellationToken)
         {
-            // Requests are not guaranteed to be processed in order nor at most once.
-            // The update function here verifies that the incoming count is greater than the current count to preserve order.
-            return this.StateManager.AddOrUpdateStateAsync("count", count, (key, value) => count > value ? count : value, cancellationToken);
+            await ilrSubmissionService.HandleIlrSubMission(message, cancellationToken);
+        }
+
+        protected override async Task OnActivateAsync()
+        {
+            if (!long.TryParse(actorId.GetStringId(), out ukprn)) throw new Exception("Unable to cast Actor Id to Ukprn");
+
+            var reliableCollectionCache = new ReliableCollectionCache<IlrSubmittedEvent>(StateManager);
+            paymentsService = new Application.Services.ProviderPaymentsService(providerPaymentsRepository, reliableCollectionCache, validateIlrSubmission, paymentLogger);
+            ilrSubmissionService = new IlrSubmissionService(providerPaymentsRepository, reliableCollectionCache, validateIlrSubmission, paymentLogger);
+            monthEndService = new MonthEndService(providerPaymentsRepository, reliableCollectionCache);
+            await base.OnActivateAsync().ConfigureAwait(false);
         }
     }
 }

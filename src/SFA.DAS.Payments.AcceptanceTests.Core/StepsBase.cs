@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Autofac;
 using NServiceBus;
 using NUnit.Framework;
@@ -53,6 +54,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             while (DateTime.Now < endTime)
             {
                 if (lookForIt())
+                    return;
+                Thread.Sleep(Config.TimeToPause);
+            }
+            Assert.Fail(failText);
+        }
+
+        protected async Task WaitForIt(Func<Task<bool>> lookForIt, string failText)
+        {
+            var endTime = DateTime.Now.Add(Config.TimeToWait);
+            while (DateTime.Now < endTime)
+            {
+                if (await lookForIt())
                     return;
                 Thread.Sleep(Config.TimeToPause);
             }

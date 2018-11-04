@@ -2,6 +2,6 @@
 {
     public interface IPaymentsMessage
     {
-        string JobId { get; }
+        long JobId { get; }
     }
 }

@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn { get; }
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
-        public string JobId { get; }
+        public long JobId { get; }
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
@@ -24,19 +24,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 .RuleFor(course => course.AimSeqNumber, faker => faker.Random.Short(1))
                 .RuleFor(course => course.FrameworkCode, faker => faker.Random.Short(1))
                 .RuleFor(course => course.FundingLineType, faker => faker.Name.JobDescriptor())
-                .RuleFor(course => course.LearnAimRef, faker => faker.Random.AlphaNumeric(10))
+                .RuleFor(course => course.LearnAimRef, faker => faker.Random.AlphaNumeric(8))
                 .RuleFor(course => course.LearningPlannedEndDate, DateTime.Today.AddMonths(12))
                 .RuleFor(course => course.LearningStartDate, DateTime.Today)
                 .RuleFor(course => course.PathwayCode, faker => faker.Random.Short(1))
                 .RuleFor(course => course.ProgrammeType, faker => faker.Random.Short(1))
                 .RuleFor(course => course.StandardCode, faker => faker.Random.Int(1))
                 .RuleFor(course => course.AgreedPrice, 15000);
-            
+
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
             Ukprn = GenerateId("ukprn");
-            Learners = new List<Learner>();
-            JobId = Guid.NewGuid().ToString("N");
+            Learners = new List<Learner> { GenerateLearner() };
+            JobId = GenerateId("JobId");
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
         }
 
@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             {
                 Ukprn = Ukprn,
                 Uln = uln,
-                LearnRefNumber = $"ref-{uln}",
+                LearnRefNumber = uln.ToString(),
                 Course = courseFaker.Generate(1).FirstOrDefault()
             };
         }

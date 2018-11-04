@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             PaymentDueEvent = new ApprenticeshipContractType2PaymentDueEvent
             {
-                JobId = "job-1234",
+                JobId = 1234,
                 Ukprn = 1,
                 Learner = new Learner { ReferenceNumber = "12345", Uln = 12345 },
                 LearningAim = new LearningAim

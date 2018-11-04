@@ -3,10 +3,9 @@ using System.Runtime.Serialization;
 
 namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
 {
-    public class PaymentEntity
+    public class PaymentHistoryEntity
     {
-        public Guid Id { get; set; }
-        public string ApprenticeshipKey { get; set; }
+        public Guid ExternalId { get; set; }
         public long Ukprn { get; set; }
         public string LearnerReferenceNumber { get; set; }
         public string LearnAimReference { get; set; }
