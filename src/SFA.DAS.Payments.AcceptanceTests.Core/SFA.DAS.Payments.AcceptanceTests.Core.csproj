@@ -247,13 +247,14 @@
     <Compile Include="Automation\DcHelper.cs" />
     <Compile Include="Automation\LearnRefNumberGenerator.cs" />
     <Compile Include="Automation\TestSession.cs" />
+    <Compile Include="BindingsBase.cs" />
     <Compile Include="Data\Learner.cs" />
     <Compile Include="Data\DataExtensions.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
     <Compile Include="Data\Course.cs" />
-    <Compile Include="Infrastructure\ScenarioScopedBootstrapper.cs" />
     <Compile Include="Infrastructure\TestsConfiguration.cs" />
+    <Compile Include="Infrastructure\TestSessionBase.cs" />
     <Compile Include="StepsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,22 +2,14 @@
 using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
-using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.Messages.Core;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 {
     [Binding]
-    public abstract class BindingBootstrapper : StepsBase
+    public class BindingBootstrapper : BindingsBase
     {
-        protected BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
-        {
-        }
-        protected BindingBootstrapper(FeatureContext featureContext) : base(featureContext)
-        {
-        }
-
         public static EndpointConfiguration EndpointConfiguration { get; private set; }
 
         [BeforeTestRun(Order = -1)]
@@ -64,22 +56,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
             endpointConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(Container));
             MessageSession = Endpoint.Start(endpointConfiguration).Result;
-        }
-
-        protected static void SetUpTestSession(SpecFlowContext context)
-        {
-            var scope = Container.BeginLifetimeScope();
-            context.Set(scope,"container_scope");
-            context.Set(new TestSession());
-        }
-
-        protected static void CleanUpTestSession(SpecFlowContext context)
-        {
-            if (!context.ContainsKey("container_scope"))
-                return;
-            var scope = context.Get<ILifetimeScope>("container_scope");
-            context.Remove("container_scope");
-            scope.Dispose();
         }
     }
 }

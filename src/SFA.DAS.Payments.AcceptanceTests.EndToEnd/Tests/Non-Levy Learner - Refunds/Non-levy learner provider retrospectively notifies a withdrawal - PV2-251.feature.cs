@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests.Non_LevyLearner_Refunds
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Refunds
 {
     using TechTalk.SpecFlow;
     
@@ -18,21 +18,20 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests.Non_LevyLearner_R
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Non-levy learner provider retrospectively notifies a withdrawal")]
-    public partial class Non_LevyLearnerProviderRetrospectivelyNotifiesAWithdrawalFeature
+    [NUnit.Framework.DescriptionAttribute("Non-levy learner provider retrospectively notifies a withdrawal - PV2-251")]
+    public partial class Non_LevyLearnerProviderRetrospectivelyNotifiesAWithdrawal_PV2_251Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "Non-levy learner provider retrospectively notifies a withdrawal.feature"
+#line 1 "Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-levy learner provider retrospectively notifies a withdrawal", "\tIn order to avoid silly mistakes\r\n\tAs a math idiot\r\n\tI want to be told the sum o" +
-                    "f two numbers", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-levy learner provider retrospectively notifies a withdrawal - PV2-251", "\tAs a Provider\r\n\tI would like TODO\r\n\tSo that TODO", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -84,7 +83,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Tests.Non_LevyLearner_R
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Provider retrospectively notifies of a withdrawal for a non-levy learner after pa" +
                     "yments have already been made PV2-251", null, exampleTags);
-#line 6
+#line 7
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line hidden
@@ -114,7 +113,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "continuing",
                         "90%"});
-#line 7
+#line 8
     testRunner.Given("the provider perviously submitted the following learner details", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -182,7 +181,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "750",
                         "0",
                         "0"});
-#line 10
+#line 11
     testRunner.And("the following earnings had been generated for the learner", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -215,7 +214,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Dec/Current Academic Year",
                         "675",
                         "75"});
-#line 24
+#line 25
     testRunner.And("the following provider payments had been generated", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -244,9 +243,9 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "withdrawn",
                         "90%"});
-#line 32
+#line 33
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
-#line 36
+#line 37
  testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -314,7 +313,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0"});
-#line 37
+#line 38
     testRunner.Then("the following learner earnings should be generated", ((string)(null)), table5, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -353,7 +352,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Dec/Current Academic Year",
                         "-675",
                         "-75"});
-#line 64
+#line 57
     testRunner.And("the following provider payments will be generated", ((string)(null)), table7, "And ");
 #line hidden
             this.ScenarioCleanup();

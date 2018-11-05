@@ -154,20 +154,25 @@
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\Training.cs" />
-    <Compile Include="Infrastructure\EndToEndBootstrapper.cs" />
     <Compile Include="EventMatchers\PaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
-    <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
+    <Compile Include="Infrastructure\FeatureScopedTestSession.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2EarningEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2PaymentDueEventHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventMatchers\EarningEventMatcher.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
+    <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Withdraws After Qualifying Period PV2-277.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner Withdraws After Qualifying Period PV2-277.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature.cs">
+      <DependentUpon>Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +194,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner Withdraws After Qualifying Period PV2-277.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.4\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
@@ -201,6 +210,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
       <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>
       <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
+      <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
+      <Name>SFA.DAS.Payments.Messages.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
       <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>

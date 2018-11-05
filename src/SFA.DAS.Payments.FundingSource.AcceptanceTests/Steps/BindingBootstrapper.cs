@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
-using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -9,12 +8,8 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
 {
     [Binding]
-    public class BindingBootstrapper : ScenarioScopedBootstrapper
+    public class BindingBootstrapper : BindingsBase
     {
-        public BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
-        {
-        }
-
         [BeforeTestRun(Order = 51)]
         public static void AddRoutingConfig()
         {

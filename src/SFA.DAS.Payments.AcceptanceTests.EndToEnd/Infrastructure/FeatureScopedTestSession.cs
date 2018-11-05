@@ -1,13 +1,14 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
 {
     [Binding]
-    public class FeatureScopedBootstrapper : BindingBootstrapper
+    public class FeatureScopedTestSession : TestSessionBase
     {
-        public FeatureScopedBootstrapper(FeatureContext context) : base(context)
+        public FeatureScopedTestSession(FeatureContext context) : base(context)
         {
         }
 
