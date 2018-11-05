@@ -13,12 +13,8 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class BindingBootstrapper : StepsBase
+    public class BindingBootstrapper : BindingsBase
     {
-        public BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
-        {
-        }
-        
         [BeforeTestRun(Order = 40)]
         public static void SetUpPaymentsDataContext()
         {
@@ -41,7 +37,5 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             routing.RouteToEndpoint(typeof(PerformMonthEndProcessingCommand), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(IlrSubmittedEvent), EndpointNames.ProviderPaymentEndPointName);
         }
-
-       
     }
 }
