@@ -93,12 +93,12 @@ this.ScenarioInitialize(scenarioInfo);
             table1.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "900"});
             table1.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "100"});
 #line 9
  testRunner.And("the provider has submitted an ILR file which has generated the following contract" +
@@ -112,32 +112,32 @@ this.ScenarioInitialize(scenarioInfo);
             table2.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "900"});
             table2.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "2700"});
             table2.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "1800"});
             table2.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "100"});
             table2.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "300"});
             table2.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 13
  testRunner.When("the provider re-submits an ILR file which triggers the following contract type 2 " +
@@ -154,32 +154,32 @@ this.ScenarioInitialize(scenarioInfo);
             table3.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "900"});
             table3.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "2700"});
             table3.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "1800"});
             table3.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "100"});
             table3.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "300"});
             table3.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 22
  testRunner.And("the provider payments service will store the following payments:", ((string)(null)), table3, "And ");
@@ -210,12 +210,12 @@ this.ScenarioInitialize(scenarioInfo);
             table4.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "900"});
             table4.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "100"});
 #line 36
  testRunner.And("the provider has submitted an ILR file which has generated the following contract" +
@@ -229,32 +229,32 @@ this.ScenarioInitialize(scenarioInfo);
             table5.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "900"});
             table5.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "2700"});
             table5.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "1800"});
             table5.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "100"});
             table5.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "300"});
             table5.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 40
  testRunner.When("the provider re-submits an ILR file which triggers the following contract type 2 " +
@@ -268,32 +268,32 @@ this.ScenarioInitialize(scenarioInfo);
             table6.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "900"});
             table6.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "2700"});
             table6.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "1800"});
             table6.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "100"});
             table6.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "300"});
             table6.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 48
  testRunner.Then("the provider payments service will store the following payments:", ((string)(null)), table6, "Then ");

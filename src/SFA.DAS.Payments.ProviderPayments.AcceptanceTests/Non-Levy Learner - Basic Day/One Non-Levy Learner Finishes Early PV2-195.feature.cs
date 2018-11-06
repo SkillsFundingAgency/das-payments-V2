@@ -104,32 +104,32 @@ this.FeatureBackground();
             table1.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "900"});
             table1.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "2700"});
             table1.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "1800"});
             table1.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "100"});
             table1.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "300"});
             table1.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 12
  testRunner.And("the funding source service generates the following contract type 2 payments:", ((string)(null)), table1, "And ");
@@ -144,32 +144,32 @@ this.FeatureBackground();
             table2.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "900"});
             table2.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "2700"});
             table2.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "1800"});
             table2.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "100"});
             table2.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "300"});
             table2.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 21
  testRunner.Then("the provider payments service will store the following payments:", ((string)(null)), table2, "Then ");
@@ -182,32 +182,32 @@ this.FeatureBackground();
             table3.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "900"});
             table3.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "2700"});
             table3.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedSfa",
+                        "CoInvestedSfa",
                         "1800"});
             table3.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "100"});
             table3.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "300"});
             table3.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-InvestedEmployer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 29
  testRunner.And("at month end the provider payments service will publish the following payments", ((string)(null)), table3, "And ");
