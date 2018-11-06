@@ -235,7 +235,7 @@
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\Training.cs" />
-    <Compile Include="EventMatchers\PaymentEventMatcher.cs" />
+    <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2EarningEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2RequiredPaymentEventHandler.cs" />

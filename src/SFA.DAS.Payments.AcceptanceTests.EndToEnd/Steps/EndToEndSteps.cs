@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
             var expectedPayments = table.CreateSet<Payment>().ToList();
-            WaitForIt(() => PaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, CurrentCollectionPeriod), "Required Payment event check failure");
+            WaitForIt(() => RequiredPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, CurrentCollectionPeriod, TestSession.JobId), "Required Payment event check failure");
         }
 
         [Then(@"at month end the following provider payments will be generated")]
