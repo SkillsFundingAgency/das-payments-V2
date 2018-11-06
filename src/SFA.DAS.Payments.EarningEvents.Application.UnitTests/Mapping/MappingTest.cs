@@ -36,6 +36,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             fm36Learner = new FM36Learner
             {
                 LearnRefNumber = "learner-a",
+                LearningDeliveries = new List<LearningDelivery>
+                {
+                    new LearningDelivery
+                    {
+                        AimSeqNumber = 1,
+                        LearningDeliveryValues = new LearningDeliveryValues
+                        {
+                            LearnAimRef = "ZPROG001"
+                        }
+                    }
+                },
                 PriceEpisodes = new List<PriceEpisode>
                 {
                     new PriceEpisode
@@ -155,6 +166,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             completion.Should().NotBeNull();
             completion.Periods.Should().HaveCount(1);
             completion.Periods.FirstOrDefault().Amount.Should().Be(3000);
+        }
+
+        [Test]
+        public void Maps_LearningAim()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.Should().NotBeNull();
+            earningEvent.LearningAim.Reference.Should().Be("ZPROG001");
+
         }
     }
 }

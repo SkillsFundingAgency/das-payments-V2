@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.CollectionYear,
                     opt => opt.MapFrom(source => source.CollectionYear))
                 .ForMember(destinationMember => destinationMember.EventTime, opt => opt.UseValue(DateTimeOffset.UtcNow))
-                .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.Ignore())
+                .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.MapFrom(source => source.Learner))
                 .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(destinationMember => destinationMember.PriceEpisodes,
                     opt => opt.MapFrom(source => source.Learner.PriceEpisodes))

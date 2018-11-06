@@ -67,15 +67,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     FundingSource = FundingSourceType.CoInvestedSfa,
                     LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
                     LearnerReferenceNumber = TestSession.Learner.LearnRefNumber,
-                    LearningAimReference = TestSession.Learner.Course.LearnAimRef,
+                    LearningAimReference = learnerTraining.AimReference,
                     LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                     IlrSubmissionDateTime = submissionTime,
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.SfaCoFundedPayments,
-                    LearningAimFundingLineType = TestSession.Learner.Course.FundingLineType,
+                    LearningAimFundingLineType = learnerTraining.FundingLineType,
                     LearnerUln = TestSession.Learner.Uln,
                     LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    LearningAimProgrammeType = TestSession.Learner.Course.ProgrammeType
+                    LearningAimProgrammeType = learnerTraining.ProgrammeType
                 },
                 new PaymentModel
                 {
@@ -90,21 +90,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     FundingSource = FundingSourceType.CoInvestedEmployer,
                     LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
                     LearnerReferenceNumber = TestSession.Learner.LearnRefNumber,
-                    LearningAimReference = TestSession.Learner.Course.LearnAimRef,
+                    LearningAimReference = learnerTraining.AimReference,
                     LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                     IlrSubmissionDateTime = submissionTime,
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.EmployerCoFundedPayments,
-                    LearningAimFundingLineType = TestSession.Learner.Course.FundingLineType,
+                    LearningAimFundingLineType = learnerTraining.FundingLineType,
                     LearnerUln = TestSession.Learner.Uln,
                     LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    LearningAimProgrammeType = TestSession.Learner.Course.ProgrammeType
+                    LearningAimProgrammeType = learnerTraining.ProgrammeType
                 }
             };
         }
 
         protected void PopulateLearner(FM36Learner learner, Training learnerEarnings)
         {
+            learner.LearnRefNumber = TestSession.Learner.LearnRefNumber;
+            
             var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
             {
                 PriceEpisodeIdentifier = learnerEarnings.LearnerId,
@@ -119,10 +121,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodePlannedInstalments = learnerEarnings.NumberOfInstallments,
                     PriceEpisodeActualInstalments = learnerEarnings.ActualInstallments,
                     PriceEpisodeBalancePayment = learnerEarnings.BalancingPayment,
-                    //PriceEpisodeFundLineType = learnerEarnings.FundingLineType,
+                    PriceEpisodeFundLineType = learnerEarnings.FundingLineType,
                     PriceEpisodeBalanceValue = learnerEarnings.BalancingPayment,
                     PriceEpisodeCompletionPayment = learnerEarnings.CompletionAmount,
-                    PriceEpisodeContractType = "ContractWithEmployer", //TODO: Needs to work for ACT1 too
+                    PriceEpisodeContractType = learnerEarnings.ContractType.ToString("G"),
                     PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
                     PriceEpisodePlannedEndDate = learnerEarnings.StartDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
                     PriceEpisodeSFAContribPct = learnerEarnings.SfaContributionPercentage,
@@ -172,10 +174,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 new LearningDelivery
                 {
-                    AimSeqNumber = 1,
+                    AimSeqNumber = learnerEarnings.AimSequenceNumber,
                     LearningDeliveryValues = new LearningDeliveryValues
                     {
-                        LearnAimRef = "ZPROG001",
+                        LearnAimRef = learnerEarnings.AimReference,
                     }
                 }
             });

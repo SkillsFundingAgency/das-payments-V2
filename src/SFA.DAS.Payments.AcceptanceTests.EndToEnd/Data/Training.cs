@@ -26,6 +26,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public int ActualInstallments => int.Parse(ActualDuration.Replace("months", null).Trim());
         public decimal? BalancingPayment { get; set; } // TODO: populate properly
         public ContractType ContractType { get; set; }
+        public int AimSequenceNumber { get; set; }
+        public string AimReference { get; set; }
+        public string StandardCode { get; set; }
+        public string FundingLineType { get; set; }
+
 
     }
 }

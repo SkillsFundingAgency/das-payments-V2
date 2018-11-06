@@ -90,10 +90,15 @@ this.ScenarioInitialize(scenarioInfo);
                         "Total Assesment Price",
                         "Total Assesment Price Effective Date",
                         "Actual Duration",
-                        "Programme Type",
                         "Completion Status",
                         "SFA Contribution Percentage",
-                        "Contract Type"});
+                        "Contract Type",
+                        "Aim Sequence Number",
+                        "Aim Reference",
+                        "Framework Code",
+                        "Pathway Code",
+                        "Programme Type",
+                        "Funding Line Type"});
             table1.AddRow(new string[] {
                         "learner a",
                         "1",
@@ -104,10 +109,15 @@ this.ScenarioInitialize(scenarioInfo);
                         "2250",
                         "Aug/Current Academic Year",
                         "12 months",
-                        "25",
                         "continuing",
-                        "90%",
-                        "ContractWithEmployer"});
+                        ".9",
+                        "ContractWithEmployer",
+                        "1",
+                        "ZPROG001",
+                        "403",
+                        "1",
+                        "25",
+                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
 #line 8
     testRunner.Given("the provider previously submitted the following learner details", ((string)(null)), table1, "Given ");
 #line hidden
@@ -228,10 +238,15 @@ this.ScenarioInitialize(scenarioInfo);
                         "Total Assesment Price",
                         "Total Assesment Price Effective Date",
                         "Actual Duration",
-                        "Programme Type",
                         "Completion Status",
                         "SFA Contribution Percentage",
-                        "Contract Type"});
+                        "Contract Type",
+                        "Aim Sequence Number",
+                        "Aim Reference",
+                        "Framework Code",
+                        "Pathway Code",
+                        "Programme Type",
+                        "Funding Line Type"});
             table4.AddRow(new string[] {
                         "learner a",
                         "1",
@@ -242,10 +257,15 @@ this.ScenarioInitialize(scenarioInfo);
                         "2250",
                         "Aug/Current Academic Year",
                         "3 months",
-                        "25",
                         "withdrawn",
-                        "90%",
-                        "ContractWithEmployer"});
+                        ".9",
+                        "ContractWithEmployer",
+                        "1",
+                        "ZPROG001",
+                        "403",
+                        "1",
+                        "25",
+                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
 #line 33
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
 #line 37

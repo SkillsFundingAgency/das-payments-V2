@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
@@ -15,6 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
 
         public Task Handle(ApprenticeshipContractType2EarningEvent message, IMessageHandlerContext context)
         {
+            Console.WriteLine($"Received event type: {message.GetType().Name}, payload: {message.ToJson()}");
             ReceivedEvents.Add(message);
             return Task.FromResult(0);
         }

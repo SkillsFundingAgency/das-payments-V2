@@ -9,6 +9,15 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
+    //public class LearningAimResolver: IValueResolver<ProcessLearnerCommand, EarningEvent, LearningAim>
+    //{
+    //    public LearningAim Resolve(ProcessLearnerCommand source, EarningEvent destination, LearningAim destMember,
+    //        ResolutionContext context)
+    //    {
+            
+    //    }
+    //}
+
     public class OnProgrammeEarningValueResolver : IValueResolver<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent, ReadOnlyCollection<OnProgrammeEarning>>
     {
 

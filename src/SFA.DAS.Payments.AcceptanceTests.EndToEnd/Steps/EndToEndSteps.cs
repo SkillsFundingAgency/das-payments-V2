@@ -30,12 +30,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             SfaContributionPercentage = CurrentIlr[0].SfaContributionPercentage;
         }
 
-        [When(@"the ILR file is submitted for the learners for collection period R(.*)/(.*)")]
-        public async Task WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(byte period, string year)
+        [When(@"the ILR file is submitted for the learners for collection period (.*)")]
+        public async Task WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
-            var calendarPeriod = new CalendarPeriod(year.ToYear(), period);
-            CollectionYear = calendarPeriod.Name.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)[0];
-            CollectionPeriod = calendarPeriod.Period;
+            var period = collectionPeriod.ToDate().ToCalendarPeriod();
+            Console.WriteLine($"Current collection period is: {period.Name}.");
+            CurrentCollectionPeriod = period;
             var fm36Learners = new List<FM36Learner>();
             foreach (var training in CurrentIlr)
             {
@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
             var expectedPayments = table.CreateSet<Payment>().ToList();
-            WaitForIt(() => PaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, new CalendarPeriod(CollectionYear, CollectionPeriod)), "Payment event check failure");
+            WaitForIt(() => PaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, CurrentCollectionPeriod), "Required Payment event check failure");
         }
 
         [Then(@"at month end the following provider payments will be generated")]
@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn), "ProviderPayment event check failure");
+            WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn), "Provider Payment event check failure");
         }
     }
 }
