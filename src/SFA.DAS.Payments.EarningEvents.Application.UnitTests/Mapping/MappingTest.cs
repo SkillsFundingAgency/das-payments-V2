@@ -109,11 +109,25 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 Learner = fm36Learner,
                 CollectionYear = "1819",
                 Ukprn = 12345,
-                JobId = 1,
+                JobId = 69,
                 CollectionPeriod = 1,
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 SubmissionDate = DateTime.UtcNow
             };
+        }
+
+        [Test]
+        public void Maps_Ukprn()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.Ukprn.Should().Be(processLearnerCommand.Ukprn);
+        }
+
+        [Test]
+        public void Maps_JobId()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.JobId.Should().Be(processLearnerCommand.JobId);
         }
 
         [Test]
