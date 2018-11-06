@@ -60,9 +60,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
-            var period = collectionPeriod.ToDate().ToCalendarPeriod();
-            Console.WriteLine($"Current collection period is: {period.Name}.");
-            CurrentCollectionPeriod = period;
+            SetCollectionPeriod(collectionPeriod);
             foreach (var training in CurrentIlr)
             {
                 var learner = new FM36Learner();
@@ -70,8 +68,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var command = new ProcessLearnerCommand
                 {
                     Learner = learner,
-                    CollectionPeriod = period.Period,
-                    CollectionYear = period.Name.Split('-').FirstOrDefault(),
+                    CollectionPeriod = CurrentCollectionPeriod.Period,
+                    CollectionYear = CollectionYear,
                     Ukprn = TestSession.Ukprn,
                     JobId = TestSession.JobId,
                     IlrSubmissionDateTime = TestSession.IlrSubmissionTime,

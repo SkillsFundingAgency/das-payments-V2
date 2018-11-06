@@ -50,6 +50,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
+        protected void SetCollectionPeriod(string collectionPeriod)
+        {
+            var period = collectionPeriod.ToDate().ToCalendarPeriod();
+            Console.WriteLine($"Current collection period is: {period.Name}.");
+            CurrentCollectionPeriod = period;
+            CollectionPeriod = CurrentCollectionPeriod.Period;
+            CollectionYear = CurrentCollectionPeriod.Name.Split('-').FirstOrDefault();
+        }
+
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime)
         {
             return new List<PaymentModel>
@@ -106,10 +115,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected void PopulateLearner(FM36Learner learner, Training learnerEarnings)
         {
             learner.LearnRefNumber = TestSession.Learner.LearnRefNumber;
-            
             var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
             {
-                PriceEpisodeIdentifier = learnerEarnings.LearnerId,
+                PriceEpisodeIdentifier = "pe-1",
                 PriceEpisodeValues = new PriceEpisodeValues
                 {
                     EpisodeStartDate = learnerEarnings.StartDate.ToDate(),

@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             PriceEpisodeInstalmentValue = 1000,
                             TNP1 = 15000,
                             TNP2 = 15000,
-                            PriceEpisodeCompleted = true
+                            PriceEpisodeCompleted = true,
                         },
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                         {
@@ -110,8 +110,32 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 CollectionYear = "1819",
                 Ukprn = 12345,
                 JobId = 1,
-                CollectionPeriod = 1
+                CollectionPeriod = 1,
+                IlrSubmissionDateTime = DateTime.UtcNow,
+                SubmissionDate = DateTime.UtcNow
             };
+        }
+
+        [Test]
+        public void Maps_Collection_Year()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.CollectionYear.Should().Be("1819");
+        }
+
+        [Test]
+        public void Maps_Collection_Period()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.CollectionPeriod.Should().NotBeNull();
+            earningEvent.CollectionPeriod.Period.Should().Be(1);
+        }
+
+        [Test]
+        public void Maps_IlrSubmissionTime()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.IlrSubmissionDateTime.Should().Be(processLearnerCommand.IlrSubmissionDateTime);
         }
 
         [Test]
@@ -142,6 +166,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
             earningEvent.OnProgrammeEarnings.Should().NotBeNullOrEmpty();
             earningEvent.OnProgrammeEarnings.Should().HaveCount(2);
+            earningEvent.OnProgrammeEarnings.Last().Periods.Count.Should().Be(12);
+            earningEvent.OnProgrammeEarnings.First().Periods.Count.Should().Be(1);
+            earningEvent.OnProgrammeEarnings.Last().Periods.All(period => period.Amount == 1000 && period.PriceEpisodeIdentifier == "pe-1").Should().BeTrue();
         }
 
         [Test]

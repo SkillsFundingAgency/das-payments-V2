@@ -33,9 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
-            var period = collectionPeriod.ToDate().ToCalendarPeriod();
-            Console.WriteLine($"Current collection period is: {period.Name}.");
-            CurrentCollectionPeriod = period;
+            SetCollectionPeriod(collectionPeriod);
             var fm36Learners = new List<FM36Learner>();
             foreach (var training in CurrentIlr)
             {
