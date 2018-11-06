@@ -27,7 +27,7 @@ Scenario Outline: A non-levy learner withdraws after qualifying period
 		| R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
 		| R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
 		| R04/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         |
-	And the following provider payments will be generated
+	And at month end the following provider payments will be generated
 		| Collection Period			| Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments |
 		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         |
 		| R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         |

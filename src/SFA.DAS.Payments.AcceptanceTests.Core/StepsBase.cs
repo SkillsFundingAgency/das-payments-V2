@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 (pass, reason) = lookForIt();
                 if (pass)
                     return;
-                await Task.Delay(Config.TimeToPause);
+                Thread.Sleep(Config.TimeToPause);
             }
             Assert.Fail(failText + " - " + reason);
         }

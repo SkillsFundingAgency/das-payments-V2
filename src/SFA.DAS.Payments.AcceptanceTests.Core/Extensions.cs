@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core

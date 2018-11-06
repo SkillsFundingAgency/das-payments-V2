@@ -2,23 +2,30 @@
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
 {
     [Binding]
-    public class FeatureScopedBootstrapper : BindingBootstrapper
+    public class FeatureScopedBootstrapper : TestSessionBase
     {
         public FeatureScopedBootstrapper(FeatureContext context) : base(context)
         {
         }
 
         [BeforeTestRun(Order = 2)]
-        public static void AddDcConfig()
+        public static void SetUpContainer()
         {
+            Builder.Register((c, p) =>
+            {
+                var configHelper = c.Resolve<TestsConfiguration>();
+                return new PaymentsDataContext(configHelper.PaymentsConnectionString);
+            }).As<IPaymentsDataContext>().InstancePerDependency();
             DcHelper.AddDcConfig(Builder);
         }
 
@@ -26,9 +33,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
         public static void SetUpFeature(FeatureContext context)
         {
             SetUpTestSession(context);
+            var dcHelper = new DcHelper(Container);
+            context.Set(dcHelper);
         }
 
-        [BeforeFeature(Order = 99)]
+        [AfterFeature(Order = 1)]
         public static void CleanUpFeature(FeatureContext context)
         {
             CleanUpTestSession(context);
@@ -38,7 +47,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
         public static void AddRoutingConfig()
         {
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<IPaymentsEvent>());
+            var conventions = endpointConfiguration.Conventions();
+            conventions.DefiningEventsAs(type => type.IsEvent<IPaymentsEvent>())
+                .DefiningCommandsAs(t => t.IsAssignableTo<ProcessLearnerCommand>() || t.IsAssignableTo<ProcessProviderMonthEndCommand>());
+            var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
+            var routing = transportConfig.Routing();
+            routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.EarningEvents);
+            routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
         }
     }
 }

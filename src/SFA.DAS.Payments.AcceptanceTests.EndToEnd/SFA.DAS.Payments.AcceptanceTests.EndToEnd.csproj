@@ -237,10 +237,11 @@
     <Compile Include="Data\Training.cs" />
     <Compile Include="EventMatchers\PaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
-    <Compile Include="Infrastructure\EndToEndTestSession.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2EarningEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2PaymentDueEventHandler.cs" />
+    <Compile Include="Infrastructure\EndpointNames.cs" />
+    <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventMatchers\EarningEventMatcher.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />

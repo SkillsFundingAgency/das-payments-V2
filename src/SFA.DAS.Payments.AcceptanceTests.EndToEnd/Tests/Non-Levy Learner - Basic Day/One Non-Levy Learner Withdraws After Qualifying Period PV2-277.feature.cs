@@ -243,7 +243,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "900",
                         "100"});
 #line 30
- testRunner.And("the following provider payments will be generated", ((string)(null)), table4, "And ");
+ testRunner.And("at month end the following provider payments will be generated", ((string)(null)), table4, "And ");
 #line hidden
             this.ScenarioCleanup();
         }
