@@ -4,8 +4,8 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
-    public interface IIlrSubmissionService
+    public interface IHandleIlrSubmissionService
     {
-        Task HandleIlrSubMission(IlrSubmittedEvent message, CancellationToken cancellationToken);
+        Task Handle(IlrSubmittedEvent message, CancellationToken cancellationToken);
     }
 }

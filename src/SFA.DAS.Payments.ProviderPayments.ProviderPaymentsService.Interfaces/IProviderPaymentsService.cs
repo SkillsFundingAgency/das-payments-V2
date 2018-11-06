@@ -12,10 +12,10 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces
 {
     public interface IProviderPaymentsService : IActor
     {
-        Task ProcessPayment(PaymentModel message, CancellationToken cancellationToken);
+        Task HandlePayment(PaymentModel message, CancellationToken cancellationToken);
 
         Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken);
 
-        Task HandleIlrSubMissionAsync(IlrSubmittedEvent message, CancellationToken cancellationToken);
+        Task HandleIlrSubMission(IlrSubmittedEvent message, CancellationToken cancellationToken);
     }
 }

@@ -11,6 +11,7 @@ using ESFA.DC.Serialization.Interfaces;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;

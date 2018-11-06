@@ -1,14 +1,12 @@
 ﻿using NServiceBus;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
+using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -57,7 +55,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         public async Task WhenTheFundingSourcePaymentsEventAreReceivedAsync()
         {
             var submissionTime = DateTime.UtcNow;
-           var payments = FundingSourcePayments.Select(p => CreateFundingSourcePaymentEvent(p, submissionTime)).ToList();
+            var payments = FundingSourcePayments.Select(p => CreateFundingSourcePaymentEvent(p, submissionTime)).ToList();
             foreach (var payment in payments)
             {
                 await MessageSession.Send(payment).ConfigureAwait(false);
@@ -99,7 +97,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 return expectedProviderPaymentEvents.All(expectedEvent =>
                     CoInvestedProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                         ContractType == receivedEvent.ContractType
-                        && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
+                        && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                         && TestSession.Ukprn == receivedEvent.Ukprn
                         && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
                         && expectedEvent.Type == (OnProgrammeEarningType)receivedEvent.TransactionType

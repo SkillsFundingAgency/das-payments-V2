@@ -1,7 +1,6 @@
 ﻿using Autofac.Extras.Moq;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -12,7 +11,6 @@ using SFA.DAS.Payments.ProviderPayments.Domain;
 using SFA.DAS.Payments.ProviderPayments.Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -90,14 +88,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                           .Verifiable();
 
             providerPaymentsRepository
-                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(), 
-                                                        It.IsAny<byte>(), 
+                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(),
+                                                        It.IsAny<byte>(),
                                                         It.IsAny<long>(),
                                                         It.IsAny<DateTime>(),
                                                         It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
-            
+
             ilrSubmittedEvent = new IlrSubmittedEvent
             {
                 Ukprn = ukprn,
@@ -116,7 +114,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(Task.CompletedTask);
 
             ilrSubmittedEventCache
-                .Setup(o => o.Add(ukprn.ToString(),It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)))
+                .Setup(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)))
                 .Returns(Task.CompletedTask);
 
             validateIlrSubmission = mocker.Mock<IValidateIlrSubmission>();
@@ -131,8 +129,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         [Test]
         public async Task GetMonthEndPaymentsShouldReturnPaymentsFromRepository()
         {
-            short year = 2018;
-            byte month = 9;
+            const short year = 2018;
+            const byte month = 9;
             var cancellationToken = new CancellationToken();
 
             var results = await monthEndService.GetMonthEndPayments(year, month, ukprn, cancellationToken);

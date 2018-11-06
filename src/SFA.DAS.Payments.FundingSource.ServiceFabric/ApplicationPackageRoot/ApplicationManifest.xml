@@ -20,7 +20,6 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
-            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[NonLevyFundedService_EndpointName]" />

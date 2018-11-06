@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 case FundingSourceType.CoInvestedEmployer:
                     return MapCommonCoInvestedPaymentEventData(payment, mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent>(requiredPaymentsEvent));
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException(nameof(FundingSourceType));
             }
         }
 

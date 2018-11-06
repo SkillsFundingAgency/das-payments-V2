@@ -9,8 +9,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            //TODO: Refactor to make it it more reusable
-            var assembly = GetType().Assembly; //TODO: Use all referenced assemblies that have profile classes
+            var assembly = GetType().Assembly;
             builder.RegisterAssemblyTypes(assembly)
                 .Where(type => type.IsClass && type.IsPublic && !type.IsAbstract && type.IsAssignableTo<Profile>())
                 .As<Profile>()

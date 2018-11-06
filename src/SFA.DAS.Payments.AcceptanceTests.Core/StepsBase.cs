@@ -71,12 +71,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
             var reason = "";
-            var pass = false;
             while (DateTime.Now < endTime)
             {
+                bool pass;
                 (pass, reason) = lookForIt();
-                if (pass)
-                    return;
+                if (pass) return;
                 Thread.Sleep(Config.TimeToPause);
             }
             Assert.Fail(failText + " - " + reason);

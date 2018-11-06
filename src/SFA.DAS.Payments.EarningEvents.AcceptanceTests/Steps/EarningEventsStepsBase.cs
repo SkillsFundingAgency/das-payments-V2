@@ -4,6 +4,7 @@ using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
