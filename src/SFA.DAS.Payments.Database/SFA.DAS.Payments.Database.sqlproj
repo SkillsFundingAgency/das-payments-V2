@@ -73,7 +73,6 @@
     <Build Include="Security\Role_DataViewer.sql" />
     <Build Include="Security\RoleMemberships.sql" />
     <Build Include="Security\User_DsciUser.sql" />
-    <None Include="Payments2\Views\Payments2.PaymentHistory.sql" />
     <Build Include="Payments2\Tables\Payment.sql" />
     <Build Include="Security\Schema_Payments2.sql" />
   </ItemGroup>
