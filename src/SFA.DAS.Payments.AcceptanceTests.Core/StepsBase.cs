@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
+using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using TechTalk.SpecFlow;
@@ -70,7 +72,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 (pass, reason) = lookForIt();
                 if (pass)
                     return;
-                Thread.Sleep(Config.TimeToPause);
+                await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail(failText + " - " + reason);
         }

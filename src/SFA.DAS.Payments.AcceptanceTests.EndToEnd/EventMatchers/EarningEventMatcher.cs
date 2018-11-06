@@ -10,12 +10,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public static class EarningEventMatcher
     {
-        public static Tuple<bool, string> MatchEarnings(IList<OnProgrammeEarning> expectedEarnings, long ukprn)
+        public static Tuple<bool, string> MatchEarnings(IList<OnProgrammeEarning> expectedPeriods, long ukprn)
         {
             var sessionEarnings = ApprenticeshipContractType2EarningEventHandler.ReceivedEvents.Where(e => e.Ukprn == ukprn).ToArray();
             var receivedPeriods = ConvertToOnProgEarning(sessionEarnings);
 
-            var matchedEvents = receivedPeriods.Select(received => expectedEarnings.Any(expected =>
+            var matchedPeriods = receivedPeriods.Select(received => expectedPeriods.Any(expected =>
             {
                 return expected.DeliveryCalendarPeriod.Name == received.Key
                        && expected.Balancing == received.Value.Balancing
@@ -23,7 +23,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                        && expected.OnProgramme == received.Value.OnProgramme;
             })).ToArray();
 
-            return new Tuple<bool, string>(matchedEvents.Length == receivedPeriods.Count, "");
+            var allFound = matchedPeriods.Length == expectedPeriods.Count;
+            var nothingExtra = receivedPeriods.Count == matchedPeriods.Length;
+
+            var reason = new List<string>();
+            if (!allFound) 
+                reason.Add($"Did not find {expectedPeriods.Count - matchedPeriods.Length} out of {expectedPeriods.Count} expected earnings");
+            if (!nothingExtra) 
+                reason.Add($"Found {receivedPeriods.Count - matchedPeriods.Length} unexpected earnings");
+
+            return new Tuple<bool, string>(allFound && nothingExtra, string.Join(" and ", reason));
         }
 
         private static Dictionary<string, OnProgrammeEarning> ConvertToOnProgEarning(ApprenticeshipContractType2EarningEvent[] sessionEarnings)

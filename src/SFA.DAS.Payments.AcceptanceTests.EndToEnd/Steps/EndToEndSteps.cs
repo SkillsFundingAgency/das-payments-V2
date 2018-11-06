@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
+using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -26,12 +27,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             SfaContributionPercentage = CurrentIlr[0].SfaContributionPercentage;
         }
 
-
-        [When(@"the ILR file is submitted for the learners for collection period R(.*)/Current Academic Year")]
-        public async Task WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(int period)
+        [When(@"the ILR file is submitted for the learners for collection period R(.*)/(.*)")]
+        public async Task WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(byte period, string year)
         {
-            SetCurrentCollectionYear();
-            CollectionPeriod = (byte) period;
+            var calendarPeriod = new CalendarPeriod(year.ToYear(), period);
+            CollectionYear = calendarPeriod.Name.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)[0];
+            CollectionPeriod = calendarPeriod.Period;
             var fm36Learners = new List<FM36Learner>();
             foreach (var training in CurrentIlr)
             {
@@ -45,17 +46,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
 
         [Then(@"the following learner earnings should be generated")]
-        public void ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
+        public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var expectedEarnings = table.CreateSet<OnProgrammeEarning>().ToList();
-            WaitForIt(() => EarningEventMatcher.MatchEarnings(expectedEarnings, TestSession.Ukprn), "OnProgrammeEarning event check failure");
+            expectedEarnings.ForEach(e => e.DeliveryCalendarPeriod = e.DeliveryPeriod.ToCalendarPeriod());
+            await WaitForIt(() => EarningEventMatcher.MatchEarnings(expectedEarnings, TestSession.Ukprn), "OnProgrammeEarning event check failure");
         }
 
         [Then(@"the following payments will be calculated")]
-        public void ThenTheFollowingPaymentsWillBeCalculated(Table table)
+        public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
             var expectedPayments = table.CreateSet<Payment>().ToList();
-            WaitForIt(() => PaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn), "Payment event check failure");
+            await WaitForIt(() => PaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, new CalendarPeriod(CollectionYear, CollectionPeriod)), "Payment event check failure");
         }
 
         [Then(@"at month end the following provider payments will be generated")]
@@ -69,7 +71,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn), "ProviderPayment event check failure");
+            await WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn), "ProviderPayment event check failure");
         }
     }
 }
