@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
             };
             var paymentDueEvents = new[] {new ApprenticeshipContractType2PaymentDueEvent()};
             
-            domainServiceMock.Setup(d => d.HandleOnProgrammeEarning(It.IsAny<OnProgrammeEarning>(), It.IsAny<CalendarPeriod>(), It.IsAny<Learner>(), It.IsAny<LearningAim>(), It.IsAny<decimal>()))
+            domainServiceMock.Setup(d => d.HandleOnProgrammeEarning(It.IsAny<long>(),It.IsAny<long>(), It.IsAny<OnProgrammeEarning>(), It.IsAny<CalendarPeriod>(), It.IsAny<Learner>(), It.IsAny<LearningAim>(), It.IsAny<decimal>()))
                 .Returns(paymentDueEvents)
                 .Verifiable();
 

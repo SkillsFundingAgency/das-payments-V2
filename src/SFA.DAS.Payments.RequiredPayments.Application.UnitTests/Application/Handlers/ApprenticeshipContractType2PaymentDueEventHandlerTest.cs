@@ -219,7 +219,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
         {
             return new Learner
             {
-                Ukprn = 1,
                 ReferenceNumber = "3",
                 Uln = 4
             };

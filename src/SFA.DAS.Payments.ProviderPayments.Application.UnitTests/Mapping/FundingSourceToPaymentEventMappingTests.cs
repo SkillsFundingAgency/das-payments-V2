@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             var employerCoInvested = new EmployerCoInvestedFundingSourcePaymentEvent
             {
                 CollectionPeriod = new CalendarPeriod {Period = 12, Month = 7, Year = 2019, Name = "1819-R12"},
-                Learner = new Learner {ReferenceNumber = "1234-ref", Ukprn = 12345, Uln = 123456},
+                Learner = new Learner {ReferenceNumber = "1234-ref", Uln = 123456 },
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                 Ukprn = 12345,
                 ContractType = ContractType.ContractWithSfa, 

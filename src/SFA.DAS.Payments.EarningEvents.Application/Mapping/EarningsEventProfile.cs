@@ -40,7 +40,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
-                .ForMember(dest => dest.Ukprn, opt => opt.Ignore()) //TODO: why is ukprn on the event and the learner
                 .ForMember(dest => dest.Uln, opt => opt.Ignore());
 
             CreateMap<FM36Learner, LearningAim>()

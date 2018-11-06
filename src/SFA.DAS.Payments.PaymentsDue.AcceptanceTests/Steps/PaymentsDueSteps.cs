@@ -1,4 +1,5 @@
-﻿using NServiceBus;
+﻿using System;
+using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -100,11 +101,12 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 
                 Act2EarningEvents.Add(new ApprenticeshipContractType2EarningEvent
                 {
+                    JobId = TestSession.JobId,
+                    EventTime = DateTimeOffset.UtcNow,
                     CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
                     Learner = new Learner
                     {
                         ReferenceNumber = TestSession.GenerateLearnerReference(learnerId),
-                        Ukprn = TestSession.Ukprn,
                         Uln = TestSession.Learner.Uln
                     },
                     LearningAim = new LearningAim

@@ -13,11 +13,15 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
     public class ApprenticeshipContractType2EarningProcessorTest
     {
         private IApprenticeshipContractType2EarningProcessor processor;
+        private long jobId;
+        private long ukprn;
 
         [SetUp]
         public void SetUp()
         {
             this.processor = new ApprenticeshipContractType2EarningProcessor();
+            jobId = 12345;
+            ukprn = 12;
         }
 
         [Test]
@@ -63,10 +67,10 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                     }
                 })
             };
-            earning.OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new[] {onProgrammeEarning});
+            earning.OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new[] { onProgrammeEarning });
 
             // act
-            var paymentsDue = this.processor.HandleOnProgrammeEarning(onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage);
+            var paymentsDue = this.processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage);
 
             // assert
             Assert.IsNotNull(paymentsDue);
@@ -99,14 +103,14 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             };
 
             // act
-            var paymentsDue = this.processor.HandleOnProgrammeEarning(onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage);
+            var paymentsDue = this.processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage);
 
             // assert
             Assert.IsNotNull(paymentsDue);
             Assert.AreEqual(0, paymentsDue.Length);
         }
 
-        private static ApprenticeshipContractType2EarningEvent GetEarning()
+        private  ApprenticeshipContractType2EarningEvent GetEarning()
         {
             var earning = new ApprenticeshipContractType2EarningEvent
             {
@@ -115,10 +119,10 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                 Learner = new Learner
                 {
                     ReferenceNumber = "1",
-                    Ukprn = 2,
                     Uln = 3
                 },
-                Ukprn = 2,
+                Ukprn = ukprn,
+                JobId = jobId,
                 LearningAim = new LearningAim
                 {
                     AgreedPrice = 4,
@@ -129,7 +133,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                     Reference = "9",
                     StandardCode = 10
                 },
-                JobId = 11,
                 PriceEpisodes = new ReadOnlyCollection<PriceEpisode>(new[]
                 {
                     new PriceEpisode
@@ -152,7 +155,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(null, new CalendarPeriod("1718-R02"), new Learner(),new LearningAim(), 100);
+                processor.HandleOnProgrammeEarning(ukprn, jobId, null, new CalendarPeriod("1718-R02"), new Learner(), new LearningAim(), 100);
             }
             catch (ArgumentNullException ex)
             {
@@ -168,7 +171,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(new OnProgrammeEarning(), null, new Learner(),new LearningAim(), 100);
+                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), null, new Learner(), new LearningAim(), 100);
             }
             catch (ArgumentNullException ex)
             {
@@ -184,7 +187,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), null,new LearningAim(), 100);
+                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), null, new LearningAim(), 100);
             }
             catch (ArgumentNullException ex)
             {
@@ -200,7 +203,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), new Learner(), null, 100);
+                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), new Learner(), null, 100);
             }
             catch (ArgumentNullException ex)
             {
@@ -219,7 +222,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.AreEqual(earning.OnProgrammeEarnings[0].Type, paymentDue.Type);
             Assert.AreEqual(earningPeriod.Period, paymentDue.DeliveryPeriod);
             Assert.AreEqual(earningPeriod.Amount, paymentDue.AmountDue);
-            Assert.AreEqual(earning.Learner.Ukprn, paymentDue.Learner.Ukprn);
             Assert.AreEqual(earning.Learner.ReferenceNumber, paymentDue.Learner.ReferenceNumber);
             Assert.AreEqual(earning.Learner.Uln, paymentDue.Learner.Uln);
             Assert.AreEqual(earning.LearningAim.AgreedPrice, paymentDue.LearningAim.AgreedPrice);

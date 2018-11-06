@@ -8,7 +8,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         {
             return new Model.Core.Learner
             {
-                Ukprn = learner.Ukprn,
                 ReferenceNumber = learner.LearnRefNumber,
                 Uln = learner.Uln
             };

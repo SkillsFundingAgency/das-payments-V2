@@ -44,7 +44,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                 },
                 Learner = new Learner
                 {
-                    Ukprn = 99999999999,
                     ReferenceNumber = "A1000",
                     Uln = 99999999999
                 },

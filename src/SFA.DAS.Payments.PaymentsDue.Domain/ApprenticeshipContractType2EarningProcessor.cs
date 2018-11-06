@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
     public class ApprenticeshipContractType2EarningProcessor : IApprenticeshipContractType2EarningProcessor
     {
-        public ApprenticeshipContractType2PaymentDueEvent[] HandleOnProgrammeEarning(OnProgrammeEarning onProgEarning, CalendarPeriod collectionPeriod, Learner learner, LearningAim learningAim, decimal sfaContributionPercentage)
+        public ApprenticeshipContractType2PaymentDueEvent[] HandleOnProgrammeEarning(long ukprn, long jobId, OnProgrammeEarning onProgEarning, CalendarPeriod collectionPeriod, Learner learner, LearningAim learningAim, decimal sfaContributionPercentage)
         {
             if (onProgEarning == null)
                 throw new ArgumentNullException(nameof(onProgEarning));
@@ -24,28 +24,29 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 
             var paymentsDue = new List<ApprenticeshipContractType2PaymentDueEvent>();
 
-                foreach (var period in onProgEarning.Periods)
+            foreach (var period in onProgEarning.Periods)
+            {
+                if (period.Period.Year > collectionPeriod.Year
+                    || (period.Period.Year == collectionPeriod.Year
+                        && period.Period.Month > collectionPeriod.Month)
+                    || period.Amount == 0)
+                    continue; // cut future and empty periods off
+
+                paymentsDue.Add(new ApprenticeshipContractType2PaymentDueEvent
                 {
-                    if (period.Period.Year > collectionPeriod.Year
-                        || (period.Period.Year == collectionPeriod.Year
-                            && period.Period.Month > collectionPeriod.Month)
-                        || period.Amount == 0)
-                        continue; // cut future and empty periods off
-                    
-                    paymentsDue.Add(new ApprenticeshipContractType2PaymentDueEvent
-                    {
-                        Ukprn = learner.Ukprn,
-                        DeliveryPeriod = period.Period,
-                        LearningAim = learningAim.Clone(),
-                        Learner = learner.Clone(),
-                        Type = onProgEarning.Type,
-                        SfaContributionPercentage = sfaContributionPercentage,
-                        AmountDue = period.Amount,
-                        CollectionPeriod = collectionPeriod,
-                        EventTime = DateTimeOffset.UtcNow,
-                        PriceEpisodeIdentifier = period.PriceEpisodeIdentifier
-                    });
-                }
+                    JobId = jobId,
+                    Ukprn = ukprn,
+                    DeliveryPeriod = period.Period,
+                    LearningAim = learningAim.Clone(),
+                    Learner = learner.Clone(),
+                    Type = onProgEarning.Type,
+                    SfaContributionPercentage = sfaContributionPercentage,
+                    AmountDue = period.Amount,
+                    CollectionPeriod = collectionPeriod,
+                    EventTime = DateTimeOffset.UtcNow,
+                    PriceEpisodeIdentifier = period.PriceEpisodeIdentifier
+                });
+            }
 
             return paymentsDue.ToArray();
         }
