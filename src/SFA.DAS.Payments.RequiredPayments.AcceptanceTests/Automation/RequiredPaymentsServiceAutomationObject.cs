@@ -13,10 +13,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Automation
             this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
         }
 
-        public async Task SendPaymentsDue()
-        {
+        //public async Task SendPaymentsDue()
+        //{
 
-        }
+        //}
         
     }
 }
