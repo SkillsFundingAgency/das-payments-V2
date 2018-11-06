@@ -72,17 +72,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Refund
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Provider retrospectively notifies of a withdrawal for a non-levy learner after pa" +
             "yments have already been made PV2-251")]
-        [NUnit.Framework.TestCaseAttribute("R06/Current Academic Year", null)]
-        [NUnit.Framework.TestCaseAttribute("R07/Current Academic Year", null)]
-        [NUnit.Framework.TestCaseAttribute("R08/Current Academic Year", null)]
-        [NUnit.Framework.TestCaseAttribute("R09/Current Academic Year", null)]
-        [NUnit.Framework.TestCaseAttribute("R10/Current Academic Year", null)]
-        [NUnit.Framework.TestCaseAttribute("R11/Current Academic Year", null)]
-        [NUnit.Framework.TestCaseAttribute("R12/Current Academic Year", null)]
-        public virtual void ProviderRetrospectivelyNotifiesOfAWithdrawalForANon_LevyLearnerAfterPaymentsHaveAlreadyBeenMadePV2_251(string collection_Period, string[] exampleTags)
+        public virtual void ProviderRetrospectivelyNotifiesOfAWithdrawalForANon_LevyLearnerAfterPaymentsHaveAlreadyBeenMadePV2_251()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Provider retrospectively notifies of a withdrawal for a non-levy learner after pa" +
-                    "yments have already been made PV2-251", null, exampleTags);
+                    "yments have already been made PV2-251", null, ((string[])(null)));
 #line 7
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
@@ -99,7 +92,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "Actual Duration",
                         "Programme Type",
                         "Completion Status",
-                        "SFA Contribution Percentage"});
+                        "SFA Contribution Percentage",
+                        "Contract Type"});
             table1.AddRow(new string[] {
                         "learner a",
                         "1",
@@ -112,9 +106,10 @@ this.ScenarioInitialize(scenarioInfo);
                         "12 months",
                         "25",
                         "continuing",
-                        "90%"});
+                        "90%",
+                        "ContractWithEmployer"});
 #line 8
-    testRunner.Given("the provider perviously submitted the following learner details", ((string)(null)), table1, "Given ");
+    testRunner.Given("the provider previously submitted the following learner details", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -188,32 +183,38 @@ this.ScenarioInitialize(scenarioInfo);
                         "Collection Period",
                         "Delivery Period",
                         "SFA Co-Funded Payments",
-                        "Employer Co-Funded Payments"});
+                        "Employer Co-Funded Payments",
+                        "On-Programme Earning Type"});
             table3.AddRow(new string[] {
                         "R01/Current Academic Year",
                         "Aug/Current Academic Year",
                         "675",
-                        "75"});
+                        "75",
+                        "Learning"});
             table3.AddRow(new string[] {
                         "R02/Current Academic Year",
                         "Sep/Current Academic Year",
                         "675",
-                        "75"});
+                        "75",
+                        "Learning"});
             table3.AddRow(new string[] {
                         "R03/Current Academic Year",
                         "Oct/Current Academic Year",
                         "675",
-                        "75"});
+                        "75",
+                        "Learning"});
             table3.AddRow(new string[] {
                         "R04/Current Academic Year",
                         "Nov/Current Academic Year",
                         "675",
-                        "75"});
+                        "75",
+                        "Learning"});
             table3.AddRow(new string[] {
                         "R05/Current Academic Year",
                         "Dec/Current Academic Year",
                         "675",
-                        "75"});
+                        "75",
+                        "Learning"});
 #line 25
     testRunner.And("the following provider payments had been generated", ((string)(null)), table3, "And ");
 #line hidden
@@ -229,7 +230,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "Actual Duration",
                         "Programme Type",
                         "Completion Status",
-                        "SFA Contribution Percentage"});
+                        "SFA Contribution Percentage",
+                        "Contract Type"});
             table4.AddRow(new string[] {
                         "learner a",
                         "1",
@@ -242,11 +244,13 @@ this.ScenarioInitialize(scenarioInfo);
                         "3 months",
                         "25",
                         "withdrawn",
-                        "90%"});
+                        "90%",
+                        "ContractWithEmployer"});
 #line 33
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
 #line 37
- testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("the amended ILR file is re-submitted for the learners in collection period R06/Cu" +
+                    "rrent Academic Year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -341,19 +345,43 @@ this.ScenarioInitialize(scenarioInfo);
                         "Collection Period",
                         "Delivery Period",
                         "SFA Co-Funded Payments",
-                        "Employer Co-Funded Payments"});
+                        "Employer Co-Funded Payments",
+                        "On-Programme Earning Type"});
             table7.AddRow(new string[] {
                         "R06/Current Academic Year",
                         "Nov/Current Academic Year",
                         "-675",
-                        "-75"});
+                        "-75",
+                        "Learning"});
             table7.AddRow(new string[] {
                         "R06/Current Academic Year",
                         "Dec/Current Academic Year",
                         "-675",
-                        "-75"});
-#line 57
-    testRunner.And("the following provider payments will be generated", ((string)(null)), table7, "And ");
+                        "-75",
+                        "Learning"});
+#line 56
+    testRunner.And("the following provider payments will be recorded", ((string)(null)), table7, "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Collection Period",
+                        "Delivery Period",
+                        "SFA Co-Funded Payments",
+                        "Employer Co-Funded Payments",
+                        "On-Programme Earning Type"});
+            table8.AddRow(new string[] {
+                        "R06/Current Academic Year",
+                        "Nov/Current Academic Year",
+                        "-675",
+                        "-75",
+                        "Learning"});
+            table8.AddRow(new string[] {
+                        "R06/Current Academic Year",
+                        "Dec/Current Academic Year",
+                        "-675",
+                        "-75",
+                        "Learning"});
+#line 60
+    testRunner.And("at month end the following provider payments will be generated", ((string)(null)), table8, "And ");
 #line hidden
             this.ScenarioCleanup();
         }

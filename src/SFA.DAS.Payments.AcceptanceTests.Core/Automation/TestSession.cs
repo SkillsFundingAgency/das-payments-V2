@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
         public long JobId { get; }
+        public DateTime IlrSubmissionTime { get; }
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
@@ -24,7 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 .RuleFor(course => course.AimSeqNumber, faker => faker.Random.Short(1))
                 .RuleFor(course => course.FrameworkCode, faker => faker.Random.Short(1))
                 .RuleFor(course => course.FundingLineType, faker => faker.Name.JobDescriptor())
-                .RuleFor(course => course.LearnAimRef, faker => faker.Random.AlphaNumeric(8))
+                .RuleFor(course => course.LearnAimRef, "ZPROG001")
                 .RuleFor(course => course.LearningPlannedEndDate, DateTime.Today.AddMonths(12))
                 .RuleFor(course => course.LearningStartDate, DateTime.Today)
                 .RuleFor(course => course.PathwayCode, faker => faker.Random.Short(1))
@@ -38,6 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             Learners = new List<Learner> { GenerateLearner() };
             JobId = GenerateId("JobId");
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
+            IlrSubmissionTime = DateTime.UtcNow;
         }
 
         public long GenerateId(string idKey, int maxValue = 1000000)

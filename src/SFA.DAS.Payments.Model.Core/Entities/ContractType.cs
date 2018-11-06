@@ -2,7 +2,7 @@
 {
     public enum ContractType: byte
     {
-        ContractWithEmployer = 1,
-        ContractWithSfa = 2
+        ContractWithSfa = 1,
+        ContractWithEmployer = 2
     }
 }

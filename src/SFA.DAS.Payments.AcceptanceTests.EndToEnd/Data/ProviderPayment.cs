@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
+﻿using SFA.DAS.Payments.Model.Core.Entities;
+
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 {
     public class ProviderPayment
     {
@@ -6,5 +8,6 @@
         public string DeliveryPeriod { get; set; }
         public decimal SfaCoFundedPayments { get; set; }
         public decimal EmployerCoFundedPayments { get; set; }
+        public TransactionType TransactionType { get; set; }
     }
 }

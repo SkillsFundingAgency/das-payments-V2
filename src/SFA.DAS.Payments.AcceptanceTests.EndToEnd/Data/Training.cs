@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 {
@@ -24,6 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public int NumberOfInstallments => int.Parse(PlannedDuration.Replace("months", null).Trim());
         public int ActualInstallments => int.Parse(ActualDuration.Replace("months", null).Trim());
         public decimal? BalancingPayment { get; set; } // TODO: populate properly
+        public ContractType ContractType { get; set; }
 
     }
 }
