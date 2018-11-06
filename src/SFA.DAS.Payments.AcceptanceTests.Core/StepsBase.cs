@@ -43,6 +43,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 ScenarioCtx.Set(item, key);
         }
 
+        protected async Task WaitForItAsync(Func<bool> lookForIt, string failText)
+        {
+            var endTime = DateTime.Now.Add(Config.TimeToWait);
+            while (DateTime.Now < endTime)
+            {
+                if (lookForIt()) return;
+              await Task.Delay(Config.TimeToPause);
+            }
+            Assert.Fail(failText);
+        }
+
+
         protected void WaitForIt(Func<bool> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);

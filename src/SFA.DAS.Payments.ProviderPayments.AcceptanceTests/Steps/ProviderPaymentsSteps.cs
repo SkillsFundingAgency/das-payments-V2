@@ -63,14 +63,15 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [Then(@"the provider payments service will store the following payments:")]
-        public void ThenTheProviderPaymentsServiceWillStoreTheFollowingPaymentsAsync(Table expectedPaymentsTable)
+        public async Task ThenTheProviderPaymentsServiceWillStoreTheFollowingPaymentsAsync(Table expectedPaymentsTable)
         {
             var expectedContract = (Model.Core.Entities.ContractType)ContractType;
             var expectedPaymentsEvent = expectedPaymentsTable.CreateSet<FundingSourcePayment>();
 
-            WaitForIt(() =>
+            await WaitForItAsync(() =>
             {
-                var savedPayments = GetPayments(TestSession.JobId);
+                var savedPayments =  GetPaymentsAsync(TestSession.JobId).Result;
+
                 var found = expectedPaymentsEvent.All(expectedEvent =>
                     savedPayments.Any(payment =>
                         expectedContract == payment.ContractType
@@ -92,7 +93,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
             var expectedProviderPaymentEvents = expectedProviderPayments.CreateSet<FundingSourcePayment>();
 
-            WaitForIt(() =>
+            await WaitForItAsync(() =>
             {
                 return expectedProviderPaymentEvents.All(expectedEvent =>
                     CoInvestedProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>

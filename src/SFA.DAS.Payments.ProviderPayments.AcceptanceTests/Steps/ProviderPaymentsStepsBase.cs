@@ -9,6 +9,8 @@ using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
@@ -23,12 +25,10 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
         }
 
-        protected List<PaymentModel> GetPayments(long jobId)
+        protected async Task<List<PaymentModel>> GetPaymentsAsync(long jobId)
         {
             var paymentDataContext = Container.Resolve<IPaymentsDataContext>();
-            var payments = paymentDataContext.Payment
-                                  .Where(o => o.JobId == jobId)
-                .ToList();
+            var payments = await paymentDataContext.Payment.Where(o => o.JobId == jobId).ToListAsync();
 
             payments.ForEach(o =>
             {

@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
                 return new PaymentsDataContext(configHelper.PaymentsConnectionString);
-            }).As<IPaymentsDataContext>().InstancePerDependency();
+            }).As<IPaymentsDataContext>();
         }
         
         [BeforeTestRun(Order = 51)]
