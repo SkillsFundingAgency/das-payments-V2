@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     {
                         new TopicItemDto
                         {
-                            SubscriptionName = DcConfiguration.SubscriptionName,
+                            SubscriptionName = "Validation",
                             Tasks = new List<TaskItemDto>
                             {
                                 new TaskItemDto

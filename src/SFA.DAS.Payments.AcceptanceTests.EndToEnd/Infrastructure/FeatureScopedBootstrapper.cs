@@ -1,5 +1,10 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+﻿using Autofac;
+using NServiceBus;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Messages.Core.Events;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
@@ -27,6 +32,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
         public static void CleanUpFeature(FeatureContext context)
         {
             CleanUpTestSession(context);
+        }
+
+        [BeforeTestRun(Order = 51)]
+        public static void AddRoutingConfig()
+        {
+            var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
+            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<IPaymentsEvent>());
         }
     }
 }

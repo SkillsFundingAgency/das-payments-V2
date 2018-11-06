@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
@@ -45,6 +47,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             var part = collectionYear.Substring(period < 5 ? 0 : 2, 2);
             return (short)(short.Parse(part) + 2000);
+        }
+
+        public static short ToYear(this string yearName)
+        {
+            short year;
+            if (yearName == "Current Academic Year")
+                year = (short) DateTime.Today.Year;
+            else
+                throw new NotImplementedException("if it was meant to be anything other than Current Academic Year, it needs to be implemented");
+            return year;
+        }
+
+        public static CalendarPeriod ToCalendarPeriod(this string periodText)
+        {
+            short year;
+            byte month;
+            var bits = periodText.Split('/');
+            var monthName = bits[0];
+            var yearName = bits[1];
+
+            year = ToYear(yearName);
+
+            month = (byte)DateTime.ParseExact(bits[0], "MMM", CultureInfo.CurrentCulture).Month;
+
+            return new CalendarPeriod(year, month);
         }
     }
 }

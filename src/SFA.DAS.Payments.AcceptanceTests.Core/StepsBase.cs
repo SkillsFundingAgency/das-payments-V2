@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Autofac;
 using NServiceBus;
 using NUnit.Framework;
@@ -59,7 +60,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             Assert.Fail(failText);
         }
 
-        protected void WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
+        protected static async Task WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
             var reason = "";
@@ -69,7 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 (pass, reason) = lookForIt();
                 if (pass)
                     return;
-                Thread.Sleep(Config.TimeToPause);
+                await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail(failText + " - " + reason);
         }
