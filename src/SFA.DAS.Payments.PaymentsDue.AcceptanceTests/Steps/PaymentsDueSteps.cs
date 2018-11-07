@@ -18,8 +18,6 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
     [Binding]
     public class PaymentsDueSteps : StepsBase
     {
-        private static bool trace = true;
-
         public PaymentsDueSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
@@ -56,28 +54,22 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                 });
             }).ToList();
 
-            if (!trace && matchedReceivedEvents.Count < expectedPaymentsEvents.Count)
-                return false;
-
             var unexpected = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents
                 .Where(receivedEvent => !matchedReceivedEvents.Contains(receivedEvent) &&
                                          TestSession.Ukprn == receivedEvent.Ukprn).ToList();
 #if DEBUG
-            if (trace)
+            if (matchedReceivedEvents.Count < expectedPaymentsEvents.Count)
             {
-                if (matchedReceivedEvents.Count < expectedPaymentsEvents.Count)
-                {
-                    Debug.WriteLine($"{expectedPaymentsEvents.Count - matchedReceivedEvents.Count} events did not arrive:");
-                }
+                Debug.WriteLine($"{expectedPaymentsEvents.Count - matchedReceivedEvents.Count} events did not arrive:");
+            }
 
-                if (unexpected.Count > 0)
+            if (unexpected.Count > 0)
+            {
+                Debug.WriteLine($"{unexpected.Count} unexpected events:");
+                for (var i = 0; i < unexpected.Count; i++)
                 {
-                    Debug.WriteLine($"{unexpected.Count} unexpected events:");
-                    for (var i = 0; i < unexpected.Count; i++)
-                    {
-                        var e = unexpected[i];
-                        Debug.WriteLine($"{i+1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
-                    }
+                    var e = unexpected[i];
+                    Debug.WriteLine($"{i+1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
                 }
             }
 #endif
