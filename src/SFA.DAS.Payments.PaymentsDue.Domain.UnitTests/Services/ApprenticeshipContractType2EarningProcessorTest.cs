@@ -107,7 +107,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
 
             // assert
             Assert.IsNotNull(paymentsDue);
-            Assert.AreEqual(0, paymentsDue.Length);
+            Assert.AreEqual(1, paymentsDue.Length);
         }
 
         private ApprenticeshipContractType2EarningEvent GetEarning()
@@ -220,7 +220,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.AreEqual(earning.SfaContributionPercentage, paymentDue.SfaContributionPercentage);
             Assert.AreEqual(earning.PriceEpisodes[0].Identifier, paymentDue.PriceEpisodeIdentifier);
             Assert.AreEqual(earning.OnProgrammeEarnings[0].Type, paymentDue.Type);
-            Assert.AreEqual(earningPeriod.Period, paymentDue.DeliveryPeriod);
+            Assert.AreEqual(earningPeriod.Period, paymentDue.DeliveryPeriod.Period);
             Assert.AreEqual(earningPeriod.Amount, paymentDue.AmountDue);
             Assert.AreEqual(earning.Learner.ReferenceNumber, paymentDue.Learner.ReferenceNumber);
             Assert.AreEqual(earning.Learner.Uln, paymentDue.Learner.Uln);
