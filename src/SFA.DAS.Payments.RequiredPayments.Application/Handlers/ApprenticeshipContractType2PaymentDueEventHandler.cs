@@ -61,7 +61,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
                 PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier,
                 OnProgrammeEarningType = paymentDue.Type,
                 EventTime = DateTimeOffset.UtcNow,
-                JobId = paymentDue.JobId
+                JobId = paymentDue.JobId,
+                SfaContributionPercentage = paymentDue.SfaContributionPercentage,
+                IlrSubmissionDateTime = paymentDue.IlrSubmissionDateTime
             };
         }
 

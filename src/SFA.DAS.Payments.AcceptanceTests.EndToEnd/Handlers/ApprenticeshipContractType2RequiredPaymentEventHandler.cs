@@ -17,5 +17,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
             ReceivedEvents.Add(message);
             return Task.FromResult(0);            
         }
-    }    
+    }
 }

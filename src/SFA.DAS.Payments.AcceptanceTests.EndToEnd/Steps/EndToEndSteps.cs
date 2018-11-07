@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn), "Provider Payment event check failure");
+            WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "Provider Payment event check failure");
         }
     }
 }

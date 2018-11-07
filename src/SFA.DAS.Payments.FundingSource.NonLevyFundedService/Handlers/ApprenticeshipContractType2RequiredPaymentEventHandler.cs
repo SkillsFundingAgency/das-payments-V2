@@ -27,22 +27,18 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 
         public async Task Handle(ApprenticeshipContractType2RequiredPaymentEvent message, IMessageHandlerContext context)
         {
-
             paymentLogger.LogInfo($"Processing Required Payment Service event for Message Id : {context.MessageId}");
-
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
 
             try
             {
                 var payments = contractType2RequiredPaymentService.GetFundedPayments(message);
-
                 foreach (var recordablePaymentEvent in payments)
                 {
                     try
                     {
                         await context.Publish(recordablePaymentEvent);
-
                         paymentLogger.LogInfo($"Successfully published CoInvestedPayment of Type  {recordablePaymentEvent.GetType().Name}");
                     }
                     catch (Exception ex)

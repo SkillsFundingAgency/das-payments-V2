@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             earning.OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new[] { onProgrammeEarning });
 
             // act
-            var paymentsDue = this.processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage);
+            var paymentsDue = this.processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
 
             // assert
             Assert.IsNotNull(paymentsDue);
@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             };
 
             // act
-            var paymentsDue = this.processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage);
+            var paymentsDue = this.processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
 
             // assert
             Assert.IsNotNull(paymentsDue);
@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(ukprn, jobId, null, new CalendarPeriod("1718-R02"), new Learner(), new LearningAim(), 100);
+                processor.HandleOnProgrammeEarning(ukprn, jobId, null, new CalendarPeriod("1718-R02"), new Learner(), new LearningAim(), 100, DateTime.UtcNow);
             }
             catch (ArgumentNullException ex)
             {
@@ -171,7 +171,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), null, new Learner(), new LearningAim(), 100);
+                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), null, new Learner(), new LearningAim(), 100, DateTime.UtcNow);
             }
             catch (ArgumentNullException ex)
             {
@@ -187,7 +187,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), null, new LearningAim(), 100);
+                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), null, new LearningAim(), 100, DateTime.UtcNow);
             }
             catch (ArgumentNullException ex)
             {
@@ -203,7 +203,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), new Learner(), null, 100);
+                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), new Learner(), null, 100, DateTime.UtcNow);
             }
             catch (ArgumentNullException ex)
             {

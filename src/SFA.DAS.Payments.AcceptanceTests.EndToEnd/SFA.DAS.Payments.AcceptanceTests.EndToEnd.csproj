@@ -240,6 +240,7 @@
     <Compile Include="Handlers\ApprenticeshipContractType2EarningEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2PaymentDueEventHandler.cs" />
+    <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -321,6 +322,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8}</Project>
       <Name>SFA.DAS.Payments.ProviderPayments.Messages.Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages\SFA.DAS.Payments.ProviderPayments.Messages.csproj">
+      <Project>{f41ed226-c11e-44c3-825a-c40143f0fef9}</Project>
+      <Name>SFA.DAS.Payments.ProviderPayments.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj">
       <Project>{21918F17-1310-4276-BEF5-64243F9E0C31}</Project>

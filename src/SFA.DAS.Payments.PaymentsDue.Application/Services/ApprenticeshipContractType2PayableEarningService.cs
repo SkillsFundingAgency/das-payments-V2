@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Services
         public ApprenticeshipContractType2PaymentDueEvent[] CreatePaymentsDue(ApprenticeshipContractType2EarningEvent message)
         {
             return message.OnProgrammeEarnings
-                .SelectMany(earning => act2EarningProcessor.HandleOnProgrammeEarning(message.Ukprn, message.JobId, earning, message.CollectionPeriod, message.Learner, message.LearningAim, message.SfaContributionPercentage))
+                .SelectMany(earning => act2EarningProcessor.HandleOnProgrammeEarning(message.Ukprn, message.JobId, earning, message.CollectionPeriod, message.Learner, message.LearningAim, message.SfaContributionPercentage, message.IlrSubmissionDateTime))
                 .ToArray();
         }
     }
