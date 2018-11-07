@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -31,27 +33,46 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public async Task WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
+        public void WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
             SetCollectionPeriod(collectionPeriod);
-            var fm36Learners = new List<FM36Learner>();
+            //TODO: when in DC end to end mode we need to send the ilr submission here
+        }
+
+        [Then(@"the following learner earnings should be generated")]
+        public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
+        {
+            var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
+            //var fm36Learners = new List<FM36Learner>();
+            //foreach (var training in CurrentIlr)
+            //{
+            //    var learner = new FM36Learner();
+            //    PopulateLearner(learner, training, earnings);
+            //    fm36Learners.Add(learner);
+            //}
+
+            //await DcHelper.SendIlrSubmission(fm36Learners, TestSession.Ukprn, CollectionYear);
+
+
             foreach (var training in CurrentIlr)
             {
                 var learner = new FM36Learner();
-                PopulateLearner(learner, training);
-                fm36Learners.Add(learner);
+                PopulateLearner(learner, training, earnings);
+                var command = new ProcessLearnerCommand
+                {
+                    Learner = learner,
+                    CollectionPeriod = CurrentCollectionPeriod.Period,
+                    CollectionYear = CollectionYear,
+                    Ukprn = TestSession.Ukprn,
+                    JobId = TestSession.JobId,
+                    IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
+                    RequestTime = DateTimeOffset.UtcNow,
+                    SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????
+                };
+                Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
+                await MessageSession.Send(command);
             }
-
-            await DcHelper.SendIlrSubmission(fm36Learners, TestSession.Ukprn, CollectionYear);
-        }
-
-
-        [Then(@"the following learner earnings should be generated")]
-        public void ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
-        {
-            var expectedEarnings = table.CreateSet<OnProgrammeEarning>().ToList();
-            expectedEarnings.ForEach(e => e.DeliveryCalendarPeriod = e.DeliveryPeriod.ToCalendarPeriod());
-            WaitForIt(() => EarningEventMatcher.MatchEarnings(expectedEarnings, TestSession.Ukprn), "OnProgrammeEarning event check failure");
+            WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "OnProgrammeEarning event check failure");
         }
 
         [Then(@"the following payments will be calculated")]

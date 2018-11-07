@@ -7,7 +7,7 @@
 Scenario:  Provider retrospectively notifies of a withdrawal for a non-levy learner after payments have already been made PV2-251
     Given the provider previously submitted the following learner details
         | ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type        | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | learner a | 1        | start of academic year | 12 months        | 9000                 | Aug/Current Academic Year           | 2250                  | Aug/Current Academic Year            | 12 months       | continuing        | .9                          | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | learner a | 1        | start of academic year | 12 months        | 9000                 | Aug/Current Academic Year           | 2250                  | Aug/Current Academic Year            |                 | continuing        | .9                          | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 750          | 0          | 0         |
@@ -23,12 +23,12 @@ Scenario:  Provider retrospectively notifies of a withdrawal for a non-levy lear
         | Jun/Current Academic Year | 750          | 0          | 0         |
         | Jul/Current Academic Year | 750          | 0          | 0         |
     And the following provider payments had been generated
-        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | On-Programme Earning Type | 
-        | R01/Current Academic Year | Aug/Current Academic Year | 675                    | 75                          | Learning                  |
-        | R02/Current Academic Year | Sep/Current Academic Year | 675                    | 75                          | Learning                  |
-        | R03/Current Academic Year | Oct/Current Academic Year | 675                    | 75                          | Learning                  |
-        | R04/Current Academic Year | Nov/Current Academic Year | 675                    | 75                          | Learning                  |
-        | R05/Current Academic Year | Dec/Current Academic Year | 675                    | 75                          | Learning                  |
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
+        | R01/Current Academic Year | Aug/Current Academic Year | 675                    | 75                          | Learning         |
+        | R02/Current Academic Year | Sep/Current Academic Year | 675                    | 75                          | Learning         |
+        | R03/Current Academic Year | Oct/Current Academic Year | 675                    | 75                          | Learning         |
+        | R04/Current Academic Year | Nov/Current Academic Year | 675                    | 75                          | Learning         |
+        | R05/Current Academic Year | Dec/Current Academic Year | 675                    | 75                          | Learning         |
         
     But the Provider now changes the Learner details as follows
         | ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type        | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
@@ -54,10 +54,10 @@ Scenario:  Provider retrospectively notifies of a withdrawal for a non-levy lear
         | R06/Current Academic Year | Nov/Current Academic Year | -750         | 0          | 0         |
         | R06/Current Academic Year | Dec/Current Academic Year | -750         | 0          | 0         |
     And the following provider payments will be recorded
-        | Collection Period			| Delivery Period			| SFA Co-Funded Payments | Employer Co-Funded Payments |On-Programme Earning Type | 
-        | R06/Current Academic Year | Nov/Current Academic Year | -675                   | -75                         |Learning                  |
-        | R06/Current Academic Year | Dec/Current Academic Year | -675                   | -75                         |Learning                  |
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
+        | R06/Current Academic Year | Nov/Current Academic Year | -675                   | -75                         | Learning         |
+        | R06/Current Academic Year | Dec/Current Academic Year | -675                   | -75                         | Learning         |
     And at month end the following provider payments will be generated
-        | Collection Period			| Delivery Period			| SFA Co-Funded Payments | Employer Co-Funded Payments |On-Programme Earning Type | 
-        | R06/Current Academic Year | Nov/Current Academic Year | -675                   | -75                         |Learning                  |
-        | R06/Current Academic Year | Dec/Current Academic Year | -675                   | -75                         |Learning                  |
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
+        | R06/Current Academic Year | Nov/Current Academic Year | -675                   | -75                         | Learning         |
+        | R06/Current Academic Year | Dec/Current Academic Year | -675                   | -75                         | Learning         |

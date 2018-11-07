@@ -61,24 +61,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
             SetCollectionPeriod(collectionPeriod);
-            foreach (var training in CurrentIlr)
-            {
-                var learner = new FM36Learner();
-                PopulateLearner(learner, training);
-                var command = new ProcessLearnerCommand
-                {
-                    Learner = learner,
-                    CollectionPeriod = CurrentCollectionPeriod.Period,
-                    CollectionYear = CollectionYear,
-                    Ukprn = TestSession.Ukprn,
-                    JobId = TestSession.JobId,
-                    IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                    RequestTime = DateTimeOffset.UtcNow,
-                    SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????
-                };
-                Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                await MessageSession.Send(command);
-            }
+            //foreach (var training in CurrentIlr)
+            //{
+            //    var learner = new FM36Learner();
+            //    PopulateLearner(learner, training);
+            //    var command = new ProcessLearnerCommand
+            //    {
+            //        Learner = learner,
+            //        CollectionPeriod = CurrentCollectionPeriod.Period,
+            //        CollectionYear = CollectionYear,
+            //        Ukprn = TestSession.Ukprn,
+            //        JobId = TestSession.JobId,
+            //        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
+            //        RequestTime = DateTimeOffset.UtcNow,
+            //        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????
+            //    };
+            //    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
+            //    await MessageSession.Send(command);
+            //}
         }
 
         [Then(@"the following provider payments will be recorded")]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
@@ -24,19 +25,13 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 
             var paymentsDue = new List<ApprenticeshipContractType2PaymentDueEvent>();
 
-            foreach (var period in onProgEarning.Periods)
+            foreach (var period in onProgEarning.Periods.Where(earning => earning.Period <= collectionPeriod.Period))
             {
-                if (period.Period.Year > collectionPeriod.Year
-                    || (period.Period.Year == collectionPeriod.Year
-                        && period.Period.Month > collectionPeriod.Month)
-                    || period.Amount == 0)
-                    continue; // cut future and empty periods off
-
                 paymentsDue.Add(new ApprenticeshipContractType2PaymentDueEvent
                 {
                     JobId = jobId,
                     Ukprn = ukprn,
-                    DeliveryPeriod = period.Period,
+                    DeliveryPeriod = new CalendarPeriod(collectionPeriod.Name.Split('-').FirstOrDefault(), period.Period),  //TODO: yuck!! fix when the CalendarPeriod class is reworked.
                     LearningAim = learningAim.Clone(),
                     Learner = learner.Clone(),
                     Type = onProgEarning.Type,

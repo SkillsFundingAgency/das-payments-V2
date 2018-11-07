@@ -126,7 +126,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                                 Type = group.Key,
                                 Periods = new ReadOnlyCollection<EarningPeriod>(group.Select(e => new EarningPeriod
                                 {
-                                    Period = new CalendarPeriod(CollectionYear, e.DeliveryPeriod),
+                                    Period = e.DeliveryPeriod,
                                     Amount = e.Amount,
                                     PriceEpisodeIdentifier = e.PriceEpisodeIdentifier
                                 }).ToList())

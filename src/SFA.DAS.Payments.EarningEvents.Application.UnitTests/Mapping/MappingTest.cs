@@ -180,9 +180,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
             earningEvent.OnProgrammeEarnings.Should().NotBeNullOrEmpty();
             earningEvent.OnProgrammeEarnings.Should().HaveCount(2);
-            earningEvent.OnProgrammeEarnings.Last().Periods.Count.Should().Be(12);
-            earningEvent.OnProgrammeEarnings.First().Periods.Count.Should().Be(1);
-            earningEvent.OnProgrammeEarnings.Last().Periods.All(period => period.Amount == 1000 && period.PriceEpisodeIdentifier == "pe-1").Should().BeTrue();
+            var learnings = earningEvent.OnProgrammeEarnings.FirstOrDefault(x => x.Type == OnProgrammeEarningType.Learning);
+            learnings.Should().NotBeNull();
+            learnings.Periods.Count.Should().Be(12);
+            learnings.Periods.All(period => period.Amount == 1000 && period.PriceEpisodeIdentifier == "pe-1").Should().BeTrue();
+            var completion = earningEvent.OnProgrammeEarnings.FirstOrDefault(x => x.Type == OnProgrammeEarningType.Completion);
+            completion.Should().NotBeNull();
+            completion.Periods.Count.Should().Be(12);
+            completion.Periods.Any(x => x.Period == 12 && x.Amount == 3000).Should().BeTrue();
         }
 
         [Test]
@@ -205,8 +210,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 earningEvent.OnProgrammeEarnings.FirstOrDefault(earnings =>
                     earnings.Type == OnProgrammeEarningType.Completion);
             completion.Should().NotBeNull();
-            completion.Periods.Should().HaveCount(1);
-            completion.Periods.FirstOrDefault().Amount.Should().Be(3000);
+            completion.Periods.Should().HaveCount(12);
+            var completionPeriod = completion.Periods.FirstOrDefault(p => p.Period == 12);
+            completionPeriod.Should().NotBeNull();
+            completionPeriod.Amount.Should().Be(3000);
         }
 
         [Test]

@@ -38,31 +38,31 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                     new EarningPeriod
                     {
                         Amount = 10,
-                        Period = new CalendarPeriod("1819-R01"), // past
+                        Period = 01, // past
                         PriceEpisodeIdentifier = "13"
                     },
                     new EarningPeriod
                     {
                         Amount = 10,
-                        Period = new CalendarPeriod("1819-R02"), // past
+                        Period = 02, // past
                         PriceEpisodeIdentifier = "13"
                     },
                     new EarningPeriod
                     {
                         Amount = 10,
-                        Period = new CalendarPeriod("1819-R03"), // current
+                        Period = 03, // current
                         PriceEpisodeIdentifier = "13"
                     },
                     new EarningPeriod
                     {
                         Amount = 10,
-                        Period = new CalendarPeriod("1819-R04"), // future
+                        Period = 04, // future
                         PriceEpisodeIdentifier = "13"
                     },
                     new EarningPeriod
                     {
                         Amount = 10,
-                        Period = new CalendarPeriod("1819-R05"), // future
+                        Period = 05, // future
                         PriceEpisodeIdentifier = "13"
                     }
                 })
@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                     new EarningPeriod
                     {
                         Amount = 0,
-                        Period = new CalendarPeriod("1819-R01"),
+                        Period = 1,
                         PriceEpisodeIdentifier = "13"
                     }
                 })
@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.AreEqual(0, paymentsDue.Length);
         }
 
-        private  ApprenticeshipContractType2EarningEvent GetEarning()
+        private ApprenticeshipContractType2EarningEvent GetEarning()
         {
             var earning = new ApprenticeshipContractType2EarningEvent
             {

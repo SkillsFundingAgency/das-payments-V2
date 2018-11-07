@@ -13,7 +13,7 @@ using PriceEpisode = SFA.DAS.Payments.Model.Core.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
-    public abstract class EndToEndStepsBase: StepsBase
+    public abstract class EndToEndStepsBase : StepsBase
     {
         protected DcHelper DcHelper => Get<DcHelper>();
         protected List<Training> CurrentIlr
@@ -74,17 +74,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ContractType = learnerTraining.ContractType,
                     PriceEpisodeIdentifier = "pe-1",
                     FundingSource = FundingSourceType.CoInvestedSfa,
-                    LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
+                    //LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
                     LearnerReferenceNumber = TestSession.Learner.LearnRefNumber,
                     LearningAimReference = learnerTraining.AimReference,
-                    LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
+                    //LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                     IlrSubmissionDateTime = submissionTime,
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.SfaCoFundedPayments,
                     LearningAimFundingLineType = learnerTraining.FundingLineType,
                     LearnerUln = TestSession.Learner.Uln,
-                    LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    LearningAimProgrammeType = learnerTraining.ProgrammeType
+                    //LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                    //LearningAimProgrammeType = learnerTraining.ProgrammeType
                 },
                 new PaymentModel
                 {
@@ -97,22 +97,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ContractType = learnerTraining.ContractType,
                     PriceEpisodeIdentifier = "pe-1",
                     FundingSource = FundingSourceType.CoInvestedEmployer,
-                    LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
+                    //LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
                     LearnerReferenceNumber = TestSession.Learner.LearnRefNumber,
                     LearningAimReference = learnerTraining.AimReference,
-                    LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
+                    //LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                     IlrSubmissionDateTime = submissionTime,
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.EmployerCoFundedPayments,
                     LearningAimFundingLineType = learnerTraining.FundingLineType,
                     LearnerUln = TestSession.Learner.Uln,
-                    LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    LearningAimProgrammeType = learnerTraining.ProgrammeType
+                    //LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                    //LearningAimProgrammeType = learnerTraining.ProgrammeType
                 }
             };
         }
 
-        protected void PopulateLearner(FM36Learner learner, Training learnerEarnings)
+        protected void PopulateLearner(FM36Learner learner, Training learnerEarnings, List<OnProgrammeEarning> earnings)
         {
             learner.LearnRefNumber = TestSession.Learner.LearnRefNumber;
             var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
@@ -140,42 +140,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
             };
 
-            var firstPeriodNumber = (int)(learnerEarnings.StartDate.ToDate().Subtract("start of academic year".ToDate()).TotalDays / 30) + 1;
-            var lastPeriodNumber = firstPeriodNumber + learnerEarnings.NumberOfInstallments - 1;
-
             var learningValues = new PriceEpisodePeriodisedValues
             {
                 AttributeName = "PriceEpisodeOnProgPayment",
             };
-
-            PropertyInfo periodProperty;
-            for (var i = firstPeriodNumber; i <= lastPeriodNumber; i++)
-            {
-                periodProperty = learningValues.GetType().GetProperty("Period" + i);
-                periodProperty?.SetValue(learningValues, learnerEarnings.InstallmentAmount);
-            }
-
-            priceEpisode.PriceEpisodePeriodisedValues.Add(learningValues);
-
-            learner.PriceEpisodes = new List<ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode>(new[] { priceEpisode });
-
-
             var completionEarnings = new PriceEpisodePeriodisedValues
             {
                 AttributeName = "PriceEpisodeCompletionPayment",
             };
-
-            periodProperty = completionEarnings.GetType().GetProperty("Period" + lastPeriodNumber);
-            periodProperty?.SetValue(completionEarnings, learnerEarnings.CompletionAmount);
-            priceEpisode.PriceEpisodePeriodisedValues.Add(completionEarnings);
-
             var balancingEarnings = new PriceEpisodePeriodisedValues
             {
                 AttributeName = "PriceEpisodeBalancePayment",
             };
+            earnings.ForEach(earning =>
+            {
+                var period = earning.DeliveryPeriod.ToDate().ToCalendarPeriod().Period;
+                SetPeriodValue(period, learningValues, earning.OnProgramme);
+                SetPeriodValue(period, completionEarnings, earning.Completion);
+                SetPeriodValue(period, balancingEarnings, earning.Balancing);
+            });
 
-            periodProperty = balancingEarnings.GetType().GetProperty("Period" + lastPeriodNumber);
-            periodProperty?.SetValue(balancingEarnings, learnerEarnings.BalancingPayment);
+            learner.PriceEpisodes = new List<ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode>(new[] { priceEpisode });
+            priceEpisode.PriceEpisodePeriodisedValues.Add(learningValues);
+            priceEpisode.PriceEpisodePeriodisedValues.Add(completionEarnings);
             priceEpisode.PriceEpisodePeriodisedValues.Add(balancingEarnings);
 
             learner.LearningDeliveries = new List<LearningDelivery>(new[]
@@ -191,5 +178,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
+        private void SetPeriodValue(int period, PriceEpisodePeriodisedValues periodisedValues, decimal amount)
+        {
+            var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
+            periodProperty?.SetValue(periodisedValues, amount);
+        }
     }
 }

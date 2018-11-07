@@ -108,7 +108,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aug/Current Academic Year",
                         "2250",
                         "Aug/Current Academic Year",
-                        "12 months",
+                        "",
                         "continuing",
                         ".9",
                         "ContractWithEmployer",
@@ -194,7 +194,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Delivery Period",
                         "SFA Co-Funded Payments",
                         "Employer Co-Funded Payments",
-                        "On-Programme Earning Type"});
+                        "Transaction Type"});
             table3.AddRow(new string[] {
                         "R01/Current Academic Year",
                         "Aug/Current Academic Year",
@@ -366,7 +366,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Delivery Period",
                         "SFA Co-Funded Payments",
                         "Employer Co-Funded Payments",
-                        "On-Programme Earning Type"});
+                        "Transaction Type"});
             table7.AddRow(new string[] {
                         "R06/Current Academic Year",
                         "Nov/Current Academic Year",
@@ -387,7 +387,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Delivery Period",
                         "SFA Co-Funded Payments",
                         "Employer Co-Funded Payments",
-                        "On-Programme Earning Type"});
+                        "Transaction Type"});
             table8.AddRow(new string[] {
                         "R06/Current Academic Year",
                         "Nov/Current Academic Year",

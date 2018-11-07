@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
 
@@ -162,6 +163,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             month = (byte)DateTime.ParseExact(bits[0], "MMM", CultureInfo.CurrentCulture).Month;
 
             return new CalendarPeriod(year, month);
+        }
+
+        public static string GetCalendarYear(this CalendarPeriod calendarPeriod)
+        {
+            return calendarPeriod.Name.Split('-').FirstOrDefault();
         }
     }
 }
