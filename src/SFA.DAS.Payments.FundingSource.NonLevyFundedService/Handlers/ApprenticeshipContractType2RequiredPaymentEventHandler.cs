@@ -1,5 +1,4 @@
-﻿using Autofac;
-using ESFA.DC.Logging.Interfaces;
+﻿using ESFA.DC.Logging.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
@@ -12,7 +11,6 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
     public class ApprenticeshipContractType2RequiredPaymentEventHandler : IHandleMessages<ApprenticeshipContractType2RequiredPaymentEvent>
     {
         private readonly IPaymentLogger paymentLogger;
-        private readonly ILifetimeScope lifetimeScope;
         private readonly IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService;
         private readonly IExecutionContext executionContext;
 
@@ -22,7 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.contractType2RequiredPaymentService = contractType2RequiredPaymentService ?? throw new ArgumentNullException(nameof(contractType2RequiredPaymentService));
-            this.executionContext = executionContext ?? throw  new ArgumentNullException(nameof(executionContext));
+            this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
         }
 
         public async Task Handle(ApprenticeshipContractType2RequiredPaymentEvent message, IMessageHandlerContext context)
@@ -31,7 +29,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
             paymentLogger.LogInfo($"Processing Required Payment Service event for Message Id : {context.MessageId}");
 
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
-            currentExecutionContext.JobId = message.JobId;
+            currentExecutionContext.JobId = message.JobId.ToString();
 
             try
             {

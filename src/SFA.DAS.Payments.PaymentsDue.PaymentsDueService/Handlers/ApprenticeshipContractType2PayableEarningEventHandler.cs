@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.PaymentsDue.PaymentsDueService.Handlers
             paymentLogger.LogInfo($"Processing {typeof(ApprenticeshipContractType2EarningEvent).Name} event. Message Id : {context.MessageId}");
 
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
-            currentExecutionContext.JobId = message.JobId;
+            currentExecutionContext.JobId = message.JobId.ToString();
 
             try
             {

@@ -180,6 +180,7 @@
     <Compile Include="Automation\TestSession.cs" />
     <Compile Include="Data\Learner.cs" />
     <Compile Include="Data\DataExtensions.cs" />
+    <Compile Include="Data\Payment.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
     <Compile Include="Data\Course.cs" />

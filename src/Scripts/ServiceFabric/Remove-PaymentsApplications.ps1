@@ -17,4 +17,4 @@ $endpoint = 'localhost:19000'
 .\Remove-ServiceFabricApplicationAndType.ps1 -applicationName SFA.DAS.Payments.ProviderPayments.ServiceFabric -Verbose
 
 
-Get-ServiceFabricApplicationType  -ApplicationTypeName SFA.DAS.Payments.FundingSource.ServiceFabricType 
+#Get-ServiceFabricApplicationType  -ApplicationTypeName SFA.DAS.Payments.FundingSource.ServiceFabricType 

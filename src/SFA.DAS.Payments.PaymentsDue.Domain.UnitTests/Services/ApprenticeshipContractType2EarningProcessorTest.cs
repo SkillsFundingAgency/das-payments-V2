@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         [SetUp]
         public void SetUp()
         {
-            this.processor = new ApprenticeshipContractType2EarningProcessor();
+           processor = new ApprenticeshipContractType2EarningProcessor();
         }
 
         [Test]
@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                     Reference = "9",
                     StandardCode = 10
                 },
-                JobId = "11",
+                JobId = 11,
                 PriceEpisodes = new ReadOnlyCollection<PriceEpisode>(new[]
                 {
                     new PriceEpisode
@@ -145,7 +145,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             };
             return earning;
         }
-
 
         [Test]
         public void TestNullEarning()
@@ -211,7 +210,10 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.Fail();
         }
 
-        private static void AssertPeriodsAreSame(ApprenticeshipContractType2EarningEvent earning, ApprenticeshipContractType2PaymentDueEvent paymentDue, EarningPeriod earningPeriod, CalendarPeriod collectionPeriod)
+        private static void AssertPeriodsAreSame(ApprenticeshipContractType2EarningEvent earning, 
+                                                ApprenticeshipContractType2PaymentDueEvent paymentDue, 
+                                                EarningPeriod earningPeriod, 
+                                                CalendarPeriod collectionPeriod)
         {
             Assert.AreEqual(earning.Ukprn, paymentDue.Ukprn);
             Assert.AreEqual(earning.SfaContributionPercentage, paymentDue.SfaContributionPercentage);

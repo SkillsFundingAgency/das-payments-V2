@@ -1,6 +1,5 @@
 ﻿using System;
 using NUnit.Framework;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 
@@ -34,24 +33,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             Assert.Less(key.IndexOf("5", StringComparison.Ordinal), key.IndexOf("6", StringComparison.Ordinal), "LearnAimRef should be after StandardCode");
         }
 
-        [Test]
-        public void PaymentKeyContainsAllElements()
-        {
-            // arrange
-            var priceEpisodeIdentifier = "1";
-            var learnAimRef = "6";
-            var transactionType = 3;
-            var deliveryPeriod = new CalendarPeriod("1819", 5);
-
-            // act
-            var key = new ApprenticeshipKeyService().GeneratePaymentKey(priceEpisodeIdentifier, learnAimRef, transactionType, deliveryPeriod);
-
-            // assert
-            Assert.AreEqual(0, key.IndexOf("1", StringComparison.Ordinal), "PriceEpisodeIdentifier should go first");
-            Assert.Less(key.IndexOf("1", StringComparison.Ordinal), key.IndexOf("6", StringComparison.Ordinal), "LearnAimRef should be after PriceEpisodeIdentifier");
-            Assert.Less(key.IndexOf("6", StringComparison.Ordinal), key.IndexOf("3", StringComparison.Ordinal), "TransactionType should be after LearnAimRef");
-            Assert.Less(key.IndexOf("3", StringComparison.Ordinal), key.IndexOf("5", StringComparison.Ordinal), "DeliveryPeriod should be after TransactionType");
-        }
 
         [Test]
         public void TestApprenticeshipKeyChangesCase()
@@ -75,23 +56,59 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             Assert.IsTrue(key.Contains("b"));
         }
 
+
         [Test]
-        public void TestPaymentKeyChangesCase()
+        public void CanParseValidApprenticeshipKey()
         {
             // arrange
-            var priceEpisodeIdentifier = "A";
-            var learnAimRef = "B";
-            var transactionType = 3;
-            var deliveryPeriod = new CalendarPeriod("1819", 5);
+            var learnerReferenceNumber = "1";
+            var ukprn = 2;
+            var frameworkCode = 3;
+            var pathwayCode = 4;
+            var programmeType = ProgrammeType.None;
+            var standardCode = 5;
+            var learnAimRef = "6";
+            var service = new ApprenticeshipKeyService();
+            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef);
 
             // act
-            var key = new ApprenticeshipKeyService().GeneratePaymentKey(priceEpisodeIdentifier, learnAimRef, transactionType, deliveryPeriod);
+            var apprenticeshipKey = service.ParseApprenticeshipKey(key);
 
             // assert
-            Assert.IsFalse(key.Contains("A"));
-            Assert.IsFalse(key.Contains("B"));
-            Assert.IsTrue(key.Contains("a"));
-            Assert.IsTrue(key.Contains("b"));
+            Assert.AreEqual(apprenticeshipKey.Ukprn, ukprn);
+            Assert.AreEqual(apprenticeshipKey.LearnerReferenceNumber, learnerReferenceNumber);
+            Assert.AreEqual(apprenticeshipKey.FrameworkCode, frameworkCode);
+            Assert.AreEqual(apprenticeshipKey.PathwayCode, pathwayCode);
+            Assert.AreEqual(apprenticeshipKey.ProgrammeType, programmeType);
+            Assert.AreEqual(apprenticeshipKey.StandardCode, standardCode);
+            Assert.AreEqual(apprenticeshipKey.LearnAimRef, learnAimRef);
+        }
+
+        [Test]
+        public void CanParseApprenticeshipKey_With_Null_Values()
+        {
+            // arrange
+            var learnerReferenceNumber = "1";
+            var ukprn = 2;
+            var frameworkCode = 3;
+            var pathwayCode = 4;
+            var programmeType = ProgrammeType.None;
+            var standardCode = 5;
+            string learnAimRef = null;
+            var service = new ApprenticeshipKeyService();
+            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef);
+
+            // act
+            var apprenticeshipKey = service.ParseApprenticeshipKey(key);
+
+            // assert
+            Assert.AreEqual(apprenticeshipKey.Ukprn, ukprn);
+            Assert.AreEqual(apprenticeshipKey.LearnerReferenceNumber, learnerReferenceNumber);
+            Assert.AreEqual(apprenticeshipKey.FrameworkCode, frameworkCode);
+            Assert.AreEqual(apprenticeshipKey.PathwayCode, pathwayCode);
+            Assert.AreEqual(apprenticeshipKey.ProgrammeType, programmeType);
+            Assert.AreEqual(apprenticeshipKey.StandardCode, standardCode);
+            Assert.AreEqual(apprenticeshipKey.LearnAimRef, string.Empty);
         }
     }
 }
