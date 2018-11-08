@@ -2,14 +2,14 @@
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers
 {
     public class CoInvestedProviderPaymentEventHandler : IHandleMessages<CoInvestedProviderPaymentEvent>
     {
-        public static List<CoInvestedProviderPaymentEvent> ReceivedEvents { get; } = new List<CoInvestedProviderPaymentEvent>();
+        public static ConcurrentBag<CoInvestedProviderPaymentEvent> ReceivedEvents { get; } = new ConcurrentBag<CoInvestedProviderPaymentEvent>();
 
         public async Task Handle(CoInvestedProviderPaymentEvent message, IMessageHandlerContext context)
         {

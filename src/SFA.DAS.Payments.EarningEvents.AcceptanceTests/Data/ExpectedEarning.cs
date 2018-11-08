@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Payments.Model.Core.OnProgramme;
 
-namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
+namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data
 {
     public class ExpectedEarning
     {

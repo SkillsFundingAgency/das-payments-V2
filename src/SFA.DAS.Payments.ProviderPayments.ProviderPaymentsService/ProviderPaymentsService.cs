@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         private readonly IValidateIlrSubmission validateIlrSubmission;
         private readonly IPaymentLogger paymentLogger;
         private IProviderPaymentsService paymentsService;
-        private IIlrSubmissionService ilrSubmissionService;
+        private IHandleIlrSubmissionService handleIlrSubmissionService;
         private IMonthEndService monthEndService;
         private long ukprn;
 
@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
         }
 
-        public async Task ProcessPayment(PaymentModel message, CancellationToken cancellationToken)
+        public async Task HandlePayment(PaymentModel message, CancellationToken cancellationToken)
         {
             await paymentsService.ProcessPayment(message, cancellationToken);
         }
@@ -50,9 +50,9 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
             return await monthEndService.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
         }
 
-        public async Task HandleIlrSubMissionAsync(IlrSubmittedEvent message, CancellationToken cancellationToken)
+        public async Task HandleIlrSubMission(IlrSubmittedEvent message, CancellationToken cancellationToken)
         {
-            await ilrSubmissionService.HandleIlrSubMission(message, cancellationToken);
+            await handleIlrSubmissionService.Handle(message, cancellationToken);
         }
 
         protected override async Task OnActivateAsync()
@@ -61,8 +61,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
 
             var reliableCollectionCache = new ReliableCollectionCache<IlrSubmittedEvent>(StateManager);
             paymentsService = new Application.Services.ProviderPaymentsService(providerPaymentsRepository, reliableCollectionCache, validateIlrSubmission, paymentLogger);
-            ilrSubmissionService = new IlrSubmissionService(providerPaymentsRepository, reliableCollectionCache, validateIlrSubmission, paymentLogger);
-            monthEndService = new MonthEndService(providerPaymentsRepository, reliableCollectionCache);
+            handleIlrSubmissionService = new HandleIlrSubmissionService(providerPaymentsRepository, reliableCollectionCache, validateIlrSubmission, paymentLogger);
+            monthEndService = new MonthEndService(providerPaymentsRepository);
             await base.OnActivateAsync().ConfigureAwait(false);
         }
     }

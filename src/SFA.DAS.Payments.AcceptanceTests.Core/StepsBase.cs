@@ -38,6 +38,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 Context.Set(item, key);
         }
 
+        protected async Task WaitForItAsync(Func<bool> lookForIt, string failText)
+        {
+            var endTime = DateTime.Now.Add(Config.TimeToWait);
+            while (DateTime.Now < endTime)
+            {
+                if (lookForIt()) return;
+              await Task.Delay(Config.TimeToPause);
+            }
+            Assert.Fail(failText);
+        }
+
+
         protected void WaitForIt(Func<bool> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
@@ -66,12 +78,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
             var reason = "";
-            var pass = false;
             while (DateTime.Now < endTime)
             {
+                bool pass;
                 (pass, reason) = lookForIt();
-                if (pass)
-                    return;
+                if (pass) return;
                 Thread.Sleep(Config.TimeToPause);
             }
             Assert.Fail(failText + " - " + reason);

@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following provider payments had been generated")]
         public void GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
-            var previousJobId = TestSession.GenerateId("previous_job_id");
+            var previousJobId = TestSession.GenerateId();
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);
             Console.WriteLine($"Previous job id: {previousJobId}");
             var payments = table.CreateSet<ProviderPayment>().ToList();

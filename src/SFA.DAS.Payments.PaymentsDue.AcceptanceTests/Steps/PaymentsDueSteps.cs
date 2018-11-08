@@ -7,7 +7,6 @@ using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data;
 using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Handlers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
@@ -49,11 +48,12 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                 {
                     return expectedEvent.PriceEpisodeIdentifier == receivedEvent.PriceEpisodeIdentifier &&
                            expectedEvent.Amount == receivedEvent.AmountDue &&
-                           TestSession.GenerateLearnerReference(expectedEvent.LearnerId) == receivedEvent.Learner?.ReferenceNumber &&
+                           TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber &&
                            expectedEvent.Type == receivedEvent.Type &&
                            TestSession.Ukprn == receivedEvent.Ukprn &&
                            expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period &&
-                           receivedEvent.CollectionPeriod == new CalendarPeriod(CollectionYear, CollectionPeriod);
+                           receivedEvent.CollectionPeriod.GetCollectionYear() == CollectionYear && 
+                           receivedEvent.CollectionPeriod.Period == CollectionPeriod;
                 });
             }).ToList();
 
@@ -63,26 +63,6 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
             var unexpected = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents
                 .Where(receivedEvent => !matchedReceivedEvents.Contains(receivedEvent) &&
                                          TestSession.Ukprn == receivedEvent.Ukprn).ToList();
-#if DEBUG
-            if (trace)
-            {
-                if (matchedReceivedEvents.Count < expectedPaymentsEvents.Count)
-                {
-                    Debug.WriteLine($"{expectedPaymentsEvents.Count - matchedReceivedEvents.Count} events did not arrive:");
-                }
-
-                if (unexpected.Count > 0)
-                {
-                    Debug.WriteLine($"{unexpected.Count} unexpected events:");
-                    for (var i = 0; i < unexpected.Count; i++)
-                    {
-                        var e = unexpected[i];
-                        Debug.WriteLine($"{i+1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
-                    }
-                }
-            }
-#endif
-
             return matchedReceivedEvents.Count == expectedPaymentsEvents.Count && unexpected.Count == 0;
         }
 
@@ -91,24 +71,20 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         {
             var allEarnings = table.CreateSet<OnProgrammeEarning>().ToArray();
 
-            Act2EarningEvents = new List<ApprenticeshipContractType2EarningEvent>();
-
-            // create separate earning for each mentioned learner
-
-            foreach (var learnerId in allEarnings.Select(e => e.LearnerId).Distinct())
+            Act2EarningEvents = new List<ApprenticeshipContractType2EarningEvent>
             {
-                var learnerEarnings = allEarnings.Where(e => e.LearnerId == learnerId).ToList();
-
-                Act2EarningEvents.Add(new ApprenticeshipContractType2EarningEvent
+                new ApprenticeshipContractType2EarningEvent
                 {
+                    Ukprn = TestSession.Ukprn,
                     JobId = TestSession.JobId,
                     EventTime = DateTimeOffset.UtcNow,
                     CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
-                    Learner = new Learner
-                    {
-                        ReferenceNumber = TestSession.GenerateLearnerReference(learnerId),
-                        Uln = TestSession.Learner.Uln
-                    },
+                    IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
+                    Learner =
+                        new Learner
+                        {
+                            ReferenceNumber = TestSession.Learner.LearnRefNumber, Uln = TestSession.Learner.Uln
+                        },
                     LearningAim = new LearningAim
                     {
                         AgreedPrice = TestSession.Learner.Course.AgreedPrice,
@@ -120,19 +96,22 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                         ProgrammeType = TestSession.Learner.Course.ProgrammeType
                     },
                     OnProgrammeEarnings = new ReadOnlyCollection<Model.Core.OnProgramme.OnProgrammeEarning>(
-                        learnerEarnings.GroupBy(e => e.Type).Select(group =>
+                        allEarnings.GroupBy(e => e.Type).Select(group =>
                             new Model.Core.OnProgramme.OnProgrammeEarning
                             {
-                                Type = group.Key,
-                                Periods = new ReadOnlyCollection<EarningPeriod>(group.Select(e => new EarningPeriod
+                                Type = @group.Key,
+                                Periods = new ReadOnlyCollection<EarningPeriod>(@group.Select(e => new EarningPeriod
                                 {
                                     Period = e.DeliveryPeriod,
                                     Amount = e.Amount,
                                     PriceEpisodeIdentifier = e.PriceEpisodeIdentifier
                                 }).ToList())
-                            }).ToArray())
-                });
-            }
+                            }).ToArray()),
+                    CollectionYear = CollectionYear,
+                    SfaContributionPercentage = SfaContributionPercentage,
+                }
+            };
+
         }
 
 

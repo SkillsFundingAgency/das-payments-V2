@@ -1,7 +1,6 @@
 ﻿using Autofac.Extras.Moq;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -12,7 +11,6 @@ using SFA.DAS.Payments.ProviderPayments.Domain;
 using SFA.DAS.Payments.ProviderPayments.Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,15 +20,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
     public class IlrSubmissionServiceTests
     {
         private AutoMock mocker;
-        private IlrSubmissionService ilrSubmissionService;
+        private HandleIlrSubmissionService ilrSubmissionService;
 
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
         private Mock<IDataCache<IlrSubmittedEvent>> ilrSubmittedEventCache;
         private Mock<IValidateIlrSubmission> validateIlrSubmission;
 
 
-        private long ukprn = 10000;
-        private long jobId = 10000;
+        private const long ukprn = 10000;
+        private const long jobId = 10000;
         private List<PaymentModel> payments;
         private IlrSubmittedEvent ilrSubmittedEvent;
 
@@ -41,7 +39,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
             payments = new List<PaymentModel>
             {
-                new PaymentModel()
+                new PaymentModel
                 {
                     Ukprn = ukprn,
                     FundingSource = FundingSourceType.CoInvestedEmployer,
@@ -90,14 +88,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                           .Verifiable();
 
             providerPaymentsRepository
-                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(), 
-                                                        It.IsAny<byte>(), 
+                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(),
+                                                        It.IsAny<byte>(),
                                                         It.IsAny<long>(),
                                                         It.IsAny<DateTime>(),
                                                         It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
-            
+
             ilrSubmittedEvent = new IlrSubmittedEvent
             {
                 Ukprn = ukprn,
@@ -116,7 +114,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(Task.CompletedTask);
 
             ilrSubmittedEventCache
-                .Setup(o => o.Add(ukprn.ToString(),It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)))
+                .Setup(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)))
                 .Returns(Task.CompletedTask);
 
             validateIlrSubmission = mocker.Mock<IValidateIlrSubmission>();
@@ -125,7 +123,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(true);
 
 
-            ilrSubmissionService = mocker.Create<IlrSubmissionService>();
+            ilrSubmissionService = mocker.Create<HandleIlrSubmissionService>();
         }
 
 
@@ -136,7 +134,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(o => o.IsNewIlrSubmission(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(true);
 
-            await ilrSubmissionService.HandleIlrSubMission(ilrSubmittedEvent, default(CancellationToken));
+            await ilrSubmissionService.Handle(ilrSubmittedEvent, default(CancellationToken));
 
             ilrSubmittedEventCache
                 .Verify(o => o.TryGet(ukprn.ToString(), default(CancellationToken)), Times.Once);
@@ -153,7 +151,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(o => o.IsNewIlrSubmission(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(false);
 
-            await ilrSubmissionService.HandleIlrSubMission(ilrSubmittedEvent, default(CancellationToken));
+            await ilrSubmissionService.Handle(ilrSubmittedEvent, default(CancellationToken));
 
             ilrSubmittedEventCache
                 .Verify(o => o.Clear(ukprn.ToString(), default(CancellationToken)), Times.Never);
@@ -171,12 +169,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
         [Test]
         public async Task HandleIlrSubMissionShouldClearCacheAndDeletePaymentForNewIlrSubmission()
-        { 
+        {
             validateIlrSubmission
                 .Setup(o => o.IsNewIlrSubmission(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(true);
 
-            await ilrSubmissionService.HandleIlrSubMission(ilrSubmittedEvent, default(CancellationToken));
+            await ilrSubmissionService.Handle(ilrSubmittedEvent, default(CancellationToken));
 
             ilrSubmittedEventCache
                 .Verify(o => o.Clear(ukprn.ToString(), default(CancellationToken)), Times.Once);

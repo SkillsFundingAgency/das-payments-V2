@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
                 var actorId = new ActorId(message.Ukprn.ToString());
                 var actor = proxyFactory.CreateActorProxy<ProviderPaymentsService.Interfaces.IProviderPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.ProviderPayments.ServiceFabric/ProviderPaymentsServiceActorService"), actorId);
 
-                await actor.HandleIlrSubMissionAsync(message, new CancellationToken());
+                await actor.HandleIlrSubMission(message, new CancellationToken());
 
                 paymentLogger.LogInfo($"Successfully processed Ilr Submitted Event for Job Id {message.JobId} and Message Type {message.GetType().Name}");
 

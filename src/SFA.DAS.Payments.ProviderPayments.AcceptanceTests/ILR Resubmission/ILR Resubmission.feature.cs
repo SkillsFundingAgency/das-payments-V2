@@ -93,16 +93,16 @@ this.ScenarioInitialize(scenarioInfo);
             table1.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "900"});
             table1.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "100"});
 #line 9
  testRunner.And("the provider has submitted an ILR file which has generated the following contract" +
-                    " type \"2\" payments:", ((string)(null)), table1, "And ");
+                    " type 2 payments:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -112,36 +112,36 @@ this.ScenarioInitialize(scenarioInfo);
             table2.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "900"});
             table2.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "2700"});
             table2.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "1800"});
             table2.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "100"});
             table2.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "300"});
             table2.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 13
- testRunner.When("the provider re-submits an ILR file which triggers the following contract type \"2" +
-                    "\" funding source payments:", ((string)(null)), table2, "When ");
+ testRunner.When("the provider re-submits an ILR file which triggers the following contract type 2 " +
+                    "funding source payments:", ((string)(null)), table2, "When ");
 #line 21
  testRunner.Then("the provider payments service should remove all payments for the previous Ilr sub" +
                     "mission", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -154,32 +154,32 @@ this.ScenarioInitialize(scenarioInfo);
             table3.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "900"});
             table3.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "2700"});
             table3.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "1800"});
             table3.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "100"});
             table3.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "300"});
             table3.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 22
  testRunner.And("the provider payments service will store the following payments:", ((string)(null)), table3, "And ");
@@ -210,16 +210,16 @@ this.ScenarioInitialize(scenarioInfo);
             table4.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "900"});
             table4.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "100"});
 #line 36
  testRunner.And("the provider has submitted an ILR file which has generated the following contract" +
-                    " type \"2\" payments:", ((string)(null)), table4, "And ");
+                    " type 2 payments:", ((string)(null)), table4, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -229,37 +229,36 @@ this.ScenarioInitialize(scenarioInfo);
             table5.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "900"});
             table5.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "2700"});
             table5.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "1800"});
             table5.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "100"});
             table5.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "300"});
             table5.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 40
- testRunner.When("the provider re-submits an ILR file which triggers the following contract type \"2" +
-                    "\" funding source payments with the ILR Submission event sent after the payments:" +
-                    "", ((string)(null)), table5, "When ");
+ testRunner.When("the provider re-submits an ILR file which triggers the following contract type 2 " +
+                    "funding source payments with the ILR Submission event sent after the payments:", ((string)(null)), table5, "When ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -269,32 +268,32 @@ this.ScenarioInitialize(scenarioInfo);
             table6.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "900"});
             table6.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "2700"});
             table6.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-Invested Sfa",
+                        "CoInvestedSfa",
                         "1800"});
             table6.AddRow(new string[] {
                         "1",
                         "Learning (TT1)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "100"});
             table6.AddRow(new string[] {
                         "1",
                         "Completion (TT2)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "300"});
             table6.AddRow(new string[] {
                         "1",
                         "Balancing (TT3)",
-                        "Co-Invested Employer",
+                        "CoInvestedEmployer",
                         "1350"});
 #line 48
  testRunner.Then("the provider payments service will store the following payments:", ((string)(null)), table6, "Then ");

@@ -24,8 +24,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public FundingSourceType FundingSource { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
         public decimal SfaContributionPercentage { get; set; }
-        //public virtual EarningsModel Earnings { get; set; }
         public long JobId { get; set; }
-        //public DateTime CreationDate { get; set; }
     }
 }

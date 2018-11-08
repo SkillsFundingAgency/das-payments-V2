@@ -35,14 +35,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
-            Ukprn = GenerateId("ukprn");
+            Ukprn = GenerateId();
             Learners = new List<Learner> { GenerateLearner() };
-            JobId = GenerateId("JobId");
+            JobId = GenerateId();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             IlrSubmissionTime = DateTime.UtcNow;
         }
 
-        public long GenerateId(string idKey, int maxValue = 1000000)
+        public long GenerateId(int maxValue = 1000000)
         {
             var id = random.Next(maxValue);
             //TODO: make sure that the id isn't already in use.
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Learner GenerateLearner()
         {
-            var uln = GenerateId("learner");
+            var uln = GenerateId();
             return new Learner
             {
                 Ukprn = Ukprn,

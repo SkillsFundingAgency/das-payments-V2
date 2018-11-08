@@ -35,24 +35,24 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             }).As<IPaymentsDataContext>().InstancePerDependency();
         }
 
-#if DEBUG
-        [BeforeTestRun(Order = 60)]
-        public static void SetUpPaymentsDb()
-        {
-            if (!IsDevEnvironment) return;
-            var instance = new DacServices(Config.PaymentsConnectionString);
-            var path = Path.GetFullPath(Path.Combine(
-                Path.GetDirectoryName(typeof(HistoricalPaymentSteps).Assembly.Location) ?? throw new InvalidOperationException("Failed to get assembly location path"),
-                @"..\..\..\SFA.DAS.Payments.Database\bin\Debug\SFA.DAS.Payments.Database.dacpac"));
+//#if DEBUG
+//        [BeforeTestRun(Order = 60)]
+//        public static void SetUpPaymentsDb()
+//        {
+//            if (!IsDevEnvironment) return;
+//            var instance = new DacServices(Config.PaymentsConnectionString);
+//            var path = Path.GetFullPath(Path.Combine(
+//                Path.GetDirectoryName(typeof(HistoricalPaymentSteps).Assembly.Location) ?? throw new InvalidOperationException("Failed to get assembly location path"),
+//                @"..\..\..\SFA.DAS.Payments.Database\bin\Debug\SFA.DAS.Payments.Database.dacpac"));
 
-            var builder = new SqlConnectionStringBuilder(Config.PaymentsConnectionString);
+//            var builder = new SqlConnectionStringBuilder(Config.PaymentsConnectionString);
 
-            using (var dacpac = DacPackage.Load(path))
-            {
-                instance.Deploy(dacpac, builder.InitialCatalog, true);
-            }
-        }
-#endif
+//            using (var dacpac = DacPackage.Load(path))
+//            {
+//                instance.Deploy(dacpac, builder.InitialCatalog, true);
+//            }
+//        }
+//#endif
 
         private void AddHistoricalPayments(IList<HistoricalPayment> payments)
         {

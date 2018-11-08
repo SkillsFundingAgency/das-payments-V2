@@ -1,12 +1,11 @@
 ﻿namespace SFA.DAS.Payments.Application.Repositories
 {
-    // borrowed from ServiceFabric
     public struct ConditionalValue<T>
     {
         public ConditionalValue(bool hasValue, T value)
         {
-            this.HasValue = hasValue;
-            this.Value = value;
+            HasValue = hasValue;
+            Value = value;
         }
 
         public bool HasValue { get; }

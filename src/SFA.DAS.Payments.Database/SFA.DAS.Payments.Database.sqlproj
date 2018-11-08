@@ -61,14 +61,49 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="Tables" />
-    <Folder Include="Schema" />
-    <Folder Include="Views" />
+    <Folder Include="Security" />
+    <Folder Include="Payments2" />
+    <Folder Include="Payments2\Views" />
+    <Folder Include="Payments2\Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Schema\Payments2.sql" />
-    <Build Include="Tables\Payment.sql" />
-    <None Include="Views\Payments2.PaymentHistory.sql" />
+    <Build Include="Security\User_RO.sql" />
+    <Build Include="Security\User_RW.sql" />
+    <Build Include="Security\Role_DataProcessing.sql" />
+    <Build Include="Security\Role_DataViewer.sql" />
+    <Build Include="Security\RoleMemberships.sql" />
+    <Build Include="Security\User_DsciUser.sql" />
+    <Build Include="Payments2\Tables\Payment.sql" />
+    <Build Include="Security\Schema_Payments2.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="zzz.Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="BUILD_BRANCHNAME">
+      <DefaultValue>Local Machine</DefaultValue>
+      <Value>$(SqlCmdVar__4)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="BUILD_BUILDNUMBER">
+      <DefaultValue>X.Y.Z-LocalDev</DefaultValue>
+      <Value>$(SqlCmdVar__3)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="DsciUserPassword">
+      <DefaultValue>NotUsedLocally!!!</DefaultValue>
+      <Value>$(SqlCmdVar__6)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="RELEASE_RELEASENAME">
+      <DefaultValue>From Local Machine</DefaultValue>
+      <Value>$(SqlCmdVar__5)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="ROUserPassword">
+      <DefaultValue>NotUsedLocally!</DefaultValue>
+      <Value>$(SqlCmdVar__1)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="RWUserPassword">
+      <DefaultValue>NotUsedLocally!!</DefaultValue>
+      <Value>$(SqlCmdVar__2)</Value>
+    </SqlCmdVariable>
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SFA.DAS.Payments.Database.refactorlog" />

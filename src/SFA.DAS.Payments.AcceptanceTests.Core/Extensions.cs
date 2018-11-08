@@ -165,7 +165,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return new CalendarPeriod(year, month);
         }
 
-        public static string GetCalendarYear(this CalendarPeriod calendarPeriod)
+        public static string GetCollectionYear(this CalendarPeriod calendarPeriod)
         {
             return calendarPeriod.Name.Split('-').FirstOrDefault();
         }

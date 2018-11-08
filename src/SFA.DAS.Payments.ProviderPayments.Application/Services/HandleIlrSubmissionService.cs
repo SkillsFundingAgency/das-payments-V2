@@ -9,7 +9,7 @@ using SFA.DAS.Payments.ProviderPayments.Domain.Models;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
-    public class IlrSubmissionService : IIlrSubmissionService
+    public class HandleIlrSubmissionService : IHandleIlrSubmissionService
     {
 
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IValidateIlrSubmission validateIlrSubmission;
         private readonly IPaymentLogger paymentLogger;
 
-        public IlrSubmissionService(IProviderPaymentsRepository providerPaymentsRepository,
+        public HandleIlrSubmissionService(IProviderPaymentsRepository providerPaymentsRepository,
             IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache,
             IValidateIlrSubmission validateIlrSubmission,
             IPaymentLogger paymentLogger)
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.paymentLogger = paymentLogger;
         }
 
-        public async Task HandleIlrSubMission(IlrSubmittedEvent message, CancellationToken cancellationToken)
+        public async Task Handle(IlrSubmittedEvent message, CancellationToken cancellationToken)
         {
             var currentIlr = await GetCurrentIlrSubmissionEvent(message.Ukprn, cancellationToken);
             var isNewIlrSubmission = validateIlrSubmission.IsNewIlrSubmission(new IlrSubmissionValidationRequest

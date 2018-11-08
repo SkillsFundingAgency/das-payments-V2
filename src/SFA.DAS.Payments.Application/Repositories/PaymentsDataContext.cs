@@ -9,16 +9,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         private readonly string connectionString;
         public virtual DbSet<PaymentModel> Payment { get; set; }
 
-        public PaymentsDataContext()
-        {
-        }
-
         public PaymentsDataContext(string connectionString)
-        {
-            this.connectionString = connectionString;
-        }
-
-        public PaymentsDataContext(DbContextOptions options, string connectionString): base(options)
         {
             this.connectionString = connectionString;
         }

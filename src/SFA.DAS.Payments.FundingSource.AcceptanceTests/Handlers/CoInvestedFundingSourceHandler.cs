@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NServiceBus;
@@ -9,7 +10,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Handlers
 {
     public class CoInvestedFundingSourceHandler : IHandleMessages<CoInvestedFundingSourcePaymentEvent>
     {
-        public static List<CoInvestedFundingSourcePaymentEvent> ReceivedEvents { get; } = new List<CoInvestedFundingSourcePaymentEvent>();
+        public static ConcurrentBag<CoInvestedFundingSourcePaymentEvent> ReceivedEvents { get; } = new ConcurrentBag<CoInvestedFundingSourcePaymentEvent>();
 
         public async Task Handle(CoInvestedFundingSourcePaymentEvent message, IMessageHandlerContext context)
         {

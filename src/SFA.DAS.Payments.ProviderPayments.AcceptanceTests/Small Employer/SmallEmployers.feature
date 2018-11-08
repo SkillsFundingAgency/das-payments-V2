@@ -9,15 +9,15 @@ Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 	Given the SFA contribution percentage is 100%
 	And the current collection period is R01
 	And the funding source service generates the following contract type 2 payments:
-	| Delivery Period | Transaction Type | Funding Source       | Amount |
-	| 1               | Learning (TT1)   | Co-Invested Sfa      | 500    |
+	| Delivery Period | Transaction Type | Funding Source | Amount |
+	| 1               | Learning (TT1)   | CoInvestedSfa  | 500    |
 	When the funding source payments event are received
 	Then the provider payments service will store the following payments:
-	| Delivery Period | TransactionType | FundingSource        | Amount |
-	| 1               | Learning (TT1)  | Co-Invested Sfa      | 500    |
+	| Delivery Period | TransactionType | FundingSource | Amount |
+	| 1               | Learning (TT1)  | CoInvestedSfa | 500    |
 	And at month end the provider payments service will publish the following payments
-	| Delivery Period | TransactionType | FundingSource        | Amount |
-	| 1               | Learning (TT1)  | Co-Invested Sfa      | 500    |
+	| Delivery Period | TransactionType | FundingSource | Amount |
+	| 1               | Learning (TT1)  | CoInvestedSfa | 500    |
 
 	   
 Scenario: AC5- Payment for a 16-18 non-DAS learner, employer is not small
@@ -25,14 +25,14 @@ Scenario: AC5- Payment for a 16-18 non-DAS learner, employer is not small
 	And the current collection period is R01
 	And the funding source service generates the following contract type 2 payments:
 	| Delivery Period | Transaction Type | Funding Source       | Amount |
-	| 1               | Learning (TT1)   | Co-Invested Sfa      | 450    |
-	| 1               | Learning (TT1)   | Co-Invested Employer | 50     |
+	| 1               | Learning (TT1)   | CoInvestedSfa       | 450    |
+	| 1               | Learning (TT1)   | CoInvestedEmployer  | 50     |
 	When the funding source payments event are received
 	Then the provider payments service will store the following payments:
-	| Delivery Period | TransactionType | FundingSource        | Amount |
-	| 1               | Learning (TT1)  | Co-Invested Sfa      | 450    |
-	| 1               | Learning (TT1)  | Co-Invested Employer | 50     |
+	| Delivery Period | TransactionType | FundingSource      | Amount |
+	| 1               | Learning (TT1)  | CoInvestedSfa      | 450    |
+	| 1               | Learning (TT1)  | CoInvestedEmployer | 50     |
 	And at month end the provider payments service will publish the following payments
-	| Delivery Period | TransactionType | FundingSource        | Amount |
-	| 1               | Learning (TT1)  | Co-Invested Sfa      | 450    |
-	| 1               | Learning (TT1)  | Co-Invested Employer | 50     |
+	| Delivery Period | TransactionType | FundingSource      | Amount |
+	| 1               | Learning (TT1)  | CoInvestedSfa      | 450    |
+	| 1               | Learning (TT1)  | CoInvestedEmployer | 50     |

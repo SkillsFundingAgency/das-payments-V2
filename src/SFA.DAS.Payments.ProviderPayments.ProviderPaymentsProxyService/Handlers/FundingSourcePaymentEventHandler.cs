@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
 
                 var paymentModel = mapper.Map<PaymentModel>(message);
 
-                await actor.ProcessPayment(paymentModel, new CancellationToken());
+                await actor.HandlePayment(paymentModel, new CancellationToken());
                 paymentLogger.LogInfo($"Successfully processed Funding Source Payment Event for Job Id {message.JobId} and Message Type {message.GetType().Name}");
             }
             catch (Exception ex)
