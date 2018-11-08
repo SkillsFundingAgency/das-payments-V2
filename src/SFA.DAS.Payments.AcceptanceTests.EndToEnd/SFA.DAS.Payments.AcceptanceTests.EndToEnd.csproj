@@ -258,6 +258,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Refunds\Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -281,6 +286,10 @@
     <None Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Refunds\Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
