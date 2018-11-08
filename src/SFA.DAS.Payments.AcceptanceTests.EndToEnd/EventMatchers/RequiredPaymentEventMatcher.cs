@@ -16,6 +16,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var requiredPaymentEvents = ApprenticeshipContractType2RequiredPaymentEventHandler.ReceivedEvents
                 .Where(e => e.Ukprn == ukprn && e.CollectionPeriod == collectionPeriod && e.JobId == jobId).ToList();
 
+            expectedPayments = expectedPayments
+                .Where(e => e.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name)
+                .ToList();
+
             //TODO: refactor to reduce duplication
             if (!expectedPayments
                 .Where(expected => expected.OnProgramme != 0)

@@ -4,14 +4,18 @@ using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public class ProviderPaymentEventMatcher
     {
-        public static Tuple<bool, string> MatchPayments(List<ProviderPayment> expectedPayments, long ukprn, string learnerReference, long jobId)
+        public static Tuple<bool, string> MatchPayments(List<ProviderPayment> expectedPayments, long ukprn, string learnerReference, long jobId, CalendarPeriod collectionPeriod)
         {
+            expectedPayments = expectedPayments
+                .Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name)
+                .ToList();
             var receivedEvents = ProviderPaymentEventHandler.ReceivedEvents
                 .Where(ev =>
                     ev.Ukprn == ukprn &&

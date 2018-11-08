@@ -32,13 +32,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             SfaContributionPercentage = CurrentIlr[0].SfaContributionPercentage;
         }
 
-        [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public void WhenTheILRFileIsSubmittedForTheLearnersForCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
-        {
-            SetCollectionPeriod(collectionPeriod);
-            //TODO: when in DC end to end mode we need to send the ilr submission here
-        }
-
         [Then(@"the following learner earnings should be generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
@@ -93,7 +86,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "Provider Payment event check failure");
+            WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId, CurrentCollectionPeriod), "Provider Payment event check failure");
         }
     }
 }

@@ -58,6 +58,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
+        [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
             SetCollectionPeriod(collectionPeriod);
@@ -84,13 +85,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"the following provider payments will be recorded")]
         public void ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
-            var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
+            var expectedPayments = table.CreateSet<ProviderPayment>()
+                .Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == CurrentCollectionPeriod.Name)
+                .ToList();
+
             var dataContext = Container.Resolve<IPaymentsDataContext>();
             WaitForIt(() =>
             {
                 var payments = dataContext.Payment.Where(p => p.JobId == TestSession.JobId &&
-                                                              p.LearnerReferenceNumber ==
-                                                              TestSession.Learner.LearnRefNumber)
+                                                              p.LearnerReferenceNumber == TestSession.Learner.LearnRefNumber &&
+                                                              p.CollectionPeriod.Name == CurrentCollectionPeriod.Name)
                     .ToList();
                 Console.WriteLine($"Found {payments.Count} recorded payments for job id: {TestSession.JobId}, learner ref: {TestSession.Learner.LearnRefNumber}");
                 return expectedPayments.All(expected => payments.Any(p => expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name == p.CollectionPeriod.Name &&
