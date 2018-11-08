@@ -40,6 +40,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             {
                 var learner = TestSession.GenerateLearner();
                 learner.LearnRefNumber = TestSession.LearnRefNumberGenerator.Generate(learner.Ukprn, row["LearnerId"]);
+                learner.LearnerIdentifier = row["LearnerId"];
                 TestSession.Learners.Add(learner);
             }
         }

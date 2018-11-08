@@ -40,9 +40,11 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             var payment = ContractType == 1
                 ? (ApprenticeshipContractTypePaymentDueEvent)new ApprenticeshipContractType1PaymentDueEvent()
                 : new ApprenticeshipContractType2PaymentDueEvent();
-
-            payment.Learner = TestSession.Learner.ToLearner();
-            payment.Learner.ReferenceNumber = TestSession.GenerateLearnerReference(paymentDue.LearnerId);
+            var testSessionLearner =
+                TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == paymentDue.LearnerId) ??
+                TestSession.Learner;
+            payment.Learner = testSessionLearner.ToLearner();
+            payment.Learner.ReferenceNumber = testSessionLearner.LearnRefNumber;
             payment.Ukprn = TestSession.Ukprn;
             payment.SfaContributionPercentage = SfaContributionPercentage;
             payment.Type = paymentDue.Type;
@@ -50,7 +52,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             payment.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
             payment.DeliveryPeriod = new CalendarPeriod(CollectionYear, paymentDue.DeliveryPeriod);
             payment.JobId = TestSession.JobId;
-            payment.LearningAim = TestSession.Learner.Course.ToLearningAim();
+            payment.LearningAim = testSessionLearner.Course.ToLearningAim();
             payment.PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier;
             return payment;
         }
@@ -93,7 +95,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
                     TestSession.JobId == receivedEvent.JobId
                     && paymentDue.Amount == receivedEvent.AmountDue
-                    && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
+                    && TestSession.Learners.Any(l => l.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber)
                     && paymentDue.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
                     && paymentDue.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
@@ -131,7 +133,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 .Where(receivedEvent => events.Any(expectedEvent =>
                     expectedEvent.Amount == receivedEvent.AmountDue 
                     && TestSession.JobId == receivedEvent.JobId
-                    && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
+                    && TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == expectedEvent.LearnerId)?.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber  //TestSession.Learners.Any(l => l.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber)  
                     && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
                     && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
