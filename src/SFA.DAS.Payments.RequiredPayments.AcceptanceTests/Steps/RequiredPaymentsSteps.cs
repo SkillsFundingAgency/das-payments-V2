@@ -91,7 +91,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             var result = PaymentsDue.Where(x => !type.HasValue || x.Type == type).ToList().All(paymentDue =>
                 !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
-                    paymentDue.Amount == receivedEvent.AmountDue
+                    TestSession.JobId == receivedEvent.JobId
+                    && paymentDue.Amount == receivedEvent.AmountDue
                     && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                     && paymentDue.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
@@ -128,8 +129,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
             var matchedExpectations = sessionEvents
                 .Where(receivedEvent => events.Any(expectedEvent =>
-                    expectedEvent.Amount == receivedEvent.AmountDue
-                    && TestSession.GenerateLearnerReference(expectedEvent.LearnerId) == receivedEvent.Learner?.ReferenceNumber
+                    expectedEvent.Amount == receivedEvent.AmountDue 
+                    && TestSession.JobId == receivedEvent.JobId
+                    && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                     && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
                     && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period

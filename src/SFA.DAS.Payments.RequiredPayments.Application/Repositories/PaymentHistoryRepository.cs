@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                             apprenticeshipKey.LearnAimRef == payment.LearningAimReference &&
                             apprenticeshipKey.LearnerReferenceNumber == payment.LearnerReferenceNumber &&
                             apprenticeshipKey.PathwayCode == payment.LearningAimPathwayCode &&
-                            (int)apprenticeshipKey.ProgrammeType == payment.LearningAimPathwayCode &&
+                            (int)apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
                             apprenticeshipKey.StandardCode == payment.LearningAimStandardCode)
                 .Select(payment => new
                 {
