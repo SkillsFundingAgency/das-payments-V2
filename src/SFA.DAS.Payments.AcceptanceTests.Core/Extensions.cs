@@ -173,5 +173,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             return calendarPeriod.Name.Split('-').FirstOrDefault();
         }
+
+        public static decimal ToPercent(this string stringPercent)
+        {
+            return decimal.Parse(stringPercent.TrimEnd('%')) / 100m;
+        }
     }
 }

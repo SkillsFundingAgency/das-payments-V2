@@ -57,13 +57,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var learnerLearnRefNumber = testSession.Learner.LearnRefNumber;
             var name = currentCollectionPeriod.Name;
-            var jobId = testSession.JobId;
 
-            var payments = dataContext.Payment.Where(p => p.JobId == jobId &&
+            var payments = dataContext.Payment.Where(p => p.Ukprn == testSession.Ukprn &&
                                                           p.LearnerReferenceNumber == learnerLearnRefNumber &&
                                                           p.CollectionPeriod.Name == name).ToList();
 
-            Console.WriteLine($"Found {payments.Count} recorded payments for job id: {jobId}, learner ref: {learnerLearnRefNumber}");
+            Console.WriteLine($"Found {payments.Count} recorded payments for Ukprn: {testSession.Ukprn}, learner ref: {learnerLearnRefNumber}");
 
             var matchedPayments = expectedPayments
                 .Where(expected => payments.Any(p => expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name == p.CollectionPeriod.Name &&

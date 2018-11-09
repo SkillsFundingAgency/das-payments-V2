@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
                     Ukprn = TestSession.Ukprn,
                     JobId = jobId,
-                    SfaContributionPercentage = learnerTraining.SfaContributionPercentage,
+                    SfaContributionPercentage = learnerTraining.SfaContributionPercentage.ToPercent(),
                     TransactionType = providerPayment.TransactionType,
                     ContractType = learnerTraining.ContractType,
                     PriceEpisodeIdentifier = "pe-1",
@@ -97,7 +97,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
                     Ukprn = TestSession.Ukprn,
                     JobId = jobId,
-                    SfaContributionPercentage = learnerTraining.SfaContributionPercentage,
+                    SfaContributionPercentage = learnerTraining.SfaContributionPercentage.ToPercent(),
                     TransactionType = providerPayment.TransactionType,
                     ContractType = learnerTraining.ContractType,
                     PriceEpisodeIdentifier = "pe-1",
@@ -206,7 +206,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
                         PriceEpisodePlannedEndDate = episode.TotalTrainingPriceEffectiveDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
                         PriceEpisodeActualEndDate = actualEndDate,
-                        PriceEpisodeSFAContribPct = learnerEarnings.SfaContributionPercentage,
+                        PriceEpisodeSFAContribPct = learnerEarnings.SfaContributionPercentage.ToPercent()
                     },
                     PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                 };
