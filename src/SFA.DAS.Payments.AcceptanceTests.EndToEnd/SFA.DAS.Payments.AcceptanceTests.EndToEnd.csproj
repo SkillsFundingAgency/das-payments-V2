@@ -233,6 +233,7 @@
   <ItemGroup>
     <Compile Include="Data\OnProgrammeEarning.cs" />
     <Compile Include="Data\Payment.cs" />
+    <Compile Include="Data\Price.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\Training.cs" />
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />

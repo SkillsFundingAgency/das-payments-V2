@@ -60,12 +60,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     JobId = TestSession.JobId,
                     IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
                     RequestTime = DateTimeOffset.UtcNow,
-                    SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????
+                    SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????                    
                 };
                 Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
                 await MessageSession.Send(command);
             }
-            WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "OnProgrammeEarning event check failure");
+            WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "Earning event check failure");
         }
 
         [Then(@"the following payments will be calculated")]
@@ -87,6 +87,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
             WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId, CurrentCollectionPeriod), "Provider Payment event check failure");
+        }
+
+        [Then(@"no payments will be calculated for following collection periods")]
+        public void ThenNoPaymentsWillBeCalculatedForFollowingCollectionPeriods(Table table)
+        {
+            ScenarioContext.Current.Pending();
         }
     }
 }

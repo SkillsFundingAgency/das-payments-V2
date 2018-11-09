@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -9,13 +8,19 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
-using PriceEpisode = SFA.DAS.Payments.Model.Core.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     public abstract class EndToEndStepsBase : StepsBase
     {
         protected DcHelper DcHelper => Get<DcHelper>();
+
+        protected List<Price> CurrentPriceEpisodes
+        {
+            get => !Context.TryGetValue<List<Price>>(out var currentPriceEpisodes) ? null : currentPriceEpisodes;
+            set => Set(value);
+        }
+
         protected List<Training> CurrentIlr
         {
             get => Get<List<Training>>();
@@ -115,30 +120,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected void PopulateLearner(FM36Learner learner, Training learnerEarnings, List<OnProgrammeEarning> earnings)
         {
             learner.LearnRefNumber = TestSession.Learner.LearnRefNumber;
-            var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
-            {
-                PriceEpisodeIdentifier = "pe-1",
-                PriceEpisodeValues = new PriceEpisodeValues
-                {
-                    EpisodeStartDate = learnerEarnings.StartDate.ToDate(),
-                    PriceEpisodeCompletionElement = learnerEarnings.CompletionAmount,
-                    PriceEpisodeCompleted = learnerEarnings.CompletionStatus.Equals("completed", StringComparison.OrdinalIgnoreCase),
-                    TNP1 = learnerEarnings.TotalTrainingPrice,
-                    TNP2 = learnerEarnings.TotalAssessmentPrice,
-                    PriceEpisodeInstalmentValue = learnerEarnings.InstallmentAmount,
-                    PriceEpisodePlannedInstalments = learnerEarnings.NumberOfInstallments,
-                    PriceEpisodeActualInstalments = learnerEarnings.ActualInstallments,
-                    PriceEpisodeBalancePayment = learnerEarnings.BalancingPayment,
-                    PriceEpisodeFundLineType = learnerEarnings.FundingLineType,
-                    PriceEpisodeBalanceValue = learnerEarnings.BalancingPayment,
-                    PriceEpisodeCompletionPayment = learnerEarnings.CompletionAmount,
-                    PriceEpisodeContractType = learnerEarnings.ContractType.ToString("G"),
-                    PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
-                    PriceEpisodePlannedEndDate = learnerEarnings.StartDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
-                    PriceEpisodeSFAContribPct = learnerEarnings.SfaContributionPercentage,
-                },
-                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
-            };
 
             var learningValues = new PriceEpisodePeriodisedValues
             {
@@ -160,10 +141,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 SetPeriodValue(period, balancingEarnings, earning.Balancing);
             });
 
-            learner.PriceEpisodes = new List<ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode>(new[] { priceEpisode });
-            priceEpisode.PriceEpisodePeriodisedValues.Add(learningValues);
-            priceEpisode.PriceEpisodePeriodisedValues.Add(completionEarnings);
-            priceEpisode.PriceEpisodePeriodisedValues.Add(balancingEarnings);
+            learner.PriceEpisodes = GetPriceEpisodes(learnerEarnings, learningValues, completionEarnings, balancingEarnings, CurrentPriceEpisodes);
 
             learner.LearningDeliveries = new List<LearningDelivery>(new[]
             {
@@ -176,6 +154,71 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     }
                 }
             });
+        }
+
+        private static List<ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode> GetPriceEpisodes(Training learnerEarnings, PriceEpisodePeriodisedValues learningValues, PriceEpisodePeriodisedValues completionEarnings, PriceEpisodePeriodisedValues balancingEarnings, List<Price> priceEpisodes)
+        {
+            if (priceEpisodes == null)
+            {
+                priceEpisodes = new List<Price>
+                {
+                    new Price
+                    {
+                        TotalAssesmentPrice = learnerEarnings.TotalAssessmentPrice,
+                        TotalTrainingPrice = learnerEarnings.TotalTrainingPrice,
+                        TotalAssesmentPriceEffectiveDate = learnerEarnings.StartDate,
+                        TotalTrainingPriceEffectiveDate = learnerEarnings.StartDate
+                    }
+                };
+            }
+
+            var result = new List<ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode>();
+
+            for (var i = 0; i < priceEpisodes.Count; i++)
+            {
+                var episode = priceEpisodes[i];
+                DateTime? actualEndDate = null;
+
+                if (i < priceEpisodes.Count - 1)
+                {
+                    var nextEpisodeStartDate = priceEpisodes[i + 1].TotalTrainingPriceEffectiveDate.ToDate();
+                    actualEndDate = nextEpisodeStartDate.AddMonths(-1);
+                }
+
+                var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
+                {
+                    PriceEpisodeIdentifier = "pe-" + (i + 1),
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        EpisodeStartDate = episode.TotalTrainingPriceEffectiveDate.ToDate(),
+                        PriceEpisodeCompletionElement = learnerEarnings.CompletionAmount,
+                        PriceEpisodeCompleted = learnerEarnings.CompletionStatus.Equals("completed", StringComparison.OrdinalIgnoreCase),
+                        TNP1 = episode.TotalTrainingPrice,
+                        TNP2 = episode.TotalAssesmentPrice,
+                        PriceEpisodeInstalmentValue = learnerEarnings.InstallmentAmount,
+                        PriceEpisodePlannedInstalments = learnerEarnings.NumberOfInstallments,
+                        PriceEpisodeActualInstalments = learnerEarnings.ActualInstallments,
+                        PriceEpisodeBalancePayment = learnerEarnings.BalancingPayment,
+                        PriceEpisodeFundLineType = learnerEarnings.FundingLineType,
+                        PriceEpisodeBalanceValue = learnerEarnings.BalancingPayment,
+                        PriceEpisodeCompletionPayment = learnerEarnings.CompletionAmount,
+                        PriceEpisodeContractType = learnerEarnings.ContractType.ToString("G"),
+                        PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
+                        PriceEpisodePlannedEndDate = episode.TotalTrainingPriceEffectiveDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
+                        PriceEpisodeActualEndDate = actualEndDate,
+                        PriceEpisodeSFAContribPct = learnerEarnings.SfaContributionPercentage,
+                    },
+                    PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
+                };
+
+                priceEpisode.PriceEpisodePeriodisedValues.Add(learningValues);
+                priceEpisode.PriceEpisodePeriodisedValues.Add(completionEarnings);
+                priceEpisode.PriceEpisodePeriodisedValues.Add(balancingEarnings);
+
+                result.Add(priceEpisode);
+            }
+
+            return result;
         }
 
         private void SetPeriodValue(int period, PriceEpisodePeriodisedValues periodisedValues, decimal amount)
