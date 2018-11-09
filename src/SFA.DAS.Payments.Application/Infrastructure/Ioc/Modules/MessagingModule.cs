@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Autofac;
-using Autofac.Builder;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Application.Messaging;

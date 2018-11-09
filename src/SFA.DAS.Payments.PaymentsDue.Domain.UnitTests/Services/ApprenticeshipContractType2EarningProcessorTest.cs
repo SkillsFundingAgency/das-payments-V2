@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         [SetUp]
         public void SetUp()
         {
-            this.processor = new ApprenticeshipContractType2EarningProcessor();
+            processor = new ApprenticeshipContractType2EarningProcessor();
             jobId = 12345;
             ukprn = 12;
         }
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             earning.OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new[] { onProgrammeEarning });
 
             // act
-            var paymentsDue = this.processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
+            var paymentsDue = processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
 
             // assert
             Assert.IsNotNull(paymentsDue);
@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             };
 
             // act
-            var paymentsDue = this.processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
+            var paymentsDue = processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
 
             // assert
             Assert.IsNotNull(paymentsDue);
