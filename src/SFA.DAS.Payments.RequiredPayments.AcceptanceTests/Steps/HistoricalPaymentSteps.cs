@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using Autofac;
-using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
@@ -13,7 +9,6 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
-using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 

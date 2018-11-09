@@ -1,14 +1,10 @@
 ﻿using Autofac;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;

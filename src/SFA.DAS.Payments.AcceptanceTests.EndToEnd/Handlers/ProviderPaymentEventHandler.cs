@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.ProviderPayments.Messages;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
 {

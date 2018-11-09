@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.Payments.AcceptanceTests.Core;
-using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps

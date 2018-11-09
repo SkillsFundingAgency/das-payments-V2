@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core;
-using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Components.Core.Infrastructure
