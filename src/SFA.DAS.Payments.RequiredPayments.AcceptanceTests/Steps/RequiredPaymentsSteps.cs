@@ -58,35 +58,35 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         }
 
         [Then(@"the required payments component will only generate contract type (.*) required payments")]
-        public void ThenTheRequiredPaymentsComponentWillOnlyGenerateContractTypeRequiredPayments(int p0, Table table)
+        public async Task ThenTheRequiredPaymentsComponentWillOnlyGenerateContractTypeRequiredPayments(int p0, Table table)
         {
             var expectedPaymentsEvents = table
                 .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
-            WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events or unexpected events found");
+            await WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events or unexpected events found");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) payable earnings")]
-        public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypePayableEarnings(int p0)
+        public async Task ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypePayableEarnings(int p0)
         {
-            WaitForIt(() => MatchUnexpectedRequiredPayment(null), "Found some unexpected required payment events");
+            await WaitForIt(() => MatchUnexpectedRequiredPayment(null), "Found some unexpected required payment events");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) Learning \(TT(.*)\) payable earnings")]
-        public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeLearningTTPayableEarnings(int p0, int p1)
+        public async Task ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeLearningTTPayableEarnings(int p0, int p1)
         {
-            WaitForIt(() => MatchUnexpectedRequiredPayment(OnProgrammeEarningType.Learning), "Found some unexpected required payment events");
+            await WaitForIt(() => MatchUnexpectedRequiredPayment(OnProgrammeEarningType.Learning), "Found some unexpected required payment events");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) Completion \(TT(.*)\) payable earnings")]
-        public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeCompletionTTPayableEarnings(int p0, int p1)
+        public async Task ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeCompletionTTPayableEarnings(int p0, int p1)
         {
-            WaitForIt(() => MatchUnexpectedRequiredPayment(OnProgrammeEarningType.Completion), "Found some unexpected required payment events");
+            await WaitForIt(() => MatchUnexpectedRequiredPayment(OnProgrammeEarningType.Completion), "Found some unexpected required payment events");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) Balancing \(TT(.*)\) payable earnings")]
-        public void ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeBalancingTTPayableEarnings(int p0, int p1)
+        public async Task ThenTheRequiredPaymentsComponentWillNotGenerateAnyContractTypeBalancingTTPayableEarnings(int p0, int p1)
         {
-            WaitForIt(() => MatchUnexpectedRequiredPayment(OnProgrammeEarningType.Balancing), "Found some unexpected required payment events");
+            await WaitForIt(() => MatchUnexpectedRequiredPayment(OnProgrammeEarningType.Balancing), "Found some unexpected required payment events");
         }
 
         private bool MatchUnexpectedRequiredPayment(OnProgrammeEarningType? type)

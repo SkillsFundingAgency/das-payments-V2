@@ -28,7 +28,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         protected async Task<List<PaymentModel>> GetPaymentsAsync(long jobId)
         {
             var paymentDataContext = Container.Resolve<IPaymentsDataContext>();
-            var payments = await paymentDataContext.Payment.Where(o => o.JobId == jobId).ToListAsync();
+            var payments = await paymentDataContext.Payment
+                .Where(o => o.JobId == jobId)
+                .ToListAsync();
 
             payments.ForEach(o =>
             {

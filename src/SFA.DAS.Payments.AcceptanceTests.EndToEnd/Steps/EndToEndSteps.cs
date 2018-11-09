@@ -60,14 +60,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
                 await MessageSession.Send(command);
             }
-            WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "Earning event check failure");
+            await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "OnProgrammeEarning event check failure");
         }
 
         [Then(@"the following payments will be calculated")]
-        public void ThenTheFollowingPaymentsWillBeCalculated(Table table)
+        public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
             var expectedPayments = table.CreateSet<Payment>().ToList();
-            WaitForIt(() => RequiredPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, CurrentCollectionPeriod, TestSession.JobId), "Required Payment event check failure");
+            await WaitForIt(() => RequiredPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, CurrentCollectionPeriod, TestSession.JobId), "Required Payment event check failure");
         }
 
         [Then(@"at month end the following provider payments will be generated")]
@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId, CurrentCollectionPeriod), "Provider Payment event check failure");
+            await WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId, CurrentCollectionPeriod), "Provider Payment event check failure");
         }
 
         [Then(@"no payments will be calculated for following collection periods")]

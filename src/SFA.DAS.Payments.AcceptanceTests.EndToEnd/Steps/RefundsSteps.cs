@@ -67,38 +67,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
+        public void WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
             SetCollectionPeriod(collectionPeriod);
-            //foreach (var training in CurrentIlr)
-            //{
-            //    var learner = new FM36Learner();
-            //    PopulateLearner(learner, training);
-            //    var command = new ProcessLearnerCommand
-            //    {
-            //        Learner = learner,
-            //        CollectionPeriod = CurrentCollectionPeriod.Period,
-            //        CollectionYear = CollectionYear,
-            //        Ukprn = TestSession.Ukprn,
-            //        JobId = TestSession.JobId,
-            //        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-            //        RequestTime = DateTimeOffset.UtcNow,
-            //        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????
-            //    };
-            //    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-            //    await MessageSession.Send(command);
-            //}
         }
 
         [Then(@"the following provider payments will be recorded")]
-        public void ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
+        public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>()
                 .Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == CurrentCollectionPeriod.Name)
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            WaitForIt(() => ProviderPaymentEventMatcher.MatchRecordedPayments(dataContext, expectedPayments, TestSession, CurrentIlr, CurrentCollectionPeriod), "Payment history check failure");
+            await WaitForIt(() => ProviderPaymentEventMatcher.MatchRecordedPayments(dataContext, expectedPayments, TestSession, CurrentIlr, CurrentCollectionPeriod), "Payment history check failure");
         }
 
     }

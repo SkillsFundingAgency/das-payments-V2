@@ -5,8 +5,8 @@
     {
         public ConditionalValue(bool hasValue, T value)
         {
-            this.HasValue = hasValue;
-            this.Value = value;
+            HasValue = hasValue;
+            Value = value;
         }
 
         public bool HasValue { get; }

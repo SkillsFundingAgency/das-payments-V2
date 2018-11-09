@@ -34,10 +34,10 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         }
 
         [Then(@"the payments due component will generate the following contract type (.*) payments due:")]
-        public void ThenThePaymentsDueComponentWillGenerateTheFollowingContractTypePaymentsDue(int act, Table table)
+        public async Task ThenThePaymentsDueComponentWillGenerateTheFollowingContractTypePaymentsDue(int act, Table table)
         {
             var expectedPaymentsEvents = table.CreateSet<OnProgrammePaymentDue>().ToList();
-            WaitForIt(() => MatchPaymentDue(expectedPaymentsEvents), "Failed to find all the payment due events");
+            await WaitForIt(() => MatchPaymentDue(expectedPaymentsEvents), "Failed to find all the payment due events");
         }
 
         private bool MatchPaymentDue(IReadOnlyCollection<OnProgrammePaymentDue> expectedPaymentsEvents)

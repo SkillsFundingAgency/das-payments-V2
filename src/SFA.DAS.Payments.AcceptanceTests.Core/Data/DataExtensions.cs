@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             };
         }
 
-        public static Model.Core.LearningAim ToLearningAim(this Course course)
+        public static LearningAim ToLearningAim(this Course course)
         {
             return new LearningAim
             {

@@ -60,9 +60,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         }
         
         [Then(@"the service should generate the required payments")]
-        public void ThenTheServiceShouldGenerateTheRequiredPayments()
+        public async Task ThenTheServiceShouldGenerateTheRequiredPayments()
         {
-            WaitForIt(() =>
+            await WaitForIt(() =>
             {
                 return ApprenticeshipContractType2Handler.ReceivedEvents
                     .Any(receivedEvent => receivedEvent.AmountDue == PaymentDueEvent.AmountDue &&

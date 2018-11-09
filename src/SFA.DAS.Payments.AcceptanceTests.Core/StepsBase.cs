@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
-using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using TechTalk.SpecFlow;
@@ -38,26 +35,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 Context.Set(item, key);
         }
 
-        protected async Task WaitForItAsync(Func<bool> lookForIt, string failText)
-        {
-            var endTime = DateTime.Now.Add(Config.TimeToWait);
-            while (DateTime.Now < endTime)
-            {
-                if (lookForIt()) return;
-              await Task.Delay(Config.TimeToPause);
-            }
-            Assert.Fail(failText);
-        }
-
-
-        protected void WaitForIt(Func<bool> lookForIt, string failText)
+        protected async Task WaitForIt(Func<bool> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
             while (DateTime.Now < endTime)
             {
                 if (lookForIt())
                     return;
-                Thread.Sleep(Config.TimeToPause);
+                await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail(failText);
         }
@@ -69,12 +54,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             {
                 if (await lookForIt())
                     return;
-                Thread.Sleep(Config.TimeToPause);
+                await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail(failText);
         }
 
-        protected void WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
+        protected async Task WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
             var reason = "";
@@ -83,21 +68,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 bool pass;
                 (pass, reason) = lookForIt();
                 if (pass) return;
-                Thread.Sleep(Config.TimeToPause);
+                await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail(failText + " - " + reason);
-        }
-
-        protected bool WaitForIt(Func<bool> lookForIt)
-        {
-            var endTime = DateTime.Now.Add(Config.TimeToWait);
-            while (DateTime.Now < endTime)
-            {
-                if (lookForIt())
-                    return true;
-                Thread.Sleep(Config.TimeToPause);
-            }
-            return false;
         }
 
         protected byte GetMonth(byte period)
