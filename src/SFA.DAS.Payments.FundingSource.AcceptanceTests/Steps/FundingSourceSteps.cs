@@ -76,10 +76,10 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         }
 
         [Then(@"the payment source component will generate the following contract type (.*) coinvested payments:")]
-        public void ThenThePaymentSourceComponentWillGenerateTheFollowingContractTypeCoinvestedPayments(ContractType expectedContractType, Table expectedFundingSourcePaymentTable)
+        public async Task ThenThePaymentSourceComponentWillGenerateTheFollowingContractTypeCoinvestedPayments(ContractType expectedContractType, Table expectedFundingSourcePaymentTable)
         {
             var expectedFundingSourcePaymentEvents = expectedFundingSourcePaymentTable.CreateSet<FundingSourcePayment>();
-            WaitForIt(() =>
+            await WaitForIt(() =>
             {
                 return expectedFundingSourcePaymentEvents.All(expectedEvent =>
                     CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
@@ -110,11 +110,12 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             paymentEvent.JobId = TestSession.JobId;
             paymentEvent.EventTime = DateTimeOffset.UtcNow;
             paymentEvent.SfaContributionPercentage = SfaContributionPercentage;
-            paymentEvent.CollectionPeriod =new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod);
+            paymentEvent.CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod);
             paymentEvent.DeliveryPeriod = new CalendarPeriod(GetYear(requiredPayment.DeliveryPeriod, CollectionYear).ToString(), requiredPayment.DeliveryPeriod);
-          
+            paymentEvent.IlrSubmissionDateTime = TestSession.IlrSubmissionTime;
             paymentEvent.LearningAim = TestSession.Learner.Course.ToLearningAim();
             paymentEvent.PriceEpisodeIdentifier = requiredPayment.PriceEpisodeIdentifier;
+            
             return paymentEvent;
         }
     }

@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using Autofac;
-using Microsoft.SqlServer.Dac;
+using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
-using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -35,24 +31,24 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             }).As<IPaymentsDataContext>().InstancePerDependency();
         }
 
-#if DEBUG
-        [BeforeTestRun(Order = 60)]
-        public static void SetUpPaymentsDb()
-        {
-            if (!IsDevEnvironment) return;
-            var instance = new DacServices(Config.PaymentsConnectionString);
-            var path = Path.GetFullPath(Path.Combine(
-                Path.GetDirectoryName(typeof(HistoricalPaymentSteps).Assembly.Location) ?? throw new InvalidOperationException("Failed to get assembly location path"),
-                @"..\..\..\SFA.DAS.Payments.Database\bin\Debug\SFA.DAS.Payments.Database.dacpac"));
+        //#if DEBUG
+        //        [BeforeTestRun(Order = 60)]
+        //        public static void SetUpPaymentsDb()
+        //        {
+        //            if (!IsDevEnvironment) return;
+        //            var instance = new DacServices(Config.PaymentsConnectionString);
+        //            var path = Path.GetFullPath(Path.Combine(
+        //                Path.GetDirectoryName(typeof(HistoricalPaymentSteps).Assembly.Location) ?? throw new InvalidOperationException("Failed to get assembly location path"),
+        //                @"..\..\..\SFA.DAS.Payments.Database\bin\Debug\SFA.DAS.Payments.Database.dacpac"));
 
-            var builder = new SqlConnectionStringBuilder(Config.PaymentsConnectionString);
+        //            var builder = new SqlConnectionStringBuilder(Config.PaymentsConnectionString);
 
-            using (var dacpac = DacPackage.Load(path))
-            {
-                instance.Deploy(dacpac, builder.InitialCatalog, true);
-            }
-        }
-#endif
+        //            using (var dacpac = DacPackage.Load(path))
+        //            {
+        //                instance.Deploy(dacpac, builder.InitialCatalog, true);
+        //            }
+        //        }
+        //#endif
 
         private void AddHistoricalPayments(IList<HistoricalPayment> payments)
         {
@@ -78,27 +74,30 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
         private PaymentModel ToPayment(HistoricalPayment payment, FundingSourceType fundingSource)
         {
+            var testSessionLearner = TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == payment.LearnerId) ?? TestSession.Learner;
+            Assert.IsNotNull(testSessionLearner, $"Test session learner with learner id: '{payment.LearnerId}' not found.");
             return new PaymentModel
             {
                 ExternalId = Guid.NewGuid(),
                 Ukprn = TestSession.Ukprn,
-                LearnerReferenceNumber = TestSession.Learner.LearnRefNumber,
-                LearnerUln = TestSession.Learner.Uln,
+                LearnerReferenceNumber = testSessionLearner.LearnRefNumber,
+                LearnerUln = testSessionLearner.Uln,
                 PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
                 Amount = GetFundingAmount(payment.Amount, fundingSource),
                 CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
                 DeliveryPeriod = new CalendarPeriod(CollectionYear, payment.Delivery_Period),
-                LearningAimReference = TestSession.Learner.Course.LearnAimRef,
-                LearningAimProgrammeType = TestSession.Learner.Course.ProgrammeType,
-                LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
-                LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                LearningAimFundingLineType = TestSession.Learner.Course.FundingLineType,
+                LearningAimReference = testSessionLearner.Course.LearnAimRef,
+                LearningAimProgrammeType = testSessionLearner.Course.ProgrammeType,
+                LearningAimStandardCode = testSessionLearner.Course.StandardCode,
+                LearningAimFrameworkCode = testSessionLearner.Course.FrameworkCode,
+                LearningAimPathwayCode = testSessionLearner.Course.PathwayCode,
+                LearningAimFundingLineType = testSessionLearner.Course.FundingLineType,
                 FundingSource = fundingSource,
                 ContractType = Payments.Model.Core.Entities.ContractType.ContractWithEmployer,
                 SfaContributionPercentage = SfaContributionPercentage,
                 JobId = TestSession.JobId,
                 TransactionType = (TransactionType)payment.Type,
+                IlrSubmissionDateTime = TestSession.IlrSubmissionTime
             };
         }
 

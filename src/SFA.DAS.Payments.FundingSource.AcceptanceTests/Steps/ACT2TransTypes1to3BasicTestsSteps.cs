@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Payments.FundingSource.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System.Linq;
+using System.Threading.Tasks;
 using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 
@@ -14,9 +15,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         }
 
         [Then(@"the payment source component will not generate any contract type (.*) Learning \(TT(.*)\) coinvested payments")]
-        public void ThenThePaymentSourceComponentWillNotGenerateAnyContractTypeLearningTTCoinvestedPayments(ContractType expectedContractType, byte expectedOnProgrammeType)
+        public async Task ThenThePaymentSourceComponentWillNotGenerateAnyContractTypeLearningTTCoinvestedPayments(ContractType expectedContractType, byte expectedOnProgrammeType)
         {
-            WaitForIt(() =>
+            await WaitForIt(() =>
             {
                 return !CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
                         expectedContractType == receivedEvent.ContractType
@@ -28,9 +29,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         }
 
         [Then(@"the payment source component will not generate any contract type (.*) Balancing \(TT(.*)\) coinvested payments")]
-        public void ThenThePaymentSourceComponentWillNotGenerateAnyContractTypeBalancingTTCoinvestedPayments(ContractType expectedContractType, byte expectedOnProgrammeType)
+        public async Task ThenThePaymentSourceComponentWillNotGenerateAnyContractTypeBalancingTTCoinvestedPayments(ContractType expectedContractType, byte expectedOnProgrammeType)
         {
-            WaitForIt(() =>
+            await WaitForIt(() =>
             {
                 return !CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
                     expectedContractType == receivedEvent.ContractType
@@ -42,9 +43,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         }
 
         [Then(@"the payment source component will not generate any contract type (.*) Completion \(TT(.*)\) coinvested payments")]
-        public void ThenThePaymentSourceComponentWillNotGenerateAnyContractTypeCompletionTTCoinvestedPayments(ContractType expectedContractType, byte expectedOnProgrammeType)
+        public async Task ThenThePaymentSourceComponentWillNotGenerateAnyContractTypeCompletionTTCoinvestedPayments(ContractType expectedContractType, byte expectedOnProgrammeType)
         {
-            WaitForIt(() =>
+            await WaitForIt(() =>
             {
                 return !CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
                     expectedContractType == receivedEvent.ContractType
@@ -54,6 +55,5 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                 );
             }, "Failed to find all the funding source payment events");
         }
-
     }
 }

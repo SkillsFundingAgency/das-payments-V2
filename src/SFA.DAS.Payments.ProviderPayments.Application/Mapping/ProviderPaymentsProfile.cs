@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
     {
         public ProviderPaymentsProfile()
         {
-           
+
             CreateMap<FundingSourcePaymentEvent, PaymentModel>()
                 .Include<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>()
                 .Include<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>()
@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.FundingSource, opt => opt.MapFrom(source => source.FundingSourceType))
                 .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
                 .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))
+                .ForMember(dest => dest.LearnerUln, opt => opt.MapFrom(source => source.Learner.Uln))
                 .ForMember(dest => dest.LearnerReferenceNumber, opt => opt.MapFrom(source => source.Learner.ReferenceNumber))
                 .ForMember(dest => dest.LearningAimFrameworkCode, opt => opt.MapFrom(source => source.LearningAim.FrameworkCode))
                 .ForMember(dest => dest.LearningAimFundingLineType, opt => opt.MapFrom(source => source.LearningAim.FundingLineType))
@@ -45,13 +46,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .Include<PaymentModel, SfaCoInvestedProviderPaymentEvent>()
                 .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(source => source.ExternalId))
                 .ForMember(dest => dest.EventTime, opt => opt.ResolveUsing(src => DateTime.UtcNow))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source =>  new CalendarPeriod(source.CollectionPeriod.Year, source.CollectionPeriod.Month)))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.CollectionPeriod.Year, source.CollectionPeriod.Month)))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.DeliveryPeriod.Year, source.DeliveryPeriod.Month)))
                 .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(source => source.Amount))
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                 .ForMember(dest => dest.FundingSourceType, opt => opt.MapFrom(source => source.FundingSource))
                 .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
                 .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))
+                .ForPath(dest => dest.Learner.Uln, opt => opt.MapFrom(source => source.LearnerUln))
                 .ForPath(dest => dest.Learner.ReferenceNumber, opt => opt.MapFrom(source => source.LearnerReferenceNumber))
                 .ForPath(dest => dest.LearningAim.FrameworkCode, opt => opt.MapFrom(source => source.LearningAimFrameworkCode))
                 .ForPath(dest => dest.LearningAim.FundingLineType, opt => opt.MapFrom(source => source.LearningAimFundingLineType))

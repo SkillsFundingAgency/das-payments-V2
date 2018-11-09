@@ -14,17 +14,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             CreateMap<ProcessLearnerCommand, EarningEvent>()
                 .Include<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent>()
                 .Include<ProcessLearnerCommand, FunctionalSkillEarningsEvent>()
-                .ForMember(destinationMember => destinationMember.CollectionYear,
-                    opt => opt.MapFrom(source => source.CollectionYear))
+                .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.MapFrom(source => source.CollectionYear))
                 .ForMember(destinationMember => destinationMember.EventTime, opt => opt.UseValue(DateTimeOffset.UtcNow))
-                .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.Ignore())
+                .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.MapFrom(source => source.Learner))
                 .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
-                .ForMember(destinationMember => destinationMember.PriceEpisodes,
-                    opt => opt.MapFrom(source => source.Learner.PriceEpisodes))
+                .ForMember(destinationMember => destinationMember.PriceEpisodes, opt => opt.MapFrom(source => source.Learner.PriceEpisodes))
                 .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId))
-                .ForMember(dest => dest.CollectionPeriod,
-                    opt => opt.ResolveUsing(src =>
-                        new CalendarPeriod(src.CollectionYear, (byte)src.CollectionPeriod)))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => new CalendarPeriod(src.CollectionYear, (byte)src.CollectionPeriod)))
                 .ForMember(dest => dest.EarningYear, opt => opt.ResolveUsing<EarningYearResolver>());
                 
             CreateMap<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent>()
@@ -44,7 +40,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
-                .ForMember(dest => dest.Ukprn, opt => opt.Ignore()) //TODO: why is ukprn on the event and the learner
                 .ForMember(dest => dest.Uln, opt => opt.Ignore());
 
             CreateMap<FM36Learner, LearningAim>()

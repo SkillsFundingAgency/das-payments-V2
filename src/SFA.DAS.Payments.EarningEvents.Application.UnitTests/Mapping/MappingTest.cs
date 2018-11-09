@@ -36,6 +36,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             fm36Learner = new FM36Learner
             {
                 LearnRefNumber = "learner-a",
+                LearningDeliveries = new List<LearningDelivery>
+                {
+                    new LearningDelivery
+                    {
+                        AimSeqNumber = 1,
+                        LearningDeliveryValues = new LearningDeliveryValues
+                        {
+                            LearnAimRef = "ZPROG001"
+                        }
+                    }
+                },
                 PriceEpisodes = new List<PriceEpisode>
                 {
                     new PriceEpisode
@@ -52,7 +63,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             PriceEpisodeInstalmentValue = 1000,
                             TNP1 = 15000,
                             TNP2 = 15000,
-                            PriceEpisodeCompleted = true
+                            PriceEpisodeCompleted = true,
                         },
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                         {
@@ -98,9 +109,47 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 Learner = fm36Learner,
                 CollectionYear = "1819",
                 Ukprn = 12345,
-                JobId = 1,
-                CollectionPeriod = 1
+                JobId = 69,
+                CollectionPeriod = 1,
+                IlrSubmissionDateTime = DateTime.UtcNow,
+                SubmissionDate = DateTime.UtcNow
             };
+        }
+
+        [Test]
+        public void Maps_Ukprn()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.Ukprn.Should().Be(processLearnerCommand.Ukprn);
+        }
+
+        [Test]
+        public void Maps_JobId()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.JobId.Should().Be(processLearnerCommand.JobId);
+        }
+
+        [Test]
+        public void Maps_Collection_Year()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.CollectionYear.Should().Be("1819");
+        }
+
+        [Test]
+        public void Maps_Collection_Period()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.CollectionPeriod.Should().NotBeNull();
+            earningEvent.CollectionPeriod.Period.Should().Be(1);
+        }
+
+        [Test]
+        public void Maps_IlrSubmissionTime()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.IlrSubmissionDateTime.Should().Be(processLearnerCommand.IlrSubmissionDateTime);
         }
 
         [Test]
@@ -131,6 +180,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
             earningEvent.OnProgrammeEarnings.Should().NotBeNullOrEmpty();
             earningEvent.OnProgrammeEarnings.Should().HaveCount(2);
+            var learnings = earningEvent.OnProgrammeEarnings.FirstOrDefault(x => x.Type == OnProgrammeEarningType.Learning);
+            learnings.Should().NotBeNull();
+            learnings.Periods.Count.Should().Be(12);
+            learnings.Periods.All(period => period.Amount == 1000 && period.PriceEpisodeIdentifier == "pe-1").Should().BeTrue();
+            var completion = earningEvent.OnProgrammeEarnings.FirstOrDefault(x => x.Type == OnProgrammeEarningType.Completion);
+            completion.Should().NotBeNull();
+            completion.Periods.Count.Should().Be(12);
+            completion.Periods.Any(x => x.Period == 12 && x.Amount == 3000).Should().BeTrue();
         }
 
         [Test]
@@ -153,8 +210,19 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 earningEvent.OnProgrammeEarnings.FirstOrDefault(earnings =>
                     earnings.Type == OnProgrammeEarningType.Completion);
             completion.Should().NotBeNull();
-            completion.Periods.Should().HaveCount(1);
-            completion.Periods.FirstOrDefault().Amount.Should().Be(3000);
+            completion.Periods.Should().HaveCount(12);
+            var completionPeriod = completion.Periods.FirstOrDefault(p => p.Period == 12);
+            completionPeriod.Should().NotBeNull();
+            completionPeriod.Amount.Should().Be(3000);
+        }
+
+        [Test]
+        public void Maps_LearningAim()
+        {
+            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            earningEvent.Should().NotBeNull();
+            earningEvent.LearningAim.Reference.Should().Be("ZPROG001");
+
         }
     }
 }

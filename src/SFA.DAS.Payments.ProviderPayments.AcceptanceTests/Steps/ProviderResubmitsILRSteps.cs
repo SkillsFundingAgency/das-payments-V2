@@ -132,10 +132,10 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [Then(@"the provider payments service should remove all payments for the previous Ilr submission")]
-        public void ThenTheProviderPaymentsServiceShouldRemoveAllPaymentsForJobId()
+        public async Task ThenTheProviderPaymentsServiceShouldRemoveAllPaymentsForJobId()
         {
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            WaitForIt(() => !dataContext.Payment.Any(p => p.JobId == PreviousJobId),
+            await WaitForIt(() => !dataContext.Payment.Any(p => p.JobId == PreviousJobId),
                 $"The payments for the previous ILR submission were not removed.  Previous Job Id: {PreviousJobId}.");
         }
     }

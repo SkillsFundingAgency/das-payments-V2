@@ -68,9 +68,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             var expectedContract = (Model.Core.Entities.ContractType)ContractType;
             var expectedPaymentsEvent = expectedPaymentsTable.CreateSet<FundingSourcePayment>();
 
-            await WaitForItAsync(() =>
+            await WaitForIt(async () =>
             {
-                var savedPayments =  GetPaymentsAsync(TestSession.JobId).Result;
+                var savedPayments =  await GetPaymentsAsync(TestSession.JobId);
 
                 var found = expectedPaymentsEvent.All(expectedEvent =>
                     savedPayments.Any(payment =>
@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
             var expectedProviderPaymentEvents = expectedProviderPayments.CreateSet<FundingSourcePayment>();
 
-            await WaitForItAsync(() =>
+            await WaitForIt(() =>
             {
                 return expectedProviderPaymentEvents.All(expectedEvent =>
                     CoInvestedProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>

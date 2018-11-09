@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using TechTalk.SpecFlow;
+﻿using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
@@ -40,6 +38,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             {
                 var learner = TestSession.GenerateLearner();
                 learner.LearnRefNumber = TestSession.LearnRefNumberGenerator.Generate(learner.Ukprn, row["LearnerId"]);
+                learner.LearnerIdentifier = row["LearnerId"];
                 TestSession.Learners.Add(learner);
             }
         }

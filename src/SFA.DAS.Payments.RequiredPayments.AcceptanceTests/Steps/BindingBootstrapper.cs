@@ -9,11 +9,8 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class BindingBootstrapper: StepsBase
+    public class BindingBootstrapper: BindingsBase
     {
-        public BindingBootstrapper(ScenarioContext scenarioContext) : base(scenarioContext)
-        {
-        }
 
         [BeforeTestRun(Order = 51)]
         public static void AddRoutingConfig()

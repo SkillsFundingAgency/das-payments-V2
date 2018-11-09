@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Globalization;
 using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
 
