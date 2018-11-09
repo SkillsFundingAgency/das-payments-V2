@@ -36,18 +36,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 Context.Set(item, key);
         }
 
-        //protected async Task WaitForItAsync(Func<bool> lookForIt, string failText)
-        //{
-        //    var endTime = DateTime.Now.Add(Config.TimeToWait);
-        //    while (DateTime.Now < endTime)
-        //    {
-        //        if (lookForIt()) return;
-        //      await Task.Delay(Config.TimeToPause);
-        //    }
-        //    Assert.Fail(failText);
-        //}
-
-
         protected async Task WaitForIt(Func<bool> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
@@ -56,7 +44,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 if (lookForIt())
                     return;
                 await Task.Delay(Config.TimeToPause);
-                //Thread.Sleep(Config.TimeToPause);
             }
             Assert.Fail(failText);
         }
@@ -69,22 +56,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 if (await lookForIt())
                     return;
                 await Task.Delay(Config.TimeToPause);
-                //Thread.Sleep(Config.TimeToPause);
             }
             Assert.Fail(failText);
         }
-
-        //protected async Task WaitForIt(Func<Task<bool>> lookForIt, string failText)
-        //{
-        //    var endTime = DateTime.Now.Add(Config.TimeToWait);
-        //    while (DateTime.Now < endTime)
-        //    {
-        //        if (await lookForIt())
-        //            return;
-        //        await Task.Delay(Config.TimeToPause);
-        //    }
-        //    Assert.Fail(failText);
-        //}
 
         protected async Task WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
         {
@@ -96,23 +70,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 (pass, reason) = lookForIt();
                 if (pass) return;
                 await Task.Delay(Config.TimeToPause);
-                //Thread.Sleep(Config.TimeToPause);
             }
             Assert.Fail(failText + " - " + reason);
         }
-
-        //protected async Task<bool> WaitForIt(Func<bool> lookForIt)
-        //{
-        //    var endTime = DateTime.Now.Add(Config.TimeToWait);
-        //    while (DateTime.Now < endTime)
-        //    {
-        //        if (lookForIt())
-        //            return true;
-        //        //Thread.Sleep(Config.TimeToPause);
-        //        await Task.Delay(Config.TimeToPause);
-        //    }
-        //    return false;
-        //}
 
         protected byte GetMonth(byte period)
         {
