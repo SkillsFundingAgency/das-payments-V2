@@ -1,14 +1,10 @@
 ﻿using Autofac;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -62,35 +58,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
             SetCollectionPeriod(collectionPeriod);
-            //foreach (var training in CurrentIlr)
-            //{
-            //    var learner = new FM36Learner();
-            //    PopulateLearner(learner, training);
-            //    var command = new ProcessLearnerCommand
-            //    {
-            //        Learner = learner,
-            //        CollectionPeriod = CurrentCollectionPeriod.Period,
-            //        CollectionYear = CollectionYear,
-            //        Ukprn = TestSession.Ukprn,
-            //        JobId = TestSession.JobId,
-            //        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-            //        RequestTime = DateTimeOffset.UtcNow,
-            //        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????
-            //    };
-            //    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-            //    await MessageSession.Send(command);
-            //}
         }
 
         [Then(@"the following provider payments will be recorded")]
-        public void ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
+        public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>()
                 .Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == CurrentCollectionPeriod.Name)
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            WaitForIt(() =>
+            await WaitForIt(() =>
             {
                 var payments = dataContext.Payment.Where(p => p.JobId == TestSession.JobId &&
                                                               p.LearnerReferenceNumber == TestSession.Learner.LearnRefNumber &&

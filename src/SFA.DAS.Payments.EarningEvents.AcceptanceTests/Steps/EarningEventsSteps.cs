@@ -71,9 +71,9 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         }
 
         [Then(@"the earning events service will generate a contract type 2 earnings event for the learner")]
-        public void ThenTheEarningEventsServiceWillGenerateAContractTypeEarningsEventForTheLearner()
+        public async Task ThenTheEarningEventsServiceWillGenerateAContractTypeEarningsEventForTheLearner()
         {
-            WaitForIt(() =>
+            await WaitForIt(() =>
                 {
                     var act2EarningEvent = Handlers.ApprenticeshipContractType2EarningEventHandler.ReceivedEvents.FirstOrDefault(ev =>
                         ev.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber);
@@ -131,13 +131,11 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             return learners;
         }
 
-
-
         [Then(@"the earning events component will generate the following earning events:")]
-        public void ThenTheEarningEventsComponentWillGenerateTheFollowingEarningEvents(Table table)
+        public async Task ThenTheEarningEventsComponentWillGenerateTheFollowingEarningEvents(Table table)
         {
             var expectedFundingSourcePaymentEvents = table.CreateSet<EarningEvent>();
-            WaitForIt(() =>
+            await WaitForIt(() =>
                 {
                     return Handlers.ApprenticeshipContractType2EarningEventHandler.ReceivedEvents.Any(ev =>
                         ev.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber);
