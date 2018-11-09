@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
@@ -48,6 +51,37 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             }
 
             return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        public static Tuple<bool, string> MatchRecordedPayments(IPaymentsDataContext dataContext, List<ProviderPayment> expectedPayments, TestSession testSession, List<Training> currentIlr, CalendarPeriod currentCollectionPeriod)
+        {
+            var learnerLearnRefNumber = testSession.Learner.LearnRefNumber;
+            var name = currentCollectionPeriod.Name;
+            var jobId = testSession.JobId;
+
+            var payments = dataContext.Payment.Where(p => p.JobId == jobId &&
+                                                          p.LearnerReferenceNumber == learnerLearnRefNumber &&
+                                                          p.CollectionPeriod.Name == name).ToList();
+
+            Console.WriteLine($"Found {payments.Count} recorded payments for job id: {jobId}, learner ref: {learnerLearnRefNumber}");
+
+            var matchedPayments = expectedPayments
+                .Where(expected => payments.Any(p => expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name == p.CollectionPeriod.Name &&
+                                                     expected.TransactionType == p.TransactionType &&
+                                                     currentIlr.First().ContractType == p.ContractType &&
+                                                     (p.FundingSource == FundingSourceType.CoInvestedSfa && expected.SfaCoFundedPayments == p.Amount ||
+                                                      p.FundingSource == FundingSourceType.CoInvestedEmployer && expected.EmployerCoFundedPayments == p.Amount)))
+                .ToList();
+
+            var errors = new List<string>();
+
+            if (matchedPayments.Count < expectedPayments.Count)
+                errors.Add($"{expectedPayments.Count - matchedPayments.Count} out of {expectedPayments.Count} were not found");
+
+            if (matchedPayments.Count > expectedPayments.Count)
+                errors.Add($"found {matchedPayments.Count - expectedPayments.Count} unexpected payments");
+
+            return new Tuple<bool, string>(errors.Count == 0, string.Join(", ", errors));
         }
     }
 }

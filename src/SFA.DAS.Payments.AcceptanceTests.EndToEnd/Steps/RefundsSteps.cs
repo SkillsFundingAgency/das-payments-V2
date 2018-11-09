@@ -1,15 +1,11 @@
 ﻿using Autofac;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -57,6 +53,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             CurrentIlr = ilr;
         }
 
+        [Given(@"price details as follows")]
+        public void GivenPriceDetailsAsFollows(Table table)
+        {
+            CurrentPriceEpisodes = table.CreateSet<Price>().ToList();
+        }
+
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
@@ -90,20 +92,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            WaitForIt(() =>
-            {
-                var payments = dataContext.Payment.Where(p => p.JobId == TestSession.JobId &&
-                                                              p.LearnerReferenceNumber == TestSession.Learner.LearnRefNumber &&
-                                                              p.CollectionPeriod.Name == CurrentCollectionPeriod.Name)
-                    .ToList();
-                Console.WriteLine($"Found {payments.Count} recorded payments for job id: {TestSession.JobId}, learner ref: {TestSession.Learner.LearnRefNumber}");
-                return expectedPayments.All(expected => payments.Any(p => expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name == p.CollectionPeriod.Name &&
-                                                                          expected.TransactionType == p.TransactionType && 
-                                                                          CurrentIlr.First().ContractType == p.ContractType &&
-                                                                          ((p.FundingSource == FundingSourceType.CoInvestedSfa && expected.SfaCoFundedPayments == p.Amount) || 
-                                                                           (p.FundingSource == FundingSourceType.CoInvestedEmployer && expected.EmployerCoFundedPayments == p.Amount))));
-
-            }, "Failed to find all the expected stored provider payments.");
+            WaitForIt(() => ProviderPaymentEventMatcher.MatchRecordedPayments(dataContext, expectedPayments, TestSession, CurrentIlr, CurrentCollectionPeriod), "Payment history check failure");
         }
+
     }
 }
