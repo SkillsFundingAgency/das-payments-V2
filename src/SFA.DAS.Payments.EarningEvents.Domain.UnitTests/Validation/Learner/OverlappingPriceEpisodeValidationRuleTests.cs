@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Learner
                         {
                             EpisodeStartDate = DateTime.Today.AddMonths(-2),
                             PriceEpisodePlannedEndDate = DateTime.Today.AddDays(-30),
+                            PriceEpisodeActualEndDate = DateTime.Today.AddDays(-30)
                         }
                     },
                     new PriceEpisode
@@ -41,6 +42,41 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Learner
             var result = rule.IsValid(learner);
 
             Assert.IsTrue(result.Failed,result.FailureReason);
+        }
+
+        [Test]
+        public void Validation_Passes_If_There_Are_Multiple_Price_Episodes()
+        {
+            var learner = new FM36Learner
+            {
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        PriceEpisodeIdentifier = "pe-1",
+                        PriceEpisodeValues = new PriceEpisodeValues
+                        {
+                            EpisodeStartDate = DateTime.Today.AddMonths(-2),
+                            PriceEpisodePlannedEndDate = DateTime.Today,
+                            PriceEpisodeActualEndDate = DateTime.Today.AddDays(-36)
+                        }
+                    },
+                    new PriceEpisode
+                    {
+                        PriceEpisodeIdentifier = "pe-2",
+                        PriceEpisodeValues = new PriceEpisodeValues
+                        {
+                            EpisodeStartDate = DateTime.Today.AddDays(-35),
+                            PriceEpisodePlannedEndDate = DateTime.Today,
+                        }
+                    }
+                }
+            };
+
+            var rule = new OverlappingPriceEpisodeValidationRule();
+            var result = rule.IsValid(learner);
+
+            Assert.IsFalse(result.Failed);
         }
     }
 }
