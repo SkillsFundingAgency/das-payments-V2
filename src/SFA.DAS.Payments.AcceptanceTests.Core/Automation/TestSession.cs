@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
         public long JobId { get; }
-        public DateTime IlrSubmissionTime { get; }
+        public DateTime IlrSubmissionTime { get; set; }
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
