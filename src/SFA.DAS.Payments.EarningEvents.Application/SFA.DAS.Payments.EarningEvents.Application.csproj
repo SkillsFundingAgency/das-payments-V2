@@ -4,8 +4,38 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.0.3" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8" />
+    <PackageReference Include="NServiceBus" Version="7.1.4" />
+    <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.294" />
+    <PackageReference Include="ESFA.DC.IO.Interfaces" Version="0.1.12-beta0001" />
+    <PackageReference Include="ESFA.DC.IO.Redis" Version="0.1.14-beta0001" />
+    <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.2-beta0001" />
+    <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.Serialization.Xml" Version="0.1.4-beta0001" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Domain\SFA.DAS.Payments.EarningEvents.Domain.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages.Internal\SFA.DAS.Payments.EarningEvents.Messages.Internal.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ESFA.DC.Queueing">
+      <HintPath>..\packages\ESFA.DC.Queueing.0.1.14-beta0001\lib\netstandard2.0\ESFA.DC.Queueing.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

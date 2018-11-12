@@ -8,7 +8,7 @@
   </Section>
 
   <Section Name="Settings">
-    <Parameter Name="EndpointName" Value="sfa-das-payments-nonlevyfundedpaymentsservice"/>
+    <Parameter Name="EndpointName" Value="sfa-das-payments-fundingsource-nonlevy"/>
     <Parameter Name="FailedMessagesQueue" Value=""/>
   </Section>
 </Settings>

@@ -3,6 +3,7 @@ R12 - Final OnProgram payment
 
 Background:
 	Given the current processing period is 12
+	And a learner is undertaking a training with a training provider
 	And the payments are for the current collection year
 	And the SFA contribution percentage is 90%
 	And the payments due component generates the following contract type 2 payments due:

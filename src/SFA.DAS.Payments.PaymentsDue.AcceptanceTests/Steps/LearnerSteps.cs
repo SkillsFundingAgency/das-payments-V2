@@ -13,6 +13,8 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         [Given(@"a learner is undertaking a training with a training provider")]
         public void GivenALearnerIsUndertakingATrainingWithATrainingProvider()
         {
+            TestSession.Learners.Clear();
+            TestSession.Learners.Add(TestSession.GenerateLearner());
         }
 
         [Given(@"following learners are undertaking training with a training provider")]

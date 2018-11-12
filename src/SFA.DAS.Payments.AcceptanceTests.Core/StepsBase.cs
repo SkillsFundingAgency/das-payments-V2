@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Threading;
-using Autofac;
-using NServiceBus;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
-    public abstract class StepsBase
+    public abstract class StepsBase: BindingsBase
     {
-        public ScenarioContext ScenarioCtx { get; }
-        public static ContainerBuilder Builder { get; protected set; } // -1
-        public static IContainer Container { get; protected set; } // 50
-        public static IMessageSession MessageSession { get; protected set; }
-        public static TestsConfiguration Config => Container.Resolve<TestsConfiguration>();
+        public SpecFlowContext Context { get; }
         public TestSession TestSession { get => Get<TestSession>(); set => Set(value); }
-        public static string Environment => Config.GetAppSetting("Environment");
         protected string CollectionYear { get => Get<string>("collection_year"); set => Set(value, "collection_year"); }
         protected byte CollectionPeriod { get => Get<byte>("collection_period"); set => Set(value, "collection_period"); }
         public static bool IsDevEnvironment => (Environment?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) ||
@@ -25,61 +17,60 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         protected decimal SfaContributionPercentage { get => Get<decimal>("sfa_contribution_percentage"); set => Set(value, "sfa_contribution_percentage"); }
         protected byte ContractType { get => Get<byte>("contract_type"); set => Set(value, "contract_type"); }
 
-        protected StepsBase(ScenarioContext scenarioContext)
+        protected StepsBase(SpecFlowContext context)
         {
-            ScenarioCtx = scenarioContext;
+            Context = context;
         }
 
         public T Get<T>(string key = null)// where T : class
         {
-            return key == null ? ScenarioCtx.Get<T>() : ScenarioCtx.Get<T>(key);
+            return key == null ? Context.Get<T>() : Context.Get<T>(key);
         }
 
         public void Set<T>(T item, string key = null)
         {
             if (key == null)
-                ScenarioCtx.Set(item);
+                Context.Set(item);
             else
-                ScenarioCtx.Set(item, key);
+                Context.Set(item, key);
         }
 
-        protected void WaitForIt(Func<bool> lookForIt, string failText)
+        protected async Task WaitForIt(Func<Task<bool>> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
             while (DateTime.Now < endTime)
             {
-                if (lookForIt())
+                if (await lookForIt())
                     return;
-                Thread.Sleep(Config.TimeToPause);
+                await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail(failText);
         }
 
-        protected void WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
-        {
-            var endTime = DateTime.Now.Add(Config.TimeToWait);
-            var reason = string.Empty;
-            while (DateTime.Now < endTime)
-            {
-                bool pass;
-                (pass, reason) = lookForIt();
-                if (pass)
-                    return;
-                Thread.Sleep(Config.TimeToPause);
-            }
-            Assert.Fail(failText + " - " + reason);
-        }
-
-        protected bool WaitForIt(Func<bool> lookForIt)
+        protected async Task WaitForIt(Func<bool> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
             while (DateTime.Now < endTime)
             {
                 if (lookForIt())
-                    return true;
-                Thread.Sleep(Config.TimeToPause);
+                    return;
+                await Task.Delay(Config.TimeToPause);
             }
-            return false;
+            Assert.Fail(failText);
+        }
+
+        protected async Task WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
+        {
+            var endTime = DateTime.Now.Add(Config.TimeToWait);
+            var reason = "";
+            while (DateTime.Now < endTime)
+            {
+                bool pass;
+                (pass, reason) = lookForIt();
+                if (pass) return;
+                await Task.Delay(Config.TimeToPause);
+            }
+            Assert.Fail(failText + " - " + reason);
         }
 
         protected byte GetMonth(byte period)

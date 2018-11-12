@@ -1,4 +1,5 @@
-﻿using NServiceBus;
+﻿using System;
+using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -19,7 +20,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
     [Binding]
     public class PaymentsDueSteps : StepsBase
     {
-        private static bool trace = true;
+        private const bool trace = true;
 
         public PaymentsDueSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
@@ -36,13 +37,13 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         }
 
         [Then(@"the payments due component will generate the following contract type (.*) payments due:")]
-        public void ThenThePaymentsDueComponentWillGenerateTheFollowingContractTypePaymentsDue(int act, Table table)
+        public async Task ThenThePaymentsDueComponentWillGenerateTheFollowingContractTypePaymentsDue(int act, Table table)
         {
             var expectedPaymentsEvents = table.CreateSet<OnProgrammePaymentDue>().ToList();
-            WaitForIt(() => MatchPaymentDue(expectedPaymentsEvents), "Failed to find all the payment due events");
+            await WaitForIt(() => MatchPaymentDue(expectedPaymentsEvents), "Failed to find all the payment due events");
         }
 
-        private bool MatchPaymentDue(List<OnProgrammePaymentDue> expectedPaymentsEvents)
+        private bool MatchPaymentDue(IReadOnlyCollection<OnProgrammePaymentDue> expectedPaymentsEvents)
         {
             var sessionEvents = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Where(r => r.Ukprn == TestSession.Ukprn).ToList();
 
@@ -67,7 +68,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                 if (!allFound)
                 {
                     Debug.WriteLine("Did not find all expected events. Trace:");
-                    TraceMismatch(expectedPaymentsEvents, sessionEvents);
+                    TraceMismatch(expectedPaymentsEvents.ToList(), sessionEvents);
                 }
 
                 if (!nothingExtra)
@@ -129,8 +130,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                     CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
                     Learner = new Learner
                     {
-                        ReferenceNumber = TestSession.GenerateLearnerReference(learnerId),
-                        Ukprn = TestSession.Ukprn,
+                        ReferenceNumber = TestSession.GenerateLearnerReference(learnerId),                        
                         Uln = TestSession.Learner.Uln
                     },
                     LearningAim = new LearningAim
@@ -147,16 +147,19 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                         learnerEarnings.GroupBy(e => e.Type).Select(group =>
                             new Model.Core.OnProgramme.OnProgrammeEarning
                             {
-                                Type = group.Key,
-                                Periods = new ReadOnlyCollection<EarningPeriod>(group.Select(e => new EarningPeriod
+                                Type = @group.Key,
+                                Periods = new ReadOnlyCollection<EarningPeriod>(@group.Select(e => new EarningPeriod
                                 {
-                                    Period = new CalendarPeriod(CollectionYear, e.DeliveryPeriod),
+                                    Period = e.DeliveryPeriod,
                                     Amount = e.Amount,
                                     PriceEpisodeIdentifier = e.PriceEpisodeIdentifier
                                 }).ToList())
-                            }).ToArray())
+                            }).ToArray()),
+                    CollectionYear = CollectionYear,
+                    SfaContributionPercentage = SfaContributionPercentage,
                 });
             }
+
         }
 
 
