@@ -39,7 +39,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);
             Console.WriteLine($"Previous job id: {previousJobId}");
             var payments = table.CreateSet<ProviderPayment>().ToList();
-            var previousPayments = payments.SelectMany(p => CreatePayments(p, PreviousIlr.First(), previousJobId, previousSubmissionTime));
+            var previousPayments = payments.SelectMany(p =>
+            {
+                var learnerTraining = PreviousIlr.First(t => t.LearnerId == p.LearnerId);
+                var learnerEarning = PreviousEarnings.First(e => e.LearnerId == p.LearnerId && e.DeliveryPeriod == p.DeliveryPeriod);
+                return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, learnerEarning);
+            });
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
             dataContext.Payment.AddRange(previousPayments);
@@ -71,15 +76,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(() =>
             {
                 var payments = dataContext.Payment.Where(p => p.JobId == TestSession.JobId &&
-                                                              p.LearnerReferenceNumber == TestSession.Learner.LearnRefNumber &&
-                                                              p.CollectionPeriod.Name == CurrentCollectionPeriod.Name)
-                    .ToList();
+                                                              p.CollectionPeriod.Name == CurrentCollectionPeriod.Name).ToList();
+
                 Console.WriteLine($"Found {payments.Count} recorded payments for job id: {TestSession.JobId}, learner ref: {TestSession.Learner.LearnRefNumber}");
+
                 return expectedPayments.All(expected => payments.Any(p => expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name == p.CollectionPeriod.Name &&
-                                                                          expected.TransactionType == p.TransactionType && 
+                                                                          TestSession.GenerateLearnerReference(expected.LearnerId) == p.LearnerReferenceNumber &&
+                                                                          expected.TransactionType == p.TransactionType &&
                                                                           CurrentIlr.First().ContractType == p.ContractType &&
-                                                                          ((p.FundingSource == FundingSourceType.CoInvestedSfa && expected.SfaCoFundedPayments == p.Amount) || 
-                                                                           (p.FundingSource == FundingSourceType.CoInvestedEmployer && expected.EmployerCoFundedPayments == p.Amount))));
+                                                                          (p.FundingSource == FundingSourceType.CoInvestedSfa && expected.SfaCoFundedPayments == p.Amount ||
+                                                                           p.FundingSource == FundingSourceType.CoInvestedEmployer && expected.EmployerCoFundedPayments == p.Amount)));
 
             }, "Failed to find all the expected stored provider payments.");
         }

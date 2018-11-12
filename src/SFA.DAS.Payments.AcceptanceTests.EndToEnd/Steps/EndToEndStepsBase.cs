@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             CollectionYear = CurrentCollectionPeriod.Name.Split('-').FirstOrDefault();
         }
 
-        protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime)
+        protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, OnProgrammeEarning earning)
         {
             return new List<PaymentModel>
             {
@@ -73,13 +73,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodeIdentifier = "pe-1",
                     FundingSource = FundingSourceType.CoInvestedSfa,
                     //LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                    LearnerReferenceNumber = TestSession.Learner.LearnRefNumber,
+                    LearnerReferenceNumber = TestSession.GenerateLearnerReference(learnerTraining.LearnerId),
                     LearningAimReference = learnerTraining.AimReference,
                     //LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                     IlrSubmissionDateTime = submissionTime,
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.SfaCoFundedPayments,
-                    LearningAimFundingLineType = learnerTraining.FundingLineType,
+                    LearningAimFundingLineType = earning?.FundingLineType ?? learnerTraining.FundingLineType,
                     LearnerUln = TestSession.Learner.Uln,
                     //LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
                     //LearningAimProgrammeType = learnerTraining.ProgrammeType
@@ -112,7 +112,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void PopulateLearner(FM36Learner learner, Training learnerEarnings, List<OnProgrammeEarning> earnings)
         {
-            learner.LearnRefNumber = TestSession.Learner.LearnRefNumber;
             var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
             {
                 PriceEpisodeIdentifier = "pe-1",
