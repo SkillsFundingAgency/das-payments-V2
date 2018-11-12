@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var learnerLearnRefNumber = testSession.Learner.LearnRefNumber;
             var name = currentCollectionPeriod.Name;
 
-            var payments = dataContext.Payment.Where(p => p.Ukprn == testSession.Ukprn &&
+            var payments = dataContext.Payment.Where(p => p.JobId == testSession.JobId &&
                                                           p.LearnerReferenceNumber == learnerLearnRefNumber &&
                                                           p.CollectionPeriod.Name == name).ToList();
 

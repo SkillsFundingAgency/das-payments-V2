@@ -53,6 +53,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 if ((byte) t.ContractType == 0)
                     t.ContractType = PreviousIlr.Last().ContractType;
+                if (string.IsNullOrEmpty(t.FundingLineType))
+                    t.FundingLineType = PreviousIlr.Last().FundingLineType;
                 return t;
             }).ToList();
 

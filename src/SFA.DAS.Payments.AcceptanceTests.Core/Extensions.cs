@@ -136,7 +136,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         public static decimal ToPercent(this string stringPercent)
         {
-            return decimal.Parse(stringPercent.TrimEnd('%'));
+            return decimal.Parse(stringPercent.TrimEnd('%')) / 100m;
         }
     }
 }
