@@ -53,23 +53,36 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return new Tuple<bool, string>(true, string.Empty);
         }
 
-        public static Tuple<bool, string> MatchRecordedPayments(IPaymentsDataContext dataContext, List<ProviderPayment> expectedPayments, TestSession testSession, List<Training> currentIlr, CalendarPeriod currentCollectionPeriod)
+        public static Tuple<bool, string> MatchRecordedPayments(IPaymentsDataContext dataContext, List<ProviderPayment> expectedPaymentInfo, TestSession testSession, List<Training> currentIlr, CalendarPeriod currentCollectionPeriod)
         {
             var learnerLearnRefNumber = testSession.Learner.LearnRefNumber;
             var name = currentCollectionPeriod.Name;
 
-            var payments = dataContext.Payment.Where(p => p.JobId == testSession.JobId &&
+            var actualPayments = dataContext.Payment.Where(p => p.JobId == testSession.JobId &&
                                                           p.LearnerReferenceNumber == learnerLearnRefNumber &&
                                                           p.CollectionPeriod.Name == name).ToList();
 
-            Console.WriteLine($"Found {payments.Count} recorded payments for Ukprn: {testSession.Ukprn}, learner ref: {learnerLearnRefNumber}");
+            var expectedPayments = new List<PaymentModel>();
+            foreach (var paymentInfo in expectedPaymentInfo)
+            {
+                var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, currentIlr.First().ContractType);
+                coFundedSfa.Amount = paymentInfo.SfaCoFundedPayments;
+                coFundedSfa.FundingSource = FundingSourceType.CoInvestedSfa;
+
+                var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, currentIlr.First().ContractType);
+                coFundedEmp.Amount = paymentInfo.EmployerCoFundedPayments;
+                coFundedEmp.FundingSource = FundingSourceType.CoInvestedEmployer;
+            
+                expectedPayments.Add(coFundedSfa);
+                expectedPayments.Add(coFundedEmp);
+            }
 
             var matchedPayments = expectedPayments
-                .Where(expected => payments.Any(p => expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name == p.CollectionPeriod.Name &&
-                                                     expected.TransactionType == p.TransactionType &&
-                                                     currentIlr.First().ContractType == p.ContractType &&
-                                                     (p.FundingSource == FundingSourceType.CoInvestedSfa && expected.SfaCoFundedPayments == p.Amount ||
-                                                      p.FundingSource == FundingSourceType.CoInvestedEmployer && expected.EmployerCoFundedPayments == p.Amount)))
+                .Where(expected => actualPayments.Any(p => expected.CollectionPeriod == p.CollectionPeriod &&
+                                                           expected.TransactionType == p.TransactionType &&
+                                                           expected.ContractType == p.ContractType &&
+                                                           expected.FundingSource == p.FundingSource &&
+                                                           expected.Amount == p.Amount))
                 .ToList();
 
             var errors = new List<string>();
@@ -81,6 +94,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 errors.Add($"found {matchedPayments.Count - expectedPayments.Count} unexpected payments");
 
             return new Tuple<bool, string>(errors.Count == 0, string.Join(", ", errors));
+        }
+
+        private static PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn, ContractType contractType)
+        {
+            return new PaymentModel
+            {
+                CollectionPeriod = paymentInfo.CollectionPeriod.ToCalendarPeriod(),
+                Ukprn = ukprn,
+                DeliveryPeriod = paymentInfo.DeliveryPeriod.ToCalendarPeriod(),
+                TransactionType = paymentInfo.TransactionType,
+                ContractType = contractType,
+                Amount = paymentInfo.EmployerCoFundedPayments,
+                FundingSource = FundingSourceType.CoInvestedEmployer
+            };
         }
     }
 }
