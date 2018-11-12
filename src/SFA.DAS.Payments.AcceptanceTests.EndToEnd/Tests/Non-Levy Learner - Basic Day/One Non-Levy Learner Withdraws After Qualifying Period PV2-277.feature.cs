@@ -119,7 +119,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aug/Current Academic Year",
                         "4 months",
                         "withdrawn",
-                        ".9",
+                        "90%",
                         "ContractWithEmployer",
                         "1",
                         "ZPROG001",
