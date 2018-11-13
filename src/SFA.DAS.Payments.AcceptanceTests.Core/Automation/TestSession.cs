@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Bogus;
@@ -18,6 +19,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
+        private static ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
         public TestSession()
         {
             courseFaker = new Faker<Course>();
@@ -57,6 +59,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Learner GenerateLearner()
         {
             var uln = GenerateId();
+            var limit = 10;
+            while (allLearners.Contains(uln))
+            {
+                if (--limit < 0)
+                    throw new InvalidOperationException("Failed to generate random learners.");
+                uln = GenerateId();
+            }
+            allLearners.Add(uln);
             return new Learner
             {
                 Ukprn = Ukprn,

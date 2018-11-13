@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Bogus;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
@@ -17,6 +18,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.PerformanceTests
@@ -81,7 +83,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         }
 
 
-        [TestCase(1, 1, 1)]
+        [TestCase(1, 10000, 1)]
         public async Task No_History(int providerCount, int providerLearnerCount, int collectionPeriod)
         {
             Randomizer.Seed = new Random(8675309);
@@ -89,6 +91,12 @@ namespace SFA.DAS.Payments.PerformanceTests
                 .Select(i => new TestSession())
                 .ToList();
             var ilrSubmissions = new List<Task>();
+            if (providerLearnerCount > 1)
+            {
+                DeliveryTime = DateTimeOffset.UtcNow.AddSeconds(providerLearnerCount >= 10000 ? 600 : providerLearnerCount >= 1000 ? 300 : 60);
+                Console.WriteLine($"Using delivery time of: {DeliveryTime:O}");
+            }
+
             foreach (var session in sessions)
             {
                 session.Learners.Clear();
@@ -98,11 +106,9 @@ namespace SFA.DAS.Payments.PerformanceTests
                 await Task.WhenAll(ilrSubmissions);
                 Console.WriteLine($"Finished sending Ukprn: {session.Ukprn}. Time: {DateTime.Now:O}");
             }
-
-            //wait for the payments
-            var dataContext = Container.Resolve<IPaymentsDataContext>();
-            
         }
+
+        protected DateTimeOffset? DeliveryTime;
 
         protected async Task SubmitIlr(TestSession session, int collectionPeriod)
         {
@@ -123,7 +129,11 @@ namespace SFA.DAS.Payments.PerformanceTests
                     RequestTime = DateTimeOffset.UtcNow,
                     SubmissionDate = session.IlrSubmissionTime,
                 };
-                await MessageSession.Send(command);
+                var sendOptions = new SendOptions();
+                if (DeliveryTime.HasValue)
+                    sendOptions.DoNotDeliverBefore(DeliveryTime.Value);
+                await MessageSession.Send(command, sendOptions);
+                LearnerStartTimes.Add(fm36Learner.LearnRefNumber, DateTime.Now);
                 Console.WriteLine($"Sent learner.  Ukprn: {session.Ukprn}, Learner: {fm36Learner.LearnRefNumber}, Time: {DateTime.Now:o}");
             }
         }
