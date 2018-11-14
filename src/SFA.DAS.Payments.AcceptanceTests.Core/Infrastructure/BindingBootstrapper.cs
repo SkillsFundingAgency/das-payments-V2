@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -64,6 +65,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 return;
             }
             Console.WriteLine($"Now clearing queue: '{Config.AcceptanceTestsEndpointName}'");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var mf = MessagingFactory.CreateFromConnectionString(Config.ServiceBusConnectionString);
             var receiver = await mf.CreateMessageReceiverAsync(Config.AcceptanceTestsEndpointName, ReceiveMode.ReceiveAndDelete);
             while (true)
@@ -74,7 +77,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                     break;
                 }
             };
-            Console.WriteLine($"Finished purging messages from {Config.AcceptanceTestsEndpointName}");
+            Console.WriteLine($"Finished purging messages from {Config.AcceptanceTestsEndpointName}. Took: {stopwatch.ElapsedMilliseconds}ms");
         } 
 
         [BeforeTestRun(Order = 99)]

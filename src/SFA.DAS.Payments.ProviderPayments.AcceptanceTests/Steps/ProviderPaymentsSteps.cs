@@ -70,8 +70,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
             await WaitForIt(async () =>
             {
+                Console.WriteLine($"Looking for payments for job {TestSession.JobId}. Time: {DateTime.Now:G}");
                 var savedPayments =  await GetPaymentsAsync(TestSession.JobId);
-
+                Console.WriteLine($"Found {savedPayments.Count} payments. Time: {DateTime.Now:G}");
                 var found = expectedPaymentsEvent.All(expectedEvent =>
                     savedPayments.Any(payment =>
                         expectedContract == payment.ContractType
@@ -83,7 +84,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         && expectedEvent.Amount == payment.Amount
                     ));
                 return found;
-            }, "Failed to find all payment in database");
+            }, $"Failed to find all payment in database. ");
         }
 
         [Then(@"at month end the provider payments service will publish the following payments")]
@@ -106,8 +107,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         && expectedEvent.Amount == receivedEvent.AmountDue
                         && TestSession.JobId == receivedEvent.JobId
                     ));
-
-
             }, "Failed to find all the provider payment events");
 
         }

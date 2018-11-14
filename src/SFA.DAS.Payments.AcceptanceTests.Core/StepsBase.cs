@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     return;
                 await Task.Delay(Config.TimeToPause);
             }
-            Assert.Fail(failText);
+            Assert.Fail($"{failText}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
         protected async Task WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 if (pass) return;
                 await Task.Delay(Config.TimeToPause);
             }
-            Assert.Fail(failText + " - " + reason);
+            Assert.Fail($"{failText} - {reason}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
         protected byte GetMonth(byte period)
