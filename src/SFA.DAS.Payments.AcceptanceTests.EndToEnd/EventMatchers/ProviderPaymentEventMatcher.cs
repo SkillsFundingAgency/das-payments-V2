@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     CollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod(),
                     DeliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod()
                 };
-                var coFundedEmp = new SfaCoInvestedProviderPaymentEvent
+                var coFundedEmp = new EmployerCoInvestedProviderPaymentEvent
                 {
                     TransactionType = providerPayment.TransactionType,
                     AmountDue = providerPayment.EmployerCoFundedPayments,
