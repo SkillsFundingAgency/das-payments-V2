@@ -129,15 +129,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             return calendarPeriod.Name.Split('-').FirstOrDefault();
         }
-
-        public static decimal? AsRounded(this decimal? unrounded)
-        {
-            return unrounded.HasValue ? AsRounded(unrounded.Value) : default(decimal?);
-        }
-
-        public static decimal AsRounded(this decimal unrounded)
-        {
-            return Math.Round(unrounded, 5);
-        }
     }
 }
