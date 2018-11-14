@@ -99,8 +99,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "Planned Duration",
                         "Total Training Price",
                         "Total Training Price Effective Date",
-                        "Total Assesment Price",
-                        "Total Assesment Price Effective Date",
+                        "Total Assessment Price",
+                        "Total Assessment Price Effective Date",
                         "Actual Duration",
                         "Completion Status",
                         "SFA Contribution Percentage",
@@ -226,8 +226,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "Planned Duration",
                         "Total Training Price",
                         "Total Training Price Effective Date",
-                        "Total Assesment Price",
-                        "Total Assesment Price Effective Date",
+                        "Total Assessment Price",
+                        "Total Assessment Price Effective Date",
                         "Actual Duration",
                         "Completion Status",
                         "SFA Contribution Percentage",
@@ -264,8 +264,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "Price details",
                         "Total Training Price",
                         "Total Training Price Effective Date",
-                        "Total Assesment Price",
-                        "Total Assesment Price Effective Date"});
+                        "Total Assessment Price",
+                        "Total Assessment Price Effective Date"});
             table5.AddRow(new string[] {
                         "1st price details",
                         "9000",

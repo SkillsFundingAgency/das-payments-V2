@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Learner
         }
 
         [Test]
-        public void Validation_Passes_If_There_Are_Multiple_Price_Episodes()
+        public void ValidationPassesIfThereAreMultiplePriceEpisodes()
         {
             var learner = new FM36Learner
             {

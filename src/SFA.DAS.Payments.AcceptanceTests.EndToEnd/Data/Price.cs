@@ -5,7 +5,7 @@
         public string PriceDetails { get; set; }
         public decimal TotalTrainingPrice { get; set; }
         public string TotalTrainingPriceEffectiveDate { get; set; }
-        public decimal TotalAssesmentPrice { get; set; }
-        public string TotalAssesmentPriceEffectiveDate { get; set; }
+        public decimal TotalAssessmentPrice { get; set; }
+        public string TotalAssessmentPriceEffectiveDate { get; set; }
     }
 }

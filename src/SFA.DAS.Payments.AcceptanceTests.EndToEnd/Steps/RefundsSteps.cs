@@ -59,15 +59,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the Provider now changes the Learner details as follows")]
         public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
         {
-            var ilr = table.CreateSet<Training>().Select(t =>
-            {
-                if ((byte)t.ContractType == 0)
-                    t.ContractType = PreviousIlr.Last().ContractType;
-                if (string.IsNullOrEmpty(t.FundingLineType))
-                    t.FundingLineType = PreviousIlr.Last().FundingLineType;
-                return t;
-            }).ToList();
-
+            var ilr = table.CreateSet<Training>().ToList();
             CurrentIlr = ilr;
         }
 

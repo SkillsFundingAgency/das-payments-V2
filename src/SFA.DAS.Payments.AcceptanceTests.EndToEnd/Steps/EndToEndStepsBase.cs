@@ -164,9 +164,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     new Price
                     {
-                        TotalAssesmentPrice = learnerEarnings.TotalAssessmentPrice,
+                        TotalAssessmentPrice = learnerEarnings.TotalAssessmentPrice,
                         TotalTrainingPrice = learnerEarnings.TotalTrainingPrice,
-                        TotalAssesmentPriceEffectiveDate = learnerEarnings.StartDate,
+                        TotalAssessmentPriceEffectiveDate = learnerEarnings.StartDate,
                         TotalTrainingPriceEffectiveDate = learnerEarnings.StartDate
                     }
                 };
@@ -194,7 +194,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         PriceEpisodeCompletionElement = learnerEarnings.CompletionAmount,
                         PriceEpisodeCompleted = learnerEarnings.CompletionStatus.Equals("completed", StringComparison.OrdinalIgnoreCase),
                         TNP1 = episode.TotalTrainingPrice,
-                        TNP2 = episode.TotalAssesmentPrice,
+                        TNP2 = episode.TotalAssessmentPrice,
                         PriceEpisodeInstalmentValue = learnerEarnings.InstallmentAmount,
                         PriceEpisodePlannedInstalments = learnerEarnings.NumberOfInstallments,
                         PriceEpisodeActualInstalments = learnerEarnings.ActualInstallments,
