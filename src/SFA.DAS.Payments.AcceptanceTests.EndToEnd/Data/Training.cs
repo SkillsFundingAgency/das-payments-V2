@@ -15,8 +15,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public string CompletionStatus { get; set; }
         public decimal SfaContributionPercentage { get; set; }
         public decimal? AgreedPrice => TotalTrainingPrice + TotalAssessmentPrice;
-        public decimal? InstallmentAmount => (AgreedPrice * (decimal) .8) / NumberOfInstallments;
-        public decimal? CompletionAmount => AgreedPrice * (decimal) .2;
+        public decimal? InstallmentAmount => (AgreedPrice * 0.8M) / NumberOfInstallments;
+        public decimal? CompletionAmount => AgreedPrice * 0.2M;
         public int NumberOfInstallments => int.Parse(PlannedDuration.Replace("months", null).Trim());
         public int ActualInstallments => int.Parse(ActualDuration.Replace("months", null).Trim());
         public decimal? BalancingPayment { get; set; } // TODO: populate properly

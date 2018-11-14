@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 .All(expected => receivedEvents.Any(receivedEvent =>
                     receivedEvent is SfaCoInvestedProviderPaymentEvent &&
                     receivedEvent.TransactionType == expected.TransactionType &&
-                    receivedEvent.AmountDue == expected.SfaCoFundedPayments &&
+                    receivedEvent.AmountDue.AsRounded() == expected.SfaCoFundedPayments.AsRounded() &&
                     receivedEvent.CollectionPeriod.Name == expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name &&
                     receivedEvent.DeliveryPeriod.Period == expected.DeliveryPeriod.ToDate().ToCalendarPeriod().Period)))
             {
@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 .All(expected => receivedEvents.Any(receivedEvent =>
                     receivedEvent is EmployerCoInvestedProviderPaymentEvent &&
                     receivedEvent.TransactionType == expected.TransactionType &&
-                    receivedEvent.AmountDue == expected.EmployerCoFundedPayments &&
+                    receivedEvent.AmountDue.AsRounded() == expected.EmployerCoFundedPayments.AsRounded() &&
                     receivedEvent.CollectionPeriod.Name == expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name &&
                     receivedEvent.DeliveryPeriod.Period == expected.DeliveryPeriod.ToDate().ToCalendarPeriod().Period)))
             {
