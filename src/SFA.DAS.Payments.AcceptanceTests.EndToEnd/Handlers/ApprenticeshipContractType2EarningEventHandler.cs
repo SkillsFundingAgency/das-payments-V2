@@ -14,7 +14,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
 
         public Task Handle(ApprenticeshipContractType2EarningEvent message, IMessageHandlerContext context)
         {
-            //Console.WriteLine($"Received event type: {message.GetType().Name}, payload: {message.ToJson()}");
             ReceivedEvents.Add(message);
             return Task.FromResult(0);
         }
