@@ -337,7 +337,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0"});
-#line 38
+#line 39
     testRunner.Then("the following learner earnings should be generated", ((string)(null)), table5, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -358,8 +358,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "-750",
                         "0",
                         "0"});
-#line 52
-    testRunner.And("the following payments will be calculated", ((string)(null)), table6, "And ");
+#line 53
+    testRunner.And("only the following payments will be calculated", ((string)(null)), table6, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -379,8 +379,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "-675",
                         "-75",
                         "Learning"});
-#line 56
-    testRunner.And("the following provider payments will be recorded", ((string)(null)), table7, "And ");
+#line 57
+    testRunner.And("only the following provider payments will be recorded", ((string)(null)), table7, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -400,8 +400,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "-675",
                         "-75",
                         "Learning"});
-#line 60
-    testRunner.And("at month end the following provider payments will be generated", ((string)(null)), table8, "And ");
+#line 61
+    testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table8, "And ");
 #line hidden
             this.ScenarioCleanup();
         }

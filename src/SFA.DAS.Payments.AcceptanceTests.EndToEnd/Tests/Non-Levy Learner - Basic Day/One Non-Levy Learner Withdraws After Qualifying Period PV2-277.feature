@@ -21,19 +21,19 @@ Scenario Outline: A non-levy learner withdraws after qualifying period
 		| May/Current Academic Year | 0            | 0          | 0         |
 		| Jun/Current Academic Year | 0            | 0          | 0         |
 		| Jul/Current Academic Year | 0            | 0          | 0         |
-    And the following payments will be calculated
+    And only the following payments will be calculated
 		| Collection Period			| Delivery Period           | On-Programme | Completion | Balancing |
 		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
 		| R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
 		| R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
 		| R04/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         |
-    And the following provider payments will be recorded
+    And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
         | R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         |
         | R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         |
         | R04/Current Academic Year | Nov/Current Academic Year | 900                    | 100                         | Learning         |
-	And at month end the following provider payments will be generated
+	And at month end only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
 		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
 		| R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         |

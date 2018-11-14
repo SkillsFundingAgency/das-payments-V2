@@ -63,14 +63,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "OnProgrammeEarning event check failure");
         }
 
-        [Then(@"the following payments will be calculated")]
+        [Then(@"only the following payments will be calculated")]
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
             var expectedPayments = table.CreateSet<Payment>().ToList();
-            await WaitForIt(() => RequiredPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, CurrentCollectionPeriod, TestSession.JobId), "Required Payment event check failure");
+            var matcher = new RequiredPaymentEventMatcher(TestSession,  CurrentCollectionPeriod, expectedPayments);
+            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
-        [Then(@"at month end the following provider payments will be generated")]
+        [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
             var monthEndCommand = new ProcessProviderMonthEndCommand
@@ -81,12 +82,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            await WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId, CurrentCollectionPeriod), "Provider Payment event check failure");
-        }
-
-        [Then(@"no payments will be calculated for following collection periods")]
-        public void ThenNoPaymentsWillBeCalculatedForFollowingCollectionPeriods(Table table)
-        {
+            var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
+            await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
     }
 }

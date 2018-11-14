@@ -35,6 +35,7 @@ Scenario:  Provider retrospectively notifies of a withdrawal for a non-levy lear
         | learner a | 1        | start of academic year | 12 months        | 9000                 | Aug/Current Academic Year           | 2250                  | Aug/Current Academic Year            | 3 months        | withdrawn         | 90%                         | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
 		 
 	When the amended ILR file is re-submitted for the learners in collection period R06/Current Academic Year
+
     Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 750          | 0          | 0         |
@@ -49,15 +50,15 @@ Scenario:  Provider retrospectively notifies of a withdrawal for a non-levy lear
         | May/Current Academic Year | 0            | 0          | 0         |
         | Jun/Current Academic Year | 0            | 0          | 0         |
         | Jul/Current Academic Year | 0            | 0          | 0         |
-    And the following payments will be calculated
+    And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R06/Current Academic Year | Nov/Current Academic Year | -750         | 0          | 0         |
         | R06/Current Academic Year | Dec/Current Academic Year | -750         | 0          | 0         |
-    And the following provider payments will be recorded
+    And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R06/Current Academic Year | Nov/Current Academic Year | -675                   | -75                         | Learning         |
         | R06/Current Academic Year | Dec/Current Academic Year | -675                   | -75                         | Learning         |
-    And at month end the following provider payments will be generated
+    And at month end only the following provider payments will be generated
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R06/Current Academic Year | Nov/Current Academic Year | -675                   | -75                         | Learning         |
         | R06/Current Academic Year | Dec/Current Academic Year | -675                   | -75                         | Learning         |

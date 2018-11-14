@@ -35,6 +35,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following provider payments had been generated")]
         public void GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
+            if (!Context.ContainsKey("added_history"))
+            {
+                Set<bool>(true, "added_history");
+            }
+            else
+            {
+                Console.WriteLine("Already added hostory");
+                return;
+            }
+            
             var previousJobId = TestSession.GenerateId();
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);
             Console.WriteLine($"Previous job id: {previousJobId}");
@@ -51,7 +61,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var ilr = table.CreateSet<Training>().Select(t =>
             {
-                if ((byte) t.ContractType == 0)
+                if ((byte)t.ContractType == 0)
                     t.ContractType = PreviousIlr.Last().ContractType;
                 if (string.IsNullOrEmpty(t.FundingLineType))
                     t.FundingLineType = PreviousIlr.Last().FundingLineType;
@@ -74,7 +84,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             SetCollectionPeriod(collectionPeriod);
         }
 
-        [Then(@"the following provider payments will be recorded")]
+        [Then(@"only the following provider payments will be recorded")]
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>()
@@ -82,7 +92,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            await WaitForIt(() => ProviderPaymentEventMatcher.MatchRecordedPayments(dataContext, expectedPayments, TestSession, CurrentIlr, CurrentCollectionPeriod), "Payment history check failure");
+            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name, expectedPayments, CurrentIlr.First().ContractType);
+            await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
 
     }
