@@ -119,6 +119,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         public static CalendarPeriod ToCalendarPeriod(this string periodText)
         {
+            if (periodText == "start of academic year") 
+                periodText = "Aug/Current Academic Year";
+
             var bits = periodText.Split('/');
             var monthName = bits[0];
             var yearName = bits[1];
