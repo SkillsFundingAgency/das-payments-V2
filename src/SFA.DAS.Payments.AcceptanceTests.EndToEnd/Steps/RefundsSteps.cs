@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -35,6 +35,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following provider payments had been generated")]
         public void GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
+            if (!Context.ContainsKey("added_history"))
+            {
+                Set<bool>(true, "added_history");
+            }
+            else
+            {
+                Console.WriteLine("Already added hostory");
+                return;
+            }
+            
             var previousJobId = TestSession.GenerateId();
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);
             Console.WriteLine($"Previous job id: {previousJobId}");
@@ -58,14 +68,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             CurrentIlr = ilr;
         }
 
+        [Given(@"price details as follows")]
+        public void GivenPriceDetailsAsFollows(Table table)
+        {
+            CurrentPriceEpisodes = table.CreateSet<Price>().ToList();
+        }
+
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
+        public void WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
             SetCollectionPeriod(collectionPeriod);
         }
 
-        [Then(@"the following provider payments will be recorded")]
+        [Then(@"only the following provider payments will be recorded")]
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>()
@@ -73,21 +89,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            await WaitForIt(() =>
-            {
-                var payments = dataContext.Payment.Where(p => p.JobId == TestSession.JobId &&
-                                                              p.CollectionPeriod.Name == CurrentCollectionPeriod.Name).ToList();
-
-                Console.WriteLine($"Found {payments.Count} recorded payments for job id: {TestSession.JobId}, learner ref: {TestSession.Learner.LearnRefNumber}");
-
-                return expectedPayments.All(expected => payments.Any(p => expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name == p.CollectionPeriod.Name &&
-                                                                          TestSession.GenerateLearnerReference(expected.LearnerId) == p.LearnerReferenceNumber &&
-                                                                          expected.TransactionType == p.TransactionType &&
-                                                                          CurrentIlr.First().ContractType == p.ContractType &&
-                                                                          (p.FundingSource == FundingSourceType.CoInvestedSfa && expected.SfaCoFundedPayments == p.Amount ||
-                                                                           p.FundingSource == FundingSourceType.CoInvestedEmployer && expected.EmployerCoFundedPayments == p.Amount)));
-
-            }, "Failed to find all the expected stored provider payments.");
+            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name, expectedPayments, CurrentIlr.First().ContractType);
+            await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
+
     }
 }

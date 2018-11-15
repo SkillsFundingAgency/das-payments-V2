@@ -1,91 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
-    public static class RequiredPaymentEventMatcher
-    {
-        public static Tuple<bool, string> MatchPayments(List<Payment> expectedPayments, long ukprn, CalendarPeriod collectionPeriod, long jobId)
+    public class RequiredPaymentEventMatcher : BaseMatcher<ApprenticeshipContractType2RequiredPaymentEvent>
+    {        
+        private readonly TestSession testSession;
+        private readonly CalendarPeriod collectionPeriod;
+        private readonly List<Payment> paymentSpec;
+
+        public RequiredPaymentEventMatcher(TestSession testSession, CalendarPeriod collectionPeriod, List<Payment> paymentSpec)
         {
-            var requiredPaymentEvents = ApprenticeshipContractType2RequiredPaymentEventHandler.ReceivedEvents
-                .Where(e => e.Ukprn == ukprn && e.CollectionPeriod == collectionPeriod && e.JobId == jobId).ToList();
+            this.testSession = testSession;
+            this.collectionPeriod = collectionPeriod;
+            this.paymentSpec = paymentSpec;
+        }
 
-            expectedPayments = expectedPayments
-                .Where(e => e.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name)
-                .ToList();
+        protected override IList<ApprenticeshipContractType2RequiredPaymentEvent> GetActualEvents()
+        {
+            return ApprenticeshipContractType2RequiredPaymentEventHandler.ReceivedEvents
+                .Where(e => e.Ukprn == testSession.Ukprn && e.CollectionPeriod == collectionPeriod && e.JobId == testSession.JobId).ToList();
+        }
 
-            //TODO: refactor to reduce duplication
-            if (!expectedPayments
-                .Where(expected => expected.OnProgramme != 0)
-                .All(expected => requiredPaymentEvents.Any(requiredPayment =>
-                    requiredPayment.OnProgrammeEarningType == OnProgrammeEarningType.Learning &&
-                    requiredPayment.AmountDue == expected.OnProgramme &&
-                    requiredPayment.CollectionPeriod.Name == expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name)))
+        protected override IList<ApprenticeshipContractType2RequiredPaymentEvent> GetExpectedEvents()
+        {
+            var expectedPayments = new List<ApprenticeshipContractType2RequiredPaymentEvent>();
+
+            foreach (var payment in paymentSpec.Where(e => e.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name))
             {
-                return new Tuple<bool, string>(false, "Failed to find all on-programme (learning) payments.");
+                var learningPayment = new ApprenticeshipContractType2RequiredPaymentEvent
+                {
+                    AmountDue = payment.OnProgramme,
+                    OnProgrammeEarningType = OnProgrammeEarningType.Learning,
+                    DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                };
+                var balancingPayment = new ApprenticeshipContractType2RequiredPaymentEvent
+                {
+                    AmountDue = payment.Balancing,
+                    OnProgrammeEarningType = OnProgrammeEarningType.Balancing,
+                    DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                };
+                var completionPayment = new ApprenticeshipContractType2RequiredPaymentEvent
+                {
+                    AmountDue = payment.Completion,
+                    OnProgrammeEarningType = OnProgrammeEarningType.Completion,
+                    DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                };
+
+                if (learningPayment.AmountDue > 0) 
+                    expectedPayments.Add(learningPayment);
+
+                if (balancingPayment.AmountDue > 0) 
+                    expectedPayments.Add(balancingPayment);
+
+                if (completionPayment.AmountDue > 0) 
+                    expectedPayments.Add(completionPayment);
             }
 
-            if (!expectedPayments
-                .Where(expected => expected.Completion != 0)
-                .All(expected => requiredPaymentEvents.Any(requiredPayment =>
-                    requiredPayment.OnProgrammeEarningType == OnProgrammeEarningType.Completion &&
-                    requiredPayment.AmountDue == expected.Completion &&
-                    requiredPayment.CollectionPeriod.Name == expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name)))
-            {
-                return new Tuple<bool, string>(false, "Failed to find all completion payments.");
-            }
+            return expectedPayments;
+        }
 
-            if (!expectedPayments
-                .Where(expected => expected.Balancing != 0)
-                .All(expected => requiredPaymentEvents.Any(requiredPayment =>
-                    requiredPayment.OnProgrammeEarningType == OnProgrammeEarningType.Balancing &&
-                    requiredPayment.AmountDue == expected.Balancing &&
-                    requiredPayment.CollectionPeriod.Name == expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name)))
-            {
-                return new Tuple<bool, string>(false, "Failed to find all balancing payments.");
-            }
-
-            return new Tuple<bool, string>(true, string.Empty);
-
-
-            //var receivedPayments = requiredPaymentEvents.Select(e =>
-            //{
-            //    var periodPayments = requiredPaymentEvents
-            //        .Where(se => se.DeliveryPeriod == e.DeliveryPeriod)
-            //        .ToDictionary(p => p.OnProgrammeEarningType, p => p.AmountDue);
-            //    return new Payment
-            //    {
-            //        DeliveryPeriod = e.DeliveryPeriod.Name,
-            //        Balancing = periodPayments[OnProgrammeEarningType.Balancing],
-            //        Completion = periodPayments[OnProgrammeEarningType.Completion],
-            //        OnProgramme = periodPayments[OnProgrammeEarningType.Learning]
-            //    };
-            //}).ToList();
-
-            //var matchedPayments = receivedPayments
-            //    .Where(receivedPayment => expectedPayments.Any(expectedEvent =>
-            //        expectedEvent.DeliveryPeriod.ToCalendarPeriod().Name == receivedPayment.DeliveryPeriod
-            //        && expectedEvent.OnProgramme == receivedPayment.OnProgramme
-            //        && expectedEvent.Completion == receivedPayment.Completion
-            //        && expectedEvent.Balancing == receivedPayment.Balancing
-            //    )).ToList();
-
-            //var allFound = matchedPayments.Count == expectedPayments.Count;
-            //var nothingExtra = requiredPaymentEvents.Count == matchedPayments.Count;
-
-            //var reason = new List<string>();
-            //if (!allFound)
-            //    reason.Add($"Did not find {expectedPayments.Count - matchedPayments.Count} out of {expectedPayments.Count} expected payments");
-            //if (!nothingExtra)
-            //    reason.Add($"Found {requiredPaymentEvents.Count - matchedPayments.Count} unexpected payments");
-
-            //return new Tuple<bool, string>(allFound && nothingExtra, string.Join(" and ", reason));
+        protected override bool Match(ApprenticeshipContractType2RequiredPaymentEvent expected, ApprenticeshipContractType2RequiredPaymentEvent actual)
+        {
+            return expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name &&
+                   expected.OnProgrammeEarningType == actual.OnProgrammeEarningType &&
+                   expected.AmountDue == actual.AmountDue;
         }
     }
 }

@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.Model.Core
         public bool Equals(CalendarPeriod other)
         {
             if (other == null) return false;
-            return Year == other.Year && Month == other.Month && Period == other.Period;
+            return Year == other.Year && (Month == other.Month || Period == other.Period);
         }
 
         public static bool operator ==(CalendarPeriod a, CalendarPeriod b)
