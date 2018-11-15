@@ -100,34 +100,43 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return (short)(short.Parse(part) + 2000);
         }
 
-        public static short ToYear(this string yearName)
+        public static string ToAcademicYear(this string yearName)
         {
-            short year;
+            int year;
             if (yearName == "Current Academic Year")
-                year = (short) DateTime.Today.Year;
+                year = DateTime.Today.Month < 8 ? DateTime.Today.Year - 1 : DateTime.Today.Year;
             else
                 throw new NotImplementedException("if it was meant to be anything other than Current Academic Year, it needs to be implemented");
-            return year;
+            return string.Concat(year - 2000, year - 1999);
         }
 
         public static CalendarPeriod ToCalendarPeriod(this string periodText)
         {
-            short year;
-            byte month;
             var bits = periodText.Split('/');
             var monthName = bits[0];
             var yearName = bits[1];
+            byte period;
 
-            year = ToYear(yearName);
+            if (DateTime.TryParseExact(monthName, "MMM", CultureInfo.CurrentCulture, DateTimeStyles.None, out var date))
+            {
+                period = (byte)(date.Month > 7 ? date.Month - 7 : date.Month + 5);
+            }
+            else
+            {
+                period = byte.Parse(monthName.Replace("R", null));
+            }
 
-            month = (byte)DateTime.ParseExact(bits[0], "MMM", CultureInfo.CurrentCulture).Month;
-
-            return new CalendarPeriod(year, month);
+            return new CalendarPeriod(yearName.ToAcademicYear(), period);
         }
 
         public static string GetCollectionYear(this CalendarPeriod calendarPeriod)
         {
             return calendarPeriod.Name.Split('-').FirstOrDefault();
+        }
+
+        public static decimal ToPercent(this string stringPercent)
+        {
+            return decimal.Parse(stringPercent.TrimEnd('%')) / 100m;
         }
     }
 }
