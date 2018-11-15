@@ -88,42 +88,20 @@ Scenario Outline: Two non-LEVY learners, one learner finishes early, one finishe
 		| learner b  | May/Current Academic Year | 0            | 0          | 0         | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 		| learner b  | Jun/Current Academic Year | 0            | 0          | 0         | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 		| learner b  | Jul/Current Academic Year | 0            | 0          | 0         | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
-    And the following payments will be calculated
+    And only the following payments will be calculated
 		| Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
 		| learner a  | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
 		| learner a  | R02/Current Academic Year | Sep/Current Academic Year | 0            | 3750       | 3000      |
 		| learner b  | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
 		| learner b  | R05/Current Academic Year | Dec/Current Academic Year | 0            | 3000       | 0         |
-	And no payments will be calculated for following collection periods
-		| Learner ID | Collection Period         |
-		| learner a  | R03/Current Academic Year |
-		| learner a  | R04/Current Academic Year |
-		| learner a  | R05/Current Academic Year |
-		| learner a  | R06/Current Academic Year |
-		| learner a  | R07/Current Academic Year |
-		| learner a  | R08/Current Academic Year |
-		| learner a  | R09/Current Academic Year |
-		| learner a  | R10/Current Academic Year |
-		| learner a  | R11/Current Academic Year |
-		| learner a  | R12/Current Academic Year |
-		| learner b  | R02/Current Academic Year |
-		| learner b  | R03/Current Academic Year |
-		| learner b  | R04/Current Academic Year |
-		| learner b  | R06/Current Academic Year |
-		| learner b  | R07/Current Academic Year |
-		| learner b  | R08/Current Academic Year |
-		| learner b  | R09/Current Academic Year |
-		| learner b  | R10/Current Academic Year |
-		| learner b  | R11/Current Academic Year |
-		| learner b  | R12/Current Academic Year |
-    And the following provider payments will be recorded
+    And only the following provider payments will be recorded
 		| Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
 		| learner a  | R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
 		| learner a  | R02/Current Academic Year | Sep/Current Academic Year | 3375                   | 375                         | Completion       |
 		| learner a  | R02/Current Academic Year | Sep/Current Academic Year | 2700                   | 300                         | Balancing        |
 		| learner b  | R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
 		| learner b  | R05/Current Academic Year | Dec/Current Academic Year | 2700                   | 300                         | Completion       |
-	And at month end the following provider payments will be generated
+	And at month end only the following provider payments will be generated
         | Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | learner a  | R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
         | learner a  | R02/Current Academic Year | Sep/Current Academic Year | 3375                   | 375                         | Completion       |
