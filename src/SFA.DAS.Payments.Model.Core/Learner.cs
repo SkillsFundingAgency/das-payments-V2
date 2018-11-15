@@ -2,7 +2,6 @@
 {
     public class Learner
     {
-        public long Ukprn { get;set; }
         public string ReferenceNumber { get; set; }
         public long Uln { get; set; }
         public Learner Clone()

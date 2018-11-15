@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.Model.Core;
@@ -9,11 +8,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public static class MappingExtensions
     {
-        public static void AddPeriodValue(this List<EarningPeriod> earningPeriods, decimal? periodValue, byte period,
-            string priceEpisodeIdentifier)
+        public static void AddPeriodValue(this List<EarningPeriod> earningPeriods, decimal? periodValue, byte period, string priceEpisodeIdentifier)
         {
-            if (periodValue.HasValue && periodValue > 0)
-                earningPeriods.Add(new EarningPeriod { Period = new CalendarPeriod((short)DateTime.UtcNow.Year, period), PriceEpisodeIdentifier = priceEpisodeIdentifier, Amount = periodValue.Value });
+            earningPeriods.Add(new EarningPeriod { Period = period, PriceEpisodeIdentifier = priceEpisodeIdentifier, Amount = periodValue ?? 0 });
         }
 
         public static List<EarningPeriod> CreateEarningPeriods(this PriceEpisodePeriodisedValues values, string priceEpisodeIdentifier)

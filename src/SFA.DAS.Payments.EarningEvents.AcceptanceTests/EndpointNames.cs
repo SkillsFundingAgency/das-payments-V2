@@ -1,7 +1,9 @@
-﻿namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests
+﻿using System.Configuration;
+
+namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests
 {
     public class EndpointNames
     {
-        public static string EarningEventsService = "sfa-das-payments-earningevents";
+        public static string EarningEventsService  => ConfigurationManager.AppSettings["EarningEventsServiceEndpointName"]; 
     }
 }

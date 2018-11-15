@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
                 CollectionYear = "1819",
                 CollectionPeriod = 1,
                 Ukprn = 12345,
-                JobId = "job-1",
+                JobId = 1
             };
             var result = mocker.Create<LearnerSubmissionProcessor>().GenerateEarnings(learnerSubmission);
             Assert.IsTrue(result.Validation.Failed);

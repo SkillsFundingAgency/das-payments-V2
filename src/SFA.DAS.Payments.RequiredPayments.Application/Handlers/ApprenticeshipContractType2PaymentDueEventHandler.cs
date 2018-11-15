@@ -15,13 +15,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
     public class ApprenticeshipContractType2PaymentDueEventHandler : IApprenticeshipContractType2PaymentDueEventHandler
     {
         private readonly IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor;
-        private readonly IRepositoryCache<PaymentEntity[]> paymentHistoryCache;
+        private readonly IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache;
         private readonly IMapper mapper;
         private readonly IApprenticeshipKeyService apprenticeshipKeyService;
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
         private readonly string apprenticeshipKey;
+        private readonly IPaymentKeyService paymentKeyService;
 
-        public ApprenticeshipContractType2PaymentDueEventHandler(IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor, IRepositoryCache<PaymentEntity[]> paymentHistoryCache, IMapper mapper, IApprenticeshipKeyService apprenticeshipKeyService, IPaymentHistoryRepository paymentHistoryRepository, string apprenticeshipKey)
+        public ApprenticeshipContractType2PaymentDueEventHandler(IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor, IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache, IMapper mapper, 
+            IApprenticeshipKeyService apprenticeshipKeyService, IPaymentHistoryRepository paymentHistoryRepository, string apprenticeshipKey, IPaymentKeyService paymentKeyService)
         {
             this.act2PaymentDueProcessor = act2PaymentDueProcessor;
             this.paymentHistoryCache = paymentHistoryCache;
@@ -29,6 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             this.apprenticeshipKeyService = apprenticeshipKeyService;
             this.paymentHistoryRepository = paymentHistoryRepository;
             this.apprenticeshipKey = apprenticeshipKey;
+            this.paymentKeyService = paymentKeyService ?? throw new ArgumentNullException(nameof(paymentKeyService));
         }
 
         public async Task<ApprenticeshipContractType2RequiredPaymentEvent> HandlePaymentDue(ApprenticeshipContractType2PaymentDueEvent paymentDue, CancellationToken cancellationToken)
@@ -36,11 +39,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             if (paymentDue == null)
                 throw new ArgumentNullException(nameof(paymentDue));
 
-            var key = apprenticeshipKeyService.GeneratePaymentKey(paymentDue.PriceEpisodeIdentifier, paymentDue.LearningAim.Reference, (int)paymentDue.Type, paymentDue.DeliveryPeriod);
+            var key = paymentKeyService.GeneratePaymentKey(paymentDue.PriceEpisodeIdentifier, paymentDue.LearningAim.Reference, (int)paymentDue.Type, paymentDue.DeliveryPeriod);
 
             var paymentHistoryValue = await paymentHistoryCache.TryGet(key, cancellationToken);
 
-            var payments = paymentHistoryValue.HasValue ? paymentHistoryValue.Value.Select(p => mapper.Map<PaymentEntity, Payment>(p)).ToArray() : new Payment[0];
+            var payments = paymentHistoryValue.HasValue ? paymentHistoryValue.Value.Select(p => mapper.Map<PaymentHistoryEntity, Payment>(p)).ToArray() : new Payment[0];
 
             var amountDue = act2PaymentDueProcessor.CalculateRequiredPaymentAmount(paymentDue.AmountDue, payments);
 
@@ -58,18 +61,20 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
                 PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier,
                 OnProgrammeEarningType = paymentDue.Type,
                 EventTime = DateTimeOffset.UtcNow,
-                JobId = paymentDue.JobId
+                JobId = paymentDue.JobId,
+                SfaContributionPercentage = paymentDue.SfaContributionPercentage,
+                IlrSubmissionDateTime = paymentDue.IlrSubmissionDateTime
             };
         }
 
         public async Task PopulatePaymentHistoryCache(CancellationToken cancellationToken)
         {
-            var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, cancellationToken).ConfigureAwait(false);
+            var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKeyService.ParseApprenticeshipKey(apprenticeshipKey), cancellationToken).ConfigureAwait(false);
 
             if (paymentHistory != null)
             {
                 var groupedEntities = paymentHistory
-                    .GroupBy(payment => apprenticeshipKeyService.GeneratePaymentKey(payment.PriceEpisodeIdentifier, payment.LearnAimReference, payment.TransactionType, new CalendarPeriod(payment.DeliveryPeriod)))
+                    .GroupBy(payment => paymentKeyService.GeneratePaymentKey(payment.PriceEpisodeIdentifier, payment.LearnAimReference, payment.TransactionType, new CalendarPeriod(payment.DeliveryPeriod)))
                     .ToDictionary(c => c.Key, c => c.ToArray());
 
                 foreach (var p in groupedEntities)

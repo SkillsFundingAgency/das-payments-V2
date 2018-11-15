@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         long Ukprn { get; }
         Learner Learner { get; }
         LearningAim LearningAim { get; }
-     
-   
+        DateTime IlrSubmissionDateTime { get; }
+
     }
 }

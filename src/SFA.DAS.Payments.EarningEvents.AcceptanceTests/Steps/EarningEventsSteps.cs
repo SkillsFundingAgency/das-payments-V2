@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.Queueing.Interface;
-using ESFA.DC.Serialization.Interfaces;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -20,22 +17,18 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
     [Binding]
     public class EarningEventsSteps : EarningEventsStepsBase
     {
-        private readonly IKeyValuePersistenceService redisService;
-        private readonly IJsonSerializationService serializationService;
-        private readonly ITopicPublishService<JobContextDto> topicPublishingService;
+        private readonly DcHelper dcHelper;
 
         protected ApprenticeshipContractType2EarningEvent Act2EarningEvent
         {
             get => Get<ApprenticeshipContractType2EarningEvent>();
             set => Set(value);
         }
+
         public EarningEventsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
-            redisService = Container.Resolve<IKeyValuePersistenceService>();
-            serializationService = Container.Resolve<IJsonSerializationService>();
-            topicPublishingService = Container.Resolve<ITopicPublishService<JobContextDto>>();
+            dcHelper = new DcHelper(Container);
         }
-
 
         [Given(@"the earnings are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
@@ -74,13 +67,13 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         public async Task WhenTheILRIsSubmittedAndTheLearnerEarningsAreSentToTheEarningEventsService()
         {
             var learners = CreateLearners();
-            await SendIlrSubmission(learners).ConfigureAwait(true);
+            await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, CollectionYear).ConfigureAwait(true);
         }
 
         [Then(@"the earning events service will generate a contract type 2 earnings event for the learner")]
-        public void ThenTheEarningEventsServiceWillGenerateAContractTypeEarningsEventForTheLearner()
+        public async Task ThenTheEarningEventsServiceWillGenerateAContractTypeEarningsEventForTheLearner()
         {
-            WaitForIt(() =>
+            await WaitForIt(() =>
                 {
                     var act2EarningEvent = Handlers.ApprenticeshipContractType2EarningEventHandler.ReceivedEvents.FirstOrDefault(ev =>
                         ev.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber);
@@ -138,61 +131,11 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             return learners;
         }
 
-        private async Task SendIlrSubmission(List<FM36Learner> learners)
-        {
-            try
-            {
-                var messagePointer = Guid.NewGuid().ToString();
-                var ilrSubmission = new FM36Global
-                {
-                    UKPRN = (int)TestSession.Ukprn,
-                    Year = CollectionYear,
-                    Learners = learners
-                };
-                var json = serializationService.Serialize(ilrSubmission);
-                Console.WriteLine($"ILR Submission: {json}");
-                await redisService
-                    .SaveAsync(messagePointer, json)
-                    .ConfigureAwait(true);
-
-                var dto = new JobContextDto
-                {
-                    JobId = 1,
-                    KeyValuePairs = new Dictionary<string, object>
-                    {
-                        {"FundingFm36Output", messagePointer},
-                        {"Filename", "blah blah"},
-                        {"UkPrn", TestSession.Ukprn},
-                        {"Username", "Bob"}
-                    },
-                    SubmissionDateTimeUtc = DateTime.UtcNow,
-                    TopicPointer = 0,
-                    Topics = new List<TopicItemDto>
-                    {
-                        new TopicItemDto
-                        {
-                            SubscriptionName = "Validation",
-                            Tasks = new List<TaskItemDto>
-                                {new TaskItemDto {SupportsParallelExecution = false, Tasks = new List<string>()}}
-                        }
-                    }
-                };
-
-                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object>(), "Validation");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-
         [Then(@"the earning events component will generate the following earning events:")]
-        public void ThenTheEarningEventsComponentWillGenerateTheFollowingEarningEvents(Table table)
+        public async Task ThenTheEarningEventsComponentWillGenerateTheFollowingEarningEvents(Table table)
         {
             var expectedFundingSourcePaymentEvents = table.CreateSet<EarningEvent>();
-            WaitForIt(() =>
+            await WaitForIt(() =>
                 {
                     return Handlers.ApprenticeshipContractType2EarningEventHandler.ReceivedEvents.Any(ev =>
                         ev.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber);

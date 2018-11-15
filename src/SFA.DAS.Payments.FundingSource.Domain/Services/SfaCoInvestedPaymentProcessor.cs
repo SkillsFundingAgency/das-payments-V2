@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
-using SFA.DAS.Payments.FundingSource.Model.Enum;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {

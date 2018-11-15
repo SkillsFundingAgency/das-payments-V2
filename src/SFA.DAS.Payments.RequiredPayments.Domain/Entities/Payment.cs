@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities

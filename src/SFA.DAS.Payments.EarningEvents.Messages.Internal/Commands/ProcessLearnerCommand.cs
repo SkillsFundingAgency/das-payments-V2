@@ -10,6 +10,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands
         public string CollectionYear { get; set; }
         public int CollectionPeriod { get; set; }
         public FM36Learner Learner { get; set; }
-        public DateTime SubmissionTime { get; set; }
+        public DateTime IlrSubmissionDateTime { get; set; }
     }
 }
