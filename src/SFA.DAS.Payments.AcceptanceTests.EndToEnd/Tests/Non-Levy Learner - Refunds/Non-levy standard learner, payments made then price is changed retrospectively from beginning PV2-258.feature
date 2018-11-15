@@ -9,7 +9,7 @@ Non-Levy standard learner, payments made then price is changed retrospectively f
 
     Given the provider previously submitted the following learner details
         | ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type        | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | learner a | 1        | start of academic year | 12 months        | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             | 12 months       | continuing        | 0.9                         | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | learner a | 1        | start of academic year | 12 months        | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             | 12 months       | continuing        | 90%                         | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 750          | 0          | 0         |
@@ -32,7 +32,7 @@ Non-Levy standard learner, payments made then price is changed retrospectively f
 
     But the Provider now changes the Learner details as follows
         | ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type        | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | learner a | 1        | start of academic year | 12 months        | 8                    | Aug/Current Academic Year           | 2                      | Aug/Current Academic Year             | 12 months       | continuing        | 0.9                         | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | learner a | 1        | start of academic year | 12 months        | 8                    | Aug/Current Academic Year           | 2                      | Aug/Current Academic Year             | 12 months       | continuing        | 90%                         | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
    
    When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
@@ -49,7 +49,7 @@ Non-Levy standard learner, payments made then price is changed retrospectively f
         | May/Current Academic Year | 0.66667      | 0          | 0         |
         | Jun/Current Academic Year | 0.66667      | 0          | 0         |
         | Jul/Current Academic Year | 0.66667      | 0          | 0         |
-    And the following payments will be calculated
+    And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R03/Current Academic Year | Aug/Current Academic Year | -749.33333   | 0          | 0         |
         | R03/Current Academic Year | Sep/Current Academic Year | -749.33333   | 0          | 0         |
@@ -63,7 +63,7 @@ Non-Levy standard learner, payments made then price is changed retrospectively f
         | R10/Current Academic Year | May/Current Academic Year | 0.66667      | 0          | 0         |
         | R11/Current Academic Year | Jun/Current Academic Year | 0.66667      | 0          | 0         |
         | R12/Current Academic Year | Jul/Current Academic Year | 0.66667      | 0          | 0         |
-    And the following provider payments will be recorded
+    And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R03/Current Academic Year | Aug/Current Academic Year | -674.40                | -74.93333                   | Learning         |
         | R03/Current Academic Year | Sep/Current Academic Year | -674.40                | -74.93333                   | Learning         |
@@ -78,7 +78,7 @@ Non-Levy standard learner, payments made then price is changed retrospectively f
         | R11/Current Academic Year | Jun/Current Academic Year | 0.60                   | 0.06667                     | Learning         |
         | R12/Current Academic Year | Jul/Current Academic Year | 0.60                   | 0.06667                     | Learning         |
 
-	And at month end the following provider payments will be generated
+	And at month end only the following provider payments will be generated
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R03/Current Academic Year | Aug/Current Academic Year | -674.40                | -74.93333                   | Learning         |
         | R03/Current Academic Year | Sep/Current Academic Year | -674.40                | -74.93333                   | Learning         |

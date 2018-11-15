@@ -123,7 +123,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aug/Current Academic Year",
                         "12 months",
                         "continuing",
-                        "0.9",
+                        "90%",
                         "ContractWithEmployer",
                         "1",
                         "ZPROG001",
@@ -253,7 +253,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aug/Current Academic Year",
                         "12 months",
                         "continuing",
-                        "0.9",
+                        "90%",
                         "ContractWithEmployer",
                         "1",
                         "ZPROG001",
@@ -413,7 +413,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0"});
 #line 52
-    testRunner.And("the following payments will be calculated", ((string)(null)), table6, "And ");
+    testRunner.And("only the following payments will be calculated", ((string)(null)), table6, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -494,7 +494,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0.06667",
                         "Learning"});
 #line 66
-    testRunner.And("the following provider payments will be recorded", ((string)(null)), table7, "And ");
+    testRunner.And("only the following provider payments will be recorded", ((string)(null)), table7, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -575,7 +575,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0.06667",
                         "Learning"});
 #line 81
- testRunner.And("at month end the following provider payments will be generated", ((string)(null)), table8, "And ");
+ testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table8, "And ");
 #line hidden
             this.ScenarioCleanup();
         }
