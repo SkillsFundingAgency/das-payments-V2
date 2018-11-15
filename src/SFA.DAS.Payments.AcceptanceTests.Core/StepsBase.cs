@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;

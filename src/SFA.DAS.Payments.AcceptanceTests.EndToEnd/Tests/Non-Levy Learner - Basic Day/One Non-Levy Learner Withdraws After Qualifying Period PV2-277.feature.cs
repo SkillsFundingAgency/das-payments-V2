@@ -96,8 +96,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "Planned Duration",
                         "Total Training Price",
                         "Total Training Price Effective Date",
-                        "Total Assesment Price",
-                        "Total Assesment Price Effective Date",
+                        "Total Assessment Price",
+                        "Total Assessment Price Effective Date",
                         "Actual Duration",
                         "Completion Status",
                         "SFA Contribution Percentage",
@@ -119,7 +119,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aug/Current Academic Year",
                         "4 months",
                         "withdrawn",
-                        ".9",
+                        "90%",
                         "ContractWithEmployer",
                         "1",
                         "ZPROG001",
@@ -231,7 +231,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0"});
 #line 24
-    testRunner.And("the following payments will be calculated", ((string)(null)), table3, "And ");
+    testRunner.And("only the following payments will be calculated", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -264,7 +264,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "100",
                         "Learning"});
 #line 30
-    testRunner.And("the following provider payments will be recorded", ((string)(null)), table4, "And ");
+    testRunner.And("only the following provider payments will be recorded", ((string)(null)), table4, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -297,7 +297,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "100",
                         "Learning"});
 #line 36
- testRunner.And("at month end the following provider payments will be generated", ((string)(null)), table5, "And ");
+ testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table5, "And ");
 #line hidden
             this.ScenarioCleanup();
         }

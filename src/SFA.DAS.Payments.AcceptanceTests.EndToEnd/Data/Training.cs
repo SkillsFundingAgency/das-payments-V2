@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public string ActualDuration { get; set; }
         public int ProgrammeType { get; set; }
         public string CompletionStatus { get; set; }
-        public decimal SfaContributionPercentage { get; set; }
+        public string SfaContributionPercentage { get; set; }
         public decimal? AgreedPrice => TotalTrainingPrice + TotalAssessmentPrice;
         public decimal? InstallmentAmount => (AgreedPrice * 0.8M) / NumberOfInstallments;
         public decimal? CompletionAmount => AgreedPrice * 0.2M;
