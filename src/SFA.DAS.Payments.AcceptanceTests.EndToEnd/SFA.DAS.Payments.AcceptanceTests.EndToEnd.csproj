@@ -261,6 +261,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finish On Time PV2-197.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two Non-Levy Learners Finish On Time PV2-197.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature.cs">
       <DependentUpon>Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -294,6 +299,10 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finish On Time PV2-197.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two Non-Levy Learners Finish On Time PV2-197.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
