@@ -44,6 +44,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         [TestCase(0.9, 552580.20, 55258.02)]
         [TestCase(1, 552580.20, 0)]
         [TestCase(0.9, 0.66667, 0.06667)]
+        [TestCase(0.9, 0.666667, 0.06667)]
         public void GivenValidSfaContributionAndAmountDueShouldReturnValidPayment(decimal sfaContribution,
                                                                                    decimal amountDue,
                                                                                    decimal expectedAmount)
