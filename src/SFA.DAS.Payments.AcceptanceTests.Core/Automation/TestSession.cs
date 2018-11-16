@@ -40,7 +40,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             JobId = GenerateId();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             IlrSubmissionTime = DateTime.UtcNow;
-            LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
         }
 
         public long GenerateId(int maxValue = 1000000)
