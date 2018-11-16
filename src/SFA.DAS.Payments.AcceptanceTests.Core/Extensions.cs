@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     var date = new DateTime(DateTime.Today.Month >= 8 ? DateTime.Today.Year : DateTime.Today.Year - 1, 8, 1);
                     date = date.AddMonths(period - 1);
                     var yearText = parts[1].ToLower();
-                    if (yearText.Equals("previous academic year"))
+                    if (yearText.Equals("last academic year"))
                         date = date.AddYears(-1);
                     else if (yearText.Equals("next academic year"))
                         date = date.AddYears(1);
@@ -103,15 +103,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         public static string ToAcademicYear(this string yearName)
         {
             int year;
-            if (yearName == "Current Academic Year")
-                year = DateTime.Today.Month < 8 ? DateTime.Today.Year - 1 : DateTime.Today.Year;
-            else
-                throw new NotImplementedException("if it was meant to be anything other than Current Academic Year, it needs to be implemented");
+            switch (yearName)
+            {
+                case "Current Academic Year":
+                    year = DateTime.Today.Month < 8 ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+                    break;
+                case "Last Academic Year":
+                    year = DateTime.Today.Month < 8 ? DateTime.Today.Year - 2 : DateTime.Today.Year - 1;
+                    break;
+                default:
+                    throw new NotImplementedException("if it was meant to be anything other than Current/Last Academic Year, it needs to be implemented");
+            }
             return string.Concat(year - 2000, year - 1999);
         }
 
         public static CalendarPeriod ToCalendarPeriod(this string periodText)
         {
+            if (periodText == "start of academic year") 
+                periodText = "Aug/Current Academic Year";
+
             var bits = periodText.Split('/');
             var monthName = bits[0];
             var yearName = bits[1];
