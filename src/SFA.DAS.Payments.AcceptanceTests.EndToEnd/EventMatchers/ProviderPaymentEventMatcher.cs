@@ -15,10 +15,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly TestSession testSession;
         private readonly CalendarPeriod collectionPeriod;
 
-        public ProviderPaymentEventMatcher(CalendarPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec)
+
+        public ProviderPaymentEventMatcher(CalendarPeriod collectionPeriod, TestSession testSession)
         {
             this.collectionPeriod = collectionPeriod;
             this.testSession = testSession;
+        }
+        public ProviderPaymentEventMatcher(CalendarPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec):this(collectionPeriod,testSession)
+        {
             this.paymentSpec = paymentSpec;
         }
 

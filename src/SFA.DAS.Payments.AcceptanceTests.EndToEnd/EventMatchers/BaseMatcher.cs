@@ -32,5 +32,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             return new Tuple<bool, string>(errors.Count == 0, string.Join(", ", errors));
         }
+
+        public Tuple<bool, string> MatchNoPayments()
+        {
+            return GetActualEvents().Any()
+                ? new Tuple<bool, string>(false,"Found Unexpected Payments"): new Tuple<bool, string>(true, string.Empty);
+        }
     }
 }

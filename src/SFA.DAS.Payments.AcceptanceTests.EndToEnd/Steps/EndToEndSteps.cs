@@ -1,13 +1,13 @@
-﻿using System;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
-using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -31,17 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
-            //var fm36Learners = new List<FM36Learner>();
-            //foreach (var training in CurrentIlr)
-            //{
-            //    var learner = new FM36Learner();
-            //    PopulateLearner(learner, training, earnings);
-            //    fm36Learners.Add(learner);
-            //}
-
-            //await DcHelper.SendIlrSubmission(fm36Learners, TestSession.Ukprn, CollectionYear);
-
-
+            
             foreach (var training in CurrentIlr)
             {
                 var learner = new FM36Learner();
@@ -67,8 +57,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
             var expectedPayments = table.CreateSet<Payment>().ToList();
-            var matcher = new RequiredPaymentEventMatcher(TestSession,  CurrentCollectionPeriod, expectedPayments);
+            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
+        }
+
+        [Then(@"no payments will be calculated")]
+        public async Task ThenNoPaymentsWillBeCalculated()
+        {
+            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod);
+            await WaitForIt(() => matcher.MatchNoPayments(), "Required Payment event check failure");
         }
 
         [Then(@"at month end only the following provider payments will be generated")]
@@ -85,5 +82,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
+
+        [Then(@"no provider payments will be generated")]
+        public async Task ThenNoProviderPaymentsWillBeGenerated()
+        {
+            var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession);
+            await WaitForIt(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
+        }
+
     }
 }

@@ -100,7 +100,7 @@ this.FeatureBackground();
 #line 14
  testRunner.And("planned course duration is 12 months", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                         "AimSeqNumber",
                         "ProgrammeType",
                         "FrameworkCode",
@@ -110,7 +110,7 @@ this.FeatureBackground();
                         "LearnAimRef",
                         "TotalNegotiatedPrice",
                         "CompletionStatus"});
-            table7.AddRow(new string[] {
+            table13.AddRow(new string[] {
                         "1",
                         "2",
                         "403",
@@ -121,46 +121,46 @@ this.FeatureBackground();
                         "15000",
                         "completed"});
 #line 15
- testRunner.And("the following course information:", ((string)(null)), table7, "And ");
+ testRunner.And("the following course information:", ((string)(null)), table13, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table8.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table8.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "p2",
                         "5",
                         "Completion (TT2)",
                         "3000"});
 #line 19
- testRunner.And("the following contract type 2 On Programme earnings are provided:", ((string)(null)), table8, "And ");
+ testRunner.And("the following contract type 2 On Programme earnings are provided:", ((string)(null)), table14, "And ");
 #line 24
  testRunner.When("an earnings event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table9.AddRow(new string[] {
+            table15.AddRow(new string[] {
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table9.AddRow(new string[] {
+            table15.AddRow(new string[] {
                         "p2",
                         "5",
                         "Completion (TT2)",
                         "3000"});
 #line 25
  testRunner.Then("the payments due component will generate the following contract type 2 payments d" +
-                    "ue:", ((string)(null)), table9, "Then ");
+                    "ue:", ((string)(null)), table15, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -186,7 +186,7 @@ this.FeatureBackground();
 #line 37
  testRunner.And("planned course duration is 12 months", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                         "AimSeqNumber",
                         "ProgrammeType",
                         "FrameworkCode",
@@ -196,7 +196,7 @@ this.FeatureBackground();
                         "LearnAimRef",
                         "TotalNegotiatedPrice",
                         "CompletionStatus"});
-            table10.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "1",
                         "2",
                         "403",
@@ -207,36 +207,36 @@ this.FeatureBackground();
                         "15000",
                         "withdrawn"});
 #line 38
- testRunner.And("the following course information:", ((string)(null)), table10, "And ");
+ testRunner.And("the following course information:", ((string)(null)), table16, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table11.AddRow(new string[] {
+            table17.AddRow(new string[] {
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
 #line 42
- testRunner.And("the following contract type 2 On Programme earnings are provided:", ((string)(null)), table11, "And ");
+ testRunner.And("the following contract type 2 On Programme earnings are provided:", ((string)(null)), table17, "And ");
 #line 46
  testRunner.When("an earnings event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table12.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
 #line 47
  testRunner.Then("the payments due component will generate the following contract type 2 payments d" +
-                    "ue:", ((string)(null)), table12, "Then ");
+                    "ue:", ((string)(null)), table18, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
