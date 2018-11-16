@@ -16,11 +16,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly List<ProviderPayment> expectedPaymentInfo;
         private readonly ContractType contractType;
 
-        public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, string currentCollectionPeriodName, List<ProviderPayment> expectedPaymentInfo, ContractType contractType)
+
+        public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, string currentCollectionPeriodName)
         {
             this.dataContext = dataContext;
             this.testSession = testSession;
             this.currentCollectionPeriodName = currentCollectionPeriodName;
+        }
+
+        public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, string currentCollectionPeriodName, List<ProviderPayment> expectedPaymentInfo, ContractType contractType)
+            :this(dataContext,testSession, currentCollectionPeriodName)
+        {
             this.expectedPaymentInfo = expectedPaymentInfo;
             this.contractType = contractType;
         }

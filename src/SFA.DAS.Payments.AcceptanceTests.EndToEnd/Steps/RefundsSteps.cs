@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
             else
             {
-                Console.WriteLine("Already added hostory");
+                Console.WriteLine("Already added history");
                 return;
             }
             

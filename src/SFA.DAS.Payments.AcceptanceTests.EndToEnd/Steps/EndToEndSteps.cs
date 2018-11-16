@@ -8,6 +8,8 @@ using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -83,12 +85,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
 
-        [Then(@"no provider payments will be generated")]
-        public async Task ThenNoProviderPaymentsWillBeGenerated()
+        [Then(@"no provider payments will be recorded")]
+        public async Task ThenNoProviderPaymentsWillBeRecorded()
         {
+            var dataContext = Container.Resolve<IPaymentsDataContext>();
+            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name);
+            await WaitForIt(() => matcher.MatchNoPayments(), "Payment history check failure");
+        }
+
+        [Then(@"at month end no provider payments will be generated")]
+        public async Task ThenAtMonthEndNoProviderPaymentsWillBeGenerated()
+        {
+            var monthEndCommand = new ProcessProviderMonthEndCommand
+            {
+                CollectionPeriod = CurrentCollectionPeriod,
+                Ukprn = TestSession.Ukprn,
+                JobId = TestSession.JobId
+            };
+            await MessageSession.Send(monthEndCommand);
             var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession);
             await WaitForIt(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
         }
-
+        
     }
 }
