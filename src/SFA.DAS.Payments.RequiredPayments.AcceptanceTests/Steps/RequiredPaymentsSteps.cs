@@ -45,6 +45,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 TestSession.Learner;
             payment.Learner = testSessionLearner.ToLearner();
             payment.Learner.ReferenceNumber = testSessionLearner.LearnRefNumber;
+            payment.Learner.ReferenceNumber = TestSession.GenerateLearnerReference(paymentDue.LearnerId);
             payment.Ukprn = TestSession.Ukprn;
             payment.SfaContributionPercentage = SfaContributionPercentage;
             payment.Type = paymentDue.Type;
@@ -111,7 +112,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return result;
         }
 
-        private bool MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
+        private Tuple<bool, string> MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
         {
             OnProgrammePaymentDue[] events;
 
@@ -143,6 +144,13 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             var allFound = matchedExpectations.Count == expectedPaymentsEvents.Length;
             var nothingExtra = sessionEvents.Length == matchedExpectations.Count;
 
+            var reason = new List<string>();
+            if (!allFound)
+                reason.Add($"{expectedPaymentsEvents.Length - matchedExpectations.Count} out of {expectedPaymentsEvents.Length} event(s) did not arrive");
+
+            if (!nothingExtra)
+                reason.Add($"{sessionEvents.Length - matchedExpectations.Count} unexpected event(s) arrived");
+
 #if DEBUG
             if ((!allFound || !nothingExtra))
             {
@@ -159,7 +167,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 }
             }
 #endif
-            return allFound && nothingExtra;
+            return Tuple.Create(allFound && nothingExtra, string.Join(" and ", reason));
         }
 
         private static void TraceUnexpected(ApprenticeshipContractType2RequiredPaymentEvent[] sessionEvents, List<ApprenticeshipContractType2RequiredPaymentEvent> matchedExpectations)

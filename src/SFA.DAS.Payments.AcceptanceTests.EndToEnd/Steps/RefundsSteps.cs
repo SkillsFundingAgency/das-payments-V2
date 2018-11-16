@@ -49,7 +49,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);
             Console.WriteLine($"Previous job id: {previousJobId}");
             var payments = table.CreateSet<ProviderPayment>().ToList();
-            var previousPayments = payments.SelectMany(p => CreatePayments(p, PreviousIlr.First(), previousJobId, previousSubmissionTime));
+            var previousPayments = payments.SelectMany(p =>
+            {
+                var learnerTraining = PreviousIlr.First(t => t.LearnerId == p.LearnerId);
+                var learnerEarning = PreviousEarnings.First(e => e.LearnerId == p.LearnerId && e.DeliveryPeriod == p.DeliveryPeriod);
+                return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, learnerEarning);
+            });
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
             dataContext.Payment.AddRange(previousPayments);
