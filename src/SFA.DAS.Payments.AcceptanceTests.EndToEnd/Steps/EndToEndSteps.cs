@@ -21,8 +21,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
-        [Given(@"the provider is providing trainging for the following learners")]
-        public void GivenTheProviderIsProvidingTraingingForTheFollowingLearners(Table table)
+        [Given(@"the provider is providing training for the following learners")]
+        public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
         {
             CurrentIlr = table.CreateSet<Training>().ToList();
         }

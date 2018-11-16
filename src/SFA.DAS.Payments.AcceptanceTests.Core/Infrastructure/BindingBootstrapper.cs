@@ -58,8 +58,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         [BeforeTestRun(Order = 75)]
         public static async Task ClearQueue()
         {
-            var ns = NamespaceManager.CreateFromConnectionString(Config.ServiceBusConnectionString);
-            if (!ns.QueueExists(Config.AcceptanceTestsEndpointName))
+            var namespaceManager = NamespaceManager.CreateFromConnectionString(Config.ServiceBusConnectionString);
+            if (!namespaceManager.QueueExists(Config.AcceptanceTestsEndpointName))
             {
                 Console.WriteLine($"'{Config.AcceptanceTestsEndpointName}' not found.");
                 return;
@@ -67,8 +67,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             Console.WriteLine($"Now clearing queue: '{Config.AcceptanceTestsEndpointName}'");
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var mf = MessagingFactory.CreateFromConnectionString(Config.ServiceBusConnectionString);
-            var receiver = await mf.CreateMessageReceiverAsync(Config.AcceptanceTestsEndpointName, ReceiveMode.ReceiveAndDelete);
+            var messagingFactory = MessagingFactory.CreateFromConnectionString(Config.ServiceBusConnectionString);
+            var receiver = await messagingFactory.CreateMessageReceiverAsync(Config.AcceptanceTestsEndpointName, ReceiveMode.ReceiveAndDelete);
             while (true)
             {
                 var messages = await receiver.ReceiveBatchAsync(500, TimeSpan.FromSeconds(1));

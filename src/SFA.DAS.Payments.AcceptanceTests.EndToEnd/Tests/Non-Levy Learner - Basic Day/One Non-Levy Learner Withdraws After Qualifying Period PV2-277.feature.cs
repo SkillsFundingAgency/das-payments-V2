@@ -128,7 +128,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
 #line 6
- testRunner.Given("the provider is providing trainging for the following learners", ((string)(null)), table1, "Given ");
+ testRunner.Given("the provider is providing training for the following learners", ((string)(null)), table1, "Given ");
 #line 9
     testRunner.When(string.Format("the ILR file is submitted for the learners for collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
