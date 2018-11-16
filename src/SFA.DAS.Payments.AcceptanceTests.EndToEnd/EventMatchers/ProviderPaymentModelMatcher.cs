@@ -27,10 +27,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override IList<PaymentModel> GetActualEvents()
         {
-            var learnerLearnRefNumber = testSession.Learner.LearnRefNumber;
-
             return dataContext.Payment.Where(p => p.JobId == testSession.JobId &&
-                                                  p.LearnerReferenceNumber == learnerLearnRefNumber &&
                                                   p.CollectionPeriod.Name == currentCollectionPeriodName).ToList();
         }
 
@@ -61,7 +58,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.TransactionType == actual.TransactionType &&
                    expected.ContractType == actual.ContractType &&
                    expected.FundingSource == actual.FundingSource &&
-                   expected.Amount == actual.Amount;
+                   expected.Amount == actual.Amount &&
+                   expected.LearnerReferenceNumber == actual.LearnerReferenceNumber;
         }
 
         private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn)
@@ -74,7 +72,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 TransactionType = paymentInfo.TransactionType,
                 ContractType = contractType,
                 Amount = paymentInfo.EmployerCoFundedPayments,
-                FundingSource = FundingSourceType.CoInvestedEmployer
+                FundingSource = FundingSourceType.CoInvestedEmployer,
+                LearnerReferenceNumber = testSession.GenerateLearnerReference(paymentInfo.LearnerId)
             };
         }
     }

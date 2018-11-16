@@ -19,5 +19,11 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             PaymentsDue = payments.CreateSet<OnProgrammePaymentDue>()
                 .ToList();
         }
+
+        [Given(@"the payments due component generates more payments due:")]
+        public void GivenThePaymentsDueComponentGeneratesMorePaymentsDue(Table payments)
+        {
+            PaymentsDue.AddRange(payments.CreateSet<OnProgrammePaymentDue>().ToList());
+        }
     }
 }
