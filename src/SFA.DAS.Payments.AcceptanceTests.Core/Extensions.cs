@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     var date = new DateTime(DateTime.Today.Month >= 8 ? DateTime.Today.Year : DateTime.Today.Year - 1, 8, 1);
                     date = date.AddMonths(period - 1);
                     var yearText = parts[1].ToLower();
-                    if (yearText.Equals("previous academic year"))
+                    if (yearText.Equals("last academic year"))
                         date = date.AddYears(-1);
                     else if (yearText.Equals("next academic year"))
                         date = date.AddYears(1);
@@ -100,34 +100,53 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return (short)(short.Parse(part) + 2000);
         }
 
-        public static short ToYear(this string yearName)
+        public static string ToAcademicYear(this string yearName)
         {
-            short year;
-            if (yearName == "Current Academic Year")
-                year = (short) DateTime.Today.Year;
-            else
-                throw new NotImplementedException("if it was meant to be anything other than Current Academic Year, it needs to be implemented");
-            return year;
+            int year;
+            switch (yearName)
+            {
+                case "Current Academic Year":
+                    year = DateTime.Today.Month < 8 ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+                    break;
+                case "Last Academic Year":
+                    year = DateTime.Today.Month < 8 ? DateTime.Today.Year - 2 : DateTime.Today.Year - 1;
+                    break;
+                default:
+                    throw new NotImplementedException("if it was meant to be anything other than Current/Last Academic Year, it needs to be implemented");
+            }
+            return string.Concat(year - 2000, year - 1999);
         }
 
         public static CalendarPeriod ToCalendarPeriod(this string periodText)
         {
-            short year;
-            byte month;
+            if (periodText == "start of academic year") 
+                periodText = "Aug/Current Academic Year";
+
             var bits = periodText.Split('/');
             var monthName = bits[0];
             var yearName = bits[1];
+            byte period;
 
-            year = ToYear(yearName);
+            if (DateTime.TryParseExact(monthName, "MMM", CultureInfo.CurrentCulture, DateTimeStyles.None, out var date))
+            {
+                period = (byte)(date.Month > 7 ? date.Month - 7 : date.Month + 5);
+            }
+            else
+            {
+                period = byte.Parse(monthName.Replace("R", null));
+            }
 
-            month = (byte)DateTime.ParseExact(bits[0], "MMM", CultureInfo.CurrentCulture).Month;
-
-            return new CalendarPeriod(year, month);
+            return new CalendarPeriod(yearName.ToAcademicYear(), period);
         }
 
         public static string GetCollectionYear(this CalendarPeriod calendarPeriod)
         {
             return calendarPeriod.Name.Split('-').FirstOrDefault();
+        }
+
+        public static decimal ToPercent(this string stringPercent)
+        {
+            return decimal.Parse(stringPercent.TrimEnd('%')) / 100m;
         }
     }
 }

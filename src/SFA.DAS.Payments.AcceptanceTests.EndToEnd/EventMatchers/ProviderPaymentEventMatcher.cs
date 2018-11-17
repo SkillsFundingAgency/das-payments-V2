@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
@@ -9,45 +9,72 @@ using SFA.DAS.Payments.ProviderPayments.Messages;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
-    public class ProviderPaymentEventMatcher
+    public class ProviderPaymentEventMatcher : BaseMatcher<ProviderPaymentEvent>
     {
-        public static Tuple<bool, string> MatchPayments(List<ProviderPayment> expectedPayments, long ukprn, string learnerReference, long jobId, CalendarPeriod collectionPeriod)
+        private readonly List<ProviderPayment> paymentSpec;
+        private readonly TestSession testSession;
+        private readonly CalendarPeriod collectionPeriod;
+
+        public ProviderPaymentEventMatcher(CalendarPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec)
         {
-            expectedPayments = expectedPayments
-                .Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name)
-                .ToList();
-            var receivedEvents = ProviderPaymentEventHandler.ReceivedEvents
+            this.collectionPeriod = collectionPeriod;
+            this.testSession = testSession;
+            this.paymentSpec = paymentSpec;
+        }
+
+        protected override IList<ProviderPaymentEvent> GetActualEvents()
+        {
+            return ProviderPaymentEventHandler.ReceivedEvents
                 .Where(ev =>
-                    ev.Ukprn == ukprn &&
-                    ev.Learner.ReferenceNumber == learnerReference &&
-                    ev.JobId == jobId)
+                    ev.Ukprn == testSession.Ukprn &&
+                    ev.JobId == testSession.JobId)
                 .ToList();
 
-            if (!expectedPayments
-                .Where(expected => expected.SfaCoFundedPayments != 0)
-                .All(expected => receivedEvents.Any(receivedEvent =>
-                    receivedEvent is SfaCoInvestedProviderPaymentEvent &&
-                    receivedEvent.TransactionType == expected.TransactionType &&
-                    receivedEvent.AmountDue == expected.SfaCoFundedPayments &&
-                    receivedEvent.CollectionPeriod.Name == expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name &&
-                    receivedEvent.DeliveryPeriod.Period == expected.DeliveryPeriod.ToDate().ToCalendarPeriod().Period)))
+        }
+
+        protected override IList<ProviderPaymentEvent> GetExpectedEvents()
+        {
+            var expectedPayments = new List<ProviderPaymentEvent>();
+
+            foreach (var providerPayment in paymentSpec.Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name))
             {
-                return new Tuple<bool, string>(false, "Failed to find all sfa co-funded payments.");
+                var eventCollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod();
+                var deliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod();
+                var learner = new Learner { ReferenceNumber = testSession.GenerateLearnerReference(providerPayment.LearnerId)};
+
+                var coFundedSfa = new SfaCoInvestedProviderPaymentEvent
+                {
+                    TransactionType = providerPayment.TransactionType,
+                    AmountDue = providerPayment.SfaCoFundedPayments,
+                    CollectionPeriod = eventCollectionPeriod,
+                    DeliveryPeriod = deliveryPeriod,
+                    Learner = learner
+                };
+
+                var coFundedEmp = new EmployerCoInvestedProviderPaymentEvent
+                {
+                    TransactionType = providerPayment.TransactionType,
+                    AmountDue = providerPayment.EmployerCoFundedPayments,
+                    CollectionPeriod = eventCollectionPeriod,
+                    DeliveryPeriod = deliveryPeriod,
+                    Learner = learner
+                };
+
+                expectedPayments.Add(coFundedSfa);
+                expectedPayments.Add(coFundedEmp);
             }
 
-            if (!expectedPayments
-                .Where(expected => expected.EmployerCoFundedPayments != 0)
-                .All(expected => receivedEvents.Any(receivedEvent =>
-                    receivedEvent is EmployerCoInvestedProviderPaymentEvent &&
-                    receivedEvent.TransactionType == expected.TransactionType &&
-                    receivedEvent.AmountDue == expected.EmployerCoFundedPayments &&
-                    receivedEvent.CollectionPeriod.Name == expected.CollectionPeriod.ToDate().ToCalendarPeriod().Name &&
-                    receivedEvent.DeliveryPeriod.Period == expected.DeliveryPeriod.ToDate().ToCalendarPeriod().Period)))
-            {
-                return new Tuple<bool, string>(false, "Failed to find all employer co-funded payments.");
-            }
+            return expectedPayments;
+        }
 
-            return new Tuple<bool, string>(true, string.Empty);
+        protected override bool Match(ProviderPaymentEvent expected, ProviderPaymentEvent actual)
+        {
+            return expected.GetType() == actual.GetType() &&
+                   expected.TransactionType == actual.TransactionType &&
+                   expected.AmountDue == actual.AmountDue &&
+                   expected.CollectionPeriod.Name == actual.CollectionPeriod.Name &&
+                   expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name &&
+                   expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber;
         }
     }
 }

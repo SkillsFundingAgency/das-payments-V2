@@ -233,8 +233,11 @@
   <ItemGroup>
     <Compile Include="Data\OnProgrammeEarning.cs" />
     <Compile Include="Data\Payment.cs" />
+    <Compile Include="Data\Price.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\Training.cs" />
+    <Compile Include="EventMatchers\BaseMatcher.cs" />
+    <Compile Include="EventMatchers\ProviderPaymentModelMatcher.cs" />
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2EarningEventHandler.cs" />
@@ -253,10 +256,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner Withdraws After Qualifying Period PV2-277.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature.cs">
       <DependentUpon>Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Refunds\Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -278,9 +291,17 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner Withdraws After Qualifying Period PV2-277.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Refunds\Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

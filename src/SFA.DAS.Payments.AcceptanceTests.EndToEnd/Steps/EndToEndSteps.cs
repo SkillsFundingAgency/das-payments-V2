@@ -25,7 +25,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheProviderIsProvidingTraingingForTheFollowingLearners(Table table)
         {
             CurrentIlr = table.CreateSet<Training>().ToList();
-            SfaContributionPercentage = CurrentIlr[0].SfaContributionPercentage;
         }
 
         [Then(@"the following learner earnings should be generated")]
@@ -45,8 +44,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var training in CurrentIlr)
             {
-                var learner = new FM36Learner();
-                PopulateLearner(learner, training, earnings);
+                var learnerId = training.LearnerId ?? TestSession.Learner.LearnerIdentifier;
+                var learner = new FM36Learner {LearnRefNumber = TestSession.GenerateLearnerReference(learnerId)};
+                var learnerEarnings = earnings.Where(e => (e.LearnerId ?? TestSession.Learner.LearnerIdentifier) == learnerId).ToList();
+                
+                PopulateLearner(learner, training, learnerEarnings);
+
                 var command = new ProcessLearnerCommand
                 {
                     Learner = learner,
@@ -56,22 +59,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     JobId = TestSession.JobId,
                     IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
                     RequestTime = DateTimeOffset.UtcNow,
-                    SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????
+                    SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????                    
                 };
+
                 Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
                 await MessageSession.Send(command);
             }
-            await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "OnProgrammeEarning event check failure");
+
+            await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession), "OnProgrammeEarning event check failure");
         }
 
-        [Then(@"the following payments will be calculated")]
+        [Then(@"only the following payments will be calculated")]
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
             var expectedPayments = table.CreateSet<Payment>().ToList();
-            await WaitForIt(() => RequiredPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, CurrentCollectionPeriod, TestSession.JobId), "Required Payment event check failure");
+            var matcher = new RequiredPaymentEventMatcher(TestSession,  CurrentCollectionPeriod, expectedPayments);
+            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
-        [Then(@"at month end the following provider payments will be generated")]
+        [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
             var monthEndCommand = new ProcessProviderMonthEndCommand
@@ -82,7 +88,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            await WaitForIt(() => ProviderPaymentEventMatcher.MatchPayments(expectedPayments, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId, CurrentCollectionPeriod), "Provider Payment event check failure");
+            var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
+            await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
+        }
+
+        [Then(@"no payments will be calculated for following collection periods")]
+        public void ThenNoPaymentsWillBeCalculatedForFollowingCollectionPeriods(Table table)
+        {
         }
     }
 }

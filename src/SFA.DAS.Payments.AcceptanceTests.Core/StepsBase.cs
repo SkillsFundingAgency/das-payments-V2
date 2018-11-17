@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -36,24 +35,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 Context.Set(item, key);
         }
 
-        protected async Task WaitForIt(Func<bool> lookForIt, string failText)
-        {
-            var endTime = DateTime.Now.Add(Config.TimeToWait);
-            while (DateTime.Now < endTime)
-            {
-                if (lookForIt())
-                    return;
-                await Task.Delay(Config.TimeToPause);
-            }
-            Assert.Fail(failText);
-        }
-
         protected async Task WaitForIt(Func<Task<bool>> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
             while (DateTime.Now < endTime)
             {
                 if (await lookForIt())
+                    return;
+                await Task.Delay(Config.TimeToPause);
+            }
+            Assert.Fail(failText);
+        }
+
+        protected async Task WaitForIt(Func<bool> lookForIt, string failText)
+        {
+            var endTime = DateTime.Now.Add(Config.TimeToWait);
+            while (DateTime.Now < endTime)
+            {
+                if (lookForIt())
                     return;
                 await Task.Delay(Config.TimeToPause);
             }
