@@ -83,25 +83,26 @@ namespace SFA.DAS.Payments.PerformanceTests
         }
 
 
-        [TestCase(1, 10000, 1)]
-        public async Task No_History(int providerCount, int providerLearnerCount, int collectionPeriod)
+        [TestCase(5, 1000, 1)]
+        public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerCount, int collectionPeriod)
         {
             Randomizer.Seed = new Random(8675309);
             var sessions = Enumerable.Range(1, providerCount)
-                .Select(i => new TestSession())
+                .Select(i => new TestSession(i))
                 .ToList();
             var ilrSubmissions = new List<Task>();
-            if (providerLearnerCount > 1)
-            {
-                DeliveryTime = DateTimeOffset.UtcNow.AddSeconds(providerLearnerCount >= 10000 ? 600 : providerLearnerCount >= 1000 ? 300 : 60);
-                Console.WriteLine($"Using delivery time of: {DeliveryTime:O}");
-            }
+            //if (providerLearnerCount > 1)
+            //{
+            //    DeliveryTime = DateTimeOffset.UtcNow.AddSeconds(providerLearnerCount >= 10000 ? 600 : providerLearnerCount >= 1000 ? 300 : 60);
+            //    Console.WriteLine($"Using delivery time of: {DeliveryTime:O}");
+            //}
 
+            var learnerId = 1;
             foreach (var session in sessions)
             {
                 session.Learners.Clear();
                 session.Learners.AddRange(Enumerable.Range(1, providerLearnerCount)
-                    .Select(i => session.GenerateLearner()));
+                    .Select(i => session.GenerateLearner(learnerId++)));
                 ilrSubmissions.Add(SubmitIlr(session, collectionPeriod));
                 await Task.WhenAll(ilrSubmissions);
                 Console.WriteLine($"Finished sending Ukprn: {session.Ukprn}. Time: {DateTime.Now:O}");

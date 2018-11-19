@@ -9,6 +9,7 @@
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="" />
     <Parameter Name="FailedMessagesQueue" Value="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
   </Section>
   <Section Name="ProviderPaymentsServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="ProviderPaymentsServiceActorServiceReplicatorEndpoint" />

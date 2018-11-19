@@ -10,6 +10,7 @@ using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handlers
 {
@@ -19,16 +20,19 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
         private readonly IExecutionContext executionContext;
         private readonly IActorProxyFactory proxyFactory;
         private readonly IMapper mapper;
+        private readonly ITelemetry telemetry;
 
         public FundingSourcePaymentEventHandler(IPaymentLogger paymentLogger,
             IExecutionContext executionContext,
             IActorProxyFactory proxyFactory,
-            IMapper mapper)
+            IMapper mapper,
+            ITelemetry telemetry)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
             this.proxyFactory = proxyFactory;
             this.mapper = mapper;
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
         public async Task Handle(FundingSourcePaymentEvent message, IMessageHandlerContext context)

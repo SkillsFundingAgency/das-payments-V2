@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
         private static ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
-        public TestSession()
+        public TestSession(long? ukprn = null)
         {
             courseFaker = new Faker<Course>();
             courseFaker
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
-            Ukprn = GenerateId();
+            Ukprn = ukprn ?? GenerateId();
             Learners = new List<Learner> { GenerateLearner() };
             JobId = GenerateId();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
@@ -56,9 +56,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
-        public Learner GenerateLearner()
+        public Learner GenerateLearner(long? uniqueLearnerNumber = null)
         {
-            var uln = GenerateId();
+            var uln = uniqueLearnerNumber ?? GenerateId();
             var limit = 10;
             while (allLearners.Contains(uln))
             {

@@ -11,6 +11,7 @@
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="ProviderPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyServicePkg" ServiceManifestVersion="1.0.0" />
@@ -26,6 +27,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[ProviderPaymentsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[ProviderPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -45,6 +47,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[ProviderPaymentsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[ProviderPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>

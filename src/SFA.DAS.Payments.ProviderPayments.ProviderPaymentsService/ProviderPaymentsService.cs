@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using IProviderPaymentsService = SFA.DAS.Payments.ProviderPayments.Application.Services.IProviderPaymentsService;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
@@ -23,6 +24,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
         private readonly IValidateIlrSubmission validateIlrSubmission;
         private readonly IPaymentLogger paymentLogger;
+        private readonly ITelemetry telemetry;
         private IProviderPaymentsService paymentsService;
         private IHandleIlrSubmissionService handleIlrSubmissionService;
         private IMonthEndService monthEndService;
@@ -31,13 +33,15 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         public ProviderPaymentsService(ActorService actorService, ActorId actorId,
             IProviderPaymentsRepository providerPaymentsRepository,
             IValidateIlrSubmission validateIlrSubmission,
-            IPaymentLogger paymentLogger)
+            IPaymentLogger paymentLogger, 
+            ITelemetry telemetry)
             : base(actorService, actorId)
         {
             this.actorId = actorId;
             this.providerPaymentsRepository = providerPaymentsRepository ?? throw new ArgumentNullException(nameof(providerPaymentsRepository));
             this.validateIlrSubmission = validateIlrSubmission ?? throw new ArgumentNullException(nameof(validateIlrSubmission));
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
         public async Task HandlePayment(PaymentModel message, CancellationToken cancellationToken)
@@ -60,7 +64,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
             if (!long.TryParse(actorId.GetStringId(), out ukprn)) throw new Exception("Unable to cast Actor Id to Ukprn");
 
             var reliableCollectionCache = new ReliableCollectionCache<IlrSubmittedEvent>(StateManager);
-            paymentsService = new Application.Services.ProviderPaymentsService(providerPaymentsRepository, reliableCollectionCache, validateIlrSubmission, paymentLogger);
+            paymentsService = new Application.Services.ProviderPaymentsService(providerPaymentsRepository, reliableCollectionCache, validateIlrSubmission, paymentLogger, telemetry);
             handleIlrSubmissionService = new HandleIlrSubmissionService(providerPaymentsRepository, reliableCollectionCache, validateIlrSubmission, paymentLogger);
             monthEndService = new MonthEndService(providerPaymentsRepository);
             await base.OnActivateAsync().ConfigureAwait(false);

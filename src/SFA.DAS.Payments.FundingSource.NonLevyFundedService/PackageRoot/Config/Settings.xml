@@ -10,5 +10,6 @@
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="sfa-das-payments-fundingsource-nonlevy"/>
     <Parameter Name="FailedMessagesQueue" Value=""/>
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value=""/>
   </Section>
 </Settings>
