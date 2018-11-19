@@ -66,6 +66,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             };
         }
 
+        public Learner GetLearner(string learnerIdentifier)
+        {
+            return Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier) ??
+                   throw new ArgumentException($"Learner with identifier: '{learnerIdentifier}' not found.");
+        }
+
         public void SessionEnd()
         {
             //TODO: clean up Ids
