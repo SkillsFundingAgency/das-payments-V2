@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         public void SFAContributionPercentageIs(decimal sfaContributionPercentage)
         {
             Console.WriteLine($"Got sfa contribution percentage: {sfaContributionPercentage}");
-            SfaContributionPercentage = sfaContributionPercentage;
+            SfaContributionPercentage = sfaContributionPercentage / 100;
         }
     }
 }
