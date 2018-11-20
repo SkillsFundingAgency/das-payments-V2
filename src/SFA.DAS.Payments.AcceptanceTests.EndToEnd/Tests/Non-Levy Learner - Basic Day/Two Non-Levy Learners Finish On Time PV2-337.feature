@@ -1,7 +1,7 @@
-﻿Feature: Two Non-Levy Learners Finish On Time PV2-197
+﻿Feature: Two Non-Levy Learners Finish On Time PV2-337
 Two Non-Levy Learners Finish On Time PV2-197
 
-Scenario Outline: Two Non-Levy Learners Finishes On Time PV2-197
+Scenario Outline: Two Non-Levy Learners Finish On Time PV2-337
 	Given the provider previously submitted the following learner details
         | Learner ID | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type        | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
         | learner a  | 1        | Sep/Last Academic Year | 12 months        | 15000                | Sep/Last Academic Year              | 0                      | Sep/Last Academic Year                |                 | continuing        | 90%                         | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |

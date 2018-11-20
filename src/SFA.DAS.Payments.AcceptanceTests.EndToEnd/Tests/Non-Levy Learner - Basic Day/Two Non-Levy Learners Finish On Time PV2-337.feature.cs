@@ -18,20 +18,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Two Non-Levy Learners Finish On Time PV2-197")]
-    public partial class TwoNon_LevyLearnersFinishOnTimePV2_197Feature
+    [NUnit.Framework.DescriptionAttribute("Two Non-Levy Learners Finish On Time PV2-337")]
+    public partial class TwoNon_LevyLearnersFinishOnTimePV2_337Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "Two Non-Levy Learners Finish On Time PV2-197.feature"
+#line 1 "Two Non-Levy Learners Finish On Time PV2-337.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Two Non-Levy Learners Finish On Time PV2-197", "Two Non-Levy Learners Finish On Time PV2-197", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Two Non-Levy Learners Finish On Time PV2-337", "Two Non-Levy Learners Finish On Time PV2-197", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Two Non-Levy Learners Finishes On Time PV2-197")]
+        [NUnit.Framework.DescriptionAttribute("Two Non-Levy Learners Finish On Time PV2-337")]
         [NUnit.Framework.TestCaseAttribute("R01/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R02/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R03/Current Academic Year", null)]
@@ -83,9 +83,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         [NUnit.Framework.TestCaseAttribute("R10/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R11/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R12/Current Academic Year", null)]
-        public virtual void TwoNon_LevyLearnersFinishesOnTimePV2_197(string collection_Period, string[] exampleTags)
+        public virtual void TwoNon_LevyLearnersFinishOnTimePV2_337(string collection_Period, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Two Non-Levy Learners Finishes On Time PV2-197", null, exampleTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Two Non-Levy Learners Finish On Time PV2-337", null, exampleTags);
 #line 4
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
