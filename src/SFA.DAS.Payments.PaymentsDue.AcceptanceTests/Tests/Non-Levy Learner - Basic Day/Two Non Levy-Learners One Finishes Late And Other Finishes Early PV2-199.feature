@@ -33,11 +33,12 @@ Scenario: 2_non_levy_learners_1finishes_Early
 	And planned course duration is 15 months
 	When an earnings event is received
 	Then the payments due component will generate the following contract type 2 payments due:
-	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
-	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
-	| L1		| p2                     | 2				| Completion (TT2)| 3750   |
-	| L1		| p2                     | 2				| Balancing (TT3) | 3000   |
-	| L2		| p3                     | 1				| Learning (TT1)  | 1000   |
+	| LearnerId | PriceEpisodeIdentifier | Delivery Period | TransactionType  | Amount |
+	| L1        | p2                     | 1               | Learning (TT1)   | 1000   |
+	| L1        | p2                     | 2               | Completion (TT2) | 3750   |
+	| L1        | p2                     | 2               | Balancing (TT3)  | 3000   |
+	| L2        | p3                     | 1               | Learning (TT1)   | 1000   |
+	| L2        | p3                     | 2               | Learning (TT1)   | 0      |
 
 @NonDas_BasicDay
 @Finishes_Late
@@ -52,4 +53,7 @@ Scenario: 2_non_levy_learners_1finishes_Late
 	| L1		| p2                     | 2				| Completion (TT2)| 3750   |
 	| L1		| p2                     | 2				| Balancing (TT3) | 3000   |
 	| L2		| p3                     | 1				| Learning (TT1)  | 1000   |
+	| L2		| p3                     | 2				| Learning (TT1)  | 0      |
+	| L2		| p3                     | 3				| Learning (TT1)  | 0      |
+	| L2		| p3                     | 4				| Learning (TT1)  | 0      |
 	| L2		| p3                     | 5				| Completion (TT2)| 3000   |
