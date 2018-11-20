@@ -234,6 +234,12 @@ this.FeatureBackground();
                         "1",
                         "Learning (TT1)",
                         "1000"});
+            table4.AddRow(new string[] {
+                        "L2",
+                        "p3",
+                        "2",
+                        "Learning (TT1)",
+                        "0"});
 #line 35
  testRunner.Then("the payments due component will generate the following contract type 2 payments d" +
                     "ue:", ((string)(null)), table4, "Then ");
@@ -250,16 +256,16 @@ this.FeatureBackground();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("2_non_levy_learners_1finishes_Late", null, new string[] {
                         "NonDas_BasicDay",
                         "Finishes_Late"});
-#line 45
+#line 46
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 4
 this.FeatureBackground();
-#line 46
- testRunner.Given("the current collection period is R05", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 47
- testRunner.And("planned course duration is 12 months", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Given("the current collection period is R05", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 48
+ testRunner.And("planned course duration is 12 months", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 49
  testRunner.When("an earnings event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -295,10 +301,28 @@ this.FeatureBackground();
             table5.AddRow(new string[] {
                         "L2",
                         "p3",
+                        "2",
+                        "Learning (TT1)",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "L2",
+                        "p3",
+                        "3",
+                        "Learning (TT1)",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "L2",
+                        "p3",
+                        "4",
+                        "Learning (TT1)",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "L2",
+                        "p3",
                         "5",
                         "Completion (TT2)",
                         "3000"});
-#line 49
+#line 50
  testRunner.Then("the payments due component will generate the following contract type 2 payments d" +
                     "ue:", ((string)(null)), table5, "Then ");
 #line hidden
