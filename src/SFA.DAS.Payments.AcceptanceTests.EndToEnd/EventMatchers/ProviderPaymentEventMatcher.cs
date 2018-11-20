@@ -31,7 +31,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return ProviderPaymentEventHandler.ReceivedEvents
                 .Where(ev =>
                     ev.Ukprn == testSession.Ukprn &&
-                    ev.Learner.ReferenceNumber == testSession.Learner.LearnRefNumber &&
                     ev.JobId == testSession.JobId)
                 .ToList();
 
@@ -43,19 +42,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var providerPayment in paymentSpec.Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name))
             {
+                var eventCollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod();
+                var deliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod();
+                var learner = new Learner { ReferenceNumber = testSession.GenerateLearnerReference(providerPayment.LearnerId)};
+
                 var coFundedSfa = new SfaCoInvestedProviderPaymentEvent
                 {
                     TransactionType = providerPayment.TransactionType,
                     AmountDue = providerPayment.SfaCoFundedPayments,
-                    CollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod(),
-                    DeliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod()
+                    CollectionPeriod = eventCollectionPeriod,
+                    DeliveryPeriod = deliveryPeriod,
+                    Learner = learner
                 };
+
                 var coFundedEmp = new EmployerCoInvestedProviderPaymentEvent
                 {
                     TransactionType = providerPayment.TransactionType,
                     AmountDue = providerPayment.EmployerCoFundedPayments,
-                    CollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod(),
-                    DeliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod()
+                    CollectionPeriod = eventCollectionPeriod,
+                    DeliveryPeriod = deliveryPeriod,
+                    Learner = learner
                 };
 
                 expectedPayments.Add(coFundedSfa);
@@ -71,7 +77,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.TransactionType == actual.TransactionType &&
                    expected.AmountDue == actual.AmountDue &&
                    expected.CollectionPeriod.Name == actual.CollectionPeriod.Name &&
-                   expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name;
+                   expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name &&
+                   expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber;
         }
     }
 }

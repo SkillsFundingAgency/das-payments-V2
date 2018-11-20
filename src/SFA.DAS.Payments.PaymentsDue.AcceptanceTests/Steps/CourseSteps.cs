@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data;
@@ -22,18 +23,23 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         [Given(@"the following course information:")]
         public void GivenTheFollowingCourseInformation(Table table)
         {
-            TestSession.Learner.Course = table.CreateSet<Course>().First();
+            var learnerCourse = table.CreateSet<LearnerOnCourse>().First();
+            Assert.IsNotNull(learnerCourse);
+            TestSession.Learner.Course = learnerCourse;
+            TestSession.Learner.LearnerIdentifier = learnerCourse.LearnerId;
         }
 
         [Given(@"the following course information for Learners:")]
         public void GivenTheFollowingCourseInformationForLearners(Table table)
         {
+            TestSession.Learners.Clear();
             var courses = table.CreateSet<LearnerOnCourse>().ToList();
             foreach (var course in courses)
             {
-                var learnRefNumber = TestSession.LearnRefNumberGenerator.Generate(TestSession.Ukprn, course.LearnerId);
-                var learner = TestSession.Learners.Single(l => l.LearnRefNumber == learnRefNumber);
+                var learner = TestSession.GenerateLearner();
+                learner.LearnerIdentifier = course.LearnerId;
                 learner.Course = course;
+                TestSession.Learners.Add(learner);
             }
         }
     }

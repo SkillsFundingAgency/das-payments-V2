@@ -7,8 +7,10 @@ using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data;
 using SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Handlers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using OnProgrammeEarning = SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Data.OnProgrammeEarning;
@@ -29,6 +31,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         {
             foreach (var act2EarningEvent in Act2EarningEvents)
             {
+                act2EarningEvent.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
                 await MessageSession.Send(act2EarningEvent);
             }
         }
@@ -42,25 +45,71 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
 
         private bool MatchPaymentDue(IReadOnlyCollection<OnProgrammePaymentDue> expectedPaymentsEvents)
         {
-            var matchedReceivedEvents = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Where(receivedEvent =>
+            var sessionEvents = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents.Where(r => r.Ukprn == TestSession.Ukprn).ToList();
+
+            var matchedReceivedEvents = sessionEvents.Where(receivedEvent =>
             {
                 return expectedPaymentsEvents.Any(expectedEvent =>
                 {
                     return expectedEvent.PriceEpisodeIdentifier == receivedEvent.PriceEpisodeIdentifier &&
                            expectedEvent.Amount == receivedEvent.AmountDue &&
-                           TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber &&
+                           TestSession.GetLearner(expectedEvent.LearnerId).LearnRefNumber == receivedEvent.Learner?.ReferenceNumber &&
                            expectedEvent.Type == receivedEvent.Type &&
-                           TestSession.Ukprn == receivedEvent.Ukprn &&
-                           expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period &&
-                           receivedEvent.CollectionPeriod.GetCollectionYear() == CollectionYear && 
-                           receivedEvent.CollectionPeriod.Period == CollectionPeriod;
+                           expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period;
                 });
             }).ToList();
 
-            var unexpected = ApprenticeshipContractType2PaymentDueEventHandler.ReceivedEvents
-                .Where(receivedEvent => !matchedReceivedEvents.Contains(receivedEvent) &&
-                                         TestSession.Ukprn == receivedEvent.Ukprn).ToList();
-            return matchedReceivedEvents.Count == expectedPaymentsEvents.Count && unexpected.Count == 0;
+            var allFound = matchedReceivedEvents.Count == expectedPaymentsEvents.Count;
+            var nothingExtra = sessionEvents.Count == matchedReceivedEvents.Count;
+
+#if DEBUG
+            if ((!allFound || !nothingExtra) && trace)
+            {
+                if (!allFound)
+                {
+                    Debug.WriteLine("Did not find all expected events. Trace:");
+                    TraceMismatch(expectedPaymentsEvents.ToList(), sessionEvents);
+                }
+
+                if (!nothingExtra)
+                {
+                    var unexpected = sessionEvents.Where(e => !matchedReceivedEvents.Contains(e)).ToList();
+                    Debug.WriteLine($"{unexpected.Count} unexpected events:");
+                    for (var i = 0; i < unexpected.Count; i++)
+                    {
+                        var e = unexpected[i];
+                        Debug.WriteLine($"{i + 1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
+                    }
+                }
+            }
+#endif
+            return allFound && nothingExtra;
+        }
+
+        private void TraceMismatch(IList<OnProgrammePaymentDue> expectedPaymentsEvents, IList<ApprenticeshipContractType2PaymentDueEvent> receivedEvents)
+        {
+            for (var i = 0; i < expectedPaymentsEvents.Count; i++)
+            {
+                var expectedEvent = expectedPaymentsEvents[i];
+                for (var k = 0; k < receivedEvents.Count; k++)
+                {
+                    var receivedEvent = receivedEvents[k];
+                    var mismatchedFields = new List<string>();
+                    var learnerReference = TestSession.GetLearner(expectedEvent.LearnerId).LearnRefNumber;
+
+                    if (expectedEvent.PriceEpisodeIdentifier != receivedEvent.PriceEpisodeIdentifier) mismatchedFields.Add($" PriceEpisodeIdentifier({expectedEvent.PriceEpisodeIdentifier}!={receivedEvent.PriceEpisodeIdentifier})");
+                    if (expectedEvent.Amount != receivedEvent.AmountDue) mismatchedFields.Add($" Amount({expectedEvent.Amount}!={receivedEvent.AmountDue})");
+                    if (learnerReference != receivedEvent.Learner?.ReferenceNumber) mismatchedFields.Add($"LearnRefNumber({learnerReference}!={receivedEvent.Learner?.ReferenceNumber})");
+                    if (expectedEvent.Type != receivedEvent.Type) mismatchedFields.Add($"Type({expectedEvent.Type}!={receivedEvent.Type})");
+                    if (expectedEvent.DeliveryPeriod != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.DeliveryPeriod}!={receivedEvent.DeliveryPeriod?.Period})");
+                    if (!receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)) mismatchedFields.Add($"CollectionPeriod({receivedEvent.CollectionPeriod} does not contain {CollectionYear})");
+
+                    if (mismatchedFields.Count == 0)
+                        Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Count}: match {k + 1}");
+                    else
+                        Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Count}: mismatch {k + 1} on {string.Join(",", mismatchedFields)}");
+                }
+            }
         }
 
         [Given(@"the following contract type (.*) On Programme earnings are provided:")]
@@ -68,36 +117,41 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         {
             var allEarnings = table.CreateSet<OnProgrammeEarning>().ToArray();
 
-            Act2EarningEvents = new List<ApprenticeshipContractType2EarningEvent>
+            Act2EarningEvents = new List<ApprenticeshipContractType2EarningEvent>();
+
+            // create separate earning for each mentioned learner
+
+            foreach (var learnerId in allEarnings.Select(e => e.LearnerId).Distinct())
             {
-                new ApprenticeshipContractType2EarningEvent
+                var learnerEarnings = allEarnings.Where(e => e.LearnerId == learnerId).ToList();
+                var testLearner = TestSession.GetLearner(learnerId); 
+                Act2EarningEvents.Add(new ApprenticeshipContractType2EarningEvent
                 {
                     Ukprn = TestSession.Ukprn,
-                    JobId = TestSession.JobId,
-                    EventTime = DateTimeOffset.UtcNow,
-                    CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
                     IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                    Learner =
-                        new Learner
-                        {
-                            ReferenceNumber = TestSession.Learner.LearnRefNumber, Uln = TestSession.Learner.Uln
-                        },
+                    JobId = TestSession.JobId,
+                    CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
+                    Learner = new Learner
+                    {
+                        ReferenceNumber = testLearner.LearnRefNumber,                        
+                        Uln = testLearner.Uln
+                    },
                     LearningAim = new LearningAim
                     {
-                        AgreedPrice = TestSession.Learner.Course.AgreedPrice,
-                        FrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                        FundingLineType = TestSession.Learner.Course.FundingLineType,
-                        Reference = TestSession.Learner.Course.LearnAimRef,
-                        PathwayCode = TestSession.Learner.Course.PathwayCode,
-                        StandardCode = TestSession.Learner.Course.StandardCode,
-                        ProgrammeType = TestSession.Learner.Course.ProgrammeType
+                        AgreedPrice = testLearner.Course.AgreedPrice,
+                        FrameworkCode = testLearner.Course.FrameworkCode,
+                        FundingLineType = testLearner.Course.FundingLineType,
+                        Reference = testLearner.Course.LearnAimRef,
+                        PathwayCode = testLearner.Course.PathwayCode,
+                        StandardCode = testLearner.Course.StandardCode,
+                        ProgrammeType = testLearner.Course.ProgrammeType
                     },
                     OnProgrammeEarnings = new ReadOnlyCollection<Model.Core.OnProgramme.OnProgrammeEarning>(
-                        allEarnings.GroupBy(e => e.Type).Select(group =>
+                        learnerEarnings.GroupBy(e => e.Type).Select(group =>
                             new Model.Core.OnProgramme.OnProgrammeEarning
                             {
-                                Type = @group.Key,
-                                Periods = new ReadOnlyCollection<EarningPeriod>(@group.Select(e => new EarningPeriod
+                                Type = group.Key,
+                                Periods = new ReadOnlyCollection<EarningPeriod>(group.Select(e => new EarningPeriod
                                 {
                                     Period = e.DeliveryPeriod,
                                     Amount = e.Amount,
@@ -106,8 +160,8 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                             }).ToArray()),
                     CollectionYear = CollectionYear,
                     SfaContributionPercentage = SfaContributionPercentage,
-                }
-            };
+                });
+            }
 
         }
 

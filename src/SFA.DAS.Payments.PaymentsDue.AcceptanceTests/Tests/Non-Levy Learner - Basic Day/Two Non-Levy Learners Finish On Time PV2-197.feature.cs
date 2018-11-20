@@ -18,20 +18,20 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Non_LevyLearner_Bas
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Two Non-Levy Learners Finishes On Time PV2-197")]
-    public partial class TwoNon_LevyLearnersFinishesOnTimePV2_197Feature
+    [NUnit.Framework.DescriptionAttribute("Two Non-Levy Learners Finish On Time PV2-197")]
+    public partial class TwoNon_LevyLearnersFinishOnTimePV2_197Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "Two Non-Levy Learners Finishes On Time PV2-197.feature"
+#line 1 "Two Non-Levy Learners Finish On Time PV2-197.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Two Non-Levy Learners Finishes On Time PV2-197", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Two Non-Levy Learners Finish On Time PV2-197", null, ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -81,16 +81,16 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Non_LevyLearner_Bas
 #line 7
  testRunner.And("planned course duration is 12 months", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "L1"});
-            table22.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "L2"});
 #line 8
- testRunner.And("following learners are undertaking training with a training provider", ((string)(null)), table22, "And ");
+ testRunner.And("following learners are undertaking training with a training provider", ((string)(null)), table1, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "AimSeqNumber",
                         "ProgrammeType",
@@ -101,7 +101,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Non_LevyLearner_Bas
                         "LearnAimRef",
                         "TotalNegotiatedPrice",
                         "CompletionStatus"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "L1",
                         "1",
                         "2",
@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Non_LevyLearner_Bas
                         "ZPROG001",
                         "15000",
                         "completed"});
-            table23.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "L2",
                         "1",
                         "2",
@@ -124,40 +124,40 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Tests.Non_LevyLearner_Bas
                         "7500",
                         "completed"});
 #line 13
- testRunner.And("the following course information for Learners:", ((string)(null)), table23, "And ");
+ testRunner.And("the following course information for Learners:", ((string)(null)), table2, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table24.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "L1",
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table24.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Completion (TT2)",
                         "3000"});
-            table24.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "L2",
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "800"});
-            table24.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "L2",
                         "p2",
                         "2",
                         "Completion (TT2)",
                         "2400"});
 #line 18
- testRunner.And("the following contract type 2 On Programme earnings are provided:", ((string)(null)), table24, "And ");
+ testRunner.And("the following contract type 2 On Programme earnings are provided:", ((string)(null)), table3, "And ");
 #line hidden
         }
         
@@ -178,31 +178,31 @@ this.FeatureBackground();
 #line 29
  testRunner.When("an earnings event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table25.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "L1",
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table25.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Completion (TT2)",
                         "3000"});
-            table25.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "L2",
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "800"});
-            table25.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "L2",
                         "p2",
                         "2",
@@ -210,7 +210,7 @@ this.FeatureBackground();
                         "2400"});
 #line 30
  testRunner.Then("the payments due component will generate the following contract type 2 payments d" +
-                    "ue:", ((string)(null)), table25, "Then ");
+                    "ue:", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

@@ -23,8 +23,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
-        [Given(@"the provider is providing trainging for the following learners")]
-        public void GivenTheProviderIsProvidingTraingingForTheFollowingLearners(Table table)
+        [Given(@"the provider is providing training for the following learners")]
+        public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
         {
             CurrentIlr = table.CreateSet<Training>().ToList();
         }
@@ -36,8 +36,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             
             foreach (var training in CurrentIlr)
             {
-                var learner = new FM36Learner();
-                PopulateLearner(learner, training, earnings);
+                var learnerId = training.LearnerId ?? TestSession.Learner.LearnerIdentifier;
+                var learner = new FM36Learner {LearnRefNumber = TestSession.GenerateLearnerReference(learnerId)};
+                var learnerEarnings = earnings.Where(e => (e.LearnerId ?? TestSession.Learner.LearnerIdentifier) == learnerId).ToList();
+                
+                PopulateLearner(learner, training, learnerEarnings);
+
                 var command = new ProcessLearnerCommand
                 {
                     Learner = learner,
@@ -49,10 +53,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     RequestTime = DateTimeOffset.UtcNow,
                     SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????                    
                 };
+
                 Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
                 await MessageSession.Send(command);
             }
-            await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession.Ukprn, TestSession.Learner.LearnRefNumber, TestSession.JobId), "OnProgrammeEarning event check failure");
+
+            await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession), "OnProgrammeEarning event check failure");
         }
 
         [Then(@"only the following payments will be calculated")]
@@ -107,5 +113,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
         }
         
+
+        [Then(@"no payments will be calculated for following collection periods")]
+        public void ThenNoPaymentsWillBeCalculatedForFollowingCollectionPeriods(Table table)
+        {
+        }
     }
 }

@@ -35,18 +35,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 Context.Set(item, key);
         }
 
-        protected async Task WaitForIt(Func<bool> lookForIt, string failText)
-        {
-            var endTime = DateTime.Now.Add(Config.TimeToWait);
-            while (DateTime.Now < endTime)
-            {
-                if (lookForIt())
-                    return;
-                await Task.Delay(Config.TimeToPause);
-            }
-            Assert.Fail(failText);
-        }
-
         protected async Task WaitForIt(Func<Task<bool>> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
@@ -57,6 +45,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail(failText);
+        }
+
+        protected async Task WaitForIt(Func<bool> lookForIt, string failText)
+        {
+            var endTime = DateTime.Now.Add(Config.TimeToWait);
+            while (DateTime.Now < endTime)
+            {
+                if (lookForIt())
+                    return;
+                await Task.Delay(Config.TimeToPause);
+            }
+            Assert.Fail($"{failText}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
         protected async Task WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 if (pass) return;
                 await Task.Delay(Config.TimeToPause);
             }
-            Assert.Fail(failText + " - " + reason);
+            Assert.Fail($"{failText} - {reason}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
         protected byte GetMonth(byte period)
