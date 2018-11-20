@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         && expectedEvent.Amount == payment.Amount
                     ));
                 return found;
-            }, $"Failed to find all payment in database. ");
+            }, "Failed to find all payment in database.");
         }
 
         [Then(@"at month end the provider payments service will publish the following payments")]
