@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                 {
                     return expectedEvent.PriceEpisodeIdentifier == receivedEvent.PriceEpisodeIdentifier &&
                            expectedEvent.Amount == receivedEvent.AmountDue &&
-                           TestSession.GenerateLearnerReference(expectedEvent.LearnerId) == receivedEvent.Learner?.ReferenceNumber &&
+                           TestSession.GetLearner(expectedEvent.LearnerId).LearnRefNumber == receivedEvent.Learner?.ReferenceNumber &&
                            expectedEvent.Type == receivedEvent.Type &&
                            expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period;
                 });
@@ -95,7 +95,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                 {
                     var receivedEvent = receivedEvents[k];
                     var mismatchedFields = new List<string>();
-                    var learnerReference = TestSession.GenerateLearnerReference(expectedEvent.LearnerId);
+                    var learnerReference = TestSession.GetLearner(expectedEvent.LearnerId).LearnRefNumber;
 
                     if (expectedEvent.PriceEpisodeIdentifier != receivedEvent.PriceEpisodeIdentifier) mismatchedFields.Add($" PriceEpisodeIdentifier({expectedEvent.PriceEpisodeIdentifier}!={receivedEvent.PriceEpisodeIdentifier})");
                     if (expectedEvent.Amount != receivedEvent.AmountDue) mismatchedFields.Add($" Amount({expectedEvent.Amount}!={receivedEvent.AmountDue})");
@@ -124,31 +124,34 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
             foreach (var learnerId in allEarnings.Select(e => e.LearnerId).Distinct())
             {
                 var learnerEarnings = allEarnings.Where(e => e.LearnerId == learnerId).ToList();
-
+                var testLearner = TestSession.GetLearner(learnerId); 
                 Act2EarningEvents.Add(new ApprenticeshipContractType2EarningEvent
                 {
+                    Ukprn = TestSession.Ukprn,
+                    IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
+                    JobId = TestSession.JobId,
                     CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
                     Learner = new Learner
                     {
-                        ReferenceNumber = TestSession.GenerateLearnerReference(learnerId),                        
-                        Uln = TestSession.Learner.Uln
+                        ReferenceNumber = testLearner.LearnRefNumber,                        
+                        Uln = testLearner.Uln
                     },
                     LearningAim = new LearningAim
                     {
-                        AgreedPrice = TestSession.Learner.Course.AgreedPrice,
-                        FrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                        FundingLineType = TestSession.Learner.Course.FundingLineType,
-                        Reference = TestSession.Learner.Course.LearnAimRef,
-                        PathwayCode = TestSession.Learner.Course.PathwayCode,
-                        StandardCode = TestSession.Learner.Course.StandardCode,
-                        ProgrammeType = TestSession.Learner.Course.ProgrammeType
+                        AgreedPrice = testLearner.Course.AgreedPrice,
+                        FrameworkCode = testLearner.Course.FrameworkCode,
+                        FundingLineType = testLearner.Course.FundingLineType,
+                        Reference = testLearner.Course.LearnAimRef,
+                        PathwayCode = testLearner.Course.PathwayCode,
+                        StandardCode = testLearner.Course.StandardCode,
+                        ProgrammeType = testLearner.Course.ProgrammeType
                     },
                     OnProgrammeEarnings = new ReadOnlyCollection<Model.Core.OnProgramme.OnProgrammeEarning>(
                         learnerEarnings.GroupBy(e => e.Type).Select(group =>
                             new Model.Core.OnProgramme.OnProgrammeEarning
                             {
-                                Type = @group.Key,
-                                Periods = new ReadOnlyCollection<EarningPeriod>(@group.Select(e => new EarningPeriod
+                                Type = group.Key,
+                                Periods = new ReadOnlyCollection<EarningPeriod>(group.Select(e => new EarningPeriod
                                 {
                                     Period = e.DeliveryPeriod,
                                     Amount = e.Amount,
