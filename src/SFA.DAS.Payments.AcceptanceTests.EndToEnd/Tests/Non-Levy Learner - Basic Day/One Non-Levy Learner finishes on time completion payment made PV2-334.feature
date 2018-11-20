@@ -39,7 +39,7 @@ Scenario Outline:  One Non-levy learner finishes on time
 		| ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type        | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
 		| learner a | 1        | Sep/Last Academic Year | 12 months        | 9000                 | Sep/Last Academic Year              | 6000                   | Sep/Last Academic Year                | 12 months       | completed         | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 
-	When the amended ILR file is re-submitted for the learners in collection period R01/Current Academic Year
+	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing |
 		| Aug/Current Academic Year | 1000         | 0          | 0         |
@@ -54,7 +54,7 @@ Scenario Outline:  One Non-levy learner finishes on time
 		| May/Current Academic Year | 0            | 0          | 0         |
 		| Jun/Current Academic Year | 0            | 0          | 0         |
 		| Jul/Current Academic Year | 0            | 0          | 0         |
-    And only the following payments will be calculated
+    And only the following payments will be calculated  
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
 		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
 		| R02/Current Academic Year | Sep/Current Academic Year | 0            | 3000       | 0         |

@@ -322,8 +322,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 37
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
 #line 40
- testRunner.When("the amended ILR file is re-submitted for the learners in collection period R05/Cu" +
-                    "rrent Academic Year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
