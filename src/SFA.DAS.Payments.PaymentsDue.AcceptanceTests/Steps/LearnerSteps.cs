@@ -20,13 +20,13 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         [Given(@"following learners are undertaking training with a training provider")]
         public void GivenFollowingLearnersAreUndertakingTrainingWithATrainingProvider(Table table)
         {
-            TestSession.Learners.Clear();
-            foreach (var row in table.Rows)
-            {
-                var learner = TestSession.GenerateLearner();
-                learner.LearnRefNumber = TestSession.LearnRefNumberGenerator.Generate(learner.Ukprn, row["LearnerId"]);
-                TestSession.Learners.Add(learner);
-            }
+            //TestSession.Learners.Clear();
+            //foreach (var row in table.Rows)
+            //{
+            //    var learner = TestSession.GenerateLearner();
+            //    learner.LearnRefNumber = TestSession.LearnRefNumberGenerator.Generate(learner.Ukprn, row["LearnerId"]);
+            //    TestSession.Learners.Add(learner);
+            //}
         }
     }
 }
