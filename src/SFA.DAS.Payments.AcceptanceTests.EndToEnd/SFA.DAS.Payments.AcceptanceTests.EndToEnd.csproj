@@ -251,6 +251,11 @@
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature.cs">
+      <DependentUpon>One Non-Levy Learner finishes on time completion payment made PV2-334.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -302,6 +307,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-Levy Learner finishes on time completion payment made PV2-334.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner withdraws after planned end date PV2-278.feature.cs</LastGenOutput>
