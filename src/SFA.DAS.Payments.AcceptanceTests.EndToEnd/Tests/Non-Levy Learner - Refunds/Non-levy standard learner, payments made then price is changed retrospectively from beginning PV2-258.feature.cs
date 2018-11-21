@@ -94,7 +94,6 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "ULN",
                         "Priority",
                         "Start Date",
                         "Planned Duration",
@@ -113,7 +112,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "Programme Type",
                         "Funding Line Type"});
             table1.AddRow(new string[] {
-                        "learner a",
                         "1",
                         "start of academic year",
                         "12 months",
@@ -224,7 +222,6 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.And("the following provider payments had been generated", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "ULN",
                         "Priority",
                         "Start Date",
                         "Planned Duration",
@@ -243,7 +240,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "Programme Type",
                         "Funding Line Type"});
             table4.AddRow(new string[] {
-                        "learner a",
                         "1",
                         "start of academic year",
                         "12 months",
