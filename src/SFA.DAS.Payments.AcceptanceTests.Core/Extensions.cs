@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 var monthAndYear = ParseTwoPartDescription($"{parts[1]}/{parts[2]}");
                 try
                 {
-                    var result = monthAndYear.AddDays(int.Parse(parts[0]));
+                    var result = monthAndYear.AddDays(int.Parse(parts[0]) - 1);
                     return result;
                 }
                 catch (Exception e)
