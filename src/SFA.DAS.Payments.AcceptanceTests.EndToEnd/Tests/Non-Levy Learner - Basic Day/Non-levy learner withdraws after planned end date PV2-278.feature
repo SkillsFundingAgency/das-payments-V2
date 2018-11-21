@@ -1,7 +1,7 @@
-﻿Feature: Non-levy learner provider retrospectively notifies a withdrawal - PV2-278
+﻿Feature: A non-levy learner withdraws after planned end date PV2-278
 
 
-Scenario Outline: A non-levy learner withdraws after planned end date PV2-278
+Scenario Outline: A non-levy learner withdraws after planned end date
     Given the provider previously submitted the following learner details in collection period "R01/Last Academic Year"
 		| ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
 		| learner a | 1        | Sep/Last Academic Year | 12 months        | 12000                | Sep/Last Academic Year              | 3000                   | Sep/Last Academic Year                |                 | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
@@ -71,9 +71,8 @@ Scenario Outline: A non-levy learner withdraws after planned end date PV2-278
         | May/Current Academic Year | 0            | 0          | 0         |
         | Jun/Current Academic Year | 0            | 0          | 0         |
         | Jul/Current Academic Year | 0            | 0          | 0         |
-    #And no payments will be calculated
+
 	And no provider payments will be recorded
-	#And at month end no provider payments will be generated
 
 	Examples:
 		| collection_period			|

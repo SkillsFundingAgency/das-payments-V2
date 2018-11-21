@@ -18,8 +18,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Non-levy learner provider retrospectively notifies a withdrawal - PV2-278")]
-    public partial class Non_LevyLearnerProviderRetrospectivelyNotifiesAWithdrawal_PV2_278Feature
+    [NUnit.Framework.DescriptionAttribute("A non-levy learner withdraws after planned end date PV2-278")]
+    public partial class ANon_LevyLearnerWithdrawsAfterPlannedEndDatePV2_278Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-levy learner provider retrospectively notifies a withdrawal - PV2-278", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "A non-levy learner withdraws after planned end date PV2-278", null, ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("A non-levy learner withdraws after planned end date PV2-278")]
+        [NUnit.Framework.DescriptionAttribute("A non-levy learner withdraws after planned end date")]
         [NUnit.Framework.TestCaseAttribute("R05/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R06/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R07/Current Academic Year", null)]
@@ -79,9 +79,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         [NUnit.Framework.TestCaseAttribute("R10/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R11/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R12/Current Academic Year", null)]
-        public virtual void ANon_LevyLearnerWithdrawsAfterPlannedEndDatePV2_278(string collection_Period, string[] exampleTags)
+        public virtual void ANon_LevyLearnerWithdrawsAfterPlannedEndDate(string collection_Period, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-levy learner withdraws after planned end date PV2-278", null, exampleTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-levy learner withdraws after planned end date", null, exampleTags);
 #line 4
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
