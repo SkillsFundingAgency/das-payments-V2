@@ -5,7 +5,7 @@
 Scenario Outline:  One Non-levy learner finishes on time
 	Given the provider previously submitted the following learner details
 		| ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| learner a | 1        | Sep/Last Academic Year | 12 months        | 9000                 | Sep/Last Academic Year              | 6000                   | 1st day of Sep/Last Academic Year     |                 | continuing        | ACT2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| learner a | 1        | Sep/Last Academic Year | 12 months        | 9000                 | Sep/Last Academic Year              | 6000                   | 1st day of Sep/Last Academic Year     |                 | continuing        | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 
     And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing | 
@@ -37,7 +37,7 @@ Scenario Outline:  One Non-levy learner finishes on time
 
     But the Provider now changes the Learner details as follows
 		| ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| learner a | 1        | Sep/Last Academic Year | 12 months        | 9000                 | Sep/Last Academic Year              | 6000                   | Sep/Last Academic Year                | 12 months       | completed         | ACT2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| learner a | 1        | Sep/Last Academic Year | 12 months        | 9000                 | Sep/Last Academic Year              | 6000                   | Sep/Last Academic Year                | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 
 	When the amended ILR file is re-submitted for the learners in collection period R01/Current Academic Year
 	Then the following learner earnings should be generated
