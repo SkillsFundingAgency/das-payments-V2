@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 Learner = new Learner {ReferenceNumber = "1234-ref", Uln = 123456 },
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                 Ukprn = 12345,
-                ContractType = ContractType.ContractWithSfa, 
+                ContractType = ContractType.Act1, 
                 SfaContributionPercentage = 0.9m, 
                 PriceEpisodeIdentifier = "pe-1",
                 JobId = 123,

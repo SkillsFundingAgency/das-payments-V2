@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 LearningAimPathwayCode = testSessionLearner.Course.PathwayCode,
                 LearningAimFundingLineType = testSessionLearner.Course.FundingLineType,
                 FundingSource = fundingSource,
-                ContractType = Payments.Model.Core.Entities.ContractType.ContractWithEmployer,
+                ContractType = Payments.Model.Core.Entities.ContractType.Act2,
                 SfaContributionPercentage = SfaContributionPercentage,
                 JobId = TestSession.JobId,
                 TransactionType = (TransactionType)payment.Type,
