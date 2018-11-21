@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 }
                 catch (Exception e)
                 {
-                    throw new Exception("Please use a format like: 03/Aug/This academic year", e);
+                    throw new Exception("Please use a format like: 03/Aug/current academic year", e);
                 }
             }
             return ParseTwoPartDescription(dateText);
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     return new DateTime(DateTime.Today.Month >= 8 ? DateTime.Today.Year - 1 : DateTime.Today.Year - 2, 8, 1);
                 default:
                     var parts = dateText.Split('/');
-                    if (parts.Length != 2) //TODO: need to fix to work for "04/Aug/current academic year" style dates
+                    if (parts.Length != 2)
                         Assert.Fail(
                             $"Invalid period format found.  Expected month or period followed by year text e.g. R01/current Academic Year or Aug/Last Academic Year but found: {dateText}");
                     var period = parts[0].StartsWith("R", StringComparison.OrdinalIgnoreCase)
