@@ -506,12 +506,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0"});
 #line 60
     testRunner.Then("the following learner earnings should be generated", ((string)(null)), table8, "Then ");
-#line 74
-    testRunner.And("no payments will be calculated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 75
  testRunner.And("no provider payments will be recorded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 76
- testRunner.And("at month end no provider payments will be generated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }

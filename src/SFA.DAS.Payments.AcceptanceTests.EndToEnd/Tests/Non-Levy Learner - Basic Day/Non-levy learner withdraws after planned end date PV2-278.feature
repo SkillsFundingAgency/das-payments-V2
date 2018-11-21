@@ -71,9 +71,9 @@ Scenario Outline: A non-levy learner withdraws after planned end date PV2-278
         | May/Current Academic Year | 0            | 0          | 0         |
         | Jun/Current Academic Year | 0            | 0          | 0         |
         | Jul/Current Academic Year | 0            | 0          | 0         |
-    And no payments will be calculated
+    #And no payments will be calculated
 	And no provider payments will be recorded
-	And at month end no provider payments will be generated
+	#And at month end no provider payments will be generated
 
 	Examples:
 		| collection_period			|

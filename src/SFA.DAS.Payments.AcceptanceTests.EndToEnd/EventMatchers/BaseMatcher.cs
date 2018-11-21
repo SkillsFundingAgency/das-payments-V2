@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.Payments.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -35,8 +36,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         public Tuple<bool, string> MatchNoPayments()
         {
-            return GetActualEvents().Any()
-                ? new Tuple<bool, string>(false,"Found Unexpected Payments"): new Tuple<bool, string>(true, string.Empty);
+            var payments = GetActualEvents();
+            return !payments.Any()
+                ? new Tuple<bool, string>(true, string.Empty)
+                : new Tuple<bool, string>(false, $"Found Unexpected Payments: {payments.Aggregate(string.Empty,(currText,payment)=> $"{currText}, {payment.ToJson()}")}");
         }
     }
 }

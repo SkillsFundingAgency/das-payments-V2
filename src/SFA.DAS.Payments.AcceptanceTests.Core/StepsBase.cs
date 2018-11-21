@@ -73,17 +73,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             Assert.Fail($"{failText} - {reason}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
-        protected async Task WaitForUnExpected(Func<Tuple<bool, string>> lookForIt, string failText)
+        protected async Task WaitForUnExpected(Func<Tuple<bool, string>> findUnexpected, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
-            var reason = "";
             while (DateTime.Now < endTime)
             {
-                bool pass;
-                (pass, reason) = lookForIt();
-                if (pass)
+                bool nothingFound;
+                var reason = "";
+                (nothingFound, reason) = findUnexpected();
+                if (!nothingFound)
                 {
-                    Assert.Fail($"{failText}- {reason}   Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
+                    Assert.Fail($"{failText} - {reason}   Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
                 }
 
                 await Task.Delay(Config.TimeToPause);
