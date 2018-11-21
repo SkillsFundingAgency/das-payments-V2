@@ -1,4 +1,7 @@
-﻿Feature: Learner Change of Circs
+﻿Feature: Learner Change of Circumstances - Change to start date - PV2-282
+	As a provider,
+	I want a non-levy learner, where change to start date within calendar month, forward in month is paid the correct amount
+	So that I am accurately paid my apprenticeship provision.
 
 Scenario Outline: Change to start date within calendar month, forward in month PV2-282
 	Given the provider previously submitted the following learner details
