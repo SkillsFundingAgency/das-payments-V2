@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_LearnerChangeOfCircs
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_LearnerChangeOfCircumstances
 {
     using TechTalk.SpecFlow;
     
@@ -19,13 +19,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Learne
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Non-Levy learner, and there is a change to the negotiated price which happens at " +
-        "the end of the month")]
-    public partial class Non_LevyLearnerAndThereIsAChangeToTheNegotiatedPriceWhichHappensAtTheEndOfTheMonthFeature
+        "the end of the month - PV2-209")]
+    public partial class Non_LevyLearnerAndThereIsAChangeToTheNegotiatedPriceWhichHappensAtTheEndOfTheMonth_PV2_209Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "Change to agreed price at end of month.feature"
+#line 1 "Change to agreed price at end of month - PV2 - 209.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
@@ -33,7 +33,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Learne
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-Levy learner, and there is a change to the negotiated price which happens at " +
-                    "the end of the month", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+                    "the end of the month - PV2-209", "\tAs a provider,\r\n\tI want a non-levy learner, changes to the agreed price at the e" +
+                    "nd of the month, to be paid the correct amount\r\n\tSo that I am accurately paid my" +
+                    " apprenticeship provision.", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -85,7 +87,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Learne
         public virtual void Non_LevyLearnerChangesToTheAgreedPriceAtTheEndOfTheMonthPV2_209(string collection_Period, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non-levy learner changes to the agreed price at the end of the month PV2-209", null, exampleTags);
-#line 3
+#line 6
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line hidden
@@ -125,7 +127,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
-#line 4
+#line 7
  testRunner.Given("the provider previously submitted the following learner details", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -193,7 +195,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "1000",
                         "0",
                         "0"});
-#line 7
+#line 10
     testRunner.And("the following earnings had been generated for the learner", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -220,7 +222,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "900",
                         "100",
                         "Learning"});
-#line 21
+#line 24
     testRunner.And("the following provider payments had been generated", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -259,9 +261,9 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
-#line 26
-    testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
 #line 29
+    testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
+#line 32
  testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -329,7 +331,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "500",
                         "0",
                         "0"});
-#line 30
+#line 33
     testRunner.Then("the following learner earnings should be generated", ((string)(null)), table5, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -392,7 +394,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "500",
                         "0",
                         "0"});
-#line 44
+#line 47
     testRunner.And("only the following payments will be calculated", ((string)(null)), table6, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -455,7 +457,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "450",
                         "50",
                         "Learning"});
-#line 55
+#line 58
     testRunner.And("only the following provider payments will be recorded", ((string)(null)), table7, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -518,7 +520,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "450",
                         "50",
                         "Learning"});
-#line 66
+#line 69
  testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table8, "And ");
 #line hidden
             this.ScenarioCleanup();
