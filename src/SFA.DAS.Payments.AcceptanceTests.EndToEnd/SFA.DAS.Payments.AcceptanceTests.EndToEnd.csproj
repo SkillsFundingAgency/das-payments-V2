@@ -281,6 +281,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy standard learner, payments made then price is changed retrospectively from beginning PV2-258.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner Change Of Circumstances\One Non-levy learner - change to start date within calendar month, backwards in month PV2-283.feature.cs">
+      <DependentUpon>One Non-levy learner - change to start date within calendar month, backwards in month PV2-283.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -320,6 +325,10 @@
     <None Include="Tests\Non-Levy Learner - Refunds\Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner Change Of Circumstances\One Non-levy learner - change to start date within calendar month, backwards in month PV2-283.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-levy learner - change to start date within calendar month, backwards in month PV2-283.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
