@@ -34,12 +34,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return new Tuple<bool, string>(errors.Count == 0, string.Join(", ", errors));
         }
 
-        public Tuple<bool, string> MatchNoPayments()
+        public (bool pass, string reason) MatchNoPayments()
         {
             var payments = GetActualEvents();
             return !payments.Any()
-                ? new Tuple<bool, string>(true, string.Empty)
-                : new Tuple<bool, string>(false, $"Found Unexpected Payments: {payments.Aggregate(string.Empty,(currText,payment)=> $"{currText}, {payment.ToJson()}")}");
+                ?  (true, string.Empty)
+                :  (false, $"Found Unexpected Payments: {payments.Aggregate(string.Empty,(currText,payment)=> $"{currText}, {payment.ToJson()}")}");
         }
     }
 }

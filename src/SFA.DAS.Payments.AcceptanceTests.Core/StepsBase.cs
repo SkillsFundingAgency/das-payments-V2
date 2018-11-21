@@ -67,30 +67,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             {
                 bool pass;
                 (pass, reason) = lookForIt();
+
                 if (pass) return;
                 await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail($"{failText} - {reason}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
-        protected async Task WaitForUnExpected(Func<Tuple<bool, string>> findUnexpected, string failText)
+        protected async Task WaitForUnExpected(Func<(bool pass, string reason)> findUnexpected, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWaitForUnexpected);
             while (DateTime.Now < endTime)
             {
-                bool nothingFound;
-                var reason = "";
-                (nothingFound, reason) = findUnexpected();
-                if (!nothingFound)
+                var (pass, reason) = findUnexpected();
+                if (!pass)
                 {
                     Assert.Fail($"{failText} - {reason}   Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
                 }
 
                 await Task.Delay(Config.TimeToPause);
             }
-           
-        }
 
+        }
         protected byte GetMonth(byte period)
         {
             return (byte)(period >= 5 ? period - 4 : period + 8);
