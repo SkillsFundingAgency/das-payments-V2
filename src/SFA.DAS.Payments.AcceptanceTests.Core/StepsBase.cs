@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         protected async Task WaitForUnExpected(Func<Tuple<bool, string>> findUnexpected, string failText)
         {
-            var endTime = DateTime.Now.Add(Config.TimeToWait);
+            var endTime = DateTime.Now.Add(Config.TimeToWaitForUnexpected);
             while (DateTime.Now < endTime)
             {
                 bool nothingFound;

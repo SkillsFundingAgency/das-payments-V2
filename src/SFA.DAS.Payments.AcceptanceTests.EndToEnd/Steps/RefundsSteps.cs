@@ -24,6 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var ilr = table.CreateSet<Training>().ToList();
             PreviousIlr = ilr;
+            AddTestLearners(PreviousIlr);
         }
 
         [Given(@"the following earnings had been generated for the learner")]
@@ -67,6 +68,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var ilr = table.CreateSet<Training>().ToList();
             CurrentIlr = ilr;
+            AddTestLearners(CurrentIlr);
         }
 
         [Given(@"price details as follows")]

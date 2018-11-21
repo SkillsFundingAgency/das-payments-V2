@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 ContractType = contractType,
                 Amount = paymentInfo.EmployerCoFundedPayments,
                 FundingSource = FundingSourceType.CoInvestedEmployer,
-                LearnerReferenceNumber = testSession.GenerateLearnerReference(paymentInfo.LearnerId)
+                LearnerReferenceNumber = testSession.GetLearner(paymentInfo.LearnerId).LearnRefNumber
             };
         }
     }

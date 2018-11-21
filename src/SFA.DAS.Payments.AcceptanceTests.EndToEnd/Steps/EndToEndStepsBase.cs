@@ -66,6 +66,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             CollectionYear = CurrentCollectionPeriod.Name.Split('-').FirstOrDefault();
         }
 
+        protected void AddTestLearners(List<Training> training)
+        {
+            training.ForEach(ilrLearner =>
+            {
+                var learner = TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == ilrLearner.LearnerId);
+                if (learner == null)
+                {
+                    learner = TestSession.GenerateLearner();
+                    learner.LearnerIdentifier = ilrLearner.LearnerId;
+                    TestSession.Learners.Add(learner);
+                }
+                learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
+                learner.Course.StandardCode = ilrLearner.StandardCode;
+                learner.Course.FundingLineType = ilrLearner.FundingLineType;
+                learner.Course.LearnAimRef = ilrLearner.AimReference;
+                learner.Course.CompletionStatus = ilrLearner.CompletionStatus;
+            });
+
+        }
+
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, OnProgrammeEarning earning)
         {
             return new List<PaymentModel>
@@ -82,7 +102,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodeIdentifier = "pe-1",
                     FundingSource = FundingSourceType.CoInvestedSfa,
                     //LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                    LearnerReferenceNumber = TestSession.GenerateLearnerReference(learnerTraining.LearnerId),
+                    LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
                     LearningAimReference = learnerTraining.AimReference,
                     //LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                     IlrSubmissionDateTime = submissionTime,
@@ -105,7 +125,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodeIdentifier = "pe-1",
                     FundingSource = FundingSourceType.CoInvestedEmployer,
                     //LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                    LearnerReferenceNumber = TestSession.GenerateLearnerReference(learnerTraining.LearnerId),
+                    LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
                     LearningAimReference = learnerTraining.AimReference,
                     //LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                     IlrSubmissionDateTime = submissionTime,
@@ -168,7 +188,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         TotalAssessmentPrice = learnerEarnings.TotalAssessmentPrice,
                         TotalTrainingPrice = learnerEarnings.TotalTrainingPrice,
                         TotalAssessmentPriceEffectiveDate = learnerEarnings.StartDate,
-                        TotalTrainingPriceEffectiveDate = learnerEarnings.StartDate                        
+                        TotalTrainingPriceEffectiveDate = learnerEarnings.StartDate
                     }
                 };
             }

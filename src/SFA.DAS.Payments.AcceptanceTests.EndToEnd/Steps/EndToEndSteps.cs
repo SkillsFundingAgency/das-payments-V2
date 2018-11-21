@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
         {
             CurrentIlr = table.CreateSet<Training>().ToList();
+            AddTestLearners(CurrentIlr);
         }
 
         [Given(@"the provider previously submitted the following learner details in collection period ""(.*)""")]
@@ -34,6 +35,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             SetCollectionPeriod(previousCollectionPeriod);
             var ilr = table.CreateSet<Training>().ToList();
             PreviousIlr = ilr;
+            AddTestLearners(PreviousIlr);
         }
 
         [Then(@"the following learner earnings should be generated")]
@@ -43,9 +45,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             
             foreach (var training in CurrentIlr)
             {
-                var learnerId = training.LearnerId ?? TestSession.Learner.LearnerIdentifier;
-                var learner = new FM36Learner {LearnRefNumber = TestSession.GenerateLearnerReference(learnerId)};
-                var learnerEarnings = earnings.Where(e => (e.LearnerId ?? TestSession.Learner.LearnerIdentifier) == learnerId).ToList();
+                var learnerId = training.LearnerId;
+                var learner = new FM36Learner {LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber};
+                var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
                 
                 PopulateLearner(learner, training, learnerEarnings);
 
