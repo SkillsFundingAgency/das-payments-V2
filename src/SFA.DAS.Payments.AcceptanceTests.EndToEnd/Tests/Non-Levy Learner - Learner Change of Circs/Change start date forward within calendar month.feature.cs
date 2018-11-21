@@ -89,8 +89,6 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Learner ID",
-                        "Priority",
                         "Start Date",
                         "Planned Duration",
                         "Total Training Price",
@@ -108,8 +106,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "Funding Line Type",
                         "SFA Contribution Percentage"});
             table1.AddRow(new string[] {
-                        "learner a",
-                        "1",
                         "05/Aug/Current Academic Year",
                         "12 months",
                         "9000",
@@ -118,7 +114,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "05/Aug/Current Academic Year",
                         "",
                         "continuing",
-                        "ContractWithEmployer",
+                        "Act2",
                         "1",
                         "ZPROG001",
                         "403",
@@ -219,8 +215,6 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.And("the following provider payments had been generated", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Learner ID",
-                        "Priority",
                         "Start Date",
                         "Planned Duration",
                         "Total Training Price",
@@ -238,8 +232,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "Funding Line Type",
                         "SFA Contribution Percentage"});
             table4.AddRow(new string[] {
-                        "learner a",
-                        "1",
                         "06/Aug/Current Academic Year",
                         "12 months",
                         "9000",
@@ -248,7 +240,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "06/Aug/Current Academic Year",
                         "",
                         "continuing",
-                        "ContractWithEmployer",
+                        "Act2",
                         "1",
                         "ZPROG001",
                         "403",
