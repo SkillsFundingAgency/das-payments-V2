@@ -15,6 +15,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             
         public static DateTime ToDate(this string dateText)
         {
+            var parts = dateText.Split('/');
+            if (parts.Length == 3)
+            {
+                var monthAndYear = ParseTwoPartDescription($"{parts[1]}/{parts[2]}");
+                try
+                {
+                    return monthAndYear.AddDays(int.Parse(parts[0]) - 1);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Please use a format like: 03/Aug/current academic year", e);
+                }
+            }
+            return ParseTwoPartDescription(dateText);
+        }
+
+        private static DateTime ParseTwoPartDescription(string dateText)
+        {
             switch (dateText.ToLower())
             {
                 case "today":
@@ -33,7 +51,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     return new DateTime(DateTime.Today.Month >= 8 ? DateTime.Today.Year - 1 : DateTime.Today.Year - 2, 8, 1);
                 default:
                     var parts = dateText.Split('/');
-                    if (parts.Length != 2)  //TODO: need to fix to work for "04/Aug/current academic year" style dates
+                    if (parts.Length != 2)
                         Assert.Fail(
                             $"Invalid period format found.  Expected month or period followed by year text e.g. R01/current Academic Year or Aug/Last Academic Year but found: {dateText}");
                     var period = parts[0].StartsWith("R", StringComparison.OrdinalIgnoreCase)

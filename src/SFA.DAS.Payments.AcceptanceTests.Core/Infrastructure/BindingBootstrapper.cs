@@ -1,5 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Autofac;
+using Microsoft.ServiceBus;
+using Microsoft.ServiceBus.Messaging;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Messages.Core;
@@ -49,6 +54,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         {
             Container = Builder.Build();
         }
+
+        [BeforeTestRun(Order = 75)]
+        public static async Task ClearQueue()
+        {
+            var namespaceManager = NamespaceManager.CreateFromConnectionString(Config.ServiceBusConnectionString);
+            if (!namespaceManager.QueueExists(Config.AcceptanceTestsEndpointName))
+            {
+                Console.WriteLine($"'{Config.AcceptanceTestsEndpointName}' not found.");
+                return;
+            }
+            Console.WriteLine($"Now clearing queue: '{Config.AcceptanceTestsEndpointName}'");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var messagingFactory = MessagingFactory.CreateFromConnectionString(Config.ServiceBusConnectionString);
+            var receiver = await messagingFactory.CreateMessageReceiverAsync(Config.AcceptanceTestsEndpointName, ReceiveMode.ReceiveAndDelete);
+            while (true)
+            {
+                var messages = await receiver.ReceiveBatchAsync(500, TimeSpan.FromSeconds(1));
+                if (!messages.Any())
+                {
+                    break;
+                }
+            };
+            Console.WriteLine($"Finished purging messages from {Config.AcceptanceTestsEndpointName}. Took: {stopwatch.ElapsedMilliseconds}ms");
+        } 
 
         [BeforeTestRun(Order = 99)]
         public static void StartBus()

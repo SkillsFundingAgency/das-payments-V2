@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                         Name = "1819-R08"
                     },
                     IlrSubmissionDateTime = DateTime.UtcNow,
-                    ContractType = ContractType.ContractWithSfa,
+                    ContractType = ContractType.Act1,
                     PriceEpisodeIdentifier = "P-1",
                     LearnerReferenceNumber = "100500",
                     ExternalId = Guid.NewGuid(),

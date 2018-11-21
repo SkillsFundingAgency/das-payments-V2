@@ -309,10 +309,6 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
-    <None Include="App.Release.config">
-      <DependentUpon>App.config</DependentUpon>
-      <IsTransformFile>true</IsTransformFile>
-    </None>
     <None Include="ILR Resubmission\ILR Resubmission.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ILR Resubmission.feature.cs</LastGenOutput>
