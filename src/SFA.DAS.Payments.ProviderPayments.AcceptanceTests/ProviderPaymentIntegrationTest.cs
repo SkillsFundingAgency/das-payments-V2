@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
 
             fundingSourcePaymentEvent = new SfaCoInvestedFundingSourcePaymentEvent
             {
-                ContractType = ContractType.ContractWithSfa,
+                ContractType = ContractType.Act1,
                 FundingSourceType = FundingSourceType.CoInvestedSfa,
                 OnProgrammeEarningType = OnProgrammeEarningType.Learning,
                 CollectionPeriod = new CalendarPeriod(2018, 10),

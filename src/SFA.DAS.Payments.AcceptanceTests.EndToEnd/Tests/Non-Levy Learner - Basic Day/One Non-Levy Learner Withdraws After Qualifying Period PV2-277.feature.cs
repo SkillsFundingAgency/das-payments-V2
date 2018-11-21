@@ -120,7 +120,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "4 months",
                         "withdrawn",
                         "90%",
-                        "ContractWithEmployer",
+                        "Act2",
                         "1",
                         "ZPROG001",
                         "403",
