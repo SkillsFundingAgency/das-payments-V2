@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenNoPaymentsWillBeCalculated()
         {
             var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod);
-            await WaitForUnExpected(() => matcher.MatchNoPayments(), "Required Payment event check failure");
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure");
         }
 
         [Then(@"at month end only the following provider payments will be generated")]
@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var dataContext = Container.Resolve<IPaymentsDataContext>();
             var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name);
-            await WaitForUnExpected(() => matcher.MatchNoPayments(), "Payment history check failure");
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }
 
         [Then(@"at month end no provider payments will be generated")]
@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession);
-            await WaitForUnExpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
         }
         
 

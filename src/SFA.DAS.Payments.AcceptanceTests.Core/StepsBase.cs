@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             Assert.Fail($"{failText} - {reason}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
-        protected async Task WaitForUnExpected(Func<(bool pass, string reason)> findUnexpected, string failText)
+        protected async Task WaitForUnexpected(Func<(bool pass, string reason)> findUnexpected, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWaitForUnexpected);
             while (DateTime.Now < endTime)
