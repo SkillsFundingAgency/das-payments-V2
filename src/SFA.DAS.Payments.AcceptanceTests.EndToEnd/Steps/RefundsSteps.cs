@@ -35,9 +35,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following provider payments had been generated")]
         public void GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
-            if (!Context.ContainsKey("added_history"))
+            if (!Context.ContainsKey("added_history_"+CurrentCollectionPeriod.GetCollectionYear()))
             {
-                Set<bool>(true, "added_history");
+                Set<bool>(true, "added_history_" + CurrentCollectionPeriod.GetCollectionYear());
             }
             else
             {

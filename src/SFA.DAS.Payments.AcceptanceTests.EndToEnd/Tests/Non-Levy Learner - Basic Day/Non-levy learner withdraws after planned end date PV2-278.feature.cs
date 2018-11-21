@@ -71,9 +71,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("A non-levy learner withdraws after planned end date PV2-278")]
-        public virtual void ANon_LevyLearnerWithdrawsAfterPlannedEndDatePV2_278()
+        [NUnit.Framework.TestCaseAttribute("R05/Current Academic Year", null)]
+        [NUnit.Framework.TestCaseAttribute("R06/Current Academic Year", null)]
+        [NUnit.Framework.TestCaseAttribute("R07/Current Academic Year", null)]
+        [NUnit.Framework.TestCaseAttribute("R08/Current Academic Year", null)]
+        [NUnit.Framework.TestCaseAttribute("R09/Current Academic Year", null)]
+        [NUnit.Framework.TestCaseAttribute("R10/Current Academic Year", null)]
+        [NUnit.Framework.TestCaseAttribute("R11/Current Academic Year", null)]
+        [NUnit.Framework.TestCaseAttribute("R12/Current Academic Year", null)]
+        public virtual void ANon_LevyLearnerWithdrawsAfterPlannedEndDatePV2_278(string collection_Period, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-levy learner withdraws after planned end date PV2-278", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A non-levy learner withdraws after planned end date PV2-278", null, exampleTags);
 #line 4
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
@@ -117,7 +125,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
 #line 5
-    testRunner.Given("the provider previously submitted the following learner details", ((string)(null)), table1, "Given ");
+    testRunner.Given("the provider previously submitted the following learner details in collection per" +
+                    "iod \"R01/Last Academic Year\"", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -301,7 +310,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
 #line 35
-    testRunner.And("the provider previously submitted the following learner details", ((string)(null)), table4, "And ");
+    testRunner.And("the provider previously submitted the following learner details in collection per" +
+                    "iod \"R01/Current Academic Year\"", ((string)(null)), table4, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -375,12 +385,26 @@ this.ScenarioInitialize(scenarioInfo);
                         "Collection Period",
                         "Delivery Period",
                         "SFA Co-Funded Payments",
-                        "Employer Co-Funded Payments"});
+                        "Employer Co-Funded Payments",
+                        "Transaction Type"});
             table6.AddRow(new string[] {
                         "R01/Current Academic Year",
                         "Aug/Current Academic Year",
                         "900",
-                        "100"});
+                        "100",
+                        "Learning"});
+            table6.AddRow(new string[] {
+                        "R01/Current Academic Year",
+                        "Aug/Current Academic Year",
+                        "810",
+                        "90",
+                        "Completion"});
+            table6.AddRow(new string[] {
+                        "R01/Current Academic Year",
+                        "Aug/Current Academic Year",
+                        "810",
+                        "90",
+                        "Balancing"});
 #line 52
     testRunner.And("the following provider payments had been generated", ((string)(null)), table6, "And ");
 #line hidden
@@ -422,11 +446,10 @@ this.ScenarioInitialize(scenarioInfo);
                         "1",
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
-#line 55
+#line 57
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table7, "But ");
-#line 58
-    testRunner.When("the amended ILR file is re-submitted for the learners in collection period \"R05/C" +
-                    "urrent Academic Year\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 60
+    testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -437,7 +460,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aug/Current Academic Year",
                         "1000",
                         "900",
-                        "100"});
+                        "900"});
             table8.AddRow(new string[] {
                         "Sep/Current Academic Year",
                         "0",
@@ -493,13 +516,13 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0"});
-#line 59
+#line 61
     testRunner.Then("the following learner earnings should be generated", ((string)(null)), table8, "Then ");
-#line 73
-    testRunner.And("no payments will be calculated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 74
- testRunner.And("no provider payments will be recorded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 75
+    testRunner.And("no payments will be calculated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 76
+ testRunner.And("no provider payments will be recorded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 77
  testRunner.And("at month end no provider payments will be generated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();

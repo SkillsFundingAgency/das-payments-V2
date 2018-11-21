@@ -29,6 +29,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             CurrentIlr = table.CreateSet<Training>().ToList();
         }
 
+        [Given(@"the provider previously submitted the following learner details in collection period ""(.*)""")]
+        public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetailsInCollectionPeriod(string previousCollectionPeriod, Table table)
+        {
+            SetCollectionPeriod(previousCollectionPeriod);
+            var ilr = table.CreateSet<Training>().ToList();
+            PreviousIlr = ilr;
+        }
+
         [Then(@"the following learner earnings should be generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
