@@ -256,6 +256,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature.cs">
+      <DependentUpon>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Withdraws After Qualifying Period PV2-277.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -305,6 +310,10 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner finishes on time completion payment made PV2-334.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Withdraws After Qualifying Period PV2-277.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

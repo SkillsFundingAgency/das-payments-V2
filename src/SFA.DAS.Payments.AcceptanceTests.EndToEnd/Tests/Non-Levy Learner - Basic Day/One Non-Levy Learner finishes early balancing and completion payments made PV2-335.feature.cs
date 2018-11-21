@@ -18,20 +18,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("One Non-Levy Learner, finishes on time, completion payment made PV2-334")]
-    public partial class OneNon_LevyLearnerFinishesOnTimeCompletionPaymentMadePV2_334Feature
+    [NUnit.Framework.DescriptionAttribute("One Non-Levy Learner finishes early, Balancing and Completion payments made PV2-3" +
+        "35")]
+    public partial class OneNon_LevyLearnerFinishesEarlyBalancingAndCompletionPaymentsMadePV2_335Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "One Non-Levy Learner finishes on time completion payment made PV2-334.feature"
+#line 1 "One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "One Non-Levy Learner, finishes on time, completion payment made PV2-334", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "One Non-Levy Learner finishes early, Balancing and Completion payments made PV2-3" +
+                    "35", null, ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -70,7 +72,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("One Non-levy learner finishes on time")]
+        [NUnit.Framework.DescriptionAttribute("1 non-levy learner finishes early balancing and completon payments made")]
         [NUnit.Framework.CategoryAttribute("EndToEnd")]
         [NUnit.Framework.TestCaseAttribute("R01/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R02/Current Academic Year", null)]
@@ -84,7 +86,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         [NUnit.Framework.TestCaseAttribute("R10/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R11/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R12/Current Academic Year", null)]
-        public virtual void OneNon_LevyLearnerFinishesOnTime(string collection_Period, string[] exampleTags)
+        public virtual void _1Non_LevyLearnerFinishesEarlyBalancingAndCompletonPaymentsMade(string collection_Period, string[] exampleTags)
         {
             string[] @__tags = new string[] {
                     "EndToEnd"};
@@ -92,7 +94,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("One Non-levy learner finishes on time", null, @__tags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("1 non-levy learner finishes early balancing and completon payments made", null, @__tags);
 #line 5
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
@@ -120,11 +122,11 @@ this.ScenarioInitialize(scenarioInfo);
                         "learner a",
                         "1",
                         "Sep/Last Academic Year",
-                        "12 months",
-                        "9000",
+                        "15 months",
+                        "18750",
                         "Sep/Last Academic Year",
-                        "6000",
-                        "1st day of Sep/Last Academic Year",
+                        "0",
+                        "Sep/Last Academic Year",
                         "",
                         "continuing",
                         "Act2",
@@ -203,7 +205,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "1000",
                         "0",
                         "0"});
-#line 10
+#line 9
     testRunner.And("the following earnings had been generated for the learner", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -278,7 +280,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "900",
                         "100",
                         "Learning"});
-#line 24
+#line 23
     testRunner.And("the following provider payments had been generated", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -304,10 +306,10 @@ this.ScenarioInitialize(scenarioInfo);
                         "learner a",
                         "1",
                         "Sep/Last Academic Year",
-                        "12 months",
-                        "9000",
+                        "15 months",
+                        "18750",
                         "Sep/Last Academic Year",
-                        "6000",
+                        "0",
                         "Sep/Last Academic Year",
                         "12 months",
                         "completed",
@@ -319,10 +321,10 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
-#line 38
+#line 36
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
-#line 42
- testRunner.When("the amended ILR file is re-submitted for the learners in collection period R01/Cu" +
+#line 39
+ testRunner.When("the amended ILR file is re-submitted for the learners in collection period R03/Cu" +
                     "rrent Academic Year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -338,8 +340,8 @@ this.ScenarioInitialize(scenarioInfo);
             table5.AddRow(new string[] {
                         "Sep/Current Academic Year",
                         "0",
-                        "3000",
-                        "0"});
+                        "3750",
+                        "3000"});
             table5.AddRow(new string[] {
                         "Oct/Current Academic Year",
                         "0",
@@ -390,7 +392,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0"});
-#line 43
+#line 40
  testRunner.Then("the following learner earnings should be generated", ((string)(null)), table5, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -409,9 +411,9 @@ this.ScenarioInitialize(scenarioInfo);
                         "R02/Current Academic Year",
                         "Sep/Current Academic Year",
                         "0",
-                        "3000",
-                        "0"});
-#line 57
+                        "3750",
+                        "3000"});
+#line 54
     testRunner.And("only the following payments will be calculated", ((string)(null)), table6, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -429,10 +431,16 @@ this.ScenarioInitialize(scenarioInfo);
             table7.AddRow(new string[] {
                         "R02/Current Academic Year",
                         "Sep/Current Academic Year",
+                        "3375",
+                        "375",
+                        "Completion"});
+            table7.AddRow(new string[] {
+                        "R02/Current Academic Year",
+                        "Sep/Current Academic Year",
                         "2700",
                         "300",
-                        "Completion"});
-#line 61
+                        "Balancing"});
+#line 58
  testRunner.And("only the following provider payments will be recorded", ((string)(null)), table7, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -450,10 +458,16 @@ this.ScenarioInitialize(scenarioInfo);
             table8.AddRow(new string[] {
                         "R02/Current Academic Year",
                         "Sep/Current Academic Year",
+                        "3375",
+                        "375",
+                        "Completion"});
+            table8.AddRow(new string[] {
+                        "R02/Current Academic Year",
+                        "Sep/Current Academic Year",
                         "2700",
                         "300",
-                        "Completion"});
-#line 65
+                        "Balancing"});
+#line 63
  testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table8, "And ");
 #line hidden
             this.ScenarioCleanup();
