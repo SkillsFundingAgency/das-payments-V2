@@ -321,8 +321,8 @@ this.ScenarioInitialize(scenarioInfo);
             table5.AddRow(new string[] {
                         "Aug/Current Academic Year",
                         "1000",
-                        "900",
-                        "900"});
+                        "0",
+                        "0"});
             table5.AddRow(new string[] {
                         "Sep/Current Academic Year",
                         "0",
@@ -393,18 +393,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "900",
                         "100",
                         "Learning"});
-            table6.AddRow(new string[] {
-                        "R01/Current Academic Year",
-                        "Aug/Current Academic Year",
-                        "810",
-                        "90",
-                        "Completion"});
-            table6.AddRow(new string[] {
-                        "R01/Current Academic Year",
-                        "Aug/Current Academic Year",
-                        "810",
-                        "90",
-                        "Balancing"});
 #line 52
     testRunner.And("the following provider payments had been generated", ((string)(null)), table6, "And ");
 #line hidden
@@ -446,9 +434,9 @@ this.ScenarioInitialize(scenarioInfo);
                         "1",
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
-#line 57
+#line 56
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table7, "But ");
-#line 60
+#line 59
     testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -459,8 +447,8 @@ this.ScenarioInitialize(scenarioInfo);
             table8.AddRow(new string[] {
                         "Aug/Current Academic Year",
                         "1000",
-                        "900",
-                        "900"});
+                        "0",
+                        "0"});
             table8.AddRow(new string[] {
                         "Sep/Current Academic Year",
                         "0",
@@ -516,13 +504,13 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0"});
-#line 61
+#line 60
     testRunner.Then("the following learner earnings should be generated", ((string)(null)), table8, "Then ");
-#line 75
+#line 74
     testRunner.And("no payments will be calculated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 76
+#line 75
  testRunner.And("no provider payments will be recorded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 77
+#line 76
  testRunner.And("at month end no provider payments will be generated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();

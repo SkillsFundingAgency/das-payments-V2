@@ -37,7 +37,7 @@ Scenario Outline: A non-levy learner withdraws after planned end date PV2-278
 		| learner a | 1        | Sep/Last Academic Year | 12 months        | 12000                | Sep/Last Academic Year              | 3000                   | Sep/Last Academic Year                |                 | continuing        | 90%                         | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 1000         | 900        | 900       |
+        | Aug/Current Academic Year | 1000         | 0          | 0         |
         | Sep/Current Academic Year | 0            | 0          | 0         |
         | Oct/Current Academic Year | 0            | 0          | 0         |
         | Nov/Current Academic Year | 0            | 0          | 0         |
@@ -52,15 +52,14 @@ Scenario Outline: A non-levy learner withdraws after planned end date PV2-278
     And the following provider payments had been generated
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
-        | R01/Current Academic Year | Aug/Current Academic Year | 810                    | 90                          | Completion       |
-        | R01/Current Academic Year | Aug/Current Academic Year | 810                    | 90                          | Balancing        |
+
     But the Provider now changes the Learner details as follows
 		| ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type        | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
 		| learner a | 1        | Sep/Last Academic Year | 15 months        | 12000                | Sep/Last Academic Year              | 3000                   | Sep/Last Academic Year                | 15 months       | withdrawn         | 90%                         | ContractWithEmployer | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
     When the amended ILR file is re-submitted for the learners in collection period <collection_period>
     Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 1000         | 900        | 900       |
+        | Aug/Current Academic Year | 1000         | 0          | 0         |
         | Sep/Current Academic Year | 0            | 0          | 0         |
         | Oct/Current Academic Year | 0            | 0          | 0         |
         | Nov/Current Academic Year | 0            | 0          | 0         |
