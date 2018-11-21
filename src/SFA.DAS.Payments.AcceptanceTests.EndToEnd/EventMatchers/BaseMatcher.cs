@@ -27,8 +27,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (matchedPayments.Count < expectedPayments.Count)
                 errors.Add($"{expectedPayments.Count - matchedPayments.Count} out of {expectedPayments.Count} events were not found");
 
-            if (matchedPayments.Count > expectedPayments.Count)
-                errors.Add($"found {matchedPayments.Count - expectedPayments.Count} unexpected events");
+            if (actualPayments.Count > expectedPayments.Count)
+                errors.Add($"found {actualPayments.Count - expectedPayments.Count} unexpected events");
 
             return new Tuple<bool, string>(errors.Count == 0, string.Join(", ", errors));
         }
