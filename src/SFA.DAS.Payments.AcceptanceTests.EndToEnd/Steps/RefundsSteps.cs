@@ -5,6 +5,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -23,6 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var ilr = table.CreateSet<Training>().ToList();
             PreviousIlr = ilr;
+            AddTestLearners(PreviousIlr);
         }
 
         [Given(@"the following earnings had been generated for the learner")]
@@ -33,32 +35,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following provider payments had been generated")]
-        public void GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
+        public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
-            if (!Context.ContainsKey("added_history"))
-            {
-                Set<bool>(true, "added_history");
-            }
-            else
-            {
-                Console.WriteLine("Already added hostory");
-                return;
-            }
-            
+            var payments = table.CreateSet<ProviderPayment>().ToList();
             var previousJobId = TestSession.GenerateId();
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);
             Console.WriteLine($"Previous job id: {previousJobId}");
-            var payments = table.CreateSet<ProviderPayment>().ToList();
             var previousPayments = payments.SelectMany(p =>
             {
                 var learnerTraining = PreviousIlr.First(t => t.LearnerId == p.LearnerId);
-                var learnerEarning = PreviousEarnings.First(e => e.LearnerId == p.LearnerId && e.DeliveryPeriod == p.DeliveryPeriod);
+                var learnerEarning =
+                    PreviousEarnings.First(e => e.LearnerId == p.LearnerId && e.DeliveryPeriod == p.DeliveryPeriod);
                 return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, learnerEarning);
             });
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
+            var currentHistory = await dataContext.Payment.Where(p => p.Ukprn == TestSession.Ukprn).ToListAsync();
+            previousPayments = previousPayments
+                .Where(p => !currentHistory.Any(historicPayment =>
+                    historicPayment.LearnerReferenceNumber == p.LearnerReferenceNumber &&
+                    historicPayment.TransactionType == p.TransactionType &&
+                    historicPayment.DeliveryPeriod.Period == p.DeliveryPeriod.Period &&
+                    historicPayment.DeliveryPeriod.GetCollectionYear() == p.DeliveryPeriod.GetCollectionYear()))
+                .ToList();
+
             dataContext.Payment.AddRange(previousPayments);
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
         [Given(@"the Provider now changes the Learner details as follows")]
@@ -66,6 +68,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var ilr = table.CreateSet<Training>().ToList();
             CurrentIlr = ilr;
+            AddTestLearners(CurrentIlr);
         }
 
         [Given(@"price details as follows")]

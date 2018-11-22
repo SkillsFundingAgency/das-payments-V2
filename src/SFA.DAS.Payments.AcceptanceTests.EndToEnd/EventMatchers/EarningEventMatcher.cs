@@ -38,17 +38,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             foreach (var expected in expectedPeriods)
             {
                 if (!learningEarnings.Any(earning => expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                                                     testSession.GenerateLearnerReference(expected.LearnerId) == earning.earning.earningEvent.Learner.ReferenceNumber &&
+                                                     testSession.GetLearner(expected.LearnerId).LearnRefNumber == earning.earning.earningEvent.Learner.ReferenceNumber &&
                                                      expected.OnProgramme == earning.period.Amount))
                     return new Tuple<bool, string>(false, $"Failed to find on-prog (learning) earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.OnProgramme}");
 
                 if (!completionEarnings.Any(earning => expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                                                       testSession.GenerateLearnerReference(expected.LearnerId) == earning.earning.earningEvent.Learner.ReferenceNumber &&
+                                                       testSession.GetLearner(expected.LearnerId).LearnRefNumber == earning.earning.earningEvent.Learner.ReferenceNumber &&
                                                        expected.Completion == earning.period.Amount))
                     return new Tuple<bool, string>(false, $"Failed to find completion earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.Completion}");
 
                 if (!balancingEarnings.Any(earning => expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                                                      testSession.GenerateLearnerReference(expected.LearnerId) == earning.earning.earningEvent.Learner.ReferenceNumber &&
+                                                      testSession.GetLearner(expected.LearnerId).LearnRefNumber == earning.earning.earningEvent.Learner.ReferenceNumber &&
                                                       expected.Balancing == earning.period.Amount))
                     return new Tuple<bool, string>(false, $"Failed to find balancing earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.Balancing}");
             }

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
+    [Obsolete("Should use the auto generated learner reference on the TestLearner")]
     public class LearnRefNumberGenerator
     {
         private readonly int sessionIdHash;
