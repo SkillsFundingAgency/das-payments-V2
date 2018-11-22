@@ -54,12 +54,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
             var currentHistory = await dataContext.Payment.Where(p => p.Ukprn == TestSession.Ukprn).ToListAsync();
+
             previousPayments = previousPayments
                 .Where(p => !currentHistory.Any(historicPayment =>
                     historicPayment.LearnerReferenceNumber == p.LearnerReferenceNumber &&
                     historicPayment.TransactionType == p.TransactionType &&
-                    historicPayment.DeliveryPeriod.Period == p.DeliveryPeriod.Period &&
-                    historicPayment.DeliveryPeriod.GetCollectionYear() == p.DeliveryPeriod.GetCollectionYear()))
+                    historicPayment.DeliveryPeriod.Name == p.DeliveryPeriod.Name))
                 .ToList();
 
             dataContext.Payment.AddRange(previousPayments);
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
-            if (Context.ContainsKey("current_collection_period") && CurrentCollectionPeriod.Name != collectionPeriod)
+            if (Context.ContainsKey("current_collection_period") && CurrentCollectionPeriod.Name != collectionPeriod.ToDate().ToCalendarPeriod().Name)
                 await RequiredPaymentsCacheCleaner.ClearCaches(TestSession);
 
             SetCollectionPeriod(collectionPeriod);
