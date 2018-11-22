@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -28,6 +29,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly IMapper mapper;
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
         private readonly IPaymentKeyService paymentKeyService;
+        private const string InitialisedKey = "initialised";
 
         public RequiredPaymentsService(ActorService actorService,
             ActorId actorId,
@@ -88,18 +90,21 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
             paymentLogger.LogInfo($"Initialised actor for apprenticeship {apprenticeshipKey}");
 
-            await StateManager.TryAddStateAsync("initialised", true).ConfigureAwait(false);
+            await StateManager.TryAddStateAsync(InitialisedKey, true).ConfigureAwait(false);
         }
 
         public async Task Reset()
         {
             paymentLogger.LogInfo($"Resetting actor for apprenticeship {apprenticeshipKey}");
-            await StateManager.AddStateAsync("initialised", false).ConfigureAwait(false);
+            if (await IsInitialised().ConfigureAwait(false))
+                await StateManager.RemoveStateAsync(InitialisedKey, CancellationToken.None).ConfigureAwait(false);
         }
 
         private async Task<bool> IsInitialised()
         {
-            return await StateManager.ContainsStateAsync("initialised").ConfigureAwait(false);
+            var isInitialised = await StateManager.ContainsStateAsync(InitialisedKey).ConfigureAwait(false);
+            Debug.WriteLine("isInitialised: " + isInitialised);
+            return isInitialised;
         }
     }
 }

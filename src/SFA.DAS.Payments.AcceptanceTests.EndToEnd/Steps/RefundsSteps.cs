@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -38,6 +40,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
             var payments = table.CreateSet<ProviderPayment>().ToList();
+
             var previousJobId = TestSession.GenerateId();
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);
             Console.WriteLine($"Previous job id: {previousJobId}");
@@ -79,8 +82,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public void WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
+        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
+            if (Context.ContainsKey("current_collection_period") && CurrentCollectionPeriod.Name != collectionPeriod)
+                await RequiredPaymentsCacheCleaner.ClearCaches(TestSession);
+
             SetCollectionPeriod(collectionPeriod);
         }
 

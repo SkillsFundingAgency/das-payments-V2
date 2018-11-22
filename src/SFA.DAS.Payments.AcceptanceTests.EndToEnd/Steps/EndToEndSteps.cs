@@ -9,9 +9,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
+using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -50,6 +52,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
                 
                 PopulateLearner(learner, training, learnerEarnings);
+
+                //var testLearner = TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerId);
+                //if (testLearner == null) TestSession.Learners.Add(new Learner
+                //{
+                //    LearnerIdentifier = learnerId,
+                //    LearnRefNumber = learner.LearnRefNumber,
+                //    Course = new Course
+                //    {
+                //        LearnAimRef = learner.LearningDeliveries[0].LearningDeliveryValues.LearnAimRef
+                //    }
+                //});
 
                 var command = new ProcessLearnerCommand
                 {

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Domain\SFA.DAS.Payments.RequiredPayments.Domain.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>
