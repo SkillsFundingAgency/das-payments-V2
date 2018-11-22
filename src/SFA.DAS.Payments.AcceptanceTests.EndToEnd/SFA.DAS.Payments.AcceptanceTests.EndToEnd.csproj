@@ -286,6 +286,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Non-Levy Learners Finish On Time PV2-337.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change to agreed price at end of month - PV2 - 209.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Change to agreed price at end of month - PV2 - 209.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature.cs">
       <DependentUpon>Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -344,6 +349,10 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finish On Time PV2-337.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two Non-Levy Learners Finish On Time PV2-337.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change to agreed price at end of month - PV2 - 209.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Change to agreed price at end of month - PV2 - 209.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Refunds\Non-levy standard learner, payments made then price is changed retrospectively from beginning PV2-258.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
