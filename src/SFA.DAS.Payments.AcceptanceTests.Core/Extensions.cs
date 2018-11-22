@@ -141,8 +141,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 periodText = "Aug/Current Academic Year";
 
             var bits = periodText.Split('/');
-            var monthName = bits[0];
-            var yearName = bits[1];
+            var monthName = (bits.Length > 2) ? bits[1] : bits[0];
+            var yearName = (bits.Length > 2) ? bits[2] : bits[1];
             byte period;
 
             if (DateTime.TryParseExact(monthName, "MMM", CultureInfo.CurrentCulture, DateTimeStyles.None, out var date))
