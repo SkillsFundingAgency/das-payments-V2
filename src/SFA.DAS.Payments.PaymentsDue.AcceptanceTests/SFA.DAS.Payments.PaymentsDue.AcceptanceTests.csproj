@@ -110,6 +110,11 @@
     <Compile Include="Steps\LearnerSteps.cs" />
     <Compile Include="Steps\PaymentsDueBootstrapper.cs" />
     <Compile Include="Steps\PaymentsDueSteps.cs" />
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Withdraws After Planned End Date PV2-278.feature.cs">
+      <DependentUpon>One Non-Levy Learner Withdraws After Planned End Date PV2-278.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -155,6 +160,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Withdraws After Planned End Date PV2-278.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-Levy Learner Withdraws After Planned End Date PV2-278.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner Finishes Early PV2-195.feature.cs</LastGenOutput>

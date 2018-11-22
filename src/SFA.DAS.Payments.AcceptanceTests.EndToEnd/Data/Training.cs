@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public ContractType ContractType { get; set; }
         public int AimSequenceNumber { get; set; }
         public string AimReference { get; set; }
-        public string StandardCode { get; set; }
+        public int StandardCode { get; set; }
         public string FundingLineType { get; set; }
     }
 }

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using System;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
-    public abstract class StepsBase: BindingsBase
+    public abstract class StepsBase : BindingsBase
     {
         public SpecFlowContext Context { get; }
         public TestSession TestSession { get => Get<TestSession>(); set => Set(value); }
@@ -67,12 +67,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             {
                 bool pass;
                 (pass, reason) = lookForIt();
+
                 if (pass) return;
                 await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail($"{failText} - {reason}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
+        protected async Task WaitForUnexpected(Func<(bool pass, string reason)> findUnexpected, string failText)
+        {
+            var endTime = DateTime.Now.Add(Config.TimeToWaitForUnexpected);
+            while (DateTime.Now < endTime)
+            {
+                var (pass, reason) = findUnexpected();
+                if (!pass)
+                {
+                    Assert.Fail($"{failText} - {reason}   Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
+                }
+
+                await Task.Delay(Config.TimeToPause);
+            }
+
+        }
         protected byte GetMonth(byte period)
         {
             return (byte)(period >= 5 ? period - 4 : period + 8);
