@@ -23,9 +23,9 @@ Scenario Outline: Non-Levy standard learner, price is changed and a negative amo
         | Jul/Current Academic Year | 750          | 0          | 0         |
 
     And the following provider payments had been generated
-        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments |
-        | R01/Current Academic Year | Aug/Current Academic Year | 675                    | 75                          |
-        | R02/Current Academic Year | Sep/Current Academic Year | 675                    | 75                          |
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
+        | R01/Current Academic Year | Aug/Current Academic Year | 675                    | 75                          | Learning         |
+        | R02/Current Academic Year | Sep/Current Academic Year | 675                    | 75                          | Learning         |
 
     But the Provider now changes the Learner details as follows
         | ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
@@ -33,8 +33,8 @@ Scenario Outline: Non-Levy standard learner, price is changed and a negative amo
 
 	And price details as follows
         | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date |
-        | 1st price details | 9000                 | Aug/Current Academic Year           | 2250                  | Aug/Current Academic Year            |
-        | 2nd price details | 1200                 | Oct/Current Academic Year           | 200                   | Oct/Current Academic Year            |
+        | 1st price details | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             |
+        | 2nd price details | 1200                 | Oct/Current Academic Year           | 200                    | Oct/Current Academic Year             |
 
     When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
