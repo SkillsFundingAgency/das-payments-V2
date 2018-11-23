@@ -28,7 +28,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 context.DoNotContinueDispatchingCurrentMessageToHandlers();
                 return;
             }
-            await context.Publish(earningEvent.EarningsEvent);
+
+            foreach (var earningsEvent in earningEvent.EarningsEvents)
+            {
+                await context.Publish(earningsEvent).ConfigureAwait(false);
+            }
+
             logger.LogInfo($"Finished handling ILR learner submission.Job: { message.JobId}, Ukprn: { message.Ukprn}, Collection year: { message.CollectionYear}, Learner: { message.Learner.LearnRefNumber}.");
         }
     }

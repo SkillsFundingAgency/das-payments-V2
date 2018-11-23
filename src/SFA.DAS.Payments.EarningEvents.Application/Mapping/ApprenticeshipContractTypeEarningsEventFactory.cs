@@ -10,15 +10,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
     public class ApprenticeshipContractTypeEarningsEventFactory: IApprenticeshipContractTypeEarningsEventFactory
     {
-        public const string SfaContractType = "Act1";
-        public const string EmployerContractType = "Act2";
+        public const string Act1 = "Act1";
+        public const string Act2 = "Act2";
         public ApprenticeshipContractTypeEarningsEvent Create(string contractType)
         {
             switch (contractType)
             {
-                case SfaContractType:
+                case Act1:
                     return new ApprenticeshipContractType1EarningEvent();
-                case EmployerContractType:
+                case Act2:
                     return new ApprenticeshipContractType2EarningEvent();
                 default: 
                     throw new InvalidOperationException($"Unknown contract type: '{contractType}'.");
