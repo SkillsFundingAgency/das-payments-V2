@@ -286,7 +286,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Non-Levy Learners Finish On Time PV2-337.feature</DependentUpon>
     </Compile>
-  
+    <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\One Non-levy learner, changes to the agreed price during the month PV2-210.feature.cs">
+      <DependentUpon>One Non-levy learner, changes to the agreed price during the month PV2-210.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change to agreed price at end of month - PV2 - 209.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -360,6 +364,10 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finish On Time PV2-337.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two Non-Levy Learners Finish On Time PV2-337.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\One Non-levy learner, changes to the agreed price during the month PV2-210.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-levy learner, changes to the agreed price during the month PV2-210.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change to agreed price at end of month - PV2 - 209.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
