@@ -11,6 +11,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     {
         public EarningsEventProfile()
         {
+            CreateMap<IntermediateLearningAim, EarningEvent>()
+                .Include<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent>()
+                .Include<IntermediateLearningAim, FunctionalSkillEarningsEvent>()
+                .ForMember(destinationMember => destinationMember.PriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
+                .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.MapFrom(source => source.Aim))
+                .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.MapFrom(source => source.CollectionYear))
+                .ForMember(destinationMember => destinationMember.EventTime, opt => opt.UseValue(DateTimeOffset.UtcNow))
+                .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
+                .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => new CalendarPeriod(src.CollectionYear, (byte)src.CollectionPeriod)))
+                .ForMember(dest => dest.EarningYear, opt => opt.ResolveUsing<EarningYearResolver>());
+
             CreateMap<ProcessLearnerCommand, EarningEvent>()
                 .Include<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent>()
                 .Include<ProcessLearnerCommand, FunctionalSkillEarningsEvent>()
@@ -42,14 +54,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
                 .ForMember(dest => dest.Uln, opt => opt.Ignore());
 
-            CreateMap<FM36Learner, LearningAim>()
-                .ForMember(dest => dest.PathwayCode, opt => opt.Ignore())
-                .ForMember(dest => dest.FrameworkCode, opt => opt.Ignore())
+            CreateMap<IntermediateLearningAim, LearningAim>()
+                .ForMember(dest => dest.PathwayCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.PwayCode))
+                .ForMember(dest => dest.FrameworkCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.FworkCode))
                 .ForMember(dest => dest.FundingLineType, opt => opt.ResolveUsing((learner, learningAim) => learner.PriceEpisodes.GetLatestPriceEpisode()?.PriceEpisodeValues.PriceEpisodeFundLineType))
-                .ForMember(dest => dest.ProgrammeType, opt => opt.Ignore())
-                .ForMember(dest => dest.Reference, opt => opt.UseValue("ZPROG001")) //TODO: Will need to be changed when we start working on Maths&English.
-                .ForMember(dest => dest.StandardCode, opt => opt.Ignore())
-                .ForMember(dest => dest.AgreedPrice, opt => opt.Ignore()) //TODO: this isn't needed on the aim, only on the price episode.
+                .ForMember(dest => dest.ProgrammeType, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.ProgType))
+                .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnAimRef))
+                .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.StdCode))
+                .ForMember(dest => dest.AgreedPrice, opt => opt.ResolveUsing((learner, learningAim) => learner.PriceEpisodes.GetLatestPriceEpisode()?.PriceEpisodeValues.PriceEpisodeTotalTNPPrice))
                 ;
 
             CreateMap<ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode, Model.Core.PriceEpisode>()

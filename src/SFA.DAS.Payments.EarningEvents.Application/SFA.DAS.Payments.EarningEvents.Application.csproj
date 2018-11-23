@@ -16,7 +16,7 @@
     <PackageReference Include="NServiceBus" Version="7.1.4" />
     <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.294" />
+    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.308" />
     <PackageReference Include="ESFA.DC.IO.Interfaces" Version="0.1.12-beta0001" />
     <PackageReference Include="ESFA.DC.IO.Redis" Version="0.1.14-beta0001" />
     <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.2-beta0001" />
