@@ -53,17 +53,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 
                 PopulateLearner(learner, training, learnerEarnings);
 
-                //var testLearner = TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerId);
-                //if (testLearner == null) TestSession.Learners.Add(new Learner
-                //{
-                //    LearnerIdentifier = learnerId,
-                //    LearnRefNumber = learner.LearnRefNumber,
-                //    Course = new Course
-                //    {
-                //        LearnAimRef = learner.LearningDeliveries[0].LearningDeliveryValues.LearnAimRef
-                //    }
-                //});
-
                 var command = new ProcessLearnerCommand
                 {
                     Learner = learner,

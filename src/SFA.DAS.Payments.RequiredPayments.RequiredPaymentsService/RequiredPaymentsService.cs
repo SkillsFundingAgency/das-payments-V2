@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -53,9 +52,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             paymentLogger.LogVerbose($"Handling PaymentDue for {apprenticeshipKey}");
 
-            // TODO: uncomment this when RequiredPayments actors are capable of updating payment history cache
-            if (!await IsInitialised().ConfigureAwait(false))
-                await Initialise().ConfigureAwait(false);
+            await Initialise().ConfigureAwait(false);
 
             var requiredPaymentEvents = await act2PaymentDueEventHandler.HandlePaymentDue(paymentDueEvent, cancellationToken).ConfigureAwait(false);
 
@@ -76,14 +73,15 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 paymentKeyService
             );
 
-            if (!await IsInitialised().ConfigureAwait(false))
-                await Initialise().ConfigureAwait(false);
+            await Initialise().ConfigureAwait(false);
 
             await base.OnActivateAsync().ConfigureAwait(false);
         }
 
         public async Task Initialise()
         {
+            if (await StateManager.ContainsStateAsync(InitialisedKey).ConfigureAwait(false)) return;
+            
             paymentLogger.LogInfo($"Initialising actor for apprenticeship {apprenticeshipKey}");
 
             await act2PaymentDueEventHandler.PopulatePaymentHistoryCache(CancellationToken.None).ConfigureAwait(false);
@@ -96,15 +94,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         public async Task Reset()
         {
             paymentLogger.LogInfo($"Resetting actor for apprenticeship {apprenticeshipKey}");
-            if (await IsInitialised().ConfigureAwait(false))
-                await StateManager.RemoveStateAsync(InitialisedKey, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        private async Task<bool> IsInitialised()
-        {
-            var isInitialised = await StateManager.ContainsStateAsync(InitialisedKey).ConfigureAwait(false);
-            Debug.WriteLine("isInitialised: " + isInitialised);
-            return isInitialised;
+            await StateManager.TryRemoveStateAsync(InitialisedKey, CancellationToken.None).ConfigureAwait(false);
         }
     }
 }
