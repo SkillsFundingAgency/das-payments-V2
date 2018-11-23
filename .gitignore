@@ -10,6 +10,7 @@
 # Settings
 */local.settings.json
 */App.Debug.config
+src/SFA.DAS.Forecasting.Web/Web.Debug.config
 *.v3.ncrunchsolution
 *.v3.ncrunchproject
 
