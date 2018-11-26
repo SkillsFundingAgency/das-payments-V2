@@ -58,13 +58,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
                 };
 
-                if (learningPayment.AmountDue > 0) 
+                if (learningPayment.AmountDue != 0) 
                     expectedPayments.Add(learningPayment);
 
-                if (balancingPayment.AmountDue > 0) 
+                if (balancingPayment.AmountDue != 0) 
                     expectedPayments.Add(balancingPayment);
 
-                if (completionPayment.AmountDue > 0) 
+                if (completionPayment.AmountDue != 0) 
                     expectedPayments.Add(completionPayment);
             }
 

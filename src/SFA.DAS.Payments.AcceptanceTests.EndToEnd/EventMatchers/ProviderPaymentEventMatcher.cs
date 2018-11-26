@@ -21,7 +21,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             this.collectionPeriod = collectionPeriod;
             this.testSession = testSession;
         }
-        public ProviderPaymentEventMatcher(CalendarPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec):this(collectionPeriod,testSession)
+
+        public ProviderPaymentEventMatcher(CalendarPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec)
+            : this(collectionPeriod, testSession)
         {
             this.paymentSpec = paymentSpec;
         }
@@ -31,7 +33,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return ProviderPaymentEventHandler.ReceivedEvents
                 .Where(ev =>
                     ev.Ukprn == testSession.Ukprn &&
-                    ev.JobId == testSession.JobId)
+                    ev.JobId == testSession.JobId &&
+                    ev.CollectionPeriod.Name == collectionPeriod.Name)
                 .ToList();
 
         }

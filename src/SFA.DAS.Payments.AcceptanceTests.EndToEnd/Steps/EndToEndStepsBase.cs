@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.RequiredPayments.Domain;
 using TechTalk.SpecFlow;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -14,6 +18,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     public abstract class EndToEndStepsBase : StepsBase
     {
+        protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
+
         protected DcHelper DcHelper => Get<DcHelper>();
 
         protected List<Price> CurrentPriceEpisodes
@@ -162,7 +168,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 SetPeriodValue(period, balancingEarnings, earning.Balancing);
             });
 
-            learner.PriceEpisodes = GetPriceEpisodes(training, learningValues, completionEarnings, balancingEarnings, CurrentPriceEpisodes, earnings);
+            learner.PriceEpisodes = GetPriceEpisodes(training, learningValues, completionEarnings, balancingEarnings, CurrentPriceEpisodes, earnings, CollectionYear);
 
             learner.LearningDeliveries = new List<LearningDelivery>(new[]
             {
@@ -177,7 +183,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
-        private static List<PriceEpisode> GetPriceEpisodes(Training learnerEarnings, PriceEpisodePeriodisedValues learningValues, PriceEpisodePeriodisedValues completionEarnings, PriceEpisodePeriodisedValues balancingEarnings, List<Price> priceEpisodes, List<OnProgrammeEarning> earnings)
+        private static List<PriceEpisode> GetPriceEpisodes(Training learnerEarnings, PriceEpisodePeriodisedValues learningValues, PriceEpisodePeriodisedValues completionEarnings, PriceEpisodePeriodisedValues balancingEarnings, List<Price> priceEpisodes, List<OnProgrammeEarning> earnings, string collectionYear)
         {
             if (priceEpisodes == null)
             {
@@ -207,6 +213,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
 
                 var episodeStart = episode.TotalTrainingPriceEffectiveDate.ToCalendarPeriod();
+                var episodeLastPeriod = actualEndDate?.ToCalendarPeriod().Period ?? 12;
                 var episodeAcademicYear = int.Parse(episodeStart.Name.Substring(0, 4));
                 var firstEarningForPriceEpisode = earnings.First(e =>
                 {
@@ -243,9 +250,44 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                 };
 
-                priceEpisode.PriceEpisodePeriodisedValues.Add(learningValues);
-                priceEpisode.PriceEpisodePeriodisedValues.Add(completionEarnings);
-                priceEpisode.PriceEpisodePeriodisedValues.Add(balancingEarnings);
+                PriceEpisodePeriodisedValues episodeLearningValues;
+                PriceEpisodePeriodisedValues episodeCompletionEarnings;
+                PriceEpisodePeriodisedValues episodeBalancingEarnings;
+
+                if ((episodeStart.Period > 1 && episodeStart.GetCollectionYear() == collectionYear) || episodeLastPeriod < 12)
+                {
+                    episodeLearningValues = new PriceEpisodePeriodisedValues {AttributeName = learningValues.AttributeName};
+                    episodeCompletionEarnings = new PriceEpisodePeriodisedValues { AttributeName = completionEarnings.AttributeName };
+                    episodeBalancingEarnings = new PriceEpisodePeriodisedValues { AttributeName = balancingEarnings.AttributeName };
+
+                    for (var p = 1; p < 13; p++)
+                    {
+                        var propertyInfo = typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + p);
+
+                        decimal? learningValue = 0, completionValue = 0, balancingValue = 0;
+
+                        if (p >= episodeStart.Period && p <= episodeLastPeriod)
+                        {
+                            learningValue = (decimal?)propertyInfo.GetValue(learningValues);
+                            completionValue = (decimal?)propertyInfo.GetValue(completionEarnings);
+                            balancingValue = (decimal?)propertyInfo.GetValue(balancingEarnings);
+                        }
+
+                        propertyInfo.SetValue(episodeLearningValues, learningValue);
+                        propertyInfo.SetValue(episodeCompletionEarnings, completionValue);
+                        propertyInfo.SetValue(episodeBalancingEarnings, balancingValue);
+                    }
+                }
+                else
+                {
+                    episodeLearningValues = learningValues;
+                    episodeCompletionEarnings = completionEarnings;
+                    episodeBalancingEarnings = balancingEarnings;
+                }
+
+                priceEpisode.PriceEpisodePeriodisedValues.Add(episodeLearningValues);
+                priceEpisode.PriceEpisodePeriodisedValues.Add(episodeCompletionEarnings);
+                priceEpisode.PriceEpisodePeriodisedValues.Add(episodeBalancingEarnings);
 
                 result.Add(priceEpisode);
             }
@@ -253,7 +295,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return result;
         }
 
-        private void SetPeriodValue(int period, PriceEpisodePeriodisedValues periodisedValues, decimal amount)
+        private static void SetPeriodValue(int period, PriceEpisodePeriodisedValues periodisedValues, decimal amount)
         {
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);

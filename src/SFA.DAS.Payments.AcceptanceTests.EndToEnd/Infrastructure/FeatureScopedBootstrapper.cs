@@ -7,6 +7,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
+using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
@@ -27,6 +28,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
                 return new PaymentsDataContext(configHelper.PaymentsConnectionString);
             }).As<IPaymentsDataContext>().InstancePerDependency();
             DcHelper.AddDcConfig(Builder);
+
+            Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
+            Builder.RegisterType<RequiredPaymentsCacheCleaner>().AsSelf();
         }
 
         [BeforeFeature(Order = 0)]
