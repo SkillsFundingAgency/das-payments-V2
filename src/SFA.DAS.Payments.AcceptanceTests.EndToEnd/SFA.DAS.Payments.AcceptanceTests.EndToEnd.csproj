@@ -447,6 +447,10 @@
       <Project>{f41ed226-c11e-44c3-825a-c40143f0fef9}</Project>
       <Name>SFA.DAS.Payments.ProviderPayments.Messages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Domain\SFA.DAS.Payments.RequiredPayments.Domain.csproj">
+      <Project>{F63F1E0D-03B8-447A-910B-D7990D2E480A}</Project>
+      <Name>SFA.DAS.Payments.RequiredPayments.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj">
       <Project>{21918F17-1310-4276-BEF5-64243F9E0C31}</Project>
       <Name>SFA.DAS.Payments.RequiredPayments.Messages</Name>
