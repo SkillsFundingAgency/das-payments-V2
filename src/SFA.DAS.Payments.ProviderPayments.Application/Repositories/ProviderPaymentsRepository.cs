@@ -1,11 +1,12 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 {
@@ -36,11 +37,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                    .Select(o => o.Ukprn)
                    .ToListAsync(cancellationToken);
         }
-        
+
         public async Task DeleteOldMonthEndPayment(short collectionYear,
-                                                    byte collectionPeriodMonth, 
-                                                    long ukprn, 
-                                                    DateTime currentIlrSubmissionDateTime, 
+                                                    byte collectionPeriodMonth,
+                                                    long ukprn,
+                                                    DateTime currentIlrSubmissionDateTime,
                                                     CancellationToken cancellationToken = default(CancellationToken))
         {
             var oldSubmittedIlrPayments = paymentsDataContext.Payment
@@ -52,11 +53,23 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             paymentsDataContext.Payment.RemoveRange(oldSubmittedIlrPayments);
             await paymentsDataContext.SaveChangesAsync(cancellationToken);
         }
-        
+
         public async Task SavePayment(PaymentModel paymentData, CancellationToken cancellationToken)
         {
-            await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);
-            await paymentsDataContext.SaveChangesAsync(cancellationToken);
+
+            var transactionOptions = new TransactionOptions()
+            {
+                IsolationLevel = IsolationLevel.Snapshot
+            };
+
+            using (var scope = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
+            {
+                await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);
+                await paymentsDataContext.SaveChangesAsync(cancellationToken);
+
+                scope.Complete();
+            }
+
         }
     }
 }
