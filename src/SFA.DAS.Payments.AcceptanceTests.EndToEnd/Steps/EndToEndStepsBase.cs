@@ -89,7 +89,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.LearnAimRef = ilrLearner.AimReference;
                 learner.Course.CompletionStatus = ilrLearner.CompletionStatus;
             });
-
         }
 
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, OnProgrammeEarning earning)
@@ -178,6 +177,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     LearningDeliveryValues = new LearningDeliveryValues
                     {
                         LearnAimRef = training.AimReference,
+                        LearnDelInitialFundLineType = training.FundingLineType,
                     }
                 }
             });
@@ -245,7 +245,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
                         PriceEpisodePlannedEndDate = episode.TotalTrainingPriceEffectiveDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
                         PriceEpisodeActualEndDate = actualEndDate,
-                        PriceEpisodeSFAContribPct = sfaPercent
+                        PriceEpisodeSFAContribPct = sfaPercent,
+                        PriceEpisodeAimSeqNumber = learnerEarnings.AimSequenceNumber,
                     },
                     PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                 };

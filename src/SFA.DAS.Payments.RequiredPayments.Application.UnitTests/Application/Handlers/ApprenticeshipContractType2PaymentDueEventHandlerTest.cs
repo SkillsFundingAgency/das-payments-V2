@@ -210,7 +210,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 StandardCode = 7,
                 FrameworkCode = 8,
                 Reference = "9",
-                AgreedPrice = 10,
                 FundingLineType = "11"
             };
         }
