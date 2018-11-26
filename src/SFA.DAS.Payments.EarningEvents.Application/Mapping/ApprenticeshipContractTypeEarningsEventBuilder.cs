@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         }
     }
 
-    class IntermediateLearningAim
+    public class IntermediateLearningAim
     {
         public IntermediateLearningAim(
             ProcessLearnerCommand command, IEnumerable<PriceEpisode> priceEpisodes, LearningDelivery aim)

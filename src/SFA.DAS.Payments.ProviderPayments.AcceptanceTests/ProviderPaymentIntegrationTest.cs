@@ -39,7 +39,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
                     PathwayCode = 1,
                     StandardCode = 1,
                     ProgrammeType = 1,
-                    AgreedPrice = 1000m,
                     FundingLineType = "T"
                 },
                 Learner = new Learner

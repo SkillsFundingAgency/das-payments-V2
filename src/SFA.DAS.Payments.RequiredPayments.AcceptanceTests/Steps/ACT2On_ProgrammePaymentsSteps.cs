@@ -35,7 +35,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 Learner = new Learner { ReferenceNumber = "12345", Uln = 12345 },
                 LearningAim = new LearningAim
                     {
-                        AgreedPrice = 5000,
                         FrameworkCode = 1234,
                         PathwayCode = 1234,
                         ProgrammeType = 1,

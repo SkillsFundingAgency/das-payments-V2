@@ -19,7 +19,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
     {
         private FM36Learner fm36Learner;
         private ProcessLearnerCommand processLearnerCommand;
-
+        private IntermediateLearningAim learningAim;
+        
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
@@ -43,7 +44,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         AimSeqNumber = 1,
                         LearningDeliveryValues = new LearningDeliveryValues
                         {
-                            LearnAimRef = "ZPROG001"
+                            LearnAimRef = "ZPROG001",
+                            StdCode = 100,
+                            FworkCode = 200,
+                            ProgType = 300,
+                            PwayCode = 400,
+                            LearnDelInitialFundLineType = "Funding Line Type",
                         }
                     }
                 },
@@ -114,33 +120,35 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 SubmissionDate = DateTime.UtcNow
             };
+
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
         }
 
         [Test]
         public void Maps_Ukprn()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Ukprn.Should().Be(processLearnerCommand.Ukprn);
         }
 
         [Test]
         public void Maps_JobId()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.JobId.Should().Be(processLearnerCommand.JobId);
         }
 
         [Test]
         public void Maps_Collection_Year()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.CollectionYear.Should().Be("1819");
         }
 
         [Test]
         public void Maps_Collection_Period()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.CollectionPeriod.Should().NotBeNull();
             earningEvent.CollectionPeriod.Period.Should().Be(1);
         }
@@ -148,14 +156,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_IlrSubmissionTime()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.IlrSubmissionDateTime.Should().Be(processLearnerCommand.IlrSubmissionDateTime);
         }
 
         [Test]
         public void Maps_Learner()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Learner.Should().NotBeNull();
             earningEvent.Learner.ReferenceNumber.Should().Be(fm36Learner.LearnRefNumber);
         }
@@ -163,7 +171,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_Price_Episodes()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.PriceEpisodes.Should().NotBeEmpty();
             earningEvent.PriceEpisodes.First().Identifier.Should().Be("pe-1");
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice1.Should().Be(15000);
@@ -177,7 +185,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_Price_Episode_Periodised_Values_To_Earning_Periods()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.OnProgrammeEarnings.Should().NotBeNullOrEmpty();
             earningEvent.OnProgrammeEarnings.Should().HaveCount(2);
             var learnings = earningEvent.OnProgrammeEarnings.FirstOrDefault(x => x.Type == OnProgrammeEarningType.Learning);
@@ -193,7 +201,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_On_Programme_Earnings()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             var learning =
                 earningEvent.OnProgrammeEarnings.FirstOrDefault(earnings =>
                     earnings.Type == OnProgrammeEarningType.Learning);
@@ -205,7 +213,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_Completion_Earnings()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             var completion =
                 earningEvent.OnProgrammeEarnings.FirstOrDefault(earnings =>
                     earnings.Type == OnProgrammeEarningType.Completion);
@@ -219,10 +227,19 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_LearningAim()
         {
-            var earningEvent = Mapper.Instance.Map<ProcessLearnerCommand, ApprenticeshipContractType2EarningEvent>(processLearnerCommand);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("ZPROG001");
-
+            earningEvent.LearningAim.FrameworkCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
+                .LearningDeliveryValues.FworkCode);
+            earningEvent.LearningAim.StandardCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
+                .LearningDeliveryValues.StdCode);
+            earningEvent.LearningAim.ProgrammeType.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
+                .LearningDeliveryValues.ProgType);
+            earningEvent.LearningAim.PathwayCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
+                .LearningDeliveryValues.PwayCode);
+            earningEvent.LearningAim.FundingLineType.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
+                .LearningDeliveryValues.LearnDelInitialFundLineType);
         }
     }
 }
