@@ -60,8 +60,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     .AsReadOnly()
             };
 
-            Console.WriteLine(JsonConvert.SerializeObject(result));
-
             return result;
         }
 
