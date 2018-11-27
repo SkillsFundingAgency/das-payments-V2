@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.RequiredPayments.Domain;
 using TechTalk.SpecFlow;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -19,8 +16,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     public abstract class EndToEndStepsBase : StepsBase
     {
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
-
-        protected DcHelper DcHelper => Get<DcHelper>();
 
         protected List<Price> CurrentPriceEpisodes
         {
@@ -94,55 +89,42 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, OnProgrammeEarning earning)
         {
-            return new List<PaymentModel>
+            var list = new List<PaymentModel>();
+            if (providerPayment.SfaFullyFundedPayments > 0)
+                list.Add(CreatePaymentModel(providerPayment, learnerTraining, jobId, submissionTime, earning, providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa));
+
+            if (providerPayment.EmployerCoFundedPayments > 0)
+                list.Add(CreatePaymentModel(providerPayment, learnerTraining, jobId, submissionTime, earning, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer));
+
+            if (providerPayment.SfaCoFundedPayments > 0)
+                list.Add(CreatePaymentModel(providerPayment, learnerTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa));
+
+            return list;
+        }
+
+        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId, 
+            DateTime submissionTime, OnProgrammeEarning earning, decimal amount, FundingSourceType fundingSourceType)
+        {
+            var paymentModel = new PaymentModel
             {
-                new PaymentModel
-                {
-                    CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
-                    DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
-                    Ukprn = TestSession.Ukprn,
-                    JobId = jobId,
-                    SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
-                    TransactionType = providerPayment.TransactionType,
-                    ContractType = learnerTraining.ContractType,
-                    PriceEpisodeIdentifier = "pe-1",
-                    FundingSource = FundingSourceType.CoInvestedSfa,
-                    //LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                    LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
-                    LearningAimReference = learnerTraining.AimReference,
-                    //LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
-                    IlrSubmissionDateTime = submissionTime,
-                    ExternalId = Guid.NewGuid(),
-                    Amount = providerPayment.SfaCoFundedPayments,
-                    LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = TestSession.Learner.Uln,
-                    //LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    //LearningAimProgrammeType = learnerTraining.ProgrammeType
-                },
-                new PaymentModel
-                {
-                    CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
-                    DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
-                    Ukprn = TestSession.Ukprn,
-                    JobId = jobId,
-                    SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
-                    TransactionType = providerPayment.TransactionType,
-                    ContractType = learnerTraining.ContractType,
-                    PriceEpisodeIdentifier = "pe-1",
-                    FundingSource = FundingSourceType.CoInvestedEmployer,
-                    //LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                    LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
-                    LearningAimReference = learnerTraining.AimReference,
-                    //LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
-                    IlrSubmissionDateTime = submissionTime,
-                    ExternalId = Guid.NewGuid(),
-                    Amount = providerPayment.EmployerCoFundedPayments,
-                    LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = TestSession.Learner.Uln,
-                    //LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    //LearningAimProgrammeType = learnerTraining.ProgrammeType
-                }
+                CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
+                DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
+                Ukprn = TestSession.Ukprn,
+                JobId = jobId,
+                SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
+                TransactionType = providerPayment.TransactionType,
+                ContractType = learnerTraining.ContractType,
+                PriceEpisodeIdentifier = "pe-1",
+                FundingSource = fundingSourceType,
+                LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
+                LearningAimReference = learnerTraining.AimReference,
+                IlrSubmissionDateTime = submissionTime,
+                ExternalId = Guid.NewGuid(),
+                Amount = amount,
+                LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
+                LearnerUln = TestSession.Learner.Uln
             };
+            return paymentModel;
         }
 
         protected void PopulateLearner(FM36Learner learner, Training training, List<OnProgrammeEarning> earnings)
