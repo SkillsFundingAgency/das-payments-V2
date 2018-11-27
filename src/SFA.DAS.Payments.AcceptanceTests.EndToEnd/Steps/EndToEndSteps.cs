@@ -9,9 +9,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
+using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {

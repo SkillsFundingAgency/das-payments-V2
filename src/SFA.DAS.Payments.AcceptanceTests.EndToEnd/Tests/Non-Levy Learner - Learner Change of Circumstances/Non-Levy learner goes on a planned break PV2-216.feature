@@ -28,6 +28,10 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
     But the Provider now changes the Learner details as follows
 		| Priority | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
 		| 1        | 03/Jan/Current Academic Year | 10 months        | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+	And price details as follows
+        | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date |
+        | 1st price details | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          |
+        | 2nd price details | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing |
