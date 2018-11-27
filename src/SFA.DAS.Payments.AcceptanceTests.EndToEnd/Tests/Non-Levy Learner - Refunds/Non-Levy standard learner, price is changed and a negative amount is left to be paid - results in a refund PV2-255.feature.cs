@@ -203,17 +203,20 @@ this.ScenarioInitialize(scenarioInfo);
                         "Collection Period",
                         "Delivery Period",
                         "SFA Co-Funded Payments",
-                        "Employer Co-Funded Payments"});
+                        "Employer Co-Funded Payments",
+                        "Transaction Type"});
             table3.AddRow(new string[] {
                         "R01/Current Academic Year",
                         "Aug/Current Academic Year",
                         "675",
-                        "75"});
+                        "75",
+                        "Learning"});
             table3.AddRow(new string[] {
                         "R02/Current Academic Year",
                         "Sep/Current Academic Year",
                         "675",
-                        "75"});
+                        "75",
+                        "Learning"});
 #line 25
     testRunner.And("the following provider payments had been generated", ((string)(null)), table3, "And ");
 #line hidden

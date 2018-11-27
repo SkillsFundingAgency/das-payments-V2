@@ -38,10 +38,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         protected async Task WaitForIt(Func<Task<bool>> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
-            while (DateTime.Now < endTime)
+            var lastRun = false;
+
+            while (DateTime.Now < endTime || lastRun)
             {
                 if (await lookForIt())
-                    return;
+                {
+                    if (lastRun) return;
+                    lastRun = true;
+                }
+
                 await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail($"{failText}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
@@ -50,10 +56,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         protected async Task WaitForIt(Func<bool> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
-            while (DateTime.Now < endTime)
+            var lastRun = false;
+
+            while (DateTime.Now < endTime || lastRun)
             {
                 if (lookForIt())
-                    return;
+                {
+                    if (lastRun) return;
+                    lastRun = true;
+                }
+
                 await Task.Delay(Config.TimeToPause);
             }
             Assert.Fail($"{failText}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
@@ -62,15 +74,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         protected async Task WaitForIt(Func<Tuple<bool, string>> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
-            var reason = "";
-            while (DateTime.Now < endTime)
+            var reason = string.Empty;
+            var lastRun = false;
+
+            while (DateTime.Now < endTime || lastRun)
             {
                 bool pass;
                 (pass, reason) = lookForIt();
-
-                if (pass) return;
+                if (pass)
+                {
+                    if (lastRun) return;
+                    lastRun = true;
+                }
                 await Task.Delay(Config.TimeToPause);
             }
+
             Assert.Fail($"{failText} - {reason}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
