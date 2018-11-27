@@ -241,7 +241,7 @@
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2EarningEventHandler.cs" />
-    <Compile Include="Handlers\ApprenticeshipContractType2RequiredPaymentEventHandler.cs" />
+    <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2PaymentDueEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
@@ -301,8 +301,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Change to agreed price at end of month - PV2 - 209.feature</DependentUpon>
     </Compile>
-      <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change start date forward within calendar month - PV2-282.feature.cs">
-            <AutoGen>True</AutoGen>
+    <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change start date forward within calendar month - PV2-282.feature.cs">
+      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Change start date forward within calendar month - PV2-282.feature</DependentUpon>
     </Compile>
