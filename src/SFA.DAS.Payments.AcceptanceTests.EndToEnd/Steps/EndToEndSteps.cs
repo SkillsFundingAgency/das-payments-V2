@@ -9,7 +9,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -44,7 +43,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
-            
+            var incentives = table.CreateSet<IncentiveEarning>().ToList();
+
             foreach (var training in CurrentIlr)
             {
                 var learnerId = training.LearnerId;
@@ -70,6 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession), "OnProgrammeEarning event check failure");
+            await WaitForIt(() => EarningEventMatcher.MatchIncentives(incentives, TestSession), "IncentiveEarning event check failure");
         }
 
         [Then(@"only the following payments will be calculated")]
