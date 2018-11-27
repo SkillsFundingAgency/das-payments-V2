@@ -105,8 +105,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
                 await Task.Delay(Config.TimeToPause);
             }
-
         }
+
         protected byte GetMonth(byte period)
         {
             return (byte)(period >= 5 ? period - 4 : period + 8);

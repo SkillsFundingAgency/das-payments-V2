@@ -88,6 +88,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
                 learner.Course.LearnAimRef = ilrLearner.AimReference;
                 learner.Course.CompletionStatus = ilrLearner.CompletionStatus;
+                learner.Course.ProgrammeType = ilrLearner.ProgrammeType;
+                learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
+                learner.Course.PathwayCode = ilrLearner.PathwayCode;
             });
         }
 
@@ -106,17 +109,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ContractType = learnerTraining.ContractType,
                     PriceEpisodeIdentifier = "pe-1",
                     FundingSource = FundingSourceType.CoInvestedSfa,
-                    //LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
+                    LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
                     LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
                     LearningAimReference = learnerTraining.AimReference,
-                    //LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
+                    LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                     IlrSubmissionDateTime = submissionTime,
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.SfaCoFundedPayments,
                     LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
                     LearnerUln = TestSession.Learner.Uln,
-                    //LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    //LearningAimProgrammeType = learnerTraining.ProgrammeType
+                    LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                    LearningAimProgrammeType = learnerTraining.ProgrammeType
                 },
                 new PaymentModel
                 {
@@ -129,17 +132,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ContractType = learnerTraining.ContractType,
                     PriceEpisodeIdentifier = "pe-1",
                     FundingSource = FundingSourceType.CoInvestedEmployer,
-                    //LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
+                    LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
                     LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
                     LearningAimReference = learnerTraining.AimReference,
-                    //LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
+                    LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                     IlrSubmissionDateTime = submissionTime,
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.EmployerCoFundedPayments,
                     LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
                     LearnerUln = TestSession.Learner.Uln,
-                    //LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    //LearningAimProgrammeType = learnerTraining.ProgrammeType
+                    LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                    LearningAimProgrammeType = learnerTraining.ProgrammeType
                 }
             };
         }
@@ -178,6 +181,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     {
                         LearnAimRef = training.AimReference,
                         LearnDelInitialFundLineType = training.FundingLineType,
+                        StdCode = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course.StandardCode,
+                        FworkCode = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course.FrameworkCode,
+                        ProgType = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course.ProgrammeType,
+                        PwayCode = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course.PathwayCode,
                     }
                 }
             });
