@@ -7,8 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
