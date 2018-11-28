@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             var payments = FundingSourcePayments.Select(p => CreateFundingSourcePaymentEvent(p, submissionTime)).ToList();
             foreach (var payment in payments)
             {
-                await MessageSession.Publish(payment).ConfigureAwait(false);
+                await MessageSession.Send(payment).ConfigureAwait(false);
             }
         }
 

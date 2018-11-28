@@ -40,8 +40,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                         PathwayCode = 1234,
                         ProgrammeType = 1,
                         Reference = "Ref-1234",
-                        StandardCode = 1
-                    },
+                        StandardCode = 1,
+                        FundingLineType = "Funding-LineType"
+                },
                 DeliveryPeriod = new CalendarPeriod("1718-R10"),
                 CollectionPeriod = new CalendarPeriod("1718-R10"),
                 AmountDue = 1000,

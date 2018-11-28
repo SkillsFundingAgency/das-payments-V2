@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
-            await MessageSession.Publish(ilrSubmissionEvent).ConfigureAwait(false);
+            await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
         }
 
         private PaymentModel CreatePayment(FundingSourcePayment fundingSourcePayment, long jobId, DateTime? ilrSubmissionDate = null)
@@ -93,14 +93,14 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
-            await MessageSession.Publish(ilrSubmissionEvent).ConfigureAwait(false);
+            await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
 
             ContractType = contractType;
             var fundingSourcePayments = table.CreateSet<FundingSourcePayment>().Select(p => CreateFundingSourcePaymentEvent(p, submissionTime)).ToList();
             foreach (var fundingSourcePaymentEvent in fundingSourcePayments)
             {
                 Console.WriteLine($"Sending funding source event: {fundingSourcePaymentEvent.ToJson()}");
-                await MessageSession.Publish(fundingSourcePaymentEvent).ConfigureAwait(false);
+                await MessageSession.Send(fundingSourcePaymentEvent).ConfigureAwait(false);
             }
             Console.WriteLine("sent submission payments.");
         }
@@ -116,7 +116,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             foreach (var fundingSourcePaymentEvent in fundingSourcePayments)
             {
                 Console.WriteLine($"Sending funding source event: {fundingSourcePaymentEvent.ToJson()}");
-                await MessageSession.Publish(fundingSourcePaymentEvent).ConfigureAwait(false);
+                await MessageSession.Send(fundingSourcePaymentEvent).ConfigureAwait(false);
             }
             Console.WriteLine("sent submission payments.");
             var ilrSubmissionEvent = new IlrSubmittedEvent
@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
-            await MessageSession.Publish(ilrSubmissionEvent).ConfigureAwait(false);
+            await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
         }
 
         [Then(@"the provider payments service should remove all payments for the previous Ilr submission")]

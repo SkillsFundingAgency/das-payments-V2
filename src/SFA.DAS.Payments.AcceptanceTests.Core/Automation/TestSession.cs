@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             courseFaker
                 .RuleFor(course => course.AimSeqNumber, faker => faker.Random.Short(1))
                 .RuleFor(course => course.FrameworkCode, faker => faker.Random.Short(1))
-                .RuleFor(course => course.FundingLineType, faker => faker.Name.JobDescriptor())
+                .RuleFor(course => course.FundingLineType, faker => faker.Name.JobDescriptor()?? "FundingLine")
                 .RuleFor(course => course.LearnAimRef, "ZPROG001")
                 .RuleFor(course => course.LearningPlannedEndDate, DateTime.Today.AddMonths(12))
                 .RuleFor(course => course.LearningStartDate, DateTime.Today)

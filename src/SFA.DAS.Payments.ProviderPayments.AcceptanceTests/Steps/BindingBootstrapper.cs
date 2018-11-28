@@ -6,9 +6,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Messages.Core;
-using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages;
-using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 
@@ -32,12 +30,13 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         public static void AddRoutingConfig()
         {
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
-            var conventions = endpointConfiguration.Conventions();
-            conventions.DefiningEventsAs(type => type.IsEvent<IPaymentsEvent>())
-                .DefiningCommandsAs(t =>  t.IsAssignableTo<ProcessProviderMonthEndCommand>());
+            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<ProviderPaymentEvent>());
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
+            routing.RouteToEndpoint(typeof(SfaCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
+            routing.RouteToEndpoint(typeof(EmployerCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPaymentEndPointName);
+            routing.RouteToEndpoint(typeof(IlrSubmittedEvent), EndpointNames.ProviderPaymentEndPointName);
 
         }
     }
