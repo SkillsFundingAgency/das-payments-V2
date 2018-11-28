@@ -50,8 +50,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var learnerId = training.LearnerId;
                 var learner = new FM36Learner {LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber};
                 var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
+                var incentiveEarnings = incentives.Where(e => e.LearnerId == learnerId).ToList();
                 
-                PopulateLearner(learner, training, learnerEarnings);
+                PopulateLearnerEarnings(learner, training, learnerEarnings, incentiveEarnings);
 
                 var command = new ProcessLearnerCommand
                 {
