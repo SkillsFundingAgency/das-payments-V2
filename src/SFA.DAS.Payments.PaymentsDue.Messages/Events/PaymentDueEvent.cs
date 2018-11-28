@@ -13,6 +13,5 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
         {
             EventTime = DateTimeOffset.UtcNow;
         }
-
     }
 }

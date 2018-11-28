@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 {
     public static class ServiceFabricContainerFactory
     {
-        public static IContainer CreateContainerForActor<TActor>() where TActor: ActorBase
+        public static IContainer CreateContainerForActor<TActor>() where TActor : ActorBase
         {
             var builder = ContainerFactory.CreateBuilder();
             builder.RegisterActor<TActor>();
@@ -17,7 +17,20 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
             return container;
         }
 
-        public static ContainerBuilder CreateBuilderForStatelessService<TStatelessService>() where TStatelessService: StatelessService
+        public static IContainer CreateContainerForStatefulService<TStatefulService>() where TStatefulService : StatefulService
+        {
+            var builder = ContainerFactory.CreateBuilder();
+            builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Name + "Type");
+            var container = ContainerFactory.CreateContainer(builder);
+            var endpointConfiguration = container.Resolve<EndpointConfiguration>();
+            endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+            {
+                customizations.ExistingLifetimeScope(container);
+            });
+            return container;
+        }
+
+        public static ContainerBuilder CreateBuilderForStatelessService<TStatelessService>() where TStatelessService : StatelessService
         {
             return CreateBuilderForStatelessService<TStatelessService>(typeof(TStatelessService).Namespace + "Type");
         }
@@ -34,7 +47,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
             return container;
         }
 
-        public static ContainerBuilder CreateBuilderForStatelessService<TStatelessService>(string serviceTypeName) where TStatelessService: StatelessService
+        public static ContainerBuilder CreateBuilderForStatelessService<TStatelessService>(string serviceTypeName) where TStatelessService : StatelessService
         {
             var builder = ContainerFactory.CreateBuilder();
             builder.RegisterStatelessService<TStatelessService>(serviceTypeName);
