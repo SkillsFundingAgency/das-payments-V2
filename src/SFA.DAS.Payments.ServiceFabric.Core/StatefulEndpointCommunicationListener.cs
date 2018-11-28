@@ -7,28 +7,28 @@ using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
-
-    public class StatelessEndpointCommunicationListener: IStatelessEndpointCommunicationListener
+    public class StatefulEndpointCommunicationListener: IStatefulEndpointCommunicationListener
     {
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
         private readonly IApplicationConfiguration config;
         private IEndpointInstance endpointInstance;
 
-        public StatelessEndpointCommunicationListener(IEndpointInstanceFactory endpointInstanceFactory, IApplicationConfiguration config)
+        public StatefulEndpointCommunicationListener(IEndpointInstanceFactory endpointInstanceFactory, IApplicationConfiguration config)
         {
             this.endpointInstanceFactory = endpointInstanceFactory ?? throw new ArgumentNullException(nameof(endpointInstanceFactory));
             this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        /// <summary>
-        /// Opens the asynchronous.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public async Task<string> OpenAsync(CancellationToken cancellationToken)
+        public Task<string> OpenAsync(CancellationToken cancellationToken)
         {
-            endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-            return config.EndpointName;
+            return Task.FromResult(config.EndpointName);
+        }
+
+        public async Task RunAsync()
+        {
+            endpointInstance = await endpointInstanceFactory
+                .GetEndpointInstance()
+                .ConfigureAwait(false);
         }
 
         public Task CloseAsync(CancellationToken cancellationToken)
