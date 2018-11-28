@@ -43,7 +43,7 @@ CREATE INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
 
 GO
 
-CREATE INDEX [IX_Payment__UkprnPeroidSearch] ON [Payments2].[Payment]
+CREATE INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
 (
   [Ukprn],
   [CollectionPeriodName],

@@ -27,6 +27,7 @@
     <IncludeSchemaNameInFileName>True</IncludeSchemaNameInFileName>
     <Recovery>SIMPLE</Recovery>
     <DacApplicationName>SFA.DAS.Payments</DacApplicationName>
+    <AllowSnapshotIsolation>True</AllowSnapshotIsolation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
