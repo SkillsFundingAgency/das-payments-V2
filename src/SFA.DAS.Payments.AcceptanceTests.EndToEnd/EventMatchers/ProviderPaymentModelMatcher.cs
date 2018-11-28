@@ -43,17 +43,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var paymentInfo in expectedPaymentInfo)
             {
-                var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn);
-                coFundedSfa.Amount = paymentInfo.SfaCoFundedPayments;
-                coFundedSfa.FundingSource = FundingSourceType.CoInvestedSfa;
+                var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa, paymentInfo.SfaCoFundedPayments);
 
-                var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn);
-                coFundedEmp.Amount = paymentInfo.EmployerCoFundedPayments;
-                coFundedEmp.FundingSource = FundingSourceType.CoInvestedEmployer;
+                var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments);
 
-                var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn);
-                fullyFundedSfa.Amount = paymentInfo.FullyFundedSfaPayments;
-                fullyFundedSfa.FundingSource = FundingSourceType.FullyFundedSfa;
+                var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.FullyFundedSfaPayments);
 
                 expectedPayments.Add(coFundedSfa);
                 expectedPayments.Add(coFundedEmp);
@@ -73,7 +67,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.LearnerReferenceNumber == actual.LearnerReferenceNumber;
         }
 
-        private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn)
+        private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn, FundingSourceType fundingSource,
+            decimal amount)
         {
             return new PaymentModel
             {
@@ -82,8 +77,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 DeliveryPeriod = paymentInfo.DeliveryPeriod.ToCalendarPeriod(),
                 TransactionType = paymentInfo.TransactionType,
                 ContractType = contractType,
-                Amount = paymentInfo.EmployerCoFundedPayments,
-                FundingSource = FundingSourceType.CoInvestedEmployer,
+                Amount = amount,
+                FundingSource = fundingSource,
                 LearnerReferenceNumber = testSession.GetLearner(paymentInfo.LearnerId).LearnRefNumber
             };
         }
