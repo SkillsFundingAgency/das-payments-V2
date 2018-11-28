@@ -127,7 +127,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return paymentModel;
         }
 
-        protected void PopulateLearner(FM36Learner learner, Training training, List<OnProgrammeEarning> earnings)
+        protected void PopulateLearnerIncentives(FM36Learner learner, Training training,
+            List<IncentiveEarning> incentives)
+        {
+           
+
+
+        }
+
+        protected void PopulateLearnerEarnings(FM36Learner learner, Training training, List<OnProgrammeEarning> earnings,
+            List<IncentiveEarning> incentives)
         {
 
             var learningValues = new PriceEpisodePeriodisedValues
@@ -142,6 +151,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 AttributeName = "PriceEpisodeBalancePayment",
             };
+
             earnings.ForEach(earning =>
             {
                 var period = earning.DeliveryPeriod.ToDate().ToCalendarPeriod().Period;
@@ -150,7 +160,80 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 SetPeriodValue(period, balancingEarnings, earning.Balancing);
             });
 
-            learner.PriceEpisodes = GetPriceEpisodes(training, learningValues, completionEarnings, balancingEarnings, CurrentPriceEpisodes, earnings, CollectionYear);
+            var first16To18EmployerIncentive = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeFirstEmp1618Pay",
+            };
+            var first16To18ProviderIncentive = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeFirstProv1618Pay",
+            };
+            var second16To18EmployerIncentive = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeSecondEmp1618Pay",
+            };
+            var second16To18ProviderIncentive = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeSecondProv1618Pay",
+            };
+            var onProgramme16To18FrameworkUplift = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment",
+            };
+            var completion16To18FrameworkUplift = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment",
+            };
+            var balancing16To18FrameworkUplift = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeApplic1618FrameworkUpliftBalancing",
+            };
+            var firstDisadvantagePayment = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeFirstDisadvantagePayment",
+            };
+            var secondDisadvantagePayment = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeSecondDisadvantagePayment",
+            };
+            var learningSupport = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeLSFCash",
+            };
+
+            incentives.ForEach(incentive =>
+            {
+                var period = incentive.DeliveryPeriod.ToDate().ToCalendarPeriod().Period;
+                SetPeriodValue(period, first16To18EmployerIncentive, incentive.First16To18EmployerIncentive);
+                SetPeriodValue(period, first16To18ProviderIncentive, incentive.First16To18ProviderIncentive);
+                SetPeriodValue(period, second16To18EmployerIncentive, incentive.Second16To18EmployerIncentive);
+                SetPeriodValue(period, second16To18ProviderIncentive, incentive.Second16To18ProviderIncentive);
+                SetPeriodValue(period, onProgramme16To18FrameworkUplift, incentive.OnProgramme16To18FrameworkUplift);
+                SetPeriodValue(period, completion16To18FrameworkUplift, incentive.Completion16To18FrameworkUplift);
+                SetPeriodValue(period, balancing16To18FrameworkUplift, incentive.Balancing16To18FrameworkUplift);
+                SetPeriodValue(period, firstDisadvantagePayment, incentive.FirstDisadvantagePayment);
+                SetPeriodValue(period, secondDisadvantagePayment, incentive.SecondDisadvantagePayment);
+                SetPeriodValue(period, learningSupport, incentive.LearningSupport);
+            });
+
+            learner.PriceEpisodes = GetPriceEpisodes(
+                training,
+                learningValues,
+                completionEarnings,
+                balancingEarnings,
+                first16To18EmployerIncentive,
+                first16To18ProviderIncentive,
+                second16To18EmployerIncentive,
+                second16To18ProviderIncentive,
+                onProgramme16To18FrameworkUplift,
+                completion16To18FrameworkUplift,
+                balancing16To18FrameworkUplift,
+                firstDisadvantagePayment,
+                secondDisadvantagePayment,
+                learningSupport,
+                CurrentPriceEpisodes,
+                earnings,
+                CollectionYear);
 
             learner.LearningDeliveries = new List<LearningDelivery>(new[]
             {
@@ -165,7 +248,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
-        private static List<PriceEpisode> GetPriceEpisodes(Training learnerEarnings, PriceEpisodePeriodisedValues learningValues, PriceEpisodePeriodisedValues completionEarnings, PriceEpisodePeriodisedValues balancingEarnings, List<Price> priceEpisodes, List<OnProgrammeEarning> earnings, string collectionYear)
+        private static List<PriceEpisode> GetPriceEpisodes(
+            Training learnerEarnings, 
+            PriceEpisodePeriodisedValues learningValues, 
+            PriceEpisodePeriodisedValues completionEarnings, 
+            PriceEpisodePeriodisedValues balancingEarnings, 
+            PriceEpisodePeriodisedValues first16To18EmployerIncentive, 
+            PriceEpisodePeriodisedValues first16To18ProviderIncentive, 
+            PriceEpisodePeriodisedValues second16To18EmployerIncentive, 
+            PriceEpisodePeriodisedValues second16To18ProviderIncentive, 
+            PriceEpisodePeriodisedValues onProgramme16To18FrameworkUplift, 
+            PriceEpisodePeriodisedValues completion16To18FrameworkUplift, 
+            PriceEpisodePeriodisedValues balancing16To18FrameworkUplift, 
+            PriceEpisodePeriodisedValues firstDisadvantagePayment, 
+            PriceEpisodePeriodisedValues secondDisadvantagePayment, 
+            PriceEpisodePeriodisedValues learningSupport, 
+            List<Price> priceEpisodes, 
+            List<OnProgrammeEarning> earnings,
+            string collectionYear)
         {
             if (priceEpisodes == null)
             {
@@ -235,29 +335,83 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 PriceEpisodePeriodisedValues episodeLearningValues;
                 PriceEpisodePeriodisedValues episodeCompletionEarnings;
                 PriceEpisodePeriodisedValues episodeBalancingEarnings;
+                PriceEpisodePeriodisedValues episodeFirst16To18EmployerIncentive;
+                PriceEpisodePeriodisedValues episodeFirst16To18ProviderIncentive;
+                PriceEpisodePeriodisedValues episodeSecond16To18EmployerIncentive;
+                PriceEpisodePeriodisedValues episodeSecond16To18ProviderIncentive;
+                PriceEpisodePeriodisedValues episodeOnProgramme16To18FrameworkUplift;
+                PriceEpisodePeriodisedValues episodeCompletion16To18FrameworkUplift;
+                PriceEpisodePeriodisedValues episodeBalancing16To18FrameworkUplift;
+                PriceEpisodePeriodisedValues episodeFirstDisadvantagePayment;
+                PriceEpisodePeriodisedValues episodeSecondDisadvantagePayment;
+                PriceEpisodePeriodisedValues episodeLearningSupport;
 
                 if ((episodeStart.Period > 1 && episodeStart.GetCollectionYear() == collectionYear) || episodeLastPeriod < 12)
                 {
                     episodeLearningValues = new PriceEpisodePeriodisedValues {AttributeName = learningValues.AttributeName};
                     episodeCompletionEarnings = new PriceEpisodePeriodisedValues { AttributeName = completionEarnings.AttributeName };
                     episodeBalancingEarnings = new PriceEpisodePeriodisedValues { AttributeName = balancingEarnings.AttributeName };
+                    episodeFirst16To18EmployerIncentive = new PriceEpisodePeriodisedValues { AttributeName = first16To18EmployerIncentive.AttributeName };
+                    episodeFirst16To18ProviderIncentive = new PriceEpisodePeriodisedValues { AttributeName = first16To18ProviderIncentive.AttributeName };
+                    episodeSecond16To18EmployerIncentive = new PriceEpisodePeriodisedValues { AttributeName = second16To18EmployerIncentive.AttributeName };
+                    episodeSecond16To18ProviderIncentive = new PriceEpisodePeriodisedValues { AttributeName = second16To18ProviderIncentive.AttributeName };
+                    episodeOnProgramme16To18FrameworkUplift = new PriceEpisodePeriodisedValues { AttributeName = onProgramme16To18FrameworkUplift.AttributeName };
+                    episodeCompletion16To18FrameworkUplift = new PriceEpisodePeriodisedValues { AttributeName = completion16To18FrameworkUplift.AttributeName };
+                    episodeBalancing16To18FrameworkUplift = new PriceEpisodePeriodisedValues { AttributeName = balancing16To18FrameworkUplift.AttributeName };
+                    episodeFirstDisadvantagePayment = new PriceEpisodePeriodisedValues { AttributeName = firstDisadvantagePayment.AttributeName };
+                    episodeSecondDisadvantagePayment = new PriceEpisodePeriodisedValues { AttributeName = secondDisadvantagePayment.AttributeName };
+                    episodeLearningSupport = new PriceEpisodePeriodisedValues { AttributeName = learningSupport.AttributeName };
 
                     for (var p = 1; p < 13; p++)
                     {
                         var propertyInfo = typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + p);
 
-                        decimal? learningValue = 0, completionValue = 0, balancingValue = 0;
+                        decimal? learningValue = 0,
+                            completionValue = 0,
+                            balancingValue = 0,
+                            first16To18EmployerIncentiveValue = 0,
+                            first16To18ProviderIncentiveValue = 0,
+                            second16To18EmployerIncentiveValue = 0,
+                            second16To18ProviderIncentiveValue = 0,
+                            onProgramme16To18FrameworkUpliftValue = 0,
+                            completion16To18FrameworkUpliftValue = 0,
+                            balancing16To18FrameworkUpliftValue = 0,
+                            firstDisadvantagePaymentValue = 0,
+                            secondDisadvantagePaymentValue = 0,
+                            learningSupportValue = 0;
 
                         if (p >= episodeStart.Period && p <= episodeLastPeriod)
                         {
                             learningValue = (decimal?)propertyInfo.GetValue(learningValues);
                             completionValue = (decimal?)propertyInfo.GetValue(completionEarnings);
                             balancingValue = (decimal?)propertyInfo.GetValue(balancingEarnings);
+
+                            first16To18EmployerIncentiveValue = (decimal?)propertyInfo.GetValue(episodeFirst16To18EmployerIncentive);
+                            first16To18ProviderIncentiveValue = (decimal?)propertyInfo.GetValue(episodeFirst16To18ProviderIncentive);
+                            second16To18EmployerIncentiveValue = (decimal?)propertyInfo.GetValue(episodeSecond16To18EmployerIncentive);
+                            second16To18ProviderIncentiveValue = (decimal?)propertyInfo.GetValue(episodeSecond16To18ProviderIncentive);
+                            onProgramme16To18FrameworkUpliftValue = (decimal?)propertyInfo.GetValue(episodeOnProgramme16To18FrameworkUplift);
+                            completion16To18FrameworkUpliftValue = (decimal?)propertyInfo.GetValue(episodeCompletion16To18FrameworkUplift);
+                            balancing16To18FrameworkUpliftValue = (decimal?)propertyInfo.GetValue(episodeBalancing16To18FrameworkUplift);
+                            firstDisadvantagePaymentValue = (decimal?)propertyInfo.GetValue(episodeFirstDisadvantagePayment);
+                            secondDisadvantagePaymentValue = (decimal?)propertyInfo.GetValue(episodeSecondDisadvantagePayment);
+                            learningSupportValue = (decimal?)propertyInfo.GetValue(episodeLearningSupport);
                         }
 
                         propertyInfo.SetValue(episodeLearningValues, learningValue);
                         propertyInfo.SetValue(episodeCompletionEarnings, completionValue);
                         propertyInfo.SetValue(episodeBalancingEarnings, balancingValue);
+
+                        propertyInfo.SetValue(episodeFirst16To18EmployerIncentive, first16To18EmployerIncentiveValue);
+                        propertyInfo.SetValue(episodeFirst16To18ProviderIncentive, first16To18ProviderIncentiveValue);
+                        propertyInfo.SetValue(episodeSecond16To18EmployerIncentive, second16To18EmployerIncentiveValue);
+                        propertyInfo.SetValue(episodeSecond16To18ProviderIncentive, second16To18ProviderIncentiveValue);
+                        propertyInfo.SetValue(episodeOnProgramme16To18FrameworkUplift, onProgramme16To18FrameworkUpliftValue);
+                        propertyInfo.SetValue(episodeCompletion16To18FrameworkUplift, completion16To18FrameworkUpliftValue);
+                        propertyInfo.SetValue(episodeBalancing16To18FrameworkUplift, balancing16To18FrameworkUpliftValue);
+                        propertyInfo.SetValue(episodeFirstDisadvantagePayment, firstDisadvantagePaymentValue);
+                        propertyInfo.SetValue(episodeSecondDisadvantagePayment, secondDisadvantagePaymentValue);
+                        propertyInfo.SetValue(episodeLearningSupport, learningSupportValue);
                     }
                 }
                 else
@@ -265,16 +419,59 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     episodeLearningValues = learningValues;
                     episodeCompletionEarnings = completionEarnings;
                     episodeBalancingEarnings = balancingEarnings;
+
+                    episodeFirst16To18EmployerIncentive = first16To18EmployerIncentive;
+                    episodeFirst16To18ProviderIncentive = first16To18ProviderIncentive;
+                    episodeSecond16To18EmployerIncentive = second16To18EmployerIncentive;
+                    episodeSecond16To18ProviderIncentive = second16To18ProviderIncentive;
+                    episodeOnProgramme16To18FrameworkUplift = onProgramme16To18FrameworkUplift;
+                    episodeCompletion16To18FrameworkUplift = completion16To18FrameworkUplift;
+                    episodeBalancing16To18FrameworkUplift = balancing16To18FrameworkUplift;
+                    episodeFirstDisadvantagePayment = firstDisadvantagePayment;
+                    episodeSecondDisadvantagePayment = secondDisadvantagePayment;
+                    episodeLearningSupport = learningSupport;
                 }
 
                 priceEpisode.PriceEpisodePeriodisedValues.Add(episodeLearningValues);
                 priceEpisode.PriceEpisodePeriodisedValues.Add(episodeCompletionEarnings);
                 priceEpisode.PriceEpisodePeriodisedValues.Add(episodeBalancingEarnings);
 
+                if (!NoValuesSet(episodeFirst16To18EmployerIncentive)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeFirst16To18EmployerIncentive);
+                if (!NoValuesSet(episodeFirst16To18ProviderIncentive)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeFirst16To18ProviderIncentive);
+                if (!NoValuesSet(episodeSecond16To18EmployerIncentive)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeSecond16To18EmployerIncentive);
+                if (!NoValuesSet(episodeSecond16To18ProviderIncentive)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeSecond16To18ProviderIncentive);
+                if (!NoValuesSet(episodeOnProgramme16To18FrameworkUplift)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeOnProgramme16To18FrameworkUplift);
+                if (!NoValuesSet(episodeCompletion16To18FrameworkUplift)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeCompletion16To18FrameworkUplift);
+                if (!NoValuesSet(episodeBalancing16To18FrameworkUplift)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeBalancing16To18FrameworkUplift);
+                if (!NoValuesSet(episodeFirstDisadvantagePayment)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeFirstDisadvantagePayment);
+                if (!NoValuesSet(episodeSecondDisadvantagePayment)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeSecondDisadvantagePayment);
+                if (!NoValuesSet(episodeLearningSupport)) priceEpisode.PriceEpisodePeriodisedValues.Add(episodeLearningSupport);
+
                 result.Add(priceEpisode);
             }
 
             return result;
+        }
+
+        private static bool NoValuesSet(PriceEpisodePeriodisedValues values)
+        {
+            return NullableDecimalNotSet(values.Period1) &&
+                   NullableDecimalNotSet(values.Period2) &&
+                   NullableDecimalNotSet(values.Period3) &&
+                   NullableDecimalNotSet(values.Period4) &&
+                   NullableDecimalNotSet(values.Period5) &&
+                   NullableDecimalNotSet(values.Period6) &&
+                   NullableDecimalNotSet(values.Period7) &&
+                   NullableDecimalNotSet(values.Period8) &&
+                   NullableDecimalNotSet(values.Period9) &&
+                   NullableDecimalNotSet(values.Period10) &&
+                   NullableDecimalNotSet(values.Period11) &&
+                   NullableDecimalNotSet(values.Period12);
+        }
+
+        private static bool NullableDecimalNotSet(decimal? value)
+        {
+            return !value.HasValue || value.Value == decimal.Zero;
         }
 
         private static void SetPeriodValue(int period, PriceEpisodePeriodisedValues periodisedValues, decimal amount)
