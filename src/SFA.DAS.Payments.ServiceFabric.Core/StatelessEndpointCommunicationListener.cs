@@ -7,13 +7,13 @@ using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
-    public class EndpointCommunicationListener: IEndpointCommunicationListener
+    public class StatelessEndpointCommunicationListener: IStatelessEndpointCommunicationListener
     {
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
         private readonly IApplicationConfiguration config;
         private IEndpointInstance endpointInstance;
 
-        public EndpointCommunicationListener(IEndpointInstanceFactory endpointInstanceFactory, IApplicationConfiguration config)
+        public StatelessEndpointCommunicationListener(IEndpointInstanceFactory endpointInstanceFactory, IApplicationConfiguration config)
         {
             this.endpointInstanceFactory = endpointInstanceFactory ?? throw new ArgumentNullException(nameof(endpointInstanceFactory));
             this.config = config ?? throw new ArgumentNullException(nameof(config));

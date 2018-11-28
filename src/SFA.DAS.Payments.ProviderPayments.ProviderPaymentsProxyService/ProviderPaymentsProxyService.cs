@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService
 
             return new List<ServiceInstanceListener>
             {
-                new ServiceInstanceListener(context =>lifetimeScope.Resolve<IEndpointCommunicationListener>())
+                new ServiceInstanceListener(context =>lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
             };
         }
 

@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
-    public interface IEndpointCommunicationListener : ICommunicationListener
+    public interface IStatelessEndpointCommunicationListener : ICommunicationListener
     {
     }
 }

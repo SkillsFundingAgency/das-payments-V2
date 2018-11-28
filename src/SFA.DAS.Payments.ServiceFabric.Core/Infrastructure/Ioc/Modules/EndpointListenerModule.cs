@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder
-                .RegisterType<EndpointCommunicationListener>().As<IEndpointCommunicationListener>();
+                .RegisterType<StatelessEndpointCommunicationListener>().As<IStatelessEndpointCommunicationListener>();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
         public static IContainer CreateContainerForStatefulService<TStatefulService>() where TStatefulService : StatefulService
         {
             var builder = ContainerFactory.CreateBuilder();
-            builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Name + "Type");
+            builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Namespace + "Type");
             var container = ContainerFactory.CreateContainer(builder);
             var endpointConfiguration = container.Resolve<EndpointConfiguration>();
             endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>

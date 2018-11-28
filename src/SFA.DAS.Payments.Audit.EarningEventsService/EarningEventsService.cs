@@ -4,6 +4,7 @@ using System.Fabric;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
@@ -13,7 +14,8 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService
     /// <summary>
     /// An instance of this class is created for each service replica by the Service Fabric runtime.
     /// </summary>
-    internal sealed class EarningEventsService : StatefulService
+    [StatePersistence(StatePersistence.Volatile)]
+    public class EarningEventsService : StatefulService
     {
         public EarningEventsService(StatefulServiceContext context)
             : base(context)

@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.PaymentsDue.PaymentsDueService
 {
     public class PaymentsDueService : StatelessService
     {
-        private IEndpointCommunicationListener listener;
+        private IStatelessEndpointCommunicationListener listener;
         private readonly IPaymentLogger paymentLogger;
         private readonly ILifetimeScope lifetimeScope;
 
@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.PaymentsDue.PaymentsDueService
 
             return new List<ServiceInstanceListener>
             {
-                new ServiceInstanceListener(context => listener = lifetimeScope.Resolve<IEndpointCommunicationListener>())
+                new ServiceInstanceListener(context => listener = lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
             };
         }
     }
