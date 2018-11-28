@@ -40,3 +40,15 @@ CREATE INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
 	LearningAimFrameworkCode ,
 	LearningAimPathwayCode 
 )
+
+GO
+
+CREATE INDEX [IX_Payment__UkprnPeroidSearch] ON [Payments2].[Payment]
+(
+  [Ukprn],
+  [CollectionPeriodName],
+  [JobId],
+  [CollectionPeriodMonth]
+) 
+
+GO
