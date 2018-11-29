@@ -151,11 +151,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Acceptance
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audit", "Audit", "{DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Audit.Application", "SFA.DAS.Payments.Audit.Application\SFA.DAS.Payments.Audit.Application.csproj", "{B9709C5B-A034-430C-8AFF-0F870BEA2ADA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.Application", "SFA.DAS.Payments.Audit.Application\SFA.DAS.Payments.Audit.Application.csproj", "{B9709C5B-A034-430C-8AFF-0F870BEA2ADA}"
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.Audit.ServiceFabric", "SFA.DAS.Payments.Audit.ServiceFabric\SFA.DAS.Payments.Audit.ServiceFabric.sfproj", "{FC462DC9-40D8-4142-831C-B91C4476A31B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Audit.EarningEventsService", "SFA.DAS.Payments.Audit.EarningEventsService\SFA.DAS.Payments.Audit.EarningEventsService.csproj", "{B4F4CB08-70BD-4E00-A21E-590D5FD533F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.EarningEventsService", "SFA.DAS.Payments.Audit.EarningEventsService\SFA.DAS.Payments.Audit.EarningEventsService.csproj", "{B4F4CB08-70BD-4E00-A21E-590D5FD533F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{502820FE-F8AD-454C-9664-B8100635C4BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Audit.AcceptanceTests", "SFA.DAS.Payments.Audit.AcceptanceTests\SFA.DAS.Payments.Audit.AcceptanceTests.csproj", "{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -693,6 +697,14 @@ Global
 		{B4F4CB08-70BD-4E00-A21E-590D5FD533F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B4F4CB08-70BD-4E00-A21E-590D5FD533F1}.Release|x64.ActiveCfg = Release|Any CPU
 		{B4F4CB08-70BD-4E00-A21E-590D5FD533F1}.Release|x64.Build.0 = Release|Any CPU
+		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}.Debug|x64.Build.0 = Debug|Any CPU
+		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}.Release|x64.ActiveCfg = Release|Any CPU
+		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -760,6 +772,8 @@ Global
 		{B9709C5B-A034-430C-8AFF-0F870BEA2ADA} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
 		{FC462DC9-40D8-4142-831C-B91C4476A31B} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
 		{B4F4CB08-70BD-4E00-A21E-590D5FD533F1} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
+		{502820FE-F8AD-454C-9664-B8100635C4BE} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
+		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B} = {502820FE-F8AD-454C-9664-B8100635C4BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
