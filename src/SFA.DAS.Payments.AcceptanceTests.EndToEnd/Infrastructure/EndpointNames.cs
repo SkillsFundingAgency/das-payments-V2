@@ -4,5 +4,6 @@
     {
         public static string ProviderPayments = "sfa-das-payments-providerpayments";
         public static string EarningEvents = "sfa-das-payments-earningevents";
+        public static string RequiredPayments = "sfa-das-payments-requiredpayments";
     }
 }
