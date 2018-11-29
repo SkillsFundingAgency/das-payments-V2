@@ -75,6 +75,12 @@
     <Build Include="Security\User_DsciUser.sql" />
     <Build Include="Payments2\Tables\Payment.sql" />
     <Build Include="Security\Schema_Payments2.sql" />
+    <Build Include="Payments2\Tables\Payments2.EarningEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.EarningEventPriceEpisode.sql" />
+    <Build Include="Payments2\Tables\Payments2.EarningEventPeriod.sql" />
+    <Build Include="Payments2\Tables\Payments2.PaymentsDueEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.RequiredPaymentsEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.FundingSourceEvent.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
