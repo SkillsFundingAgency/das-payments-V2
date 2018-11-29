@@ -16,9 +16,9 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService
             {
                 using (ServiceFabricContainerFactory.CreateContainerForStatefulService<EarningEventsService>())
                 {
-                    ServiceEventSource.Current.ServiceTypeRegistered(
-                        Process.GetCurrentProcess().Id,
-                        typeof(EarningEventsService).Name);
+                    //ServiceEventSource.Current.ServiceTypeRegistered(
+                    //    Process.GetCurrentProcess().Id,
+                    //    typeof(EarningEventsService).Name);
                     Thread.Sleep(Timeout.Infinite);
                 }
             }
