@@ -30,8 +30,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             PaymentDueEvent = new ApprenticeshipContractType2PaymentDueEvent
             {
-                JobId = 1234,
-                Ukprn = 1,
+                JobId = TestSession.JobId,
+                Ukprn = TestSession.Ukprn,
                 Learner = new Learner { ReferenceNumber = "12345", Uln = 12345 },
                 LearningAim = new LearningAim
                     {
@@ -67,7 +67,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             {
                 return ApprenticeshipContractType2Handler.ReceivedEvents
                     .Any(receivedEvent => receivedEvent.AmountDue == PaymentDueEvent.AmountDue &&
-                                          receivedEvent.DeliveryPeriod?.Period == PaymentDueEvent.DeliveryPeriod.Period);
+                                          receivedEvent.DeliveryPeriod?.Period == PaymentDueEvent.DeliveryPeriod.Period &&
+                                          receivedEvent.Ukprn == TestSession.Ukprn &&
+                                          receivedEvent.JobId == TestSession.JobId);
             },"Failed to find all the required payment events");
         }
     }

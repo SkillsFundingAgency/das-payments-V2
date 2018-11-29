@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 {
@@ -56,19 +55,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 
         public async Task SavePayment(PaymentModel paymentData, CancellationToken cancellationToken)
         {
-
-            var transactionOptions = new TransactionOptions()
-            {
-                IsolationLevel = IsolationLevel.Snapshot
-            };
-
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
-            {
-                await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);
-                await paymentsDataContext.SaveChangesAsync(cancellationToken);
-
-                scope.Complete();
-            }
+            await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);
+            await paymentsDataContext.SaveChangesAsync(cancellationToken);
 
         }
     }
