@@ -231,6 +231,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\FunctionalSkillEarning.cs" />
     <Compile Include="Data\OnProgrammeEarning.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\Price.cs" />
@@ -301,8 +302,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Change to agreed price at end of month - PV2 - 209.feature</DependentUpon>
     </Compile>
-      <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change start date forward within calendar month - PV2-282.feature.cs">
-            <AutoGen>True</AutoGen>
+    <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change start date forward within calendar month - PV2-282.feature.cs">
+      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Change start date forward within calendar month - PV2-282.feature</DependentUpon>
     </Compile>

@@ -44,6 +44,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
+            var functionalSkills = table.CreateSet<FunctionalSkillEarning>().ToList();
             
             foreach (var training in CurrentIlr)
             {
