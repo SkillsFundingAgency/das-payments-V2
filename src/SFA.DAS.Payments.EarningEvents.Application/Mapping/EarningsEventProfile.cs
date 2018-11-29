@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
-                .ForMember(dest => dest.Uln, opt => opt.Ignore());
+                .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.ULN));
 
             CreateMap<IntermediateLearningAim, LearningAim>()
                 .ForMember(dest => dest.PathwayCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.PwayCode))
