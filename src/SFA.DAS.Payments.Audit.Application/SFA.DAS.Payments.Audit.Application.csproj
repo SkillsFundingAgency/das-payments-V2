@@ -5,7 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Data\" />
     <Folder Include="Mapping\EarningEvents\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Audit.Model\SFA.DAS.Payments.Audit.Model.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
   </ItemGroup>
 
 </Project>
