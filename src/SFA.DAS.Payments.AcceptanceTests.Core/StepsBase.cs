@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
                 await Task.Delay(Config.TimeToPause);
             }
-            Assert.Fail(failText);
+            Assert.Fail($"{failText}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
         protected async Task WaitForIt(Func<bool> lookForIt, string failText)

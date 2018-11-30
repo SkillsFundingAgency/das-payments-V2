@@ -7,6 +7,7 @@ using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -114,8 +115,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
         private async Task SendMonthEndEvent()
         {
-            await MessageSession.Send(new PerformMonthEndProcessingCommand()
+            await MessageSession.Send(new ProcessProviderMonthEndCommand()
             {
+                Ukprn = TestSession.Ukprn,
                 JobId = TestSession.JobId,
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
             }).ConfigureAwait(false);
