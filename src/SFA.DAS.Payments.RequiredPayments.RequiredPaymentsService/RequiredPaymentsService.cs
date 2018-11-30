@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly IPaymentLogger paymentLogger;
         private readonly string apprenticeshipKey;
         private readonly IApprenticeshipKeyService apprenticeshipKeyService;
-        private readonly IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor;
+        private readonly IPaymentDueProcessor act2PaymentDueProcessor;
         private readonly IMapper mapper;
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
         private readonly IPaymentKeyService paymentKeyService;
@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             ActorId actorId,
             IPaymentLogger paymentLogger,
             IApprenticeshipKeyService apprenticeshipKeyService,
-            IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor, 
+            IPaymentDueProcessor act2PaymentDueProcessor, 
             IMapper mapper, 
             IPaymentHistoryRepository paymentHistoryRepository,
             IPaymentKeyService paymentKeyService) : base(actorService, actorId)
