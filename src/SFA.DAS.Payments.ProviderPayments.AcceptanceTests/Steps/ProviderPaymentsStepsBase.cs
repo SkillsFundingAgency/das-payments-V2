@@ -54,6 +54,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 case FundingSourceType.CoInvestedEmployer:
                     paymentEvent = new EmployerCoInvestedFundingSourcePaymentEvent();
                     break;
+                case FundingSourceType.FullyFundedSfa:
+                    paymentEvent = new SfaFullyFundedFundingSourcePaymentEvent();
+                    break;
                 default:
                     throw new NotImplementedException("Unhandled Funding Source Type");
             }

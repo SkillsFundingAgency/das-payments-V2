@@ -41,4 +41,4 @@ Scenario: Non levy learner with incentives finishes OnTime
 	When required payments event is received
 	Then the payment source component will generate the following contract type 2 payments:
 	| PriceEpisodeIdentifier | Delivery Period | TransactionType                    | FundingSource        | Amount |
-	| p2                     | 1               | First16To18EmployerIncentive (TT1) | FullyFundedSfa (FS4) | 500    |
+	| p2                     | 1               | First16To18EmployerIncentive (TT4) | FullyFundedSfa (FS4) | 500    |
