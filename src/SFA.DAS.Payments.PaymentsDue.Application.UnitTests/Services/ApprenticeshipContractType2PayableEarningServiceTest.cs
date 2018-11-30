@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
         public void SetUp()
         {
             domainServiceMock = new Mock<IApprenticeshipContractType2EarningProcessor>(MockBehavior.Strict);
-            service = new ApprenticeshipContractType2PayableEarningService(domainServiceMock.Object);
+            service = new ApprenticeshipContractType2PayableEarningService(domainServiceMock.Object, TODO);
         }
 
         [TearDown]
