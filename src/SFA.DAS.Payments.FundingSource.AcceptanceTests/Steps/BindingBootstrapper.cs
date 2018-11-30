@@ -14,10 +14,11 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         public static void AddRoutingConfig()
         {
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<CoInvestedFundingSourcePaymentEvent>());
+            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<FundingSourcePaymentEvent>());
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(ApprenticeshipContractType2RequiredPaymentEvent), EndpointNames.NonLevyFundedPaymentsService);
+            routing.RouteToEndpoint(typeof(IncentiveRequiredPayment), EndpointNames.NonLevyFundedPaymentsService);
         }
     }
 }

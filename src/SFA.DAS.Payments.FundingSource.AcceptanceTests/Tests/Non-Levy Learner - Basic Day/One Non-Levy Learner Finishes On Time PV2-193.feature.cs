@@ -254,8 +254,8 @@ this.FeatureBackground();
                         "FullyFundedSfa (FS4)",
                         "500"});
 #line 42
- testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
-                    "ed payments:", ((string)(null)), table6, "Then ");
+ testRunner.Then("the payment source component will generate the following contract type 2 payments" +
+                    ":", ((string)(null)), table6, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

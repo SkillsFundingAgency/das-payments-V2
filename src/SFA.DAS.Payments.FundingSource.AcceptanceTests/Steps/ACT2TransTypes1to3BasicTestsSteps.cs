@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
             await WaitForIt(() =>
             {
-                return !CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
+                return !FundingSourcePaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                         expectedContractType == receivedEvent.ContractType
                         && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                         && TestSession.Ukprn == receivedEvent.Ukprn
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
             await WaitForIt(() =>
             {
-                return !CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
+                return !FundingSourcePaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                     expectedContractType == receivedEvent.ContractType
                     && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                     && TestSession.Ukprn == receivedEvent.Ukprn
@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
             await WaitForIt(() =>
             {
-                return !CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
+                return !FundingSourcePaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                     expectedContractType == receivedEvent.ContractType
                     && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                     && TestSession.Ukprn == receivedEvent.Ukprn

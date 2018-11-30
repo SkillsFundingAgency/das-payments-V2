@@ -23,7 +23,7 @@ Scenario: A non-DAS learner, learner finishes late
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
 	| p2                     | 5				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
-	| p2                     | 5				| Completion (TT2)| CoInvestedEmploer (FS3)	| 300    |
+	| p2                     | 5				| Completion (TT2)| CoInvestedEmployer (FS3)	| 300    |
 
 
 @NonDas_BasicDay
@@ -44,6 +44,6 @@ Scenario: A non-DAS learner, learner finishes late - no history
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
 	| p2                     | 1				| Learning (TT1)  | CoInvestedSfa (FS2)		| 900    |
-	| p2                     | 1				| Learning (TT1)  | CoInvestedEmploer (FS3)	| 100    |
+	| p2                     | 1				| Learning (TT1)  | CoInvestedEmployer (FS3)	| 100    |
 	| p2                     | 5				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
-	| p2                     | 5				| Completion (TT2)| CoInvestedEmploer (FS3)	| 300    |
+	| p2                     | 5				| Completion (TT2)| CoInvestedEmployer (FS3)	| 300    |
