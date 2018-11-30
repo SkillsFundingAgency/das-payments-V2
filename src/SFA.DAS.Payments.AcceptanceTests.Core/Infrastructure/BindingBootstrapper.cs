@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using NServiceBus;
+using NServiceBus.Faults;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Messages.Core;
 using TechTalk.SpecFlow;

@@ -81,18 +81,18 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
 #line 8
  testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table55 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table1.AddRow(new string[] {
+            table55.AddRow(new string[] {
                         "p1",
                         "1",
                         "Learning (TT1)",
                         "600"});
 #line 9
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
+ testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table55, "And ");
 #line hidden
         }
         
@@ -117,19 +117,19 @@ this.FeatureBackground();
 #line 18
  testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table56 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table2.AddRow(new string[] {
+            table56.AddRow(new string[] {
                         "p1",
                         "1",
                         "Learning (TT1)",
                         "600"});
 #line 19
  testRunner.Then("the required payments component will only generate contract type 2 required payme" +
-                    "nts", ((string)(null)), table2, "Then ");
+                    "nts", ((string)(null)), table56, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
