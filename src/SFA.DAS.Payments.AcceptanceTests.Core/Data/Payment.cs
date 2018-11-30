@@ -5,11 +5,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
     public abstract class Payment
     {
-        public OnProgrammeEarningType Type => TransactionType.Contains("Learning") ?
-            OnProgrammeEarningType.Learning : TransactionType.Contains("Completion") ?
-                OnProgrammeEarningType.Completion : OnProgrammeEarningType.Balancing;
-        public FundingSourceType FundingSourceType => FundingSource.Contains("CoInvestedSfa") ?
-            FundingSourceType.CoInvestedSfa : FundingSourceType.CoInvestedEmployer;
+        public TransactionType Type => Helper.GetTransactionType(TransactionType);
+
+        public FundingSourceType FundingSourceType => Helper.GetFundingSourceType(FundingSource);
+
 
         public string TransactionType { get; set; }
         public string FundingSource { get; set; }

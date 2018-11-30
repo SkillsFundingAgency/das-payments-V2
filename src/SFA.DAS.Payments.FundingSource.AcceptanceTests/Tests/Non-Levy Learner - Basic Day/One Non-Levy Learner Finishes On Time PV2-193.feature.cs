@@ -213,6 +213,52 @@ this.FeatureBackground();
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Non levy learner with incentives finishes OnTime")]
+        public virtual void NonLevyLearnerWithIncentivesFinishesOnTime()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non levy learner with incentives finishes OnTime", null, ((string[])(null)));
+#line 37
+this.ScenarioInitialize(scenarioInfo);
+            this.ScenarioStart();
+#line 3
+this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
+                        "PriceEpisodeIdentifier",
+                        "Delivery Period",
+                        "TransactionType",
+                        "Amount"});
+            table5.AddRow(new string[] {
+                        "p2",
+                        "1",
+                        "First16To18EmployerIncentive (TT4)",
+                        "500"});
+#line 38
+ testRunner.Given("the required payments component generates the following contract type 2 payable e" +
+                    "arnings:", ((string)(null)), table5, "Given ");
+#line 41
+ testRunner.When("required payments event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+                        "PriceEpisodeIdentifier",
+                        "Delivery Period",
+                        "TransactionType",
+                        "FundingSource",
+                        "Amount"});
+            table6.AddRow(new string[] {
+                        "p2",
+                        "1",
+                        "First16To18EmployerIncentive (TT1)",
+                        "FullyFundedSfa (FS4)",
+                        "500"});
+#line 42
+ testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
+                    "ed payments:", ((string)(null)), table6, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

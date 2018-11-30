@@ -33,3 +33,12 @@ Scenario: 1_non_levy_learner_finishes_OnTime - No history
 	| p2                     | 1				| Learning (TT1)  | CoInvestedEmployer (FS3)| 100    |
 	| p2                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 2700   |
 	| p2                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)| 300    |
+
+Scenario: Non levy learner with incentives finishes OnTime
+	Given the required payments component generates the following contract type 2 payable earnings:
+	| PriceEpisodeIdentifier | Delivery Period | TransactionType                    | Amount |
+	| p2                     | 1               | First16To18EmployerIncentive (TT4) | 500    |
+	When required payments event is received
+	Then the payment source component will generate the following contract type 2 coinvested payments:
+	| PriceEpisodeIdentifier | Delivery Period | TransactionType                    | FundingSource        | Amount |
+	| p2                     | 1               | First16To18EmployerIncentive (TT1) | FullyFundedSfa (FS4) | 500    |

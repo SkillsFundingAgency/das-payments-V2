@@ -76,6 +76,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         }
 
         [Then(@"the payment source component will generate the following contract type (.*) coinvested payments:")]
+        [Then(@"the payment source component will generate the following contract type (.*) payments:")]
         public async Task ThenThePaymentSourceComponentWillGenerateTheFollowingContractTypeCoinvestedPayments(ContractType expectedContractType, Table expectedFundingSourcePaymentTable)
         {
             var expectedFundingSourcePaymentEvents = expectedFundingSourcePaymentTable.CreateSet<FundingSourcePayment>();
