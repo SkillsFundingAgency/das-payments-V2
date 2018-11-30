@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                         expectedContractType == receivedEvent.ContractType
                         && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                         && TestSession.Ukprn == receivedEvent.Ukprn
-                        && (OnProgrammeEarningType)expectedOnProgrammeType == receivedEvent.OnProgrammeEarningType
+                        && (TransactionType)expectedOnProgrammeType == receivedEvent.TransactionType
                     );
             }, "Failed to find all the funding source payment events");
         }
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                     expectedContractType == receivedEvent.ContractType
                     && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && (OnProgrammeEarningType)expectedOnProgrammeType == receivedEvent.OnProgrammeEarningType
+                    && (TransactionType)expectedOnProgrammeType == receivedEvent.TransactionType
                 );
             }, "Failed to find all the funding source payment events");
         }
@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                     expectedContractType == receivedEvent.ContractType
                     && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && (OnProgrammeEarningType)expectedOnProgrammeType == receivedEvent.OnProgrammeEarningType
+                    && (TransactionType)expectedOnProgrammeType == receivedEvent.TransactionType
                 );
             }, "Failed to find all the funding source payment events");
         }

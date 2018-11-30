@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -89,7 +90,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                          && TestSession.Ukprn == receivedEvent.Ukprn
                          && expectedEvent.PriceEpisodeIdentifier == receivedEvent.PriceEpisodeIdentifier
                          && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
-                         && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
+                         && expectedEvent.Type == receivedEvent.TransactionType
                          && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
                          && expectedEvent.Amount == receivedEvent.AmountDue
                    ));
@@ -106,7 +107,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
 
             paymentEvent.Learner = TestSession.Learner.ToLearner();
             paymentEvent.Ukprn = TestSession.Ukprn;
-            paymentEvent.OnProgrammeEarningType = requiredPayment.Type;
+            paymentEvent.OnProgrammeEarningType = (OnProgrammeEarningType)requiredPayment.Type;
             paymentEvent.AmountDue = requiredPayment.Amount;
             paymentEvent.JobId = TestSession.JobId;
             paymentEvent.EventTime = DateTimeOffset.UtcNow;
