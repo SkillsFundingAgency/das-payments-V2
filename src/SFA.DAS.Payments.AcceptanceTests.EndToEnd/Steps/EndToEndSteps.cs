@@ -125,11 +125,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
         }
-        
-
-        [Then(@"no payments will be calculated for following collection periods")]
-        public void ThenNoPaymentsWillBeCalculatedForFollowingCollectionPeriods(Table table)
-        {
-        }
     }
 }
