@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             await WaitForIt(() =>
             {
                 return expectedProviderPaymentEvents.All(expectedEvent =>
-                    CoInvestedProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
+                    ProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                         ContractType == receivedEvent.ContractType
                         && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                         && TestSession.Ukprn == receivedEvent.Ukprn

@@ -134,7 +134,7 @@ this.FeatureBackground();
             table1.AddRow(new string[] {
                         "1",
                         "First16To18EmployerIncentive (TT4)",
-                        "SfaFullyFunded",
+                        "FullyFundedSfa",
                         "500"});
 #line 12
  testRunner.And("the funding source service generates the following contract type 2 payments:", ((string)(null)), table1, "And ");
@@ -179,7 +179,7 @@ this.FeatureBackground();
             table2.AddRow(new string[] {
                         "1",
                         "First16To18EmployerIncentive (TT4)",
-                        "SfaFullyFunded",
+                        "FullyFundedSfa",
                         "500"});
 #line 22
  testRunner.Then("the provider payments service will store the following payments:", ((string)(null)), table2, "Then ");
@@ -222,7 +222,7 @@ this.FeatureBackground();
             table3.AddRow(new string[] {
                         "1",
                         "First16To18EmployerIncentive (TT4)",
-                        "SfaFullyFunded",
+                        "FullyFundedSfa",
                         "500"});
 #line 31
  testRunner.And("at month end the provider payments service will publish the following payments", ((string)(null)), table3, "And ");
