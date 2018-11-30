@@ -182,6 +182,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Audit Earning Events.feature</DependentUpon>
     </Compile>
+    <Compile Include="FundingSource\Audit Funding Source Events.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Audit Funding Source Events.feature</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +214,10 @@
     <None Include="EarningEvents\Audit Earning Events.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Audit Earning Events.feature.cs</LastGenOutput>
+    </None>
+    <None Include="FundingSource\Audit Funding Source Events.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Audit Funding Source Events.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

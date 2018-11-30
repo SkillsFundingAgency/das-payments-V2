@@ -6,6 +6,7 @@ namespace SFA.DAS.Payments.Audit.Model
     public abstract class PeriodisedModel
     {
         public long Id { get; set; }
+        public Guid EventId { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
         public ContractType ContractType { get; set; }
         public TransactionType TransactionType { get; set; }

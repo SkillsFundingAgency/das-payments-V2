@@ -157,10 +157,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return new CalendarPeriod(yearName.ToAcademicYear(), period);
         }
 
-        public static string GetCollectionYear(this CalendarPeriod calendarPeriod)
-        {
-            return calendarPeriod.Name.Split('-').FirstOrDefault();
-        }
+        //public static string GetCollectionYear(this CalendarPeriod calendarPeriod)
+        //{
+        //    return calendarPeriod.Name.Split('-').FirstOrDefault();
+        //}
 
         public static decimal ToPercent(this string stringPercent)
         {
