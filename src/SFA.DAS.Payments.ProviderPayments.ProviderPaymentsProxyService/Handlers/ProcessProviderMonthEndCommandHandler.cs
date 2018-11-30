@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             var providerPayment = paymentFactory.Create(payment.FundingSource);
             paymentLogger.LogDebug($"Got {providerPayment.GetType().Name} payment message type. Now mapping to provider payment.");
             mapper.Map(payment, providerPayment);
-            paymentLogger.LogDebug($"Finished mapping payment. Id: {providerPayment.ExternalId}");
+            paymentLogger.LogDebug($"Finished mapping payment. Id: {providerPayment.EventId}");
             return providerPayment;
         }
     }

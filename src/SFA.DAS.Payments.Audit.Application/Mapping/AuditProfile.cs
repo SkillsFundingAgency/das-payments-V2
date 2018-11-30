@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
         {
             CreateMap<IPeriodisedPaymentEvent, PeriodisedModel>()
                 .Include<FundingSourcePaymentEvent,FundingSourceEventModel>()
-                .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.Id))
+                .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.EventId))
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Period))
                 .ForMember(dest => dest.CollectionYear, opt => opt.MapFrom(source => source.CollectionPeriod.GetCollectionYear()))

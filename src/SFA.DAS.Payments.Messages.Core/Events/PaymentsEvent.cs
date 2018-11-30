@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
     {
         public long JobId { get; set; }
         public DateTimeOffset EventTime { get; set; }
-        public Guid Id { get; set; }
+        public Guid EventId { get; set; }
         public long Ukprn { get; set; }
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
 
         protected PaymentsEvent()
         {
-            Id = Guid.NewGuid();
+            EventId = Guid.NewGuid();
         }
     }
 }
