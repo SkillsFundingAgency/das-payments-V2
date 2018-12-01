@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.Payments.Messages.Core.Events
 {
-    public class PaymentsEvent : IPaymentsEvent
+    public abstract class PaymentsEvent : IPaymentsEvent
     {
         public long JobId { get; set; }
         public DateTimeOffset EventTime { get; set; }
@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         protected PaymentsEvent()
         {
             EventId = Guid.NewGuid();
+            EventTime = DateTimeOffset.UtcNow;
         }
     }
 }

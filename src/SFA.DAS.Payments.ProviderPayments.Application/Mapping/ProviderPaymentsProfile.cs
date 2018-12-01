@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .Include<PaymentModel, EmployerCoInvestedProviderPaymentEvent>()
                 .Include<PaymentModel, SfaCoInvestedProviderPaymentEvent>()
                 .Include<PaymentModel, SfaFullyFundedProviderPaymentEvent>()
-                .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(source => source.ExternalId))
+                .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.ExternalId))
                 .ForMember(dest => dest.EventTime, opt => opt.ResolveUsing(src => DateTime.UtcNow))
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.CollectionPeriod.Year, source.CollectionPeriod.Month)))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.DeliveryPeriod.Year, source.DeliveryPeriod.Month)))

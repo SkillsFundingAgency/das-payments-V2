@@ -4,14 +4,7 @@ using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
 {
-    public abstract class PaymentDueEvent :PaymentsEvent, IPaymentDueEvent
+    public abstract class PaymentDueEvent : PeriodisedPaymentEvent, IPaymentDueEvent
     {
-        public string PriceEpisodeIdentifier { get; set; }
-        public decimal AmountDue { get; set; }
-        public CalendarPeriod DeliveryPeriod { get; set; }
-        protected PaymentDueEvent()
-        {
-            EventTime = DateTimeOffset.UtcNow;
-        }
     }
 }

@@ -5,14 +5,9 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Events
 {
-    public abstract class FundingSourcePaymentEvent : PaymentsEvent, IFundingSourcePaymentEvent
+    public abstract class FundingSourcePaymentEvent : PeriodisedPaymentEvent, IFundingSourcePaymentEvent
     {
         public Guid RequiredPaymentEventId { get; set; }
-        public string PriceEpisodeIdentifier { get; set; }
-
-        public decimal AmountDue { get; set; }
-
-        public CalendarPeriod DeliveryPeriod { get; set; }
 
         public ContractType ContractType { get; set; }
 
@@ -21,6 +16,5 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
         public TransactionType TransactionType { get; set; }
 
         public FundingSourceType FundingSourceType { get; set; }
-
     }
 }
