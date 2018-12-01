@@ -161,7 +161,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{502820FE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Audit.AcceptanceTests", "SFA.DAS.Payments.Audit.AcceptanceTests\SFA.DAS.Payments.Audit.AcceptanceTests.csproj", "{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Audit.Model", "SFA.DAS.Payments.Audit.Model\SFA.DAS.Payments.Audit.Model.csproj", "{74B96EDE-251D-446F-B6A8-423DF0C03A12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.Model", "SFA.DAS.Payments.Audit.Model\SFA.DAS.Payments.Audit.Model.csproj", "{74B96EDE-251D-446F-B6A8-423DF0C03A12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Audit.Application.UnitTests", "SFA.DAS.Payments.Audit.Application.UnitTests\SFA.DAS.Payments.Audit.Application.UnitTests.csproj", "{C7C538B0-354D-401A-85AD-DED9FB54327E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -715,6 +717,14 @@ Global
 		{74B96EDE-251D-446F-B6A8-423DF0C03A12}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74B96EDE-251D-446F-B6A8-423DF0C03A12}.Release|x64.ActiveCfg = Release|Any CPU
 		{74B96EDE-251D-446F-B6A8-423DF0C03A12}.Release|x64.Build.0 = Release|Any CPU
+		{C7C538B0-354D-401A-85AD-DED9FB54327E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C538B0-354D-401A-85AD-DED9FB54327E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7C538B0-354D-401A-85AD-DED9FB54327E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C7C538B0-354D-401A-85AD-DED9FB54327E}.Debug|x64.Build.0 = Debug|Any CPU
+		{C7C538B0-354D-401A-85AD-DED9FB54327E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7C538B0-354D-401A-85AD-DED9FB54327E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C538B0-354D-401A-85AD-DED9FB54327E}.Release|x64.ActiveCfg = Release|Any CPU
+		{C7C538B0-354D-401A-85AD-DED9FB54327E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -785,6 +795,7 @@ Global
 		{502820FE-F8AD-454C-9664-B8100635C4BE} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
 		{1ED3DE66-AF18-497A-AFA1-7073AF785E9B} = {502820FE-F8AD-454C-9664-B8100635C4BE}
 		{74B96EDE-251D-446F-B6A8-423DF0C03A12} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
+		{C7C538B0-354D-401A-85AD-DED9FB54327E} = {502820FE-F8AD-454C-9664-B8100635C4BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
