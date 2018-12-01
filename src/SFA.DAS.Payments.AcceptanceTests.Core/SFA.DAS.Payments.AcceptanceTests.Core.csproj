@@ -250,6 +250,7 @@
     <Compile Include="Automation\RequiredPaymentsCacheCleaner.cs" />
     <Compile Include="Automation\TestSession.cs" />
     <Compile Include="BindingsBase.cs" />
+    <Compile Include="Data\Helper.cs" />
     <Compile Include="Data\Learner.cs" />
     <Compile Include="Data\DataExtensions.cs" />
     <Compile Include="Data\Payment.cs" />
