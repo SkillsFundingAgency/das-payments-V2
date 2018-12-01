@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
@@ -9,7 +8,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         private const string keyDelimiter = "~";
 
 
-        public string GenerateApprenticeshipKey(long ukprn, string learnerReferenceNumber, int frameworkCode, int pathwayCode, ProgrammeType programmeType, int standardCode, string learnAimRef)
+        public string GenerateApprenticeshipKey(long ukprn, string learnerReferenceNumber, int frameworkCode, int pathwayCode, int programmeType, int standardCode, string learnAimRef)
         {
             return string.Join(keyDelimiter,
                 new[]
@@ -18,7 +17,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     learnerReferenceNumber,
                     frameworkCode.ToString(CultureInfo.InvariantCulture),
                     pathwayCode.ToString(CultureInfo.InvariantCulture),
-                    ((int)programmeType).ToString(CultureInfo.InvariantCulture),
+                    programmeType.ToString(CultureInfo.InvariantCulture),
                     standardCode.ToString(CultureInfo.InvariantCulture),
                     learnAimRef // we may need to remove this as apprenticeship should handle both zprog and maths&eng
                 }
@@ -36,7 +35,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 LearnerReferenceNumber = keyParts[1],
                 FrameworkCode = ParseToInt(keyParts[2], "FrameworkCode"),
                 PathwayCode = ParseToInt(keyParts[3], "PathwayCode"),
-                ProgrammeType = ParseToEnum<ProgrammeType>(keyParts[4], "ProgrammeType"),
+                ProgrammeType = ParseToInt(keyParts[4], "ProgrammeType"),
                 StandardCode = ParseToInt(keyParts[5], "StandardCode"),
                 LearnAimRef = keyParts[6]
             };

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.Payments.Core.Validation;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
@@ -9,7 +10,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
 {
     public interface ILearnerSubmissionProcessor
     {
-        (ValidationResult Validation, ApprenticeshipContractTypeEarningsEvent EarningsEvent) GenerateEarnings(
+        (ValidationResult Validation, List<ApprenticeshipContractTypeEarningsEvent> EarningsEvents) GenerateEarnings(
             ProcessLearnerCommand learnerSubmission);
     }
 
@@ -23,15 +24,15 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
             this.apprenticeshipContractTypeEarningsEventBuilder = apprenticeshipContractTypeEarningsEventBuilder ?? throw new ArgumentNullException(nameof(apprenticeshipContractTypeEarningsEventBuilder));
         }
 
-        public (ValidationResult Validation, ApprenticeshipContractTypeEarningsEvent EarningsEvent)  GenerateEarnings(ProcessLearnerCommand learnerSubmission)
+        public (ValidationResult Validation, List<ApprenticeshipContractTypeEarningsEvent> EarningsEvents)  GenerateEarnings(ProcessLearnerCommand learnerSubmission)
         {
             var validationResult = learnerValidator.Validate(learnerSubmission.Learner);
             if (validationResult.Failed)
-                return (Validation: validationResult, EarningsEvent:null);
+                return (Validation: validationResult, EarningsEvents:null);
 
             var earningsEvent =
                 apprenticeshipContractTypeEarningsEventBuilder.Build(learnerSubmission);
-            return (Validation: validationResult, EarningsEvent: earningsEvent); 
+            return (Validation: validationResult, EarningsEvents: earningsEvent); 
         }
     }
 }

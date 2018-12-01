@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                     PriceEpisodeIdentifier = learnerEarnings.PriceEpisodeIdentifier,
                     PriceEpisodeValues = new PriceEpisodeValues
                     {
+                        PriceEpisodeAimSeqNumber = learnerEarnings.AimSequenceNumber,
                         EpisodeStartDate = learnerEarnings.EpisodeStartDate.ToDate(),
                         PriceEpisodeCompletionElement = learnerEarnings.CompletionAmount,
                         PriceEpisodeCompleted = learnerEarnings.CompletionStatus.Equals("completed", StringComparison.OrdinalIgnoreCase),
@@ -99,6 +100,9 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 LearningDeliveryValues = new LearningDeliveryValues
                 {
                     LearnAimRef = learnerEarnings.AimReference,
+                    StdCode = string.IsNullOrEmpty(learnerEarnings.StandardCode) ? 0 : int.Parse(learnerEarnings.StandardCode),
+                    ProgType = string.IsNullOrEmpty(learnerEarnings.ProgrammeType) ? 0 : int.Parse(learnerEarnings.ProgrammeType),
+                    LearnDelInitialFundLineType = learnerEarnings.FundingLineType,
                 }
             });
         }
