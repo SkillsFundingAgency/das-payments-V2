@@ -534,7 +534,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aim Reference",
                         "Framework Code",
                         "Pathway Code",
-                        "Programme Type"});
+                        "Programme Type",
+                        "Funding Line Type"});
             table4.AddRow(new string[] {
                         "learner a",
                         "1",
@@ -551,7 +552,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "ZPROG001",
                         "403",
                         "1",
-                        "25"});
+                        "25",
+                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
             table4.AddRow(new string[] {
                         "learner b",
                         "1",
@@ -568,7 +570,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "ZPROG001",
                         "403",
                         "1",
-                        "25"});
+                        "25",
+                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
 #line 60
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
 #line 64
@@ -580,7 +583,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "On-Programme",
                         "Completion",
                         "Balancing",
-                        "Funding Line Type",
                         "SFA Contribution Percentage"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -588,7 +590,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "1000",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -596,7 +597,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "3750",
                         "3000",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -604,7 +604,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -612,7 +611,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -620,7 +618,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -628,7 +625,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -636,7 +632,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -644,7 +639,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -652,7 +646,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -660,7 +653,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -668,7 +660,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner a",
@@ -676,7 +667,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -684,7 +674,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "1000",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -692,7 +681,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -700,7 +688,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -708,7 +695,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -716,7 +702,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "3000",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -724,7 +709,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -732,7 +716,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -740,7 +723,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -748,7 +730,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -756,7 +737,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -764,7 +744,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
             table5.AddRow(new string[] {
                         "learner b",
@@ -772,7 +751,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "90%"});
 #line 65
     testRunner.Then("the following learner earnings should be generated", ((string)(null)), table5, "Then ");
