@@ -161,10 +161,8 @@
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -187,6 +185,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Audit Funding Source Events.feature</DependentUpon>
     </Compile>
+    <Compile Include="FundingSource\AuditFundingSourceEventsSteps.cs" />
+    <Compile Include="FundingSource\FundingSourceTestData.cs" />
+    <Compile Include="Infrastructure\BindingBootstrapper.cs" />
+    <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +199,26 @@
     <ProjectReference Include="..\SFA.DAS.Payments.AcceptanceTests.Core\SFA.DAS.Payments.AcceptanceTests.Core.csproj">
       <Project>{0f0beb68-7f9f-4d39-b85a-3fe7701bb6cc}</Project>
       <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj">
+      <Project>{23551cd8-7554-4f2c-9b42-a67b9e0c261d}</Project>
+      <Name>SFA.DAS.Payments.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
+      <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
+      <Name>SFA.DAS.Payments.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj">
+      <Project>{43861469-71a2-4128-b35a-fb680f1e8bca}</Project>
+      <Name>SFA.DAS.Payments.FundingSource.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
+      <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>
+      <Name>SFA.DAS.Payments.Messages.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
+      <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
+      <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

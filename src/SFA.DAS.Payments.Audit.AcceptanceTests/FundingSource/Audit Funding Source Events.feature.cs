@@ -31,8 +31,8 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.FundingSource
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Audit Funding Source Events", "\tIn order to avoid silly mistakes\r\n\tAs a math idiot\r\n\tI want to be told the sum o" +
-                    "f two numbers", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Audit Funding Source Events", "\tIn order to trace provider payments\r\n\tAs a payments DevOps\r\n\tI want to the Payme" +
+                    "nts V2 service to store all Funding Source Payment events", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -71,23 +71,37 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.FundingSource
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Add two numbers")]
-        [NUnit.Framework.CategoryAttribute("mytag")]
-        public virtual void AddTwoNumbers()
+        [NUnit.Framework.DescriptionAttribute("CoFunded Funding Source Events Calculated")]
+        public virtual void CoFundedFundingSourceEventsCalculated()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add two numbers", null, new string[] {
-                        "mytag"});
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("CoFunded Funding Source Events Calculated", null, ((string[])(null)));
 #line 7
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
+#line hidden
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Funding Source",
+                        "Amount",
+                        "Transaction Type",
+                        "Contarct Type"});
+            table1.AddRow(new string[] {
+                        "CoInvestedSfa",
+                        "90",
+                        "Learning",
+                        "Act2"});
+            table1.AddRow(new string[] {
+                        "CoInvestedEmployer",
+                        "10",
+                        "Learning",
+                        "Act2"});
 #line 8
- testRunner.Given("I have entered 50 into the calculator", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 9
- testRunner.And("I have entered 70 into the calculator", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 10
- testRunner.When("I press add", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 11
- testRunner.Then("the result should be 120 on the screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Given("the funding source service has calculated the following payments", ((string)(null)), table1, "Given ");
+#line 12
+ testRunner.When("the Audit Funding Source Service is notified of the calculated funding source pay" +
+                    "ments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 13
+ testRunner.Then("the calculated funding source payments should be recorded in the funding source t" +
+                    "ables", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

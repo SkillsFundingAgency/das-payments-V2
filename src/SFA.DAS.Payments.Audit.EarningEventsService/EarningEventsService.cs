@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
             logger.LogInfo("Creating Service Replica Listeners For Audit EarningEvents Service");
-
+            //var tx = StateManager.CreateTransaction();
             return new List<ServiceReplicaListener>
             {
                 new ServiceReplicaListener(context => listener = lifetimeScope.Resolve<IStatefulEndpointCommunicationListener>())
@@ -52,8 +52,10 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService
         /// This method executes when this replica of your service becomes primary and has write status.
         /// </summary>
         /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service replica.</param>
-        protected override Task RunAsync(CancellationToken cancellationToken)
+        protected  override Task RunAsync(CancellationToken cancellationToken)
         {
+            
+
             return listener.RunAsync();
 
             // TODO: Replace the following sample code with your own logic 

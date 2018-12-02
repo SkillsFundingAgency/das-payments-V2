@@ -1,11 +1,13 @@
 ﻿Feature: Audit Funding Source Events
-	In order to avoid silly mistakes
-	As a math idiot
-	I want to be told the sum of two numbers
+	In order to trace provider payments
+	As a payments DevOps
+	I want to the Payments V2 service to store all Funding Source Payment events
 
-@mytag
-Scenario: Add two numbers
-	Given I have entered 50 into the calculator
-	And I have entered 70 into the calculator
-	When I press add
-	Then the result should be 120 on the screen
+
+Scenario: CoFunded Funding Source Events Calculated
+	Given the funding source service has calculated the following payments
+	| Funding Source     | Amount | Transaction Type | Contarct Type |
+	| CoInvestedSfa      | 90     | Learning         | Act2          |
+	| CoInvestedEmployer | 10     | Learning         | Act2          |
+	When the Audit Funding Source Service is notified of the calculated funding source payments
+	Then the calculated funding source payments should be recorded in the funding source tables

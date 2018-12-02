@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="PaymentEventCache\" />
   </ItemGroup>
 
   <ItemGroup>
