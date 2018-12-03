@@ -10,15 +10,15 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Services
     public class ApprenticeshipContractType2PayableEarningService : IApprenticeshipContractType2PayableEarningService
     {
         private readonly IApprenticeshipContractType2EarningProcessor act2EarningProcessor;
-        private readonly IApprenticeshipContractTypeIncentiveProcessor incentiveEarningProcessor;
+        private readonly IIncentiveProcessor incentiveEarningProcessor;
 
         public ApprenticeshipContractType2PayableEarningService(
             IApprenticeshipContractType2EarningProcessor act2EarningProcessor,
-            IApprenticeshipContractTypeIncentiveProcessor incentiveEarningProcessor)
+            IIncentiveProcessor incentiveEarningProcessor)
         {
             this.act2EarningProcessor = act2EarningProcessor;
             this.incentiveEarningProcessor = incentiveEarningProcessor;
-        }
+        } 
 
         public PaymentDueEvent[] CreatePaymentsDue(ApprenticeshipContractType2EarningEvent message)
         {

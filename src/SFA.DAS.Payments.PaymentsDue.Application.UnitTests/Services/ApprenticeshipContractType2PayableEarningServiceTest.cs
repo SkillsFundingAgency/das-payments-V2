@@ -17,13 +17,13 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
     {
         private IApprenticeshipContractType2PayableEarningService service;
         private Mock<IApprenticeshipContractType2EarningProcessor> domainServiceMock;
-        private Mock<IApprenticeshipContractTypeIncentiveProcessor> incentiveEarningProcessor;
+        private Mock<IIncentiveProcessor> incentiveEarningProcessor;
 
         [SetUp]
         public void SetUp()
         {
             domainServiceMock = new Mock<IApprenticeshipContractType2EarningProcessor>(MockBehavior.Strict);
-            incentiveEarningProcessor = new Mock<IApprenticeshipContractTypeIncentiveProcessor>(MockBehavior.Strict);
+            incentiveEarningProcessor = new Mock<IIncentiveProcessor>(MockBehavior.Strict);
             service = new ApprenticeshipContractType2PayableEarningService(domainServiceMock.Object, incentiveEarningProcessor.Object);
         }
 

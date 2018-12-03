@@ -7,7 +7,7 @@ using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
-    public class ApprenticeshipContractTypeIncentiveProcessor : IApprenticeshipContractTypeIncentiveProcessor
+    public class IncentiveProcessor : IIncentiveProcessor
     {
         public IncentivePaymentDueEvent[] HandleIncentiveEarnings(long ukprn, long jobId,
             IncentiveEarning incentiveEarning, CalendarPeriod collectionPeriod, Learner learner,
