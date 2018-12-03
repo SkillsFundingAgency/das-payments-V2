@@ -5,9 +5,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
     public abstract class Payment
     {
-        public TransactionType Type => Helper.GetTransactionType(TransactionType);
+        public TransactionType Type => EnumHelper.ToTransactionType(TransactionType);
 
-        public FundingSourceType FundingSourceType => Helper.GetFundingSourceType(FundingSource);
+        public FundingSourceType FundingSourceType => EnumHelper.ToFundingSourceType(FundingSource);
 
 
         public string TransactionType { get; set; }

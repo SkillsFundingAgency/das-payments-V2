@@ -3,23 +3,24 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
-    public class Helper
+    public static class EnumHelper
     {
-        public static TransactionType GetTransactionType(string transactionType)
+        public static TransactionType ToTransactionType(string transactionType)
         {
             transactionType = transactionType.ToLower();
+
             return transactionType.Contains("learning")
-                ? Model.Core.Entities.TransactionType.Learning
+                ? TransactionType.Learning
                 : transactionType.Contains("completion")
-                    ? Model.Core.Entities.TransactionType.Completion
+                    ? TransactionType.Completion
                     : transactionType.Contains("balancing")
-                        ? Model.Core.Entities.TransactionType.Balancing
+                        ? TransactionType.Balancing
                         : transactionType.Contains("first16to18employerincentive")
-                            ? Model.Core.Entities.TransactionType.First16To18EmployerIncentive
+                            ? TransactionType.First16To18EmployerIncentive
                             : throw new InvalidOperationException($"Unknown transaction type: '{transactionType}'");
         }
 
-        public static FundingSourceType GetFundingSourceType(string fundingSourceType)
+        public static FundingSourceType ToFundingSourceType(string fundingSourceType)
         {
             fundingSourceType = fundingSourceType.ToLower();
             return fundingSourceType.Contains("coinvestedsfa")

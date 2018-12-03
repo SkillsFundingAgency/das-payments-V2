@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Data
 {
@@ -14,7 +11,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Data
 
         public byte DeliveryPeriod { get; set; }
 
-        public TransactionType Type => Helper.GetTransactionType(TransactionType);
+        public TransactionType Type => EnumHelper.ToTransactionType(TransactionType);
 
         public string TransactionType { get; set; }
 
