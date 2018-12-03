@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Events
 {
@@ -17,7 +16,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
 
         public decimal SfaContributionPercentage { get; set; }
 
-        public OnProgrammeEarningType OnProgrammeEarningType { get; set; }
+        public TransactionType TransactionType { get; set; }
 
         public FundingSourceType FundingSourceType { get; set; }
 
