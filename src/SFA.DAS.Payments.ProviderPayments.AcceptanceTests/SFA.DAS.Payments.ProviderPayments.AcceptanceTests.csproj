@@ -278,7 +278,7 @@
   <ItemGroup>
     <Compile Include="Data\FundingSourcePayment.cs" />
     <Compile Include="EndpointNames.cs" />
-    <Compile Include="Handlers\CoInvestedProviderPaymentEventHandler.cs" />
+    <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="ILR Resubmission\ILR Resubmission.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -289,7 +289,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner Finishes Early PV2-195.feature</DependentUpon>
     </Compile>
-    <Compile Include="ProviderPaymentIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Small Employer\SmallEmployers.feature.cs">
       <DependentUpon>SmallEmployers.feature</DependentUpon>
@@ -363,6 +362,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
       <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
+      <Project>{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8}</Project>
+      <Name>SFA.DAS.Payments.ProviderPayments.Messages.Internal</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages\SFA.DAS.Payments.ProviderPayments.Messages.csproj">
       <Project>{f41ed226-c11e-44c3-825a-c40143f0fef9}</Project>

@@ -131,9 +131,14 @@ this.FeatureBackground();
                         "Balancing (TT3)",
                         "CoInvestedEmployer",
                         "1350"});
+            table1.AddRow(new string[] {
+                        "1",
+                        "First16To18EmployerIncentive (TT4)",
+                        "FullyFundedSfa",
+                        "500"});
 #line 12
  testRunner.And("the funding source service generates the following contract type 2 payments:", ((string)(null)), table1, "And ");
-#line 20
+#line 21
  testRunner.When("the funding source payments event are received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -171,7 +176,12 @@ this.FeatureBackground();
                         "Balancing (TT3)",
                         "CoInvestedEmployer",
                         "1350"});
-#line 21
+            table2.AddRow(new string[] {
+                        "1",
+                        "First16To18EmployerIncentive (TT4)",
+                        "FullyFundedSfa",
+                        "500"});
+#line 22
  testRunner.Then("the provider payments service will store the following payments:", ((string)(null)), table2, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -209,7 +219,12 @@ this.FeatureBackground();
                         "Balancing (TT3)",
                         "CoInvestedEmployer",
                         "1350"});
-#line 29
+            table3.AddRow(new string[] {
+                        "1",
+                        "First16To18EmployerIncentive (TT4)",
+                        "FullyFundedSfa",
+                        "500"});
+#line 31
  testRunner.And("at month end the provider payments service will publish the following payments", ((string)(null)), table3, "And ");
 #line hidden
             this.ScenarioCleanup();

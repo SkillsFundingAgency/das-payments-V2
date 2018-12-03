@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             // Arrange
             var message = new ApprenticeshipContractType2RequiredPaymentEvent();
             var requiredCoInvestedPayment = new RequiredCoInvestedPayment();
-            var fundingSourcePayment = new CoInvestedPayment();
+            var fundingSourcePayment = new FundingSourcePayment();
 
             var sfaPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
             var employerPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
