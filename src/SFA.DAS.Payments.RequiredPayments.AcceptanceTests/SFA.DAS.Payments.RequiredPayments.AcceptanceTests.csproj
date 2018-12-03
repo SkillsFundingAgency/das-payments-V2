@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props')" />
   <Import Project="..\packages\Microsoft.NET.Test.Sdk.15.9.0\build\net45\Microsoft.Net.Test.Sdk.props" Condition="Exists('..\packages\Microsoft.NET.Test.Sdk.15.9.0\build\net45\Microsoft.Net.Test.Sdk.props')" />
   <Import Project="..\packages\Microsoft.CodeCoverage.15.9.0\build\netstandard1.0\Microsoft.CodeCoverage.props" Condition="Exists('..\packages\Microsoft.CodeCoverage.15.9.0\build\netstandard1.0\Microsoft.CodeCoverage.props')" />
   <Import Project="..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props')" />
@@ -339,55 +340,55 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Completion %28TT2%29 and Balancing %28TT3%29.feature.cs">
+    <Compile Include="Tests\Completion (TT2) and Balancing (TT3).feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Completion %28TT2%29 and Balancing %28TT3%29.feature</DependentUpon>
+      <DependentUpon>Completion (TT2) and Balancing (TT3).feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\ALL TT1 TT2 and TT3.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ALL TT1 TT2 and TT3.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Completion %28TT2%29 only - Late completion.feature.cs">
+    <Compile Include="Tests\Completion (TT2) only - Late completion.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Completion %28TT2%29 only - Late completion.feature</DependentUpon>
+      <DependentUpon>Completion (TT2) only - Late completion.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\No Payment - Continuing after planned end date.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>No Payment - Continuing after planned end date.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\No history - Learning %28TT1%29 only - Multiple periods.feature.cs">
+    <Compile Include="Tests\No history - Learning (TT1) only - Multiple periods.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>No history - Learning %28TT1%29 only - Multiple periods.feature</DependentUpon>
+      <DependentUpon>No history - Learning (TT1) only - Multiple periods.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Learning %28TT1%29 only - Multiple periods.feature.cs">
+    <Compile Include="Tests\Learning (TT1) only - Multiple periods.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Learning %28TT1%29 only - Multiple periods.feature</DependentUpon>
+      <DependentUpon>Learning (TT1) only - Multiple periods.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Completion %28TT2%29 and Learning %28TT1%29.feature.cs">
+    <Compile Include="Tests\Completion (TT2) and Learning (TT1).feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Completion %28TT2%29 and Learning %28TT1%29.feature</DependentUpon>
+      <DependentUpon>Completion (TT2) and Learning (TT1).feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Completion %28TT2%29 only - On time completion1.feature.cs">
+    <Compile Include="Tests\Completion (TT2) only - On time completion1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Completion %28TT2%29 only - On time completion.feature</DependentUpon>
+      <DependentUpon>Completion (TT2) only - On time completion.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\No history - Learning %28TT1%29 only - Single period.feature.cs">
+    <Compile Include="Tests\No history - Learning (TT1) only - Single period.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>No history - Learning %28TT1%29 only - Single period.feature</DependentUpon>
+      <DependentUpon>No history - Learning (TT1) only - Single period.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Learning %28TT1%29 only - Single period.feature.cs">
+    <Compile Include="Tests\Learning (TT1) only - Single period.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Learning %28TT1%29 only - Single period.feature</DependentUpon>
+      <DependentUpon>Learning (TT1) only - Single period.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature.cs">
       <AutoGen>True</AutoGen>
@@ -462,45 +463,45 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>No Payment - ALL TT1 TT2 and TT3 paid already.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Completion %28TT2%29 and Balancing %28TT3%29.feature">
+    <None Include="Tests\Completion (TT2) and Balancing (TT3).feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion %28TT2%29 and Balancing %28TT3%29.feature.cs</LastGenOutput>
+      <LastGenOutput>Completion (TT2) and Balancing (TT3).feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Completion %28TT2%29 only - Late completion.feature">
+    <None Include="Tests\Completion (TT2) only - Late completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion %28TT2%29 only - Late completion.feature.cs</LastGenOutput>
+      <LastGenOutput>Completion (TT2) only - Late completion.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\No Payment - Continuing after planned end date.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>No Payment - Continuing after planned end date.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\No history - Learning %28TT1%29 only - Multiple periods.feature">
+    <None Include="Tests\No history - Learning (TT1) only - Multiple periods.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>No history - Learning %28TT1%29 only - Multiple periods.feature.cs</LastGenOutput>
+      <LastGenOutput>No history - Learning (TT1) only - Multiple periods.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Learning %28TT1%29 only - Multiple periods.feature">
+    <None Include="Tests\Learning (TT1) only - Multiple periods.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learning %28TT1%29 only - Multiple periods.feature.cs</LastGenOutput>
+      <LastGenOutput>Learning (TT1) only - Multiple periods.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Completion %28TT2%29 and Learning %28TT1%29.feature">
+    <None Include="Tests\Completion (TT2) and Learning (TT1).feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion %28TT2%29 and Learning %28TT1%29.feature.cs</LastGenOutput>
+      <LastGenOutput>Completion (TT2) and Learning (TT1).feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Completion %28TT2%29 only - On time completion.feature">
+    <None Include="Tests\Completion (TT2) only - On time completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion %28TT2%29 only - On time completion1.feature.cs</LastGenOutput>
+      <LastGenOutput>Completion (TT2) only - On time completion1.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\No history - Learning %28TT1%29 only - Single period.feature">
+    <None Include="Tests\No history - Learning (TT1) only - Single period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>No history - Learning %28TT1%29 only - Single period.feature.cs</LastGenOutput>
+      <LastGenOutput>No history - Learning (TT1) only - Single period.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Learning %28TT1%29 only - Single period.feature">
+    <None Include="Tests\Learning (TT1) only - Single period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learning %28TT1%29 only - Single period.feature.cs</LastGenOutput>
+      <LastGenOutput>Learning (TT1) only - Single period.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finishes On Time PV2-197.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -566,6 +567,8 @@
     <Error Condition="!Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.11.0\build\NUnit.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ServiceFabric.Actors.3.2.162\build\net45\Microsoft.ServiceFabric.Actors.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ServiceFabric.Actors.3.2.162\build\net45\Microsoft.ServiceFabric.Actors.targets'))" />
+    <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.props'))" />
+    <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets'))" />
   </Target>
   <Target Name="AfterUpdateFeatureFilesInProject">
     <!-- include any files that specflow generated into the compilation of the project -->
@@ -579,4 +582,5 @@
   <Import Project="..\packages\Microsoft.ServiceFabric.Actors.3.2.162\build\net45\Microsoft.ServiceFabric.Actors.targets" Condition="Exists('..\packages\Microsoft.ServiceFabric.Actors.3.2.162\build\net45\Microsoft.ServiceFabric.Actors.targets')" />
   <Import Project="..\packages\Microsoft.CodeCoverage.15.9.0\build\netstandard1.0\Microsoft.CodeCoverage.targets" Condition="Exists('..\packages\Microsoft.CodeCoverage.15.9.0\build\netstandard1.0\Microsoft.CodeCoverage.targets')" />
   <Import Project="..\packages\Microsoft.NET.Test.Sdk.15.9.0\build\net45\Microsoft.Net.Test.Sdk.targets" Condition="Exists('..\packages\Microsoft.NET.Test.Sdk.15.9.0\build\net45\Microsoft.Net.Test.Sdk.targets')" />
+  <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.0\build\SpecFlow.Tools.MsBuild.Generation.targets')" />
 </Project>

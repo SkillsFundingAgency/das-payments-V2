@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using NServiceBus;
+﻿using NServiceBus;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -26,11 +26,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     return apprenticeshipKeyService.GenerateApprenticeshipKey(
                         testSession.Ukprn,
                         testSession.GetLearner(learner.LearnerIdentifier).LearnRefNumber,
-                        // TODO: enable this when FM36 mapping for course details is implemented
-                        0, //learner.Course.FrameworkCode,
-                        0, //learner.Course.PathwayCode,
-                        0, //(ProgrammeType)learner.Course.ProgrammeType,
-                        0, //learner.Course.StandardCode,
+                        learner.Course.FrameworkCode,
+                        learner.Course.PathwayCode,
+                        learner.Course.ProgrammeType,
+                        learner.Course.StandardCode,
                         learner.Course.LearnAimRef);
                 }).ToList().AsReadOnly()
             };

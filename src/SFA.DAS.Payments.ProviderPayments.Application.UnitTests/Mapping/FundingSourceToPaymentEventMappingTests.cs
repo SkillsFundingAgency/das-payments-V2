@@ -47,7 +47,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                     FundingLineType = "Non-DAS 16-18 Learner",
                     StandardCode = 1209,
                     ProgrammeType = 7890,
-                    AgreedPrice = 15000,
                     Reference = "1234567-aim-ref"
                 },
                 IlrSubmissionDateTime = DateTime.UtcNow,
