@@ -10,4 +10,10 @@
     <PackageReference Include="NServiceBus" Version="7.1.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Audit.Application\SFA.DAS.Payments.Audit.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
+  </ItemGroup>
+
 </Project>

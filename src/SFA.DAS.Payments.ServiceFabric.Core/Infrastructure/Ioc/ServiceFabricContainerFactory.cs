@@ -1,6 +1,8 @@
-﻿using Autofac;
+﻿using System.Linq;
+using Autofac;
 using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Runtime;
+using Microsoft.ServiceFabric.Data;
 using Microsoft.ServiceFabric.Services.Runtime;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
@@ -20,7 +22,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
         public static IContainer CreateContainerForStatefulService<TStatefulService>() where TStatefulService : StatefulService
         {
             var builder = ContainerFactory.CreateBuilder();
-            builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Namespace + "Type");
+            builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Namespace + "Type")
+                .OnActivating(e =>
+                {
+                    ((ReliableStateManagerProvider) e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
+                });
             var container = ContainerFactory.CreateContainer(builder);
             var endpointConfiguration = container.Resolve<EndpointConfiguration>();
             endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>

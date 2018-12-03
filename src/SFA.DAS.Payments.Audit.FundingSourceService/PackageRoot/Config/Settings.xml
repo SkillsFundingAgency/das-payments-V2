@@ -16,5 +16,6 @@
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="sfa-das-payments-audit-fundingsource"/>
     <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-audit-fundingsource-errors"/>
+    <Parameter Name="BatchIntervalInSeconds" Value="10"/> 
   </Section>
 </Settings>

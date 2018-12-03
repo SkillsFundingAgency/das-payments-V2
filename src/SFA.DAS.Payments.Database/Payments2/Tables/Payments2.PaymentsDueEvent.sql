@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [Payments2].[PaymentsDueEvent]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_PaymentsDueEvent PRIMARY KEY CLUSTERED,
-	PaymentsDueId UNIQUEIDENTIFIER NOT NULL ,
+	EventId UNIQUEIDENTIFIER NOT NULL ,
 	EarningEventId UNIQUEIDENTIFIER NOT NULL,  --NOT guaranteed the earning event will be stored before the PaymentDueEvent
 	PriceEpisodeIdentifier NVARCHAR(50) NOT NULL,
 	Ukprn BIGINT NOT NULL,

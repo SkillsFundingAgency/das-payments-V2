@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
             builder.RegisterType<ActorProxyFactory>().As<IActorProxyFactory>();
             builder.RegisterServiceFabricSupport();
             builder.RegisterType<ServiceFabricConfigurationHelper>().As<IConfigurationHelper>().SingleInstance();
+            builder.RegisterType<ReliableStateManagerProvider>().As<IReliableStateManagerProvider>().SingleInstance();
         }
     }
 }

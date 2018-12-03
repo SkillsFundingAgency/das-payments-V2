@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
 {
     public abstract class PeriodisedEventMappingTests<TSource, TDest> 
         where TSource : PeriodisedPaymentEvent
-        where TDest : PeriodisedModel
+        where TDest : PeriodisedPaymentsEventModel
     {
         [OneTimeSetUp]
         public void InitialiseMapper()

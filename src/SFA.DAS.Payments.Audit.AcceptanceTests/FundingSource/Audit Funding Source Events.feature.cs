@@ -83,15 +83,10 @@ this.ScenarioInitialize(scenarioInfo);
                         "Funding Source",
                         "Amount",
                         "Transaction Type",
-                        "Contarct Type"});
+                        "Contract Type"});
             table1.AddRow(new string[] {
                         "CoInvestedSfa",
                         "90",
-                        "Learning",
-                        "Act2"});
-            table1.AddRow(new string[] {
-                        "CoInvestedEmployer",
-                        "10",
                         "Learning",
                         "Act2"});
 #line 8
