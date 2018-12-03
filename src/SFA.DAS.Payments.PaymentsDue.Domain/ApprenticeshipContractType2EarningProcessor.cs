@@ -9,7 +9,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
     public class ApprenticeshipContractType2EarningProcessor : IApprenticeshipContractType2EarningProcessor
     {
-        public PaymentDueEvent[] HandleOnProgrammeEarning(long ukprn, long jobId, OnProgrammeEarning onProgEarning,
+        public ApprenticeshipContractTypePaymentDueEvent[] HandleOnProgrammeEarning(long ukprn, long jobId,
+            OnProgrammeEarning onProgEarning,
             CalendarPeriod collectionPeriod, Learner learner, LearningAim learningAim,
             decimal sfaContributionPercentage, DateTime ilrSubmissionDate)
         {
@@ -46,7 +47,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
                 });
             }
 
-            return paymentsDue.Cast<PaymentDueEvent>().ToArray();
+            return paymentsDue.Cast<ApprenticeshipContractTypePaymentDueEvent>().ToArray();
         }
     }
 }

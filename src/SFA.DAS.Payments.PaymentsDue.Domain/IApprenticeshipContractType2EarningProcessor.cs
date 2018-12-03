@@ -7,7 +7,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
     public interface IApprenticeshipContractType2EarningProcessor
     {
-        PaymentDueEvent[] HandleOnProgrammeEarning(long ukprn, long jobId, OnProgrammeEarning onProgEarning,
+        ApprenticeshipContractTypePaymentDueEvent[] HandleOnProgrammeEarning(long ukprn, long jobId,
+            OnProgrammeEarning onProgEarning,
             CalendarPeriod collectionPeriod, Learner learner, LearningAim learningAim,
             decimal sfaContributionPercentage, DateTime ilrSubmissionDate);
     }

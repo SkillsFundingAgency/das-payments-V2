@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
     public class ApprenticeshipContractTypeIncentiveProcessor : IApprenticeshipContractTypeIncentiveProcessor
     {
-        public PaymentDueEvent[] HandleIncentiveEarnings(long ukprn, long jobId,
+        public IncentivePaymentDueEvent[] HandleIncentiveEarnings(long ukprn, long jobId,
             IncentiveEarning incentiveEarning, CalendarPeriod collectionPeriod, Learner learner,
             LearningAim learningAim,
             decimal sfaContributionPercentage, DateTime ilrSubmissionDate)
