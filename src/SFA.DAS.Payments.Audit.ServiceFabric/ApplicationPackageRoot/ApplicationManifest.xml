@@ -12,13 +12,29 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="Audit_EarningEvents_EndpointName" DefaultValue="" />
     <Parameter Name="Audit_EarningEvents_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="Audit_FundingSource_EndpointName" DefaultValue="" />
+    <Parameter Name="Audit_FundingSource_FailedMessagesQueue" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Audit.FundingSourceServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[Audit_FundingSource_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[Audit_FundingSource_FailedMessagesQueue]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Audit.EarningEventsServicePkg" ServiceManifestVersion="1.0.0" />

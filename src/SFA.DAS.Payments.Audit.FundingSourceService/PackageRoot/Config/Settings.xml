@@ -7,10 +7,14 @@
   <!-- This is used for securing StateManager's replication traffic. -->
   <Section Name="ReplicatorSecurityConfig" />
 
-  <!-- Add your custom configuration sections and parameters here. -->
-  <!--
-  <Section Name="MyConfigSection">
-    <Parameter Name="MyParameter" Value="Value1" />
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"/>
+    <Parameter Name="ServiceBusConnectionString" Value=""/>
   </Section>
-  -->
+
+  <Section Name="Settings">
+    <Parameter Name="EndpointName" Value="sfa-das-payments-audit-fundingsource"/>
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-audit-fundingsource-errors"/>
+  </Section>
 </Settings>
