@@ -25,5 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public string AimReference { get; set; }
         public int StandardCode { get; set; }
         public string FundingLineType { get; set; }
+        public int FrameworkCode { get; set; }
+        public int PathwayCode { get; set; }
     }
 }

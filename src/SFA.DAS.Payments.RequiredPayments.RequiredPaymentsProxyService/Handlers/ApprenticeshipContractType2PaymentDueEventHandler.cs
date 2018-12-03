@@ -6,7 +6,6 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain;
-using SFA.DAS.Payments.RequiredPayments.Domain.Enums;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System;
@@ -47,7 +46,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     message.Learner.ReferenceNumber,
                     message.LearningAim.FrameworkCode,
                     message.LearningAim.PathwayCode,
-                    (ProgrammeType)message.LearningAim.ProgrammeType,
+                    message.LearningAim.ProgrammeType,
                     message.LearningAim.StandardCode,
                     message.LearningAim.Reference
                 );
