@@ -5,9 +5,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
     public class Course
     {
         public short AimSeqNumber { get; set; }
-        public short ProgrammeType { get; set; }
-        public short FrameworkCode { get; set; }
-        public short PathwayCode { get; set; }
+        public int ProgrammeType { get; set; }
+        public int FrameworkCode { get; set; }
+        public int PathwayCode { get; set; }
         public int StandardCode { get; set; }
         public string FundingLineType { get; set; }
         public string LearnAimRef { get; set; }

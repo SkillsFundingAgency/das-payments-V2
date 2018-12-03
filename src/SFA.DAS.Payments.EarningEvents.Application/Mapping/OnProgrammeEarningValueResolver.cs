@@ -4,13 +4,12 @@ using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
 
-    public class OnProgrammeEarningValueResolver : IValueResolver<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent, ReadOnlyCollection<OnProgrammeEarning>>
+    public class OnProgrammeEarningValueResolver : IValueResolver<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent, ReadOnlyCollection<OnProgrammeEarning>>
     {
 
         // ReSharper disable once InconsistentNaming
@@ -48,7 +47,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
         private static readonly OnProgrammeEarningType[] OnProgrammeEarningTypes = { OnProgrammeEarningType.Balancing, OnProgrammeEarningType.Completion, OnProgrammeEarningType.Learning };
 
-        public ReadOnlyCollection<OnProgrammeEarning> Resolve(ProcessLearnerCommand source, ApprenticeshipContractTypeEarningsEvent destination, ReadOnlyCollection<OnProgrammeEarning> destMember, ResolutionContext context)
+        public ReadOnlyCollection<OnProgrammeEarning> Resolve(IntermediateLearningAim source, ApprenticeshipContractTypeEarningsEvent destination, ReadOnlyCollection<OnProgrammeEarning> destMember, ResolutionContext context)
         {
             return OnProgrammeEarningTypes
                 .Select(type => CreateOnProgrammeEarning(source.Learner, type))

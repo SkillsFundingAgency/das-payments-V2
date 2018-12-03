@@ -3,14 +3,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using Newtonsoft.Json;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public class IncentiveEarningValueResolver : IValueResolver<ProcessLearnerCommand, ApprenticeshipContractTypeEarningsEvent, ReadOnlyCollection<IncentiveEarning>>
+    public class IncentiveEarningValueResolver : IValueResolver<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent, ReadOnlyCollection<IncentiveEarning>>
     {
 
         // ReSharper disable once InconsistentNaming
@@ -79,7 +78,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             IncentiveType.LearningSupport
         };
 
-        public ReadOnlyCollection<IncentiveEarning> Resolve(ProcessLearnerCommand source, ApprenticeshipContractTypeEarningsEvent destination, ReadOnlyCollection<IncentiveEarning> destMember, ResolutionContext context)
+        public ReadOnlyCollection<IncentiveEarning> Resolve(IntermediateLearningAim source, ApprenticeshipContractTypeEarningsEvent destination, ReadOnlyCollection<IncentiveEarning> destMember, ResolutionContext context)
         {
 
             return IncentiveTypes

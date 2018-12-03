@@ -7,7 +7,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.ProviderPayments.Messages;
-using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
+using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
@@ -35,8 +35,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(SfaCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(EmployerCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
-            routing.RouteToEndpoint(typeof(PerformMonthEndProcessingCommand), EndpointNames.ProviderPaymentEndPointName);
+            routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(IlrSubmittedEvent), EndpointNames.ProviderPaymentEndPointName);
+
         }
     }
 }

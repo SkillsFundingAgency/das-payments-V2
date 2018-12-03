@@ -111,21 +111,17 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         private List<FM36Learner> CreateLearners()
         {
             var learners = TestSession.Learners.Select(testLearner => new FM36Learner
-            {
-                LearnRefNumber = TestSession.Learner.LearnRefNumber,
-                PriceEpisodes = new List<PriceEpisode>(),
-                LearningDeliveries = new List<LearningDelivery>()
-            })
+                {
+                    LearnRefNumber = TestSession.Learner.LearnRefNumber,
+                    PriceEpisodes = new List<PriceEpisode>(),
+                    LearningDeliveries = new List<LearningDelivery>()
+                })
                 .ToList();
 
             learners.ForEach(learner =>
             {
-                IlrLearnerEarnings.ForEach(earnings =>
-                {
-                    AddLearnerEarnings(learner, earnings);
-                });
+                IlrLearnerEarnings.ForEach(earnings => AddLearnerEarnings(learner, earnings));
                 Console.WriteLine($"Created learner: {learner.ToJson()}");
-
             });
 
             return learners;

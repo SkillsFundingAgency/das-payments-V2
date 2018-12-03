@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
@@ -32,6 +33,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             foreach (var paymentDue in payments)
             {
                 await MessageSession.Send(paymentDue).ConfigureAwait(false);
+
             }
         }
 
@@ -44,8 +46,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == paymentDue.LearnerId) ??
                 TestSession.Learner;
             payment.Learner = testSessionLearner.ToLearner();
-            payment.Learner.ReferenceNumber = testSessionLearner.LearnRefNumber;
-            payment.Learner.ReferenceNumber = TestSession.GenerateLearnerReference(paymentDue.LearnerId);
             payment.Ukprn = TestSession.Ukprn;
             payment.SfaContributionPercentage = SfaContributionPercentage;
             payment.Type = paymentDue.Type;

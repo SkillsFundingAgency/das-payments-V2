@@ -138,7 +138,6 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                     },
                     LearningAim = new LearningAim
                     {
-                        AgreedPrice = testLearner.Course.AgreedPrice,
                         FrameworkCode = testLearner.Course.FrameworkCode,
                         FundingLineType = testLearner.Course.FundingLineType,
                         Reference = testLearner.Course.LearnAimRef,

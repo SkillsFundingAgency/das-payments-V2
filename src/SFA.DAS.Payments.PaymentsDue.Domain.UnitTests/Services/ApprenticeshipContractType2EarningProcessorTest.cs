@@ -125,7 +125,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                 JobId = jobId,
                 LearningAim = new LearningAim
                 {
-                    AgreedPrice = 4,
                     FrameworkCode = 5,
                     FundingLineType = "6",
                     PathwayCode = 7,
@@ -226,7 +225,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.AreEqual(earningPeriod.Amount, paymentDue.AmountDue);
             Assert.AreEqual(earning.Learner.ReferenceNumber, paymentDue.Learner.ReferenceNumber);
             Assert.AreEqual(earning.Learner.Uln, paymentDue.Learner.Uln);
-            Assert.AreEqual(earning.LearningAim.AgreedPrice, paymentDue.LearningAim.AgreedPrice);
             Assert.AreEqual(earning.LearningAim.FrameworkCode, paymentDue.LearningAim.FrameworkCode);
             Assert.AreEqual(earning.LearningAim.FundingLineType, paymentDue.LearningAim.FundingLineType);
             Assert.AreEqual(earning.LearningAim.PathwayCode, paymentDue.LearningAim.PathwayCode);
