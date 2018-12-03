@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 await MessageSession.Send(command);
             }
 
-            await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession), "OnProgrammeEarning event check failure");
+            await WaitForIt(() => OnProgrammeEarningEventMatcher.MatchEarnings(earnings, TestSession), "OnProgrammeEarning event check failure");
         }
 
         [Then(@"only the following payments will be calculated")]
