@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers
 {
-    public class CoInvestedProviderPaymentEventHandler : IHandleMessages<CoInvestedProviderPaymentEvent>
+    public class ProviderPaymentEventHandler : IHandleMessages<ProviderPaymentEvent>
     {
-        public static ConcurrentBag<CoInvestedProviderPaymentEvent> ReceivedEvents { get; } = new ConcurrentBag<CoInvestedProviderPaymentEvent>();
+        public static ConcurrentBag<ProviderPaymentEvent> ReceivedEvents { get; } = new ConcurrentBag<ProviderPaymentEvent>();
 
-        public async Task Handle(CoInvestedProviderPaymentEvent message, IMessageHandlerContext context)
+        public async Task Handle(ProviderPaymentEvent message, IMessageHandlerContext context)
         {
             Console.WriteLine(message.ToJson());
             ReceivedEvents.Add(message);

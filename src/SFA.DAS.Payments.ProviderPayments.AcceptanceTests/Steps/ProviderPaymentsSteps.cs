@@ -7,6 +7,7 @@ using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -79,7 +80,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         && TestSession.Learner.LearnRefNumber == payment.LearnerReferenceNumber
                         && TestSession.Ukprn == payment.Ukprn
                         && expectedEvent.DeliveryPeriod == payment.DeliveryPeriod?.Period
-                        && expectedEvent.Type == (OnProgrammeEarningType)payment.TransactionType
+                        && expectedEvent.Type == payment.TransactionType
                         && expectedEvent.FundingSourceType == payment.FundingSource
                         && expectedEvent.Amount == payment.Amount
                     ));
@@ -97,12 +98,12 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             await WaitForIt(() =>
             {
                 return expectedProviderPaymentEvents.All(expectedEvent =>
-                    CoInvestedProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
+                    ProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                         ContractType == receivedEvent.ContractType
                         && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                         && TestSession.Ukprn == receivedEvent.Ukprn
                         && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
-                        && expectedEvent.Type == (OnProgrammeEarningType)receivedEvent.TransactionType
+                        && expectedEvent.Type == receivedEvent.TransactionType
                         && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
                         && expectedEvent.Amount == receivedEvent.AmountDue
                         && TestSession.JobId == receivedEvent.JobId
@@ -114,8 +115,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
         private async Task SendMonthEndEvent()
         {
-            await MessageSession.Send(new PerformMonthEndProcessingCommand()
+            await MessageSession.Send(new ProcessProviderMonthEndCommand()
             {
+                Ukprn = TestSession.Ukprn,
                 JobId = TestSession.JobId,
                 CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
             }).ConfigureAwait(false);
