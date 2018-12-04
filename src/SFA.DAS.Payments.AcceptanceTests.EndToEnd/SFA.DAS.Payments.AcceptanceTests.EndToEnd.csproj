@@ -238,6 +238,7 @@
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\Training.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
+    <Compile Include="EventMatchers\FunctionalSkillEarningEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentModelMatcher.cs" />
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
