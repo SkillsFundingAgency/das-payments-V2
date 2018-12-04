@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
@@ -12,11 +13,15 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
     public class ApprenticeshipContractType2EarningProcessorTest : ProcessorTestBase
     {
         private IApprenticeshipContractType2EarningProcessor earningProcessor;
+        private long jobId;
+        private long ukprn;
 
         [SetUp]
         public void SetUp()
         {
             earningProcessor = new ApprenticeshipContractType2EarningProcessor();
+            jobId = 12345;
+            ukprn = 12;
         }
 
         [Test]

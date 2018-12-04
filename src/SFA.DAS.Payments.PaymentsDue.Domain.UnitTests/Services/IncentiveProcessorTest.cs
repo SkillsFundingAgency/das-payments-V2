@@ -91,7 +91,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.AreEqual(earningPeriod.Amount, paymentDue.AmountDue);
             Assert.AreEqual(earning.Learner.ReferenceNumber, paymentDue.Learner.ReferenceNumber);
             Assert.AreEqual(earning.Learner.Uln, paymentDue.Learner.Uln);
-            Assert.AreEqual(earning.LearningAim.AgreedPrice, paymentDue.LearningAim.AgreedPrice);
             Assert.AreEqual(earning.LearningAim.FrameworkCode, paymentDue.LearningAim.FrameworkCode);
             Assert.AreEqual(earning.LearningAim.FundingLineType, paymentDue.LearningAim.FundingLineType);
             Assert.AreEqual(earning.LearningAim.PathwayCode, paymentDue.LearningAim.PathwayCode);

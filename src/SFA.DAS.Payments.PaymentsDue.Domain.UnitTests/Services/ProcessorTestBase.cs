@@ -33,7 +33,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                 JobId = JobId,
                 LearningAim = new LearningAim
                 {
-                    AgreedPrice = 4,
                     FrameworkCode = 5,
                     FundingLineType = "6",
                     PathwayCode = 7,
