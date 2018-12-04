@@ -27,8 +27,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             CreateMap<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent>()
                 .Include<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>()
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
-                .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.Ignore())
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
+                .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.SfaContributionPercentage, opt => opt.ResolveUsing((cmd, ev) => cmd.Learner.PriceEpisodes.GetLatestPriceEpisode()?.PriceEpisodeValues.PriceEpisodeSFAContribPct));
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>()
