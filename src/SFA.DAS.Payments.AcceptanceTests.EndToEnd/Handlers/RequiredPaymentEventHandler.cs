@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
         public Task Handle(RequiredPaymentEvent message, IMessageHandlerContext context)
         {
             ReceivedEvents.Add(message);
-            return Task.FromResult(0);            
+            return Task.CompletedTask;            
         }
     }
 }

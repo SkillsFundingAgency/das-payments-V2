@@ -14,7 +14,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public static class EarningEventMatcher
     {
-        public static Tuple<bool, string> MatchEarnings(IList<OnProgrammeEarning> expectedPeriods, TestSession testSession)
+        public static (bool pass, string reason) MatchEarnings(IList<OnProgrammeEarning> expectedPeriods,
+            TestSession testSession)
         {
             var sessionEarnings = ApprenticeshipContractType2EarningEventHandler.ReceivedEvents
                 .Where(e => e.Ukprn == testSession.Ukprn && e.JobId == testSession.JobId)
@@ -26,7 +27,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     earningEvent,
                     onProgEarning
                 })
-                .SelectMany(earning => earning.onProgEarning.Periods, (earning, period) => new { earning, period })
+                .SelectMany(earning => earning.onProgEarning.Periods, (earning, period) => new {earning, period})
                 .ToList();
 
             var learningEarnings = earnings
@@ -42,22 +43,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             foreach (var expected in expectedPeriods)
             {
                 if (!learningEarnings.Any(earning => expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                                                     testSession.GetLearner(expected.LearnerId).LearnRefNumber == earning.earning.earningEvent.Learner.ReferenceNumber &&
+                                                     testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
+                                                     earning.earning.earningEvent.Learner.ReferenceNumber &&
                                                      expected.OnProgramme == earning.period.Amount))
-                    return new Tuple<bool, string>(false, $"Failed to find on-prog (learning) earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.OnProgramme}");
+                    return (false,
+                        $"Failed to find on-prog (learning) earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.OnProgramme}");
 
-                if (!completionEarnings.Any(earning => expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                                                       testSession.GetLearner(expected.LearnerId).LearnRefNumber == earning.earning.earningEvent.Learner.ReferenceNumber &&
-                                                       expected.Completion == earning.period.Amount))
-                    return new Tuple<bool, string>(false, $"Failed to find completion earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.Completion}");
+                if (!completionEarnings.Any(earning =>
+                    expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
+                    testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
+                    earning.earning.earningEvent.Learner.ReferenceNumber &&
+                    expected.Completion == earning.period.Amount))
+                    return (false,
+                        $"Failed to find completion earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.Completion}");
 
                 if (!balancingEarnings.Any(earning => expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                                                      testSession.GetLearner(expected.LearnerId).LearnRefNumber == earning.earning.earningEvent.Learner.ReferenceNumber &&
+                                                      testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
+                                                      earning.earning.earningEvent.Learner.ReferenceNumber &&
                                                       expected.Balancing == earning.period.Amount))
-                    return new Tuple<bool, string>(false, $"Failed to find balancing earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.Balancing}");
+                    return (false,
+                        $"Failed to find balancing earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.Balancing}");
             }
 
-            return new Tuple<bool, string>(true, string.Empty);
+            return (true, string.Empty);
             //TOOD: Figure what nothing extra should be doing
             //var nothingExtra = receivedPeriods.Count == matchedPeriods.Length;
             //var reason = new List<string>();
@@ -69,7 +77,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             //return new Tuple<bool, string>(allFound && nothingExtra, string.Join(" and ", reason));
         }
 
-        public static Tuple<bool, string> MatchIncentives(IList<IncentiveEarning> expectedPeriods,
+        public static (bool pass, string reason) MatchIncentives(IList<IncentiveEarning> expectedPeriods,
             TestSession testSession)
         {
             var sessionEarnings = ApprenticeshipContractType2EarningEventHandler.ReceivedEvents
@@ -166,12 +174,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 }
             }
 
-            return new Tuple<bool, string>(true, string.Empty);
+            return (true, string.Empty);
         }
 
         private static bool CheckPeriodIncentiveEarningsAreValid(TestSession testSession,
-            List<(ApprenticeshipContractTypeEarningsEvent earningEvent, Model.Core.Incentives.IncentiveEarning incentiveEarning, EarningPeriod
-                period)> incentiveEarnings, IncentiveEarning expected, Func<decimal> expectedEarningValue, string earningName, out Tuple<bool, string> result)
+            List<(ApprenticeshipContractTypeEarningsEvent earningEvent, Model.Core.Incentives.IncentiveEarning
+                incentiveEarning, EarningPeriod
+                period)> incentiveEarnings, IncentiveEarning expected, Func<decimal> expectedEarningValue,
+            string earningName, out
+                (bool pass, string reason) result)
         {
             var expectedValue = expectedEarningValue();
 
@@ -181,49 +192,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 earning.earningEvent.Learner.ReferenceNumber &&
                 expectedValue == earning.period.Amount))
             {
-                result = new Tuple<bool, string>(false,
+                result = (false,
                     $"Failed to find incentive ({earningName}) earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expectedValue}");
                 return false;
             }
 
-            result = null;
+            result = (true, string.Empty);
             return true;
         }
-
-        //private static Dictionary<string, OnProgrammeEarning> ConvertToOnProgEarning(ApprenticeshipContractType2EarningEvent[] sessionEarnings)
-        //{
-        //    var receivedPeriods = sessionEarnings
-        //        .SelectMany(e => e.OnProgrammeEarnings
-        //            .SelectMany(pe => pe.Periods.Select(p => p.Period)))
-        //        .Distinct()
-        //        .ToDictionary(p => p.Name, p => new OnProgrammeEarning
-        //        {
-        //            DeliveryCalendarPeriod = p
-        //        });
-
-        //    foreach (var receivedEarning in sessionEarnings.SelectMany(e => e.OnProgrammeEarnings))
-        //    {
-        //        foreach (var period in receivedEarning.Periods)
-        //        {
-        //            var onProg = receivedPeriods[period.Period.Name];
-        //            switch (receivedEarning.Type)
-        //            {
-        //                case OnProgrammeEarningType.Learning:
-        //                    onProg.OnProgramme = period.Amount;
-        //                    break;
-        //                case OnProgrammeEarningType.Balancing:
-        //                    onProg.Balancing = period.Amount;
-        //                    break;
-        //                case OnProgrammeEarningType.Completion:
-        //                    onProg.Completion = period.Amount;
-        //                    break;
-        //                default:
-        //                    throw new NotSupportedException("Unknown earning type " + receivedEarning.Type);
-        //            }
-        //        }
-        //    }
-
-        //    return receivedPeriods;
-        //}
     }
 }
