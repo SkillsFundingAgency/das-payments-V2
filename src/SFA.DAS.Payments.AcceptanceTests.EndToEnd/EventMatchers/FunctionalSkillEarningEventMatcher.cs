@@ -97,23 +97,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 var calendarPeriod = new CalendarPeriod(periodName);
                 var earningSpec = earningSpecs.Single(s => s.DeliveryCalendarPeriod.Name == calendarPeriod.Name && s.LearnerId == leanerId);
                 var priceEpisode = FindPriceEpisode(leanerId, periodName);
-            
-                var onProgPeriod = new EarningPeriod
-                {
-                    Period = calendarPeriod.Period,
-                    Amount = earningSpec.OnProgrammeMathsAndEnglish,
-                    PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier
-                };
 
-                var balancingPeriod = new EarningPeriod
+                if (earningSpec.OnProgrammeMathsAndEnglish.HasValue)
                 {
-                    Period = calendarPeriod.Period,
-                    Amount = earningSpec.BalancingMathsAndEnglish,
-                    PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier
-                };
+                    onProgPeriods.Add(new EarningPeriod
+                    {
+                        Period = calendarPeriod.Period,
+                        Amount = earningSpec.OnProgrammeMathsAndEnglish.Value,
+                        PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier
+                    });
+                }
 
-                onProgPeriods.Add(onProgPeriod);
-                balancingPeriods.Add(balancingPeriod);
+                if (earningSpec.BalancingMathsAndEnglish.HasValue)
+                {
+                    balancingPeriods.Add(new EarningPeriod
+                    {
+                        Period = calendarPeriod.Period,
+                        Amount = earningSpec.BalancingMathsAndEnglish.Value,
+                        PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier
+                    });
+                }
             }
 
             return (onProgPeriods, balancingPeriods);

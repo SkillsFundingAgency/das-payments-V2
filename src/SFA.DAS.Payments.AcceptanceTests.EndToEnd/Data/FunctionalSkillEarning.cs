@@ -12,10 +12,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 
         public string DeliveryPeriod { get; set; }
 
-        public decimal OnProgrammeMathsAndEnglish { get; set; }
+        public decimal? OnProgrammeMathsAndEnglish { get; set; }
 
-        public decimal BalancingMathsAndEnglish { get; set; }
+        public decimal? BalancingMathsAndEnglish { get; set; }
 
         public string LearnerId { get; set; }
+
+        public bool Specified => OnProgrammeMathsAndEnglish.HasValue || BalancingMathsAndEnglish.HasValue;
     }
 }

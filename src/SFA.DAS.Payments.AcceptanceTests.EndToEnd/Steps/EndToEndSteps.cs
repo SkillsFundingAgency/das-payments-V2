@@ -6,10 +6,10 @@ using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -44,8 +44,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
-            var functionalSkills = table.CreateSet<FunctionalSkillEarning>().ToList();
-            
+            var functionalSkills = table.CreateSet<FunctionalSkillEarning>().Where(f => f.Specified).ToList();
+            var learners = new List<FM36Learner>();
+
             foreach (var training in CurrentIlr)
             {
                 var learnerId = training.LearnerId;
@@ -68,9 +69,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
                 await MessageSession.Send(command);
+
+                learners.Add(learner);
             }
 
             await WaitForIt(() => OnProgrammeEarningEventMatcher.MatchEarnings(earnings, TestSession), "OnProgrammeEarning event check failure");
+            if (functionalSkills.Count > 0)
+            {
+                var matcher = new FunctionalSkillEarningEventMatcher(functionalSkills, TestSession, CurrentCollectionPeriod, learners);
+                await WaitForIt(() => matcher.MatchPayments(), "Functional Skill Earning event check failure");
+            }
         }
 
         [Then(@"only the following payments will be calculated")]
