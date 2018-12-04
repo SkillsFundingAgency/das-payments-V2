@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
@@ -12,11 +13,15 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
     public class ApprenticeshipContractType2EarningProcessorTest : ProcessorTestBase
     {
         private IApprenticeshipContractType2EarningProcessor earningProcessor;
+        private long jobId;
+        private long ukprn;
 
         [SetUp]
         public void SetUp()
         {
             earningProcessor = new ApprenticeshipContractType2EarningProcessor();
+            jobId = 12345;
+            ukprn = 12;
         }
 
         [Test]
@@ -105,6 +110,44 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             // assert
             Assert.IsNotNull(paymentsDue);
             Assert.AreEqual(1, paymentsDue.Length);
+        }
+
+        private ApprenticeshipContractType2EarningEvent GetEarning()
+        {
+            var earning = new ApprenticeshipContractType2EarningEvent
+            {
+                EarningYear = 2018,
+                EventTime = DateTimeOffset.UtcNow,
+                Learner = new Learner
+                {
+                    ReferenceNumber = "1",
+                    Uln = 3
+                },
+                Ukprn = ukprn,
+                JobId = jobId,
+                LearningAim = new LearningAim
+                {
+                    FrameworkCode = 5,
+                    FundingLineType = "6",
+                    PathwayCode = 7,
+                    ProgrammeType = 8,
+                    Reference = "9",
+                    StandardCode = 10
+                },
+                PriceEpisodes = new ReadOnlyCollection<PriceEpisode>(new[]
+                {
+                    new PriceEpisode
+                    {
+                        TotalNegotiatedPrice1 = 120,
+                        StartDate = new DateTime(2018, 8, 1),
+                        PlannedEndDate = new DateTime(2019, 7, 31),
+                        Identifier = "13"
+                    }
+                }),
+                IncentiveEarnings = new ReadOnlyCollection<IncentiveEarning>(new IncentiveEarning[0]),
+                SfaContributionPercentage = 100
+            };
+            return earning;
         }
 
         [Test]
