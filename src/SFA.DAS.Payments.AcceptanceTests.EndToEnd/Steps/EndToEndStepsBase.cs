@@ -83,8 +83,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
                 learner.Course.LearnAimRef = ilrLearner.AimReference;
                 learner.Course.CompletionStatus = ilrLearner.CompletionStatus;
+                learner.Course.ProgrammeType = ilrLearner.ProgrammeType;
+                learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
+                learner.Course.PathwayCode = ilrLearner.PathwayCode;
             });
-
         }
 
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, OnProgrammeEarning earning)
@@ -243,6 +245,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     LearningDeliveryValues = new LearningDeliveryValues
                     {
                         LearnAimRef = training.AimReference,
+                        LearnDelInitialFundLineType = training.FundingLineType,
+                        StdCode = training.StandardCode,
+                        FworkCode = training.FrameworkCode,
+                        ProgType = training.ProgrammeType,
+                        PwayCode = training.PathwayCode,
                     }
                 }
             });
@@ -327,7 +334,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
                         PriceEpisodePlannedEndDate = episode.TotalTrainingPriceEffectiveDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
                         PriceEpisodeActualEndDate = actualEndDate,
-                        PriceEpisodeSFAContribPct = sfaPercent
+                        PriceEpisodeSFAContribPct = sfaPercent,
+                        PriceEpisodeAimSeqNumber = learnerEarnings.AimSequenceNumber,
                     },
                     PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                 };

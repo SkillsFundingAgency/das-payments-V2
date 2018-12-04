@@ -22,7 +22,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 FundingLineType = course.FundingLineType,
                 StandardCode = course.StandardCode,
                 ProgrammeType = course.ProgrammeType,
-                AgreedPrice = course.AgreedPrice,
                 Reference = course.LearnAimRef
             };
         }
