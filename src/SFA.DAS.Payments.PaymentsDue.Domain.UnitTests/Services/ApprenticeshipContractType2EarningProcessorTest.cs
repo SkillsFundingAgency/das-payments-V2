@@ -107,6 +107,44 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.AreEqual(1, paymentsDue.Length);
         }
 
+        private ApprenticeshipContractType2EarningEvent GetEarning()
+        {
+            var earning = new ApprenticeshipContractType2EarningEvent
+            {
+                EarningYear = 2018,
+                EventTime = DateTimeOffset.UtcNow,
+                Learner = new Learner
+                {
+                    ReferenceNumber = "1",
+                    Uln = 3
+                },
+                Ukprn = ukprn,
+                JobId = jobId,
+                LearningAim = new LearningAim
+                {
+                    FrameworkCode = 5,
+                    FundingLineType = "6",
+                    PathwayCode = 7,
+                    ProgrammeType = 8,
+                    Reference = "9",
+                    StandardCode = 10
+                },
+                PriceEpisodes = new ReadOnlyCollection<PriceEpisode>(new[]
+                {
+                    new PriceEpisode
+                    {
+                        TotalNegotiatedPrice1 = 120,
+                        StartDate = new DateTime(2018, 8, 1),
+                        PlannedEndDate = new DateTime(2019, 7, 31),
+                        Identifier = "13"
+                    }
+                }),
+                IncentiveEarnings = new ReadOnlyCollection<IncentiveEarning>(new IncentiveEarning[0]),
+                SfaContributionPercentage = 100
+            };
+            return earning;
+        }
+
         [Test]
         public void TestNullEarning()
         {
@@ -184,7 +222,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.AreEqual(earningPeriod.Amount, paymentDue.AmountDue);
             Assert.AreEqual(earning.Learner.ReferenceNumber, paymentDue.Learner.ReferenceNumber);
             Assert.AreEqual(earning.Learner.Uln, paymentDue.Learner.Uln);
-            Assert.AreEqual(earning.LearningAim.AgreedPrice, paymentDue.LearningAim.AgreedPrice);
             Assert.AreEqual(earning.LearningAim.FrameworkCode, paymentDue.LearningAim.FrameworkCode);
             Assert.AreEqual(earning.LearningAim.FundingLineType, paymentDue.LearningAim.FundingLineType);
             Assert.AreEqual(earning.LearningAim.PathwayCode, paymentDue.LearningAim.PathwayCode);
