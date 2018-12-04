@@ -278,20 +278,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     for (var p = 1; p < 13; p++)
                     {
-                        var propertyInfo = typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + p);
-
                         decimal? learningValue = 0, completionValue = 0, balancingValue = 0;
 
                         if (p >= episodeStart.Period && p <= episodeLastPeriod)
                         {
-                            learningValue = (decimal?)propertyInfo.GetValue(learningValues);
-                            completionValue = (decimal?)propertyInfo.GetValue(completionEarnings);
-                            balancingValue = (decimal?)propertyInfo.GetValue(balancingEarnings);
+                            learningValue = learningValues.GetValue(p);
+                            completionValue = completionEarnings.GetValue(p);
+                            balancingValue = balancingEarnings.GetValue(p);
                         }
 
-                        propertyInfo.SetValue(episodeLearningValues, learningValue);
-                        propertyInfo.SetValue(episodeCompletionEarnings, completionValue);
-                        propertyInfo.SetValue(episodeBalancingEarnings, balancingValue);
+                        episodeLearningValues.SetValue(p, learningValue);
+                        episodeCompletionEarnings.SetValue(p, completionValue);
+                        episodeBalancingEarnings.SetValue(p, balancingValue);
                     }
                 }
                 else
