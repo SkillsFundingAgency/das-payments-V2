@@ -13,20 +13,20 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessi
     {
         private readonly ILifetimeScope lifetimeScope;
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
-        private readonly TransactionScope transactionScope;
+        //private readonly TransactionScope transactionScope;
         public BatchScope(ILifetimeScope lifetimeScope)
         {
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
             var stateManager = lifetimeScope.Resolve<IReliableStateManagerProvider>().Current;
             transactionProvider = lifetimeScope.Resolve<IReliableStateManagerTransactionProvider>();
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = stateManager.CreateTransaction();
-            transactionScope = new TransactionScope();
+            //transactionScope = new TransactionScope();
         }
 
         public void Dispose()
         {
             transactionProvider.Current.Dispose();
-            transactionScope.Dispose();
+        //    transactionScope.Dispose();
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = null;
             lifetimeScope?.Dispose();
         }
@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessi
 
         public async Task Commit()
         {
-            transactionScope.Complete();
+        //    transactionScope.Complete();
             await transactionProvider.Current.CommitAsync();
         }
     }

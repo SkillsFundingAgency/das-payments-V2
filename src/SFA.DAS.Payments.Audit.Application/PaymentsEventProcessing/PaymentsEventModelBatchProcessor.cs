@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,20 +46,24 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             }
             logger.LogDebug($"Processing {batch.Count} records.");
             var data = dataTable.GetDataTable(batch);
-            using (var scope = new TransactionScope(TransactionScopeOption.Required))
-            {
+            //using (var scope = new TransactionScope(TransactionScopeOption.Required))
+            //{
                 using (var sqlConnection = new SqlConnection(connectionString))
                 {
                     await sqlConnection.OpenAsync(cancellationToken);
                     using (var bulkCopy = new SqlBulkCopy(sqlConnection))
                     {
                         bulkCopy.DestinationTableName = dataTable.TableName;
+                        foreach (DataColumn dataColumn in data.Columns)
+                        {
+                            bulkCopy.ColumnMappings.Add(dataColumn.ColumnName, dataColumn.ColumnName);
+                        }
                         await bulkCopy.WriteToServerAsync(data, cancellationToken);
-                        scope.Complete();
+              //          scope.Complete();
                         logger.LogDebug($"Finished bulk copying {batch.Count} records.");
                     }
                 }
-            }
+            //}
             return batch.Count;
         }
     }

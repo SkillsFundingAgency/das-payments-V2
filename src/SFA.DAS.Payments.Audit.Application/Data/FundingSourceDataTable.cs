@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using SFA.DAS.Payments.Audit.Model;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
 {
-    public class FundingSourceDataTable: PeriodisedPaymentsEventModelDataTable<FundingSourceEventModel>
+    public class FundingSourceDataTable : PeriodisedPaymentsEventModelDataTable<FundingSourceEventModel>
     {
         public FundingSourceDataTable()
         {
             DataTable.Columns.AddRange(new[]
             {
-                new DataColumn("RequiredPaymentEventId"),
+                new DataColumn("RequiredPaymentEventId", typeof(Guid)),
                 new DataColumn("FundingSourceType"),
             });
         }
@@ -23,6 +24,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             return dataRow;
         }
 
-        public override string TableName => "FundingSourceEvent";
+        public override string TableName => "Payments2.FundingSourceEvent";
     }
 }

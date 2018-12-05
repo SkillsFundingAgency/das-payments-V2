@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using SFA.DAS.Payments.Audit.Model;
 
@@ -14,7 +15,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
 
             DataTable.Columns.AddRange(new[]
             {
-                new DataColumn("EventId"),
+                new DataColumn("EventId", typeof(Guid)),
                 new DataColumn("CollectionPeriod"),
                 new DataColumn("CollectionYear"),
                 new DataColumn("LearnerReferenceNumber"),

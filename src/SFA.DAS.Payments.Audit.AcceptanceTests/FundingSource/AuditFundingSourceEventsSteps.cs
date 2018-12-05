@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.Audit.AcceptanceTests.Data;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -16,6 +19,7 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.FundingSource
     [Binding]
     public class AuditFundingSourceEventsSteps : StepsBase
     {
+
         protected List<FundingSourcePaymentEvent> Events
         {
             get => Get<List<FundingSourcePaymentEvent>>();
@@ -92,10 +96,17 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.FundingSource
         }
 
         [Then(@"the calculated funding source payments should be recorded in the funding source tables")]
-        public void ThenTheCalculatedFundingSourcePaymentsShouldBeRecordedInTheFundingSourceTables()
+        public async Task ThenTheCalculatedFundingSourcePaymentsShouldBeRecordedInTheFundingSourceTables()
         {
-            ScenarioContext.Current.Pending();
+            await WaitForIt(async () =>
+            {
+                var dataContext = Container.Resolve<AuditDataContext>();
+                var storedEvents = await dataContext
+                    .FundingSourceEvents
+                    .Where(fse => fse.JobId == TestSession.JobId)
+                    .ToListAsync();
+                return Events.All(ev => storedEvents.Any(storedEvent => storedEvent.EventId == ev.EventId));
+            },$"Failed to find the funding source events. Job Id: {TestSession.JobId}, Ukprn: {TestSession.Ukprn}");
         }
-
     }
 }

@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                int processedCount;
+                var processedCount = 0;
                 using (var scope = batchScopeFactory.Create())
                 {
                     try
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                     {
                         logger.LogError($"Error processing batch of payments.  Error: {ex.Message}", ex);
                         scope.Abort();
-                        throw;
+                        //TODO: implement circuit breaker
                     }
                 }
                 if (processedCount != batchSize)

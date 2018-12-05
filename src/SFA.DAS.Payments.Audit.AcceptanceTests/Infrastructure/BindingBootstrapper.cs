@@ -3,6 +3,7 @@ using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Audit.AcceptanceTests.Data;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using TechTalk.SpecFlow;
 
@@ -17,11 +18,24 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Infrastructure
             Builder.Register((c, p) =>
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
+                return new AuditDataContext(configHelper.PaymentsConnectionString);
+            })
+                .AsSelf()
+                .InstancePerLifetimeScope()
+                .AutoActivate();
+            //Builder.RegisterBuildCallback(c => c.Resolve<AuditDataContext>());
+
+            Builder.Register((c, p) =>
+            {
+                var configHelper = c.Resolve<TestsConfiguration>();
                 return new PaymentsDataContext(configHelper.PaymentsConnectionString);
-            }).As<IPaymentsDataContext>()
-                .InstancePerDependency();
+            })
+                .As<IPaymentsDataContext>()
+                .InstancePerLifetimeScope()
+                .AutoActivate();
+            //Builder.RegisterBuildCallback(c => c.Resolve<IPaymentsDataContext>());
         }
-        
+
         [BeforeTestRun(Order = 51)]
         public static void AddRoutingConfig()
         {
