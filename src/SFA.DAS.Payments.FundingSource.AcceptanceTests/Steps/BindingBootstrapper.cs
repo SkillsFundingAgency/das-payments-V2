@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(ApprenticeshipContractType2RequiredPaymentEvent), EndpointNames.NonLevyFundedPaymentsService);
-            routing.RouteToEndpoint(typeof(IncentiveRequiredPayment), EndpointNames.NonLevyFundedPaymentsService);
+            routing.RouteToEndpoint(typeof(IncentiveRequiredPaymentEvent), EndpointNames.NonLevyFundedPaymentsService);
         }
     }
 }

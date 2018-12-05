@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .ForMember(dest => dest.ContractType, opt => opt.UseValue<byte>(2))
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedEmployer));
 
-                cfg.CreateMap<IncentiveRequiredPayment, SfaFullyFundedFundingSourcePaymentEvent>()
+                cfg.CreateMap<IncentiveRequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.Type))
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa));
             });

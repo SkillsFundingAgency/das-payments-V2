@@ -1,4 +1,6 @@
 ﻿namespace SFA.DAS.Payments.ProviderPayments.Messages
 {
-    public class SfaFullyFundedProviderPaymentEvent: ProviderPaymentEvent { }
+    public abstract class SfaFullyFundedProviderPaymentEvent : ProviderPaymentEvent
+    {
+    }
 }

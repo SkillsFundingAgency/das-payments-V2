@@ -65,14 +65,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         private static readonly IncentiveType[] IncentiveTypes =
         {
             IncentiveType.First16To18EmployerIncentive,
-            IncentiveType.First16To18EmployerIncentive,
             IncentiveType.First16To18ProviderIncentive,
             IncentiveType.Second16To18EmployerIncentive,
             IncentiveType.Second16To18ProviderIncentive,
             IncentiveType.OnProgramme16To18FrameworkUplift,
             IncentiveType.Completion16To18FrameworkUplift,
             IncentiveType.Balancing16To18FrameworkUplift,
-            IncentiveType.FirstDisadvantagePayment,
             IncentiveType.FirstDisadvantagePayment,
             IncentiveType.SecondDisadvantagePayment,
             IncentiveType.LearningSupport
