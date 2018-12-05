@@ -279,7 +279,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                         decimal? learningValue = 0, completionValue = 0, balancingValue = 0;
 
-                        learningValue = (decimal?)propertyInfo.GetValue(learningValues);
+                        // On-prog census date is the last day of the month
+                        var periodsSinceStartPeriod = p - episodeStartPeriod.Period;
+                        var lastDayOfPeriodMonth = episodeStartPeriod.LastDayOfMonthAfter(periodsSinceStartPeriod);
+
+                        if (!currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.HasValue ||
+                            currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate >=
+                            lastDayOfPeriodMonth)
+                        {
+                            learningValue = (decimal?)propertyInfo.GetValue(learningValues);
+                        }
                         completionValue = (decimal?)propertyInfo.GetValue(completionEarnings);
                         balancingValue = (decimal?)propertyInfo.GetValue(balancingEarnings);
                         
