@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                     try
                     {
                         var processor = scope.GetBatchProcessor<T>(); //TODO: move to factory ??
-                        processedCount = await processor.Process(batchSize);
+                        processedCount = await processor.Process(batchSize, cancellationToken);
                         await scope.Commit();
                     }
                     catch (Exception ex)
