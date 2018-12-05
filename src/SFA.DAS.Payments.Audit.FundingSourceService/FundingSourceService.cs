@@ -8,6 +8,8 @@ using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
+using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.Audit.FundingSourceService
@@ -20,12 +22,14 @@ namespace SFA.DAS.Payments.Audit.FundingSourceService
     {
         private readonly IPaymentLogger logger;
         private readonly ILifetimeScope lifetimeScope;
+        private readonly IPaymentsEventModelBatchService<FundingSourceEventModel> batchService;
         private IStatefulEndpointCommunicationListener listener;
-        public FundingSourceService(StatefulServiceContext context, IPaymentLogger logger, ILifetimeScope lifetimeScope)
+        public FundingSourceService(StatefulServiceContext context, IPaymentLogger logger, ILifetimeScope lifetimeScope, IPaymentsEventModelBatchService<FundingSourceEventModel> batchService)
             : base(context)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
+            this.batchService = batchService ?? throw new ArgumentNullException(nameof(batchService));
         }
 
         /// <summary>
@@ -51,7 +55,7 @@ namespace SFA.DAS.Payments.Audit.FundingSourceService
         /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service replica.</param>
         protected override Task RunAsync(CancellationToken cancellationToken)
         {
-            return listener.RunAsync();
+            return Task.WhenAll(listener.RunAsync(), batchService.RunAsync(cancellationToken));
         }
     }
 }

@@ -1,0 +1,12 @@
+﻿using System.Collections.Generic;
+using System.Data;
+using SFA.DAS.Payments.Audit.Model;
+
+namespace SFA.DAS.Payments.Audit.Application.Data
+{
+    public interface IPaymentsEventModelDataTable<T> where T : PaymentsEventModel
+    {
+        string TableName { get; }
+        DataTable GetDataTable(List<T> events);
+    }
+}
