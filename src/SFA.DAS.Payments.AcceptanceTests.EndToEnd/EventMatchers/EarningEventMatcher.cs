@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     earningEvent,
                     onProgEarning
                 })
-                .SelectMany(earning => earning.onProgEarning.Periods, (earning, period) => new {earning, period})
+                .SelectMany(earning => earning.onProgEarning.Periods, (earning, period) => new { earning, period })
                 .ToList();
 
             var learningEarnings = earnings
@@ -96,109 +96,177 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             incentiveEarning: earning.incentiveEarning, period: period))
                     .ToList();
 
-                var first16To18EmployerIncentiveEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.First16To18EmployerIncentive)
-                    .ToList();
-                var first16To18ProviderIncentiveEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.First16To18ProviderIncentive)
-                    .ToList();
-                var second16To18EmployerIncentiveEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.Second16To18EmployerIncentive)
-                    .ToList();
-                var second16To18ProviderIncentiveEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.Second16To18ProviderIncentive)
-                    .ToList();
-                var onProgramme16To18FrameworkUpliftEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.OnProgramme16To18FrameworkUplift)
-                    .ToList();
-                var completion16To18FrameworkUpliftEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.Completion16To18FrameworkUplift)
-                    .ToList();
-                var balancing16To18FrameworkUpliftEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.Balancing16To18FrameworkUplift)
-                    .ToList();
-                var firstDisadvantagePaymentEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.FirstDisadvantagePayment)
-                    .ToList();
-                var secondDisadvantagePaymentEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.SecondDisadvantagePayment)
-                    .ToList();
-                var learningSupportEarnings = earnings
-                    .Where(earning => earning.incentiveEarning.Type == IncentiveType.LearningSupport)
-                    .ToList();
-
-                foreach (var expected in expectedPeriods)
+                foreach (var incentiveType in IncentiveTypes)
                 {
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, first16To18EmployerIncentiveEarnings,
-                        expected,
-                        () => expected.First16To18EmployerIncentive, "First16To18EmployerIncentive",
-                        out var first16To18Employer))
-                        return first16To18Employer;
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, first16To18ProviderIncentiveEarnings,
-                        expected,
-                        () => expected.First16To18ProviderIncentive, "First16To18ProviderIncentive",
-                        out var first16To18Provider))
-                        return first16To18Provider;
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, second16To18EmployerIncentiveEarnings,
-                        expected,
-                        () => expected.Second16To18EmployerIncentive, "Second16To18EmployerIncentive",
-                        out var second16To18Employer))
-                        return second16To18Employer;
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, second16To18ProviderIncentiveEarnings,
-                        expected,
-                        () => expected.Second16To18ProviderIncentive, "Second16To18ProviderIncentive",
-                        out var second16To18Provider))
-                        return second16To18Provider;
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, onProgramme16To18FrameworkUpliftEarnings,
-                        expected, () => expected.OnProgramme16To18FrameworkUplift, "OnProgramme16To18FrameworkUplift",
-                        out var onProgramme16To18))
-                        return onProgramme16To18;
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, completion16To18FrameworkUpliftEarnings,
-                        expected, () => expected.Completion16To18FrameworkUplift, "Completion16To18FrameworkUplift",
-                        out var completion16To18))
-                        return completion16To18;
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, balancing16To18FrameworkUpliftEarnings,
-                        expected,
-                        () => expected.Balancing16To18FrameworkUplift, "Balancing16To18FrameworkUplift",
-                        out var balancing16To18)) return balancing16To18;
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, firstDisadvantagePaymentEarnings, expected,
-                        () => expected.FirstDisadvantagePayment, "FirstDisadvantagePayment", out var firstDisadvantage))
-                        return firstDisadvantage;
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, secondDisadvantagePaymentEarnings, expected,
-                        () => expected.SecondDisadvantagePayment, "SecondDisadvantagePayment",
-                        out var secondDisadvantage))
-                        return secondDisadvantage;
-                    if (!CheckPeriodIncentiveEarningsAreValid(testSession, learningSupportEarnings, expected,
-                        () => expected.LearningSupport, "LearningSupport", out var learningSupport))
-                        return learningSupport;
+                    var incentiveEarnings = earnings
+                        .Where(earning => earning.incentiveEarning.Type == incentiveType)
+                        .ToList();
+
+                    if (incentiveEarnings.Any())
+                    {
+                        foreach (var expected in expectedPeriods)
+                        {
+                            var expectedValue = expected.GetIncentiveTypeValue(incentiveType);
+
+                            if (!incentiveEarnings.Any(earning =>
+                                expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
+                                testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
+                                earning.earningEvent.Learner.ReferenceNumber &&
+                                expectedValue == earning.period.Amount))
+                            {
+                                return (false,
+                                     $"Failed to find incentive ({incentiveType.ToString()}) earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expectedValue}");
+                            }
+                        }
+                    }
                 }
+
+                //var first16To18EmployerIncentiveEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.First16To18EmployerIncentive)
+                //    .ToList();
+                //var first16To18ProviderIncentiveEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.First16To18ProviderIncentive)
+                //    .ToList();
+                //var second16To18EmployerIncentiveEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.Second16To18EmployerIncentive)
+                //    .ToList();
+                //var second16To18ProviderIncentiveEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.Second16To18ProviderIncentive)
+                //    .ToList();
+                //var onProgramme16To18FrameworkUpliftEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.OnProgramme16To18FrameworkUplift)
+                //    .ToList();
+                //var completion16To18FrameworkUpliftEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.Completion16To18FrameworkUplift)
+                //    .ToList();
+                //var balancing16To18FrameworkUpliftEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.Balancing16To18FrameworkUplift)
+                //    .ToList();
+                //var firstDisadvantagePaymentEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.FirstDisadvantagePayment)
+                //    .ToList();
+                //var secondDisadvantagePaymentEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.SecondDisadvantagePayment)
+                //    .ToList();
+                //var learningSupportEarnings = earnings
+                //    .Where(earning => earning.incentiveEarning.Type == IncentiveType.LearningSupport)
+                //    .ToList();
+
+                //foreach (var expected in expectedPeriods)
+                //{
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, first16To18EmployerIncentiveEarnings,
+                //        expected,
+                //        () => expected.First16To18EmployerIncentive, "First16To18EmployerIncentive",
+                //        out var first16To18Employer))
+                //        return first16To18Employer;
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, first16To18ProviderIncentiveEarnings,
+                //        expected,
+                //        () => expected.First16To18ProviderIncentive, "First16To18ProviderIncentive",
+                //        out var first16To18Provider))
+                //        return first16To18Provider;
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, second16To18EmployerIncentiveEarnings,
+                //        expected,
+                //        () => expected.Second16To18EmployerIncentive, "Second16To18EmployerIncentive",
+                //        out var second16To18Employer))
+                //        return second16To18Employer;
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, second16To18ProviderIncentiveEarnings,
+                //        expected,
+                //        () => expected.Second16To18ProviderIncentive, "Second16To18ProviderIncentive",
+                //        out var second16To18Provider))
+                //        return second16To18Provider;
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, onProgramme16To18FrameworkUpliftEarnings,
+                //        expected, () => expected.OnProgramme16To18FrameworkUplift, "OnProgramme16To18FrameworkUplift",
+                //        out var onProgramme16To18))
+                //        return onProgramme16To18;
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, completion16To18FrameworkUpliftEarnings,
+                //        expected, () => expected.Completion16To18FrameworkUplift, "Completion16To18FrameworkUplift",
+                //        out var completion16To18))
+                //        return completion16To18;
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, balancing16To18FrameworkUpliftEarnings,
+                //        expected,
+                //        () => expected.Balancing16To18FrameworkUplift, "Balancing16To18FrameworkUplift",
+                //        out var balancing16To18)) return balancing16To18;
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, firstDisadvantagePaymentEarnings, expected,
+                //        () => expected.FirstDisadvantagePayment, "FirstDisadvantagePayment", out var firstDisadvantage))
+                //        return firstDisadvantage;
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, secondDisadvantagePaymentEarnings, expected,
+                //        () => expected.SecondDisadvantagePayment, "SecondDisadvantagePayment",
+                //        out var secondDisadvantage))
+                //        return secondDisadvantage;
+                //    if (!CheckPeriodIncentiveEarningsAreValid(testSession, learningSupportEarnings, expected,
+                //        () => expected.LearningSupport, "LearningSupport", out var learningSupport))
+                //        return learningSupport;
+                //}
             }
 
             return (true, string.Empty);
         }
 
-        private static bool CheckPeriodIncentiveEarningsAreValid(TestSession testSession,
-            List<(ApprenticeshipContractTypeEarningsEvent earningEvent, Model.Core.Incentives.IncentiveEarning
-                incentiveEarning, EarningPeriod
-                period)> incentiveEarnings, IncentiveEarning expected, Func<decimal> expectedEarningValue,
-            string earningName, out
-                (bool pass, string reason) result)
+        //private static bool CheckPeriodIncentiveEarningsAreValid(TestSession testSession,
+        //    List<(ApprenticeshipContractTypeEarningsEvent earningEvent, Model.Core.Incentives.IncentiveEarning
+        //        incentiveEarning, EarningPeriod
+        //        period)> incentiveEarnings, IncentiveEarning expected, Func<decimal> expectedEarningValue,
+        //    string earningName, out
+        //        (bool pass, string reason) result)
+        //{
+        //    var expectedValue = expectedEarningValue();
+
+        //    if (!incentiveEarnings.Any(earning =>
+        //        expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
+        //        testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
+        //        earning.earningEvent.Learner.ReferenceNumber &&
+        //        expectedValue == earning.period.Amount))
+        //    {
+        //        result = (false,
+        //            $"Failed to find incentive ({earningName}) earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expectedValue}");
+        //        return false;
+        //    }
+
+        //    result = (true, string.Empty);
+        //    return true;
+        //}
+
+        private static readonly IncentiveType[] IncentiveTypes =
         {
-            var expectedValue = expectedEarningValue();
+            IncentiveType.First16To18EmployerIncentive,
+            IncentiveType.First16To18ProviderIncentive,
+            IncentiveType.Second16To18EmployerIncentive,
+            IncentiveType.Second16To18ProviderIncentive,
+            IncentiveType.OnProgramme16To18FrameworkUplift,
+            IncentiveType.Completion16To18FrameworkUplift,
+            IncentiveType.Balancing16To18FrameworkUplift,
+            IncentiveType.FirstDisadvantagePayment,
+            IncentiveType.SecondDisadvantagePayment,
+            IncentiveType.LearningSupport
+        };
 
-            if (!incentiveEarnings.Any(earning =>
-                expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
-                earning.earningEvent.Learner.ReferenceNumber &&
-                expectedValue == earning.period.Amount))
+        private static decimal GetIncentiveTypeValue(this IncentiveEarning incentiveEarning, IncentiveType type)
+        {
+            switch (type)
             {
-                result = (false,
-                    $"Failed to find incentive ({earningName}) earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expectedValue}");
-                return false;
+                case IncentiveType.First16To18EmployerIncentive:
+                    return incentiveEarning.First16To18EmployerIncentive;
+                case IncentiveType.First16To18ProviderIncentive:
+                    return incentiveEarning.First16To18ProviderIncentive;
+                case IncentiveType.Second16To18EmployerIncentive:
+                    return incentiveEarning.Second16To18EmployerIncentive;
+                case IncentiveType.Second16To18ProviderIncentive:
+                    return incentiveEarning.Second16To18ProviderIncentive;
+                case IncentiveType.OnProgramme16To18FrameworkUplift:
+                    return incentiveEarning.OnProgramme16To18FrameworkUplift;
+                case IncentiveType.Completion16To18FrameworkUplift:
+                    return incentiveEarning.Completion16To18FrameworkUplift;
+                case IncentiveType.Balancing16To18FrameworkUplift:
+                    return incentiveEarning.Balancing16To18FrameworkUplift;
+                case IncentiveType.FirstDisadvantagePayment:
+                    return incentiveEarning.FirstDisadvantagePayment;
+                case IncentiveType.SecondDisadvantagePayment:
+                    return incentiveEarning.SecondDisadvantagePayment;
+                case IncentiveType.LearningSupport:
+                    return incentiveEarning.LearningSupport;
+                default:
+                    return default(decimal);
             }
-
-            result = (true, string.Empty);
-            return true;
         }
     }
 }
