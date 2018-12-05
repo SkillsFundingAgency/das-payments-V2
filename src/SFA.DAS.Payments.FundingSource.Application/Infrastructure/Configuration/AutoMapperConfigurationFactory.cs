@@ -15,12 +15,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                 cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, RequiredCoInvestedPayment>();
 
                 cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>()
-                  .ForMember(dest => dest.ContractType, opt => opt.UseValue<byte>(2))
+                    .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType))
+                    .ForMember(dest => dest.ContractType, opt => opt.UseValue<byte>(2))
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedSfa));
 
                 cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, EmployerCoInvestedFundingSourcePaymentEvent>()
-                 .ForMember(dest => dest.ContractType, opt => opt.UseValue<byte>(2))
-                 .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedEmployer));
+                    .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType))
+                    .ForMember(dest => dest.ContractType, opt => opt.UseValue<byte>(2))
+                    .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedEmployer));
+
+                cfg.CreateMap<IncentiveRequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>()
+                    .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.Type))
+                    .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa));
             });
         }
     }

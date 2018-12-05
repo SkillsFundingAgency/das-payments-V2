@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected abstract bool Match(T expected, T actual);
 
-        public Tuple<bool, string> MatchPayments()
+        public (bool pass, string reason) MatchPayments()
         {
             var actualPayments = GetActualEvents();
 
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (actualPayments.Count > expectedPayments.Count)
                 errors.Add($"found {actualPayments.Count - expectedPayments.Count} unexpected events");
 
-            return new Tuple<bool, string>(errors.Count == 0, string.Join(", ", errors));
+            return (errors.Count == 0, string.Join(", ", errors));
         }
 
         public (bool pass, string reason) MatchNoPayments()

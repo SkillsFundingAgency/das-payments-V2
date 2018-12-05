@@ -9,7 +9,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -44,14 +43,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
-            
+            var incentives = table.CreateSet<IncentiveEarning>().ToList();
+
             foreach (var training in CurrentIlr)
             {
                 var learnerId = training.LearnerId;
                 var learner = new FM36Learner {LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber};
                 var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
+                var incentiveEarnings = incentives.Where(e => e.LearnerId == learnerId).ToList();
                 
-                PopulateLearner(learner, training, learnerEarnings);
+                PopulateLearnerEarnings(learner, training, learnerEarnings, incentiveEarnings);
 
                 var command = new ProcessLearnerCommand
                 {
@@ -70,6 +71,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession), "OnProgrammeEarning event check failure");
+            await WaitForIt(() => EarningEventMatcher.MatchIncentives(incentives, TestSession), "IncentiveEarning event check failure");
         }
 
         [Then(@"only the following payments will be calculated")]
@@ -122,12 +124,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await MessageSession.Send(monthEndCommand);
             var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
-        }
-        
-
-        [Then(@"no payments will be calculated for following collection periods")]
-        public void ThenNoPaymentsWillBeCalculatedForFollowingCollectionPeriods(Table table)
-        {
         }
     }
 }
