@@ -1,13 +1,9 @@
 ﻿using System;
+using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public interface IApprenticeshipContractTypeEarningsEventFactory
-    {
-        ApprenticeshipContractTypeEarningsEvent Create(string contractType);
-    }
-
     public class ApprenticeshipContractTypeEarningsEventFactory: IApprenticeshipContractTypeEarningsEventFactory
     {
         public const string Act1TestToRemove = "Act1";

@@ -348,6 +348,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
 
             learner.PriceEpisodes = GetPriceEpisodes(training, learningValues, completionEarnings, balancingEarnings, CurrentPriceEpisodes, earnings, CollectionYear);
+            var course = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course;
 
             learner.LearningDeliveries = new List<LearningDelivery>(new[]
             {
@@ -358,16 +359,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     {
                         LearnAimRef = training.AimReference,
                         LearnDelInitialFundLineType = training.FundingLineType,
-                        StdCode = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course.StandardCode,
-                        FworkCode = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course.FrameworkCode,
-                        ProgType = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course.ProgrammeType,
-                        PwayCode = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course.PathwayCode,
+                        StdCode = course.StandardCode,
+                        FworkCode = course.FrameworkCode,
+                        ProgType = course.ProgrammeType,
+                        PwayCode = course.PathwayCode,
                     }
                 }
             });
         }
 
-        private static List<PriceEpisode> GetPriceEpisodes(Training learnerEarnings, PriceEpisodePeriodisedValues learningValues, PriceEpisodePeriodisedValues completionEarnings, PriceEpisodePeriodisedValues balancingEarnings, List<Price> priceEpisodes, List<OnProgrammeEarning> earnings, string collectionYear)
+        private static List<PriceEpisode> GetPriceEpisodes(
+            Training learnerEarnings, 
+            PriceEpisodePeriodisedValues learningValues,
+            PriceEpisodePeriodisedValues completionEarnings, 
+            PriceEpisodePeriodisedValues balancingEarnings, 
+            List<Price> priceEpisodes,
+            List<OnProgrammeEarning> earnings, 
+            string collectionYear)
         {
             if (priceEpisodes == null)
             {

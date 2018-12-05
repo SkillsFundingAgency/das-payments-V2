@@ -49,17 +49,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 ruleNameSanitizer: ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
             EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             EndpointConfiguration.EnableInstallers();
-            EndpointConfiguration.Notifications.Errors.MessageHasFailedAnImmediateRetryAttempt += ErrorsOnMessageHasFailedAnImmediateRetryAttempt;
-        }
-
-        private static void ErrorsOnMessageHasFailedAnImmediateRetryAttempt(object sender, ImmediateRetryMessage e)
-        {
-            var messageToLog = $"Error Message: {e.Exception.Message}\nMessage: {GetMessageString(e.Body)}";
-        }
-
-        static string GetMessageString(byte[] body)
-        {
-            return Encoding.UTF8.GetString(body);
         }
 
         [BeforeTestRun(Order = 50)]

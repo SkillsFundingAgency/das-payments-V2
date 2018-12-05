@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -42,7 +43,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return results;
         }
 
-        List<IntermediateLearningAim> InitialLearnerTransform(ProcessLearnerCommand learnerSubmission)
+        private static List<IntermediateLearningAim> InitialLearnerTransform(ProcessLearnerCommand learnerSubmission)
         {
             var results = new List<IntermediateLearningAim>();
 

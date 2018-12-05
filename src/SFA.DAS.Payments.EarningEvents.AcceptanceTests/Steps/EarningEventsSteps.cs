@@ -120,7 +120,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
 
             learners.ForEach(learner =>
             {
-                IlrLearnerEarnings.ForEach(earnings => { AddLearnerEarnings(learner, earnings); });
+                IlrLearnerEarnings.ForEach(earnings => AddLearnerEarnings(learner, earnings));
                 Console.WriteLine($"Created learner: {learner.ToJson()}");
             });
 
