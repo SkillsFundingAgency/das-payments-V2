@@ -3,28 +3,28 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using ESFA.DC.IO.AzureTableStorage;
+using ESFA.DC.IO.AzureTableStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.IO.Redis;
-using ESFA.DC.IO.Redis.Config;
-using ESFA.DC.IO.Redis.Config.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Queueing;
 using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
     public class DcHelper
     {
         private readonly IJsonSerializationService serializationService;
-        private readonly IKeyValuePersistenceService redisService;
+        private readonly IKeyValuePersistenceService azureTableStorageService;
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
 
         public DcHelper(IContainer container)
         {
-            redisService = container.Resolve<IKeyValuePersistenceService>();
+            azureTableStorageService = container.Resolve<IKeyValuePersistenceService>();
             serializationService = container.Resolve<IJsonSerializationService>();
             topicPublishingService = container.Resolve<ITopicPublishService<JobContextDto>>();
         }
@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 };
                 var json = serializationService.Serialize(ilrSubmission);
                 Console.WriteLine($"ILR Submission: {json}");
-                await redisService
+                await azureTableStorageService
                     .SaveAsync(messagePointer, json)
                     .ConfigureAwait(true);
 
@@ -87,13 +87,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public static void AddDcConfig(ContainerBuilder builder)
         {
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
-            builder.Register(c => new RedisKeyValuePersistenceServiceConfig
-            {
-                ConnectionString = DcConfiguration.AzureRedisConnectionString,
-                KeyExpiry = new TimeSpan(14, 0, 0, 0)
-            }).As<IRedisKeyValuePersistenceServiceConfig>().SingleInstance();
+            builder.Register(c => new AzureStorageKeyValuePersistenceConfig(DcConfiguration.AzureTableStorageConnectionString,DcConfiguration.DcTableStorageContainer)).As<IAzureTableStorageKeyValuePersistenceServiceConfig>().SingleInstance();
 
-            builder.RegisterType<RedisKeyValuePersistenceService>().As<IKeyValuePersistenceService>()
+            builder.RegisterType<AzureTableStorageKeyValuePersistenceService>().As<IKeyValuePersistenceService>()
                 .InstancePerLifetimeScope();
 
             builder.Register(c => new TopicConfiguration(DcConfiguration.DcServiceBusConnectionString,
