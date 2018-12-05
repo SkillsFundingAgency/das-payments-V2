@@ -300,7 +300,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var earnings = table.CreateSet<Earning>().ToList();
             foreach (var tableRow in table.Rows)
             {
-                var earning = earnings.Single(e => e.DeliveryPeriod == tableRow["Delivery Period"] && e.LearnerId == tableRow["Learner ID"]);
+                var earning = earnings.Single(e =>
+                {
+                    var result = e.DeliveryPeriod == tableRow["Delivery Period"];
+
+                    if (tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId))
+                        result |= e.LearnerId == learnerId;
+
+                    return result;
+                });
                 foreach (var headerCell in table.Header)
                 {
                     var name = headerCell == "On-Programme" ? "Learning" : headerCell.Replace(" ", null).Replace("-", null);
