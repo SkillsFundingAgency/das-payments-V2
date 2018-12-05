@@ -5,11 +5,11 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
 {
-    public class FunctionalSkillEarningsEventHandler : IHandleMessages<FunctionalSkillEarningsEvent>
+    public class EarningEventHandler : IHandleMessages<EarningEvent>
     {
-        public static ConcurrentBag<FunctionalSkillEarningsEvent> ReceivedEvents { get; } = new ConcurrentBag<FunctionalSkillEarningsEvent>();
+        public static ConcurrentBag<EarningEvent> ReceivedEvents { get; } = new ConcurrentBag<EarningEvent>();
 
-        public Task Handle(FunctionalSkillEarningsEvent message, IMessageHandlerContext context)
+        public Task Handle(EarningEvent message, IMessageHandlerContext context)
         {
             ReceivedEvents.Add(message);
             return Task.CompletedTask;

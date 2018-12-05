@@ -6,6 +6,7 @@ using System.Reflection;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
@@ -200,6 +201,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         public static void SetValue(this PriceEpisodePeriodisedValues values, int period, decimal? value)
         {
             PeriodisedProperties[period].SetValue(values, value);
+        }
+
+        public static string ToAttributeName(this SFA.DAS.Payments.Model.Core.Entities.TransactionType transactionType)
+        {
+            switch (transactionType)
+            {
+                case TransactionType.Learning:
+                    return "PriceEpisodeOnProgPayment";
+                case TransactionType.Balancing:
+                    return "PriceEpisodeBalancePayment";
+                case TransactionType.Completion:
+                    return "PriceEpisodeCompletionPayment";
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }
