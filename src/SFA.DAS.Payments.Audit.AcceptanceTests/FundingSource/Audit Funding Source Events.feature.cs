@@ -89,12 +89,22 @@ this.ScenarioInitialize(scenarioInfo);
                         "90",
                         "Learning",
                         "Act2"});
+            table1.AddRow(new string[] {
+                        "CoInvestedEmployer",
+                        "10",
+                        "Learning",
+                        "Act2"});
+            table1.AddRow(new string[] {
+                        "FullyFundedSfa",
+                        "50",
+                        "First16To18EmployerIncentive",
+                        "Act2"});
 #line 8
  testRunner.Given("the funding source service has calculated the following payments", ((string)(null)), table1, "Given ");
-#line 12
+#line 13
  testRunner.When("the Audit Funding Source Service is notified of the calculated funding source pay" +
                     "ments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 13
+#line 14
  testRunner.Then("the calculated funding source payments should be recorded in the funding source t" +
                     "ables", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
