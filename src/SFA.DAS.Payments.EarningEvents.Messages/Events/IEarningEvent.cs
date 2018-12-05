@@ -6,7 +6,8 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
     public interface IEarningEvent : IPaymentsEvent
     {
-        short EarningYear { get; }
+        // TODO: uncomment this when we know why we need it
+        //short EarningYear { get; }
         ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; }
         CalendarPeriod CollectionPeriod { get; }
         string CollectionYear { get; }
