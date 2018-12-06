@@ -241,5 +241,136 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.LearningAim.FundingLineType.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
                 .LearningDeliveryValues.LearnDelInitialFundLineType);
         }
+
+        [Test]
+        public void TestMultiplePriceEpisodes()
+        {
+            fm36Learner.PriceEpisodes.Clear();
+
+            fm36Learner.PriceEpisodes.Add(new PriceEpisode
+            {
+                PriceEpisodeIdentifier = "pe-1",
+                PriceEpisodeValues = new PriceEpisodeValues
+                {
+                    EpisodeStartDate = DateTime.Today.AddMonths(-12),
+                    PriceEpisodePlannedEndDate = DateTime.Today.AddMonths(-6),
+                    PriceEpisodeActualEndDate = DateTime.Today.AddMonths(-6),
+                    PriceEpisodePlannedInstalments = 6,
+                    PriceEpisodeCompletionElement = 1500,
+                    PriceEpisodeInstalmentValue = 500,
+                    TNP1 = 7500,
+                    TNP2 = 7500,
+                    PriceEpisodeCompleted = true,
+                },
+                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                {
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeOnProgPayment",
+                        Period1 = 500,
+                        Period2 = 500,
+                        Period3 = 500,
+                        Period4 = 500,
+                        Period5 = 500,
+                        Period6 = 500,
+                        Period7 = 0,
+                        Period8 = 0,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 0
+                    },
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeCompletionPayment",
+                        Period1 = 0,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 0,
+                        Period8 = 1500,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 0
+                    },
+                }
+            });
+            
+            fm36Learner.PriceEpisodes.Add(new PriceEpisode
+            {
+                PriceEpisodeIdentifier = "pe-2",
+                PriceEpisodeValues = new PriceEpisodeValues
+                {
+
+                    EpisodeStartDate = DateTime.Today.AddMonths(-5),
+                    PriceEpisodePlannedEndDate = DateTime.Today,
+                    PriceEpisodeActualEndDate = DateTime.Today,
+                    PriceEpisodePlannedInstalments = 6,
+                    PriceEpisodeCompletionElement = 1500,
+                    PriceEpisodeInstalmentValue = 500,
+                    TNP1 = 7500,
+                    TNP2 = 7500,
+                    PriceEpisodeCompleted = true
+                },
+                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                {
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeOnProgPayment",
+                        Period1 = 0,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 500,
+                        Period8 = 500,
+                        Period9 = 500,
+                        Period10 = 500,
+                        Period11 = 500,
+                        Period12 = 500
+                    },
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeCompletionPayment",
+                        Period1 = 0,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 0,
+                        Period8 = 0,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 1500,
+                    },
+                }
+            });
+
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
+
+            earningEvent.PriceEpisodes.Should().HaveCount(2);
+            earningEvent.OnProgrammeEarnings.Should().HaveCount(2);
+
+            var learning = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Learning);
+            learning.Periods.Should().HaveCount(12);
+            learning.Periods.Count(p => p.Amount == 500).Should().Be(12);
+            learning.Periods.Count(p => p.Period < 7 && p.PriceEpisodeIdentifier == "pe-1").Should().Be(6);
+            learning.Periods.Count(p => p.Period > 6 && p.PriceEpisodeIdentifier == "pe-2").Should().Be(6);
+
+            var completion = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Completion);
+            completion.Periods.Should().HaveCount(12);
+            completion.Periods.Count(p => p.Amount == 0).Should().Be(10);
+            completion.Periods.Where(p => p.Period == 8).Single().PriceEpisodeIdentifier.Should().Be("pe-1");
+            completion.Periods.Where(p => p.Period == 8).Single().Amount.Should().Be(1500);
+            completion.Periods.Where(p => p.Period == 12).Single().PriceEpisodeIdentifier.Should().Be("pe-2");
+            completion.Periods.Where(p => p.Period == 12).Single().Amount.Should().Be(1500);            
+        }
     }
 }

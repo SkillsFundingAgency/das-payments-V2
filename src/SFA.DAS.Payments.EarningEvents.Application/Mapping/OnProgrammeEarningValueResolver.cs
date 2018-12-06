@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using FastMember;
+using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
 
     public class OnProgrammeEarningValueResolver : IValueResolver<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent, ReadOnlyCollection<OnProgrammeEarning>>
     {
+        private static readonly TypeAccessor periodAccessor = TypeAccessor.Create(typeof(PriceEpisodePeriodisedValues));
 
         // ReSharper disable once InconsistentNaming
         private static string OnProgrammeEarningTypeToFM36AttributeName(OnProgrammeEarningType onProgrammeEarningType)
@@ -30,18 +36,38 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
         private OnProgrammeEarning CreateOnProgrammeEarning(FM36Learner source, OnProgrammeEarningType onProgrammeEarningType)
         {
+            var attributeName = OnProgrammeEarningTypeToFM36AttributeName(onProgrammeEarningType);
+            var allPeriods = source.PriceEpisodes.Select(p => p.PriceEpisodePeriodisedValues.SingleOrDefault(v => v.AttributeName == attributeName))
+                .Where(p => p != null)
+                .ToArray();
+
+            var periods = new EarningPeriod[12];
+            var allZeros = true;
+
+            for (byte i = 1; i <= 12; i++)
+            {
+                var periodValues = allPeriods.Select(p => (decimal?) periodAccessor[p, "Period" + i]).ToArray();
+                var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
+                var priceEpisodeIdentifier = periodValue == 0 ? null : source.PriceEpisodes[periodValues.IndexOf(periodValue)].PriceEpisodeIdentifier;
+
+                periods[i - 1] = new EarningPeriod
+                {
+                    Period = i,
+                    Amount = periodValue,
+                    PriceEpisodeIdentifier = priceEpisodeIdentifier
+                };
+
+                if (periodValue != 0)
+                    allZeros = false;
+            }
+
+            if (allZeros)
+                return null;
+
             return new OnProgrammeEarning
             {
                 Type = onProgrammeEarningType,
-                Periods = source.PriceEpisodes
-                    .Where(priceEpisode => priceEpisode.PriceEpisodePeriodisedValues != null)
-                    .SelectMany(priceEpisode => priceEpisode.PriceEpisodePeriodisedValues,
-                        (priceEpisode, periodisedValues) => new { priceEpisode, periodisedValues })
-                    .Where(priceEpisodeValues =>
-                        priceEpisodeValues.periodisedValues.AttributeName == OnProgrammeEarningTypeToFM36AttributeName(onProgrammeEarningType))
-                    .SelectMany(priceEpisodeValues => priceEpisodeValues.periodisedValues.CreateEarningPeriods(priceEpisodeValues.priceEpisode.PriceEpisodeIdentifier) )
-                    .ToList()
-                    .AsReadOnly()
+                Periods = new ReadOnlyCollection<EarningPeriod>(periods)
             };
         }
 
@@ -51,7 +77,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         {
             return OnProgrammeEarningTypes
                 .Select(type => CreateOnProgrammeEarning(source.Learner, type))
-                .Where(earning => earning.Periods.Any())
+                .Where(earning => earning != null)
                 .ToList()
                 .AsReadOnly();
         }
