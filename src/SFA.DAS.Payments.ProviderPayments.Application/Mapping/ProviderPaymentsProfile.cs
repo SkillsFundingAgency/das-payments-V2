@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .Include<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>()
                 .Include<SfaFullyFundedFundingSourcePaymentEvent, PaymentModel>()
                 .ForMember(dest => dest.ExternalId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
+                .ForMember(dest => dest.FundingSourceId, opt => opt.MapFrom(source => source.EventId))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.CollectionPeriod.Year, source.CollectionPeriod.Month)))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.DeliveryPeriod.Year, source.DeliveryPeriod.Month)))

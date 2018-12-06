@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
 {
     public interface IIncentiveRequiredPaymentProcessor
     {
-        SfaFullyFundedFundingSourcePaymentEvent Process(IncentiveRequiredPayment requiredPayment);
+        SfaFullyFundedFundingSourcePaymentEvent Process(IncentiveRequiredPaymentEvent requiredPayment);
     }
 }

@@ -52,6 +52,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
 
             return new ApprenticeshipContractType2RequiredPaymentEvent
             {
+                PaymentsDueEventId = paymentDue.EventId,
                 AmountDue = amountDue,
                 Learner = paymentDue.Learner.Clone(),
                 Ukprn = paymentDue.Ukprn,

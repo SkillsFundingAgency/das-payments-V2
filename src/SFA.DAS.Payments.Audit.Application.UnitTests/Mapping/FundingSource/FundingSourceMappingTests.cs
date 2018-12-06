@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
+namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.FundingSource
 {
     public abstract class FundingSourceMappingTests<TSource> : PeriodisedEventMappingTests<TSource, FundingSourceEventModel>
         where TSource : FundingSourcePaymentEvent
@@ -29,10 +29,6 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
         {
             PaymentEvent.ContractType = contractType;
             Mapper.Map<FundingSourceEventModel>(PaymentEvent).ContractType.Should().Be(PaymentEvent.ContractType);
-        }
-        public static Array GetContractTypes()
-        {
-            return Enum.GetValues(typeof(ContractType));
         }
 
         [TestCaseSource(nameof(GetTransactionTypes))]

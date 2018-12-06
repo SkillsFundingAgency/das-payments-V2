@@ -34,6 +34,8 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.EarningEventsService\SFA.DAS.Payments.Audit.EarningEventsService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.FundingSourceService\SFA.DAS.Payments.Audit.FundingSourceService.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Audit.PaymentsDueService\SFA.DAS.Payments.Audit.PaymentsDueService.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Audit.RequiredPaymentService\SFA.DAS.Payments.Audit.RequiredPaymentService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

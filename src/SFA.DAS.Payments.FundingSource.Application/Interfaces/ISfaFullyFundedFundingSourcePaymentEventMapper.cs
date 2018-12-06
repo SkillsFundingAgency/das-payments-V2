@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
 {
     public interface ISfaFullyFundedFundingSourcePaymentEventMapper
     {
-        SfaFullyFundedFundingSourcePaymentEvent Map(IncentiveRequiredPayment requiredPaymentsEvent, FundingSourcePayment payment);
+        SfaFullyFundedFundingSourcePaymentEvent Map(IncentiveRequiredPaymentEvent requiredPaymentsEvent, FundingSourcePayment payment);
     }
 }

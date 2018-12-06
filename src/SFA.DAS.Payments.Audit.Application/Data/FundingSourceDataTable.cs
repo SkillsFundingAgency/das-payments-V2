@@ -26,4 +26,5 @@ namespace SFA.DAS.Payments.Audit.Application.Data
 
         public override string TableName => "Payments2.FundingSourceEvent";
     }
+
 }

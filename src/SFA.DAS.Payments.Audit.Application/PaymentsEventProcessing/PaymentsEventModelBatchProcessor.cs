@@ -3,7 +3,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
@@ -17,14 +16,14 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
         Task<int> Process(int batchSize, CancellationToken cancellationToken);
     }
 
-    public class PaymentsEventModelBatchProcessor<T>: IPaymentsEventModelBatchProcessor<T> where T: PaymentsEventModel
+    public class PaymentsEventModelBatchProcessor<T> : IPaymentsEventModelBatchProcessor<T> where T : PaymentsEventModel
     {
         private readonly IPaymentsEventModelCache<T> cache;
         private readonly IPaymentsEventModelDataTable<T> dataTable;
         private readonly IPaymentLogger logger;
         private readonly string connectionString;
 
-        public PaymentsEventModelBatchProcessor(IPaymentsEventModelCache<T> cache, 
+        public PaymentsEventModelBatchProcessor(IPaymentsEventModelCache<T> cache,
             IPaymentsEventModelDataTable<T> dataTable, IConfigurationHelper configurationHelper,
             IPaymentLogger logger
             )
@@ -46,24 +45,20 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             }
             logger.LogDebug($"Processing {batch.Count} records.");
             var data = dataTable.GetDataTable(batch);
-            //using (var scope = new TransactionScope(TransactionScopeOption.Required))
-            //{
-                using (var sqlConnection = new SqlConnection(connectionString))
+            using (var sqlConnection = new SqlConnection(connectionString))
+            {
+                await sqlConnection.OpenAsync(cancellationToken);
+                using (var bulkCopy = new SqlBulkCopy(sqlConnection))
                 {
-                    await sqlConnection.OpenAsync(cancellationToken);
-                    using (var bulkCopy = new SqlBulkCopy(sqlConnection))
+                    bulkCopy.DestinationTableName = dataTable.TableName;
+                    foreach (DataColumn dataColumn in data.Columns)
                     {
-                        bulkCopy.DestinationTableName = dataTable.TableName;
-                        foreach (DataColumn dataColumn in data.Columns)
-                        {
-                            bulkCopy.ColumnMappings.Add(dataColumn.ColumnName, dataColumn.ColumnName);
-                        }
-                        await bulkCopy.WriteToServerAsync(data, cancellationToken);
-              //          scope.Complete();
-                        logger.LogDebug($"Finished bulk copying {batch.Count} records.");
+                        bulkCopy.ColumnMappings.Add(dataColumn.ColumnName, dataColumn.ColumnName);
                     }
+                    await bulkCopy.WriteToServerAsync(data, cancellationToken);
+                    logger.LogDebug($"Finished bulk copying {batch.Count} records.");
                 }
-            //}
+            }
             return batch.Count;
         }
     }

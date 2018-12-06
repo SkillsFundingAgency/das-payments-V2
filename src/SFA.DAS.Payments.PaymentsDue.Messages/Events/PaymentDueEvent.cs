@@ -6,5 +6,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
 {
     public abstract class PaymentDueEvent : PeriodisedPaymentEvent, IPaymentDueEvent
     {
+        public Guid EarningEventId { get; set; }
     }
 }

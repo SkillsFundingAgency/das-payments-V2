@@ -2,8 +2,9 @@
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.PaymentsDue;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
 using SFA.DAS.Payments.Audit.Model;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
 {
@@ -14,11 +15,26 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<FundingSourcePaymentsEventProcessor>()
                 .As<IFundingSourcePaymentsEventProcessor>()
                 .InstancePerLifetimeScope();
+            builder.RegisterType<RequiredPaymentEventProcessor>()
+                .As<IRequiredPaymentEventProcessor>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<PaymentsDueEventProcessor>()
+                .As<IPaymentsDueEventProcessor>()
+                .InstancePerLifetimeScope();
+
             builder.RegisterType<FundingSourceDataTable>()
                 .As<IPaymentsEventModelDataTable<FundingSourceEventModel>>();
+
+            builder.RegisterType<PaymentsDueDataTable>()
+                .As<IPaymentsEventModelDataTable<PaymentsDueEventModel>>();
+
+            builder.RegisterType<RequiredPaymentDataTable>()
+                .As<IPaymentsEventModelDataTable<RequiredPaymentEventModel>>();
+
             builder.RegisterGeneric(typeof(PaymentsEventModelBatchService<>))
                 .As(typeof(IPaymentsEventModelBatchService<>))
                 .SingleInstance();
+
             builder.RegisterGeneric(typeof(PaymentsEventModelBatchProcessor<>))
                 .As(typeof(IPaymentsEventModelBatchProcessor<>))
                 .InstancePerLifetimeScope();

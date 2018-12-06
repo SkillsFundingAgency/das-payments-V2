@@ -112,9 +112,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             return paymentEvent;
         }
 
-        private IncentiveRequiredPayment BuildIncentiveRequiredPaymentEvent(RequiredPayment requiredPayment)
+        private IncentiveRequiredPaymentEvent BuildIncentiveRequiredPaymentEvent(RequiredPayment requiredPayment)
         {
-            var paymentEvent = new IncentiveRequiredPayment();
+            var paymentEvent = new IncentiveRequiredPaymentEvent();
             MapCommon(requiredPayment, paymentEvent);
             paymentEvent.Type = (IncentiveType)requiredPayment.Type;
             paymentEvent.ContractType = (ContractType)ContractType;

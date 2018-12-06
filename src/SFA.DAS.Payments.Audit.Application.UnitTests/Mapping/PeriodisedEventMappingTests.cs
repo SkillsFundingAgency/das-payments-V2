@@ -2,10 +2,11 @@
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Payments.Audit.Application.Mapping;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
 {
@@ -13,15 +14,13 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
         where TSource : PeriodisedPaymentEvent
         where TDest : PeriodisedPaymentsEventModel
     {
+        protected IMapper Mapper { get; private set; }
+
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
-            Mapper.Initialize(cfg =>
-            {
-                //cfg.AddProfile<AuditProfile>();
-                AddProfile(cfg);
-            });
-            Mapper.AssertConfigurationIsValid();
+            var config = new MapperConfiguration(AddProfile);
+            Mapper = new Mapper(config);
         }
 
         protected abstract void AddProfile(IMapperConfigurationExpression cfg);
@@ -60,10 +59,20 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
             paymentEvent.Ukprn = 23456;
         }
 
+        protected static Array GetEnumValues<T>() where T: Enum
+        {
+            return Enum.GetValues(typeof(T));
+        }
+
+        public static Array GetContractTypes()
+        {
+            return PeriodisedEventMappingTests<IncentivePaymentDueEvent, PaymentsDueEventModel>.GetEnumValues<ContractType>();
+        }
+
         [Test]
         public void Maps_EventId()
         {
-            var model = Mapper.Map<FundingSourceEventModel>(PaymentEvent);
+            var model = Mapper.Map<TDest>(PaymentEvent);
             model.EventId.Should().Be(PaymentEvent.EventId);
             //model.AgreementId, opt => opt.Ignore())
             //model.TransactionType, opt => opt.Ignore())
@@ -160,6 +169,5 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
         {
             Mapper.Map<TDest>(PaymentEvent).LearningAimStandardCode.Should().Be(PaymentEvent.LearningAim.StandardCode);
         }
-
     }
 }

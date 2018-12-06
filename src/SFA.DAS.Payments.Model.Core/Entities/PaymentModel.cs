@@ -5,6 +5,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
     public class PaymentModel
     {
         public long Id { get; set; }
+        public Guid FundingSourceId { get; set; }
         public Guid ExternalId { get; set; }
         public long Ukprn { get; set; }
         public string LearnerReferenceNumber { get; set; }

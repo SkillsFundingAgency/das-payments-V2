@@ -80,7 +80,7 @@
     <Build Include="Payments2\Tables\Payments2.EarningEventPriceEpisode.sql" />
     <Build Include="Payments2\Tables\Payments2.EarningEventPeriod.sql" />
     <Build Include="Payments2\Tables\Payments2.PaymentsDueEvent.sql" />
-    <Build Include="Payments2\Tables\Payments2.RequiredPaymentsEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.RequiredPaymentEvent.sql" />
     <Build Include="Payments2\Tables\Payments2.FundingSourceEvent.sql" />
   </ItemGroup>
   <ItemGroup>

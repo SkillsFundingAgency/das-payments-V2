@@ -145,7 +145,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 26
+#line 25
  testRunner.When("required payments event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -175,7 +175,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "CoInvestedEmployer (FS3)",
                         "100"});
-#line 28
+#line 26
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table2, "Then ");
 #line hidden
@@ -187,12 +187,12 @@ this.FeatureBackground();
         public virtual void ContractType2OnProgrammeCompletionPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On Programme Completion payment", null, ((string[])(null)));
-#line 34
+#line 31
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 36
+#line 32
  testRunner.When("required payments event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -222,7 +222,7 @@ this.FeatureBackground();
                         "Completion (TT2)",
                         "CoInvestedEmployer (FS3)",
                         "300"});
-#line 38
+#line 33
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table3, "Then ");
 #line hidden
@@ -234,12 +234,12 @@ this.FeatureBackground();
         public virtual void ContractType2OnProgrammeBalancingPayment()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Contract Type 2 On Programme Balancing payment", null, ((string[])(null)));
-#line 45
+#line 39
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 3
 this.FeatureBackground();
-#line 47
+#line 40
  testRunner.When("required payments event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -269,7 +269,7 @@ this.FeatureBackground();
                         "Balancing (TT3)",
                         "CoInvestedEmployer (FS3)",
                         "300"});
-#line 49
+#line 41
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
                     "ed payments:", ((string)(null)), table4, "Then ");
 #line hidden
