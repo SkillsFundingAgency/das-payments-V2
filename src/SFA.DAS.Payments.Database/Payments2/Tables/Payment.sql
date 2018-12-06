@@ -5,7 +5,7 @@
 	Ukprn BIGINT NOT NULL,
 	LearnerReferenceNumber  NVARCHAR(50) NOT NULL,
 	LearnerUln  BIGINT NOT NULL,
-	PriceEpisodeIdentifier NVARCHAR(50) NOT NULL,
+	PriceEpisodeIdentifier NVARCHAR(50) NULL,
     Amount DECIMAL(15,5) NOT NULL,
 	CollectionPeriodName CHAR(8) NOT NULL,
 	CollectionPeriodMonth TINYINT NOT NULL,
