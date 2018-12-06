@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
             CreateMap<RequiredPaymentEvent, RequiredPaymentEventModel>()
                 .Include<IncentiveRequiredPaymentEvent, RequiredPaymentEventModel>()
                 .Include<ApprenticeshipContractType2RequiredPaymentEvent, RequiredPaymentEventModel>()
-                .MapCommon()
+                .MapPeriodisedCommon()
                 .ForMember(dest => dest.PaymentsDueEventId, opt => opt.MapFrom(source => source.PaymentsDueEventId))
                 .ForMember(dest => dest.ContractType, opt => opt.Ignore())
                 .ForMember(dest => dest.TransactionType, opt => opt.Ignore())

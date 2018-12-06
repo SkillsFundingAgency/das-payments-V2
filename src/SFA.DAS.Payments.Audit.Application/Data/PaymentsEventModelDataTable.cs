@@ -5,10 +5,10 @@ using SFA.DAS.Payments.Audit.Model;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
 {
-    public abstract class PaymentsEventModelDataTable<T>: IPaymentsEventModelDataTable<T> where T : PaymentsEventModel
+    public abstract class PaymentsEventModelDataTable<T> : IPaymentsEventModelDataTable<T> where T : PaymentsEventModel
     {
         protected DataTable DataTable { get; private set; }
-        
+
         protected PaymentsEventModelDataTable()
         {
             DataTable = new DataTable("PaymentsEventTable");
@@ -56,11 +56,11 @@ namespace SFA.DAS.Payments.Audit.Application.Data
 
         public abstract string TableName { get; }
 
-        public DataTable GetDataTable(List<T> events)
+        public virtual List<DataTable> GetDataTable(List<T> events)
         {
             DataTable.Rows.Clear();
             events.ForEach(ev => DataTable.Rows.Add(CreateDataRow(ev)));
-            return DataTable;
+            return new List<DataTable> { DataTable };
         }
     }
 }

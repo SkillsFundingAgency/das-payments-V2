@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
                 .Include<SfaCoInvestedFundingSourcePaymentEvent, FundingSourceEventModel>()
                 .Include<EmployerCoInvestedFundingSourcePaymentEvent, FundingSourceEventModel>()
                 .Include<SfaFullyFundedFundingSourcePaymentEvent, FundingSourceEventModel>()
-                .MapCommon()
+                .MapPeriodisedCommon()
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => source.TransactionType))
                 .ForMember(dest => dest.FundingSource, opt => opt.MapFrom(source => source.FundingSourceType))
                 .ForMember(dest => dest.RequiredPaymentEventId, opt => opt.MapFrom(source => source.RequiredPaymentEventId))

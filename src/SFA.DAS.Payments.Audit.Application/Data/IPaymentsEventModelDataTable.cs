@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data
     public interface IPaymentsEventModelDataTable<T> where T : PaymentsEventModel
     {
         string TableName { get; }
-        DataTable GetDataTable(List<T> events);
+        List<DataTable> GetDataTable(List<T> events);
     }
 }

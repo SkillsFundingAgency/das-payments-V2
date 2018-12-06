@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using SFA.DAS.Payments.Audit.Model;
 
@@ -26,5 +25,4 @@ namespace SFA.DAS.Payments.Audit.Application.Data
 
         public override string TableName => "Payments2.FundingSourceEvent";
     }
-
 }

@@ -50,12 +50,16 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                 await sqlConnection.OpenAsync(cancellationToken);
                 using (var bulkCopy = new SqlBulkCopy(sqlConnection))
                 {
-                    bulkCopy.DestinationTableName = dataTable.TableName;
-                    foreach (DataColumn dataColumn in data.Columns)
+                    foreach (var table in data)
                     {
-                        bulkCopy.ColumnMappings.Add(dataColumn.ColumnName, dataColumn.ColumnName);
+                        bulkCopy.DestinationTableName = data.Count > 1 ? table.TableName : dataTable.TableName;
+                        foreach (DataColumn dataColumn in table.Columns)
+                        {
+                            bulkCopy.ColumnMappings.Add(dataColumn.ColumnName, dataColumn.ColumnName);
+                        }
+                        await bulkCopy.WriteToServerAsync(table, cancellationToken);
+                        bulkCopy.ColumnMappings.Clear();
                     }
-                    await bulkCopy.WriteToServerAsync(data, cancellationToken);
                     logger.LogDebug($"Finished bulk copying {batch.Count} records.");
                 }
             }
