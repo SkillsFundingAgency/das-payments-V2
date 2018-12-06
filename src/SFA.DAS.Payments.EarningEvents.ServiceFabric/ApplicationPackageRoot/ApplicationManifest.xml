@@ -11,8 +11,9 @@
     <Parameter Name="DCServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
-    <Parameter Name="AzureRedisConnectionString" DefaultValue="" />
+    <Parameter Name="AzureStorageConnectionString" DefaultValue="" />
     <Parameter Name="TopicName" DefaultValue="" />
+    <Parameter Name="DcBlobStorageContainer" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -27,7 +28,7 @@
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="DCServiceBusConnectionString" Value="[DCServiceBusConnectionString]" />
-            <Parameter Name="AzureRedisConnectionString" Value="[AzureRedisConnectionString]" />
+            <Parameter Name="AzureStorageConnectionString" Value="[AzureStorageConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[EarningEventsService_EndpointName]" />
@@ -36,6 +37,7 @@
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
             <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="DcBlobStorageContainer" Value="[DcBlobStorageContainer]" />
           </Section>
         </Settings>
       </ConfigOverride>

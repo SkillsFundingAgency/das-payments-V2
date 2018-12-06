@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
@@ -16,18 +17,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
     public class JobContextMessageHandler: IMessageHandler<JobContextMessage>
     {
         private readonly IPaymentLogger paymentLogger;
-        private readonly IKeyValuePersistenceService redisService;
+        private readonly IStreamableKeyValuePersistenceService azureStorageService;
         private readonly IJsonSerializationService serializationService;
         private readonly IEndpointInstanceFactory factory;
         
 
-        public JobContextMessageHandler(IPaymentLogger paymentLogger, 
-            IKeyValuePersistenceService redisService,
+        public JobContextMessageHandler(IPaymentLogger paymentLogger,
+            IStreamableKeyValuePersistenceService azureStorageService,
             IJsonSerializationService serializationService,
             IEndpointInstanceFactory factory)
         {
             this.paymentLogger = paymentLogger;
-            this.redisService = redisService;
+            this.azureStorageService = azureStorageService;
             this.serializationService = serializationService;
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
@@ -39,10 +40,24 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
          
             try
             {
-                var fm36Json = await redisService
-                    .GetAsync(message.KeyValuePairs["FundingFm36Output"].ToString(), cancellationToken);
+                FM36Global fm36Output;
 
-                var fm36Output = serializationService.Deserialize<FM36Global>(fm36Json);
+                using (var ms = new MemoryStream())
+                {
+                    await azureStorageService.GetAsync(
+                        message.KeyValuePairs["FundingFm36Output"].ToString(),
+                        ms,
+                        cancellationToken);
+
+                    ms.Seek(0, SeekOrigin.Begin);
+                    fm36Output = serializationService.Deserialize<FM36Global>(ms);
+                }
+                //var stream = new MemoryStream();
+
+                //await azureStorageService
+                //    .GetAsync(message.KeyValuePairs["FundingFm36Output"].ToString(), stream, cancellationToken);
+
+                //var fm36Output = serializationService.Deserialize<FM36Global>(stream);
 
                 foreach (var learner in fm36Output.Learners)
                 {

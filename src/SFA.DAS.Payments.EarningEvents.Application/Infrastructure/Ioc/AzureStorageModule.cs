@@ -14,8 +14,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();
 
-                return new AzureStorageKeyValuePersistenceConfig(configHelper.GetConnectionString("AzureTableStorageConnectionString"),
-                    configHelper.GetSetting("DcTableStorageContainer"));
+                return new AzureStorageKeyValuePersistenceConfig(configHelper.GetConnectionString("AzureStorageConnectionString"),
+                    configHelper.GetSetting("DcBlobStorageContainer"));
             }).As<IAzureStorageKeyValuePersistenceServiceConfig>().SingleInstance();
 
             builder.RegisterType<AzureStorageKeyValuePersistenceService>()

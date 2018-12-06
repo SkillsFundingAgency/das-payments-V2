@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.IO.AzureTableStorage;
-using ESFA.DC.IO.AzureTableStorage.Config.Interfaces;
+using ESFA.DC.IO.AzureStorage;
+using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Queueing;
@@ -19,12 +21,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
     public class DcHelper
     {
         private readonly IJsonSerializationService serializationService;
-        private readonly IKeyValuePersistenceService azureTableStorageService;
+        private readonly IStreamableKeyValuePersistenceService azureStorageService;
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
 
         public DcHelper(IContainer container)
         {
-            azureTableStorageService = container.Resolve<IKeyValuePersistenceService>();
+            azureStorageService = container.Resolve<IStreamableKeyValuePersistenceService>();
             serializationService = container.Resolve<IJsonSerializationService>();
             topicPublishingService = container.Resolve<ITopicPublishService<JobContextDto>>();
         }
@@ -33,7 +35,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             try
             {
-                var messagePointer = Guid.NewGuid().ToString();
+                var messagePointer = Guid.NewGuid().ToString().Replace("-", string.Empty);
                 var ilrSubmission = new FM36Global
                 {
                     UKPRN = (int)ukprn,
@@ -41,10 +43,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     Learners = learners
                 };
                 var json = serializationService.Serialize(ilrSubmission);
-                Console.WriteLine($"ILR Submission: {json}");
-                await azureTableStorageService
-                    .SaveAsync(messagePointer, json)
-                    .ConfigureAwait(true);
+
+                using (var stream = new MemoryStream())
+                {
+                    var writer = new StreamWriter(stream);
+                    writer.Write(json);
+
+                    Console.WriteLine($"ILR Submission: {json}");
+                    await azureStorageService
+                        .SaveAsync(messagePointer, stream)
+                        .ConfigureAwait(true);
+                }
 
                 var dto = new JobContextDto
                 {
@@ -87,10 +96,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public static void AddDcConfig(ContainerBuilder builder)
         {
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
-            builder.Register(c => new AzureStorageKeyValuePersistenceConfig(DcConfiguration.AzureTableStorageConnectionString,DcConfiguration.DcTableStorageContainer)).As<IAzureTableStorageKeyValuePersistenceServiceConfig>().SingleInstance();
+            builder.Register(c =>
+                    new AzureStorageKeyValuePersistenceConfig(DcConfiguration.AzureStorageConnectionString,
+                        DcConfiguration.DcBlobStorageContainer)).As<IAzureStorageKeyValuePersistenceServiceConfig>()
+                .SingleInstance();
 
-            builder.RegisterType<AzureTableStorageKeyValuePersistenceService>().As<IKeyValuePersistenceService>()
-                .InstancePerLifetimeScope();
+            builder.RegisterType<AzureStorageKeyValuePersistenceService>()
+                .Keyed<IKeyValuePersistenceService>(0)
+                .As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
 
             builder.Register(c => new TopicConfiguration(DcConfiguration.DcServiceBusConnectionString,
                     DcConfiguration.TopicName,

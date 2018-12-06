@@ -11,7 +11,8 @@
     <Parameter Name="AuditQueueName" Value="__AuditQueue__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
-    <Parameter Name="AzureRedisConnectionString" Value="__AzureRedisConnectionString__" />
+    <Parameter Name="AzureStorageConnectionString" Value="__AzureStorageConnectionString__" />
     <Parameter Name="TopicName" Value="__TopicName__" />
+    <Parameter Name="DcBlobStorageContainer" Value="__DcBlobStorageContainer__" />
   </Parameters>
 </Application>

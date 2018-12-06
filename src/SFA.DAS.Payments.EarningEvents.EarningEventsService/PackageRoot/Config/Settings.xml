@@ -6,7 +6,7 @@
     <Parameter Name="LoggingConnectionString" Value=""/>
     <Parameter Name="ServiceBusConnectionString" Value=""/>
     <Parameter Name="DCServiceBusConnectionString" Value=""/>
-    <Parameter Name="AzureRedisConnectionString" Value=""/>
+    <Parameter Name="AzureStorageConnectionString" Value=""/>
   </Section>
 
   <Section Name="Settings">
@@ -16,6 +16,7 @@
     <Parameter Name="SubscriptionName" Value="" />
     <Parameter Name="JobStatusQueueName" Value="" />
     <Parameter Name="TopicName" Value="" />
+    <Parameter Name="DcBlobStorageContainer" Value=""/>
   </Section>
 
 </Settings>
