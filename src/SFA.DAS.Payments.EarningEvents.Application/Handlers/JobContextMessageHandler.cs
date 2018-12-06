@@ -52,13 +52,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     ms.Seek(0, SeekOrigin.Begin);
                     fm36Output = serializationService.Deserialize<FM36Global>(ms);
                 }
-                //var stream = new MemoryStream();
-
-                //await azureStorageService
-                //    .GetAsync(message.KeyValuePairs["FundingFm36Output"].ToString(), stream, cancellationToken);
-
-                //var fm36Output = serializationService.Deserialize<FM36Global>(stream);
-
+             
                 foreach (var learner in fm36Output.Learners)
                 {
                     try

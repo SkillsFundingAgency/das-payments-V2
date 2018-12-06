@@ -49,6 +49,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     var writer = new StreamWriter(stream);
                     writer.Write(json);
 
+                    writer.Flush();
+                    stream.Position = 0;
+
                     Console.WriteLine($"ILR Submission: {json}");
                     await azureStorageService
                         .SaveAsync(messagePointer, stream)
