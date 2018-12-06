@@ -187,7 +187,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         {
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.OnProgrammeEarnings.Should().NotBeNullOrEmpty();
-            earningEvent.OnProgrammeEarnings.Should().HaveCount(2);
+            earningEvent.OnProgrammeEarnings.Should().HaveCount(3);
             var learnings = earningEvent.OnProgrammeEarnings.FirstOrDefault(x => x.Type == OnProgrammeEarningType.Learning);
             learnings.Should().NotBeNull();
             learnings.Periods.Count.Should().Be(12);
