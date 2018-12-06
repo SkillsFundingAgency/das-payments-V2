@@ -250,9 +250,12 @@
     <Compile Include="Automation\RequiredPaymentsCacheCleaner.cs" />
     <Compile Include="Automation\TestSession.cs" />
     <Compile Include="BindingsBase.cs" />
+    <Compile Include="Data\Aim.cs" />
+    <Compile Include="Data\CompletionStatus.cs" />
     <Compile Include="Data\Learner.cs" />
     <Compile Include="Data\DataExtensions.cs" />
     <Compile Include="Data\Payment.cs" />
+    <Compile Include="Data\Price.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
     <Compile Include="Data\Course.cs" />

@@ -233,7 +233,6 @@
   <ItemGroup>
     <Compile Include="Data\OnProgrammeEarning.cs" />
     <Compile Include="Data\Payment.cs" />
-    <Compile Include="Data\Price.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\Training.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
@@ -286,6 +285,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Non-Levy Learners Finish On Time PV2-337.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change standard and price but not from start - PV2-205.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Change standard and price but not from start - PV2-205.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Changes standard but not from beginning - PV2-207.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Changes standard but not from beginning - PV2-207.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\One Non-levy learner, changes to the agreed price during the month PV2-210.feature.cs">
       <DependentUpon>One Non-levy learner, changes to the agreed price during the month PV2-210.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -301,8 +310,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Change to agreed price at end of month - PV2 - 209.feature</DependentUpon>
     </Compile>
-      <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change start date forward within calendar month - PV2-282.feature.cs">
-            <AutoGen>True</AutoGen>
+    <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change start date forward within calendar month - PV2-282.feature.cs">
+      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Change start date forward within calendar month - PV2-282.feature</DependentUpon>
     </Compile>
@@ -369,6 +378,14 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\Two Non-Levy Learners Finish On Time PV2-337.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two Non-Levy Learners Finish On Time PV2-337.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change standard and price but not from start - PV2-205.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Change standard and price but not from start - PV2-205.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Changes standard but not from beginning - PV2-207.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Changes standard but not from beginning - PV2-207.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\One Non-levy learner, changes to the agreed price during the month PV2-210.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
