@@ -104,11 +104,11 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.Given("the following learners", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Reference",
+                        "Aim Reference",
                         "Start Date",
                         "Planned Duration",
                         "Actual Duration",
-                        "Sequence Number",
+                        "Aim Sequence Number",
                         "Programme Type",
                         "Standard Code",
                         "Funding Line Type",

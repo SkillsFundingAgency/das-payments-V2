@@ -14,8 +14,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public decimal OnProgramme { get; set; }
         public decimal Completion { get; set; }
         public decimal Balancing { get; set; }
-        public string FundingLineType { get; set; } = "16-19 Non-Levy";
-        public string SfaContributionPercentage { get; set; } = "90%";
+        public string FundingLineType { get; set; } 
+        public string SfaContributionPercentage { get; set; } 
         public string LearnerId { get; set; }
     }
 }

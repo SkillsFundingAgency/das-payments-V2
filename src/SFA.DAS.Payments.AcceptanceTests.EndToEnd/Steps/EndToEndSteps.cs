@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     try
                     {
                         var aim = TestSession.Learners.SelectMany(x => x.Aims)
-                            .SingleOrDefault(x => x.SequenceNumber == newPriceEpisode.AimSequenceNumber);
+                            .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
                         if (aim == null)
                         {
                             throw new Exception("There is a price episode without a matching aim");

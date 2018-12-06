@@ -106,11 +106,11 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("the following learners", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Reference",
+                        "Aim Reference",
                         "Start Date",
                         "Planned Duration",
                         "Actual Duration",
-                        "Sequence Number",
+                        "Aim Sequence Number",
                         "Programme Type",
                         "Standard Code",
                         "Funding Line Type",
@@ -139,7 +139,6 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.And("the following aims", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Price Episode Id",
                         "Total Training Price",
                         "Total Training Price Effective Date",
                         "Total Assessment Price",
@@ -148,7 +147,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aim Sequence Number",
                         "SFA Contribution Percentage"});
             table3.AddRow(new string[] {
-                        "51-25-",
                         "12000",
                         "03/Aug/Current Academic Year",
                         "3000",
@@ -157,7 +155,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "1",
                         "90%"});
             table3.AddRow(new string[] {
-                        "52-25-",
                         "12000",
                         "03/Nov/Current Academic Year",
                         "3000",

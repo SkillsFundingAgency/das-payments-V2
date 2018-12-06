@@ -21,6 +21,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected DcHelper DcHelper => Get<DcHelper>();
 
+        private static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
+
         protected List<Price> CurrentPriceEpisodes
         {
             get => !Context.TryGetValue<List<Price>>(out var currentPriceEpisodes) ? null : currentPriceEpisodes;
@@ -93,7 +95,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
-        protected void AddTestLearners(IEnumerable<AcceptanceTests.Core.Data.Learner> learners)
+        protected void AddTestLearners(IEnumerable<Learner> learners)
         {
             foreach (var learner in learners)
             {
@@ -109,7 +111,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        private static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
         protected void AddTestAims(IEnumerable<Aim> aims)
         {
             if (AimsProcessedForJob.Contains(TestSession.JobId))
@@ -246,7 +247,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var orderedPriceEpisodes = priceEpisodesForAim
                     .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
                     .ToList();
-                for (int i = 0; i < orderedPriceEpisodes.Count; i++)
+                for (var i = 0; i < orderedPriceEpisodes.Count; i++)
                 {
                     var currentPriceEpisode = priceEpisodesForAim[i];
                     var tnpStartDate = orderedPriceEpisodes
@@ -306,7 +307,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var learningDelivery = new LearningDelivery
                 {
-                    AimSeqNumber = aim.SequenceNumber,
+                    AimSeqNumber = aim.AimSequenceNumber,
                     LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>(),
                     LearningDeliveryValues = new LearningDeliveryValues(),
                 };
@@ -314,7 +315,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learningDelivery.LearningDeliveryValues.LearnDelInitialFundLineType = aim.FundingLineType;
                 learningDelivery.LearningDeliveryValues.Completed = aim.CompletionStatus == CompletionStatus.Completed;
                 learningDelivery.LearningDeliveryValues.FworkCode = aim.FrameworkCode;
-                learningDelivery.LearningDeliveryValues.LearnAimRef = aim.Reference;
+                learningDelivery.LearningDeliveryValues.LearnAimRef = aim.AimReference;
                 learningDelivery.LearningDeliveryValues.LearnStartDate = aim.StartDate.ToDate();
                 learningDelivery.LearningDeliveryValues.ProgType = aim.ProgrammeType;
                 learningDelivery.LearningDeliveryValues.PwayCode = aim.PathwayCode;

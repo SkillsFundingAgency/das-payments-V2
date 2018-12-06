@@ -6,7 +6,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
     public class Aim
     {
         public string LearnerId { get; set; }
-        public string Reference { get; set; }
+        public string AimReference { get; set; }
         public string StartDate { get; set; }
         public string PlannedDuration { get; set; }
         public string ActualDuration { get; set; }
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             }
         }
 
-        public int SequenceNumber { get; set; }
+        public int AimSequenceNumber { get; set; }
         public int ProgrammeType { get; set; }
         public int StandardCode { get; set; }
         public string FundingLineType { get; set; }

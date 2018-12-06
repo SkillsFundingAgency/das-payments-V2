@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                             aim.PathwayCode,
                             aim.ProgrammeType,
                             aim.StandardCode,
-                            aim.Reference));
+                            aim.AimReference));
                     }
                 }    
             }
