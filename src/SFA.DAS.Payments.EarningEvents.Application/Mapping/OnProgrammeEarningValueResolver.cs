@@ -42,7 +42,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ToArray();
 
             var periods = new EarningPeriod[12];
-            var allZeros = true;
 
             for (byte i = 1; i <= 12; i++)
             {
@@ -56,13 +55,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     Amount = periodValue,
                     PriceEpisodeIdentifier = priceEpisodeIdentifier
                 };
-
-                if (periodValue != 0)
-                    allZeros = false;
             }
-
-            if (allZeros)
-                return null;
 
             return new OnProgrammeEarning
             {
@@ -77,7 +70,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         {
             return OnProgrammeEarningTypes
                 .Select(type => CreateOnProgrammeEarning(source.Learner, type))
-                .Where(earning => earning != null)
                 .ToList()
                 .AsReadOnly();
         }

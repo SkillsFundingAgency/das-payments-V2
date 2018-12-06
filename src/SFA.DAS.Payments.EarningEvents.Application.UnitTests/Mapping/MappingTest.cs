@@ -356,7 +356,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
 
             earningEvent.PriceEpisodes.Should().HaveCount(2);
-            earningEvent.OnProgrammeEarnings.Should().HaveCount(2);
+            earningEvent.OnProgrammeEarnings.Should().HaveCount(3); // we generate 3 earnings even if not present in ILR
 
             var learning = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Learning);
             learning.Periods.Should().HaveCount(12);

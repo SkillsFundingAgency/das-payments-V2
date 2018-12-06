@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             {
                                 Amount = e.Values[tt],
                                 Period = e.DeliveryCalendarPeriod.Period,
-                                PriceEpisodeIdentifier = FindPriceEpisode(learnerId, e.DeliveryCalendarPeriod.Name).PriceEpisodeIdentifier
+                                PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], learnerId, e.DeliveryCalendarPeriod.Name)
                             }).ToList().AsReadOnly()
                         }).ToList().AsReadOnly(),
                         JobId = testSession.JobId,
@@ -103,14 +103,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return result;
         }
 
-        private PriceEpisode FindPriceEpisode(string leanerId, string periodName)
+        private string FindPriceEpisodeIdentifier(decimal value, string leanerId, string periodName)
         {
+            if (value == 0) return null;
+
             // find first price episode with non-zero value for a period, otherwise return first one
             // TODO: this will have to change when multiple aims done
             var period = int.Parse(periodName.Substring(6, 2));
             var learnerSpec = learnerSpecs.Single(l => l.LearnRefNumber == testSession.GetLearner(leanerId).LearnRefNumber);
-            var nonZeroEpisode = learnerSpec.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) > 0));
-            return nonZeroEpisode ?? learnerSpec.PriceEpisodes.First();
+            return learnerSpec.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0))?.PriceEpisodeIdentifier;
         }
 
         protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)
