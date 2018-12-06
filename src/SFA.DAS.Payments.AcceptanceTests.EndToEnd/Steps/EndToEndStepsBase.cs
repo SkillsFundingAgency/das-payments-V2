@@ -302,12 +302,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 var earning = earnings.Single(e =>
                 {
-                    var result = e.DeliveryPeriod == tableRow["Delivery Period"];
+                    if (e.DeliveryPeriod != tableRow["Delivery Period"])
+                        return false;
 
                     if (tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId))
-                        result |= e.LearnerId == learnerId;
+                        return e.LearnerId == learnerId;
 
-                    return result;
+                    return true;
                 });
                 foreach (var headerCell in table.Header)
                 {
