@@ -184,26 +184,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void PopulateLearner(FM36Learner learner, Learner testLearner, IEnumerable<Earning> earnings)
         {
-            var learningValues = new PriceEpisodePeriodisedValues
-            {
-                AttributeName = "PriceEpisodeOnProgPayment",
-            };
-            var completionEarnings = new PriceEpisodePeriodisedValues
-            {
-                AttributeName = "PriceEpisodeCompletionPayment",
-            };
-            var balancingEarnings = new PriceEpisodePeriodisedValues
-            {
-                AttributeName = "PriceEpisodeBalancePayment",
-            };
-            earnings.ToList().ForEach(earning =>
-            {
-                var period = earning.DeliveryPeriod.ToDate().ToCalendarPeriod().Period;
-                SetPeriodValue(period, learningValues, earning.OnProgramme);
-                SetPeriodValue(period, completionEarnings, earning.Completion);
-                SetPeriodValue(period, balancingEarnings, earning.Balancing);
-            });
-
             learner.LearnRefNumber = testLearner.LearnRefNumber;
             learner.ULN = testLearner.Uln;
             learner.PriceEpisodes = new List<PriceEpisode>();
@@ -211,23 +191,39 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var aim in testLearner.Aims)
             {
-                var priceEpisodePrefix = (aim.StandardCode != 0)
-                    ? $"{aim.ProgrammeType}-{aim.StandardCode}"
-                    : $"{aim.ProgrammeType}-{aim.FrameworkCode}-{aim.PathwayCode}";
+                var learningValues = new PriceEpisodePeriodisedValues
+                {
+                    AttributeName = "PriceEpisodeOnProgPayment",
+                };
+                var completionEarnings = new PriceEpisodePeriodisedValues
+                {
+                    AttributeName = "PriceEpisodeCompletionPayment",
+                };
+                var balancingEarnings = new PriceEpisodePeriodisedValues
+                {
+                    AttributeName = "PriceEpisodeBalancePayment",
+                };
+                earnings.Where(e => e.AimSequenceNumber.GetValueOrDefault(aim.AimSequenceNumber) == aim.AimSequenceNumber).ToList().ForEach(earning =>
+                {
+                    var period = earning.DeliveryPeriod.ToDate().ToCalendarPeriod().Period;
+                    SetPeriodValue(period, learningValues, earning.OnProgramme);
+                    SetPeriodValue(period, completionEarnings, earning.Completion);
+                    SetPeriodValue(period, balancingEarnings, earning.Balancing);
+                });
 
                 var priceEpisodesForAim = new List<PriceEpisode>();
 
                 foreach (var priceEpisode in aim.PriceEpisodes)
                 {
                     var episodeStartDate = priceEpisode.TotalTrainingPriceEffectiveDate.ToDate();
-                    var id = $"{priceEpisodePrefix}-{episodeStartDate.Day:D2}/{episodeStartDate.Month:D2}/{episodeStartDate.Year}";
 
                     var newPriceEpisode = new PriceEpisode
                     {
-                        PriceEpisodeIdentifier = id,
+                        PriceEpisodeIdentifier = priceEpisode.PriceEpisodeId,
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>(),
                         PriceEpisodeValues = new PriceEpisodeValues(),
                     };
+
                     priceEpisodesForAim.Add(newPriceEpisode);
 
                     newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = priceEpisode.AimSequenceNumber;
@@ -479,6 +475,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected static List<Earning> CreateEarnings(Table table)
         {
             var earnings = table.CreateSet<Earning>().ToList();
+
             foreach (var tableRow in table.Rows)
             {
                 var earning = earnings.Single(e =>
@@ -486,11 +483,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     if (e.DeliveryPeriod != tableRow["Delivery Period"])
                         return false;
 
-                    if (tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId))
-                        return e.LearnerId == learnerId;
+                    if (tableRow.TryGetValue("Aim Sequence Number", out var aimSequenceNumber) && long.Parse(aimSequenceNumber) != e.AimSequenceNumber)
+                        return false;
+
+                    if ((tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId)) && learnerId != e.LearnerId)
+                        return false;
 
                     return true;
                 });
+
                 foreach (var headerCell in table.Header)
                 {
                     var name = headerCell == "On-Programme" ? "Learning" : headerCell.Replace(" ", null).Replace("-", null);

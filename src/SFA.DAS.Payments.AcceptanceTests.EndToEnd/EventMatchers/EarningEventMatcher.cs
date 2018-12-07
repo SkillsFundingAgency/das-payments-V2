@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
@@ -11,7 +10,6 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -49,11 +47,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             foreach (var learnerId in learnerIds)
             {
                 var learnerSpec = testSession.GetLearner(learnerId);
-                var learnerEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId).ToList();
-                var fullListOfTransactionTypes = learnerEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
-                var onProgEarnings = fullListOfTransactionTypes.Where(t => onProgTypes.Contains(t)).ToList();
-                var incentiveEarnings = fullListOfTransactionTypes.Where(t => incentiveTypes.Contains(t)).ToList();
-                var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => functionalSkillTypes.Contains(t)).ToList();
 
                 var learner = new Learner
                 {
@@ -61,17 +54,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     Uln = learnerSpec.Uln
                 };
 
-                foreach (var specAim in learnerSpec.Aims)
+                foreach (var aimSpec in learnerSpec.Aims)
                 {
                     var learningAim = new LearningAim
                     {
-                        ProgrammeType = specAim.ProgrammeType,
-                        FrameworkCode = specAim.FrameworkCode,
-                        PathwayCode = specAim.PathwayCode,
-                        StandardCode = specAim.StandardCode,
-                        FundingLineType = specAim.FundingLineType,
-                        Reference = specAim.AimReference
+                        ProgrammeType = aimSpec.ProgrammeType,
+                        FrameworkCode = aimSpec.FrameworkCode,
+                        PathwayCode = aimSpec.PathwayCode,
+                        StandardCode = aimSpec.StandardCode,
+                        FundingLineType = aimSpec.FundingLineType,
+                        Reference = aimSpec.AimReference
                     };
+
+                    var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
+                    var fullListOfTransactionTypes = aimEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
+                    var onProgEarnings = fullListOfTransactionTypes.Where(t => onProgTypes.Contains(t)).ToList();
+                    var incentiveEarnings = fullListOfTransactionTypes.Where(t => incentiveTypes.Contains(t)).ToList();
+                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => functionalSkillTypes.Contains(t)).ToList();
 
                     if (onProgEarnings.Any())
                     {
@@ -83,11 +82,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                             {
                                 Type = (OnProgrammeEarningType) (int) tt,
-                                Periods = learnerEarningSpecs.Select(e => new EarningPeriod
+                                Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
                                     Period = e.DeliveryCalendarPeriod.Period,
-                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], learnerId, e.DeliveryCalendarPeriod.Name)
+                                    PriceEpisodeIdentifier = e.PriceEpisodeIdentifier
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
                             JobId = testSession.JobId,
@@ -96,22 +95,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         };
                         result.Add(onProgEarning);
                     }
+
+                    // TODO: incentive earnings
+                    // TODO: functional skill earnings
                 }
             }
 
             return result;
         }
 
-        private string FindPriceEpisodeIdentifier(decimal value, string leanerId, string periodName)
-        {
-            if (value == 0) return null;
+        //private string FindPriceEpisodeIdentifier(decimal value, string leanerId, string periodName, long? aimSequenceNumber)
+        //{
+        //    if (value == 0) return null;
 
-            // find first price episode with non-zero value for a period, otherwise return first one
-            // TODO: this will have to change when multiple aims done
-            var period = int.Parse(periodName.Substring(6, 2));
-            var learnerSpec = learnerSpecs.Single(l => l.LearnRefNumber == testSession.GetLearner(leanerId).LearnRefNumber);
-            return learnerSpec.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0))?.PriceEpisodeIdentifier;
-        }
+        //    // find first price episode with non-zero value for a period, otherwise null
+        //    var period = int.Parse(periodName.Substring(6, 2));
+        //    var learnerSpec = learnerSpecs.Single(l => l.LearnRefNumber == testSession.GetLearner(leanerId).LearnRefNumber);
+        //    return learnerSpec.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodeValues.PriceEpisodeAimSeqNumber == aimSequenceNumber && pe.PriceEpisodePeriodisedValues.Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0))?.PriceEpisodeIdentifier;
+        //}
 
         protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)
         {
