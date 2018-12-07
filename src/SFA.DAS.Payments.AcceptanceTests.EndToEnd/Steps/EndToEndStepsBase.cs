@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.RequiredPayments.Domain;
 using TechTalk.SpecFlow;
+using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
@@ -22,6 +21,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected DcHelper DcHelper => Get<DcHelper>();
 
+        private static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
+
         protected List<Price> CurrentPriceEpisodes
         {
             get => !Context.TryGetValue<List<Price>>(out var currentPriceEpisodes) ? null : currentPriceEpisodes;
@@ -30,7 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected List<Training> CurrentIlr
         {
-            get => Get<List<Training>>();
+            get => !Context.TryGetValue<List<Training>>(out var currentIlr) ? null : currentIlr;
             set => Set(value);
         }
 
@@ -94,6 +95,41 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
+        protected void AddTestLearners(IEnumerable<Learner> learners)
+        {
+            foreach (var learner in learners)
+            {
+                var testLearner = TestSession.Learners
+                    .FirstOrDefault(l => l.LearnerIdentifier == learner.LearnerIdentifier);
+                if (testLearner == null)
+                {
+                    testLearner = TestSession.GenerateLearner();
+                }
+                testLearner.LearnerIdentifier = string.IsNullOrEmpty(learner.LearnerIdentifier) ? testLearner.LearnerIdentifier : learner.LearnerIdentifier;
+                testLearner.Uln = learner.Uln == 0 ? testLearner.Uln : learner.Uln;
+                testLearner.LearnRefNumber = string.IsNullOrEmpty(learner.LearnRefNumber) ? testLearner.LearnRefNumber : learner.LearnRefNumber;
+            }
+        }
+
+        protected void AddTestAims(IEnumerable<Aim> aims)
+        {
+            if (AimsProcessedForJob.Contains(TestSession.JobId))
+            {
+                return;
+            }
+
+            AimsProcessedForJob.Add(TestSession.JobId);
+            foreach (var aim in aims)
+            {
+                var learner = TestSession.Learners.FirstOrDefault(x => x.LearnerIdentifier == aim.LearnerId);
+                if (learner == null)
+                {
+                    throw new Exception("There is an aim without a matching learner");
+                }
+                learner.Aims.Add(aim);
+            }
+        }
+
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, OnProgrammeEarning earning)
         {
             return new List<PaymentModel>
@@ -145,6 +181,148 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     LearningAimProgrammeType = learnerTraining.ProgrammeType
                 }
             };
+        }
+
+        protected void PopulateLearner(FM36Learner learner, Learner testLearner, IEnumerable<OnProgrammeEarning> earnings)
+        {
+            var learningValues = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeOnProgPayment",
+            };
+            var completionEarnings = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeCompletionPayment",
+            };
+            var balancingEarnings = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeBalancePayment",
+            };
+            earnings.ToList().ForEach(earning =>
+            {
+                var period = earning.DeliveryPeriod.ToDate().ToCalendarPeriod().Period;
+                SetPeriodValue(period, learningValues, earning.OnProgramme);
+                SetPeriodValue(period, completionEarnings, earning.Completion);
+                SetPeriodValue(period, balancingEarnings, earning.Balancing);
+            });
+
+            learner.LearnRefNumber = testLearner.LearnRefNumber;
+            learner.ULN = testLearner.Uln;
+            learner.PriceEpisodes = new List<PriceEpisode>();
+            learner.LearningDeliveries = new List<LearningDelivery>();
+
+            foreach (var aim in testLearner.Aims)
+            {
+                var priceEpisodePrefix = (aim.StandardCode != 0)
+                    ? $"{aim.ProgrammeType}-{aim.StandardCode}"
+                    : $"{aim.ProgrammeType}-{aim.FrameworkCode}-{aim.PathwayCode}";
+
+                var priceEpisodesForAim = new List<PriceEpisode>();
+
+                foreach (var priceEpisode in aim.PriceEpisodes)
+                {
+                    var episodeStartDate = priceEpisode.TotalTrainingPriceEffectiveDate.ToDate();
+                    var id = $"{priceEpisodePrefix}-{episodeStartDate.Day:D2}/{episodeStartDate.Month:D2}/{episodeStartDate.Year}";
+
+                    var newPriceEpisode = new PriceEpisode
+                    {
+                        PriceEpisodeIdentifier = id,
+                        PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>(),
+                        PriceEpisodeValues = new PriceEpisodeValues(),
+                    };
+                    priceEpisodesForAim.Add(newPriceEpisode);
+
+                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = priceEpisode.AimSequenceNumber;
+                    newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = episodeStartDate;
+                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType = priceEpisode.ContractType == Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
+                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
+                    newPriceEpisode.PriceEpisodeValues.TNP1 = priceEpisode.TotalTrainingPrice;
+                    newPriceEpisode.PriceEpisodeValues.TNP2 = priceEpisode.TotalAssessmentPrice;
+                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice =
+                        newPriceEpisode.PriceEpisodeValues.TNP1 +
+                        newPriceEpisode.PriceEpisodeValues.TNP2;
+                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct =
+                        priceEpisode.SfaContributionPercentage.ToPercent();
+                }
+
+                var orderedPriceEpisodes = priceEpisodesForAim
+                    .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
+                    .ToList();
+                for (var i = 0; i < orderedPriceEpisodes.Count; i++)
+                {
+                    var currentPriceEpisode = priceEpisodesForAim[i];
+                    var tnpStartDate = orderedPriceEpisodes
+                        .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
+                                    currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
+                        .PriceEpisodeValues.EpisodeStartDate;
+                    currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
+                    if (i + 1 < orderedPriceEpisodes.Count && 
+                        orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.HasValue)
+                    {
+                        currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
+                            orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.AddDays(-1);
+                    }
+                    else if (aim.ActualDurationAsTimespan.HasValue)
+                    {
+                        currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate = 
+                            aim.StartDate.ToDate() + aim.ActualDurationAsTimespan;
+                    }
+
+                    var episodeStartPeriod = currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value.ToCalendarPeriod();
+                    var episodeLastPeriod = currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate?.ToCalendarPeriod().Period ?? 12;
+
+                    var episodeLearningValues = new PriceEpisodePeriodisedValues { AttributeName = learningValues.AttributeName };
+                    var episodeCompletionEarnings = new PriceEpisodePeriodisedValues { AttributeName = completionEarnings.AttributeName };
+                    var episodeBalancingEarnings = new PriceEpisodePeriodisedValues { AttributeName = balancingEarnings.AttributeName };
+                    
+                    for (var p = episodeStartPeriod.Period; p <= episodeLastPeriod; p++)
+                    {
+                        var propertyInfo = typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + p);
+
+                        decimal? learningValue = 0, completionValue = 0, balancingValue = 0;
+
+                        // On-prog census date is the last day of the month
+                        var periodsSinceStartPeriod = p - episodeStartPeriod.Period;
+                        var lastDayOfPeriodMonth = episodeStartPeriod.LastDayOfMonthAfter(periodsSinceStartPeriod);
+
+                        if (!currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.HasValue ||
+                            currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate >=
+                            lastDayOfPeriodMonth)
+                        {
+                            learningValue = (decimal?)propertyInfo.GetValue(learningValues);
+                        }
+                        completionValue = (decimal?)propertyInfo.GetValue(completionEarnings);
+                        balancingValue = (decimal?)propertyInfo.GetValue(balancingEarnings);
+                        
+                        propertyInfo.SetValue(episodeLearningValues, learningValue);
+                        propertyInfo.SetValue(episodeCompletionEarnings, completionValue);
+                        propertyInfo.SetValue(episodeBalancingEarnings, balancingValue);
+                    }
+
+                    currentPriceEpisode.PriceEpisodePeriodisedValues.Add(episodeLearningValues);
+                    currentPriceEpisode.PriceEpisodePeriodisedValues.Add(episodeCompletionEarnings);
+                    currentPriceEpisode.PriceEpisodePeriodisedValues.Add(episodeBalancingEarnings);
+                }
+
+                learner.PriceEpisodes.AddRange(priceEpisodesForAim);
+
+                var learningDelivery = new LearningDelivery
+                {
+                    AimSeqNumber = aim.AimSequenceNumber,
+                    LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>(),
+                    LearningDeliveryValues = new LearningDeliveryValues(),
+                };
+
+                learningDelivery.LearningDeliveryValues.LearnDelInitialFundLineType = aim.FundingLineType;
+                learningDelivery.LearningDeliveryValues.Completed = aim.CompletionStatus == CompletionStatus.Completed;
+                learningDelivery.LearningDeliveryValues.FworkCode = aim.FrameworkCode;
+                learningDelivery.LearningDeliveryValues.LearnAimRef = aim.AimReference;
+                learningDelivery.LearningDeliveryValues.LearnStartDate = aim.StartDate.ToDate();
+                learningDelivery.LearningDeliveryValues.ProgType = aim.ProgrammeType;
+                learningDelivery.LearningDeliveryValues.PwayCode = aim.PathwayCode;
+                learningDelivery.LearningDeliveryValues.StdCode = aim.StandardCode;
+                
+                learner.LearningDeliveries.Add(learningDelivery);
+            }
         }
 
         protected void PopulateLearner(FM36Learner learner, Training training, List<OnProgrammeEarning> earnings)

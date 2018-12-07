@@ -5,7 +5,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
     public class Training
     {
         public string LearnerId { get; set; }
-        public int Priority { get; set; }
         public string StartDate { get; set; }
         public string PlannedDuration { get; set; }
         public decimal TotalTrainingPrice { get; set; }

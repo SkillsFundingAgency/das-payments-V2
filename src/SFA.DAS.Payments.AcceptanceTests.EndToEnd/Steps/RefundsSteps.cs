@@ -72,12 +72,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(CurrentIlr);
         }
 
-        [Given(@"price details as follows")]
-        public void GivenPriceDetailsAsFollows(Table table)
-        {
-            CurrentPriceEpisodes = table.CreateSet<Price>().ToList();
-        }
-
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
@@ -96,7 +90,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name, expectedPayments, CurrentIlr.First().ContractType);
+            var contractType = CurrentIlr == null
+                ? TestSession.Learners.First().Aims.First().PriceEpisodes.First().ContractType
+                : CurrentIlr.First().ContractType;
+                    
+            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
     }
