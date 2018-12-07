@@ -19,8 +19,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
             deliveryPeriod ?? (deliveryPeriod = DeliveryPeriod.ToDate().ToCalendarPeriod());
 
         public string DeliveryPeriod { get; set; }
-
-        public string SfaContributionPercentage { get; set; }
+        public decimal OnProgramme { get; set; }
+        public decimal Completion { get; set; }
+        public decimal Balancing { get; set; }
+        public string FundingLineType { get; set; } 
+        public string SfaContributionPercentage { get; set; } 
 
         public string LearnerId { get; set; }
 

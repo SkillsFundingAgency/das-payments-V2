@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             }
         }
 
-        private OnProgrammeEarning CreateOnProgrammeEarning(FM36Learner source, OnProgrammeEarningType onProgrammeEarningType)
+        private OnProgrammeEarning CreateOnProgrammeEarning(IntermediateLearningAim source, OnProgrammeEarningType onProgrammeEarningType)
         {
             var attributeName = OnProgrammeEarningTypeToFM36AttributeName(onProgrammeEarningType);
             var allPeriods = source.PriceEpisodes.Select(p => p.PriceEpisodePeriodisedValues.SingleOrDefault(v => v.AttributeName == attributeName))
@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public ReadOnlyCollection<OnProgrammeEarning> Resolve(IntermediateLearningAim source, ApprenticeshipContractTypeEarningsEvent destination, ReadOnlyCollection<OnProgrammeEarning> destMember, ResolutionContext context)
         {
             return OnProgrammeEarningTypes
-                .Select(type => CreateOnProgrammeEarning(source.Learner, type))
+                .Select(type => CreateOnProgrammeEarning(source, type))
                 .ToList()
                 .AsReadOnly();
         }

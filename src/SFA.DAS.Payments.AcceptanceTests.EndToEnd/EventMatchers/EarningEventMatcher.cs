@@ -46,11 +46,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var learnerIds = earningSpecs.Select(e => e.LearnerId).Distinct().ToList();
             var year = earningSpecs.First().DeliveryCalendarPeriod.Year;
 
-            // TODO: when multiple learning aims introduced, this should be looping through unique aims instead of learners
-
             foreach (var learnerId in learnerIds)
             {
                 var learnerSpec = testSession.GetLearner(learnerId);
+                var learnerEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId).ToList();
+                var fullListOfTransactionTypes = learnerEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
+                var onProgEarnings = fullListOfTransactionTypes.Where(t => onProgTypes.Contains(t)).ToList();
+                var incentiveEarnings = fullListOfTransactionTypes.Where(t => incentiveTypes.Contains(t)).ToList();
+                var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => functionalSkillTypes.Contains(t)).ToList();
 
                 var learner = new Learner
                 {
@@ -58,45 +61,41 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     Uln = learnerSpec.Uln
                 };
 
-                var learningAim = new LearningAim
+                foreach (var specAim in learnerSpec.Aims)
                 {
-                    ProgrammeType = learnerSpec.Course.ProgrammeType,
-                    FrameworkCode = learnerSpec.Course.FrameworkCode,
-                    PathwayCode = learnerSpec.Course.PathwayCode,
-                    StandardCode = learnerSpec.Course.StandardCode,
-                    FundingLineType = learnerSpec.Course.FundingLineType,
-                    Reference = learnerSpec.Course.LearnAimRef
-                };
-
-                var learnerEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId).ToList();
-
-                var fullListOfTransactionTypes = learnerEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
-                var onProgEarnings = fullListOfTransactionTypes.Where(t => onProgTypes.Contains(t)).ToList();
-                var incentiveEarnings = fullListOfTransactionTypes.Where(t => incentiveTypes.Contains(t)).ToList();
-                var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => functionalSkillTypes.Contains(t)).ToList();
-
-                if (onProgEarnings.Any())
-                {
-                    var onProgEarning = new ApprenticeshipContractType2EarningEvent
+                    var learningAim = new LearningAim
                     {
-                        CollectionPeriod = collectionPeriod,
-                        Ukprn = testSession.Ukprn,
-                        //EarningYear = year,
-                        OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
-                        {
-                            Type = (OnProgrammeEarningType)(int)tt,
-                            Periods = learnerEarningSpecs.Select(e => new EarningPeriod
-                            {
-                                Amount = e.Values[tt],
-                                Period = e.DeliveryCalendarPeriod.Period,
-                                PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], learnerId, e.DeliveryCalendarPeriod.Name)
-                            }).ToList().AsReadOnly()
-                        }).ToList().AsReadOnly(),
-                        JobId = testSession.JobId,
-                        Learner = learner,
-                        LearningAim = learningAim
+                        ProgrammeType = specAim.ProgrammeType,
+                        FrameworkCode = specAim.FrameworkCode,
+                        PathwayCode = specAim.PathwayCode,
+                        StandardCode = specAim.StandardCode,
+                        FundingLineType = specAim.FundingLineType,
+                        Reference = specAim.AimReference
                     };
-                    result.Add(onProgEarning);
+
+                    if (onProgEarnings.Any())
+                    {
+                        var onProgEarning = new ApprenticeshipContractType2EarningEvent
+                        {
+                            CollectionPeriod = collectionPeriod,
+                            Ukprn = testSession.Ukprn,
+                            //EarningYear = year,
+                            OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
+                            {
+                                Type = (OnProgrammeEarningType) (int) tt,
+                                Periods = learnerEarningSpecs.Select(e => new EarningPeriod
+                                {
+                                    Amount = e.Values[tt],
+                                    Period = e.DeliveryCalendarPeriod.Period,
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], learnerId, e.DeliveryCalendarPeriod.Name)
+                                }).ToList().AsReadOnly()
+                            }).ToList().AsReadOnly(),
+                            JobId = testSession.JobId,
+                            Learner = learner,
+                            LearningAim = learningAim
+                        };
+                        result.Add(onProgEarning);
+                    }
                 }
             }
 

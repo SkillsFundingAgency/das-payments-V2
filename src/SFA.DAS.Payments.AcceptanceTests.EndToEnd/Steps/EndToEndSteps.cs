@@ -10,10 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
+using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
@@ -41,41 +42,121 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(PreviousIlr);
         }
 
+        [Given(@"the following learners")]
+        public void GivenTheFollowingLearners(Table table)
+        {
+            var learners = table.CreateSet<Learner>();
+            AddTestLearners(learners);
+        }
+
+        [Given(@"the following aims")]
+        public void GivenTheFollowingAims(Table table)
+        {
+            var aims = table.CreateSet<Aim>();
+            AddTestAims(aims);
+        }
+
+        private static readonly HashSet<long> PriceEpisodesProcessedForJob = new HashSet<long>();
+        [Given(@"price details as follows")]
+        public void GivenPriceDetailsAsFollows(Table table)
+        {
+            if (PriceEpisodesProcessedForJob.Contains(TestSession.JobId))
+            {
+                return;
+            }
+
+            PriceEpisodesProcessedForJob.Add(TestSession.JobId);
+
+            var newPriceEpisodes = table.CreateSet<Price>().ToList();
+            CurrentPriceEpisodes = newPriceEpisodes;
+            if (TestSession.Learners.Any(x => x.Aims.Count > 0))
+            {
+                foreach (var newPriceEpisode in newPriceEpisodes)
+                {
+                    try
+                    {
+                        var aim = TestSession.Learners.SelectMany(x => x.Aims)
+                            .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
+                        if (aim == null)
+                        {
+                            throw new Exception("There is a price episode without a matching aim");
+                        }
+
+                        aim.PriceEpisodes.Add(newPriceEpisode);
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception("There are too many aims with the same sequence number");
+                    }
+                }
+            }
+        }
+
         [Then(@"the following learner earnings should be generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = CreateEarnings(table);
 
             var learners = new List<FM36Learner>();
+            if (CurrentIlr == null)
 
-            foreach (var training in CurrentIlr)
             {
-                var learnerId = training.LearnerId;
-                var learner = new FM36Learner {LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber};
-                var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
-                
-                PopulateLearner(learner, training, learnerEarnings);
-
-                var command = new ProcessLearnerCommand
+                // Learner -> Aims -> Price Episodes
+                foreach (var testSessionLearner in TestSession.Learners)
                 {
-                    Learner = learner,
-                    CollectionPeriod = CurrentCollectionPeriod.Period,
-                    CollectionYear = CollectionYear,
-                    Ukprn = TestSession.Ukprn,
-                    JobId = TestSession.JobId,
-                    IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                    RequestTime = DateTimeOffset.UtcNow,
-                    SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????                    
-                };
+                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
+                    var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier);
+                    PopulateLearner(learner, testSessionLearner, learnerEarnings);
 
-                Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                await MessageSession.Send(command);
+                    var command = new ProcessLearnerCommand
+                    {
+                        Learner = learner,
+                        CollectionPeriod = CurrentCollectionPeriod.Period,
+                        CollectionYear = CollectionYear,
+                        Ukprn = TestSession.Ukprn,
+                        JobId = TestSession.JobId,
+                        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
+                        RequestTime = DateTimeOffset.UtcNow,
+                        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????          
+                    };
 
-                learners.Add(learner);
+                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
+                    await MessageSession.Send(command);
+
+                    learners.Add(learner);
+                }
             }
+            else
+            {
+                foreach (var training in CurrentIlr)
+                {
+                    var learnerId = training.LearnerId;
+                    var learner = new FM36Learner {LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber};
+                    var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
 
+                    PopulateLearner(learner, training, learnerEarnings);
+
+                    var command = new ProcessLearnerCommand
+                    {
+                        Learner = learner,
+                        CollectionPeriod = CurrentCollectionPeriod.Period,
+                        CollectionYear = CollectionYear,
+                        Ukprn = TestSession.Ukprn,
+                        JobId = TestSession.JobId,
+                        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
+                        RequestTime = DateTimeOffset.UtcNow,
+                        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????                    
+                    };
+
+                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
+                    await MessageSession.Send(command);
+
+                    learners.Add(learner);
+                }
+            }
+            
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
-            await WaitForIt(() => matcher.MatchPayments(), "Functional Skill Earning event check failure");
+            await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
 
 
