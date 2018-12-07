@@ -11,10 +11,13 @@
     <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
     <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"/>
     <Parameter Name="ServiceBusConnectionString" Value=""/>
+    <Parameter Name="PaymentsConnectionString" Value="" />
   </Section>
 
   <Section Name="Settings">
-    <Parameter Name="EndpointName" Value="sfa-das-payments-audit-earningevents"/>
-    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-audit-earningevents-errors"/>
+    <Parameter Name="EndpointName" Value="sfa-das-payments-audit-paymentsdue"/>
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-audit-paymentsdue-errors"/>
+    <Parameter Name="BatchIntervalInSeconds" Value="10"/>
+    <Parameter Name="BatchSize" Value="500"/>
   </Section>
 </Settings>
