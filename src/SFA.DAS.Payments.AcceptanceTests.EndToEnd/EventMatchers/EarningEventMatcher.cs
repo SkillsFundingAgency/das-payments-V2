@@ -86,7 +86,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 {
                                     Amount = e.Values[tt],
                                     Period = e.DeliveryCalendarPeriod.Period,
-                                    PriceEpisodeIdentifier = e.PriceEpisodeIdentifier
+                                    PriceEpisodeIdentifier = e.Values[tt] == 0 ? null : e.PriceEpisodeIdentifier
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
                             JobId = testSession.JobId,
