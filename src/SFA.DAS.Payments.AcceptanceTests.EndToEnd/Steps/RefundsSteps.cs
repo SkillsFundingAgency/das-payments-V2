@@ -72,6 +72,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(CurrentIlr);
         }
 
+        [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]
+        public void TheProviderChangesTheLearnersUln(long newUln)
+        {
+            TestSession.Learner.Uln = newUln;
+            CurrentIlr = PreviousIlr;
+        }
+
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
