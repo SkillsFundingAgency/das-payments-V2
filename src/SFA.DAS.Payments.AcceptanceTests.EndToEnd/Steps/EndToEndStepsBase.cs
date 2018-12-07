@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected void SetCollectionPeriod(string collectionPeriod)
         {
             Console.WriteLine($"Current collection period is: {collectionPeriod}.");
-            var period = collectionPeriod.ToDate().ToCalendarPeriod();
+            var period = collectionPeriod.ToCalendarPeriod();
             Console.WriteLine($"Current collection period name is: {period.Name}.");
             CurrentCollectionPeriod = period;
             CollectionPeriod = CurrentCollectionPeriod.Period;
