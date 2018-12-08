@@ -31,5 +31,4 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         protected abstract FundingSourcePayment CreatePayment(RequiredCoInvestedPayment message);
       
     }
-
 }
