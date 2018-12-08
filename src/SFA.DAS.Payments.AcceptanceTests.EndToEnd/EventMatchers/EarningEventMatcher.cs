@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
@@ -45,8 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var result = new List<EarningEvent>();
             var learnerIds = earningSpecs.Select(e => e.LearnerId).Distinct().ToList();
-            var year = earningSpecs.First().DeliveryCalendarPeriod.Year;
-
+            
             foreach (var learnerId in learnerIds)
             {
                 var learnerSpec = testSession.GetLearner(learnerId);
@@ -84,8 +84,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
                     var fullListOfTransactionTypes = aimEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
                     var onProgEarnings = fullListOfTransactionTypes.Where(t => onProgTypes.Contains(t)).ToList();
-                    var incentiveEarnings = fullListOfTransactionTypes.Where(t => incentiveTypes.Contains(t)).ToList();
                     var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => functionalSkillTypes.Contains(t)).ToList();
+                    var incentiveEarnings = fullListOfTransactionTypes.Where(t => incentiveTypes.Contains(t)).ToList();
+                    // TODO: incentive earnings
 
                     if (onProgEarnings.Any())
                     {
@@ -111,8 +112,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         result.Add(onProgEarning);
                     }
 
-                    // TODO: incentive earnings
-                    // TODO: functional skill earnings
+                    if (functionalSkillEarnings.Any())
+                    {
+                        var onProgEarning = new FunctionalSkillEarningsEvent
+                        {
+                            CollectionPeriod = collectionPeriod,
+                            Ukprn = testSession.Ukprn,
+                            //EarningYear = year,
+                            Earnings = onProgEarnings.Select(tt => new FunctionalSkillEarning
+                            {
+                                Type = (FunctionalSkillType) (int) tt,
+                                Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                                {
+                                    Amount = e.Values[tt],
+                                    Period = e.DeliveryCalendarPeriod.Period,
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36learner)
+                                }).ToList().AsReadOnly()
+                            }).ToList().AsReadOnly(),
+                            JobId = testSession.JobId,
+                            Learner = learner,
+                            LearningAim = learningAim
+                        };
+                        result.Add(onProgEarning);
+                    }
+
                 }
             }
 
