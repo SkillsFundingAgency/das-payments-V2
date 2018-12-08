@@ -34,14 +34,14 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("EarningEventId", typeof(Guid)),
                 new DataColumn("PriceEpisodeIdentifier"),
                 new DataColumn("SfaContributionPercentage"),
-                new DataColumn("StartDate"),
-                new DataColumn("PlannedEndDate"),
-                new DataColumn("ActualEndDate"),
+                new DataColumn("StartDate",typeof(DateTime)),
+                new DataColumn("PlannedEndDate",typeof(DateTime)),
+                new DataColumn("ActualEndDate",typeof(DateTime)) {AllowDBNull = true},
                 new DataColumn("TotalNegotiatedPrice1"),
                 new DataColumn("TotalNegotiatedPrice2"),
                 new DataColumn("TotalNegotiatedPrice3"),
                 new DataColumn("TotalNegotiatedPrice4"),
-                new DataColumn("Completed"),
+                new DataColumn("Completed",typeof(bool)),
                 new DataColumn("CompletionAmount"),
                 new DataColumn("InstalmentAmount"),
                 new DataColumn("NumberOfInstalments"),
@@ -71,13 +71,13 @@ namespace SFA.DAS.Payments.Audit.Application.Data
 
         private DataRow CreatePriceEpisodeDataRow(EarningEventPriceEpisodeModel priceEpisodeModel)
         {
-            var dataRow = periods.NewRow();
+            var dataRow = priceEpisodes.NewRow();
             dataRow["EarningEventId"] = priceEpisodeModel.EarningEventId;
             dataRow["PriceEpisodeIdentifier"] = priceEpisodeModel.PriceEpisodeIdentifier;
             dataRow["SfaContributionPercentage"] = priceEpisodeModel.SfaContributionPercentage;
             dataRow["StartDate"] = priceEpisodeModel.StartDate;
             dataRow["PlannedEndDate"] = priceEpisodeModel.PlannedEndDate;
-            dataRow["ActualEndDate"] = priceEpisodeModel.ActualEndDate;
+            dataRow["ActualEndDate"] = (object)ConvertMinDateToNull(priceEpisodeModel.ActualEndDate) ?? DBNull.Value;
             dataRow["TotalNegotiatedPrice1"] = priceEpisodeModel.TotalNegotiatedPrice1;
             dataRow["TotalNegotiatedPrice2"] = priceEpisodeModel.TotalNegotiatedPrice2;
             dataRow["TotalNegotiatedPrice3"] = priceEpisodeModel.TotalNegotiatedPrice3;
@@ -87,8 +87,14 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["InstalmentAmount"] = priceEpisodeModel.InstalmentAmount;
             dataRow["NumberOfInstalments"] = priceEpisodeModel.NumberOfInstalments;
             return dataRow;
-
         }
+
+        private static DateTime? ConvertMinDateToNull(DateTime? value)
+        {
+            return value.HasValue && value.Value == DateTime.MinValue ? null : value;
+        }
+
+
 
         public override List<DataTable> GetDataTable(List<EarningEventModel> events)
         {

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
@@ -47,20 +49,30 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             var data = dataTable.GetDataTable(batch);
             using (var sqlConnection = new SqlConnection(connectionString))
             {
-                await sqlConnection.OpenAsync(cancellationToken);
-                using (var bulkCopy = new SqlBulkCopy(sqlConnection))
+                using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    foreach (var table in data)
+                    try
                     {
-                        bulkCopy.DestinationTableName = data.Count > 1 ? table.TableName : dataTable.TableName;
-                        foreach (DataColumn dataColumn in table.Columns)
+                        await sqlConnection.OpenAsync(cancellationToken);
+                        using (var bulkCopy = new SqlBulkCopy(sqlConnection))
                         {
-                            bulkCopy.ColumnMappings.Add(dataColumn.ColumnName, dataColumn.ColumnName);
+                            foreach (var table in data)
+                            {
+                                bulkCopy.ColumnMappings.Clear();
+                                bulkCopy.DestinationTableName = data.Count > 1 ? table.TableName : dataTable.TableName;
+                                foreach (DataColumn dataColumn in table.Columns)
+                                    bulkCopy.ColumnMappings.Add(dataColumn.ColumnName, dataColumn.ColumnName);
+                                await bulkCopy.WriteToServerAsync(table, cancellationToken);
+                            }
+                            logger.LogDebug($"Finished bulk copying {batch.Count} of {typeof(T).Name} records.");
                         }
-                        await bulkCopy.WriteToServerAsync(table, cancellationToken);
-                        bulkCopy.ColumnMappings.Clear();
+                        scope.Complete();
                     }
-                    logger.LogDebug($"Finished bulk copying {batch.Count} records.");
+                    catch (Exception e)
+                    {
+                        logger.LogError($"Error performing bulk copy for model type: {typeof(T).Name}. Error: {e.Message}", e);
+                        throw;
+                    }
                 }
             }
             return batch.Count;

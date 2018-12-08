@@ -22,10 +22,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
         public async Task ProcessPaymentsEvent(TPaymentsEvent message)
         {
-            var model = mapper.Map<TPaymentsEventModel>(message);
+            var model = mapper.Map<TPaymentsEventModel>(message);  
             await cache.AddPayment(model);
         }
     }
-
-    
 }

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.PaymentsDue;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
@@ -22,6 +23,10 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .As<IPaymentsDueEventProcessor>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<EarningEventProcessor>()
+                .As<IEarningEventProcessor>()
+                .InstancePerLifetimeScope();
+
             builder.RegisterType<FundingSourceDataTable>()
                 .As<IPaymentsEventModelDataTable<FundingSourceEventModel>>();
 
@@ -30,6 +35,9 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
 
             builder.RegisterType<RequiredPaymentDataTable>()
                 .As<IPaymentsEventModelDataTable<RequiredPaymentEventModel>>();
+
+            builder.RegisterType<EarningEventDataTable>()
+                .As<IPaymentsEventModelDataTable<EarningEventModel>>();
 
             builder.RegisterGeneric(typeof(PaymentsEventModelBatchService<>))
                 .As(typeof(IPaymentsEventModelBatchService<>))

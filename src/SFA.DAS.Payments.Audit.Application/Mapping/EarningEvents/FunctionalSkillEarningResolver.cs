@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.Audit.Application.Mapping
+namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
 {
     public class FunctionalSkillEarningResolver : IValueResolver<FunctionalSkillEarningsEvent, EarningEventModel, List<EarningEventPeriodModel>>
     {
