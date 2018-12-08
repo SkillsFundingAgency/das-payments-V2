@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -10,6 +12,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using Learner = SFA.DAS.Payments.Model.Core.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -47,12 +50,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             foreach (var learnerId in learnerIds)
             {
                 var learnerSpec = testSession.GetLearner(learnerId);
-
+                var fm36learner = learnerSpecs.Single(l => l.LearnRefNumber == learnerSpec.LearnRefNumber);
                 var learner = new Learner
                 {
                     ReferenceNumber = learnerSpec.LearnRefNumber,
                     Uln = learnerSpec.Uln
                 };
+
+                if (learnerSpec.Aims.Count == 0)
+                    learnerSpec.Aims.Add(new Aim
+                    {
+                        LearnerId = learnerSpec.LearnerIdentifier,
+                        ProgrammeType = learnerSpec.Course.ProgrammeType,
+                        FrameworkCode = learnerSpec.Course.FrameworkCode,
+                        PathwayCode = learnerSpec.Course.PathwayCode,
+                        StandardCode = learnerSpec.Course.StandardCode,
+                        FundingLineType = learnerSpec.Course.FundingLineType,
+                        AimReference = learnerSpec.Course.LearnAimRef
+                    });
 
                 foreach (var aimSpec in learnerSpec.Aims)
                 {
@@ -86,7 +101,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 {
                                     Amount = e.Values[tt],
                                     Period = e.DeliveryCalendarPeriod.Period,
-                                    PriceEpisodeIdentifier = e.Values[tt] == 0 ? null : e.PriceEpisodeIdentifier
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36learner)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
                             JobId = testSession.JobId,
@@ -104,15 +119,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return result;
         }
 
-        //private string FindPriceEpisodeIdentifier(decimal value, string leanerId, string periodName, long? aimSequenceNumber)
-        //{
-        //    if (value == 0) return null;
+        private string FindPriceEpisodeIdentifier(decimal value, Earning earning, FM36Learner fm36Learner)
+        {
+            // null for 0 values
+            if (value == 0) 
+                return null;
 
-        //    // find first price episode with non-zero value for a period, otherwise null
-        //    var period = int.Parse(periodName.Substring(6, 2));
-        //    var learnerSpec = learnerSpecs.Single(l => l.LearnRefNumber == testSession.GetLearner(leanerId).LearnRefNumber);
-        //    return learnerSpec.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodeValues.PriceEpisodeAimSeqNumber == aimSequenceNumber && pe.PriceEpisodePeriodisedValues.Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0))?.PriceEpisodeIdentifier;
-        //}
+            // it could be specified in earnings table
+            if (earning.PriceEpisodeIdentifier != null) 
+                return earning.PriceEpisodeIdentifier;
+            
+            // find first price episode with non-zero value for a period
+            var period = earning.DeliveryCalendarPeriod.Period;
+            return fm36Learner.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0))?.PriceEpisodeIdentifier;
+        }
 
         protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)
         {
