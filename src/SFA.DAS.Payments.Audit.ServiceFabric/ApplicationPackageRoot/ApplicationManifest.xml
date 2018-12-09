@@ -25,6 +25,7 @@
     <Parameter Name="Audit_RequiredPayments_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="Audit_PaymentsDue_EndpointName" DefaultValue="" />
     <Parameter Name="Audit_PaymentsDue_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -43,6 +44,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_PaymentsDue_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[Audit_PaymentsDue_FailedMessagesQueue]" />
+            <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -62,6 +64,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_RequiredPayments_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[Audit_RequiredPayments_FailedMessagesQueue]" />
+            <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -81,6 +84,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_FundingSource_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[Audit_FundingSource_FailedMessagesQueue]" />
+            <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -100,6 +104,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_EarningEvents_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[Audit_EarningEvents_FailedMessagesQueue]" />
+            <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
           </Section>
         </Settings>
       </ConfigOverride>

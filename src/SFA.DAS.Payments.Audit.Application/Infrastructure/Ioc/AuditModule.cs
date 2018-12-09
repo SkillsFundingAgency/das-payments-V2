@@ -22,7 +22,6 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<PaymentsDueEventProcessor>()
                 .As<IPaymentsDueEventProcessor>()
                 .InstancePerLifetimeScope();
-
             builder.RegisterType<EarningEventProcessor>()
                 .As<IEarningEventProcessor>()
                 .InstancePerLifetimeScope();

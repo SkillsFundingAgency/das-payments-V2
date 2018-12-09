@@ -19,5 +19,6 @@
     <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-audit-requiredpayments-errors"/>
     <Parameter Name="BatchIntervalInSeconds" Value="10"/>
     <Parameter Name="BatchSize" Value="500"/>
+    <Parameter Name="BatchFailureTimeoutInSeconds" Value="60"/>
   </Section>
 </Settings>
