@@ -12,12 +12,12 @@ using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 {
-    public interface IPaymentsEventModelBatchProcessor<T> where T : PaymentsEventModel
+    public interface IPaymentsEventModelBatchProcessor<T> where T : IPaymentsEventModel
     {
         Task<int> Process(int batchSize, CancellationToken cancellationToken);
     }
 
-    public class PaymentsEventModelBatchProcessor<T> : IPaymentsEventModelBatchProcessor<T> where T : PaymentsEventModel
+    public class PaymentsEventModelBatchProcessor<T> : IPaymentsEventModelBatchProcessor<T> where T : IPaymentsEventModel
     {
         private readonly IPaymentsEventModelCache<T> cache;
         private readonly IPaymentsEventModelDataTable<T> dataTable;

@@ -9,12 +9,26 @@ using SFA.DAS.Payments.ProviderPayments.Domain;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System;
 using System.Collections.Generic;
+using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
+using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
+using SFA.DAS.Payments.Audit.Model;
 using IProviderPaymentsService = SFA.DAS.Payments.ProviderPayments.Application.Services.IProviderPaymentsService;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
 {
+
+    [StatePersistence(StatePersistence.Persisted)]
+    public class ProviderPaymentsStatefulService : AuditStatefulService<PaymentsDueEventModel>
+    {
+        public ProviderPaymentsStatefulService(StatefulServiceContext context, IPaymentLogger logger, ILifetimeScope lifetimeScope, IPaymentsEventModelBatchService<PaymentsDueEventModel> batchService) : base(context, logger, lifetimeScope, batchService)
+        {
+        }
+    }
+
 
     [StatePersistence(StatePersistence.Volatile)]
     public class ProviderPaymentsService : Actor, Interfaces.IProviderPaymentsService

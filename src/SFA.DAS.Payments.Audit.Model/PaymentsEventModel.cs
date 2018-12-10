@@ -2,7 +2,26 @@
 
 namespace SFA.DAS.Payments.Audit.Model
 {
-    public abstract class PaymentsEventModel
+    public interface IPaymentsEventModel
+    {
+        Guid EventId { get; set; }
+        byte CollectionPeriod { get; set; }
+        string LearnerReferenceNumber { get; set; }
+        long LearnerUln { get; set; }
+        string LearningAimReference { get; set; }
+        int LearningAimProgrammeType { get; set; }
+        int LearningAimStandardCode { get; set; }
+        int LearningAimFrameworkCode { get; set; }
+        int LearningAimPathwayCode { get; set; }
+        string LearningAimFundingLineType { get; set; }
+        long Ukprn { get; set; }
+        DateTime IlrSubmissionDateTime { get; set; }
+        long JobId { get; set; }
+        DateTimeOffset EventTime { get; set; }
+        string CollectionYear { get; set; }
+    }
+
+    public abstract class PaymentsEventModel : IPaymentsEventModel
     {
         public Guid EventId { get; set; }
         public byte CollectionPeriod { get; set; }

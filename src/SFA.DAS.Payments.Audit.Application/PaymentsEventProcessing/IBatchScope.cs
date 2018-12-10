@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 {
     public interface IBatchScope: IDisposable
     {
-        IPaymentsEventModelBatchProcessor<T> GetBatchProcessor<T>() where T: PaymentsEventModel;
+        IPaymentsEventModelBatchProcessor<T> GetBatchProcessor<T>() where T: IPaymentsEventModel;
         void Abort();
         Task Commit();
     }

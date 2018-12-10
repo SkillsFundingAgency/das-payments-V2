@@ -2,7 +2,19 @@
 
 namespace SFA.DAS.Payments.Audit.Model
 {
-    public abstract class PeriodisedPaymentsEventModel: PaymentsEventModel
+
+    public interface IPeriodisedPaymentsEventModel: IPaymentsEventModel
+    {
+         string PriceEpisodeIdentifier { get; set; }
+         ContractType ContractType { get; set; }
+         TransactionType TransactionType { get; set; }
+         decimal Amount { get; set; }
+         byte DeliveryPeriod { get; set; }
+         decimal SfaContributionPercentage { get; set; }
+         string AgreementId { get; set; }
+    }
+
+    public abstract class PeriodisedPaymentsEventModel: PaymentsEventModel, IPeriodisedPaymentsEventModel
     {
         //public long Id { get; set; }
         public string PriceEpisodeIdentifier { get; set; }

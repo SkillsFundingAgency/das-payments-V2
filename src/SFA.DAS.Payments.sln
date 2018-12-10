@@ -175,9 +175,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.Paym
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Monitoring", "Monitoring", "{889F5FD9-D5A4-4CC5-9DB5-37D6934BFA2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.JobStatus.Client", "SFA.DAS.Payments.Monitoring.JobStatus.Client\SFA.DAS.Payments.Monitoring.JobStatus.Client.csproj", "{66B42B94-B29B-48EA-9AB6-C96C11C1D9CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobStatus.Client", "SFA.DAS.Payments.Monitoring.JobStatus.Client\SFA.DAS.Payments.Monitoring.JobStatus.Client.csproj", "{66B42B94-B29B-48EA-9AB6-C96C11C1D9CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.JobStatus.Messages", "SFA.DAS.Payments.Monitoring.JobStatus.Messages\SFA.DAS.Payments.Monitoring.JobStatus.Messages.csproj", "{9274ABB3-9F30-4320-A111-17BA07DBF568}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobStatus.Messages", "SFA.DAS.Payments.Monitoring.JobStatus.Messages\SFA.DAS.Payments.Monitoring.JobStatus.Messages.csproj", "{9274ABB3-9F30-4320-A111-17BA07DBF568}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

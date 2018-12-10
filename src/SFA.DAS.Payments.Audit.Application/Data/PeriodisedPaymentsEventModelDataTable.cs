@@ -3,7 +3,7 @@ using SFA.DAS.Payments.Audit.Model;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
 {
-    public abstract class PeriodisedPaymentsEventModelDataTable<T>: PaymentsEventModelDataTable<T> where T: PeriodisedPaymentsEventModel
+    public abstract class PeriodisedPaymentsEventModelDataTable<T>: PaymentsEventModelDataTable<T> where T: IPeriodisedPaymentsEventModel
     {
         protected PeriodisedPaymentsEventModelDataTable()
         {

@@ -8,12 +8,12 @@ using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 {
-    public interface IPaymentsEventModelBatchService<T> where T : PaymentsEventModel
+    public interface IPaymentsEventModelBatchService<T> where T : IPaymentsEventModel
     {
         Task RunAsync(CancellationToken cancellationToken);
     }
 
-    public class PaymentsEventModelBatchService<T> : IPaymentsEventModelBatchService<T> where T : PaymentsEventModel
+    public class PaymentsEventModelBatchService<T> : IPaymentsEventModelBatchService<T> where T : IPaymentsEventModel
     {
         private readonly IBatchScopeFactory batchScopeFactory;
         private readonly IPaymentLogger logger;

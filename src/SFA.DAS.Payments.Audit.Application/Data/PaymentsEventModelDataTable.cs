@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Audit.Model;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
 {
-    public abstract class PaymentsEventModelDataTable<T> : IPaymentsEventModelDataTable<T> where T : PaymentsEventModel
+    public abstract class PaymentsEventModelDataTable<T> : IPaymentsEventModelDataTable<T> where T : IPaymentsEventModel
     {
         protected DataTable DataTable { get; private set; }
 

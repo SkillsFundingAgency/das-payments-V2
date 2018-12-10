@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.ProviderPayments.Messages;
 
 namespace SFA.DAS.Payments.Audit.Application.Mapping
 {
