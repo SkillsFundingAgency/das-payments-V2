@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             return new CalendarPeriod((short)date.Year, (byte)date.Month);
         }
-            
+
         public static DateTime ToDate(this string dateText)
         {
             var parts = dateText.Split('/');
@@ -54,10 +54,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     if (parts.Length != 2)
                         Assert.Fail(
                             $"Invalid period format found.  Expected month or period followed by year text e.g. R01/current Academic Year or Aug/Last Academic Year but found: {dateText}");
-                    var period = parts[0].StartsWith("R", StringComparison.OrdinalIgnoreCase)
-                        ? int.Parse(parts[0].ToLower().Replace("r", ""))
-                        : parts[0].ToMonthPeriod();
-
+                    int period;
+                    var returnPeriodPart = parts[0];
+                    if (returnPeriodPart.StartsWith("R", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var returnPeriod = parts[0].ToLower().Replace("r", "");
+                        period = int.Parse(returnPeriod);
+                    }
+                    else
+                    {
+                        period = parts[0].ToMonthPeriod();
+                    }
+                        
                     var date = new DateTime(DateTime.Today.Month >= 8 ? DateTime.Today.Year : DateTime.Today.Year - 1, 8, 1);
                     date = date.AddMonths(period - 1);
                     var yearText = parts[1].ToLower();
