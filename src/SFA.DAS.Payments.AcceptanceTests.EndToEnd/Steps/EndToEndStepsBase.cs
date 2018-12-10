@@ -352,8 +352,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 SetPeriodValue(period, balancingEarnings, earning.Balancing);
             });
 
+            var testLearner = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber);
+            learner.ULN = testLearner.Uln;
             learner.PriceEpisodes = GetPriceEpisodes(training, learningValues, completionEarnings, balancingEarnings, CurrentPriceEpisodes, earnings, CollectionYear);
-            var course = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course;
+            var course = testLearner.Course;
 
             learner.LearningDeliveries = new List<LearningDelivery>(new[]
             {
