@@ -18,20 +18,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.SmallEmployer
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Non-Levy 19-24 learner")]
-    public partial class Non_Levy19_24LearnerFeature
+    [NUnit.Framework.DescriptionAttribute("Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2" +
+        "-330")]
+    public partial class Non_Levy19_24LearnerThatIsNotEligibleForSmallEmployerContribution_PV2_330Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "Non-Levy 19-24 learner.feature"
+#line 1 "Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-Levy 19-24 learner", @"	As a provider,
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2" +
+                    "-330", @"	As a provider,
 	I want a non-levy learner, 1 learner aged 19-24, employed with a small employer at start, is co-funded for on programme and completion payments (this apprentice does not have a Education Health Care plan and is not a care leaver), to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
