@@ -92,6 +92,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.ProgrammeType = ilrLearner.ProgrammeType;
                 learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
                 learner.Course.PathwayCode = ilrLearner.PathwayCode;
+                if (ilrLearner.Uln != default(long))
+                {
+                    learner.Uln = ilrLearner.Uln;
+                }
             });
         }
 
@@ -153,7 +157,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.SfaCoFundedPayments,
                     LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = TestSession.Learner.Uln,
+                    LearnerUln = providerPayment.Uln,
                     LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
                     LearningAimProgrammeType = learnerTraining.ProgrammeType
                 },
@@ -176,7 +180,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.EmployerCoFundedPayments,
                     LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = TestSession.Learner.Uln,
+                    LearnerUln = providerPayment.Uln,
                     LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
                     LearningAimProgrammeType = learnerTraining.ProgrammeType
                 }

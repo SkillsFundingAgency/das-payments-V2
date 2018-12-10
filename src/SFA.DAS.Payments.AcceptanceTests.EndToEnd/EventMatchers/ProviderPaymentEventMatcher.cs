@@ -47,7 +47,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             {
                 var eventCollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod();
                 var deliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod();
-                var learner = new Learner { ReferenceNumber = testSession.GetLearner(providerPayment.LearnerId).LearnRefNumber};
+                var learner = new Learner
+                {
+                    ReferenceNumber = testSession.GetLearner(providerPayment.LearnerId).LearnRefNumber,
+                };
+                if (providerPayment.Uln != default(long))
+                {
+                    learner.Uln = providerPayment.Uln;
+                }
+                else
+                {
+                    learner.Uln = testSession.GetLearner(providerPayment.LearnerId).Uln;
+                }
 
                 var coFundedSfa = new SfaCoInvestedProviderPaymentEvent
                 {
@@ -81,7 +92,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.AmountDue == actual.AmountDue &&
                    expected.CollectionPeriod.Name == actual.CollectionPeriod.Name &&
                    expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name &&
-                   expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber;
+                   expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
+                   expected.Learner.Uln == actual.Learner.Uln;
         }
     }
 }

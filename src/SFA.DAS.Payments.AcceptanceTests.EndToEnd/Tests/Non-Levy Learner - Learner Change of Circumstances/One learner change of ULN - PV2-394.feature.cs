@@ -113,7 +113,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Funding Line Type",
                         "SFA Contribution Percentage"});
             table1.AddRow(new string[] {
-                        "1111111111",
+                        "11111111",
                         "06/Aug/Current Academic Year",
                         "12 months",
                         "9000",
@@ -222,7 +222,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 27
     testRunner.And("the following provider payments had been generated", ((string)(null)), table3, "And ");
 #line 32
-    testRunner.But("the Provider now changes the Learner\'s ULN to \"222222\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "But ");
+    testRunner.But("the Provider now changes the Learner\'s ULN to \"22222222\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "But ");
 #line 33
  testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden

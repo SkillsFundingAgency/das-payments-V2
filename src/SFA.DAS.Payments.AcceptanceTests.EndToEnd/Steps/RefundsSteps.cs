@@ -31,6 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheFollowingEarningsHadBeenGeneratedForTheLearner(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
+            
             PreviousEarnings = earnings;
         }
 
@@ -38,6 +39,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
             var payments = table.CreateSet<ProviderPayment>().ToList();
+            foreach (var payment in payments)
+            {
+                payment.Uln = TestSession.GetLearner(payment.LearnerId).Uln;
+            }
 
             var previousJobId = TestSession.GenerateId();
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);

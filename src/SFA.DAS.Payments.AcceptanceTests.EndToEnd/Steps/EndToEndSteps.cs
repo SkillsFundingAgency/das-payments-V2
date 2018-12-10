@@ -96,13 +96,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
+            foreach (var earning in earnings)
+            {
+                earning.Uln = TestSession.GetLearner(earning.LearnerId).Uln;
+            }
 
             if (CurrentIlr == null)
             {
                 // Learner -> Aims -> Price Episodes
                 foreach (var testSessionLearner in TestSession.Learners)
                 {
-                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
+                    var learner = new FM36Learner
+                    {
+                        LearnRefNumber = testSessionLearner.LearnRefNumber,
+                        ULN = testSessionLearner.Uln,
+                    };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier);
                     PopulateLearner(learner, testSessionLearner, learnerEarnings);
 
@@ -127,7 +135,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in CurrentIlr)
                 {
                     var learnerId = training.LearnerId;
-                    var learner = new FM36Learner { LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber };
+                    var learner = new FM36Learner
+                    {
+                        LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber,
+                        ULN = TestSession.GetLearner(learnerId).Uln,
+                    };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
 
                     PopulateLearner(learner, training, learnerEarnings);
@@ -178,6 +190,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
+            foreach (var payment in expectedPayments)
+            {
+                payment.Uln = TestSession.GetLearner(payment.LearnerId).Uln;
+            }
             var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
