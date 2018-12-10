@@ -44,10 +44,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
                 using (var stream = new MemoryStream())
                 {
-                    var writer = new StreamWriter(stream);
-                    writer.Write(json);
+                    using (var writer = new StreamWriter(stream))
+                    {
+                        writer.Write(json);
 
-                    writer.Flush();
+                        writer.Flush();
+                    }
+
                     stream.Position = 0;
 
                     Console.WriteLine($"ILR Submission: {json}");
