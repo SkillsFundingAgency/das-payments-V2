@@ -47,19 +47,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             {
                 var eventCollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod();
                 var deliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod();
+                var testLearner = testSession.GetLearner(providerPayment.LearnerId);
                 var learner = new Learner
                 {
-                    ReferenceNumber = testSession.GetLearner(providerPayment.LearnerId).LearnRefNumber,
+                    ReferenceNumber = testLearner.LearnRefNumber,
+                    Uln = testLearner.Uln,
                 };
-                if (providerPayment.Uln != default(long))
-                {
-                    learner.Uln = providerPayment.Uln;
-                }
-                else
-                {
-                    learner.Uln = testSession.GetLearner(providerPayment.LearnerId).Uln;
-                }
-
+                
                 var coFundedSfa = new SfaCoInvestedProviderPaymentEvent
                 {
                     TransactionType = providerPayment.TransactionType,
