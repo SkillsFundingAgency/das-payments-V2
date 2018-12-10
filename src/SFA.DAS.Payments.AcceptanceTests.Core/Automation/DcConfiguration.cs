@@ -7,8 +7,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public static string DcServiceBusConnectionString =>
             ConfigurationManager.ConnectionStrings["DCServiceBusConnectionString"]?.ConnectionString;
 
-        public static string AzureStorageConnectionString =>
-            ConfigurationManager.ConnectionStrings["AzureStorageConnectionString"]?.ConnectionString;
+        public static string DcStorageConnectionString =>
+            ConfigurationManager.ConnectionStrings["DcStorageConnectionString"]?.ConnectionString;
 
         public static string DcBlobStorageContainer => ConfigurationManager.AppSettings["DcBlobStorageContainer"];
 

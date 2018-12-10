@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
             builder.Register(c =>
-                    new AzureStorageKeyValuePersistenceConfig(DcConfiguration.AzureStorageConnectionString,
+                    new AzureStorageKeyValuePersistenceConfig(DcConfiguration.DcStorageConnectionString,
                         DcConfiguration.DcBlobStorageContainer)).As<IAzureStorageKeyValuePersistenceServiceConfig>()
                 .SingleInstance();
 
