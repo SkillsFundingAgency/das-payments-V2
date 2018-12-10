@@ -96,11 +96,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
-            foreach (var earning in earnings)
-            {
-                earning.Uln = TestSession.GetLearner(earning.LearnerId).Uln;
-            }
-
+            
             if (CurrentIlr == null)
             {
                 // Learner -> Aims -> Price Episodes
