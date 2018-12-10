@@ -18,8 +18,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("One Non-Levy Learner submitted late PV2-202")]
-    public partial class OneNon_LevyLearnerSubmittedLatePV2_202Feature
+    [NUnit.Framework.DescriptionAttribute("One Non-Levy Learner submitted late PV2-427")]
+    public partial class OneNon_LevyLearnerSubmittedLatePV2_427Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_BasicD
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "One Non-Levy Learner submitted late PV2-202", "\tAs a provider,\r\n\tI want to ensure that when a non-levy learner is submitted for " +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "One Non-Levy Learner submitted late PV2-427", "\tAs a provider,\r\n\tI want to ensure that when a non-levy learner is submitted for " +
                     "the first time in R13/R14 that payments are calculated correctly.\r\n\tSo that I am" +
                     " accurately paid my apprenticeship provision.", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
