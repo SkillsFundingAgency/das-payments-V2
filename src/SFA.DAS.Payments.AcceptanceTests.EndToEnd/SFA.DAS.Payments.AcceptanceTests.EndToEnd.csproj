@@ -300,6 +300,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Changes standard but not from beginning - PV2-207.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\One Non-levy learner - ilr submitted late PV2-402.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Non-levy learner - ilr submitted late PV2-402.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\One Non-levy learner, changes to the agreed price during the month PV2-210.feature.cs">
       <DependentUpon>One Non-levy learner, changes to the agreed price during the month PV2-210.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -400,6 +405,10 @@
     <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Changes standard but not from beginning - PV2-207.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Changes standard but not from beginning - PV2-207.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\One Non-levy learner - ilr submitted late PV2-402.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Non-levy learner - ilr submitted late PV2-402.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\One Non-levy learner, changes to the agreed price during the month PV2-210.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
