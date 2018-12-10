@@ -105,7 +105,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var learner = new FM36Learner
                     {
                         LearnRefNumber = testSessionLearner.LearnRefNumber,
-                        ULN = testSessionLearner.Uln,
                     };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier);
                     PopulateLearner(learner, testSessionLearner, learnerEarnings);
