@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 // Learner -> Aims -> Price Episodes
                 foreach (var testSessionLearner in TestSession.Learners)
                 {
-                    FM36Learner learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
+                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
                     var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier);
                     PopulateLearner(learner, testSessionLearner, learnerEarnings);
                     await SendProcessLearnerCommand(learner);
@@ -114,7 +114,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in CurrentIlr)
                 {
                     var learnerId = training.LearnerId;
-                    FM36Learner  learner = new FM36Learner { LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber };
+                    var  learner = new FM36Learner { LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
                     PopulateLearner(learner, training, learnerEarnings);
                    await SendProcessLearnerCommand(learner);
