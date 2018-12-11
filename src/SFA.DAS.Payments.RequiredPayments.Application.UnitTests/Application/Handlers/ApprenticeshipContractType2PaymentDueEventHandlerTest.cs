@@ -26,8 +26,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
     public class ApprenticeshipContractType2PaymentDueEventHandlerTest
     {
         private AutoMock mocker;
-        private IApprenticeshipContractType2PaymentDueEventHandler act2PaymentDueEventHandler;
-        private Mock<IApprenticeshipContractType2PaymentDueProcessor> paymentDueProcessorMock;
+        private ApprenticeshipContractType2PaymentDueEventHandler act2PaymentDueEventHandler;
+        private Mock<IPaymentDueProcessor> paymentDueProcessorMock;
         private Mock<IRepositoryCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
         private Mock<IApprenticeshipKeyService> apprenticeshipKeyServiceMock;
         private Mock<IPaymentHistoryRepository> paymentHistoryRepositoryMock;
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            paymentDueProcessorMock = mocker.Mock<IApprenticeshipContractType2PaymentDueProcessor>();
+            paymentDueProcessorMock = mocker.Mock<IPaymentDueProcessor>();
             paymentHistoryCacheMock = mocker.Mock<IRepositoryCache<PaymentHistoryEntity[]>>();
             apprenticeshipKeyServiceMock = mocker.Mock<IApprenticeshipKeyService>();
             paymentHistoryRepositoryMock = mocker.Mock<IPaymentHistoryRepository>();
@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
             // assert
             try
             {
-                await act2PaymentDueEventHandler.HandlePaymentDue(null);
+                await act2PaymentDueEventHandler.HandlePaymentDue(null, paymentHistoryCacheMock.Object, CancellationToken.None);
             }
             catch (ArgumentNullException ex)
             {
@@ -113,7 +113,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(1).Verifiable();
 
             // act
-            var actualRequiredPayment = await act2PaymentDueEventHandler.HandlePaymentDue(paymentDue);
+            var actualRequiredPayment = await act2PaymentDueEventHandler.HandlePaymentDue(paymentDue, paymentHistoryCacheMock.Object, CancellationToken.None);
 
             // assert
             Assert.IsNotNull(actualRequiredPayment);
@@ -144,7 +144,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(0).Verifiable();
 
             // act
-            var actualRequiredPayment = await act2PaymentDueEventHandler.HandlePaymentDue(paymentDue);
+            var actualRequiredPayment = await act2PaymentDueEventHandler.HandlePaymentDue(paymentDue, paymentHistoryCacheMock.Object, CancellationToken.None);
 
             // assert
             Assert.IsNull(actualRequiredPayment);

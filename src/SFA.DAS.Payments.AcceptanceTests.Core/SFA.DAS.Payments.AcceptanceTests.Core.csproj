@@ -252,6 +252,7 @@
     <Compile Include="BindingsBase.cs" />
     <Compile Include="Data\Aim.cs" />
     <Compile Include="Data\CompletionStatus.cs" />
+    <Compile Include="Data\EnumHelper.cs" />
     <Compile Include="Data\Learner.cs" />
     <Compile Include="Data\DataExtensions.cs" />
     <Compile Include="Data\Payment.cs" />

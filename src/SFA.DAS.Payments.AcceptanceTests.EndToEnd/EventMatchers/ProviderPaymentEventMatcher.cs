@@ -67,8 +67,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     Learner = learner
                 };
 
+                var fullyFundedSfa = new FullyFundedSfaProviderPaymentEvent
+                {
+                    TransactionType = providerPayment.TransactionType,
+                    AmountDue = providerPayment.SfaFullyFundedPayments,
+                    CollectionPeriod = eventCollectionPeriod,
+                    DeliveryPeriod = deliveryPeriod,
+                    Learner = learner
+                };
+
                 expectedPayments.Add(coFundedSfa);
                 expectedPayments.Add(coFundedEmp);
+                expectedPayments.Add(fullyFundedSfa);
             }
 
             return expectedPayments;

@@ -10,7 +10,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
-    public class RequiredPaymentEventMatcher : BaseMatcher<ApprenticeshipContractType2RequiredPaymentEvent>
+    public class RequiredPaymentEventMatcher : BaseMatcher<RequiredPaymentEvent>
     {        
         private readonly TestSession testSession;
         private readonly CalendarPeriod collectionPeriod;
@@ -27,15 +27,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             this.paymentSpec = paymentSpec;
         }
 
-        protected override IList<ApprenticeshipContractType2RequiredPaymentEvent> GetActualEvents()
+        protected override IList<RequiredPaymentEvent> GetActualEvents()
         {
-            return ApprenticeshipContractType2RequiredPaymentEventHandler.ReceivedEvents
+            return RequiredPaymentEventHandler.ReceivedEvents
                 .Where(e => e.Ukprn == testSession.Ukprn && e.CollectionPeriod == collectionPeriod && e.JobId == testSession.JobId).ToList();
         }
 
-        protected override IList<ApprenticeshipContractType2RequiredPaymentEvent> GetExpectedEvents()
+        protected override IList<RequiredPaymentEvent> GetExpectedEvents()
         {
-            var expectedPayments = new List<ApprenticeshipContractType2RequiredPaymentEvent>();
+            var expectedPayments = new List<RequiredPaymentEvent>();
 
             foreach (var payment in paymentSpec.Where(e => e.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name))
             {
@@ -71,11 +71,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expectedPayments;
         }
 
-        protected override bool Match(ApprenticeshipContractType2RequiredPaymentEvent expected, ApprenticeshipContractType2RequiredPaymentEvent actual)
+        protected override bool Match(RequiredPaymentEvent expected, RequiredPaymentEvent actual)
         {
+            if (expected.GetType() != actual.GetType())
+                return false;
+
             return expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name &&
-                   expected.OnProgrammeEarningType == actual.OnProgrammeEarningType &&
-                   expected.AmountDue == actual.AmountDue;
+                   expected.AmountDue == actual.AmountDue &&
+                   MatchAct(expected as ApprenticeshipContractTypeRequiredPaymentEvent, actual as ApprenticeshipContractTypeRequiredPaymentEvent) &&
+                   MatchIncentive(expected as IncentiveRequiredPaymentEvent, actual as IncentiveRequiredPaymentEvent);
+        }
+
+        private bool MatchAct(ApprenticeshipContractTypeRequiredPaymentEvent expected, ApprenticeshipContractTypeRequiredPaymentEvent actual)
+        {
+            if (expected == null)
+                return true;
+
+            return expected.OnProgrammeEarningType == actual.OnProgrammeEarningType;
+        }
+
+        private bool MatchIncentive(IncentiveRequiredPaymentEvent expected, IncentiveRequiredPaymentEvent actual)
+        {
+            if (expected == null)
+                return true;
+
+            return expected.Type == actual.Type;
         }
     }
 }

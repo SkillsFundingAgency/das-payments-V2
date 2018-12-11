@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.PaymentsDue.PaymentsDueService.Handlers
 
             try
             {
-                ApprenticeshipContractType2PaymentDueEvent[] paymentsDue;
+                PaymentDueEvent[] paymentsDue;
 
                 try
                 {

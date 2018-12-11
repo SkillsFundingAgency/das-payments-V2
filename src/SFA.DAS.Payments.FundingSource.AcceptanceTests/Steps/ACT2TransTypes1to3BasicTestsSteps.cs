@@ -19,11 +19,11 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
             await WaitForIt(() =>
             {
-                return !CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
+                return !FundingSourcePaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                         expectedContractType == receivedEvent.ContractType
                         && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                         && TestSession.Ukprn == receivedEvent.Ukprn
-                        && (OnProgrammeEarningType)expectedOnProgrammeType == receivedEvent.OnProgrammeEarningType
+                        && (TransactionType)expectedOnProgrammeType == receivedEvent.TransactionType
                     );
             }, "Failed to find all the funding source payment events");
         }
@@ -33,11 +33,11 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
             await WaitForIt(() =>
             {
-                return !CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
+                return !FundingSourcePaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                     expectedContractType == receivedEvent.ContractType
                     && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && (OnProgrammeEarningType)expectedOnProgrammeType == receivedEvent.OnProgrammeEarningType
+                    && (TransactionType)expectedOnProgrammeType == receivedEvent.TransactionType
                 );
             }, "Failed to find all the funding source payment events");
         }
@@ -47,11 +47,11 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
             await WaitForIt(() =>
             {
-                return !CoInvestedFundingSourceHandler.ReceivedEvents.Any(receivedEvent =>
+                return !FundingSourcePaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
                     expectedContractType == receivedEvent.ContractType
                     && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && (OnProgrammeEarningType)expectedOnProgrammeType == receivedEvent.OnProgrammeEarningType
+                    && (TransactionType)expectedOnProgrammeType == receivedEvent.TransactionType
                 );
             }, "Failed to find all the funding source payment events");
         }

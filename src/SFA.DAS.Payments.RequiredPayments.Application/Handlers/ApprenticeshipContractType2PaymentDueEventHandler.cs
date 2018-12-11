@@ -1,40 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using SFA.DAS.Payments.Model.Core;
+﻿using AutoMapper;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain;
-using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
-using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
 {
-    public class ApprenticeshipContractType2PaymentDueEventHandler : IApprenticeshipContractType2PaymentDueEventHandler
+    public class ApprenticeshipContractType2PaymentDueEventHandler : PaymentDueHandlerBase<ApprenticeshipContractType2PaymentDueEvent, ApprenticeshipContractType2RequiredPaymentEvent>
     {
-        private readonly IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor;
-        private readonly IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache;
-        private readonly IMapper mapper;
-        private readonly IApprenticeshipKeyService apprenticeshipKeyService;
-        private readonly IPaymentHistoryRepository paymentHistoryRepository;
-        private readonly string apprenticeshipKey;
-        private readonly IPaymentKeyService paymentKeyService;
-
-        public ApprenticeshipContractType2PaymentDueEventHandler(IApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor, IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache, IMapper mapper, 
-            IApprenticeshipKeyService apprenticeshipKeyService, IPaymentHistoryRepository paymentHistoryRepository, string apprenticeshipKey, IPaymentKeyService paymentKeyService)
+        public ApprenticeshipContractType2PaymentDueEventHandler(IPaymentDueProcessor paymentDueProcessor, IMapper mapper, IPaymentKeyService paymentKeyService)
+            : base(paymentKeyService, paymentDueProcessor, mapper)
         {
-            this.act2PaymentDueProcessor = act2PaymentDueProcessor;
-            this.paymentHistoryCache = paymentHistoryCache;
-            this.mapper = mapper;
-            this.apprenticeshipKeyService = apprenticeshipKeyService;
-            this.paymentHistoryRepository = paymentHistoryRepository;
-            this.apprenticeshipKey = apprenticeshipKey;
-            this.paymentKeyService = paymentKeyService ?? throw new ArgumentNullException(nameof(paymentKeyService));
         }
 
-        public async Task<ApprenticeshipContractType2RequiredPaymentEvent> HandlePaymentDue(ApprenticeshipContractType2PaymentDueEvent paymentDue, CancellationToken cancellationToken)
+        protected override ApprenticeshipContractType2RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2PaymentDueEvent paymentDue)
         {
             if (paymentDue == null)
                 throw new ArgumentNullException(nameof(paymentDue));
@@ -67,14 +45,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
                 LearningAim = paymentDue.LearningAim.Clone(),
                 PriceEpisodeIdentifier = priceEpisodeIdentifier,
                 OnProgrammeEarningType = paymentDue.Type,
-                EventTime = DateTimeOffset.UtcNow,
-                JobId = paymentDue.JobId,
                 SfaContributionPercentage = paymentDue.SfaContributionPercentage,
-                IlrSubmissionDateTime = paymentDue.IlrSubmissionDateTime
             };
         }
 
-        public async Task PopulatePaymentHistoryCache(CancellationToken cancellationToken)
+        protected override int GetTransactionType(ApprenticeshipContractType2PaymentDueEvent paymentDue)
         {
             var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKeyService.ParseApprenticeshipKey(apprenticeshipKey), cancellationToken).ConfigureAwait(false);
 
