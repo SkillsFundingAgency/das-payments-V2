@@ -34,7 +34,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            Mapper.Initialize(cfg => AutoMapperConfigurationFactory.CreateMappingConfig());
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfile<RequiredPaymentsProfile>();
+            });
+            Mapper.AssertConfigurationIsValid();
         }
 
         [OneTimeTearDown]
