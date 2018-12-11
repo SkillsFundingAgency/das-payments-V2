@@ -42,6 +42,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(PreviousIlr);
         }
 
+        [Given(@"the Provider now changes the Learner details as follows")]
+        public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
+        {
+            var ilr = table.CreateSet<Training>().ToList();
+            CurrentIlr = ilr;
+            AddTestLearners(CurrentIlr);
+        }
+
+        [Given("the Learner has now changed to \"(.*)\" as follows")]
+        public void GivenTheLearnerChangesProvider(string providerId, Table table)
+        {
+            TestSession.RegenerateUkprn();
+            GivenTheProviderNowChangesTheLearnerDetailsAsFollows(table);
+        }
+
         [Given(@"the following learners")]
         public void GivenTheFollowingLearners(Table table)
         {
