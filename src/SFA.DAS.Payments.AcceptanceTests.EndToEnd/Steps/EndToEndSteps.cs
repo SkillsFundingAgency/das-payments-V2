@@ -22,6 +22,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     public class EndToEndSteps : EndToEndStepsBase
     {
+        private static readonly HashSet<long> UkprnSwitchesForJob = new HashSet<long>();
+
         public EndToEndSteps(FeatureContext context) : base(context)
         {
         }
@@ -51,7 +53,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the Learner has now changed to \"(.*)\" as follows")]
         public void GivenTheLearnerChangesProvider(string providerId, Table table)
         {
-            TestSession.RegenerateUkprn();
+            if (!UkprnSwitchesForJob.Contains(TestSession.JobId))
+            {
+                TestSession.RegenerateUkprn();
+                UkprnSwitchesForJob.Add(TestSession.JobId);
+            }
+            
             AddNewIlr(table);
         }
 

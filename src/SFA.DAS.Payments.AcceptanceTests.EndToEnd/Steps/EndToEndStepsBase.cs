@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected DcHelper DcHelper => Get<DcHelper>();
 
         private static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
-
+        
         protected List<Price> CurrentPriceEpisodes
         {
             get => !Context.TryGetValue<List<Price>>(out var currentPriceEpisodes) ? null : currentPriceEpisodes;
