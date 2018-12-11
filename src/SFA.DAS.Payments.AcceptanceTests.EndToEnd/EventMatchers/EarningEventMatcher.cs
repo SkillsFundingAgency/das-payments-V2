@@ -94,7 +94,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         {
                             CollectionPeriod = collectionPeriod,
                             Ukprn = testSession.Ukprn,
-                            //EarningYear = year,
                             OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                             {
                                 Type = (OnProgrammeEarningType) (int) tt,
@@ -118,7 +117,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         {
                             CollectionPeriod = collectionPeriod,
                             Ukprn = testSession.Ukprn,
-                            //EarningYear = year,
                             Earnings = onProgEarnings.Select(tt => new FunctionalSkillEarning
                             {
                                 Type = (FunctionalSkillType) (int) tt,
@@ -163,7 +161,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 return false;
 
             if (expectedEvent.CollectionPeriod.Name != actualEvent.CollectionPeriod.Name ||
-                //expectedEvent.EarningYear != actualEvent.EarningYear ||
                 expectedEvent.Learner.ReferenceNumber != actualEvent.Learner.ReferenceNumber ||
                 //expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
                 expectedEvent.LearningAim.Reference != actualEvent.LearningAim.Reference ||

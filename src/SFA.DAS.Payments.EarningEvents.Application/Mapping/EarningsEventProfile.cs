@@ -20,7 +20,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId))
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => new CalendarPeriod(src.CollectionYear, (byte)src.CollectionPeriod)))
-                //.ForMember(dest => dest.EarningYear, opt => opt.ResolveUsing<EarningYearResolver>())
                 .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source => source))
                 ;
 
