@@ -22,7 +22,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
 
             var earning = new ApprenticeshipContractType2EarningEvent
             {
-                EarningYear = 2018,
                 EventTime = DateTimeOffset.UtcNow,
                 Learner = new Learner
                 {

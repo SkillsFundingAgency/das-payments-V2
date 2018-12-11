@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -156,7 +157,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
-            await WaitForIt(() => EarningEventMatcher.MatchIncentives(incentives, TestSession), "IncentiveEarning event check failure");
         }
 
 

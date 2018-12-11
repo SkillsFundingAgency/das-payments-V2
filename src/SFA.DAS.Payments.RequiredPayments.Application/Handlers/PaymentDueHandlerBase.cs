@@ -31,8 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             if (paymentDue == null)
                 throw new ArgumentNullException(nameof(paymentDue));
 
-            var key = paymentKeyService.GeneratePaymentKey(paymentDue.PriceEpisodeIdentifier,
-                paymentDue.LearningAim.Reference, GetTransactionType((TPaymentDue) paymentDue), paymentDue.DeliveryPeriod);
+            var key = paymentKeyService.GeneratePaymentKey(paymentDue.LearningAim.Reference, GetTransactionType((TPaymentDue) paymentDue), paymentDue.DeliveryPeriod);
 
             var paymentHistoryValue = await paymentHistoryCache.TryGet(key, cancellationToken);
 
