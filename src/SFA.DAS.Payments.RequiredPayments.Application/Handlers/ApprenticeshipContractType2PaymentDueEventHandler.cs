@@ -50,6 +50,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             if (amountDue == 0)
                 return null;
 
+            string priceEpisodeIdentifier;
+
+            if (amountDue < 0 && payments.Length > 0)
+                priceEpisodeIdentifier = payments[0].PriceEpisodeIdentifier;
+            else
+                priceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier;
+
             return new ApprenticeshipContractType2RequiredPaymentEvent
             {
                 AmountDue = amountDue,
@@ -58,7 +65,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
                 CollectionPeriod = paymentDue.CollectionPeriod.Clone(),
                 DeliveryPeriod = paymentDue.DeliveryPeriod.Clone(),
                 LearningAim = paymentDue.LearningAim.Clone(),
-                PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier,
+                PriceEpisodeIdentifier = priceEpisodeIdentifier,
                 OnProgrammeEarningType = paymentDue.Type,
                 EventTime = DateTimeOffset.UtcNow,
                 JobId = paymentDue.JobId,
