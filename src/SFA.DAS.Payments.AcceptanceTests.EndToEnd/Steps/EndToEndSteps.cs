@@ -96,30 +96,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
+            
 
             if (CurrentIlr == null)
             {
                 // Learner -> Aims -> Price Episodes
                 foreach (var testSessionLearner in TestSession.Learners)
                 {
-                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
+                    FM36Learner learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
                     var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier);
                     PopulateLearner(learner, testSessionLearner, learnerEarnings);
-
-                    var command = new ProcessLearnerCommand
-                    {
-                        Learner = learner,
-                        CollectionPeriod = CurrentCollectionPeriod.Period,
-                        CollectionYear = CollectionYear,
-                        Ukprn = TestSession.Ukprn,
-                        JobId = TestSession.JobId,
-                        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                        RequestTime = DateTimeOffset.UtcNow,
-                        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????          
-                    };
-
-                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                    await MessageSession.Send(command);
+                    await SendProcessLearnerCommand(learner);
                 }
             }
             else
@@ -127,31 +114,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in CurrentIlr)
                 {
                     var learnerId = training.LearnerId;
-                    var learner = new FM36Learner { LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber };
+                    FM36Learner  learner = new FM36Learner { LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
-
                     PopulateLearner(learner, training, learnerEarnings);
-
-                    var command = new ProcessLearnerCommand
-                    {
-                        Learner = learner,
-                        CollectionPeriod = CurrentCollectionPeriod.Period,
-                        CollectionYear = CollectionYear,
-                        Ukprn = TestSession.Ukprn,
-                        JobId = TestSession.JobId,
-                        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                        RequestTime = DateTimeOffset.UtcNow,
-                        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????                    
-                    };
-
-                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                    await MessageSession.Send(command);
+                   await SendProcessLearnerCommand(learner);
                 }
             }
             
             await WaitForIt(() => EarningEventMatcher.MatchEarnings(earnings, TestSession), "OnProgrammeEarning event check failure");
         }
 
+     
         [Then(@"only the following payments will be calculated")]
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
