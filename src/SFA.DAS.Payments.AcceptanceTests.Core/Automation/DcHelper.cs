@@ -49,14 +49,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                         writer.Write(json);
 
                         writer.Flush();
+
+                        stream.Position = 0;
+
+                        Console.WriteLine($"ILR Submission: {json}");
+                        await azureStorageService
+                            .SaveAsync(messagePointer, stream)
+                            .ConfigureAwait(true);
                     }
-
-                    stream.Position = 0;
-
-                    Console.WriteLine($"ILR Submission: {json}");
-                    await azureStorageService
-                        .SaveAsync(messagePointer, stream)
-                        .ConfigureAwait(true);
                 }
 
                 var dto = new JobContextDto
@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                             {
                                 new TaskItemDto
                                 {
-                                    SupportsParallelExecution = false, 
+                                    SupportsParallelExecution = false,
                                     Tasks = new List<string>()
                                 }
                             }
@@ -114,7 +114,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     DcConfiguration.SubscriptionName, 1,
                     maximumCallbackTimeSpan: TimeSpan.FromMinutes(40)))
                 .As<ITopicConfiguration>();
-           
+
             builder.Register(c =>
             {
                 var config = c.Resolve<ITopicConfiguration>();
