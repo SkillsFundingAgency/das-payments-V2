@@ -1,5 +1,6 @@
 ﻿using System;
 using Autofac;
+using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using TechTalk.SpecFlow;
 
@@ -31,7 +32,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         protected static void LogTestSession(SpecFlowContext context)
         {
             var testSession = context.Get<TestSession>();
-            Console.WriteLine("Finished scenario with:\n" +
+            TestContext.WriteLine("Finished scenario with:\n" +
                               $"Ukprn: {testSession.Ukprn}\n" +
                               $"Job ID: {testSession.JobId}\n" +
                               $"Learners:\n" +
