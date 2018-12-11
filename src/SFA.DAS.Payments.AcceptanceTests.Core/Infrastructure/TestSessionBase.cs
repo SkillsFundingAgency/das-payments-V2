@@ -27,5 +27,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             context.Remove("container_scope");
             scope.Dispose();
         }
+
+        protected static void LogTestSession(SpecFlowContext context)
+        {
+            var testSession = context.Get<TestSession>();
+            Console.WriteLine("Finished scenario with:\n" +
+                              $"Ukprn: {testSession.Ukprn}\n" +
+                              $"Job ID: {testSession.JobId}\n" +
+                              $"Learners:\n" +
+                              $"\t{string.Join("\n\t", testSession.Learners)}");
+        }
     }
 }
