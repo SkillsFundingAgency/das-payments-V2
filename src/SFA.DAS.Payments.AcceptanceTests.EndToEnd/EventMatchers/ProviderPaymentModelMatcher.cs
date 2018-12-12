@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments);
                 expectedPayments.Add(coFundedEmp);
 
-                if (paymentInfo.SfaFullyFundedPayments > 0)
+                if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
                     var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments);
                     expectedPayments.Add(fullyFundedSfa);

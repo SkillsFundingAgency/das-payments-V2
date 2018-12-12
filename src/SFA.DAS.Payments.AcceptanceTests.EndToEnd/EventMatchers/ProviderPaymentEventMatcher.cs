@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedPayments.Add(coFundedEmp);
 
 
-                if (providerPayment.SfaFullyFundedPayments > 0)
+                if (providerPayment.SfaFullyFundedPayments != 0)
                 {
                     var fullyFundedSfa = new FullyFundedSfaProviderPaymentEvent
                     {
@@ -82,8 +82,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         AmountDue = providerPayment.SfaFullyFundedPayments,
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
-                        Learner = learner,
-                        FundingSourceType = FundingSourceType.FullyFundedSfa
+                        Learner = learner
                     };
                     expectedPayments.Add(fullyFundedSfa);
                 }
