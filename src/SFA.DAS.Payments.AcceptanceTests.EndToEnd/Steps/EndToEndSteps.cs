@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -99,16 +100,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (CurrentIlr == null)
             {
-                // Learner -> Aims -> Price Episodes
                 foreach (var testSessionLearner in TestSession.Learners)
-                var learnerId = training.LearnerId;
-                var learner = new FM36Learner {LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber};
-                var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
-                var incentiveEarnings = incentives.Where(e => e.LearnerId == learnerId).ToList();
-                
-                PopulateLearnerEarnings(learner, training, learnerEarnings, incentiveEarnings);
-
-                var command = new ProcessLearnerCommand
                 {
                     var learner = new FM36Learner
                     {

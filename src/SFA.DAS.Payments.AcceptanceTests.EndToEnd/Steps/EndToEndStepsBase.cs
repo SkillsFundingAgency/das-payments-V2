@@ -9,9 +9,6 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Core;
@@ -154,57 +151,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return list;
         }
 
-        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId, 
+        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId,
             DateTime submissionTime, OnProgrammeEarning earning, decimal amount, FundingSourceType fundingSourceType)
         {
             var paymentModel = new PaymentModel
             {
-                new PaymentModel
-                {
-                    CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
-                    DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
-                    Ukprn = TestSession.Ukprn,
-                    JobId = jobId,
-                    SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
-                    TransactionType = providerPayment.TransactionType,
-                    ContractType = learnerTraining.ContractType,
-                    PriceEpisodeIdentifier = "pe-1",
-                    FundingSource = FundingSourceType.CoInvestedSfa,
-                    LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                    LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
-                    LearningAimReference = learnerTraining.AimReference,
-                    LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
-                    IlrSubmissionDateTime = submissionTime,
-                    ExternalId = Guid.NewGuid(),
-                    Amount = providerPayment.SfaCoFundedPayments,
-                    LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = providerPayment.Uln,
-                    LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    LearningAimProgrammeType = learnerTraining.ProgrammeType
-                },
-                new PaymentModel
-                {
-                    CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
-                    DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
-                    Ukprn = TestSession.Ukprn,
-                    JobId = jobId,
-                    SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
-                    TransactionType = providerPayment.TransactionType,
-                    ContractType = learnerTraining.ContractType,
-                    PriceEpisodeIdentifier = "pe-1",
-                    FundingSource = FundingSourceType.CoInvestedEmployer,
-                    LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                    LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
-                    LearningAimReference = learnerTraining.AimReference,
-                    LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
-                    IlrSubmissionDateTime = submissionTime,
-                    ExternalId = Guid.NewGuid(),
-                    Amount = providerPayment.EmployerCoFundedPayments,
-                    LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = providerPayment.Uln,
-                    LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    LearningAimProgrammeType = learnerTraining.ProgrammeType
-                }
+                CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
+                DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
+                Ukprn = TestSession.Ukprn,
+                JobId = jobId,
+                SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
+                TransactionType = providerPayment.TransactionType,
+                ContractType = learnerTraining.ContractType,
+                PriceEpisodeIdentifier = "pe-1",
+                FundingSource = fundingSourceType,
+                LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
+                LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
+                LearningAimReference = learnerTraining.AimReference,
+                LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
+                IlrSubmissionDateTime = submissionTime,
+                ExternalId = Guid.NewGuid(),
+                Amount = amount,
+                LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
+                LearnerUln = providerPayment.Uln,
+                LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                LearningAimProgrammeType = learnerTraining.ProgrammeType
             };
             return paymentModel;
         }
@@ -383,10 +354,49 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 SetPeriodValue(period, balancingEarnings, earning.Balancing);
             });
 
+            var first16To18EmployerIncentive = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeFirstEmp1618Pay",
+            };
+            var first16To18ProviderIncentive = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeFirstProv1618Pay",
+            };
+            var second16To18EmployerIncentive = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeSecondEmp1618Pay",
+            };
+            var second16To18ProviderIncentive = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeSecondProv1618Pay",
+            };
+            var onProgramme16To18FrameworkUplift = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment",
+            };
+            var completion16To18FrameworkUplift = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment",
+            };
+            var balancing16To18FrameworkUplift = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeApplic1618FrameworkUpliftBalancing",
+            };
+            var firstDisadvantagePayment = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeFirstDisadvantagePayment",
+            };
+            var secondDisadvantagePayment = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeSecondDisadvantagePayment",
+            };
+            var learningSupport = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeLSFCash",
+            };
+
             var testLearner = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber);
             learner.ULN = testLearner.Uln;
-            learner.PriceEpisodes = GetPriceEpisodes(training, learningValues, completionEarnings, balancingEarnings, CurrentPriceEpisodes, earnings, CollectionYear);
-            var course = testLearner.Course;
 
             incentives.ForEach(incentive =>
             {
@@ -445,6 +455,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             PriceEpisodePeriodisedValues learningValues, 
             PriceEpisodePeriodisedValues completionEarnings,
             PriceEpisodePeriodisedValues balancingEarnings,
+            PriceEpisodePeriodisedValues first16To18EmployerIncentive,
+            PriceEpisodePeriodisedValues first16To18ProviderIncentive,
+            PriceEpisodePeriodisedValues second16To18EmployerIncentive,
+            PriceEpisodePeriodisedValues second16To18ProviderIncentive,
+            PriceEpisodePeriodisedValues onProgramme16To18FrameworkUplift,
+            PriceEpisodePeriodisedValues completion16To18FrameworkUplift,
+            PriceEpisodePeriodisedValues balancing16To18FrameworkUplift,
+            PriceEpisodePeriodisedValues firstDisadvantagePayment,
+            PriceEpisodePeriodisedValues secondDisadvantagePayment,
+            PriceEpisodePeriodisedValues learningSupport,
             List<Price> priceEpisodes,
             List<OnProgrammeEarning> earnings,
             string collectionYear)
