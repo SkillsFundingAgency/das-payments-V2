@@ -7,6 +7,7 @@
 	Ukprn BIGINT NOT NULL,
 	ContractType  TINYINT NOT NULL,
 	TransactionType TINYINT NOT NULL, 
+	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	Amount DECIMAL(15,5) NOT NULL,
 	CollectionPeriod TINYINT NOT NULL,
 	CollectionYear NVARCHAR(4) NOT NULL,

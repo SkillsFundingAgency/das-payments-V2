@@ -10,16 +10,28 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForActor<ProviderPaymentsService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatefulService<ProviderPaymentsStatefulService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }
             }
             catch (Exception e)
             {
-                ActorEventSource.Current.ActorHostInitializationFailed(e.ToString());
+                ServiceEventSource.Current.ServiceHostInitializationFailed(e.ToString());
                 throw;
             }
+            //try
+            //{
+            //    using (ServiceFabricContainerFactory.CreateContainerForActor<ProviderPaymentsService>())
+            //    {
+            //        Thread.Sleep(Timeout.Infinite);
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ActorEventSource.Current.ActorHostInitializationFailed(e.ToString());
+            //    throw;
+            //}
         }
     }
 }

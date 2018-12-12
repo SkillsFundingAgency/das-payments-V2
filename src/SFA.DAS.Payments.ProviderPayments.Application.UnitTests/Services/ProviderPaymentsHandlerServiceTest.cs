@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
+using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
@@ -30,7 +32,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
         private long ukprn = 10000;
         private long jobId = 10000;
-        private List<PaymentModel> payments;
+        private List<ProviderPaymentEventModel> payments;
         private IlrSubmittedEvent ilrSubmittedEvent;
 
         [SetUp]
@@ -38,33 +40,28 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         {
             mocker = AutoMock.GetLoose();
 
-            payments = new List<PaymentModel>
+            payments = new List<ProviderPaymentEventModel>
             {
-                new PaymentModel()
+                new ProviderPaymentEventModel
                 {
                     Ukprn = ukprn,
                     FundingSource = FundingSourceType.CoInvestedEmployer,
                     SfaContributionPercentage = 0.9m,
                     JobId = 1,
-                    DeliveryPeriod = new CalendarPeriod
-                    {
-                        Year = 2018,
-                        Month = 2,
-                        Period = 7,
-                        Name = "1819-R07"
-                    },
-                    CollectionPeriod = new CalendarPeriod
-                    {
-                        Year = 2018,
-                        Month = 3,
-                        Period = 8,
-                        Name = "1819-R08"
-                    },
+                    DeliveryPeriod = 7,
+                    DeliveryPeriodName= "1819-R07",
+                    DeliveryPeriodYear = 2018,
+                    DeliveryPeriodMonth = 2,
+                    
+                    CollectionPeriod = 8,
+                    CollectionPeriodYear = 2018,
+                    CollectionPeriodName = "1819-R08",
+                    CollectionPeriodMonth = 3,
                     IlrSubmissionDateTime = DateTime.UtcNow,
                     ContractType = ContractType.Act1,
                     PriceEpisodeIdentifier = "P-1",
                     LearnerReferenceNumber = "100500",
-                    ExternalId = Guid.NewGuid(),
+                    EventId = Guid.NewGuid(),
                     LearningAimFundingLineType = "16-18",
                     LearningAimPathwayCode = 1,
                     LearningAimReference = "1",
@@ -82,11 +79,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(t => t.SavePayment(It.IsAny<PaymentModel>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
-
-            providerPaymentsRepository
-                          .Setup(o => o.GetMonthEndPayments(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(payments)
-                          .Verifiable();
 
             ilrSubmittedEvent = new IlrSubmittedEvent
             {
@@ -114,8 +106,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(true);
 
+            mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
+                .Setup(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()))
+                .Returns(Task.CompletedTask);
 
             providerPaymentsService = mocker.Create<ProviderPaymentsService>();
+
+
         }
 
         [Test]
@@ -123,14 +120,17 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         {
             await providerPaymentsService.ProcessPayment(payments.First(), default(CancellationToken));
 
-            providerPaymentsRepository
-                .Verify(o => o.SavePayment(It.IsAny<PaymentModel>(), default(CancellationToken)), Times.Once);
-
             ilrSubmittedEventCache
                 .Verify(o => o.TryGet(ukprn.ToString(), default(CancellationToken)), Times.Once);
 
             validateIlrSubmission
                 .Verify(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()), Times.Once);
+
+            mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
+                .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()));
+
+            mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
+                .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()),Times.Once);
         }
 
         [Test]
@@ -143,12 +143,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
             await providerPaymentsService.ProcessPayment(payments.First(), default(CancellationToken));
 
-            providerPaymentsRepository
-                .Verify(o => o.SavePayment(It.IsAny<PaymentModel>(), default(CancellationToken)), Times.Never);
+            mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
+                .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()), Times.Never);
 
         }
-
-
-
     }
 }

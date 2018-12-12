@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.ProviderPayments.Application.Mapping;
+using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
 {
@@ -52,19 +53,17 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 EventTime = DateTimeOffset.UtcNow
             };
-            var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>(employerCoInvested);
+            var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
-            payment.CollectionPeriod.Should().NotBeNull();
-            payment.CollectionPeriod.Name.Should().BeEquivalentTo(employerCoInvested.CollectionPeriod.Name);
-            payment.CollectionPeriod.Month.Should().Be(employerCoInvested.CollectionPeriod.Month);
-            payment.CollectionPeriod.Year.Should().Be(employerCoInvested.CollectionPeriod.Year);
-            payment.CollectionPeriod.Period.Should().Be(employerCoInvested.CollectionPeriod.Period);
-
-
-            payment.DeliveryPeriod.Name.Should().BeEquivalentTo(employerCoInvested.CollectionPeriod.Name);
-            payment.DeliveryPeriod.Month.Should().Be(employerCoInvested.CollectionPeriod.Month);
-            payment.DeliveryPeriod.Year.Should().Be(employerCoInvested.CollectionPeriod.Year);
-            payment.DeliveryPeriod.Period.Should().Be(employerCoInvested.CollectionPeriod.Period);
+            payment.CollectionPeriod.Should().Be(employerCoInvested.CollectionPeriod.Period);
+            payment.CollectionPeriodName.Should().BeEquivalentTo(employerCoInvested.CollectionPeriod.Name);
+            payment.CollectionPeriodMonth.Should().Be(employerCoInvested.CollectionPeriod.Month);
+            payment.CollectionPeriodYear.Should().Be(employerCoInvested.CollectionPeriod.Year);
+            
+            payment.DeliveryPeriodName.Should().BeEquivalentTo(employerCoInvested.CollectionPeriod.Name);
+            payment.DeliveryPeriodMonth.Should().Be(employerCoInvested.CollectionPeriod.Month);
+            payment.DeliveryPeriodYear.Should().Be(employerCoInvested.CollectionPeriod.Year);
+            payment.DeliveryPeriod.Should().Be(employerCoInvested.CollectionPeriod.Period);
         }
     }
 }

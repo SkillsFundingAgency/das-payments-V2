@@ -7,15 +7,11 @@
     <Parameter Name="ServiceBusConnectionString" Value="" />
   </Section>
   <Section Name="Settings">
-    <Parameter Name="EndpointName" Value="" />
-    <Parameter Name="FailedMessagesQueue" Value="" />
-  </Section>
-  <Section Name="ProviderPaymentsServiceActorServiceReplicatorConfig">
-    <Parameter Name="ReplicatorEndpoint" Value="ProviderPaymentsServiceActorServiceReplicatorEndpoint" />
-    <Parameter Name="BatchAcknowledgementInterval" Value="0.005" />
-  </Section>
-  <Section Name="ProviderPaymentsServiceActorServiceReplicatorSecurityConfig">
-    <Parameter Name="CredentialType" Value="None" />
+    <Parameter Name="EndpointName" Value="sfa-das-payments-providerpayments" />
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-providerpayments-errors" />
+    <Parameter Name="BatchIntervalInSeconds" Value="10" />
+    <Parameter Name="BatchSize" Value="500" />
+    <Parameter Name="BatchFailureTimeoutInSeconds" Value="60" />
   </Section>
   <!-- The content will be generated during build -->
 </Settings>

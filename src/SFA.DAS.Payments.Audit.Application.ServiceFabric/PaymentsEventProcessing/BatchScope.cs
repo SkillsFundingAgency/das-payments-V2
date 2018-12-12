@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessi
             lifetimeScope?.Dispose();
         }
 
-        public IPaymentsEventModelBatchProcessor<T> GetBatchProcessor<T>() where T: PaymentsEventModel
+        public IPaymentsEventModelBatchProcessor<T> GetBatchProcessor<T>() where T: IPaymentsEventModel
         {
             return lifetimeScope.Resolve<IPaymentsEventModelBatchProcessor<T>>();
         }

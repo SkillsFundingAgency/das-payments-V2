@@ -1,36 +1,36 @@
 ﻿using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Domain;
 using SFA.DAS.Payments.ProviderPayments.Domain.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
+using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public class ProviderPaymentsService : IProviderPaymentsService
     {
 
-        private readonly IProviderPaymentsRepository providerPaymentsRepository;
         private readonly IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache;
+        private readonly IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache;
         private readonly IValidateIlrSubmission validateIlrSubmission;
         private readonly IPaymentLogger paymentLogger;
 
-        public ProviderPaymentsService(IProviderPaymentsRepository providerPaymentsRepository,
-            IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache,
-            IValidateIlrSubmission validateIlrSubmission,
+        public ProviderPaymentsService(IProviderPaymentsRepository providerPaymentsRepository, IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache, 
+            IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache, IValidateIlrSubmission validateIlrSubmission,
             IPaymentLogger paymentLogger)
         {
-            this.providerPaymentsRepository = providerPaymentsRepository;
             this.ilrSubmittedEventCache = ilrSubmittedEventCache;
+            this.paymentCache = paymentCache ?? throw new ArgumentNullException(nameof(paymentCache));
             this.validateIlrSubmission = validateIlrSubmission;
             this.paymentLogger = paymentLogger;
         }
 
-        public async Task ProcessPayment(PaymentModel payment, CancellationToken cancellationToken)
+        public async Task ProcessPayment(ProviderPaymentEventModel payment, CancellationToken cancellationToken)
         {
             var isCurrentProviderIlr = await IsCurrentProviderIlr(payment.JobId, payment.Ukprn, payment.IlrSubmissionDateTime, cancellationToken);
 
@@ -40,14 +40,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
                 return;
             }
 
-            paymentLogger.LogDebug($"Received valid payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
-
-            await providerPaymentsRepository.SavePayment(payment, cancellationToken);
+            paymentLogger.LogVerbose($"Received valid payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
+            await paymentCache.AddPayment(payment);
+            paymentLogger.LogInfo("Finished adding the payment to the cache.");
         }
 
         private async Task<bool> IsCurrentProviderIlr(long jobId, long ukprn, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken)
         {
             var currentIlr = await GetCurrentIlrSubmissionEvent(ukprn, cancellationToken);
+            //TODO: this looks like a bit of a hack to me, should be a specific payment validation class
             var allowPayment = validateIlrSubmission.IsLatestIlrPayment(new IlrSubmissionValidationRequest
             {
                 IncomingPaymentUkprn = ukprn,

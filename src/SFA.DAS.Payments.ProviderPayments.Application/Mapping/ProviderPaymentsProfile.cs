@@ -4,6 +4,7 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
+using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
 {
@@ -13,15 +14,21 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
         public ProviderPaymentsProfile()
         {
 
-            CreateMap<FundingSourcePaymentEvent, PaymentModel>()
-                .Include<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>()
-                .Include<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>()
-                .Include<SfaFullyFundedFundingSourcePaymentEvent, PaymentModel>()
-                .ForMember(dest => dest.ExternalId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
+            CreateMap<FundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .Include<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .Include<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .Include<SfaFullyFundedFundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .ForMember(dest => dest.EventId, opt => opt.ResolveUsing<Guid>(src => Guid.NewGuid()))
                 .ForMember(dest => dest.FundingSourceId, opt => opt.MapFrom(source => source.EventId))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.CollectionPeriod.Year, source.CollectionPeriod.Month)))
-                .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.DeliveryPeriod.Year, source.DeliveryPeriod.Month)))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Period))
+                .ForMember(dest => dest.CollectionPeriodName, opt => opt.MapFrom(source => source.CollectionPeriod.Name))
+                .ForMember(dest => dest.CollectionPeriodYear, opt => opt.MapFrom(source => source.CollectionPeriod.Year))
+                .ForMember(dest => dest.CollectionPeriodMonth, opt => opt.MapFrom(source => source.CollectionPeriod.Month))
+                .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod.Period))
+                .ForMember(dest => dest.DeliveryPeriodName, opt => opt.MapFrom(source => source.DeliveryPeriod.Name))
+                .ForMember(dest => dest.DeliveryPeriodYear, opt => opt.MapFrom(source => source.DeliveryPeriod.Year))
+                .ForMember(dest => dest.DeliveryPeriodMonth, opt => opt.MapFrom(source => source.DeliveryPeriod.Month))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(source => source.AmountDue))
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                 .ForMember(dest => dest.FundingSource, opt => opt.MapFrom(source => source.FundingSourceType))
@@ -38,11 +45,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier))
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => source.TransactionType))
-                .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn));
+                .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
+                .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
+                .ForMember(dest => dest.CollectionYear, opt => opt.Ignore());
 
-            CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>();
-            CreateMap<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>();
-            CreateMap<SfaFullyFundedFundingSourcePaymentEvent, PaymentModel>();
+            CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
+            CreateMap<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
+            CreateMap<SfaFullyFundedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
 
             CreateMap<PaymentModel, ProviderPaymentEvent>()
                 .Include<PaymentModel, EmployerCoInvestedProviderPaymentEvent>()
