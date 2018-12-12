@@ -44,14 +44,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             foreach (var paymentInfo in expectedPaymentInfo)
             {
                 var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa, paymentInfo.SfaCoFundedPayments);
+                expectedPayments.Add(coFundedSfa);
 
                 var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments);
-
-                var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments);
-
-                expectedPayments.Add(coFundedSfa);
                 expectedPayments.Add(coFundedEmp);
-                expectedPayments.Add(fullyFundedSfa);
+
+                if (paymentInfo.SfaFullyFundedPayments != 0)
+                {
+                    var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments);
+                    expectedPayments.Add(fullyFundedSfa);
+                }
             }
 
             return expectedPayments;

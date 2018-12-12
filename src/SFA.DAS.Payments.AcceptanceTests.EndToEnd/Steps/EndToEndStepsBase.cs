@@ -180,7 +180,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return paymentModel;
         }
 
-        protected void PopulateLearner(FM36Learner learner, Learner testLearner, IEnumerable<OnProgrammeEarning> earnings)
+        protected void PopulateLearner(FM36Learner learner, Learner testLearner, IEnumerable<OnProgrammeEarning> earnings, IEnumerable<IncentiveEarning> incentives)
         {
             var learningValues = new PriceEpisodePeriodisedValues
             {
@@ -322,17 +322,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected void PopulateLearner(FM36Learner learner, Training training, List<OnProgrammeEarning> earnings)
+        protected void PopulateLearner(FM36Learner learner, Training training, List<OnProgrammeEarning> earnings, List<IncentiveEarning> incentives)
         {
-           
-
-
-        }
-
-        protected void PopulateLearnerEarnings(FM36Learner learner, Training training, List<OnProgrammeEarning> earnings,
-            List<IncentiveEarning> incentives)
-        {
-
             var learningValues = new PriceEpisodePeriodisedValues
             {
                 AttributeName = "PriceEpisodeOnProgPayment",

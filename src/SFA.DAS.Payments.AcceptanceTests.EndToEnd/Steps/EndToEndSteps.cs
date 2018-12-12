@@ -107,7 +107,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         LearnRefNumber = testSessionLearner.LearnRefNumber,
                     };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier);
-                    PopulateLearner(learner, testSessionLearner, learnerEarnings);
+                    PopulateLearner(learner, testSessionLearner, learnerEarnings, incentives);
                     await SendProcessLearnerCommand(learner);
                 }
             }
@@ -121,7 +121,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber,
                     };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
-                    PopulateLearner(learner, training, learnerEarnings);
+                    PopulateLearner(learner, training, learnerEarnings, incentives);
                    await SendProcessLearnerCommand(learner);
                 }
             }

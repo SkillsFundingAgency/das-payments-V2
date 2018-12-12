@@ -62,6 +62,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     DeliveryPeriod = deliveryPeriod,
                     Learner = learner
                 };
+                expectedPayments.Add(coFundedSfa);
 
                 var coFundedEmp = new EmployerCoInvestedProviderPaymentEvent
                 {
@@ -71,19 +72,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     DeliveryPeriod = deliveryPeriod,
                     Learner = learner
                 };
-
-                var fullyFundedSfa = new FullyFundedSfaProviderPaymentEvent
-                {
-                    TransactionType = providerPayment.TransactionType,
-                    AmountDue = providerPayment.SfaFullyFundedPayments,
-                    CollectionPeriod = eventCollectionPeriod,
-                    DeliveryPeriod = deliveryPeriod,
-                    Learner = learner
-                };
-
-                expectedPayments.Add(coFundedSfa);
                 expectedPayments.Add(coFundedEmp);
-                expectedPayments.Add(fullyFundedSfa);
+
+                if (providerPayment.SfaFullyFundedPayments != 0)
+                {
+                    var fullyFundedSfa = new FullyFundedSfaProviderPaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.SfaFullyFundedPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner
+                    };
+                    expectedPayments.Add(fullyFundedSfa);
+                }
             }
 
             return expectedPayments;
