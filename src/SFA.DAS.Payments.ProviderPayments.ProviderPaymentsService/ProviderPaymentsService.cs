@@ -1,5 +1,6 @@
 ﻿using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using System.Fabric;
 using Autofac;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;

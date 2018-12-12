@@ -11,6 +11,7 @@
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -29,6 +30,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -48,6 +50,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>

@@ -5,6 +5,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Domain;
 using SFA.DAS.Payments.ProviderPayments.Domain.Models;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
@@ -19,29 +20,37 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache;
         private readonly IValidateIlrSubmission validateIlrSubmission;
         private readonly IPaymentLogger paymentLogger;
+        private readonly ITelemetry telemetry;
 
         public ProviderPaymentsService(IProviderPaymentsRepository providerPaymentsRepository, IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache, 
             IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache, IValidateIlrSubmission validateIlrSubmission,
-            IPaymentLogger paymentLogger)
+            IPaymentLogger paymentLogger,
+            ITelemetry telemetry)
         {
             this.ilrSubmittedEventCache = ilrSubmittedEventCache;
             this.paymentCache = paymentCache ?? throw new ArgumentNullException(nameof(paymentCache));
             this.validateIlrSubmission = validateIlrSubmission;
             this.paymentLogger = paymentLogger;
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
         public async Task ProcessPayment(ProviderPaymentEventModel payment, CancellationToken cancellationToken)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var isCurrentProviderIlr = await IsCurrentProviderIlr(payment.JobId, payment.Ukprn, payment.IlrSubmissionDateTime, cancellationToken);
 
             if (!isCurrentProviderIlr)
             {
                 paymentLogger.LogWarning($"Received out of sequence payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
+                telemetry.TrackEvent("Provider payments service received out of sequence payment");
                 return;
             }
 
             paymentLogger.LogVerbose($"Received valid payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
             await paymentCache.AddPayment(payment);
+            stopwatch.Stop();
+            telemetry.TrackDuration(GetType().FullName + ".ProcessPayment", stopwatch.Elapsed);
             paymentLogger.LogInfo("Finished adding the payment to the cache.");
         }
 

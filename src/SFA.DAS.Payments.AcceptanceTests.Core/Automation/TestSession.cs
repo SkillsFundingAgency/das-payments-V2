@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Bogus;
@@ -14,11 +15,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
         public long JobId { get; }
-        public DateTime IlrSubmissionTime { get; }
+        public DateTime IlrSubmissionTime { get; set; }
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
-        public TestSession()
+        private static ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
+        public TestSession(long? ukprn = null)
         {
             courseFaker = new Faker<Course>();
             courseFaker
@@ -35,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
-            Ukprn = GenerateId();
+            Ukprn = ukprn ?? GenerateId();
             Learners = new List<Learner> { GenerateLearner() };
             JobId = GenerateId();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
@@ -54,9 +56,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
-        public Learner GenerateLearner()
+        public Learner GenerateLearner(long? uniqueLearnerNumber = null)
         {
-            var uln = GenerateId();
+            var uln = uniqueLearnerNumber ?? GenerateId();
+            var limit = 10;
+            while (allLearners.Contains(uln))
+            {
+                if (--limit < 0)
+                    throw new InvalidOperationException("Failed to generate random learners.");
+                uln = GenerateId();
+            }
+            allLearners.Add(uln);
             return new Learner
             {
                 Ukprn = Ukprn,

@@ -14,6 +14,7 @@
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="ProviderPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
   </Parameters>
   <ServiceManifestImport>
@@ -62,6 +63,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[ProviderPaymentsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[ProviderPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -81,6 +83,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[ProviderPaymentsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[ProviderPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>

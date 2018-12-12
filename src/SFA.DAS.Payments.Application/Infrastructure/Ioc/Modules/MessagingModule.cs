@@ -3,6 +3,7 @@ using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Application.Messaging.Telemetry;
 using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
@@ -34,15 +35,17 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
                 endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
                 endpointConfiguration.EnableInstallers();
-
+                endpointConfiguration.Pipeline.Register(typeof(HandlerTimingBehaviour), "Sends handler timing to telemetry service.");
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()
             .SingleInstance();
-
+            builder.RegisterType<HandlerTimingBehaviour>();
             builder.RegisterType<EndpointInstanceFactory>()
                 .As<IEndpointInstanceFactory>()
                 .SingleInstance();
+
+
             //builder.Register(c =>
             //    {
             //        var endpointConfig = c.Resolve<EndpointConfiguration>();
