@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var expectedPayments = new List<ApprenticeshipContractType2RequiredPaymentEvent>();
 
-            foreach (var payment in paymentSpec.Where(e => e.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name))
+            foreach (var payment in paymentSpec.Where(e => e.CollectionPeriod.ToCalendarPeriod().Name == collectionPeriod.Name))
             {
                 var learningPayment = new ApprenticeshipContractType2RequiredPaymentEvent
                 {
