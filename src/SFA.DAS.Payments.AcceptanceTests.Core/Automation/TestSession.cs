@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
     {
         public LearnRefNumberGenerator LearnRefNumberGenerator { get; }
         public string SessionId { get; }
-        public long Ukprn { get; }
+        public long Ukprn { get; private set; }
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
         public long JobId { get; }
@@ -47,6 +47,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var id = random.Next(maxValue);
             //TODO: make sure that the id isn't already in use.
             return id;
+        }
+
+        public void RegenerateUkprn()
+        {
+            Ukprn = GenerateId();
         }
 
         public string GenerateLearnerReference(string learnerId)

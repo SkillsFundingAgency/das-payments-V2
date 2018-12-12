@@ -10,6 +10,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
+using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -61,6 +62,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected EndToEndStepsBase(FeatureContext context) : base(context)
         {
+        }
+
+        protected void AddNewIlr(Table table)
+        {
+            var ilr = table.CreateSet<Training>().ToList();
+            CurrentIlr = ilr;
+            AddTestLearners(CurrentIlr);
         }
 
         protected void SetCollectionPeriod(string collectionPeriod)

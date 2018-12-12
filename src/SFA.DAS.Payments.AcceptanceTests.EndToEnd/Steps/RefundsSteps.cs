@@ -64,14 +64,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await dataContext.SaveChangesAsync();
         }
 
-        [Given(@"the Provider now changes the Learner details as follows")]
-        public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
-        {
-            var ilr = table.CreateSet<Training>().ToList();
-            CurrentIlr = ilr;
-            AddTestLearners(CurrentIlr);
-        }
-
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
