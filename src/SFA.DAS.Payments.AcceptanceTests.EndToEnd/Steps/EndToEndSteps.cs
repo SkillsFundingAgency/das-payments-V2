@@ -97,13 +97,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
             
-
             if (CurrentIlr == null)
             {
                 // Learner -> Aims -> Price Episodes
                 foreach (var testSessionLearner in TestSession.Learners)
                 {
-                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
+                    var learner = new FM36Learner
+                    {
+                        LearnRefNumber = testSessionLearner.LearnRefNumber,
+                    };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier);
                     PopulateLearner(learner, testSessionLearner, learnerEarnings);
                     await SendProcessLearnerCommand(learner);
@@ -114,7 +116,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in CurrentIlr)
                 {
                     var learnerId = training.LearnerId;
-                    var  learner = new FM36Learner { LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber };
+                    var learner = new FM36Learner
+                    {
+                        LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber,
+                    };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
                     PopulateLearner(learner, training, learnerEarnings);
                    await SendProcessLearnerCommand(learner);
@@ -151,6 +156,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(monthEndCommand);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
+            foreach (var payment in expectedPayments)
+            {
+                payment.Uln = TestSession.GetLearner(payment.LearnerId).Uln;
+            }
             var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
