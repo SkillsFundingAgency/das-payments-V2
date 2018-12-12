@@ -3,6 +3,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following provider payments had been generated")]
         public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
+            if (TestSession.AtLeastOneScenarioCompleted)
+            {
+                return;
+            }
+
             var payments = table.CreateSet<ProviderPayment>().ToList();
 
             var previousJobId = TestSession.GenerateId();

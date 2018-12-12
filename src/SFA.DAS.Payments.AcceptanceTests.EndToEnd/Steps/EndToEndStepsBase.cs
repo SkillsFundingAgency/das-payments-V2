@@ -22,8 +22,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected DcHelper DcHelper => Get<DcHelper>();
 
-        private static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
-        
         protected List<Price> CurrentPriceEpisodes
         {
             get => !Context.TryGetValue<List<Price>>(out var currentPriceEpisodes) ? null : currentPriceEpisodes;
@@ -121,12 +119,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddTestAims(IEnumerable<Aim> aims)
         {
-            if (AimsProcessedForJob.Contains(TestSession.JobId))
+            if (TestSession.AtLeastOneScenarioCompleted)
             {
                 return;
             }
 
-            AimsProcessedForJob.Add(TestSession.JobId);
             foreach (var aim in aims)
             {
                 var learner = TestSession.Learners.FirstOrDefault(x => x.LearnerIdentifier == aim.LearnerId);

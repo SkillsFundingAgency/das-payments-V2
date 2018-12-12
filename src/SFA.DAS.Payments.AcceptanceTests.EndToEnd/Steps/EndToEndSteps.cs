@@ -6,7 +6,6 @@ using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -22,8 +21,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     public class EndToEndSteps : EndToEndStepsBase
     {
-        private static readonly HashSet<long> UkprnSwitchesForJob = new HashSet<long>();
-
         public EndToEndSteps(FeatureContext context) : base(context)
         {
         }
@@ -53,13 +50,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the Learner has now changed to \"(.*)\" as follows")]
         public void GivenTheLearnerChangesProvider(string providerId, Table table)
         {
-            if (!UkprnSwitchesForJob.Contains(TestSession.JobId))
+            if (!TestSession.AtLeastOneScenarioCompleted)
             {
                 TestSession.RegenerateUkprn();
-                UkprnSwitchesForJob.Add(TestSession.JobId);
+                AddNewIlr(table);
             }
-            
-            AddNewIlr(table);
         }
 
         [Given(@"the following learners")]
@@ -76,16 +71,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestAims(aims);
         }
 
-        private static readonly HashSet<long> PriceEpisodesProcessedForJob = new HashSet<long>();
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
         {
-            if (PriceEpisodesProcessedForJob.Contains(TestSession.JobId))
+            if (TestSession.AtLeastOneScenarioCompleted)
             {
                 return;
             }
-
-            PriceEpisodesProcessedForJob.Add(TestSession.JobId);
 
             var newPriceEpisodes = table.CreateSet<Price>().ToList();
             CurrentPriceEpisodes = newPriceEpisodes;
