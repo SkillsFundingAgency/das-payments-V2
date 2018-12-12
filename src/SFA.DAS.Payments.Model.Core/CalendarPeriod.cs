@@ -85,6 +85,12 @@ namespace SFA.DAS.Payments.Model.Core
             Period = (byte) period;
         }
 
+        public DateTime LastDayOfMonthAfter(int periods)
+        {
+            var month = new DateTime(Year, Month, DateTime.DaysInMonth(Year, Month));
+            return month.AddMonths(periods);
+        }
+
         public override string ToString()
         {
             return string.Concat(Name, " ", Year, "-", Month);

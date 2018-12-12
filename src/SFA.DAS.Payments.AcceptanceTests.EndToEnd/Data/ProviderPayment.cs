@@ -11,5 +11,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public decimal SfaFullyFundedPayments { get; set; }
         public TransactionType TransactionType { get; set; }
         public string LearnerId { get; set; }
+        public long Uln { get; set; }
     }
 }

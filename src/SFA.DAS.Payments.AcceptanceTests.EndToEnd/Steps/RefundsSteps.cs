@@ -31,6 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheFollowingEarningsHadBeenGeneratedForTheLearner(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
+            
             PreviousEarnings = earnings;
         }
 
@@ -38,6 +39,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
             var payments = table.CreateSet<ProviderPayment>().ToList();
+            foreach (var payment in payments)
+            {
+                payment.Uln = TestSession.GetLearner(payment.LearnerId).Uln;
+            }
 
             var previousJobId = TestSession.GenerateId();
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);
@@ -72,10 +77,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(CurrentIlr);
         }
 
-        [Given(@"price details as follows")]
-        public void GivenPriceDetailsAsFollows(Table table)
+        [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]
+        public void TheProviderChangesTheLearnersUln(long newUln)
         {
-            CurrentPriceEpisodes = table.CreateSet<Price>().ToList();
+            TestSession.Learner.Uln = newUln;
+            CurrentIlr = PreviousIlr;
         }
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
@@ -96,7 +102,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name, expectedPayments, CurrentIlr.First().ContractType);
+            var contractType = CurrentIlr == null
+                ? TestSession.Learners.First().Aims.First().PriceEpisodes.First().ContractType
+                : CurrentIlr.First().ContractType;
+                    
+            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
     }
