@@ -20,6 +20,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
+        [Given("\"(.*)\" previously submitted the following learner details")]
+        public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetailsForProvider(
+            string providerId,
+            Table table)
+        {
+            GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetails(table);
+        }
+
         [Given(@"the provider previously submitted the following learner details")]
         public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetails(Table table)
         {
@@ -33,6 +41,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
             PreviousEarnings = earnings;
+        }
+
+        [Given("the following payments had been generated for \"(.*)\"")]
+        public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(string providerId, Table table)
+        {
+            await GivenTheFollowingProviderPaymentsHadBeenGenerated(table);
         }
 
         [Given(@"the following provider payments had been generated")]
