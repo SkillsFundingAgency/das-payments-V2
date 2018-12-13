@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using ESFA.DC.FileService;
+using ESFA.DC.FileService.Config;
+using ESFA.DC.FileService.Config.Interface;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.IO.Interfaces;
-using ESFA.DC.IO.Redis;
-using ESFA.DC.IO.Redis.Config;
-using ESFA.DC.IO.Redis.Config.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Queueing;
 using ESFA.DC.Queueing.Interface;
@@ -19,21 +21,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
     public class DcHelper
     {
         private readonly IJsonSerializationService serializationService;
-        private readonly IKeyValuePersistenceService redisService;
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
+        private readonly IFileService azureFileService;
 
         public DcHelper(IContainer container)
         {
-            redisService = container.Resolve<IKeyValuePersistenceService>();
             serializationService = container.Resolve<IJsonSerializationService>();
             topicPublishingService = container.Resolve<ITopicPublishService<JobContextDto>>();
+            azureFileService = container.Resolve<IFileService>();
         }
 
         public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, string collectionYear)
         {
             try
             {
-                var messagePointer = Guid.NewGuid().ToString();
+                var messagePointer = Guid.NewGuid().ToString().Replace("-", string.Empty);
                 var ilrSubmission = new FM36Global
                 {
                     UKPRN = (int)ukprn,
@@ -41,10 +43,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     Learners = learners
                 };
                 var json = serializationService.Serialize(ilrSubmission);
-                Console.WriteLine($"ILR Submission: {json}");
-                await redisService
-                    .SaveAsync(messagePointer, json)
-                    .ConfigureAwait(true);
+
+                using (var stream = await azureFileService.OpenWriteStreamAsync(messagePointer, DcConfiguration.DcBlobStorageContainer, new CancellationToken()))
+                using (var writer = new StreamWriter(stream))
+                {
+                    await writer.WriteAsync(json);
+                }
 
                 var dto = new JobContextDto
                 {
@@ -54,7 +58,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                         {"FundingFm36Output", messagePointer},
                         {"Filename", "blah blah"},
                         {"UkPrn", ukprn},
-                        {"Username", "Bob"}
+                        {"Username", "Bob"},
+                        {"Container", DcConfiguration.DcBlobStorageContainer }
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
                     TopicPointer = 0,
@@ -67,7 +72,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                             {
                                 new TaskItemDto
                                 {
-                                    SupportsParallelExecution = false, 
+                                    SupportsParallelExecution = false,
                                     Tasks = new List<string>()
                                 }
                             }
@@ -87,21 +92,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public static void AddDcConfig(ContainerBuilder builder)
         {
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
-            builder.Register(c => new RedisKeyValuePersistenceServiceConfig
+            builder.Register(c =>
+                    new AzureStorageFileServiceConfiguration
+                    { ConnectionString = DcConfiguration.DcStorageConnectionString })
+                .As<IAzureStorageFileServiceConfiguration>()
+                .SingleInstance();
+
+            builder.Register(c =>
             {
-                ConnectionString = DcConfiguration.AzureRedisConnectionString,
-                KeyExpiry = new TimeSpan(14, 0, 0, 0)
-            }).As<IRedisKeyValuePersistenceServiceConfig>().SingleInstance();
+                var config = c.Resolve<IAzureStorageFileServiceConfiguration>();
 
-            builder.RegisterType<RedisKeyValuePersistenceService>().As<IKeyValuePersistenceService>()
-                .InstancePerLifetimeScope();
-
+                return new AzureStorageFileService(config);
+            }).As<IFileService>().InstancePerLifetimeScope();
             builder.Register(c => new TopicConfiguration(DcConfiguration.DcServiceBusConnectionString,
                     DcConfiguration.TopicName,
                     DcConfiguration.SubscriptionName, 1,
                     maximumCallbackTimeSpan: TimeSpan.FromMinutes(40)))
                 .As<ITopicConfiguration>();
-           
+
             builder.Register(c =>
             {
                 var config = c.Resolve<ITopicConfiguration>();
