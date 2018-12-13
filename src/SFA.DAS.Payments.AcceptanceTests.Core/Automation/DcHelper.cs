@@ -45,11 +45,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 var json = serializationService.Serialize(ilrSubmission);
 
                 using (var stream = await azureFileService.OpenWriteStreamAsync(messagePointer, DcConfiguration.DcBlobStorageContainer, new CancellationToken()))
+                using (var writer = new StreamWriter(stream))
                 {
-                    using (var writer = new StreamWriter(stream))
-                    {
-                        await writer.WriteAsync(json);
-                    }
+                    await writer.WriteAsync(json);
                 }
 
                 var dto = new JobContextDto
@@ -96,7 +94,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
             builder.Register(c =>
                     new AzureStorageFileServiceConfiguration
-                        {ConnectionString = DcConfiguration.DcStorageConnectionString})
+                    { ConnectionString = DcConfiguration.DcStorageConnectionString })
                 .As<IAzureStorageFileServiceConfiguration>()
                 .SingleInstance();
 
