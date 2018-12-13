@@ -36,8 +36,8 @@ Scenario Outline: A non-levy learner withdraws after planned end date
 		| ULN       | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
 		| learner a | 1        | Sep/Last Academic Year | 12 months        | 12000                | Sep/Last Academic Year              | 3000                   | Sep/Last Academic Year                |                 | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
     And the following earnings had been generated for the learner
-        | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 1000         | 0          | 0         |
+        | Delivery Period           | On-Programme | Completion | Balancing | 
+        | Aug/Current Academic Year | 1000         | 0          | 0         | 
         | Sep/Current Academic Year | 0            | 0          | 0         |
         | Oct/Current Academic Year | 0            | 0          | 0         |
         | Nov/Current Academic Year | 0            | 0          | 0         |

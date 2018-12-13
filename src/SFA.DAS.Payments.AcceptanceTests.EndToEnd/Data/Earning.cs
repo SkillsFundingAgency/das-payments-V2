@@ -24,5 +24,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public string PriceEpisodeIdentifier { get; set; }
 
         public IDictionary<TransactionType, decimal> Values { get; set; } = new Dictionary<TransactionType, decimal>();
+        public long Uln { get; set; }
     }
 }
