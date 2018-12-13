@@ -23,10 +23,4 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="ESFA.DC.IO.AzureStorage">
-      <HintPath>..\packages\esfa.dc.io.azurestorage\0.1.15-beta0001\lib\netstandard2.0\ESFA.DC.IO.AzureStorage.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
