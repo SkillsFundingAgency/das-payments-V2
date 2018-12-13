@@ -31,6 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheFollowingEarningsHadBeenGeneratedForTheLearner(Table table)
         {
             var earnings = table.CreateSet<OnProgrammeEarning>().ToList();
+            
             PreviousEarnings = earnings;
         }
 
@@ -38,6 +39,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
             var payments = table.CreateSet<ProviderPayment>().ToList();
+            foreach (var payment in payments)
+            {
+                payment.Uln = TestSession.GetLearner(payment.LearnerId).Uln;
+            }
 
             var previousJobId = TestSession.GenerateId();
             var previousSubmissionTime = DateTime.UtcNow.AddHours(-1);
@@ -62,6 +67,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             dataContext.Payment.AddRange(previousPayments);
             await dataContext.SaveChangesAsync();
+        }
+
+        [Given(@"the Provider now changes the Learner details as follows")]
+        public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
+        {
+            var ilr = table.CreateSet<Training>().ToList();
+            CurrentIlr = ilr;
+            AddTestLearners(CurrentIlr);
+        }
+
+        [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]
+        public void TheProviderChangesTheLearnersUln(long newUln)
+        {
+            TestSession.Learner.Uln = newUln;
+            CurrentIlr = PreviousIlr;
         }
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
