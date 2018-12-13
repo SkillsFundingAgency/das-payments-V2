@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac;
+﻿using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -9,6 +6,13 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using NServiceBus;
+using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -98,6 +102,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.ProgrammeType = ilrLearner.ProgrammeType;
                 learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
                 learner.Course.PathwayCode = ilrLearner.PathwayCode;
+                if (ilrLearner.Uln != default(long))
+                {
+                    learner.Uln = ilrLearner.Uln;
+                }
             });
         }
 
@@ -158,7 +166,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.SfaCoFundedPayments,
                     LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = TestSession.Learner.Uln,
+                    LearnerUln = providerPayment.Uln,
                     LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
                     LearningAimProgrammeType = learnerTraining.ProgrammeType
                 },
@@ -181,7 +189,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ExternalId = Guid.NewGuid(),
                     Amount = providerPayment.EmployerCoFundedPayments,
                     LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = TestSession.Learner.Uln,
+                    LearnerUln = providerPayment.Uln,
                     LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
                     LearningAimProgrammeType = learnerTraining.ProgrammeType
                 }
@@ -234,7 +242,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>(),
                         PriceEpisodeValues = new PriceEpisodeValues(),
                     };
-                    priceEpisodesForAim.Add(newPriceEpisode);
 
                     newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = priceEpisode.AimSequenceNumber;
                     newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = episodeStartDate;
@@ -242,11 +249,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
                     newPriceEpisode.PriceEpisodeValues.TNP1 = priceEpisode.TotalTrainingPrice;
                     newPriceEpisode.PriceEpisodeValues.TNP2 = priceEpisode.TotalAssessmentPrice;
-                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice =
-                        newPriceEpisode.PriceEpisodeValues.TNP1 +
-                        newPriceEpisode.PriceEpisodeValues.TNP2;
-                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct =
-                        priceEpisode.SfaContributionPercentage.ToPercent();
+                    newPriceEpisode.PriceEpisodeValues.TNP3 = priceEpisode.ResidualTrainingPrice;
+                    newPriceEpisode.PriceEpisodeValues.TNP4 = priceEpisode.ResidualAssessmentPrice;
+                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice = newPriceEpisode.PriceEpisodeValues.TNP1 + newPriceEpisode.PriceEpisodeValues.TNP2;
+                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct = priceEpisode.SfaContributionPercentage.ToPercent();
+
+                    priceEpisodesForAim.Add(newPriceEpisode);
                 }
 
                 var orderedPriceEpisodes = priceEpisodesForAim
@@ -260,7 +268,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                     currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
                         .PriceEpisodeValues.EpisodeStartDate;
                     currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
-                    if (i + 1 < orderedPriceEpisodes.Count && 
+                    if (i + 1 < orderedPriceEpisodes.Count &&
                         orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.HasValue)
                     {
                         currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
@@ -268,7 +276,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     }
                     else if (aim.ActualDurationAsTimespan.HasValue)
                     {
-                        currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate = 
+                        currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
                             aim.StartDate.ToDate() + aim.ActualDurationAsTimespan;
                     }
 
@@ -278,7 +286,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var episodeLearningValues = new PriceEpisodePeriodisedValues { AttributeName = learningValues.AttributeName };
                     var episodeCompletionEarnings = new PriceEpisodePeriodisedValues { AttributeName = completionEarnings.AttributeName };
                     var episodeBalancingEarnings = new PriceEpisodePeriodisedValues { AttributeName = balancingEarnings.AttributeName };
-                    
+
                     for (var p = episodeStartPeriod.Period; p <= episodeLastPeriod; p++)
                     {
                         var propertyInfo = typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + p);
@@ -297,7 +305,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         }
                         completionValue = (decimal?)propertyInfo.GetValue(completionEarnings);
                         balancingValue = (decimal?)propertyInfo.GetValue(balancingEarnings);
-                        
+
                         propertyInfo.SetValue(episodeLearningValues, learningValue);
                         propertyInfo.SetValue(episodeCompletionEarnings, completionValue);
                         propertyInfo.SetValue(episodeBalancingEarnings, balancingValue);
@@ -325,7 +333,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learningDelivery.LearningDeliveryValues.ProgType = aim.ProgrammeType;
                 learningDelivery.LearningDeliveryValues.PwayCode = aim.PathwayCode;
                 learningDelivery.LearningDeliveryValues.StdCode = aim.StandardCode;
-                
+
                 learner.LearningDeliveries.Add(learningDelivery);
             }
         }
@@ -353,8 +361,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 SetPeriodValue(period, balancingEarnings, earning.Balancing);
             });
 
+            var testLearner = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber);
+            learner.ULN = testLearner.Uln;
             learner.PriceEpisodes = GetPriceEpisodes(training, learningValues, completionEarnings, balancingEarnings, CurrentPriceEpisodes, earnings, CollectionYear);
-            var course = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber).Course;
+            var course = testLearner.Course;
 
             learner.LearningDeliveries = new List<LearningDelivery>(new[]
             {
@@ -375,12 +385,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         private static List<PriceEpisode> GetPriceEpisodes(
-            Training learnerEarnings, 
+            Training learnerEarnings,
             PriceEpisodePeriodisedValues learningValues,
-            PriceEpisodePeriodisedValues completionEarnings, 
-            PriceEpisodePeriodisedValues balancingEarnings, 
+            PriceEpisodePeriodisedValues completionEarnings,
+            PriceEpisodePeriodisedValues balancingEarnings,
             List<Price> priceEpisodes,
-            List<OnProgrammeEarning> earnings, 
+            List<OnProgrammeEarning> earnings,
             string collectionYear)
         {
             if (priceEpisodes == null)
@@ -432,6 +442,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         PriceEpisodeCompleted = learnerEarnings.CompletionStatus.Equals("completed", StringComparison.OrdinalIgnoreCase),
                         TNP1 = episode.TotalTrainingPrice,
                         TNP2 = episode.TotalAssessmentPrice,
+                        TNP3 = episode.ResidualTrainingPrice,
+                        TNP4 = episode.ResidualAssessmentPrice,
                         PriceEpisodeInstalmentValue = learnerEarnings.InstallmentAmount,
                         PriceEpisodePlannedInstalments = learnerEarnings.NumberOfInstallments,
                         PriceEpisodeActualInstalments = learnerEarnings.ActualInstallments,
@@ -455,7 +467,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 if ((episodeStart.Period > 1 && episodeStart.GetCollectionYear() == collectionYear) || episodeLastPeriod < 12)
                 {
-                    episodeLearningValues = new PriceEpisodePeriodisedValues {AttributeName = learningValues.AttributeName};
+                    episodeLearningValues = new PriceEpisodePeriodisedValues { AttributeName = learningValues.AttributeName };
                     episodeCompletionEarnings = new PriceEpisodePeriodisedValues { AttributeName = completionEarnings.AttributeName };
                     episodeBalancingEarnings = new PriceEpisodePeriodisedValues { AttributeName = balancingEarnings.AttributeName };
 
@@ -499,5 +511,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);
         }
+
+        protected async Task SendProcessLearnerCommand(FM36Learner learner)
+        {
+            var command = new ProcessLearnerCommand
+            {
+                Learner = learner,
+                CollectionPeriod = CurrentCollectionPeriod.Period,
+                CollectionYear = CollectionYear,
+                Ukprn = TestSession.Ukprn,
+                JobId = TestSession.JobId,
+                IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
+                RequestTime = DateTimeOffset.UtcNow,
+                SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????          
+            };
+
+            Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
+            await MessageSession.Send(command);
+        }
+
     }
 }
