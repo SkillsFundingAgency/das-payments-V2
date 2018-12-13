@@ -1,7 +1,8 @@
 ﻿using Autofac;
-using ESFA.DC.IO.AzureStorage;
-using ESFA.DC.IO.AzureStorage.Config.Interfaces;
-using ESFA.DC.IO.Interfaces;
+using ESFA.DC.FileService;
+using ESFA.DC.FileService.Config;
+using ESFA.DC.FileService.Config.Interface;
+using ESFA.DC.FileService.Interface;
 using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
@@ -14,15 +15,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();
 
-                return new AzureStorageKeyValuePersistenceConfig(
-                    configHelper.GetConnectionString("DcStorageConnectionString"),
-                    configHelper.GetSetting("DcBlobStorageContainer"));
-            }).As<IAzureStorageKeyValuePersistenceServiceConfig>().SingleInstance();
+                return new AzureStorageFileServiceConfiguration
+                {
+                    ConnectionString =
+                        configHelper.GetConnectionString("DcStorageConnectionString")
+                };
 
-            builder.RegisterType<AzureStorageKeyValuePersistenceService>()
-                .Keyed<IKeyValuePersistenceService>(0)
-                .As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
+            }).As<IAzureStorageFileServiceConfiguration>().SingleInstance();
+
+            builder.RegisterType<AzureStorageFileService>()
+                .As<IFileService>().InstancePerLifetimeScope();
         }
     }
 }
-    

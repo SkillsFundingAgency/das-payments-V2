@@ -13,6 +13,5 @@
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="DcStorageConnectionString" Value="__DcStorageConnectionString__" />
     <Parameter Name="TopicName" Value="__TopicName__" />
-    <Parameter Name="DcBlobStorageContainer" Value="__DcBlobStorageContainer__" />
   </Parameters>
 </Application>

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.Serialization.Interfaces;
@@ -17,18 +16,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
     public class JobContextMessageHandler: IMessageHandler<JobContextMessage>
     {
         private readonly IPaymentLogger paymentLogger;
-        private readonly IStreamableKeyValuePersistenceService azureStorageService;
+        private readonly IFileService azureFileService;
         private readonly IJsonSerializationService serializationService;
         private readonly IEndpointInstanceFactory factory;
         
 
         public JobContextMessageHandler(IPaymentLogger paymentLogger,
-            IStreamableKeyValuePersistenceService azureStorageService,
+            IFileService azureFileService,
             IJsonSerializationService serializationService,
             IEndpointInstanceFactory factory)
         {
             this.paymentLogger = paymentLogger;
-            this.azureStorageService = azureStorageService;
+            this.azureFileService = azureFileService;
             this.serializationService = serializationService;
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
@@ -42,17 +41,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 FM36Global fm36Output;
 
-                using (var ms = new MemoryStream())
+                using (var stream = await azureFileService.OpenReadStreamAsync(message.KeyValuePairs["FundingFm36Output"].ToString(), message.KeyValuePairs["Container"].ToString(), cancellationToken))
                 {
-                    await azureStorageService.GetAsync(
-                        message.KeyValuePairs["FundingFm36Output"].ToString(),
-                        ms,
-                        cancellationToken);
-
-                    ms.Seek(0, SeekOrigin.Begin);
-                    fm36Output = serializationService.Deserialize<FM36Global>(ms);
+                    fm36Output = serializationService.Deserialize<FM36Global>(stream);
                 }
-             
+               
                 foreach (var learner in fm36Output.Learners)
                 {
                     try

@@ -13,7 +13,6 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="DcStorageConnectionString" DefaultValue="" />
     <Parameter Name="TopicName" DefaultValue="" />
-    <Parameter Name="DcBlobStorageContainer" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -37,7 +36,6 @@
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
             <Parameter Name="TopicName" Value="[TopicName]" />
-            <Parameter Name="DcBlobStorageContainer" Value="[DcBlobStorageContainer]" />
           </Section>
         </Settings>
       </ConfigOverride>

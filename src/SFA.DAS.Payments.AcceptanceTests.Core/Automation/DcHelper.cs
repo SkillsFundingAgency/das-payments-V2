@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using ESFA.DC.FileService;
+using ESFA.DC.FileService.Config;
+using ESFA.DC.FileService.Config.Interface;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.IO.AzureStorage;
-using ESFA.DC.IO.AzureStorage.Config.Interfaces;
-using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Queueing;
 using ESFA.DC.Queueing.Interface;
@@ -19,14 +21,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
     public class DcHelper
     {
         private readonly IJsonSerializationService serializationService;
-        private readonly IStreamableKeyValuePersistenceService azureStorageService;
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
+        private readonly IFileService azureFileService;
 
         public DcHelper(IContainer container)
         {
-            azureStorageService = container.Resolve<IStreamableKeyValuePersistenceService>();
             serializationService = container.Resolve<IJsonSerializationService>();
             topicPublishingService = container.Resolve<ITopicPublishService<JobContextDto>>();
+            azureFileService = container.Resolve<IFileService>();
         }
 
         public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, string collectionYear)
@@ -42,20 +44,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 };
                 var json = serializationService.Serialize(ilrSubmission);
 
-                using (var stream = new MemoryStream())
+                using (var stream = await azureFileService.OpenWriteStreamAsync(messagePointer, DcConfiguration.DcBlobStorageContainer, new CancellationToken()))
                 {
                     using (var writer = new StreamWriter(stream))
                     {
-                        writer.Write(json);
-
-                        writer.Flush();
-
-                        stream.Position = 0;
-
-                        Console.WriteLine($"ILR Submission: {json}");
-                        await azureStorageService
-                            .SaveAsync(messagePointer, stream)
-                            .ConfigureAwait(true);
+                        await writer.WriteAsync(json);
                     }
                 }
 
@@ -67,7 +60,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                         {"FundingFm36Output", messagePointer},
                         {"Filename", "blah blah"},
                         {"UkPrn", ukprn},
-                        {"Username", "Bob"}
+                        {"Username", "Bob"},
+                        {"Container", DcConfiguration.DcBlobStorageContainer }
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
                     TopicPointer = 0,
@@ -101,14 +95,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
             builder.Register(c =>
-                    new AzureStorageKeyValuePersistenceConfig(DcConfiguration.DcStorageConnectionString,
-                        DcConfiguration.DcBlobStorageContainer)).As<IAzureStorageKeyValuePersistenceServiceConfig>()
+                    new AzureStorageFileServiceConfiguration
+                        {ConnectionString = DcConfiguration.DcStorageConnectionString})
+                .As<IAzureStorageFileServiceConfiguration>()
                 .SingleInstance();
 
-            builder.RegisterType<AzureStorageKeyValuePersistenceService>()
-                .Keyed<IKeyValuePersistenceService>(0)
-                .As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
+            builder.Register(c =>
+            {
+                var config = c.Resolve<IAzureStorageFileServiceConfiguration>();
 
+                return new AzureStorageFileService(config);
+            }).As<IFileService>().InstancePerLifetimeScope();
             builder.Register(c => new TopicConfiguration(DcConfiguration.DcServiceBusConnectionString,
                     DcConfiguration.TopicName,
                     DcConfiguration.SubscriptionName, 1,
