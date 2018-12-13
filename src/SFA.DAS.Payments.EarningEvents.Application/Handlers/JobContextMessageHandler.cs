@@ -45,7 +45,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 {
                     fm36Output = serializationService.Deserialize<FM36Global>(stream);
                 }
-               
+
+                var collectionPeriod = int.Parse(message.KeyValuePairs["ReturnPeriod"].ToString());
+
                 foreach (var learner in fm36Output.Learners)
                 {
                     try
@@ -57,7 +59,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                             RequestTime = DateTimeOffset.UtcNow,
                             IlrSubmissionDateTime = message.SubmissionDateTimeUtc,
                             CollectionYear = fm36Output.Year,
-                            CollectionPeriod = 1,
+                            CollectionPeriod = collectionPeriod,
                             Ukprn = fm36Output.UKPRN
                         };
                         var endpointInstance = await factory.GetEndpointInstance();
