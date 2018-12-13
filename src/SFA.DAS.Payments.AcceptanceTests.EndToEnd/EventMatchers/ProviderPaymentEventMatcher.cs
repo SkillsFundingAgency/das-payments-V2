@@ -5,6 +5,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
@@ -60,9 +61,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     AmountDue = providerPayment.SfaCoFundedPayments,
                     CollectionPeriod = eventCollectionPeriod,
                     DeliveryPeriod = deliveryPeriod,
-                    Learner = learner
+                    Learner = learner,
+                    FundingSourceType = FundingSourceType.CoInvestedSfa
                 };
                 expectedPayments.Add(coFundedSfa);
+
 
                 var coFundedEmp = new EmployerCoInvestedProviderPaymentEvent
                 {
@@ -70,9 +73,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     AmountDue = providerPayment.EmployerCoFundedPayments,
                     CollectionPeriod = eventCollectionPeriod,
                     DeliveryPeriod = deliveryPeriod,
-                    Learner = learner
+                    Learner = learner,
+                    FundingSourceType = FundingSourceType.CoInvestedEmployer
                 };
                 expectedPayments.Add(coFundedEmp);
+
 
                 if (providerPayment.SfaFullyFundedPayments != 0)
                 {
@@ -86,6 +91,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     };
                     expectedPayments.Add(fullyFundedSfa);
                 }
+
             }
 
             return expectedPayments;

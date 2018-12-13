@@ -1,172 +1,227 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using OnProgrammeEarning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.OnProgrammeEarning;
-using IncentiveEarning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.IncentiveEarning;
+using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
+using Learner = SFA.DAS.Payments.Model.Core.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
-    public static class EarningEventMatcher
+    public class EarningEventMatcher : BaseMatcher<EarningEvent>
     {
-        public static (bool pass, string reason) MatchEarnings(IList<OnProgrammeEarning> expectedPeriods,
-            TestSession testSession)
+        private readonly TestSession testSession;
+        private readonly CalendarPeriod collectionPeriod;
+        private readonly IList<Earning> earningSpecs;
+        private readonly IList<FM36Learner> learnerSpecs;
+        private static readonly TransactionType[] onProgTypes = { TransactionType.Learning, TransactionType.Balancing, TransactionType.Completion };
+        private static readonly TransactionType[] incentiveTypes = { TransactionType.First16To18EmployerIncentive, TransactionType.First16To18ProviderIncentive, TransactionType.Second16To18EmployerIncentive, TransactionType.Second16To18ProviderIncentive };
+        private static readonly TransactionType[] functionalSkillTypes = { TransactionType.OnProgrammeMathsAndEnglish, TransactionType.BalancingMathsAndEnglish };
+
+        public EarningEventMatcher(IList<Earning> earningSpecs, TestSession testSession, CalendarPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
         {
-            var sessionEarnings = ApprenticeshipContractType2EarningEventHandler.ReceivedEvents
-                .Where(e => e.Ukprn == testSession.Ukprn && e.JobId == testSession.JobId)
-                .ToList();
-
-            var earnings = sessionEarnings
-                .SelectMany(earning => earning.OnProgrammeEarnings, (earningEvent, onProgEarning) => new
-                {
-                    earningEvent,
-                    onProgEarning
-                })
-                .SelectMany(earning => earning.onProgEarning.Periods, (earning, period) => new { earning, period })
-                .ToList();
-
-            var learningEarnings = earnings
-                .Where(earning => earning.earning.onProgEarning.Type == OnProgrammeEarningType.Learning)
-                .ToList();
-            var completionEarnings = earnings
-                .Where(earning => earning.earning.onProgEarning.Type == OnProgrammeEarningType.Completion)
-                .ToList();
-            var balancingEarnings = earnings
-                .Where(earning => earning.earning.onProgEarning.Type == OnProgrammeEarningType.Balancing)
-                .ToList();
-
-            foreach (var expected in expectedPeriods)
-            {
-                if (!learningEarnings.Any(earning => expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                                                     testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
-                                                     earning.earning.earningEvent.Learner.ReferenceNumber &&
-                                                     expected.OnProgramme == earning.period.Amount))
-                    return (false,
-                        $"Failed to find on-prog (learning) earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.OnProgramme}");
-
-                if (!completionEarnings.Any(earning =>
-                    expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                    testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
-                    earning.earning.earningEvent.Learner.ReferenceNumber &&
-                    expected.Completion == earning.period.Amount))
-                    return (false,
-                        $"Failed to find completion earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.Completion}");
-
-                if (!balancingEarnings.Any(earning => expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                                                      testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
-                                                      earning.earning.earningEvent.Learner.ReferenceNumber &&
-                                                      expected.Balancing == earning.period.Amount))
-                    return (false,
-                        $"Failed to find balancing earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expected.Balancing}");
-            }
-
-            return (true, string.Empty);
-            //TOOD: Figure what nothing extra should be doing
-            //var nothingExtra = receivedPeriods.Count == matchedPeriods.Length;
-            //var reason = new List<string>();
-            //if (!allFound)
-            //    reason.Add($"Did not find {expectedPeriods.Count - matchedPeriods.Length} out of {expectedPeriods.Count} expected earnings");
-            //if (!nothingExtra)
-            //    reason.Add($"Found {receivedPeriods.Count - matchedPeriods.Length} unexpected earnings");
-
-            //return new Tuple<bool, string>(allFound && nothingExtra, string.Join(" and ", reason));
+            this.earningSpecs = earningSpecs;
+            this.testSession = testSession;
+            this.collectionPeriod = collectionPeriod;
+            this.learnerSpecs = learnerSpecs;
         }
 
-        public static (bool pass, string reason) MatchIncentives(IList<IncentiveEarning> expectedPeriods,
-            TestSession testSession)
+        protected override IList<EarningEvent> GetActualEvents()
         {
-            var sessionEarnings = ApprenticeshipContractType2EarningEventHandler.ReceivedEvents
-                .Where(e => e.Ukprn == testSession.Ukprn && e.JobId == testSession.JobId)
-                .ToList();
+            return EarningEventHandler.ReceivedEvents.Where(e => e.JobId == testSession.JobId 
+                                                                                 && e.CollectionPeriod.Name == collectionPeriod.Name
+                                                                                 && e.Ukprn == testSession.Ukprn).ToList();
+        }
 
-            if (sessionEarnings.Any(earning => earning.IncentiveEarnings != null))
+        protected override IList<EarningEvent> GetExpectedEvents()
+        {
+            var result = new List<EarningEvent>();
+            var learnerIds = earningSpecs.Select(e => e.LearnerId).Distinct().ToList();
+            
+            foreach (var learnerId in learnerIds)
             {
-                var earnings = sessionEarnings
-                    .SelectMany(earning => earning.IncentiveEarnings, (earningEvent, incentiveEarning) => (
-                        earningEvent: earningEvent as ApprenticeshipContractTypeEarningsEvent,
-                        incentiveEarning: incentiveEarning
-                    ))
-                    .SelectMany(earning => earning.incentiveEarning.Periods,
-                        (earning, period) => (earningEvent: earning.earningEvent,
-                            incentiveEarning: earning.incentiveEarning, period: period))
-                    .ToList();
-
-                foreach (var incentiveType in IncentiveTypes)
+                var learnerSpec = testSession.GetLearner(learnerId);
+                var fm36learner = learnerSpecs.Single(l => l.LearnRefNumber == learnerSpec.LearnRefNumber);
+                var learner = new Learner
                 {
-                    var incentiveEarnings = earnings
-                        .Where(earning => earning.incentiveEarning.Type == incentiveType)
-                        .ToList();
+                    ReferenceNumber = learnerSpec.LearnRefNumber,
+                    Uln = learnerSpec.Uln
+                };
 
-                    if (incentiveEarnings.Any())
+                if (learnerSpec.Aims.Count == 0)
+                    learnerSpec.Aims.Add(new Aim
                     {
-                        foreach (var expected in expectedPeriods)
+                        LearnerId = learnerSpec.LearnerIdentifier,
+                        ProgrammeType = learnerSpec.Course.ProgrammeType,
+                        FrameworkCode = learnerSpec.Course.FrameworkCode,
+                        PathwayCode = learnerSpec.Course.PathwayCode,
+                        StandardCode = learnerSpec.Course.StandardCode,
+                        FundingLineType = learnerSpec.Course.FundingLineType,
+                        AimReference = learnerSpec.Course.LearnAimRef
+                    });
+
+                foreach (var aimSpec in learnerSpec.Aims)
+                {
+                    var learningAim = new LearningAim
+                    {
+                        ProgrammeType = aimSpec.ProgrammeType,
+                        FrameworkCode = aimSpec.FrameworkCode,
+                        PathwayCode = aimSpec.PathwayCode,
+                        StandardCode = aimSpec.StandardCode,
+                        FundingLineType = aimSpec.FundingLineType,
+                        Reference = aimSpec.AimReference
+                    };
+
+                    var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
+                    var fullListOfTransactionTypes = aimEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
+                    var onProgEarnings = fullListOfTransactionTypes.Where(t => onProgTypes.Contains(t)).ToList();
+                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => functionalSkillTypes.Contains(t)).ToList();
+                    var incentiveEarnings = fullListOfTransactionTypes.Where(t => incentiveTypes.Contains(t)).ToList();
+                    // TODO: incentive earnings
+
+                    if (onProgEarnings.Any())
+                    {
+                        var onProgEarning = new ApprenticeshipContractType2EarningEvent
                         {
-                            var expectedValue = expected.GetIncentiveTypeValue(incentiveType);
-
-                            if (!incentiveEarnings.Any(earning =>
-                                expected.DeliveryCalendarPeriod.Period == earning.period.Period &&
-                                testSession.GetLearner(expected.LearnerId).LearnRefNumber ==
-                                earning.earningEvent.Learner.ReferenceNumber &&
-                                expectedValue == earning.period.Amount))
+                            CollectionPeriod = collectionPeriod,
+                            Ukprn = testSession.Ukprn,
+                            OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                             {
-                                return (false,
-                                     $"Failed to find incentive ({incentiveType.ToString()}) earning: {expected.DeliveryPeriod} ({expected.DeliveryCalendarPeriod.Name}), amount: {expectedValue}");
-                            }
-                        }
+                                Type = (OnProgrammeEarningType) (int) tt,
+                                Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                                {
+                                    Amount = e.Values[tt],
+                                    Period = e.DeliveryCalendarPeriod.Period,
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36learner)
+                                }).ToList().AsReadOnly()
+                            }).ToList().AsReadOnly(),
+                            JobId = testSession.JobId,
+                            Learner = learner,
+                            LearningAim = learningAim
+                        };
+                        result.Add(onProgEarning);
                     }
-                }
 
+                    if (functionalSkillEarnings.Any())
+                    {
+                        var onProgEarning = new FunctionalSkillEarningsEvent
+                        {
+                            CollectionPeriod = collectionPeriod,
+                            Ukprn = testSession.Ukprn,
+                            Earnings = onProgEarnings.Select(tt => new FunctionalSkillEarning
+                            {
+                                Type = (FunctionalSkillType) (int) tt,
+                                Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                                {
+                                    Amount = e.Values[tt],
+                                    Period = e.DeliveryCalendarPeriod.Period,
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36learner)
+                                }).ToList().AsReadOnly()
+                            }).ToList().AsReadOnly(),
+                            JobId = testSession.JobId,
+                            Learner = learner,
+                            LearningAim = learningAim
+                        };
+                        result.Add(onProgEarning);
+                    }
+
+                }
             }
 
-            return (true, string.Empty);
+            return result;
         }
 
-        private static readonly IncentiveType[] IncentiveTypes =
+        private string FindPriceEpisodeIdentifier(decimal value, Earning earning, FM36Learner fm36Learner)
         {
-            IncentiveType.First16To18EmployerIncentive,
-            IncentiveType.First16To18ProviderIncentive,
-            IncentiveType.Second16To18EmployerIncentive,
-            IncentiveType.Second16To18ProviderIncentive,
-            IncentiveType.OnProgramme16To18FrameworkUplift,
-            IncentiveType.Completion16To18FrameworkUplift,
-            IncentiveType.Balancing16To18FrameworkUplift,
-            IncentiveType.FirstDisadvantagePayment,
-            IncentiveType.SecondDisadvantagePayment,
-            IncentiveType.LearningSupport
-        };
+            // null for 0 values
+            if (value == 0) 
+                return null;
 
-        private static decimal GetIncentiveTypeValue(this IncentiveEarning incentiveEarning, IncentiveType type)
+            // it could be specified in earnings table
+            if (earning.PriceEpisodeIdentifier != null) 
+                return earning.PriceEpisodeIdentifier;
+            
+            // find first price episode with non-zero value for a period
+            var period = earning.DeliveryCalendarPeriod.Period;
+            return fm36Learner.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0))?.PriceEpisodeIdentifier;
+        }
+
+        protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)
         {
-            switch (type)
+            if (expectedEvent.GetType() != actualEvent.GetType())
+                return false;
+
+            if (expectedEvent.CollectionPeriod.Name != actualEvent.CollectionPeriod.Name ||
+                expectedEvent.Learner.ReferenceNumber != actualEvent.Learner.ReferenceNumber ||
+                //expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
+                expectedEvent.LearningAim.Reference != actualEvent.LearningAim.Reference ||
+                expectedEvent.LearningAim.FundingLineType != actualEvent.LearningAim.FundingLineType ||
+                expectedEvent.LearningAim.FrameworkCode != actualEvent.LearningAim.FrameworkCode ||
+                expectedEvent.LearningAim.PathwayCode != actualEvent.LearningAim.PathwayCode ||
+                expectedEvent.LearningAim.ProgrammeType != actualEvent.LearningAim.ProgrammeType ||
+                expectedEvent.LearningAim.StandardCode != actualEvent.LearningAim.StandardCode)
+                return false;
+
+            if (!MatchOnProgrammeEarnings(expectedEvent as ApprenticeshipContractType2EarningEvent, actualEvent as ApprenticeshipContractType2EarningEvent))
+                return false;
+
+            return true;
+        }
+
+        private bool MatchOnProgrammeEarnings(ApprenticeshipContractType2EarningEvent expectedEvent, ApprenticeshipContractType2EarningEvent actualEvent)
+        {
+            if (expectedEvent == null)
+                return true;
+
+
+            var expectedEventOnProgrammeEarnings = expectedEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>().AsReadOnly();
+            var actualEventOnProgrammeEarnings = actualEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>().AsReadOnly();
+
+            foreach (var expectedEarning in expectedEventOnProgrammeEarnings)
             {
-                case IncentiveType.First16To18EmployerIncentive:
-                    return incentiveEarning.First16To18EmployerIncentive;
-                case IncentiveType.First16To18ProviderIncentive:
-                    return incentiveEarning.First16To18ProviderIncentive;
-                case IncentiveType.Second16To18EmployerIncentive:
-                    return incentiveEarning.Second16To18EmployerIncentive;
-                case IncentiveType.Second16To18ProviderIncentive:
-                    return incentiveEarning.Second16To18ProviderIncentive;
-                case IncentiveType.OnProgramme16To18FrameworkUplift:
-                    return incentiveEarning.OnProgramme16To18FrameworkUplift;
-                case IncentiveType.Completion16To18FrameworkUplift:
-                    return incentiveEarning.Completion16To18FrameworkUplift;
-                case IncentiveType.Balancing16To18FrameworkUplift:
-                    return incentiveEarning.Balancing16To18FrameworkUplift;
-                case IncentiveType.FirstDisadvantagePayment:
-                    return incentiveEarning.FirstDisadvantagePayment;
-                case IncentiveType.SecondDisadvantagePayment:
-                    return incentiveEarning.SecondDisadvantagePayment;
-                case IncentiveType.LearningSupport:
-                    return incentiveEarning.LearningSupport;
-                default:
-                    return default(decimal);
+                var actualEarning = actualEventOnProgrammeEarnings.FirstOrDefault(a => a.Type == expectedEarning.Type);
+
+                if (actualEarning == null || !MatchEarningPeriods(actualEarning.Periods, expectedEarning.Periods)) 
+                    return false;
             }
+
+            var expectedEventIncentiveEarnings = expectedEvent.IncentiveEarnings ?? new List<IncentiveEarning>().AsReadOnly();
+            var actualEventIncentiveEarnings = actualEvent.IncentiveEarnings ?? new List<IncentiveEarning>().AsReadOnly();
+
+            foreach (var expectedEarning in expectedEventIncentiveEarnings)
+            {
+                var actualEarning = actualEventIncentiveEarnings.FirstOrDefault(a => a.Type == expectedEarning.Type);
+
+                if (actualEarning == null || !MatchEarningPeriods(actualEarning.Periods, expectedEarning.Periods)) 
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool MatchEarningPeriods(ReadOnlyCollection<EarningPeriod> actualEarningPeriods, ReadOnlyCollection<EarningPeriod> expectedEarningPeriods)
+        {
+            if (actualEarningPeriods.Count != expectedEarningPeriods.Count)
+                return false;
+
+            for (var i = 0; i < expectedEarningPeriods.Count; i++)
+            {
+                if (expectedEarningPeriods[i].Amount != actualEarningPeriods[i].Amount ||
+                    expectedEarningPeriods[i].PriceEpisodeIdentifier != actualEarningPeriods[i].PriceEpisodeIdentifier ||
+                    expectedEarningPeriods[i].Period != actualEarningPeriods[i].Period)
+                    return false;
+            }
+
+            return true;
         }
     }
 }

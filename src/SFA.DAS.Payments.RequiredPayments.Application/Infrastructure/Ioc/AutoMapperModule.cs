@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
-using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
 {
@@ -8,24 +8,27 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(ctx =>
-                {
-                    var config = AutoMapperConfigurationFactory.CreateMappingConfig();
-                    return config;
-                })
-                .SingleInstance() // We only need one instance
-                .AutoActivate() // Create it on ContainerBuilder.Build()
-                .AsSelf(); // Bind it to its own type
+            var assembly = GetType().Assembly;
+            builder.RegisterAssemblyTypes(assembly)
+                .Where(type => type.IsClass && type.IsPublic && !type.IsAbstract && type.IsAssignableTo<Profile>())
+                .As<Profile>()
+                .SingleInstance();
 
-            builder.Register(tempContext =>
-                {
-                    var ctx = tempContext.Resolve<IComponentContext>();
-                    var config = ctx.Resolve<MapperConfiguration>();
+            builder.RegisterAssemblyTypes(assembly)
+                .AsClosedTypesOf(typeof(IValueResolver<,,>))
+                .AsSelf()
+                .SingleInstance();
 
-                    // Create our mapper using our configuration above
-                    return config.CreateMapper();
-                })
-                .As<IMapper>(); // Bind it to the IMapper interface
+            builder.Register(c => new MapperConfiguration(
+                    cfg =>
+                    {
+                        cfg.AddProfiles(GetType().Assembly);
+                    }))
+                .AsSelf()
+                .SingleInstance();
+
+            builder.Register(c => new Mapper(c.Resolve<MapperConfiguration>(), ContainerFactory.Container.Resolve))
+                .As<IMapper>();
         }
     }
 }

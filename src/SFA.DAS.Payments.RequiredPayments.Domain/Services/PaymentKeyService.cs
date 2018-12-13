@@ -5,12 +5,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class PaymentKeyService : IPaymentKeyService
     {
-        public string GeneratePaymentKey(string priceEpisodeIdentifier, string learnAimReference, int transactionType, CalendarPeriod deliveryPeriod)
+        public string GeneratePaymentKey(string learnAimReference, int transactionType, CalendarPeriod deliveryPeriod)
         {
             return string.Join("~",
                 new[]
                 {
-                    priceEpisodeIdentifier.ToLowerInvariant(),
                     learnAimReference.ToLowerInvariant(),
                     transactionType.ToString(CultureInfo.InvariantCulture),
                     deliveryPeriod.Name

@@ -31,8 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             if (paymentDue == null)
                 throw new ArgumentNullException(nameof(paymentDue));
 
-            var key = paymentKeyService.GeneratePaymentKey(paymentDue.PriceEpisodeIdentifier,
-                paymentDue.LearningAim.Reference, GetTransactionType((TPaymentDue) paymentDue), paymentDue.DeliveryPeriod);
+            var key = paymentKeyService.GeneratePaymentKey(paymentDue.LearningAim.Reference, GetTransactionType((TPaymentDue) paymentDue), paymentDue.DeliveryPeriod);
 
             var paymentHistoryValue = await paymentHistoryCache.TryGet(key, cancellationToken);
 
@@ -45,6 +44,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             if (amountDue == 0)
                 return null;
 
+            string priceEpisodeIdentifier;
+
+            if (amountDue < 0 && payments.Length > 0)
+                priceEpisodeIdentifier = payments[0].PriceEpisodeIdentifier;
+            else
+                priceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier;
+
             var requiredPayment = CreateRequiredPayment((TPaymentDue) paymentDue);
 
             requiredPayment.AmountDue = amountDue;
@@ -53,7 +59,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             requiredPayment.CollectionPeriod = paymentDue.CollectionPeriod.Clone();
             requiredPayment.DeliveryPeriod = paymentDue.DeliveryPeriod.Clone();
             requiredPayment.LearningAim = paymentDue.LearningAim.Clone();
-            requiredPayment.PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier;
+            requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
             requiredPayment.EventTime = DateTimeOffset.UtcNow;
             requiredPayment.JobId = paymentDue.JobId;
             requiredPayment.IlrSubmissionDateTime = paymentDue.IlrSubmissionDateTime;

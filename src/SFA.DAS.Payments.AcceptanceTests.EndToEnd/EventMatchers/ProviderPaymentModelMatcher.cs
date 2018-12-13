@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var expectedPayments = new List<PaymentModel>();
 
-            foreach (var paymentInfo in expectedPaymentInfo)
+            foreach (var paymentInfo in expectedPaymentInfo) 
             {
                 var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa, paymentInfo.SfaCoFundedPayments);
                 expectedPayments.Add(coFundedSfa);
@@ -54,6 +54,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments);
                     expectedPayments.Add(fullyFundedSfa);
                 }
+
             }
 
             return expectedPayments;
@@ -69,8 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.LearnerReferenceNumber == actual.LearnerReferenceNumber;
         }
 
-        private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn, FundingSourceType fundingSource,
-            decimal amount)
+        private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn, FundingSourceType fundingSource, decimal amount)
         {
             return new PaymentModel
             {
