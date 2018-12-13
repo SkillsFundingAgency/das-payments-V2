@@ -96,16 +96,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             var earnings = CreateEarnings(table);
-
             var learners = new List<FM36Learner>();
-            if (CurrentIlr == null)
 
+            if (CurrentIlr == null)
             {
                 // Learner -> Aims -> Price Episodes
                 foreach (var testSessionLearner in TestSession.Learners)
                 {
                     var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
-                    var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier);
+                    var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
                     PopulateLearner(learner, testSessionLearner, learnerEarnings);
 
                     var command = new ProcessLearnerCommand
