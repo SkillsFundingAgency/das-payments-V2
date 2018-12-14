@@ -9,7 +9,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public class ApprenticeshipContractTypeEarningsEventBuilder : IApprenticeshipContractTypeEarningsEventBuilder
+    public class ApprenticeshipContractTypeEarningsEventBuilder : EarningEventBuilderBase, IApprenticeshipContractTypeEarningsEventBuilder
     {
         private readonly IApprenticeshipContractTypeEarningsEventFactory factory;
         private readonly IMapper mapper;
@@ -27,34 +27,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                var episodesByContractType =
-                    intermediateLearningAim.PriceEpisodes.GroupBy(x => x.PriceEpisodeValues.PriceEpisodeContractType);
+                var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x => x.PriceEpisodeValues.PriceEpisodeContractType);
 
                 foreach (var priceEpisodes in episodesByContractType)
                 {
-                    var learnerWithSortedPriceEpisodes = intermediateLearningAim
-                        .CopyReplacingPriceEpisodes(priceEpisodes);
+                    var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(priceEpisodes);
                     var earningEvent = factory.Create(priceEpisodes.Key);
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
                     results.Add(earningEvent);
                 }
             }
             
-            return results;
-        }
-
-        private static List<IntermediateLearningAim> InitialLearnerTransform(ProcessLearnerCommand learnerSubmission)
-        {
-            var results = new List<IntermediateLearningAim>();
-
-            foreach (var learningDelivery in learnerSubmission.Learner.LearningDeliveries)
-            {
-                var priceEpisodes = learnerSubmission.Learner.PriceEpisodes
-                    .Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber);
-                var intermediateAim = new IntermediateLearningAim(learnerSubmission, priceEpisodes, learningDelivery);
-                results.Add(intermediateAim);
-            }
-
             return results;
         }
     }
