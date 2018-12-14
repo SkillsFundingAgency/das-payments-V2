@@ -1,10 +1,30 @@
 ﻿using System;
+using System.Linq;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
     public static class EnumHelper
     {
+        private static readonly TransactionType[] onProgTypes = { TransactionType.Learning, TransactionType.Balancing, TransactionType.Completion };
+        private static readonly TransactionType[] incentiveTypes = { TransactionType.First16To18EmployerIncentive, TransactionType.First16To18ProviderIncentive, TransactionType.Second16To18EmployerIncentive, TransactionType.Second16To18ProviderIncentive };
+        private static readonly TransactionType[] functionalSkillTypes = { TransactionType.OnProgrammeMathsAndEnglish, TransactionType.BalancingMathsAndEnglish };
+
+        public static bool IsOnProgType(TransactionType type)
+        {
+            return onProgTypes.Contains(type);
+        }
+
+        public static bool IsIncentiveType(TransactionType type)
+        {
+            return incentiveTypes.Contains(type);
+        }
+
+        public static bool IsFunctionalSkillType(TransactionType type)
+        {
+            return functionalSkillTypes.Contains(type);
+        }
+
         public static TransactionType ToTransactionType(string transactionType)
         {
             transactionType = transactionType.ToLower();

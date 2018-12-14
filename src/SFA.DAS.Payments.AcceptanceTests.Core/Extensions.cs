@@ -221,6 +221,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     return "PriceEpisodeBalancePayment";
                 case TransactionType.Completion:
                     return "PriceEpisodeCompletionPayment";
+                case TransactionType.OnProgrammeMathsAndEnglish:
+                    return "MathEngOnProgPayment";
+                case TransactionType.BalancingMathsAndEnglish:
+                    return "MathEngBalPayment";
                 default:
                     throw new NotImplementedException();
             }

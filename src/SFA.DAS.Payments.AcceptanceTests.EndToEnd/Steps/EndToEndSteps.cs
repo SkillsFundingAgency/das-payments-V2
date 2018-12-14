@@ -69,25 +69,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var newPriceEpisodes = table.CreateSet<Price>().ToList();
             CurrentPriceEpisodes = newPriceEpisodes;
+
             if (TestSession.Learners.Any(x => x.Aims.Count > 0))
             {
                 foreach (var newPriceEpisode in newPriceEpisodes)
                 {
+                    Aim aim;
                     try
                     {
-                        var aim = TestSession.Learners.SelectMany(x => x.Aims)
+                        aim = TestSession.Learners.SelectMany(x => x.Aims)
                             .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
-                        if (aim == null)
-                        {
-                            throw new Exception("There is a price episode without a matching aim");
-                        }
-
-                        aim.PriceEpisodes.Add(newPriceEpisode);
                     }
                     catch (Exception)
                     {
                         throw new Exception("There are too many aims with the same sequence number");
                     }
+
+                    if (aim == null)
+                    {
+                        throw new Exception("There is a price episode without a matching aim");
+                    }
+
+                    aim.PriceEpisodes.Add(newPriceEpisode);
                 }
             }
         }
