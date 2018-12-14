@@ -49,6 +49,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(learners);
         }
 
+        [Given(@"aims details are changed as follows")]
+        public void GivenAimsDetailsAreChangedAsFollows(Table table)
+        {
+            AimsProcessedForJob.Remove(TestSession.JobId);
+            AddTestAims(table.CreateSet<Aim>());
+        }
+
         [Given(@"the following aims")]
         public void GivenTheFollowingAims(Table table)
         {
@@ -57,6 +64,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         private static readonly HashSet<long> PriceEpisodesProcessedForJob = new HashSet<long>();
+
+        [Given(@"price details are changed as follows")]
+        public void GivenPriceDetailsAreChangedAsFollows(Table table)
+        {
+            PriceEpisodesProcessedForJob.Remove(TestSession.JobId);
+            GivenPriceDetailsAsFollows(table);
+        }
+
+
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
         {
