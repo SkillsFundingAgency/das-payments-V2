@@ -89,6 +89,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await dataContext.SaveChangesAsync();
         }
 
+        [Given(@"the Provider now changes the Learner details as follows")]
+        public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
+        {
+            var ilr = table.CreateSet<Training>().ToList();
+            CurrentIlr = ilr;
+            AddTestLearners(CurrentIlr);
+        }
+
         [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]
         public void TheProviderChangesTheLearnersUln(long newUln)
         {
