@@ -55,11 +55,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     JobId = 1,
                     KeyValuePairs = new Dictionary<string, object>
                     {
-                        {"FundingFm36Output", messagePointer},
-                        {"Filename", "blah blah"},
-                        {"UkPrn", ukprn},
-                        {"Username", "Bob"},
-                        {"Container", DcConfiguration.DcBlobStorageContainer }
+                        {JobContextMessageKey.FundingFm36Output, messagePointer},
+                        {JobContextMessageKey.Filename, "blah blah"},
+                        {JobContextMessageKey.UkPrn, ukprn},
+                        {JobContextMessageKey.Username, "Bob"},
+                        {JobContextMessageKey.Container, DcConfiguration.DcBlobStorageContainer },
+                        {JobContextMessageKey.ReturnPeriod, 1 }
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
                     TopicPointer = 0,

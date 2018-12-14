@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.Serialization.Interfaces;
@@ -41,12 +42,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 FM36Global fm36Output;
 
-                using (var stream = await azureFileService.OpenReadStreamAsync(message.KeyValuePairs["FundingFm36Output"].ToString(), message.KeyValuePairs["Container"].ToString(), cancellationToken))
+                using (var stream = await azureFileService.OpenReadStreamAsync(message.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString(), message.KeyValuePairs[JobContextMessageKey.Container].ToString(), cancellationToken))
                 {
                     fm36Output = serializationService.Deserialize<FM36Global>(stream);
                 }
 
-                var collectionPeriod = int.Parse(message.KeyValuePairs["ReturnPeriod"].ToString());
+                var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
 
                 foreach (var learner in fm36Output.Learners)
                 {
