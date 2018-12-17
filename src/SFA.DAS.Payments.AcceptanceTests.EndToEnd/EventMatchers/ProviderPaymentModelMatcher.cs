@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         }
 
         public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, string currentCollectionPeriodName, List<ProviderPayment> expectedPaymentInfo, ContractType contractType)
-            :this(dataContext,testSession, currentCollectionPeriodName)
+            : this(dataContext, testSession, currentCollectionPeriodName)
         {
             this.expectedPaymentInfo = expectedPaymentInfo;
             this.contractType = contractType;
@@ -41,22 +41,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var expectedPayments = new List<PaymentModel>();
 
-            foreach (var paymentInfo in expectedPaymentInfo) 
+            foreach (var paymentInfo in expectedPaymentInfo)
             {
-                var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa, paymentInfo.SfaCoFundedPayments);
-                expectedPayments.Add(coFundedSfa);
+                if (paymentInfo.SfaCoFundedPayments != 0)
+                {
+                    var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa, paymentInfo.SfaCoFundedPayments);
+                    expectedPayments.Add(coFundedSfa);
+                }
 
-                var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments);
-                expectedPayments.Add(coFundedEmp);
+                if (paymentInfo.EmployerCoFundedPayments != 0)
+                {
+                    var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments);
+                    expectedPayments.Add(coFundedEmp);
+                }
 
                 if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
                     var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments);
                     expectedPayments.Add(fullyFundedSfa);
                 }
-
             }
-
             return expectedPayments;
         }
 

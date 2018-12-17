@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Domain;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
@@ -29,7 +30,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Services
             var incentiveEvents = message.IncentiveEarnings?
                 .SelectMany(earning => incentiveEarningProcessor.HandleIncentiveEarnings(message.Ukprn, message.JobId,
                     earning, message.CollectionPeriod, message.Learner, message.LearningAim,
-                    message.SfaContributionPercentage, message.IlrSubmissionDateTime)).ToList();
+                    message.SfaContributionPercentage, message.IlrSubmissionDateTime, ContractType.Act2)).ToList();
 
             var result = new List<PaymentDueEvent>();
 

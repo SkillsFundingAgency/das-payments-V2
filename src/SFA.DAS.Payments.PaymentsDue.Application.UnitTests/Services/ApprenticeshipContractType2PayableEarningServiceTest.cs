@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Application.Services;
@@ -78,7 +79,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
             };
             var paymentDueEvents = new[] { new IncentivePaymentDueEvent() };
 
-            incentiveEarningProcessor.Setup(d => d.HandleIncentiveEarnings(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<IncentiveEarning>(), It.IsAny<CalendarPeriod>(), It.IsAny<Learner>(), It.IsAny<LearningAim>(), It.IsAny<decimal>(), It.IsAny<DateTime>()))
+            incentiveEarningProcessor.Setup(d => d.HandleIncentiveEarnings(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<IncentiveEarning>(), It.IsAny<CalendarPeriod>(), It.IsAny<Learner>(), It.IsAny<LearningAim>(), It.IsAny<decimal>(), It.IsAny<DateTime>(), It.IsAny<ContractType>()))
                 .Returns(paymentDueEvents)
                 .Verifiable();
 

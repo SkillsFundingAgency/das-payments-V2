@@ -54,30 +54,34 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     ReferenceNumber = testLearner.LearnRefNumber,
                     Uln = testLearner.Uln,
                 };
-                
-                var coFundedSfa = new SfaCoInvestedProviderPaymentEvent
+
+                if (providerPayment.SfaCoFundedPayments != 0)
                 {
-                    TransactionType = providerPayment.TransactionType,
-                    AmountDue = providerPayment.SfaCoFundedPayments,
-                    CollectionPeriod = eventCollectionPeriod,
-                    DeliveryPeriod = deliveryPeriod,
-                    Learner = learner,
-                    FundingSourceType = FundingSourceType.CoInvestedSfa
-                };
-                expectedPayments.Add(coFundedSfa);
+                    var coFundedSfa = new SfaCoInvestedProviderPaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.SfaCoFundedPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        FundingSourceType = FundingSourceType.CoInvestedSfa
+                    };
+                    expectedPayments.Add(coFundedSfa);
+                }
 
-
-                var coFundedEmp = new EmployerCoInvestedProviderPaymentEvent
+                if (providerPayment.EmployerCoFundedPayments != 0)
                 {
-                    TransactionType = providerPayment.TransactionType,
-                    AmountDue = providerPayment.EmployerCoFundedPayments,
-                    CollectionPeriod = eventCollectionPeriod,
-                    DeliveryPeriod = deliveryPeriod,
-                    Learner = learner,
-                    FundingSourceType = FundingSourceType.CoInvestedEmployer
-                };
-                expectedPayments.Add(coFundedEmp);
-
+                    var coFundedEmp = new EmployerCoInvestedProviderPaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.EmployerCoFundedPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        FundingSourceType = FundingSourceType.CoInvestedEmployer
+                    };
+                    expectedPayments.Add(coFundedEmp);
+                }
 
                 if (providerPayment.SfaFullyFundedPayments != 0)
                 {

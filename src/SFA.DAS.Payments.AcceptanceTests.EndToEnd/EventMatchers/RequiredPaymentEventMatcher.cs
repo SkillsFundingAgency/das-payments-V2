@@ -5,6 +5,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
@@ -57,6 +58,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                     DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
                 };
+
+                if (payment.LearningSupport!=0)
+                    expectedPayments.Add(new IncentiveRequiredPaymentEvent
+                    {
+                        AmountDue = payment.LearningSupport,
+                        Type = IncentiveType.LearningSupport,
+                        DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                    });
+                
 
                 if (learningPayment.AmountDue != 0) 
                     expectedPayments.Add(learningPayment);

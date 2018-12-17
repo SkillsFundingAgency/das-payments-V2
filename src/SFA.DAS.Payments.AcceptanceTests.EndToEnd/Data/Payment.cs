@@ -7,5 +7,6 @@
         public decimal OnProgramme { get; set; }
         public decimal Completion { get; set; }
         public decimal Balancing { get; set; }
+        public decimal LearningSupport { get; set; }
     }
 }

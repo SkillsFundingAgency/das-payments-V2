@@ -211,7 +211,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             PeriodisedProperties[period].SetValue(values, value);
         }
 
-        public static string ToAttributeName(this SFA.DAS.Payments.Model.Core.Entities.TransactionType transactionType)
+        public static string ToAttributeName(this TransactionType transactionType)
         {
             switch (transactionType)
             {
@@ -221,8 +221,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     return "PriceEpisodeBalancePayment";
                 case TransactionType.Completion:
                     return "PriceEpisodeCompletionPayment";
+                case TransactionType.LearningSupport:
+                    return "PriceEpisodeLSFCash";
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException($"Cannot get FM36 attribute name.  Unhandled transaction type: {transactionType}");
             }
         }
     }
