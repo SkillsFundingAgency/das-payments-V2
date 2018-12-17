@@ -12,13 +12,14 @@
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.15-beta0001" />
+    <PackageReference Include="ESFA.DC.JobContext.Interface" Version="0.2.5-beta0001" />
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.0.3" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8" />
     <PackageReference Include="NServiceBus" Version="7.1.5" />
     <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.318" />
-    <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.4-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.320" />
+    <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.5-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Xml" Version="0.1.4-beta0001" />
