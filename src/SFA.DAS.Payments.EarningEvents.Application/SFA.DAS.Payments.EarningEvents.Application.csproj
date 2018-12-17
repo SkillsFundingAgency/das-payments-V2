@@ -11,19 +11,19 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="ESFA.DC.FileService" Version="0.1.15-beta0001" />
     <PackageReference Include="FastMember" Version="1.4.1" />
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.0.3" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8" />
-    <PackageReference Include="NServiceBus" Version="7.1.4" />
+    <PackageReference Include="NServiceBus" Version="7.1.5" />
     <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.308" />
-    <PackageReference Include="ESFA.DC.IO.Interfaces" Version="0.1.12-beta0001" />
-    <PackageReference Include="ESFA.DC.IO.Redis" Version="0.1.14-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.318" />
     <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.4-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Xml" Version="0.1.4-beta0001" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +34,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="ESFA.DC.FileService">
+      <HintPath>..\packages\ESFA.DC.FileService.0.1.15-beta0001\lib\netstandard2.0\ESFA.DC.FileService.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.Queueing">
       <HintPath>..\packages\ESFA.DC.Queueing.0.1.14-beta0001\lib\netstandard2.0\ESFA.DC.Queueing.dll</HintPath>
     </Reference>
