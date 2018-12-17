@@ -16,6 +16,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return (decimal?) PeriodAccessor[periodisedValues, "Period" + period];
         }
 
+        public static bool IsMainAim(this LearningDelivery learningDelivery)
+        {
+            return learningDelivery.LearningDeliveryValues.LearnAimRef == "ZPROG001";
+        }
+
         public static void AddPeriodValue(this List<EarningPeriod> earningPeriods, decimal? periodValue, byte period, string priceEpisodeIdentifier)
         {
             earningPeriods.Add(new EarningPeriod { Period = period, PriceEpisodeIdentifier = priceEpisodeIdentifier, Amount = periodValue ?? 0 });

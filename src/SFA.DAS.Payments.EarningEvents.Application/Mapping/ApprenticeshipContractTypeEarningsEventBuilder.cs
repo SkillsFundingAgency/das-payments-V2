@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
         public List<ApprenticeshipContractTypeEarningsEvent> Build(ProcessLearnerCommand learnerSubmission)
         {
-            var intermediateResults = InitialLearnerTransform(learnerSubmission);
+            var intermediateResults = InitialLearnerTransform(learnerSubmission, true);
             var results = new List<ApprenticeshipContractTypeEarningsEvent>();
 
             foreach (var intermediateLearningAim in intermediateResults)

@@ -29,15 +29,29 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 {
                     LearningDeliveries = new EditableList<LearningDelivery>
                     {
-                        new LearningDelivery { AimSeqNumber = 1 }
+                        new LearningDelivery {AimSeqNumber = 1, LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "ZPROG001"}},
+                        new LearningDelivery {AimSeqNumber = 2, LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "M&E"}}
                     },
                     PriceEpisodes = new EditableList<PriceEpisode>
                     {
                         new PriceEpisode
                         {
-                            PriceEpisodeValues = new PriceEpisodeValues { PriceEpisodeAimSeqNumber = 1 },
+                            PriceEpisodeValues = new PriceEpisodeValues {PriceEpisodeAimSeqNumber = 1},
                             PriceEpisodePeriodisedValues = new EditableList<PriceEpisodePeriodisedValues>
-                            {                                
+                            {
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeOnProgPayment",
+                                    Period1 = 10,
+                                    Period2 = 20
+                                }
+                            }
+                        },
+                        new PriceEpisode
+                        {
+                            PriceEpisodeValues = new PriceEpisodeValues {PriceEpisodeAimSeqNumber = 2},
+                            PriceEpisodePeriodisedValues = new EditableList<PriceEpisodePeriodisedValues>
+                            {
                                 new PriceEpisodePeriodisedValues
                                 {
                                     AttributeName = "MathEngBalPayment",

@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
         public List<FunctionalSkillEarningsEvent> Build(ProcessLearnerCommand learnerSubmission)
         {
-            var intermediateResults = InitialLearnerTransform(learnerSubmission);
+            var intermediateResults = InitialLearnerTransform(learnerSubmission, false);
             var results = new List<FunctionalSkillEarningsEvent>();
 
             foreach (var intermediateLearningAim in intermediateResults)
