@@ -1,0 +1,4 @@
+﻿CREATE TABLE [Payments2].[JobEventStatus] (
+	Id TINYINT NOT NULL CONSTRAINT PK_JobEventStatus PRIMARY KEY CLUSTERED,
+	[Description] VARCHAR(255) NOT NULL
+)

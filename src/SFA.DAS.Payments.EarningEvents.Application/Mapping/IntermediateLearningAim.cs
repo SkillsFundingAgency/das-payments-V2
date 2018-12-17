@@ -7,6 +7,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public class IntermediateLearningAim
     {
+        public LearningDelivery Aim { get; protected set; }
+        public List<PriceEpisode> PriceEpisodes { get; protected set; } = new List<PriceEpisode>();
+        public FM36Learner Learner { get; protected set; }
+        public long Ukprn { get; protected set; }
+        public string CollectionYear { get; protected set; }
+        public int CollectionPeriod { get; protected set; }
+        public DateTime IlrSubmissionDateTime { get; protected set; }
+        public long JobId { get; set; }
+        
         public IntermediateLearningAim(
             ProcessLearnerCommand command, IEnumerable<PriceEpisode> priceEpisodes, LearningDelivery aim)
         {
@@ -41,13 +50,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return copy;
         }
 
-        public LearningDelivery Aim { get; protected set; }
-        public List<PriceEpisode> PriceEpisodes { get; protected set; } = new List<PriceEpisode>();
-        public FM36Learner Learner { get; protected set; }
-        public long Ukprn { get; protected set; }
-        public string CollectionYear { get; protected set; }
-        public int CollectionPeriod { get; protected set; }
-        public DateTime IlrSubmissionDateTime { get; protected set; }
-        public long JobId { get; set; }
+
     }
 }

@@ -30,6 +30,8 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Domain\SFA.DAS.Payments.EarningEvents.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages.Internal\SFA.DAS.Payments.EarningEvents.Messages.Internal.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.JobStatus.Client\SFA.DAS.Payments.Monitoring.JobStatus.Client.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.JobStatus.Messages\SFA.DAS.Payments.Monitoring.JobStatus.Messages.csproj" />
   </ItemGroup>
 
   <ItemGroup>

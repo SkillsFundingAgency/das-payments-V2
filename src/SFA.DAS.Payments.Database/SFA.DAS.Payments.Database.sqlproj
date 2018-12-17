@@ -82,6 +82,11 @@
     <Build Include="Payments2\Tables\Payments2.PaymentsDueEvent.sql" />
     <Build Include="Payments2\Tables\Payments2.RequiredPaymentEvent.sql" />
     <Build Include="Payments2\Tables\Payments2.FundingSourceEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.JobStatus.sql" />
+    <Build Include="Payments2\Tables\Payments2.JobEventStatus.sql" />
+    <Build Include="Payments2\Tables\Payments2.Job.sql" />
+    <Build Include="Payments2\Tables\Payments2.JobEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.ProviderEarningsJob.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
