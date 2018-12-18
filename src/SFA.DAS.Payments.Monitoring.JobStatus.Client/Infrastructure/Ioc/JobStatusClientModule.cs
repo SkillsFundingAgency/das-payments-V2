@@ -13,6 +13,10 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Client.Infrastructure.Ioc
                 .As<IProviderEarningsJobStatusClient>()
                 .SingleInstance();
 
+            builder.RegisterType<ProviderEarningsJobStatusClientFactory>()
+                .As<IProviderEarningsJobStatusClientFactory>()
+                .SingleInstance();
+
             builder.RegisterType<JobStatusContext>()
                 .InstancePerLifetimeScope();
 

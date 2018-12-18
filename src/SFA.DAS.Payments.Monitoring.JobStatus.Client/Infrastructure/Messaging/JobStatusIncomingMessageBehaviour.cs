@@ -10,11 +10,11 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Client.Infrastructure.Messaging
 {
     public class JobStatusIncomingMessageBehaviour : Behavior<IIncomingLogicalMessageContext>
     {
-        private readonly IProviderEarningsJobStatusClient jobStatusClient;
+        private readonly IProviderEarningsJobStatusClientFactory factory;
 
-        public JobStatusIncomingMessageBehaviour(IProviderEarningsJobStatusClient jobStatusClient)
+        public JobStatusIncomingMessageBehaviour(IProviderEarningsJobStatusClientFactory factory)
         {
-            this.jobStatusClient = jobStatusClient ?? throw new ArgumentNullException(nameof(jobStatusClient));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public override async Task Invoke(IIncomingLogicalMessageContext context, Func<Task> next)
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Client.Infrastructure.Messaging
 
             if (paymentMessage == null)
                 return;
-
+            var jobStatusClient = factory.Create();
             await jobStatusClient.ProcessedJobMessage(paymentMessage.JobId,
                 (paymentMessage as IPaymentsEvent)?.EventId ??
                 (paymentMessage as PaymentsCommand)?.CommandId ?? Guid.Empty,

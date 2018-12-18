@@ -21,21 +21,25 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IKeyValuePersistenceService redisService;
         private readonly IJsonSerializationService serializationService;
         private readonly IEndpointInstanceFactory factory;
-        private readonly IProviderEarningsJobStatusClient jobStatusClient;
+
+        private readonly IProviderEarningsJobStatusClientFactory jobStatusClientFactory;
+        //private readonly IProviderEarningsJobStatusClient jobStatusClient;
 
 
         public JobContextMessageHandler(IPaymentLogger paymentLogger,
             IKeyValuePersistenceService redisService,
             IJsonSerializationService serializationService,
             IEndpointInstanceFactory factory,
-            IProviderEarningsJobStatusClient jobStatusClient
+            IProviderEarningsJobStatusClientFactory jobStatusClientFactory
+            //IProviderEarningsJobStatusClient jobStatusClient
             )
         {
             this.paymentLogger = paymentLogger;
             this.redisService = redisService;
             this.serializationService = serializationService;
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            this.jobStatusClient = jobStatusClient ?? throw new ArgumentNullException(nameof(jobStatusClient));
+            this.jobStatusClientFactory = jobStatusClientFactory ?? throw new ArgumentNullException(nameof(jobStatusClientFactory));
+            //this.jobStatusClient = jobStatusClient ?? throw new ArgumentNullException(nameof(jobStatusClient));
         }
 
 
@@ -75,6 +79,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     }
                 }
 
+                var jobStatusClient = jobStatusClientFactory.Create();
                 await jobStatusClient.StartJob(message.JobId, fm36Output.UKPRN, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), 1, commands);
                 paymentLogger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
                 return true;
