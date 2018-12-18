@@ -11,7 +11,7 @@ using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public class FunctionalSkillsEarningValueResolver : IValueResolver<IntermediateLearningAim, FunctionalSkillEarningsEvent, IReadOnlyCollection<FunctionalSkillEarning>>
+    public class FunctionalSkillsEarningValueResolver : IValueResolver<IntermediateLearningAim, FunctionalSkillEarningsEvent, ReadOnlyCollection<FunctionalSkillEarning>>
     {
         private static readonly Dictionary<string, FunctionalSkillType> TypeMap = new Dictionary<string, FunctionalSkillType>
         {
@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             {"MathEngOnProgPayment", FunctionalSkillType.OnProgrammeMathsAndEnglish}
         };
 
-        public IReadOnlyCollection<FunctionalSkillEarning> Resolve(IntermediateLearningAim source, FunctionalSkillEarningsEvent destination, IReadOnlyCollection<FunctionalSkillEarning> destMember, ResolutionContext context)
+        public ReadOnlyCollection<FunctionalSkillEarning> Resolve(IntermediateLearningAim source, FunctionalSkillEarningsEvent destination, ReadOnlyCollection<FunctionalSkillEarning> destMember, ResolutionContext context)
         {
             return source.PriceEpisodes.SelectMany(priceEpisode => priceEpisode.PriceEpisodePeriodisedValues)
                 .Where(periodisedValues => TypeMap.ContainsKey(periodisedValues.AttributeName))
