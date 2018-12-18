@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatusService
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
     /// </summary>
-    internal sealed class JobStatusService : StatelessService
+    public class JobStatusService : StatelessService
     {
         private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentLogger logger;

@@ -187,7 +187,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JobStatus", "JobStatus", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0DBC1A28-3662-42C3-81D9-9080FFCF9F88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests", "SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests\SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests.csproj", "{B8278B33-E7F4-43F3-97D9-9151DF3E66A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests", "SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests\SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests.csproj", "{B8278B33-E7F4-43F3-97D9-9151DF3E66A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -790,6 +790,8 @@ Global
 		{9274ABB3-9F30-4320-A111-17BA07DBF568}.Release|x64.ActiveCfg = Release|Any CPU
 		{9274ABB3-9F30-4320-A111-17BA07DBF568}.Release|x64.Build.0 = Release|Any CPU
 		{C7D441B0-203C-433A-890B-1DF14576C203}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{C7D441B0-203C-433A-890B-1DF14576C203}.Debug|Any CPU.Build.0 = Debug|x64
+		{C7D441B0-203C-433A-890B-1DF14576C203}.Debug|Any CPU.Deploy.0 = Debug|x64
 		{C7D441B0-203C-433A-890B-1DF14576C203}.Debug|x64.ActiveCfg = Debug|x64
 		{C7D441B0-203C-433A-890B-1DF14576C203}.Debug|x64.Build.0 = Debug|x64
 		{C7D441B0-203C-433A-890B-1DF14576C203}.Debug|x64.Deploy.0 = Debug|x64
