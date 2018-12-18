@@ -220,7 +220,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     var newPriceEpisode = new PriceEpisode
                     {
-                        PriceEpisodeIdentifier = priceEpisode.PriceEpisodeId,
+                        PriceEpisodeIdentifier = priceEpisode.PriceEpisodeId ?? priceEpisode.PriceDetails,
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>(),
                         PriceEpisodeValues = new PriceEpisodeValues(),
                     };
