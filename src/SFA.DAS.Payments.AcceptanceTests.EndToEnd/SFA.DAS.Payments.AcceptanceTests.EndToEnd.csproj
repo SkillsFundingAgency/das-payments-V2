@@ -357,6 +357,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Small Employer\Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature.cs">
+      <DependentUpon>Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Small Employer\Non-Levy 16-18 learner with a small employer at start PV2-326.feature.cs">
       <DependentUpon>Non-Levy 16-18 learner with a small employer at start PV2-326.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -467,6 +472,10 @@
     <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\One Non-levy learner - change to start date within calendar month, backwards in month PV2-283.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-levy learner - change to start date within calendar month, backwards in month PV2-283.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Small Employer\Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Small Employer\Non-Levy 16-18 learner with a small employer at start PV2-326.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
