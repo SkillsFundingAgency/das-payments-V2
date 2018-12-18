@@ -297,8 +297,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Non-Levy Learners Finish On Time PV2-337.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change to Negotiated Code Mid Month PV2-382.feature.cs">
-      <DependentUpon>Change to Negotiated Code Mid Month PV2-382.feature</DependentUpon>
+    <Compile Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change of employer with gap between employers PV2-379.feature.cs">
+      <DependentUpon>Change of employer with gap between employers PV2-379.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change to Negotiated Cost Mid Month PV2-382.feature.cs">
+      <DependentUpon>Change to Negotiated Cost Mid Month PV2-382.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -415,9 +420,13 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two Non-Levy Learners Finish On Time PV2-337.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change to Negotiated Code Mid Month PV2-382.feature">
+    <None Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change of employer with gap between employers PV2-379.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Change to Negotiated Code Mid Month PV2-382.feature.cs</LastGenOutput>
+      <LastGenOutput>Change of employer with gap between employers PV2-379.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change to Negotiated Cost Mid Month PV2-382.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Change to Negotiated Cost Mid Month PV2-382.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change standard and price but not from start - PV2-205.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
