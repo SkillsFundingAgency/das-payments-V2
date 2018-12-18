@@ -18,22 +18,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.SmallEmployer
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Non-levy learner 16-18 employed with a small employer at start but removed later " +
-        "PV2-331")]
-    public partial class Non_LevyLearner16_18EmployedWithASmallEmployerAtStartButRemovedLaterPV2_331Feature
+    [NUnit.Framework.DescriptionAttribute("Non-levy learner 16-18 employed with a large employer change to small employer PV" +
+        "2-352")]
+    public partial class Non_LevyLearner16_18EmployedWithALargeEmployerChangeToSmallEmployerPV2_352Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "Non-Levy 16-18 learner second employment status with same employer but small employer flag removed PV2-331.feature"
+#line 1 "Non-Levy 16-18 learner large employer at start changed to small employer PV2-352.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-levy learner 16-18 employed with a small employer at start but removed later " +
-                    "PV2-331", @"	As a provider,
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-levy learner 16-18 employed with a large employer change to small employer PV" +
+                    "2-352", @"	As a provider,
 	I want a non-levy learner, 1 learner aged 16-18. Second employment status record added with same employer id but small employer flag removed. Learner retains small employer funding, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
@@ -74,12 +74,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.SmallEmployer
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Non-levy learner 16-18 employed with a small employer at start but removed later " +
-            "PV2-331")]
-        public virtual void Non_LevyLearner16_18EmployedWithASmallEmployerAtStartButRemovedLaterPV2_331()
+        [NUnit.Framework.DescriptionAttribute("Non-levy learner 16-18 employed with a large employer change to small employer PV" +
+            "2-352")]
+        public virtual void Non_LevyLearner16_18EmployedWithALargeEmployerChangeToSmallEmployerPV2_352()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non-levy learner 16-18 employed with a small employer at start but removed later " +
-                    "PV2-331", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non-levy learner 16-18 employed with a large employer change to small employer PV" +
+                    "2-352", null, ((string[])(null)));
 #line 5
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
@@ -99,8 +99,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Framework Code",
                         "Pathway Code",
                         "Programme Type",
-                        "Funding Line Type",
-                        "SFA Contribution Percentage"});
+                        "Funding Line Type"});
             table1.AddRow(new string[] {
                         "06/Aug/Last Academic Year",
                         "12 months",
@@ -116,9 +115,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "403",
                         "1",
                         "25",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "100%"});
-#line 11
+                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
+#line 14
  testRunner.Given("the provider previously submitted the following learner details", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -128,7 +126,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "Balancing",
                         "First16To18EmployerIncentive",
                         "First16To18ProviderIncentive",
-                        "OnProgramme16To18FrameworkUplift"});
+                        "OnProgramme16To18FrameworkUplift",
+                        "SFA Contribution Percentage"});
             table2.AddRow(new string[] {
                         "Aug/Last Academic Year",
                         "500",
@@ -136,7 +135,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "90%"});
             table2.AddRow(new string[] {
                         "Sep/Last Academic Year",
                         "500",
@@ -144,7 +144,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "90%"});
             table2.AddRow(new string[] {
                         "Oct/Last Academic Year",
                         "500",
@@ -152,7 +153,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "100%"});
             table2.AddRow(new string[] {
                         "Nov/Last Academic Year",
                         "500",
@@ -160,7 +162,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "500",
                         "500",
-                        "120"});
+                        "120",
+                        "100%"});
             table2.AddRow(new string[] {
                         "Dec/Last Academic Year",
                         "500",
@@ -168,7 +171,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "100%"});
             table2.AddRow(new string[] {
                         "Jan/Last Academic Year",
                         "500",
@@ -176,7 +180,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "100%"});
             table2.AddRow(new string[] {
                         "Feb/Last Academic Year",
                         "500",
@@ -184,7 +189,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "100%"});
             table2.AddRow(new string[] {
                         "Mar/Last Academic Year",
                         "500",
@@ -192,7 +198,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "100%"});
             table2.AddRow(new string[] {
                         "Apr/Last Academic Year",
                         "500",
@@ -200,7 +207,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "100%"});
             table2.AddRow(new string[] {
                         "May/Last Academic Year",
                         "500",
@@ -208,7 +216,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "100%"});
             table2.AddRow(new string[] {
                         "Jun/Last Academic Year",
                         "500",
@@ -216,7 +225,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
+                        "120",
+                        "100%"});
             table2.AddRow(new string[] {
                         "Jul/Last Academic Year",
                         "500",
@@ -224,8 +234,9 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0",
-                        "120"});
-#line 15
+                        "120",
+                        "100%"});
+#line 18
     testRunner.And("the following earnings had been generated for the learner", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -238,17 +249,31 @@ this.ScenarioInitialize(scenarioInfo);
             table3.AddRow(new string[] {
                         "R01/Last Academic Year",
                         "Jul/Last Academic Year",
-                        "500",
-                        "0",
+                        "450",
+                        "50",
                         "0",
                         "Learning"});
             table3.AddRow(new string[] {
                         "R02/Last Academic Year",
                         "Aug/Last Academic Year",
-                        "500",
-                        "0",
+                        "450",
+                        "50",
                         "0",
                         "Learning"});
+            table3.AddRow(new string[] {
+                        "R01/Last Academic Year",
+                        "Jul/Last Academic Year",
+                        "0",
+                        "0",
+                        "120",
+                        "OnProgramme16To18FrameworkUplift"});
+            table3.AddRow(new string[] {
+                        "R02/Last Academic Year",
+                        "Aug/Last Academic Year",
+                        "0",
+                        "0",
+                        "120",
+                        "OnProgramme16To18FrameworkUplift"});
             table3.AddRow(new string[] {
                         "R03/Last Academic Year",
                         "Sep/Last Academic Year",
@@ -319,20 +344,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "Learning"});
-            table3.AddRow(new string[] {
-                        "R01/Last Academic Year",
-                        "Jul/Last Academic Year",
-                        "0",
-                        "0",
-                        "120",
-                        "OnProgramme16To18FrameworkUplift"});
-            table3.AddRow(new string[] {
-                        "R02/Last Academic Year",
-                        "Aug/Last Academic Year",
-                        "0",
-                        "0",
-                        "120",
-                        "OnProgramme16To18FrameworkUplift"});
             table3.AddRow(new string[] {
                         "R03/Last Academic Year",
                         "Sep/Last Academic Year",
@@ -417,7 +428,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "500",
                         "First16To18ProviderIncentive"});
-#line 29
+#line 32
     testRunner.And("the following provider payments had been generated", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -454,9 +465,9 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
                         "100%"});
-#line 57
+#line 63
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
-#line 60
+#line 66
  testRunner.When("the amended ILR file is re-submitted for the learners in collection period R01/Cu" +
                     "rrent Academic Year", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -564,7 +575,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0"});
-#line 61
+#line 67
  testRunner.Then("the following learner earnings should be generated", ((string)(null)), table5, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -585,7 +596,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "500",
                         "500",
                         "360"});
-#line 75
+#line 81
     testRunner.And("only the following payments will be calculated", ((string)(null)), table6, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -623,7 +634,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "360",
                         "Completion16To18FrameworkUplift"});
-#line 78
+#line 84
  testRunner.And("only the following provider payments will be recorded", ((string)(null)), table7, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -661,7 +672,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "360",
                         "Completion16To18FrameworkUplift"});
-#line 84
+#line 90
  testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table8, "And ");
 #line hidden
             this.ScenarioCleanup();
