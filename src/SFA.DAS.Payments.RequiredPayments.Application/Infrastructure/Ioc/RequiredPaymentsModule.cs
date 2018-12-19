@@ -16,7 +16,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
             // app layer event handlers
             builder.RegisterType<ApprenticeshipContractType2PaymentDueEventHandler>().Keyed<IPaymentDueEventHandler>(typeof(ApprenticeshipContractType2PaymentDueEvent));
             builder.RegisterType<IncentivePaymentDueEventHandler>().Keyed<IPaymentDueEventHandler>(typeof(IncentivePaymentDueEvent));
-            builder.RegisterType<FunctionalSkillPaymentDueEventHandler>().Keyed<IPaymentDueEventHandler>(typeof(FunctionalSkillPaymentDueEvent));
         }
     }
 }
