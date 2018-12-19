@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.PaymentsDue.Domain;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
@@ -28,7 +29,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Services
                 submission,
                 earning,
                 message.Learner,
-                message.LearningAim
+                message.LearningAim,
+                ContractType.Act2
             )).ToArray();
         }
     }

@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.PaymentsDue.Application.Services;
 using SFA.DAS.Payments.PaymentsDue.Domain;
@@ -22,7 +23,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
             var processorMock = new Mock<IFunctionalSkillsEarningProcessor>(MockBehavior.Strict);
             var incentives = new [] { new IncentivePaymentDueEvent() };
 
-            processorMock.Setup(p => p.HandleEarning(It.IsAny<Submission>(), It.IsAny<FunctionalSkillEarning>(), It.IsAny<Learner>(), It.IsAny<LearningAim>()))
+            processorMock.Setup(p => p.HandleEarning(It.IsAny<Submission>(), It.IsAny<FunctionalSkillEarning>(), It.IsAny<Learner>(), It.IsAny<LearningAim>(), ContractType.Act2))
                 .Returns(incentives)
                 .Verifiable();
 

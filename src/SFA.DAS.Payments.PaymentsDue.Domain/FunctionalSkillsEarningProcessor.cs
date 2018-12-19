@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
@@ -13,7 +14,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
             Submission submission,
             FunctionalSkillEarning functionalSkillEarning,
             Learner learner,
-            LearningAim learningAim
+            LearningAim learningAim,
+            ContractType contractType
         )
         {
             var paymentsDue = new List<IncentivePaymentDueEvent>();
@@ -32,7 +34,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
                     CollectionPeriod = submission.CollectionPeriod,
                     EventTime = DateTimeOffset.UtcNow,
                     PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
-                    IlrSubmissionDateTime = submission.IlrSubmissionDate
+                    IlrSubmissionDateTime = submission.IlrSubmissionDate,
+                    ContractType = contractType
                 });
             }
 

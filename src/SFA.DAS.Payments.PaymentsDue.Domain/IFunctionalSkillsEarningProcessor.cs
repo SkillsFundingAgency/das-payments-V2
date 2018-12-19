@@ -1,5 +1,5 @@
-﻿using System;
-using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
@@ -11,7 +11,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
             Submission submission,
             FunctionalSkillEarning earning,
             Learner learner,
-            LearningAim learningAim
+            LearningAim learningAim,
+            ContractType contractType
         );
     }
 }
