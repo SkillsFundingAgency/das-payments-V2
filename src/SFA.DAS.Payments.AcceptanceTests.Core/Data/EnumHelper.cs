@@ -30,5 +30,40 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
              throw new InvalidOperationException($"Invalid funding source: '{fundingSourceType}'");
         }
+
+        public static string ToAttributeName(this TransactionType transactionType)
+        {
+            switch (transactionType)
+            {
+                case TransactionType.Learning:
+                    return "PriceEpisodeOnProgPayment";
+                case TransactionType.Balancing:
+                    return "PriceEpisodeBalancePayment";
+                case TransactionType.Completion:
+                    return "PriceEpisodeCompletionPayment";
+                case TransactionType.LearningSupport:
+                    return "PriceEpisodeLSFCash";
+                case TransactionType.First16To18EmployerIncentive:
+                    return "PriceEpisodeFirstEmp1618Pay";
+                case TransactionType.First16To18ProviderIncentive:
+                    return "PriceEpisodeFirstProv1618Pay";
+                case TransactionType.Second16To18EmployerIncentive:
+                    return "PriceEpisodeSecondEmp1618Pay";
+                case TransactionType.Second16To18ProviderIncentive:
+                    return "PriceEpisodeSecondProv1618Pay";
+                case TransactionType.OnProgramme16To18FrameworkUplift:
+                    return "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment";
+                case TransactionType.Completion16To18FrameworkUplift:
+                    return "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment";
+                case TransactionType.Balancing16To18FrameworkUplift:
+                    return "PriceEpisodeApplic1618FrameworkUpliftBalancing";
+                case TransactionType.FirstDisadvantagePayment:
+                    return "PriceEpisodeFirstDisadvantagePayment";
+                case TransactionType.SecondDisadvantagePayment:
+                    return "PriceEpisodeSecondDisadvantagePayment";
+                default:
+                    throw new NotImplementedException($"Cannot get FM36 attribute name.  Unhandled transaction type: {transactionType}");
+            }
+        }
     }
 }
