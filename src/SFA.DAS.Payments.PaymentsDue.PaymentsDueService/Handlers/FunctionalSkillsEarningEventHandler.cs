@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.PaymentsDue.PaymentsDueService.Handlers
         private readonly IExecutionContext executionContext;
         private readonly IFunctionalSkillsEarningService functionalSkillsEarningService;
 
-        public FunctionalSkillsEarningEventHandler(IPaymentLogger paymentLogger, IExecutionContext executionContext, IFunctionalSkillsEarningService functionalSkillsEarningService)
+        public FunctionalSkillsEarningEventHandler(IFunctionalSkillsEarningService functionalSkillsEarningService, IPaymentLogger paymentLogger, IExecutionContext executionContext)
         {
             this.paymentLogger = paymentLogger;
             this.executionContext = executionContext;
