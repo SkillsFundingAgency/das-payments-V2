@@ -5,6 +5,7 @@ using System.Linq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
@@ -69,7 +70,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             var submission = new Submission { Ukprn = Ukprn, JobId = JobId, CollectionPeriod = collectionPeriod, IlrSubmissionDate = earning.IlrSubmissionDateTime };
 
             // act
-            var paymentsDue = incentiveProcessor.HandleIncentiveEarnings(submission, incentiveEarning, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage);
+            var paymentsDue = incentiveProcessor.HandleIncentiveEarnings(submission, incentiveEarning, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, ContractType.Act2);
 
             // assert
             Assert.IsNotNull(paymentsDue);

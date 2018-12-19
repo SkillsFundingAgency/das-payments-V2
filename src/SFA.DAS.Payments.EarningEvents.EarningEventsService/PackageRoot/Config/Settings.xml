@@ -6,7 +6,7 @@
     <Parameter Name="LoggingConnectionString" Value=""/>
     <Parameter Name="ServiceBusConnectionString" Value=""/>
     <Parameter Name="DCServiceBusConnectionString" Value=""/>
-    <Parameter Name="AzureRedisConnectionString" Value=""/>
+    <Parameter Name="DcStorageConnectionString" Value=""/>
   </Section>
 
   <Section Name="Settings">

@@ -63,6 +63,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             requiredPayment.EventTime = DateTimeOffset.UtcNow;
             requiredPayment.JobId = paymentDue.JobId;
             requiredPayment.IlrSubmissionDateTime = paymentDue.IlrSubmissionDateTime;
+            
 
             return requiredPayment;
         }

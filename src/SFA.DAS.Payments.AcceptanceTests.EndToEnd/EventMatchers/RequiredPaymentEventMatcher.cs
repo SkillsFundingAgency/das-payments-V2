@@ -47,6 +47,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                 AddIncentivePayment(payment, expectedPayments, payment.OnProgrammeMathsAndEnglish, IncentivePaymentType.OnProgrammeMathsAndEnglish);
                 AddIncentivePayment(payment, expectedPayments, payment.BalancingMathsAndEnglish, IncentivePaymentType.BalancingMathsAndEnglish);
+                if (payment.LearningSupport!=0)
+                    expectedPayments.Add(new IncentiveRequiredPaymentEvent
+                    {
+                        AmountDue = payment.LearningSupport,
+                        Type = IncentiveType.LearningSupport,
+                        DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                    });
+                
             }
 
             return expectedPayments;

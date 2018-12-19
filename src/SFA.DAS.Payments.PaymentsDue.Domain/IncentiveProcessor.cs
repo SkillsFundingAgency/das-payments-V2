@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
@@ -14,8 +15,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
             IncentiveEarning incentiveEarning,
             Learner learner,
             LearningAim learningAim,
-            decimal sfaContributionPercentage
-            )
+            decimal sfaContributionPercentage, ContractType contractType)
         {
             if (incentiveEarning == null)
                 throw new ArgumentNullException(nameof(incentiveEarning));
@@ -46,6 +46,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
                     PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
                     IlrSubmissionDateTime = submission.IlrSubmissionDate,
                     Type = (IncentivePaymentType) incentiveEarning.Type
+                    ContractType = contractType
                 });
             }
 

@@ -9,5 +9,6 @@
         public decimal Balancing { get; set; }
         public decimal OnProgrammeMathsAndEnglish { get; set; }
         public decimal BalancingMathsAndEnglish { get; set; }
+        public decimal LearningSupport { get; set; }
     }
 }
