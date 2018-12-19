@@ -388,12 +388,12 @@ this.ScenarioInitialize(scenarioInfo);
                         "Funding Line Type",
                         "SFA Contribution Percentage"});
             table4.AddRow(new string[] {
-                        "06/Aug/Last Academic Year",
+                        "06/Sep/Last Academic Year",
                         "12 months",
                         "15000",
-                        "06/Aug/Last Academic Year",
+                        "06/Sep/Last Academic Year",
                         "0",
-                        "06/Aug/Last Academic Year",
+                        "06/Sep/Last Academic Year",
                         "12 months",
                         "completed",
                         "Act2",

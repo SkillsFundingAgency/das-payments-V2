@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
@@ -23,9 +24,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly CalendarPeriod collectionPeriod;
         private readonly IList<Earning> earningSpecs;
         private readonly IList<FM36Learner> learnerSpecs;
-        private static readonly TransactionType[] onProgTypes = { TransactionType.Learning, TransactionType.Balancing, TransactionType.Completion };
-        private static readonly TransactionType[] incentiveTypes = { TransactionType.First16To18EmployerIncentive, TransactionType.First16To18ProviderIncentive, TransactionType.Second16To18EmployerIncentive, TransactionType.Second16To18ProviderIncentive };
-        private static readonly TransactionType[] functionalSkillTypes = { TransactionType.OnProgrammeMathsAndEnglish, TransactionType.BalancingMathsAndEnglish };
+        private readonly TransactionType[] incentiveTypes;
+        private readonly TransactionType[] onProgTypes;
+        private readonly TransactionType[] functionalSkillTypes;
 
         public EarningEventMatcher(IList<Earning> earningSpecs, TestSession testSession, CalendarPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
         {
@@ -33,6 +34,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             this.testSession = testSession;
             this.collectionPeriod = collectionPeriod;
             this.learnerSpecs = learnerSpecs;
+
+            incentiveTypes = Enum.GetValues(typeof(IncentiveType)).Cast<IncentiveType>().Select(x => (TransactionType)x).ToArray();
+            onProgTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<OnProgrammeEarningType>().Select(x => (TransactionType)x).ToArray();
+            functionalSkillTypes = Enum.GetValues(typeof(FunctionalSkillType)).Cast<FunctionalSkillType>().Select(x => (TransactionType)x).ToArray();
         }
 
         protected override IList<EarningEvent> GetActualEvents()
