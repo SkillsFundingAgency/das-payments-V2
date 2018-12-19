@@ -164,16 +164,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ContractType = learnerTraining.ContractType,
                 PriceEpisodeIdentifier = "pe-1",
                 FundingSource = fundingSourceType,
-                LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
+                LearningAimPathwayCode = learnerTraining.PathwayCode,
                 LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
                 LearningAimReference = learnerTraining.AimReference,
-                LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
+                LearningAimStandardCode = learnerTraining.StandardCode,
                 IlrSubmissionDateTime = submissionTime,
                 ExternalId = Guid.NewGuid(),
                 Amount = amount,
                 LearningAimFundingLineType = learnerTraining.FundingLineType,
                 LearnerUln = providerPayment.Uln,
-                LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                LearningAimFrameworkCode = learnerTraining.FrameworkCode,
                 LearningAimProgrammeType = learnerTraining.ProgrammeType
             };
         }
