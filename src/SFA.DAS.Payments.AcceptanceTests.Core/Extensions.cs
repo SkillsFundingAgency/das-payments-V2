@@ -210,24 +210,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             PeriodisedProperties[period].SetValue(values, value);
         }
-
-        public static string ToAttributeName(this SFA.DAS.Payments.Model.Core.Entities.TransactionType transactionType)
-        {
-            switch (transactionType)
-            {
-                case TransactionType.Learning:
-                    return "PriceEpisodeOnProgPayment";
-                case TransactionType.Balancing:
-                    return "PriceEpisodeBalancePayment";
-                case TransactionType.Completion:
-                    return "PriceEpisodeCompletionPayment";
-                case TransactionType.OnProgrammeMathsAndEnglish:
-                    return "MathEngOnProgPayment";
-                case TransactionType.BalancingMathsAndEnglish:
-                    return "MathEngBalPayment";
-                default:
-                    throw new NotImplementedException();
-            }
-        }
     }
 }

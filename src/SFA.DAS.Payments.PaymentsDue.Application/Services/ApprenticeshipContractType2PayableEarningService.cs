@@ -44,7 +44,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Services
                 earning,
                 message.Learner,
                 message.LearningAim,
-                message.SfaContributionPercentage
+                message.SfaContributionPercentage,
+                ContractType.Act2
             )).ToList();
 
             var result = new List<PaymentDueEvent>();

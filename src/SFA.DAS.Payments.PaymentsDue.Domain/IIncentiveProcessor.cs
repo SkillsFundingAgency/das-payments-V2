@@ -13,7 +13,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
             IncentiveEarning incentiveEarning,
             Learner learner,
             LearningAim learningAim,
-            decimal sfaContributionPercentage
+            decimal sfaContributionPercentage,
+            ContractType contractType
         );
     }
 }

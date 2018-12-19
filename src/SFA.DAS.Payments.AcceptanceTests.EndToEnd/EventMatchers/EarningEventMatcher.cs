@@ -9,7 +9,6 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -31,10 +30,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             this.testSession = testSession;
             this.collectionPeriod = collectionPeriod;
             this.learnerSpecs = learnerSpecs;
-
-            incentiveTypes = Enum.GetValues(typeof(IncentiveType)).Cast<IncentiveType>().Select(x => (TransactionType)x).ToArray();
-            onProgTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<OnProgrammeEarningType>().Select(x => (TransactionType)x).ToArray();
-            functionalSkillTypes = Enum.GetValues(typeof(FunctionalSkillType)).Cast<FunctionalSkillType>().Select(x => (TransactionType)x).ToArray();
         }
 
         protected override IList<EarningEvent> GetActualEvents()
@@ -143,12 +138,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             Ukprn = testSession.Ukprn,
                             IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
                             {
-                                Type = (IncentiveType)(int)tt,
+                                Type = (IncentiveEarningType)(int)tt,
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
                                     Period = e.DeliveryCalendarPeriod.Period,
-                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36learner)
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
                             JobId = testSession.JobId,

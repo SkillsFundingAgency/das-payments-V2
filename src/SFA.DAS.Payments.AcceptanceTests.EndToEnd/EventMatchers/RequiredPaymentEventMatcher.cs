@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     expectedPayments.Add(new IncentiveRequiredPaymentEvent
                     {
                         AmountDue = payment.LearningSupport,
-                        Type = IncentiveType.LearningSupport,
+                        Type = IncentivePaymentType.LearningSupport,
                         DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
                     });
                 

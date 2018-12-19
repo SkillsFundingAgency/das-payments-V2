@@ -81,6 +81,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                     return "PriceEpisodeFirstDisadvantagePayment";
                 case TransactionType.SecondDisadvantagePayment:
                     return "PriceEpisodeSecondDisadvantagePayment";
+                case TransactionType.OnProgrammeMathsAndEnglish:
+                    return "MathEngOnProgPayment";
+                case TransactionType.BalancingMathsAndEnglish:
+                    return "MathEngBalPayment";
+
                 default:
                     throw new NotImplementedException($"Cannot get FM36 attribute name.  Unhandled transaction type: {transactionType}");
             }

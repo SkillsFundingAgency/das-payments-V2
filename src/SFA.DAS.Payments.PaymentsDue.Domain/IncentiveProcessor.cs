@@ -15,7 +15,9 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
             IncentiveEarning incentiveEarning,
             Learner learner,
             LearningAim learningAim,
-            decimal sfaContributionPercentage, ContractType contractType)
+            decimal sfaContributionPercentage,
+            ContractType contractType
+        )
         {
             if (incentiveEarning == null)
                 throw new ArgumentNullException(nameof(incentiveEarning));
@@ -45,7 +47,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
                     EventTime = DateTimeOffset.UtcNow,
                     PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
                     IlrSubmissionDateTime = submission.IlrSubmissionDate,
-                    Type = (IncentivePaymentType) incentiveEarning.Type
+                    Type = (IncentivePaymentType) incentiveEarning.Type,
                     ContractType = contractType
                 });
             }
