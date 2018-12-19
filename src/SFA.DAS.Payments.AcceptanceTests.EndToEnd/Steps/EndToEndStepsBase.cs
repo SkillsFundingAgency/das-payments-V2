@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             Console.WriteLine($"Current collection period name is: {period.Name}.");
             CurrentCollectionPeriod = period;
             CollectionPeriod = CurrentCollectionPeriod.Period;
-            CollectionYear = CurrentCollectionPeriod.Name.Split('-').FirstOrDefault();
+            CollectionYear = CurrentCollectionPeriod.AcademicYear;
         }
 
         protected void AddTestLearners(List<Training> training)
