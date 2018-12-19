@@ -511,29 +511,29 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             yield return "PriceEpisodeLSFCash"; 
         }
 
-        private static string MapIncentiveType(IncentiveType incentiveType)
+        private static string MapIncentiveType(IncentiveEarningType incentiveType)
         {
             switch (incentiveType)
             {
-                case IncentiveType.First16To18EmployerIncentive:
+                case IncentiveEarningType.First16To18EmployerIncentive:
                     return "PriceEpisodeFirstEmp1618Pay";
-                case IncentiveType.First16To18ProviderIncentive:
+                case IncentiveEarningType.First16To18ProviderIncentive:
                     return "PriceEpisodeFirstProv1618Pay";
-                case IncentiveType.Second16To18EmployerIncentive:
+                case IncentiveEarningType.Second16To18EmployerIncentive:
                     return "PriceEpisodeSecondEmp1618Pay";
-                case IncentiveType.Second16To18ProviderIncentive:
+                case IncentiveEarningType.Second16To18ProviderIncentive:
                     return "PriceEpisodeSecondProv1618Pay";
-                case IncentiveType.OnProgramme16To18FrameworkUplift:
+                case IncentiveEarningType.OnProgramme16To18FrameworkUplift:
                     return "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment";
-                case IncentiveType.Completion16To18FrameworkUplift:
+                case IncentiveEarningType.Completion16To18FrameworkUplift:
                     return "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment";
-                case IncentiveType.Balancing16To18FrameworkUplift:
+                case IncentiveEarningType.Balancing16To18FrameworkUplift:
                     return "PriceEpisodeApplic1618FrameworkUpliftBalancing";
-                case IncentiveType.FirstDisadvantagePayment:
+                case IncentiveEarningType.FirstDisadvantagePayment:
                     return "PriceEpisodeFirstDisadvantagePayment";
-                case IncentiveType.SecondDisadvantagePayment:
+                case IncentiveEarningType.SecondDisadvantagePayment:
                     return "PriceEpisodeSecondDisadvantagePayment";
-                case IncentiveType.LearningSupport:
+                case IncentiveEarningType.LearningSupport:
                     return "PriceEpisodeLSFCash"; 
                  default:
                      return string.Empty;
