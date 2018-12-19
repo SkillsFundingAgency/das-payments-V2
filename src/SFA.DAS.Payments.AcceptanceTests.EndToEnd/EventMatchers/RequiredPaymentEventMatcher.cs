@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -44,8 +45,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 AddOnProgPayment(payment, expectedPayments, payment.Balancing, OnProgrammeEarningType.Balancing);
                 AddOnProgPayment(payment, expectedPayments, payment.Completion, OnProgrammeEarningType.Completion);
 
-                AddFunctionalSkillPayment(payment, expectedPayments, payment.OnProgrammeMathsAndEnglish, FunctionalSkillType.OnProgrammeMathsAndEnglish);
-                AddFunctionalSkillPayment(payment, expectedPayments, payment.BalancingMathsAndEnglish, FunctionalSkillType.BalancingMathsAndEnglish);
+                AddIncentivePayment(payment, expectedPayments, payment.OnProgrammeMathsAndEnglish, IncentivePaymentType.OnProgrammeMathsAndEnglish);
+                AddIncentivePayment(payment, expectedPayments, payment.BalancingMathsAndEnglish, IncentivePaymentType.BalancingMathsAndEnglish);
             }
 
             return expectedPayments;
@@ -64,9 +65,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedPayments.Add(payment);
         }
 
-        private static void AddFunctionalSkillPayment(Payment paymentSpec, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, FunctionalSkillType type)
+        private static void AddIncentivePayment(Payment paymentSpec, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, IncentivePaymentType type)
         {
-            var payment = new FunctionalSkillRequiredPaymentEvent
+            var payment = new IncentiveRequiredPaymentEvent
             {
                 AmountDue = amountDue,
                 Type = type,
@@ -85,8 +86,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name &&
                    expected.AmountDue == actual.AmountDue &&
                    MatchAct(expected as ApprenticeshipContractTypeRequiredPaymentEvent, actual as ApprenticeshipContractTypeRequiredPaymentEvent) &&
-                   MatchIncentive(expected as IncentiveRequiredPaymentEvent, actual as IncentiveRequiredPaymentEvent) &&
-                   MatchFunctionalSkill(expected as FunctionalSkillRequiredPaymentEvent, actual as FunctionalSkillRequiredPaymentEvent);
+                   MatchIncentive(expected as IncentiveRequiredPaymentEvent, actual as IncentiveRequiredPaymentEvent);
         }
 
         private bool MatchAct(ApprenticeshipContractTypeRequiredPaymentEvent expected, ApprenticeshipContractTypeRequiredPaymentEvent actual)
@@ -98,14 +98,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         }
 
         private bool MatchIncentive(IncentiveRequiredPaymentEvent expected, IncentiveRequiredPaymentEvent actual)
-        {
-            if (expected == null)
-                return true;
-
-            return expected.Type == actual.Type;
-        }
-
-        private bool MatchFunctionalSkill(FunctionalSkillRequiredPaymentEvent expected, FunctionalSkillRequiredPaymentEvent actual)
         {
             if (expected == null)
                 return true;
