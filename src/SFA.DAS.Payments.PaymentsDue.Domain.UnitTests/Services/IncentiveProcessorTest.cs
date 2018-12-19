@@ -66,9 +66,10 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                 })
             };
             earning.IncentiveEarnings = new ReadOnlyCollection<IncentiveEarning>(new[] { incentiveEarning });
+            var submission = new Submission { Ukprn = Ukprn, JobId = JobId, CollectionPeriod = collectionPeriod, IlrSubmissionDate = earning.IlrSubmissionDateTime };
 
             // act
-            var paymentsDue = incentiveProcessor.HandleIncentiveEarnings(Ukprn, JobId, incentiveEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
+            var paymentsDue = incentiveProcessor.HandleIncentiveEarnings(submission, incentiveEarning, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage);
 
             // assert
             Assert.IsNotNull(paymentsDue);

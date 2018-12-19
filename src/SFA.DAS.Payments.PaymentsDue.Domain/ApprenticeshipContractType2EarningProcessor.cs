@@ -9,16 +9,18 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
     public class ApprenticeshipContractType2EarningProcessor : IApprenticeshipContractType2EarningProcessor
     {
-        public ApprenticeshipContractTypePaymentDueEvent[] HandleOnProgrammeEarning(long ukprn, long jobId,
+        public ApprenticeshipContractTypePaymentDueEvent[] HandleOnProgrammeEarning(
+            Submission submission,
             OnProgrammeEarning onProgEarning,
-            CalendarPeriod collectionPeriod, Learner learner, LearningAim learningAim,
-            decimal sfaContributionPercentage, DateTime ilrSubmissionDate)
+            Learner learner,
+            LearningAim learningAim,
+            decimal sfaContributionPercentage)
         {
             if (onProgEarning == null)
                 throw new ArgumentNullException(nameof(onProgEarning));
 
-            if (collectionPeriod == null)
-                throw new ArgumentNullException(nameof(collectionPeriod));
+            if (submission == null)
+                throw new ArgumentNullException(nameof(submission));
 
             if (learner == null)
                 throw new ArgumentNullException(nameof(learner));
@@ -28,22 +30,22 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 
             var paymentsDue = new List<ApprenticeshipContractType2PaymentDueEvent>();
 
-            foreach (var period in onProgEarning.Periods.Where(earning => earning.Period <= collectionPeriod.Period))
+            foreach (var period in onProgEarning.Periods.Where(earning => earning.Period <= submission.CollectionPeriod.Period))
             {
                 paymentsDue.Add(new ApprenticeshipContractType2PaymentDueEvent
                 {
-                    JobId = jobId,
-                    Ukprn = ukprn,
-                    DeliveryPeriod = new CalendarPeriod(collectionPeriod.Name.Split('-').FirstOrDefault(), period.Period),  //TODO: yuck!! fix when the CalendarPeriod class is reworked.
+                    JobId = submission.JobId,
+                    Ukprn = submission.Ukprn,
+                    DeliveryPeriod = new CalendarPeriod(submission.CollectionPeriod.AcademicYear, period.Period),
                     LearningAim = learningAim.Clone(),
                     Learner = learner.Clone(),
                     Type = onProgEarning.Type,
                     SfaContributionPercentage = sfaContributionPercentage,
                     AmountDue = period.Amount,
-                    CollectionPeriod = collectionPeriod,
+                    CollectionPeriod = submission.CollectionPeriod,
                     EventTime = DateTimeOffset.UtcNow,
                     PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
-                    IlrSubmissionDateTime = ilrSubmissionDate
+                    IlrSubmissionDateTime = submission.IlrSubmissionDate
                 });
             }
 
