@@ -4,7 +4,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
-    public class ApprenticeshipContractType2PaymentDueProcessor : IApprenticeshipContractType2PaymentDueProcessor
+    public class PaymentDueProcessor : IPaymentDueProcessor
     {
         public decimal CalculateRequiredPaymentAmount(decimal amountDue, Payment[] paymentHistory)
         {

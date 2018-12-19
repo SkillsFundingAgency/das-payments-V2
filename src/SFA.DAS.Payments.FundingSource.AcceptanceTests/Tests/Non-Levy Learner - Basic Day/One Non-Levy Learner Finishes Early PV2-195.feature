@@ -22,9 +22,9 @@ Scenario: A non-DAS learner, learner finishes early
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
 	| p2                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 3375   |
-	| p2                     | 2				| Completion (TT2)| CoInvestedEmploer (FS3)	| 375    |
+	| p2                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)	| 375    |
 	| p2                     | 2				| Balancing (TT3) | CoInvestedSfa (FS2)		| 2700   |
-	| p2                     | 2				| Balancing (TT3) | CoInvestedEmploer (FS3)	| 300    |
+	| p2                     | 2				| Balancing (TT3) | CoInvestedEmployer (FS3)	| 300    |
 
 @NonDas_BasicDay
 @finishes_early
@@ -43,11 +43,11 @@ Scenario: A non-DAS learner, learner finishes early - no history
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
 	| p2                     | 1				| Learning (TT1)  | CoInvestedSfa (FS2)		| 900    |
-	| p2                     | 1				| Learning (TT1)  | CoInvestedEmploer (FS3)	| 100    |
+	| p2                     | 1				| Learning (TT1)  | CoInvestedEmployer (FS3)	| 100    |
 	| p2                     | 2				| Completion (TT2)| CoInvestedSfa (FS2)		| 3375   |
-	| p2                     | 2				| Completion (TT2)| CoInvestedEmploer (FS3)	| 375    |
+	| p2                     | 2				| Completion (TT2)| CoInvestedEmployer (FS3)	| 375    |
 	| p2                     | 2				| Balancing (TT3) | CoInvestedSfa (FS2)		| 2700   |
-	| p2                     | 2				| Balancing (TT3) | CoInvestedEmploer (FS3)	| 300    |
+	| p2                     | 2				| Balancing (TT3) | CoInvestedEmployer (FS3)	| 300    |
 
 
 @withdrawal
@@ -65,6 +65,6 @@ Scenario: A non-DAS learner, learner withdraws after qualifying period - partial
 	Then the payment source component will generate the following contract type 2 coinvested payments:
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType | FundingSource			| Amount |
 	| p2                     | 4				| Learning (TT1)  | CoInvestedSfa (FS2)		| 900    |
-	| p2                     | 4				| Learning (TT1)  | CoInvestedEmploer (FS3)	| 100    |
+	| p2                     | 4				| Learning (TT1)  | CoInvestedEmployer (FS3)	| 100    |
 	| p2                     | 5				| Learning (TT1)  | CoInvestedSfa (FS2)		| 900    |
-	| p2                     | 5				| Learning (TT1)  | CoInvestedEmploer (FS3)	| 100    |
+	| p2                     | 5				| Learning (TT1)  | CoInvestedEmployer (FS3)	| 100    |

@@ -1,4 +1,7 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -6,14 +9,12 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
+using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -22,8 +23,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     public abstract class EndToEndStepsBase : StepsBase
     {
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
-
-        protected DcHelper DcHelper => Get<DcHelper>();
 
         private static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
 
@@ -45,15 +44,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "previous_training");
         }
 
-        protected List<OnProgrammeEarning> CurrentEarnings
+        protected List<Earning> PreviousEarnings
         {
-            get => Get<List<OnProgrammeEarning>>("current_earnings");
-            set => Set(value, "current_earnings");
-        }
-
-        protected List<OnProgrammeEarning> PreviousEarnings
-        {
-            get => Get<List<OnProgrammeEarning>>("previous_earnings");
+            get => Get<List<Earning>>("previous_earnings");
             set => Set(value, "previous_earnings");
         }
 
@@ -138,81 +131,50 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, OnProgrammeEarning earning)
+        protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, Earning earning)
         {
-            return new List<PaymentModel>
+            var list = new List<PaymentModel>();
+            if (providerPayment.SfaFullyFundedPayments > 0)
+                list.Add(CreatePaymentModel(providerPayment, learnerTraining, jobId, submissionTime, earning, providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa));
+
+            if (providerPayment.EmployerCoFundedPayments > 0)
+                list.Add(CreatePaymentModel(providerPayment, learnerTraining, jobId, submissionTime, earning, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer));
+
+            if (providerPayment.SfaCoFundedPayments > 0)
+                list.Add(CreatePaymentModel(providerPayment, learnerTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa));
+
+            return list;
+        }
+
+        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, Earning earning, decimal amount, FundingSourceType fundingSourceType)
+        {
+            return new PaymentModel
             {
-                new PaymentModel
-                {
-                    CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
-                    DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
-                    Ukprn = TestSession.Ukprn,
-                    JobId = jobId,
-                    SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
-                    TransactionType = providerPayment.TransactionType,
-                    ContractType = learnerTraining.ContractType,
-                    PriceEpisodeIdentifier = "pe-1",
-                    FundingSource = FundingSourceType.CoInvestedSfa,
-                    LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                    LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
-                    LearningAimReference = learnerTraining.AimReference,
-                    LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
-                    IlrSubmissionDateTime = submissionTime,
-                    ExternalId = Guid.NewGuid(),
-                    Amount = providerPayment.SfaCoFundedPayments,
-                    LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = providerPayment.Uln,
-                    LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    LearningAimProgrammeType = learnerTraining.ProgrammeType
-                },
-                new PaymentModel
-                {
-                    CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
-                    DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
-                    Ukprn = TestSession.Ukprn,
-                    JobId = jobId,
-                    SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
-                    TransactionType = providerPayment.TransactionType,
-                    ContractType = learnerTraining.ContractType,
-                    PriceEpisodeIdentifier = "pe-1",
-                    FundingSource = FundingSourceType.CoInvestedEmployer,
-                    LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
-                    LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
-                    LearningAimReference = learnerTraining.AimReference,
-                    LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
-                    IlrSubmissionDateTime = submissionTime,
-                    ExternalId = Guid.NewGuid(),
-                    Amount = providerPayment.EmployerCoFundedPayments,
-                    LearningAimFundingLineType = earning.FundingLineType ?? learnerTraining.FundingLineType,
-                    LearnerUln = providerPayment.Uln,
-                    LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
-                    LearningAimProgrammeType = learnerTraining.ProgrammeType
-                }
+                CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
+                DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
+                Ukprn = TestSession.Ukprn,
+                JobId = jobId,
+                SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
+                TransactionType = providerPayment.TransactionType,
+                ContractType = learnerTraining.ContractType,
+                PriceEpisodeIdentifier = "pe-1",
+                FundingSource = fundingSourceType,
+                LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
+                LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
+                LearningAimReference = learnerTraining.AimReference,
+                LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
+                IlrSubmissionDateTime = submissionTime,
+                ExternalId = Guid.NewGuid(),
+                Amount = amount,
+                LearningAimFundingLineType = learnerTraining.FundingLineType,
+                LearnerUln = providerPayment.Uln,
+                LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                LearningAimProgrammeType = learnerTraining.ProgrammeType
             };
         }
 
-        protected void PopulateLearner(FM36Learner learner, Learner testLearner, IEnumerable<OnProgrammeEarning> earnings)
+        protected void PopulateLearner(FM36Learner learner, Learner testLearner, IList<Earning> earnings)
         {
-            var learningValues = new PriceEpisodePeriodisedValues
-            {
-                AttributeName = "PriceEpisodeOnProgPayment",
-            };
-            var completionEarnings = new PriceEpisodePeriodisedValues
-            {
-                AttributeName = "PriceEpisodeCompletionPayment",
-            };
-            var balancingEarnings = new PriceEpisodePeriodisedValues
-            {
-                AttributeName = "PriceEpisodeBalancePayment",
-            };
-            earnings.ToList().ForEach(earning =>
-            {
-                var period = earning.DeliveryPeriod.ToDate().ToCalendarPeriod().Period;
-                SetPeriodValue(period, learningValues, earning.OnProgramme);
-                SetPeriodValue(period, completionEarnings, earning.Completion);
-                SetPeriodValue(period, balancingEarnings, earning.Balancing);
-            });
-
             learner.LearnRefNumber = testLearner.LearnRefNumber;
             learner.ULN = testLearner.Uln;
             learner.PriceEpisodes = new List<PriceEpisode>();
@@ -220,20 +182,33 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var aim in testLearner.Aims)
             {
-                var priceEpisodePrefix = (aim.StandardCode != 0)
-                    ? $"{aim.ProgrammeType}-{aim.StandardCode}"
-                    : $"{aim.ProgrammeType}-{aim.FrameworkCode}-{aim.PathwayCode}";
+                var aimPeriodisedValues = new List<PriceEpisodePeriodisedValues>();
+
+                foreach (var earning in earnings.Where(e => e.AimSequenceNumber == aim.AimSequenceNumber))
+                {
+                    var period = earning.DeliveryCalendarPeriod.Period;
+                    foreach (var earningValue in earning.Values)
+                    {
+                        var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
+                        if (periodisedValues == null)
+                        {
+                            periodisedValues = new PriceEpisodePeriodisedValues { AttributeName = earningValue.Key.ToAttributeName() };
+                            aimPeriodisedValues.Add(periodisedValues);
+                        }
+
+                        SetPeriodValue(period, periodisedValues, earningValue.Value);
+                    }
+                }
 
                 var priceEpisodesForAim = new List<PriceEpisode>();
 
                 foreach (var priceEpisode in aim.PriceEpisodes)
                 {
                     var episodeStartDate = priceEpisode.TotalTrainingPriceEffectiveDate.ToDate();
-                    var id = $"{priceEpisodePrefix}-{episodeStartDate.Day:D2}/{episodeStartDate.Month:D2}/{episodeStartDate.Year}";
 
                     var newPriceEpisode = new PriceEpisode
                     {
-                        PriceEpisodeIdentifier = id,
+                        PriceEpisodeIdentifier = priceEpisode.PriceEpisodeId,
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>(),
                         PriceEpisodeValues = new PriceEpisodeValues(),
                     };
@@ -255,6 +230,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var orderedPriceEpisodes = priceEpisodesForAim
                     .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
                     .ToList();
+
                 for (var i = 0; i < orderedPriceEpisodes.Count; i++)
                 {
                     var currentPriceEpisode = priceEpisodesForAim[i];
@@ -275,40 +251,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             aim.StartDate.ToDate() + aim.ActualDurationAsTimespan;
                     }
 
-                    var episodeStartPeriod = currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value.ToCalendarPeriod();
+                    var episodeStart = currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value.ToCalendarPeriod();
                     var episodeLastPeriod = currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate?.ToCalendarPeriod().Period ?? 12;
 
-                    var episodeLearningValues = new PriceEpisodePeriodisedValues { AttributeName = learningValues.AttributeName };
-                    var episodeCompletionEarnings = new PriceEpisodePeriodisedValues { AttributeName = completionEarnings.AttributeName };
-                    var episodeBalancingEarnings = new PriceEpisodePeriodisedValues { AttributeName = balancingEarnings.AttributeName };
-
-                    for (var p = episodeStartPeriod.Period; p <= episodeLastPeriod; p++)
+                    foreach (var currentValues in aimPeriodisedValues)
                     {
-                        var propertyInfo = typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + p);
+                        PriceEpisodePeriodisedValues newValues;
 
-                        decimal? learningValue = 0, completionValue = 0, balancingValue = 0;
-
-                        // On-prog census date is the last day of the month
-                        var periodsSinceStartPeriod = p - episodeStartPeriod.Period;
-                        var lastDayOfPeriodMonth = episodeStartPeriod.LastDayOfMonthAfter(periodsSinceStartPeriod);
-
-                        if (!currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.HasValue ||
-                            currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate >=
-                            lastDayOfPeriodMonth)
+                        // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
+                        if ((episodeStart.Period > 1 && episodeStart.GetCollectionYear() == CollectionYear) || episodeLastPeriod < 12)
                         {
-                            learningValue = (decimal?)propertyInfo.GetValue(learningValues);
+                            newValues = new PriceEpisodePeriodisedValues { AttributeName = currentValues.AttributeName };
+
+                            for (var p = 1; p < 13; p++)
+                            {
+                                var amount = p >= episodeStart.Period && p <= episodeLastPeriod ? currentValues.GetValue(p) : 0;
+                                newValues.SetValue(p, amount);
+                            }
                         }
-                        completionValue = (decimal?)propertyInfo.GetValue(completionEarnings);
-                        balancingValue = (decimal?)propertyInfo.GetValue(balancingEarnings);
+                        else // put everything as is for previous years
+                        {
+                            newValues = currentValues;
+                        }
 
-                        propertyInfo.SetValue(episodeLearningValues, learningValue);
-                        propertyInfo.SetValue(episodeCompletionEarnings, completionValue);
-                        propertyInfo.SetValue(episodeBalancingEarnings, balancingValue);
+                        currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
-
-                    currentPriceEpisode.PriceEpisodePeriodisedValues.Add(episodeLearningValues);
-                    currentPriceEpisode.PriceEpisodePeriodisedValues.Add(episodeCompletionEarnings);
-                    currentPriceEpisode.PriceEpisodePeriodisedValues.Add(episodeBalancingEarnings);
                 }
 
                 learner.PriceEpisodes.AddRange(priceEpisodesForAim);
@@ -333,32 +300,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected void PopulateLearner(FM36Learner learner, Training training, List<OnProgrammeEarning> earnings)
+        protected void PopulateLearner(FM36Learner learner, Training training, List<Earning> earnings)
         {
+            var values = new List<PriceEpisodePeriodisedValues>();
 
-            var learningValues = new PriceEpisodePeriodisedValues
+            foreach (var earning in earnings)
             {
-                AttributeName = "PriceEpisodeOnProgPayment",
-            };
-            var completionEarnings = new PriceEpisodePeriodisedValues
-            {
-                AttributeName = "PriceEpisodeCompletionPayment",
-            };
-            var balancingEarnings = new PriceEpisodePeriodisedValues
-            {
-                AttributeName = "PriceEpisodeBalancePayment",
-            };
-            earnings.ForEach(earning =>
-            {
-                var period = earning.DeliveryPeriod.ToDate().ToCalendarPeriod().Period;
-                SetPeriodValue(period, learningValues, earning.OnProgramme);
-                SetPeriodValue(period, completionEarnings, earning.Completion);
-                SetPeriodValue(period, balancingEarnings, earning.Balancing);
-            });
+                var period = earning.DeliveryCalendarPeriod.Period;
+                foreach (var earningValue in earning.Values)
+                {
+                    var periodisedValues = values.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
+                    if (periodisedValues == null)
+                    {
+                        periodisedValues = new PriceEpisodePeriodisedValues {AttributeName = earningValue.Key.ToAttributeName()};
+                        values.Add(periodisedValues);
+                    }
+
+                    SetPeriodValue(period, periodisedValues, earningValue.Value);
+                }
+            }
+
+            learner.PriceEpisodes = GetPriceEpisodes(training, values, CurrentPriceEpisodes, earnings, CollectionYear);
 
             var testLearner = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber);
             learner.ULN = testLearner.Uln;
-            learner.PriceEpisodes = GetPriceEpisodes(training, learningValues, completionEarnings, balancingEarnings, CurrentPriceEpisodes, earnings, CollectionYear);
             var course = testLearner.Course;
 
             learner.LearningDeliveries = new List<LearningDelivery>(new[]
@@ -381,11 +346,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private static List<PriceEpisode> GetPriceEpisodes(
             Training learnerEarnings,
-            PriceEpisodePeriodisedValues learningValues,
-            PriceEpisodePeriodisedValues completionEarnings,
-            PriceEpisodePeriodisedValues balancingEarnings,
+            List<PriceEpisodePeriodisedValues> periodisedValues,
             List<Price> priceEpisodes,
-            List<OnProgrammeEarning> earnings,
+            List<Earning> earnings, 
             string collectionYear)
         {
             if (priceEpisodes == null)
@@ -443,7 +406,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         PriceEpisodePlannedInstalments = learnerEarnings.NumberOfInstallments,
                         PriceEpisodeActualInstalments = learnerEarnings.ActualInstallments,
                         PriceEpisodeBalancePayment = learnerEarnings.BalancingPayment,
-                        PriceEpisodeFundLineType = firstEarningForPriceEpisode.FundingLineType ?? learnerEarnings.FundingLineType,
+                        PriceEpisodeFundLineType = learnerEarnings.FundingLineType,
                         PriceEpisodeBalanceValue = learnerEarnings.BalancingPayment,
                         PriceEpisodeCompletionPayment = learnerEarnings.CompletionAmount,
                         PriceEpisodeContractType = learnerEarnings.ContractType.ToString("G"),
@@ -456,44 +419,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                 };
 
-                PriceEpisodePeriodisedValues episodeLearningValues;
-                PriceEpisodePeriodisedValues episodeCompletionEarnings;
-                PriceEpisodePeriodisedValues episodeBalancingEarnings;
 
-                if ((episodeStart.Period > 1 && episodeStart.GetCollectionYear() == collectionYear) || episodeLastPeriod < 12)
+                foreach (var currentValues in periodisedValues)
                 {
-                    episodeLearningValues = new PriceEpisodePeriodisedValues { AttributeName = learningValues.AttributeName };
-                    episodeCompletionEarnings = new PriceEpisodePeriodisedValues { AttributeName = completionEarnings.AttributeName };
-                    episodeBalancingEarnings = new PriceEpisodePeriodisedValues { AttributeName = balancingEarnings.AttributeName };
+                    PriceEpisodePeriodisedValues newValues;
 
-                    for (var p = 1; p < 13; p++)
+                    // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
+                    if ((episodeStart.Period > 1 && episodeStart.GetCollectionYear() == collectionYear) || episodeLastPeriod < 12)
                     {
-                        var propertyInfo = typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + p);
+                        newValues = new PriceEpisodePeriodisedValues {AttributeName = currentValues.AttributeName};
 
-                        decimal? learningValue = 0, completionValue = 0, balancingValue = 0;
-
-                        if (p >= episodeStart.Period && p <= episodeLastPeriod)
+                        for (var p = 1; p < 13; p++)
                         {
-                            learningValue = (decimal?)propertyInfo.GetValue(learningValues);
-                            completionValue = (decimal?)propertyInfo.GetValue(completionEarnings);
-                            balancingValue = (decimal?)propertyInfo.GetValue(balancingEarnings);
+                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod ? currentValues.GetValue(p) : 0;
+                            newValues.SetValue(p, amount);
                         }
-
-                        propertyInfo.SetValue(episodeLearningValues, learningValue);
-                        propertyInfo.SetValue(episodeCompletionEarnings, completionValue);
-                        propertyInfo.SetValue(episodeBalancingEarnings, balancingValue);
                     }
-                }
-                else
-                {
-                    episodeLearningValues = learningValues;
-                    episodeCompletionEarnings = completionEarnings;
-                    episodeBalancingEarnings = balancingEarnings;
-                }
+                    else // put everything as is for previous years
+                    {
+                        newValues = currentValues;
+                    }
 
-                priceEpisode.PriceEpisodePeriodisedValues.Add(episodeLearningValues);
-                priceEpisode.PriceEpisodePeriodisedValues.Add(episodeCompletionEarnings);
-                priceEpisode.PriceEpisodePeriodisedValues.Add(episodeBalancingEarnings);
+                    priceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
+                }
 
                 result.Add(priceEpisode);
             }
@@ -505,6 +453,44 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);
+        }
+
+        
+        protected static List<Earning> CreateEarnings(Table table)
+        {
+            var earnings = table.CreateSet<Earning>().ToList();
+
+            foreach (var tableRow in table.Rows)
+            {
+                var earning = earnings.Single(e =>
+                {
+                    if (e.DeliveryPeriod != tableRow["Delivery Period"])
+                        return false;
+
+                    if (tableRow.TryGetValue("Aim Sequence Number", out var aimSequenceNumber) && long.Parse(aimSequenceNumber) != e.AimSequenceNumber)
+                        return false;
+
+                    if ((tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId)) && learnerId != e.LearnerId)
+                        return false;
+
+                    return true;
+                });
+
+                foreach (var headerCell in table.Header)
+                {
+                    var name = headerCell == "On-Programme" ? "Learning" : headerCell.Replace(" ", null).Replace("-", null);
+
+                    if (!Enum.TryParse<TransactionType>(name, true, out var transactionType))
+                        continue;
+
+                    if (!decimal.TryParse(tableRow[headerCell], out var amount))
+                        continue;
+
+                    earning.Values.Add(transactionType, amount);
+                }
+            }
+
+            return earnings;
         }
 
         protected async Task SendProcessLearnerCommand(FM36Learner learner)

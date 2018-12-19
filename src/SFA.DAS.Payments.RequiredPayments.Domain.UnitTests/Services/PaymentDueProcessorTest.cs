@@ -7,21 +7,21 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 {
     [TestFixture]
-    public class ApprenticeshipContractType2PaymentDueProcessorTest
+    public class PaymentDueProcessorTest
     {
-        private ApprenticeshipContractType2PaymentDueProcessor act2PaymentDueProcessor;
+        private PaymentDueProcessor paymentDueProcessor;
 
         [Test]
         public void TestNullPaymentHistory()
         {
             // arrange
-            act2PaymentDueProcessor = new ApprenticeshipContractType2PaymentDueProcessor();
+            paymentDueProcessor = new PaymentDueProcessor();
 
             // act
             // assert
             try
             {
-                act2PaymentDueProcessor.CalculateRequiredPaymentAmount(0, null);
+                paymentDueProcessor.CalculateRequiredPaymentAmount(0, null);
             }
             catch (ArgumentNullException ex)
             {
@@ -36,12 +36,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestNoPaymentFound()
         {
             // arrange
-            act2PaymentDueProcessor = new ApprenticeshipContractType2PaymentDueProcessor();
+            paymentDueProcessor = new PaymentDueProcessor();
 
             var history = new Payment[0];
 
             // act
-            var amount = act2PaymentDueProcessor.CalculateRequiredPaymentAmount(1, history);
+            var amount = paymentDueProcessor.CalculateRequiredPaymentAmount(1, history);
 
             // assert
             Assert.IsNotNull(amount);
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestMultiplePaymentsFoundWithLessPaidThanDue()
         {
             // arrange
-            act2PaymentDueProcessor = new ApprenticeshipContractType2PaymentDueProcessor();
+            paymentDueProcessor = new PaymentDueProcessor();
 
             var history = new []
             {
@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
 
             // act
-            var amount = act2PaymentDueProcessor.CalculateRequiredPaymentAmount(5, history);
+            var amount = paymentDueProcessor.CalculateRequiredPaymentAmount(5, history);
 
             // assert
             Assert.AreEqual(1, amount);
@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestOnePaymentFound()
         {
             // arrange
-            act2PaymentDueProcessor = new ApprenticeshipContractType2PaymentDueProcessor();
+            paymentDueProcessor = new PaymentDueProcessor();
 
             var history = new []
             {
@@ -94,7 +94,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
 
             // act
-            var amount = act2PaymentDueProcessor.CalculateRequiredPaymentAmount(2, history);
+            var amount = paymentDueProcessor.CalculateRequiredPaymentAmount(2, history);
 
             // assert
             Assert.AreEqual(0, amount);
@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestMultiplePaymentsFoundWithMorePaidThanDue()
         {
             // arrange
-            act2PaymentDueProcessor = new ApprenticeshipContractType2PaymentDueProcessor();
+            paymentDueProcessor = new PaymentDueProcessor();
 
             var history = new []
             {
@@ -123,7 +123,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
 
             // act
-            var amount = act2PaymentDueProcessor.CalculateRequiredPaymentAmount(5, history);
+            var amount = paymentDueProcessor.CalculateRequiredPaymentAmount(5, history);
 
             // assert
             Assert.AreEqual(-1, amount);
@@ -133,7 +133,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestMultiplePaymentsFoundWithSamePaidAsDue()
         {
             // arrange
-            act2PaymentDueProcessor = new ApprenticeshipContractType2PaymentDueProcessor();
+            paymentDueProcessor = new PaymentDueProcessor();
 
             var history = new []
             {
@@ -152,7 +152,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
 
             // act
-            var amount = act2PaymentDueProcessor.CalculateRequiredPaymentAmount(5, history);
+            var amount = paymentDueProcessor.CalculateRequiredPaymentAmount(5, history);
 
             // assert
             Assert.AreEqual(0, amount);

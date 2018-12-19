@@ -20,15 +20,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId))
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => new CalendarPeriod(src.CollectionYear, (byte)src.CollectionPeriod)))
-                .ForMember(dest => dest.EarningYear, opt => opt.ResolveUsing<EarningYearResolver>())
                 .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source => source))
                 ;
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent>()
                 .Include<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>()
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
-                .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.Ignore())
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
+                .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.SfaContributionPercentage, opt => opt.ResolveUsing((cmd, ev) => cmd.Learner.PriceEpisodes.GetLatestPriceEpisode()?.PriceEpisodeValues.PriceEpisodeSFAContribPct));
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>()
