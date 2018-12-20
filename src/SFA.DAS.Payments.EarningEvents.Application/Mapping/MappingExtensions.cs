@@ -44,12 +44,31 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return result;
         }
 
-        public static PriceEpisode GetLatestPriceEpisode(this List<PriceEpisode> priceEpisodes)
+        public static PriceEpisode GetLatestOnProgPriceEpisode(this List<PriceEpisode> priceEpisodes)
         {
             return priceEpisodes
-                .Where(priceEpisode => priceEpisode.PriceEpisodeValues?.EpisodeStartDate.HasValue ?? false)
+                .Where(IsOnProgPriceEpisode)
                 .OrderByDescending(priceEpisode => priceEpisode.PriceEpisodeValues?.EpisodeStartDate)
                 .FirstOrDefault();
+        }
+
+        private static readonly HashSet<string> OnProgAttributeNames = new HashSet<string>(new[]
+        {
+            "PriceEpisodeBalancePayment", "PriceEpisodeCompletionPayment", "PriceEpisodeOnProgPayment"
+        });
+
+        private static bool IsOnProgPriceEpisode(PriceEpisode priceEpisode)
+        {
+            if (priceEpisode.PriceEpisodeValues?.EpisodeStartDate == null)
+                return false;
+
+            if (priceEpisode.PriceEpisodePeriodisedValues == null)
+                return false;
+
+            if (priceEpisode.PriceEpisodePeriodisedValues == null)
+                return false;
+
+            return priceEpisode.PriceEpisodePeriodisedValues.Any(p => OnProgAttributeNames.Contains(p.AttributeName));
         }
     }
 }
