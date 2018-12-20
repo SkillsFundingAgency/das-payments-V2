@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                 foreach (var incentiveTypeKey in payment.IncentiveValues.Keys)
                 {
-                    if (!payment.IncentiveValues.TryGetValue(incentiveTypeKey, out var amount)) continue;
+                    var amount = payment.IncentiveValues[incentiveTypeKey];
 
                     if (amount != 0)
                         expectedPayments.Add(new IncentiveRequiredPaymentEvent
