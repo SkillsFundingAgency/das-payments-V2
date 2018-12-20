@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.Monitoring.JobStatus.Messages.Events;
+using SFA.DAS.Payments.Monitoring.JobStatus.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.JobStatus.Client
 {
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Client
         {
             logger.LogVerbose($"Sending request to record start of provider earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
             eventIds.ForEach(eventId => logger.LogVerbose($"Learner command event id: {eventId}"));
-            var providerEarningsEvent = new StartedProcessingProviderEarningsEvent
+            var providerEarningsEvent = new RecordStartedProcessingProviderEarningsJob
             {
                 JobId = jobId,
                 Ukprn = ukprn,
@@ -39,14 +39,14 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Client
                 CollectionPeriod = collectionPeriod,
                 SubEventIds = eventIds
             };
-            await messageSession.Publish(providerEarningsEvent).ConfigureAwait(false);
+            await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
             logger.LogDebug($"Sent request to record start of provider earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
         }
 
         public async Task ProcessedJobMessage(long jobId, Guid messageId, List<(DateTimeOffset StartTime, Guid EventId)> generatedEvents)
         {
             logger.LogVerbose($"Sending request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
-            var itemProcessedEvent = new ProcessedJobMessage
+            var itemProcessedEvent = new RecordJobMessageProcessingStatus
             {
                 JobId = jobId,
                 Id = messageId,
@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Client
                 GeneratedEvents = generatedEvents ?? new List<(DateTimeOffset StartTime, Guid EventId)>(),
                 Succeeded = true
             };
-            await messageSession.Publish(itemProcessedEvent).ConfigureAwait(false);
+            await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
             logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
         }
     }

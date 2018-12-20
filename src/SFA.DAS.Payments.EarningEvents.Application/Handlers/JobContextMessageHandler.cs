@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IFileService azureFileService;
         private readonly IJsonSerializationService serializationService;
         private readonly IEndpointInstanceFactory factory;
+        private readonly IProviderEarningsJobStatusClientFactory jobStatusClientFactory;
 
         public JobContextMessageHandler(IPaymentLogger paymentLogger,
             IFileService azureFileService,
@@ -48,13 +49,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 FM36Global fm36Output;
 
-                using (var stream = await azureFileService.OpenReadStreamAsync(message.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString(), message.KeyValuePairs[JobContextMessageKey.Container].ToString(), cancellationToken))
+                using (var stream = await azureFileService.OpenReadStreamAsync(
+                    message.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString(),
+                    message.KeyValuePairs[JobContextMessageKey.Container].ToString(),
+                    cancellationToken))
                 {
                     fm36Output = serializationService.Deserialize<FM36Global>(stream);
                 }
 
                 var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
-
+                var commands = new List<(DateTimeOffset StartTime, Guid MessageId)>();
                 foreach (var learner in fm36Output.Learners)
                 {
                     try
@@ -73,7 +77,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         await endpointInstance.SendLocal(learnerCommand);
                         commands.Add((DateTimeOffset.UtcNow, learnerCommand.CommandId));
                         paymentLogger.LogInfo(
-                            $"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}");
+                            $"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
                     }
                     catch (Exception ex)
                     {
@@ -83,7 +87,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 }
 
                 var jobStatusClient = jobStatusClientFactory.Create();
-                await jobStatusClient.StartJob(message.JobId, fm36Output.UKPRN, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), 1, commands);
+                await jobStatusClient.StartJob(message.JobId, fm36Output.UKPRN, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year),
+                    (byte)collectionPeriod, commands);
                 paymentLogger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
                 return true;
             }

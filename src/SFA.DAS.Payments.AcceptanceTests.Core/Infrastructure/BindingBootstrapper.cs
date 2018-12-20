@@ -9,6 +9,7 @@ using Microsoft.ServiceBus.Messaging;
 using NServiceBus;
 using NServiceBus.Faults;
 using NServiceBus.Features;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.Messages.Core;
 using TechTalk.SpecFlow;
 
@@ -25,6 +26,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var config = new TestsConfiguration();
             Builder = new ContainerBuilder();
             Builder.RegisterType<TestsConfiguration>().SingleInstance();
+            Builder.RegisterType<DcHelper>().SingleInstance();
             EndpointConfiguration = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
             Builder.RegisterInstance(EndpointConfiguration)
                 .SingleInstance();

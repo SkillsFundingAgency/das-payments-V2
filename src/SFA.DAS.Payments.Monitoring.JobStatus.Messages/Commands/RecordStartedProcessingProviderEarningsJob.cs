@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.Payments.Monitoring.JobStatus.Messages.Events
+namespace SFA.DAS.Payments.Monitoring.JobStatus.Messages.Commands
 {
-    public class StartedProcessingProviderEarningsEvent : JobStatusEvent
+    public class RecordStartedProcessingProviderEarningsJob : JobStatusMessage
     {
         public DateTime IlrSubmissionTime { get; set; }
         public long Ukprn { get; set; }
@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Messages.Events
         public DateTimeOffset StartTime { get; set; }
         public List<(DateTimeOffset StartTime, Guid EventId)> SubEventIds { get; set; }
 
-        public StartedProcessingProviderEarningsEvent()
+        public RecordStartedProcessingProviderEarningsJob()
         {
             StartTime = DateTimeOffset.UtcNow;
             SubEventIds = new List<(DateTimeOffset StartTime, Guid EventId)>();

@@ -17,7 +17,9 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Data.Configuration
             builder.Property(x => x.IlrSubmissionTime).HasColumnName(@"IlrSubmissionTime");
             builder.Property(x => x.CollectionYear).HasColumnName(@"CollectionYear");
             builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
-            builder.HasOne<JobModel>(x => x.Job).WithOne();
+            builder.HasOne(x => x.Job)
+                .WithMany(job => job.ProviderEarnings)
+                .HasForeignKey(x => x.Id);
         }
     }
 }

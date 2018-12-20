@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Data.Model
 {
-    public enum JobEventStatus : byte
+    public enum JobStepStatus : byte
     {
         Queued = 1, 
         Processing, 

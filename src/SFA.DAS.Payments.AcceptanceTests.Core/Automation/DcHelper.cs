@@ -24,14 +24,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
         private readonly IFileService azureFileService;
 
-        public DcHelper(IContainer container)
+        public DcHelper(IJsonSerializationService serializationService, 
+            ITopicPublishService<JobContextDto> topicPublishingService,
+            IFileService azureFileService)
         {
-            serializationService = container.Resolve<IJsonSerializationService>();
-            topicPublishingService = container.Resolve<ITopicPublishService<JobContextDto>>();
-            azureFileService = container.Resolve<IFileService>();
+            this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
+            this.topicPublishingService = topicPublishingService ?? throw new ArgumentNullException(nameof(topicPublishingService));
+            this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
         }
 
-        public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, string collectionYear)
+        public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, string collectionYear, byte collectionPeriod, long jobId)
         {
             try
             {
@@ -52,7 +54,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
                 var dto = new JobContextDto
                 {
-                    JobId = 1,
+                    JobId = jobId,
                     KeyValuePairs = new Dictionary<string, object>
                     {
                         {JobContextMessageKey.FundingFm36Output, messagePointer},
@@ -60,7 +62,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                         {JobContextMessageKey.UkPrn, ukprn},
                         {JobContextMessageKey.Username, "Bob"},
                         {JobContextMessageKey.Container, DcConfiguration.DcBlobStorageContainer },
-                        {JobContextMessageKey.ReturnPeriod, 1 }
+                        {JobContextMessageKey.ReturnPeriod, collectionPeriod }
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
                     TopicPointer = 0,

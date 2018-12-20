@@ -5,6 +5,7 @@
     <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
     <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"/>
     <Parameter Name="ServiceBusConnectionString" Value=""/>
+    <Parameter Name="PaymentsConnectionString" Value="" />
   </Section>
 
   <Section Name="Settings">

@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
+            TransportExtensions<AzureServiceBusTransport> transportConfig = null;
             builder.Register((c, p) =>
             {
                 var config = c.Resolve<IApplicationConfiguration>();
@@ -31,7 +32,10 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     .ConnectionString(config.ServiceBusConnectionString)
                     .Transactions(TransportTransactionMode.ReceiveOnly)
                     .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
-
+                builder.RegisterInstance(transport)
+                    .As<TransportExtensions<AzureServiceBusTransport>>()
+                    .SingleInstance();
+                EndpointConfigurationEvents.OnConfiguringTransport(transport);  //TODO: find AutoFac & NSB way to do this
                 endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
                 endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
                 endpointConfiguration.EnableInstallers();
@@ -40,20 +44,11 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             })
             .As<EndpointConfiguration>()
             .SingleInstance();
+
             builder.RegisterType<HandlerTimingBehaviour>();
             builder.RegisterType<EndpointInstanceFactory>()
                 .As<IEndpointInstanceFactory>()
                 .SingleInstance();
-
-
-            //builder.Register(c =>
-            //    {
-            //        var endpointConfig = c.Resolve<EndpointConfiguration>();
-            //        var instance = Endpoint.Start(endpointConfig).Result;
-            //        return instance;
-            //    })
-            //    .As<IEndpointInstance, IMessageSession>()
-            //    .SingleInstance();
         }
     }
 }
