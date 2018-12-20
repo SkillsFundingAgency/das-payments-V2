@@ -3,6 +3,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System.Collections.Generic;
