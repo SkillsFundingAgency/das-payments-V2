@@ -184,7 +184,7 @@
     <Compile Include="Data\FundingSourcePayment.cs" />
     <Compile Include="Data\RequiredPayment.cs" />
     <Compile Include="EndpointNames.cs" />
-    <Compile Include="Handlers\CoInvestedFundingSourceHandler.cs" />
+    <Compile Include="Handlers\FundingSourcePaymentEventHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\BindingBootstrapper.cs" />
     <Compile Include="Steps\FundingSourceStepBase.cs" />

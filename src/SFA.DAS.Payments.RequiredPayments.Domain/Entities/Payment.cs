@@ -9,6 +9,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
 
         public decimal Amount { get; set; }
 
+        public string PriceEpisodeIdentifier { get; set; }
+
         public CalendarPeriod DeliveryPeriod { get; set; }
 
         public CalendarPeriod CollectionPeriod { get; set; }

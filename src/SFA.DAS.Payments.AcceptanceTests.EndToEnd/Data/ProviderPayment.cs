@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public string DeliveryPeriod { get; set; }
         public decimal SfaCoFundedPayments { get; set; }
         public decimal EmployerCoFundedPayments { get; set; }
+        public decimal SfaFullyFundedPayments { get; set; }
         public TransactionType TransactionType { get; set; }
         public string LearnerId { get; set; }
         public long Uln { get; set; }

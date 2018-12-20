@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain
 {
-    public interface IApprenticeshipContractType2PaymentDueProcessor
+    public interface IPaymentDueProcessor
     {
         decimal CalculateRequiredPaymentAmount(decimal amountDue, Payment[] paymentHistory);
     }
