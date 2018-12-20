@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -74,19 +70,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             {
                 AmountDue = amountDue,
                 OnProgrammeEarningType = type,
-                DeliveryPeriod = paymentSpec.DeliveryPeriod.ToCalendarPeriod()
-            };
-
-            if (payment.AmountDue != 0)
-                expectedPayments.Add(payment);
-        }
-
-        private static void AddIncentivePayment(Payment paymentSpec, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, IncentivePaymentType type)
-        {
-            var payment = new IncentiveRequiredPaymentEvent
-            {
-                AmountDue = amountDue,
-                Type = type,
                 DeliveryPeriod = paymentSpec.DeliveryPeriod.ToCalendarPeriod()
             };
 
