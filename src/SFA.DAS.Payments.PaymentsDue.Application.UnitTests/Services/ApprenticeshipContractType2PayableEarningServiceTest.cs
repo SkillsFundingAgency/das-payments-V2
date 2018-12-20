@@ -90,34 +90,5 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
             Assert.AreEqual(1, actualPaymentsDue.Length);
             Assert.AreSame(paymentDueEvents[0], actualPaymentsDue[0]);
         }
-
-        [Test]
-        public void TestCreatePaymentsDueForOnIncentiveEarning()
-        {
-            // arrange
-            var earningEvent = new ApprenticeshipContractType2EarningEvent
-            {
-                Learner = new Learner(),
-                LearningAim = new LearningAim(),
-                CollectionPeriod = new CalendarPeriod("1819R01"),
-                IncentiveEarnings = new ReadOnlyCollection<IncentiveEarning>(new[]
-                {
-                    new IncentiveEarning()
-                })
-            };
-            var paymentDueEvents = new[] { new IncentivePaymentDueEvent() };
-
-            incentiveEarningProcessor.Setup(d => d.HandleIncentiveEarnings(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<IncentiveEarning>(), It.IsAny<CalendarPeriod>(), It.IsAny<Learner>(), It.IsAny<LearningAim>(), It.IsAny<decimal>(), It.IsAny<DateTime>(), It.IsAny<ContractType>()))
-                .Returns(paymentDueEvents)
-                .Verifiable();
-
-            // act
-            var actualPaymentsDue = service.CreatePaymentsDue(earningEvent);
-
-            // assert
-            Assert.IsNotNull(actualPaymentsDue);
-            Assert.AreEqual(1, actualPaymentsDue.Length);
-            Assert.AreSame(paymentDueEvents[0], actualPaymentsDue[0]);
-        }
     }
 }

@@ -524,7 +524,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     var name = headerCell.Replace(" ", null).Replace("-", null);
 
-                    if (!Enum.TryParse<IncentiveType>(name, true, out var transactionType))
+                    if (!Enum.TryParse<IncentivePaymentType>(name, true, out var transactionType))
                         continue;
 
                     if (!decimal.TryParse(tableRow[headerCell], out var amount))
