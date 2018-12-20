@@ -137,7 +137,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             }
             catch (ArgumentNullException ex)
             {
-                Assert.AreEqual("collectionPeriod", ex.ParamName);
+                Assert.AreEqual(nameof(submission.CollectionPeriod), ex.ParamName);
                 return;
             }
 

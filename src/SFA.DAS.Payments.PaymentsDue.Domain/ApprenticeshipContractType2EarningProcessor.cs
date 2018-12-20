@@ -22,6 +22,9 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
             if (submission == null)
                 throw new ArgumentNullException(nameof(submission));
 
+            if (submission.CollectionPeriod == null)
+                throw new ArgumentNullException(nameof(submission.CollectionPeriod));
+
             if (learner == null)
                 throw new ArgumentNullException(nameof(learner));
 
