@@ -7,5 +7,6 @@
     <Parameter Name="PaymentsDueService_EndpointName" Value="__PaymentsDueService_EndpointName__" />
     <Parameter Name="PaymentsDueService_FailedMessagesQueue" Value="__PaymentsDueService_FailedMessagesQueue__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
   </Parameters>
 </Application>

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.Monitoring.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.Monitoring.JobStatusService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="Monitoring_JobStatusService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
-    <Parameter Name="Monitoring_JobStatus_EndpointName" DefaultValue="" />
-    <Parameter Name="Monitoring_JobStatus_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="Monitoring_JobStatusService_EndpointName" DefaultValue="" />
+    <Parameter Name="Monitoring_JobStatusService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
@@ -25,8 +25,8 @@
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[Monitoring_JobStatus_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[Monitoring_JobStatus_FailedMessagesQueue]" />
+            <Parameter Name="EndpointName" Value="[Monitoring_JobStatusService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[Monitoring_JobStatusService_FailedMessagesQueue]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
@@ -40,7 +40,7 @@
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.Monitoring.JobStatusService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.Monitoring.JobStatusServiceType" InstanceCount="[SFA.DAS.Payments.Monitoring.JobStatusService_InstanceCount]">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.Monitoring.JobStatusServiceType" InstanceCount="[Monitoring_JobStatusService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
