@@ -8,6 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -24,10 +25,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile<EarningsEventProfile>();
-            });
+            Mapper.Initialize(cfg => { cfg.AddProfile<EarningsEventProfile>(); });
             Mapper.AssertConfigurationIsValid();
         }
 
@@ -105,10 +103,48 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                                 Period11 = 0,
                                 Period12 = 3000,
                             },
+                            new PriceEpisodePeriodisedValues
+                            {
+                                AttributeName = "PriceEpisodeBalancePayment",
+                                Period1 = 0,
+                                Period2 = 0,
+                                Period3 = 0,
+                                Period4 = 0,
+                                Period5 = 0,
+                                Period6 = 0,
+                                Period7 = 0,
+                                Period8 = 0,
+                                Period9 = 0,
+                                Period10 = 0,
+                                Period11 = 0,
+                                Period12 = 3000,
+                            },
                         }
                     }
                 }
             };
+
+            var incentiveTypes = GetIncentiveTypes();
+
+            foreach (var incentiveType in incentiveTypes)
+            {
+                fm36Learner.PriceEpisodes.First().PriceEpisodePeriodisedValues.Add(new PriceEpisodePeriodisedValues
+                {
+                    AttributeName = incentiveType,
+                    Period1 = 1000,
+                    Period2 = 1000,
+                    Period3 = 1000,
+                    Period4 = 1000,
+                    Period5 = 1000,
+                    Period6 = 1000,
+                    Period7 = 1000,
+                    Period8 = 1000,
+                    Period9 = 1000,
+                    Period10 = 1000,
+                    Period11 = 1000,
+                    Period12 = 1000,
+                });
+            }
 
             processLearnerCommand = new ProcessLearnerCommand
             {
@@ -187,12 +223,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         {
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.OnProgrammeEarnings.Should().NotBeNullOrEmpty();
-            earningEvent.OnProgrammeEarnings.Should().HaveCount(2);
+            earningEvent.OnProgrammeEarnings.Should().HaveCount(3);
             var learnings = earningEvent.OnProgrammeEarnings.FirstOrDefault(x => x.Type == OnProgrammeEarningType.Learning);
             learnings.Should().NotBeNull();
             learnings.Periods.Count.Should().Be(12);
-            learnings.Periods.All(period => period.Amount == 1000 && period.PriceEpisodeIdentifier == "pe-1").Should().BeTrue();
-            var completion = earningEvent.OnProgrammeEarnings.FirstOrDefault(x => x.Type == OnProgrammeEarningType.Completion);
+            learnings.Periods.All(period => period.Amount == 1000 && period.PriceEpisodeIdentifier == "pe-1").Should()
+                .BeTrue();
+            var completion =
+                earningEvent.OnProgrammeEarnings.FirstOrDefault(x => x.Type == OnProgrammeEarningType.Completion);
             completion.Should().NotBeNull();
             completion.Periods.Count.Should().Be(12);
             completion.Periods.Any(x => x.Period == 12 && x.Amount == 3000).Should().BeTrue();
@@ -225,21 +263,217 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         }
 
         [Test]
+        public void MapsBalancingEarnings()
+        {
+            var earningEvent =
+                Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(
+                    learningAim);
+            var completion =
+                earningEvent.OnProgrammeEarnings.FirstOrDefault(earnings =>
+                    earnings.Type == OnProgrammeEarningType.Balancing);
+            completion.Should().NotBeNull();
+            completion.Periods.Should().HaveCount(12);
+            var completionPeriod = completion.Periods.FirstOrDefault(p => p.Period == 12);
+            completionPeriod.Should().NotBeNull();
+            completionPeriod.Amount.Should().Be(3000);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(GetIncentiveTypes))]
+        public void MapsIncentiveEarnings(string incentiveType)
+        {
+            var earningEvent =
+                Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(
+                    learningAim);
+            var learning =
+                earningEvent.IncentiveEarnings.FirstOrDefault(earnings =>
+                    MapIncentiveType(earnings.Type).Equals(incentiveType));
+            learning.Should().NotBeNull();
+            learning.Periods.Should().HaveCount(12);
+            learning.Periods.All(period => period.Amount == 1000).Should().BeTrue();
+        }
+
+        [Test]
         public void Maps_LearningAim()
         {
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("ZPROG001");
-            earningEvent.LearningAim.FrameworkCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
-                .LearningDeliveryValues.FworkCode);
-            earningEvent.LearningAim.StandardCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
-                .LearningDeliveryValues.StdCode);
-            earningEvent.LearningAim.ProgrammeType.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
-                .LearningDeliveryValues.ProgType);
-            earningEvent.LearningAim.PathwayCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
-                .LearningDeliveryValues.PwayCode);
-            earningEvent.LearningAim.FundingLineType.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0]
-                .LearningDeliveryValues.LearnDelInitialFundLineType);
+
+        }
+
+        [Test]
+        public void TestMultiplePriceEpisodes()
+        {
+            fm36Learner.PriceEpisodes.Clear();
+
+            fm36Learner.PriceEpisodes.Add(new PriceEpisode
+            {
+                PriceEpisodeIdentifier = "pe-1",
+                PriceEpisodeValues = new PriceEpisodeValues
+                {
+                    EpisodeStartDate = DateTime.Today.AddMonths(-12),
+                    PriceEpisodePlannedEndDate = DateTime.Today.AddMonths(-6),
+                    PriceEpisodeActualEndDate = DateTime.Today.AddMonths(-6),
+                    PriceEpisodePlannedInstalments = 6,
+                    PriceEpisodeCompletionElement = 1500,
+                    PriceEpisodeInstalmentValue = 500,
+                    TNP1 = 7500,
+                    TNP2 = 7500,
+                    PriceEpisodeCompleted = true,
+                },
+                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                {
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeOnProgPayment",
+                        Period1 = 500,
+                        Period2 = 500,
+                        Period3 = 500,
+                        Period4 = 500,
+                        Period5 = 500,
+                        Period6 = 500,
+                        Period7 = 0,
+                        Period8 = 0,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 0
+                    },
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeCompletionPayment",
+                        Period1 = 0,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 0,
+                        Period8 = 1500,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 0
+                    },
+                }
+            });
+            
+            fm36Learner.PriceEpisodes.Add(new PriceEpisode
+            {
+                PriceEpisodeIdentifier = "pe-2",
+                PriceEpisodeValues = new PriceEpisodeValues
+                {
+
+                    EpisodeStartDate = DateTime.Today.AddMonths(-5),
+                    PriceEpisodePlannedEndDate = DateTime.Today,
+                    PriceEpisodeActualEndDate = DateTime.Today,
+                    PriceEpisodePlannedInstalments = 6,
+                    PriceEpisodeCompletionElement = 1500,
+                    PriceEpisodeInstalmentValue = 500,
+                    TNP1 = 7500,
+                    TNP2 = 7500,
+                    PriceEpisodeCompleted = true
+                },
+                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                {
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeOnProgPayment",
+                        Period1 = 0,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 500,
+                        Period8 = 500,
+                        Period9 = 500,
+                        Period10 = 500,
+                        Period11 = 500,
+                        Period12 = 500
+                    },
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeCompletionPayment",
+                        Period1 = 0,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 0,
+                        Period8 = 0,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 1500,
+                    },
+                }
+            });
+
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
+
+            earningEvent.PriceEpisodes.Should().HaveCount(2);
+            earningEvent.OnProgrammeEarnings.Should().HaveCount(3); // we generate 3 earnings even if not present in ILR
+
+            var learning = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Learning);
+            learning.Periods.Should().HaveCount(12);
+            learning.Periods.Count(p => p.Amount == 500).Should().Be(12);
+            learning.Periods.Count(p => p.Period < 7 && p.PriceEpisodeIdentifier == "pe-1").Should().Be(6);
+            learning.Periods.Count(p => p.Period > 6 && p.PriceEpisodeIdentifier == "pe-2").Should().Be(6);
+
+            var completion = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Completion);
+            completion.Periods.Should().HaveCount(12);
+            completion.Periods.Count(p => p.Amount == 0).Should().Be(10);
+            completion.Periods.Where(p => p.Period == 8).Single().PriceEpisodeIdentifier.Should().Be("pe-1");
+            completion.Periods.Where(p => p.Period == 8).Single().Amount.Should().Be(1500);
+            completion.Periods.Where(p => p.Period == 12).Single().PriceEpisodeIdentifier.Should().Be("pe-2");
+            completion.Periods.Where(p => p.Period == 12).Single().Amount.Should().Be(1500);            
+        }
+
+        private static IEnumerable<string> GetIncentiveTypes()
+        {
+            yield return "PriceEpisodeFirstEmp1618Pay";
+            yield return "PriceEpisodeFirstProv1618Pay";
+            yield return "PriceEpisodeSecondEmp1618Pay";
+            yield return "PriceEpisodeSecondProv1618Pay";
+            yield return "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment";
+            yield return "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment";
+            yield return "PriceEpisodeApplic1618FrameworkUpliftBalancing";
+            yield return "PriceEpisodeFirstDisadvantagePayment";
+            yield return "PriceEpisodeSecondDisadvantagePayment";
+            yield return "PriceEpisodeLSFCash"; 
+        }
+
+        private static string MapIncentiveType(IncentiveType incentiveType)
+        {
+            switch (incentiveType)
+            {
+                case IncentiveType.First16To18EmployerIncentive:
+                    return "PriceEpisodeFirstEmp1618Pay";
+                case IncentiveType.First16To18ProviderIncentive:
+                    return "PriceEpisodeFirstProv1618Pay";
+                case IncentiveType.Second16To18EmployerIncentive:
+                    return "PriceEpisodeSecondEmp1618Pay";
+                case IncentiveType.Second16To18ProviderIncentive:
+                    return "PriceEpisodeSecondProv1618Pay";
+                case IncentiveType.OnProgramme16To18FrameworkUplift:
+                    return "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment";
+                case IncentiveType.Completion16To18FrameworkUplift:
+                    return "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment";
+                case IncentiveType.Balancing16To18FrameworkUplift:
+                    return "PriceEpisodeApplic1618FrameworkUpliftBalancing";
+                case IncentiveType.FirstDisadvantagePayment:
+                    return "PriceEpisodeFirstDisadvantagePayment";
+                case IncentiveType.SecondDisadvantagePayment:
+                    return "PriceEpisodeSecondDisadvantagePayment";
+                case IncentiveType.LearningSupport:
+                    return "PriceEpisodeLSFCash"; 
+                 default:
+                     return string.Empty;
+            }
         }
     }
 }

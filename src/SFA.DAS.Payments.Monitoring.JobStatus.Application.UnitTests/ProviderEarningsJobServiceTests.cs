@@ -39,11 +39,25 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests
                 IlrSubmissionTime = DateTime.UtcNow.AddMinutes(-20),
                 StartTime = DateTimeOffset.UtcNow,
             };
+            mocker.Mock<IJobStatusDataContext>()
+                .Setup(dc => dc.SaveNewProviderEarningsJob(
+                    It.IsAny<(long DcJobId, DateTimeOffset StartTime, byte CollectionPeriod, short CollectionYear, long
+                        Ukprn, DateTime ilrSubmissionTime, List<(DateTimeOffset StartTime, Guid MessageId)>
+                        GeneratedMessages)>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<JobModel>(new JobModel {Id = 1}));
             jobStarted.SubEventIds.Add((DateTimeOffset.UtcNow, Guid.NewGuid()));
             await service.JobStarted(jobStarted);
-            //mocker.Mock<IJobStatusDataContext>()
-            //    .Verify(dc => dc.SaveNewJob(It.Is<JobModel>(model => IsValidJobId(model,jobStarted)), 
-            //        It.IsAny<CancellationToken>()),Times.Once);
+            mocker.Mock<IJobStatusDataContext>()
+                .Verify(dc => dc.SaveNewProviderEarningsJob(
+                    It.Is<(long DcJobId, DateTimeOffset StartTime, byte CollectionPeriod, short CollectionYear, long Ukprn, DateTime ilrSubmissionTime, List<(DateTimeOffset StartTime, Guid MessageId)> GeneratedMessages)>(
+                        details => details.CollectionPeriod == jobStarted.CollectionPeriod && 
+                                   details.CollectionYear == jobStarted.CollectionYear &&
+                                   details.DcJobId == jobStarted.JobId && 
+                                   details.StartTime == jobStarted.StartTime && 
+                                   details.Ukprn == jobStarted.Ukprn &&
+                                   details.ilrSubmissionTime == jobStarted.IlrSubmissionTime), 
+                    It.IsAny<CancellationToken>()), 
+                    Times.Once);
         }
 
         private bool IsValidJobId(JobModel model, RecordStartedProcessingProviderEarningsJob jobStarted)
@@ -52,37 +66,6 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests
                    && model.ProviderEarnings.All(pe => pe.DcJobId == jobStarted.JobId && pe.CollectionPeriod == jobStarted.CollectionPeriod && pe.CollectionYear == jobStarted.CollectionYear && pe.Ukprn == jobStarted.Ukprn)
                    && model.ProviderEarnings.First().DcJobId == jobStarted.JobId
                    && model.JobEvents.All(ev => ev.ParentMessageId == null && ev.MessageId == jobStarted.SubEventIds.First().EventId && ev.StartTime == jobStarted.SubEventIds.First().StartTime && ev.Status == JobStepStatus.Queued);
-        }
-
-        [Test]
-        public void Uses_Correct_Job_Id_When_Saving_Provider_Earnings_Job_Steps()
-        {
-
-        }
-
-        [Test]
-        public async Task Updates_Status_Of_Completed_JobStep()
-        {
-            var jobStep = new JobStepModel
-            {
-                JobId = 4321,
-                StartTime = DateTimeOffset.UtcNow.AddSeconds(-10),
-                Id = 1,
-                Status = JobStepStatus.Queued,
-                MessageId = Guid.NewGuid()
-            };
-
-            var processedPaymentMessage = new ProcessedPaymentsMessageEvent
-            {
-                JobId = 1234,
-                Id = jobStep.MessageId,
-                EndTime = DateTimeOffset.UtcNow,
-                Succeeded = true,
-            };
-
-            var service = mocker.Create<ProviderEarningsJobService>();
-            await service.JobStepCompleted(processedPaymentMessage);
-            
         }
     }
 }

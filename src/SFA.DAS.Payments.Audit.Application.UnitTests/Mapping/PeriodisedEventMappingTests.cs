@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
 
         protected override void PopulateCommonProperties(TSource paymentEvent)
         {
+            base.PopulateCommonProperties(paymentEvent);
             paymentEvent.AmountDue = 500;
             paymentEvent.DeliveryPeriod = new CalendarPeriod(2018,1);
             paymentEvent.PriceEpisodeIdentifier = "pe-1";

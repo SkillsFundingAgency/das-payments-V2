@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
@@ -173,6 +177,38 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         public static decimal ToPercent(this string stringPercent)
         {
             return decimal.Parse(stringPercent.TrimEnd('%')) / 100m;
+        }
+
+        private static Dictionary<int, PropertyInfo> periodisedProperties;
+
+        private static Dictionary<int, PropertyInfo> PeriodisedProperties
+        {
+            get
+            {
+                if (periodisedProperties == null)
+                {
+                    periodisedProperties = new Dictionary<int, PropertyInfo>();
+
+                    for (var i = 1; i < 13; i++)
+                    {
+                        periodisedProperties.Add(i, typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + i));
+                    }
+                }
+
+                return periodisedProperties;
+            }
+        }
+
+
+        public static decimal? GetValue(this PriceEpisodePeriodisedValues values, int period)
+        {
+
+            return (decimal?) PeriodisedProperties[period].GetValue(values);
+        }
+
+        public static void SetValue(this PriceEpisodePeriodisedValues values, int period, decimal? value)
+        {
+            PeriodisedProperties[period].SetValue(values, value);
         }
     }
 }

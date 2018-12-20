@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return result;
         }
 
-        private Tuple<bool, string> MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
+        private (bool pass, string reason)MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
         {
             OnProgrammePaymentDue[] events;
 
@@ -167,7 +167,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 }
             }
 #endif
-            return Tuple.Create(allFound && nothingExtra, string.Join(" and ", reason));
+            return (allFound && nothingExtra, string.Join(" and ", reason));
         }
 
         private static void TraceUnexpected(ApprenticeshipContractType2RequiredPaymentEvent[] sessionEvents, List<ApprenticeshipContractType2RequiredPaymentEvent> matchedExpectations)

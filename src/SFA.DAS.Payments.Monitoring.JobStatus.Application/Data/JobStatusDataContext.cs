@@ -106,7 +106,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Data
                 if (jobId == 0)
                     throw new InvalidOperationException($"Job not found. DcJob id: {messageProcessingDetails.DcJobId}");
 
-                var jobStep = await JobSteps.Where(js =>js.JobId == jobId && 
+                var jobStep = await JobSteps.Where(js => js.JobId == jobId && 
                                                         js.MessageId == messageProcessingDetails.MessageId)
                     .FirstOrDefaultAsync(cancellationToken);
                 if (jobStep == null)
