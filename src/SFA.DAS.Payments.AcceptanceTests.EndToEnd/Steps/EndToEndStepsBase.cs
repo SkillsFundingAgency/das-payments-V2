@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
 
                 // replace aim if exists
-                var existingAim = learner.Aims.FirstOrDefault(a => a.AimReference == aim.AimReference);
+                var existingAim = learner.Aims.FirstOrDefault(a => a.AimReference == aim.AimReference && a.AimSequenceNumber == aim.AimSequenceNumber);
                 if (existingAim != null) learner.Aims.Remove(existingAim);
 
                 learner.Aims.Add(aim);
