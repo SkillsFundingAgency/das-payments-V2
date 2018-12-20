@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 
 // General Information about an assembly is controlled through the following
@@ -36,3 +37,4 @@ using NUnit.Framework;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: Parallelize(Workers = 5, Scope = ExecutionScope.ClassLevel)]
