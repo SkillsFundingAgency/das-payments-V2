@@ -506,7 +506,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 foreach (var headerCell in table.Header)
                 {
-                    var name = headerCell == "On-Programme" ? "Learning" : headerCell.Replace(" ", null).Replace("-", null);
+                    var name = headerCell.Replace(" ", null).Replace("-", null);
 
                     if (!Enum.TryParse<IncentiveType>(name, true, out var transactionType))
                         continue;
