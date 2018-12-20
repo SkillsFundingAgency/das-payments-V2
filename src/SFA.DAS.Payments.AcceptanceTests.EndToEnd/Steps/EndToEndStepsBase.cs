@@ -114,7 +114,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected void AddTestAims(IEnumerable<Aim> aims)
+        protected void AddTestAims(IList<Aim> aims)
         {
             if (AimsProcessedForJob.Contains(TestSession.JobId))
             {
@@ -130,9 +130,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     throw new Exception("There is an aim without a matching learner");
                 }
 
-                // replace aim if exists
-                var existingAim = learner.Aims.FirstOrDefault(a => a.AimReference == aim.AimReference && a.AimSequenceNumber == aim.AimSequenceNumber);
-                if (existingAim != null) learner.Aims.Remove(existingAim);
+                // replace aim if exists but only if it was added earlier
+                var existingAim = learner.Aims.FirstOrDefault(a => a.AimReference == aim.AimReference);
+                if (existingAim != null && !aims.Contains(existingAim))
+                    learner.Aims.Remove(existingAim);
 
                 learner.Aims.Add(aim);
             }

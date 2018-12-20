@@ -53,13 +53,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenAimsDetailsAreChangedAsFollows(Table table)
         {
             AimsProcessedForJob.Remove(TestSession.JobId);
-            AddTestAims(table.CreateSet<Aim>());
+            AddTestAims(table.CreateSet<Aim>().ToList());
         }
 
         [Given(@"the following aims")]
         public void GivenTheFollowingAims(Table table)
         {
-            var aims = table.CreateSet<Aim>();
+            var aims = table.CreateSet<Aim>().ToList();
             AddTestAims(aims);
         }
 
