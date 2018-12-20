@@ -11,5 +11,6 @@
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />
     <Parameter Name="RequiredPaymentsService_EndpointName" Value="__RequiredPaymentsService_EndpointName__" />
     <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" Value="__RequiredPaymentsService_FailedMessagesQueue__" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
   </Parameters>
 </Application>

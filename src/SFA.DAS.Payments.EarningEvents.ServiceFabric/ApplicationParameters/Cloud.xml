@@ -13,5 +13,6 @@
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="DcStorageConnectionString" Value="__DcStorageConnectionString__" />
     <Parameter Name="TopicName" Value="__TopicName__" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
   </Parameters>
 </Application>
