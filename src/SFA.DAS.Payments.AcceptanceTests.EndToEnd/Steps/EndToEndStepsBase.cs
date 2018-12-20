@@ -510,6 +510,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
             await MessageSession.Send(command);
         }
-
     }
 }

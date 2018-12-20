@@ -107,20 +107,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
                     PopulateLearner(learner, testSessionLearner, learnerEarnings);
 
-                    var command = new ProcessLearnerCommand
-                    {
-                        Learner = learner,
-                        CollectionPeriod = CurrentCollectionPeriod.Period,
-                        CollectionYear = CollectionYear,
-                        Ukprn = TestSession.Ukprn,
-                        JobId = TestSession.JobId,
-                        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                        RequestTime = DateTimeOffset.UtcNow,
-                        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????          
-                    };
-
-                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                    await MessageSession.Send(command);
+                    await SendProcessLearnerCommand(learner);
 
                     learners.Add(learner);
                 }
@@ -135,20 +122,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     PopulateLearner(learner, training, learnerEarnings);
 
-                    var command = new ProcessLearnerCommand
-                    {
-                        Learner = learner,
-                        CollectionPeriod = CurrentCollectionPeriod.Period,
-                        CollectionYear = CollectionYear,
-                        Ukprn = TestSession.Ukprn,
-                        JobId = TestSession.JobId,
-                        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                        RequestTime = DateTimeOffset.UtcNow,
-                        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????                    
-                    };
-
-                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                    await MessageSession.Send(command);
+                    await SendProcessLearnerCommand(learner);
 
                     learners.Add(learner);
                 }
@@ -157,7 +131,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
-
 
         [Then(@"only the following payments will be calculated")]
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)

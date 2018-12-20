@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.props')" />
   <Import Project="..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props')" />
   <Import Project="..\packages\NUnit.3.11.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -117,12 +116,6 @@
     </Reference>
     <Reference Include="Microsoft.ServiceBus, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.ServiceBus.5.0.2\lib\net46\Microsoft.ServiceBus.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MSTest.TestFramework.1.4.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MSTest.TestFramework.1.4.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=9.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.Storage.9.3.3\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
@@ -369,6 +362,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner\Provider Change of Circumstances\Change employer at end of month PV2-381.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Change employer at end of month PV2-381.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -474,6 +472,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-levy learner - change to start date within calendar month, backwards in month PV2-283.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Non-Levy Learner\Provider Change of Circumstances\Change employer at end of month PV2-381.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Change employer at end of month PV2-381.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature.cs</LastGenOutput>
@@ -543,10 +545,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets'))" />
     <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets'))" />
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.props'))" />
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets" Condition="Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets')" />
   <Import Project="..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets')" />
-  <Import Project="..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.targets')" />
 </Project>
