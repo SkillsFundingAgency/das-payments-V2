@@ -1,4 +1,8 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
+﻿using System.Collections.Generic;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Incentives;
+
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 {
     public class Payment
     {
@@ -10,5 +14,7 @@
         public decimal OnProgrammeMathsAndEnglish { get; set; }
         public decimal BalancingMathsAndEnglish { get; set; }
         public decimal LearningSupport { get; set; }
+
+        public IDictionary<IncentiveType, decimal> IncentiveValues { get; set; } = new Dictionary<IncentiveType, decimal>();
     }
 }

@@ -31,7 +31,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following earnings had been generated for the learner")]
         public void GivenTheFollowingEarningsHadBeenGeneratedForTheLearner(Table table)
         {
-            var earnings = CreateEarnings(table);            
+            var earnings = CreateEarnings(table);
+            
             PreviousEarnings = earnings;
 
             // for new style specs where no ILR specified

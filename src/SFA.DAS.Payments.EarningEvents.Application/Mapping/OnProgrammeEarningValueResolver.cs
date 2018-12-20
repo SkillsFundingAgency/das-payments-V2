@@ -1,16 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Internal;
+using FastMember;
+using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public class OnProgrammeEarningValueResolver : IValueResolver<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent, ReadOnlyCollection<OnProgrammeEarning>>
     {
+        private static readonly TypeAccessor periodAccessor = TypeAccessor.Create(typeof(PriceEpisodePeriodisedValues));
 
         // ReSharper disable once InconsistentNaming
         private static string OnProgrammeEarningTypeToFM36AttributeName(OnProgrammeEarningType onProgrammeEarningType)

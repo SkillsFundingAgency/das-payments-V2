@@ -7,5 +7,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Messages.Events
     {
         public IncentivePaymentType Type { get; set; }
         public ContractType ContractType { get; set; }
+        public ContractType ContractType { get; set; }
     }
 }

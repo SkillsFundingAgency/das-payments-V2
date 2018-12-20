@@ -9,6 +9,8 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -24,7 +26,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             this.collectionPeriod = collectionPeriod;
         }
 
-        public RequiredPaymentEventMatcher(TestSession testSession, CalendarPeriod collectionPeriod, List<Payment> paymentSpec):this(testSession,collectionPeriod)
+        public RequiredPaymentEventMatcher(TestSession testSession, CalendarPeriod collectionPeriod, List<Payment> paymentSpec) : this(testSession, collectionPeriod)
         {
             this.paymentSpec = paymentSpec;
         }
@@ -39,22 +41,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var expectedPayments = new List<RequiredPaymentEvent>();
 
-            foreach (var payment in paymentSpec.Where(e => e.CollectionPeriod.ToCalendarPeriod().Name == collectionPeriod.Name))
+            var paymentsToValidate =
+                paymentSpec.Where(e => e.CollectionPeriod.ToCalendarPeriod().Name == collectionPeriod.Name);
+
+            foreach (var payment in paymentsToValidate)
             {
                 AddOnProgPayment(payment, expectedPayments, payment.OnProgramme, OnProgrammeEarningType.Learning);
                 AddOnProgPayment(payment, expectedPayments, payment.Balancing, OnProgrammeEarningType.Balancing);
                 AddOnProgPayment(payment, expectedPayments, payment.Completion, OnProgrammeEarningType.Completion);
 
-                AddIncentivePayment(payment, expectedPayments, payment.OnProgrammeMathsAndEnglish, IncentivePaymentType.OnProgrammeMathsAndEnglish);
-                AddIncentivePayment(payment, expectedPayments, payment.BalancingMathsAndEnglish, IncentivePaymentType.BalancingMathsAndEnglish);
-                if (payment.LearningSupport!=0)
-                    expectedPayments.Add(new IncentiveRequiredPaymentEvent
-                    {
-                        AmountDue = payment.LearningSupport,
-                        Type = IncentivePaymentType.LearningSupport,
-                        DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
-                    });
-                
+                foreach (var incentiveTypeKey in payment.IncentiveValues.Keys)
+                {
+                    var amount = payment.IncentiveValues[incentiveTypeKey];
+
+                    if (amount != 0)
+                        expectedPayments.Add(new IncentiveRequiredPaymentEvent
+                        {
+                            AmountDue = amount,
+                            Type = incentiveTypeKey,
+                            DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                        });
+
+                }    
             }
 
             return expectedPayments;
