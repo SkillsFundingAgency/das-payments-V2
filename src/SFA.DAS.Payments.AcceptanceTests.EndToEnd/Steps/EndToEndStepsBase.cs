@@ -13,10 +13,12 @@ using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
+using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -491,6 +493,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             return earnings;
+        }
+
+        protected static List<Payment> CreatePayments(Table table)
+        {
+            var payments = table.CreateSet<Payment>().ToList();
+
+            for (var i = 0; i < table.RowCount-1; i++)
+            {
+                var tableRow = table.Rows[i];
+                var payment = payments[i];
+
+                foreach (var headerCell in table.Header)
+                {
+                    var name = headerCell.Replace(" ", null).Replace("-", null);
+
+                    if (!Enum.TryParse<IncentiveType>(name, true, out var transactionType))
+                        continue;
+
+                    if (!decimal.TryParse(tableRow[headerCell], out var amount))
+                        continue;
+
+                    payment.IncentiveValues.Add(transactionType, amount);
+                }
+            }
+
+            return payments;
         }
 
         protected async Task SendProcessLearnerCommand(FM36Learner learner)
