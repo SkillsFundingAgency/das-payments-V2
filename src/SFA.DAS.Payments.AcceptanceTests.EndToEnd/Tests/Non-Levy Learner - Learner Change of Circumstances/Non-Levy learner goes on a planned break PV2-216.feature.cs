@@ -261,19 +261,22 @@ this.ScenarioInitialize(scenarioInfo);
                         "Total Training Price",
                         "Total Training Price Effective Date",
                         "Total Assessment Price",
-                        "Total Assessment Price Effective Date"});
+                        "Total Assessment Price Effective Date",
+                        "SFA Contribution Percentage"});
             table5.AddRow(new string[] {
                         "1st price details",
                         "12000",
                         "01/Sep/Current Academic Year",
                         "3000",
-                        "01/Sep/Current Academic Year"});
+                        "01/Sep/Current Academic Year",
+                        "90%"});
             table5.AddRow(new string[] {
                         "2nd price details",
                         "12000",
                         "03/Jan/Current Academic Year",
                         "3000",
-                        "03/Jan/Current Academic Year"});
+                        "03/Jan/Current Academic Year",
+                        "90%"});
 #line 31
  testRunner.And("price details as follows", ((string)(null)), table5, "And ");
 #line 35

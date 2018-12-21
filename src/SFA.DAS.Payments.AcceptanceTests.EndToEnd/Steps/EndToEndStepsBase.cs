@@ -300,7 +300,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodePeriodisedValues newValues;
 
                     // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
-                    if ((episodeStart.Period > 1 && episodeStart.GetCollectionYear() == CollectionYear) || episodeLastPeriod < 12)
+                    if (episodeStart.GetCollectionYear() == CollectionYear && (episodeStart.Period > 1 || episodeLastPeriod < 12))
                     {
                         newValues = new PriceEpisodePeriodisedValues { AttributeName = currentValues.AttributeName };
 

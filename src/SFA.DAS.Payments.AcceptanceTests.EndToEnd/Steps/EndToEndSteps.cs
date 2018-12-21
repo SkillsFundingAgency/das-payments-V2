@@ -129,7 +129,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             matchingAim.PriceEpisodes.Add(currentPriceEpisode);
                         }
                     }
-                    aims.First().PriceEpisodes.AddRange(CurrentPriceEpisodes);
                 }
             }
             

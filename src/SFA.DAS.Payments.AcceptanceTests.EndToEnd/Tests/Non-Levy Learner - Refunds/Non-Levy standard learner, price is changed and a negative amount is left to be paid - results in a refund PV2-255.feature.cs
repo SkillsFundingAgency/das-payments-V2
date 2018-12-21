@@ -230,7 +230,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "Total Assessment Price Effective Date",
                         "Actual Duration",
                         "Completion Status",
-                        "SFA Contribution Percentage",
                         "Contract Type",
                         "Aim Sequence Number",
                         "Aim Reference",
@@ -248,7 +247,6 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aug/Current Academic Year",
                         "12 months",
                         "continuing",
-                        "90%",
                         "Act2",
                         "1",
                         "ZPROG001",
@@ -264,19 +262,22 @@ this.ScenarioInitialize(scenarioInfo);
                         "Total Training Price",
                         "Total Training Price Effective Date",
                         "Total Assessment Price",
-                        "Total Assessment Price Effective Date"});
+                        "Total Assessment Price Effective Date",
+                        "SFA Contribution Percentage"});
             table5.AddRow(new string[] {
                         "1st price details",
                         "9000",
                         "Aug/Current Academic Year",
                         "2250",
-                        "Aug/Current Academic Year"});
+                        "Aug/Current Academic Year",
+                        "90%"});
             table5.AddRow(new string[] {
                         "2nd price details",
                         "1200",
                         "Oct/Current Academic Year",
                         "200",
-                        "Oct/Current Academic Year"});
+                        "Oct/Current Academic Year",
+                        "90%"});
 #line 34
  testRunner.And("price details as follows", ((string)(null)), table5, "And ");
 #line 39
