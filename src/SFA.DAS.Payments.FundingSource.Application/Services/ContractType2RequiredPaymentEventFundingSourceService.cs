@@ -7,6 +7,7 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
+
     public class ContractType2RequiredPaymentEventFundingSourceService : IContractType2RequiredPaymentEventFundingSourceService
     {
         private readonly IEnumerable<ICoInvestedPaymentProcessor> processors;

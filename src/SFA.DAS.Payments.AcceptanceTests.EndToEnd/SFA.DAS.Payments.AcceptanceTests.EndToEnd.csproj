@@ -238,25 +238,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\OnProgrammeEarning.cs" />
+    <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\Training.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
+    <Compile Include="EventMatchers\EarningEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentModelMatcher.cs" />
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
-    <Compile Include="Handlers\ApprenticeshipContractType2EarningEventHandler.cs" />
-    <Compile Include="Handlers\ApprenticeshipContractType2RequiredPaymentEventHandler.cs" />
+    <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2PaymentDueEventHandler.cs" />
+    <Compile Include="Handlers\FunctionalSkillEarningsEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="EventMatchers\EarningEventMatcher.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-levy learner - learning support OPP and completion payments - PV2-429.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature.cs">
       <DependentUpon>One Non-Levy Learner finishes on time completion payment made PV2-334.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -408,6 +413,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner finishes on time completion payment made PV2-334.feature.cs</LastGenOutput>

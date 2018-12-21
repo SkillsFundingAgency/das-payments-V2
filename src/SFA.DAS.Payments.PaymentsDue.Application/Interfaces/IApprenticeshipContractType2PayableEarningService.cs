@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Application
 {
     public interface IApprenticeshipContractType2PayableEarningService
     {
-        ApprenticeshipContractType2PaymentDueEvent[] CreatePaymentsDue(ApprenticeshipContractType2EarningEvent message);
+        PaymentDueEvent[] CreatePaymentsDue(ApprenticeshipContractType2EarningEvent message);
     }
 }
