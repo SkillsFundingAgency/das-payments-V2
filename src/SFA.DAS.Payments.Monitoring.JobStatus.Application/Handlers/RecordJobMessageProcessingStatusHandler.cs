@@ -21,13 +21,13 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Handlers
         {
             try
             {
-                logger.LogVerbose($"Handling processed provider payment message. DC Job Id: {message.JobId}");
+                logger.LogVerbose($"Handling job message processed. DC Job Id: {message.JobId}, message name: {message.MessageName}, id: {message.Id}");
                 await providerEarningsService.JobStepCompleted(message);
-                logger.LogDebug($"Finished handling processed provider payment message. DC Job Id: {message.JobId}");
+                logger.LogDebug($"Finished handling job message processed. DC Job Id: {message.JobId}, message name: {message.MessageName}, id: {message.Id}");
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error recording message processing status. Job id: {message.JobId}, message : {message.Id}. Error: {ex.Message}", ex);
+                logger.LogError($"Error recording message processing status. Job id: {message.JobId}, message : {message.Id}, message name: {message.MessageName}. Error: {ex.Message}", ex);
                 throw;
             }
         }

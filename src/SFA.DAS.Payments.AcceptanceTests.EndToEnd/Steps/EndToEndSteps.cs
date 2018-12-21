@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
@@ -103,7 +104,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 // Learner -> Aims -> Price Episodes
                 foreach (var testSessionLearner in TestSession.Learners)
                 {
-                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
+                    var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
                     PopulateLearner(learner, testSessionLearner, learnerEarnings);
 
@@ -119,8 +120,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????          
                     };
 
-                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                    await MessageSession.Send(command);
+                    //                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
+                    //                    await MessageSession.Send(command);
 
                     learners.Add(learner);
                 }
@@ -130,7 +131,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in CurrentIlr)
                 {
                     var learnerId = training.LearnerId;
-                    var learner = new FM36Learner {LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber};
+                    var learner = new FM36Learner { LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber };
                     var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
 
                     PopulateLearner(learner, training, learnerEarnings);
@@ -147,13 +148,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????                    
                     };
 
-                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                    await MessageSession.Send(command);
+                    //                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
+                    //                    await MessageSession.Send(command);
 
                     learners.Add(learner);
                 }
             }
-            
+            var dcHelper = Container.Resolve<DcHelper>();
+            await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, CollectionYear, CollectionPeriod, TestSession.JobId);
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }

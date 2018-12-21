@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Data.Configuration
             builder.Property(x => x.StartTime).HasColumnName(@"StartTime");
             builder.Property(x => x.EndTime).HasColumnName(@"EndTime");
             builder.Property(x => x.Status).HasColumnName(@"Status");
+            builder.Property(x => x.MessageName).HasColumnName(@"MessageName");
             builder.HasOne(x => x.Job)
                 .WithMany(x => x.JobEvents)
                 .HasForeignKey(x => x.JobId);

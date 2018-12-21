@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application
         {
             logger.LogDebug($"Now recording completion of message processing.  Job Id: {stepCompleted.JobId}, Message id: {stepCompleted.Id}.");
             await dataContext.StoreMessageProcessingStatus((stepCompleted.JobId, stepCompleted.Id,
-                stepCompleted.EndTime, stepCompleted.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed,
+                stepCompleted.EndTime, stepCompleted.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed, stepCompleted.MessageName,
                 stepCompleted.GeneratedEvents));
             logger.LogDebug($"Recorded completion of message processing.  Job Id: {stepCompleted.JobId}, Message id: {stepCompleted.Id}.");
         }

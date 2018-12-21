@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Data
                     Guid MessageId)> GeneratedMessages) jobDetails, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<JobStepModel> StoreMessageProcessingStatus(
-            (long DcJobId, Guid MessageId, DateTimeOffset EndTime, JobStepStatus Status, List<(DateTimeOffset StartTime,
+            (long DcJobId, Guid MessageId, DateTimeOffset EndTime, JobStepStatus Status, string messageName, List<(DateTimeOffset StartTime,
                 Guid MessageId)> GeneratedMessages) messageProcessingDetails, CancellationToken cancellationToken = default(CancellationToken));
         Task<long> GetJobIdFromDcJobId(long dcJobId);
         Task SaveJobSteps(List<JobStepModel> jobSteps);
@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Data
         }
 
         public async Task<JobStepModel> StoreMessageProcessingStatus(
-            (long DcJobId, Guid MessageId, DateTimeOffset EndTime, JobStepStatus Status, List<(DateTimeOffset StartTime, Guid MessageId)> GeneratedMessages)
+            (long DcJobId, Guid MessageId, DateTimeOffset EndTime, JobStepStatus Status, string messageName, List<(DateTimeOffset StartTime, Guid MessageId)> GeneratedMessages)
                 messageProcessingDetails, CancellationToken cancellationToken = default(CancellationToken))
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -139,7 +139,8 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Data
                         {
                             JobId = jobId,
                             MessageId = gm.GeneratedMessage.MessageId,
-                            Status = JobStepStatus.Queued
+                            Status = JobStepStatus.Queued,
+                            MessageName = jobStep.MessageName
                         };
                         JobSteps.Add(generatedMessage);
                     }

@@ -10,8 +10,8 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Data.Model
         public Guid? ParentMessageId { get; set; }
         public JobStepStatus Status { get; set; }
         public DateTimeOffset? StartTime { get; set; }
-        public DateTimeOffset? EndTime { get; set; }    
-
+        public DateTimeOffset? EndTime { get; set; }
+        public string MessageName { get; set; }
         public virtual JobModel Job { get; set; }
     }
 }
