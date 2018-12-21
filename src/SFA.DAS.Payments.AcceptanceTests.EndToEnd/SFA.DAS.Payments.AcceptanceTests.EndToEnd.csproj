@@ -241,7 +241,6 @@
     <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
-    <Compile Include="Data\Training.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
     <Compile Include="EventMatchers\EarningEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentModelMatcher.cs" />

@@ -98,34 +98,51 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var earnings = CreateEarnings(table);
             var learners = new List<FM36Learner>();
 
-            if (CurrentIlr == null)
-            {
-                // Learner -> Aims -> Price Episodes
-                foreach (var testSessionLearner in TestSession.Learners)
-                {
-                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
-                    var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
-                    PopulateLearner(learner, testSessionLearner, learnerEarnings);
-
-                    await SendProcessLearnerCommand(learner);
-
-                    learners.Add(learner);
-                }
-            }
-            else
+            if (CurrentIlr != null)
             {
                 foreach (var training in CurrentIlr)
                 {
-                    var learnerId = training.LearnerId;
-                    var learner = new FM36Learner {LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber};
-                    var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
-
-                    PopulateLearner(learner, training, learnerEarnings);
-
-                    await SendProcessLearnerCommand(learner);
-
-                    learners.Add(learner);
+                    var aims = new List<Aim> {new Aim(training)};
+                    AddTestAims(aims);
+                    if (CurrentPriceEpisodes == null)
+                    {
+                        CurrentPriceEpisodes = new List<Price>{(new Price
+                        {
+                            AimSequenceNumber = training.AimSequenceNumber,
+                            TotalAssessmentPrice = training.TotalAssessmentPrice,
+                            TotalTrainingPrice = training.TotalTrainingPrice,
+                            TotalTrainingPriceEffectiveDate = training.StartDate,
+                            TotalAssessmentPriceEffectiveDate = training.StartDate,
+                            SfaContributionPercentage = training.SfaContributionPercentage,
+                        })};
+                    }
+                    foreach (var currentPriceEpisode in CurrentPriceEpisodes)
+                    {
+                        if (currentPriceEpisode.AimSequenceNumber == 0)
+                        {
+                            aims.Single().PriceEpisodes.Add(currentPriceEpisode);
+                        }
+                        else
+                        {
+                            var matchingAim = aims.First(x => x.AimSequenceNumber ==
+                                                                       currentPriceEpisode.AimSequenceNumber);
+                            matchingAim.PriceEpisodes.Add(currentPriceEpisode);
+                        }
+                    }
+                    aims.First().PriceEpisodes.AddRange(CurrentPriceEpisodes);
                 }
+            }
+            
+            // Learner -> Aims -> Price Episodes
+            foreach (var testSessionLearner in TestSession.Learners)
+            {
+                var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
+                var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
+                PopulateLearner(learner, testSessionLearner, learnerEarnings);
+
+                await SendProcessLearnerCommand(learner);
+
+                learners.Add(learner);
             }
             
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
