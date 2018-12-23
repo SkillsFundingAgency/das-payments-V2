@@ -1,28 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
     public static class EnumHelper
     {
-        private static readonly TransactionType[] onProgTypes = { TransactionType.Learning, TransactionType.Balancing, TransactionType.Completion };
-        private static readonly TransactionType[] incentiveTypes = { TransactionType.First16To18EmployerIncentive, TransactionType.First16To18ProviderIncentive, TransactionType.Second16To18EmployerIncentive, TransactionType.Second16To18ProviderIncentive };
-        private static readonly TransactionType[] functionalSkillTypes = { TransactionType.OnProgrammeMathsAndEnglish, TransactionType.BalancingMathsAndEnglish };
+        private static readonly HashSet<TransactionType> OnProgTypes = new HashSet<TransactionType>(Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<int>().Select(t => (TransactionType) t));
+        private static readonly HashSet<TransactionType> IncentiveTypes = new HashSet<TransactionType>(Enum.GetValues(typeof(IncentiveEarningType)).Cast<int>().Select(t => (TransactionType)t));
+        private static readonly HashSet<TransactionType> FunctionalSkillTypes = new HashSet<TransactionType>(Enum.GetValues(typeof(FunctionalSkillType)).Cast<int>().Select(t => (TransactionType)t));
 
         public static bool IsOnProgType(TransactionType type)
         {
-            return onProgTypes.Contains(type);
+            return OnProgTypes.Contains(type);
         }
 
         public static bool IsIncentiveType(TransactionType type)
         {
-            return incentiveTypes.Contains(type);
+            return IncentiveTypes.Contains(type);
         }
 
         public static bool IsFunctionalSkillType(TransactionType type)
         {
-            return functionalSkillTypes.Contains(type);
+            return FunctionalSkillTypes.Contains(type);
         }
 
         public static TransactionType ToTransactionType(string transactionType)

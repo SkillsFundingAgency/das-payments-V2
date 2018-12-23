@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.PaymentsDue.PaymentsDueService.Handlers
 
             try
             {
-                PaymentDueEvent[] paymentsDue;
+                IncentivePaymentDueEvent[] paymentsDue;
 
                 try
                 {
