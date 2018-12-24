@@ -63,5 +63,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
             routing.RouteToEndpoint(typeof(CollectionStartedEvent), EndpointNames.RequiredPayments);
         }
+
+        [AfterScenario]
+        public static void MarkScenarioCompleteWithSession(FeatureContext context)
+        {
+            var testSession = context.Get<TestSession>();
+            testSession.CompleteScenario();
+        }
     }
 }

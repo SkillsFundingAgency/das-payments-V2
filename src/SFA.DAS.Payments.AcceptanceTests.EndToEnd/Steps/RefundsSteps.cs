@@ -3,6 +3,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     {
         public RefundsSteps(FeatureContext context) : base(context)
         {
+        }
+
+        [Given("\"(.*)\" previously submitted the following learner details")]
+        public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetailsForProvider(
+            string providerId,
+            Table table)
+        {
+            GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetails(table);
         }
 
         [Given(@"the provider previously submitted the following learner details")]
@@ -36,9 +45,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             PreviousEarnings = earnings;
         }
 
+        [Given("the following payments had been generated for \"(.*)\"")]
+        public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(string providerId, Table table)
+        {
+            await GivenTheFollowingProviderPaymentsHadBeenGenerated(table);
+        }
+
         [Given(@"the following provider payments had been generated")]
         public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
+            if (TestSession.AtLeastOneScenarioCompleted)
+            {
+                return;
+            }
+
             var payments = table.CreateSet<ProviderPayment>().ToList();
             foreach (var payment in payments)
             {
@@ -68,14 +88,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             dataContext.Payment.AddRange(previousPayments);
             await dataContext.SaveChangesAsync();
-        }
-
-        [Given(@"the Provider now changes the Learner details as follows")]
-        public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
-        {
-            var ilr = table.CreateSet<Training>().ToList();
-            CurrentIlr = ilr;
-            AddTestLearners(CurrentIlr);
         }
 
         [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]

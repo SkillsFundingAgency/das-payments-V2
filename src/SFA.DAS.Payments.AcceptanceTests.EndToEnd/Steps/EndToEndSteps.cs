@@ -2,8 +2,6 @@
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
 using System.Collections.Generic;
@@ -15,7 +13,6 @@ using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
-using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -42,6 +39,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(PreviousIlr);
         }
 
+        [Given(@"the Provider now changes the Learner details as follows")]
+        public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
+        {
+            AddNewIlr(table);
+        }
+
+        [Given("the Learner has now changed to \"(.*)\" as follows")]
+        public void GivenTheLearnerChangesProvider(string providerId, Table table)
+        {
+            if (!TestSession.AtLeastOneScenarioCompleted)
+            {
+                TestSession.RegenerateUkprn();
+                AddNewIlr(table);
+            }
+        }
+
         [Given(@"the following learners")]
         public void GivenTheFollowingLearners(Table table)
         {
@@ -56,16 +69,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestAims(aims);
         }
 
-        private static readonly HashSet<long> PriceEpisodesProcessedForJob = new HashSet<long>();
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
         {
-            if (PriceEpisodesProcessedForJob.Contains(TestSession.JobId))
+            if (TestSession.AtLeastOneScenarioCompleted)
             {
                 return;
             }
-
-            PriceEpisodesProcessedForJob.Add(TestSession.JobId);
 
             var newPriceEpisodes = table.CreateSet<Price>().ToList();
             CurrentPriceEpisodes = newPriceEpisodes;

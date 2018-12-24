@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     {
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
-        private static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
+        protected DcHelper DcHelper => Get<DcHelper>();
 
         protected List<Price> CurrentPriceEpisodes
         {
@@ -60,6 +60,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected EndToEndStepsBase(FeatureContext context) : base(context)
         {
+        }
+
+        protected void AddNewIlr(Table table)
+        {
+            var ilr = table.CreateSet<Training>().ToList();
+            CurrentIlr = ilr;
+            AddTestLearners(CurrentIlr);
         }
 
         protected void SetCollectionPeriod(string collectionPeriod)
@@ -116,12 +123,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddTestAims(IEnumerable<Aim> aims)
         {
-            if (AimsProcessedForJob.Contains(TestSession.JobId))
+            if (TestSession.AtLeastOneScenarioCompleted)
             {
                 return;
             }
 
-            AimsProcessedForJob.Add(TestSession.JobId);
             foreach (var aim in aims)
             {
                 var learner = TestSession.Learners.FirstOrDefault(x => x.LearnerIdentifier == aim.LearnerId);
