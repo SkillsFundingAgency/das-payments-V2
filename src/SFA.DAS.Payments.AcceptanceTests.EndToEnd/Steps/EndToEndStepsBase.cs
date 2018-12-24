@@ -499,7 +499,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var payments = table.CreateSet<Payment>().ToList();
 
-            for (var i = 0; i < table.RowCount-1; i++)
+            for (var i = 0; i < table.RowCount; i++)
             {
                 var tableRow = table.Rows[i];
                 var payment = payments[i];
