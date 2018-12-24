@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.Payments.AcceptanceTests.Core;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
@@ -8,11 +6,13 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public class RequiredPaymentEventMatcher : BaseMatcher<RequiredPaymentEvent>
-    {        
+    {
         private readonly TestSession testSession;
         private readonly CalendarPeriod collectionPeriod;
         private readonly List<Payment> paymentSpec;
@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             this.collectionPeriod = collectionPeriod;
         }
 
-        public RequiredPaymentEventMatcher(TestSession testSession, CalendarPeriod collectionPeriod, List<Payment> paymentSpec):this(testSession,collectionPeriod)
+        public RequiredPaymentEventMatcher(TestSession testSession, CalendarPeriod collectionPeriod, List<Payment> paymentSpec) : this(testSession, collectionPeriod)
         {
             this.paymentSpec = paymentSpec;
         }
@@ -38,44 +38,58 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var expectedPayments = new List<RequiredPaymentEvent>();
 
-            foreach (var payment in paymentSpec.Where(e => e.CollectionPeriod.ToCalendarPeriod().Name == collectionPeriod.Name))
+            var paymentsToValidate =
+                paymentSpec.Where(e => e.CollectionPeriod.ToCalendarPeriod().Name == collectionPeriod.Name);
+
+            foreach (var payment in paymentsToValidate)
             {
-                var learningPayment = new ApprenticeshipContractType2RequiredPaymentEvent
+                if (payment.OnProgramme != 0)
                 {
-                    AmountDue = payment.OnProgramme,
-                    OnProgrammeEarningType = OnProgrammeEarningType.Learning,
-                    DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
-                };
-                var balancingPayment = new ApprenticeshipContractType2RequiredPaymentEvent
-                {
-                    AmountDue = payment.Balancing,
-                    OnProgrammeEarningType = OnProgrammeEarningType.Balancing,
-                    DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
-                };
-                var completionPayment = new ApprenticeshipContractType2RequiredPaymentEvent
-                {
-                    AmountDue = payment.Completion,
-                    OnProgrammeEarningType = OnProgrammeEarningType.Completion,
-                    DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
-                };
-
-                if (payment.LearningSupport!=0)
-                    expectedPayments.Add(new IncentiveRequiredPaymentEvent
+                    var learningPayment = new ApprenticeshipContractType2RequiredPaymentEvent
                     {
-                        AmountDue = payment.LearningSupport,
-                        Type = IncentiveType.LearningSupport,
+                        AmountDue = payment.OnProgramme,
+                        OnProgrammeEarningType = OnProgrammeEarningType.Learning,
                         DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
-                    });
-                
-
-                if (learningPayment.AmountDue != 0) 
+                    };
                     expectedPayments.Add(learningPayment);
+                }
 
-                if (balancingPayment.AmountDue != 0) 
+                if (payment.Balancing != 0)
+                {
+                    var balancingPayment = new ApprenticeshipContractType2RequiredPaymentEvent
+                    {
+                        AmountDue = payment.Balancing,
+                        OnProgrammeEarningType = OnProgrammeEarningType.Balancing,
+                        DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                    };
+
                     expectedPayments.Add(balancingPayment);
+                }
 
-                if (completionPayment.AmountDue != 0) 
+                if (payment.Completion != 0)
+                {
+                    var completionPayment = new ApprenticeshipContractType2RequiredPaymentEvent
+                    {
+                        AmountDue = payment.Completion,
+                        OnProgrammeEarningType = OnProgrammeEarningType.Completion,
+                        DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                    };
                     expectedPayments.Add(completionPayment);
+                }
+
+                foreach (var incentiveTypeKey in payment.IncentiveValues.Keys)
+                {
+                    var amount = payment.IncentiveValues[incentiveTypeKey];
+
+                    if (amount != 0)
+                        expectedPayments.Add(new IncentiveRequiredPaymentEvent
+                        {
+                            AmountDue = amount,
+                            Type = incentiveTypeKey,
+                            DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                        });
+
+                }    
             }
 
             return expectedPayments;
