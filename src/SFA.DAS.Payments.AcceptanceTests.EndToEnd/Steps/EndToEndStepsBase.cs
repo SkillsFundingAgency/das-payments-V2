@@ -26,8 +26,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     {
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
-        private static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
-
         protected DcHelper DcHelper => Get<DcHelper>();
 
         protected List<Price> CurrentPriceEpisodes
@@ -428,8 +426,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     },
                     PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                 };
-
-
+                
                 foreach (var currentValues in periodisedValues)
                 {
                     PriceEpisodePeriodisedValues newValues;
@@ -464,7 +461,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);
         }
-
         
         protected static List<Earning> CreateEarnings(Table table)
         {
@@ -546,6 +542,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
             await MessageSession.Send(command);
         }
-
     }
 }
