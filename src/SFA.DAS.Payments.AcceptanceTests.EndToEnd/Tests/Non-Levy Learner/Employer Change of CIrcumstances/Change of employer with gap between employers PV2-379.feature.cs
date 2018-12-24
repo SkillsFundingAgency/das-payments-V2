@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_EmployerChangeOfCircumstances
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner.EmployerChangeOfCIrcumstances
 {
     using TechTalk.SpecFlow;
     
@@ -127,7 +127,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "25",
                         "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
 #line 12
-  testRunner.Given("the provider is providing training for the following learners", ((string)(null)), table1, "Given ");
+ testRunner.Given("the provider is providing training for the following learners", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Price details",
@@ -162,8 +162,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 16
  testRunner.And("price details as follows", ((string)(null)), table2, "And ");
 #line 21
-    testRunner.When("the ILR file is submitted for the learners for collection period <collection_peri" +
-                    "od>", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When(string.Format("the ILR file is submitted for the learners for collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "Delivery Period",
@@ -325,7 +324,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0"});
 #line 39
-    testRunner.And("only the following payments will be calculated", ((string)(null)), table4, "And ");
+ testRunner.And("only the following payments will be calculated", ((string)(null)), table4, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",

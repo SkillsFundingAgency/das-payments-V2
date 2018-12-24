@@ -301,17 +301,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Non-Levy Learners Finish On Time PV2-337.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change of employer with gap between employers PV2-379.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner\Employer Change of CIrcumstances\Change of employer with gap between employers PV2-379.feature.cs">
       <DependentUpon>Change of employer with gap between employers PV2-379.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change to Negotiated Cost Mid Month PV2-382.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner\Employer Change of CIrcumstances\Change to Negotiated Cost Mid Month PV2-382.feature.cs">
       <DependentUpon>Change to Negotiated Cost Mid Month PV2-382.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-	<Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change standard and price but not from start - PV2-205.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change standard and price but not from start - PV2-205.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Change standard and price but not from start - PV2-205.feature</DependentUpon>
@@ -371,7 +371,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner\Provider Change of Circumstances\Change employer at end of month PV2-381.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner\Employer Change of CIrcumstances\Change employer at end of month PV2-381.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Change employer at end of month PV2-381.feature</DependentUpon>
@@ -386,7 +386,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Remain with same Employer with a gap in learning - PV2-324.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature</DependentUpon>
@@ -443,15 +443,15 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two Non-Levy Learners Finish On Time PV2-337.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change of employer with gap between employers PV2-379.feature">
+    <None Include="Tests\Non-Levy Learner\Employer Change of CIrcumstances\Change of employer with gap between employers PV2-379.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Change of employer with gap between employers PV2-379.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Non-Levy Learner - Employer Change of Circumstances\Change to Negotiated Cost Mid Month PV2-382.feature">
+    <None Include="Tests\Non-Levy Learner\Employer Change of CIrcumstances\Change to Negotiated Cost Mid Month PV2-382.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Change to Negotiated Cost Mid Month PV2-382.feature.cs</LastGenOutput>
     </None>
-	<None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change standard and price but not from start - PV2-205.feature">
+    <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change standard and price but not from start - PV2-205.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Change standard and price but not from start - PV2-205.feature.cs</LastGenOutput>
     </None>
@@ -507,11 +507,11 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Remain with same Employer with a gap in learning - PV2-324.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Non-Levy Learner\Provider Change of Circumstances\Change employer at end of month PV2-381.feature">
+    <None Include="Tests\Non-Levy Learner\Employer Change of CIrcumstances\Change employer at end of month PV2-381.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Change employer at end of month PV2-381.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature">
+    <None Include="Tests\Non-Levy Learner\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature.cs</LastGenOutput>
     </None>
