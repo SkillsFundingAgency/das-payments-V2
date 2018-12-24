@@ -243,8 +243,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Framework Code",
                         "Pathway Code",
                         "Programme Type",
-                        "Funding Line Type",
-                        "SFA Contribution Percentage"});
+                        "Funding Line Type"});
             table4.AddRow(new string[] {
                         "01/Aug/Current Academic Year",
                         "12 months",
@@ -260,8 +259,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "403",
                         "1",
                         "25",
-                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)",
-                        "90%"});
+                        "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"});
 #line 38
  testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
 #line hidden
@@ -274,7 +272,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "Residual Training Price",
                         "Residual Training Price Effective Date",
                         "Residual Assessment Price",
-                        "Residual Assessment Price Effective Date"});
+                        "Residual Assessment Price Effective Date",
+                        "SFA Contribution Percentage"});
             table5.AddRow(new string[] {
                         "1st price details",
                         "12000",
@@ -284,7 +283,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "",
                         "0",
-                        ""});
+                        "",
+                        "90%"});
             table5.AddRow(new string[] {
                         "2nd price details",
                         "12000",
@@ -294,7 +294,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "5000",
                         "01/Nov/Current Academic Year",
                         "625",
-                        "01/Nov/Current Academic Year"});
+                        "01/Nov/Current Academic Year",
+                        "90%"});
 #line 42
  testRunner.And("price details as follows", ((string)(null)), table5, "And ");
 #line 46

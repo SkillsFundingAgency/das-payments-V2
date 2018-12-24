@@ -293,11 +293,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
                         aim.StartDate.ToDate() + aim.ActualDurationAsTimespan;
                 }
-                else if (i + 1 < orderedPriceEpisodes.Count &&
+
+                if (i + 1 < orderedPriceEpisodes.Count &&
                          orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.HasValue)
                 {
-                    currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
-                        orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.AddDays(-1);
+                    var actualEndDate = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.AddDays(-1);
+                    if (currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.HasValue)
+                    {
+                        if (actualEndDate < currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate)
+                        {
+                            currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate = actualEndDate;
+                        }
+                    }
+                    else
+                    {
+                        currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate = actualEndDate;
+                    }
                 }
 
                 var episodeLastPeriod = LastOnProgPeriod(currentPriceEpisode);

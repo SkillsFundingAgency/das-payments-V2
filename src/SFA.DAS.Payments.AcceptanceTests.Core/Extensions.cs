@@ -187,7 +187,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         public static decimal ToPercent(this string stringPercent)
         {
-            return decimal.Parse(stringPercent.TrimEnd('%')) / 100m;
+            if (decimal.TryParse(stringPercent.TrimEnd('%'), out var result))
+            {
+                return result / 100;
+            }
+            throw new Exception("Please include the SFA Contribution % in the price episodes or earnings");
         }
 
         private static Dictionary<int, PropertyInfo> periodisedProperties;
