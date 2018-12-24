@@ -102,11 +102,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 foreach (var training in CurrentIlr)
                 {
-                    var aims = new List<Aim> {new Aim(training)};
+                    var aim = new Aim(training);
+                    var aims = new List<Aim> {aim};
                     AddTestAims(aims);
+
                     if (CurrentPriceEpisodes == null)
                     {
-                        CurrentPriceEpisodes = new List<Price>{(new Price
+                        aim.PriceEpisodes.Add(new Price
                         {
                             AimSequenceNumber = training.AimSequenceNumber,
                             TotalAssessmentPrice = training.TotalAssessmentPrice,
@@ -114,19 +116,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             TotalTrainingPriceEffectiveDate = training.StartDate,
                             TotalAssessmentPriceEffectiveDate = training.StartDate,
                             SfaContributionPercentage = training.SfaContributionPercentage,
-                        })};
+                        });
                     }
-                    foreach (var currentPriceEpisode in CurrentPriceEpisodes)
+                    else
                     {
-                        if (currentPriceEpisode.AimSequenceNumber == 0)
+                        foreach (var currentPriceEpisode in CurrentPriceEpisodes)
                         {
-                            aims.Single().PriceEpisodes.Add(currentPriceEpisode);
-                        }
-                        else
-                        {
-                            var matchingAim = aims.First(x => x.AimSequenceNumber ==
-                                                                       currentPriceEpisode.AimSequenceNumber);
-                            matchingAim.PriceEpisodes.Add(currentPriceEpisode);
+                            if (currentPriceEpisode.AimSequenceNumber == 0)
+                            {
+                                aims.Single().PriceEpisodes.Add(currentPriceEpisode);
+                            }
+                            else
+                            {
+                                var matchingAim = aims.First(x => x.AimSequenceNumber ==
+                                                                  currentPriceEpisode.AimSequenceNumber);
+                                matchingAim.PriceEpisodes.Add(currentPriceEpisode);
+                            }
                         }
                     }
                 }
