@@ -32,15 +32,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         private FunctionalSkillEarning CreateEarning(IntermediateLearningAim source, IGrouping<string, PriceEpisodePeriodisedValues> grouping)
         {
             if (grouping.Count() > 1)
-                throw new ArgumentException("More than one functional skill earning of type " + grouping.Key);
+                throw new ArgumentException($"More than one functional skill earning of type {grouping.Key}");
 
             var allPeriods = source.PriceEpisodes.Select(p => p.PriceEpisodePeriodisedValues.SingleOrDefault(v => v.AttributeName == grouping.Key))
                 .Where(p => p != null)
                 .ToArray();
 
-            var periods = new EarningPeriod[12];
+            const byte earningPeriods = 12;
 
-            for (byte i = 1; i <= 12; i++)
+            var periods = new EarningPeriod[earningPeriods];
+
+            for (byte i = 1; i <= earningPeriods; i++)
             {
                 var periodValues = allPeriods.Select(p => p.GetPeriodValue(i)).ToArray();
                 var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
