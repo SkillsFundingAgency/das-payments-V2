@@ -34,7 +34,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<PaymentModel> GetActualEvents()
         {
             return dataContext.Payment.Where(p => p.JobId == testSession.JobId &&
-                                                  p.CollectionPeriod.Name == currentCollectionPeriodName).ToList();
+                                                  p.CollectionPeriod.Name == currentCollectionPeriodName &&
+                                                  p.Ukprn == testSession.Ukprn).ToList();
         }
 
         protected override IList<PaymentModel> GetExpectedEvents()

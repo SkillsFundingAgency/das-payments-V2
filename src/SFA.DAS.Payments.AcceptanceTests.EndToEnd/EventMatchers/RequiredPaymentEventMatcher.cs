@@ -30,7 +30,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<RequiredPaymentEvent> GetActualEvents()
         {
             return RequiredPaymentEventHandler.ReceivedEvents
-                .Where(e => e.Ukprn == testSession.Ukprn && e.CollectionPeriod == collectionPeriod && e.JobId == testSession.JobId).ToList();
+                .Where(e => e.Ukprn == testSession.Ukprn && 
+                            e.CollectionPeriod.Name == collectionPeriod.Name && 
+                            e.JobId == testSession.JobId).ToList();
         }
 
         protected override IList<RequiredPaymentEvent> GetExpectedEvents()
