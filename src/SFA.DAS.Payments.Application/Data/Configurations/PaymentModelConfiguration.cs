@@ -21,6 +21,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
                 cp.Property(x => x.Name).HasColumnName(@"CollectionPeriodName").IsRequired();
                 cp.Property(x => x.Year).HasColumnName(@"CollectionPeriodYear").IsRequired();
                 cp.Ignore(x => x.Period);
+                cp.Ignore(x => x.AcademicYear);
             });
             builder.OwnsOne(p => p.DeliveryPeriod, cp =>
             {
@@ -28,6 +29,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
                 cp.Property(x => x.Year).HasColumnName(@"DeliveryPeriodYear").IsRequired();
                 cp.Property(x => x.Name).HasColumnName(@"DeliveryPeriodName").IsRequired();
                 cp.Ignore(x => x.Period);
+                cp.Ignore(x => x.AcademicYear);
             });
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();
             builder.Property(x => x.LearnerReferenceNumber).HasColumnName(@"LearnerReferenceNumber").IsRequired();

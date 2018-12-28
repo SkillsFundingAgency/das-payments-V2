@@ -12,6 +12,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Infrastructure.Ioc
                 .SingleInstance();
             builder.RegisterType<ApprenticeshipContractType2PayableEarningService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<ApprenticeshipContractType2EarningProcessor>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<FunctionalSkillsEarningService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<FunctionalSkillsEarningProcessor>().AsImplementedInterfaces().SingleInstance();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
@@ -17,6 +17,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         /// </value>
         /// <seealso cref="SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning" />
         /// <seealso cref="SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillType" />
-        public IReadOnlyCollection<FunctionalSkillEarning> Earnings { get; set; }
+        public ReadOnlyCollection<FunctionalSkillEarning> Earnings { get; set; }
     }
 }

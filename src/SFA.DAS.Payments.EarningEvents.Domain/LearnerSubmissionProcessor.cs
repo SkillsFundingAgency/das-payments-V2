@@ -10,29 +10,35 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
 {
     public interface ILearnerSubmissionProcessor
     {
-        (ValidationResult Validation, List<ApprenticeshipContractTypeEarningsEvent> EarningsEvents) GenerateEarnings(
-            ProcessLearnerCommand learnerSubmission);
+        (ValidationResult Validation, List<EarningEvent> EarningEvents) GenerateEarnings(ProcessLearnerCommand learnerSubmission);
     }
 
     public class LearnerSubmissionProcessor: ILearnerSubmissionProcessor
     {
         private readonly ILearnerValidator learnerValidator;
         private readonly IApprenticeshipContractTypeEarningsEventBuilder apprenticeshipContractTypeEarningsEventBuilder;
-        public LearnerSubmissionProcessor(ILearnerValidator learnerValidator, IApprenticeshipContractTypeEarningsEventBuilder apprenticeshipContractTypeEarningsEventBuilder)
+        private readonly IFunctionalSkillEarningsEventBuilder functionalSkillEarningsEventBuilder;
+
+        public LearnerSubmissionProcessor(ILearnerValidator learnerValidator, IApprenticeshipContractTypeEarningsEventBuilder apprenticeshipContractTypeEarningsEventBuilder, IFunctionalSkillEarningsEventBuilder functionalSkillEarningsEventBuilder)
         {
             this.learnerValidator = learnerValidator ?? throw new ArgumentNullException(nameof(learnerValidator));
             this.apprenticeshipContractTypeEarningsEventBuilder = apprenticeshipContractTypeEarningsEventBuilder ?? throw new ArgumentNullException(nameof(apprenticeshipContractTypeEarningsEventBuilder));
+            this.functionalSkillEarningsEventBuilder = functionalSkillEarningsEventBuilder ?? throw new ArgumentNullException(nameof(functionalSkillEarningsEventBuilder));
         }
 
-        public (ValidationResult Validation, List<ApprenticeshipContractTypeEarningsEvent> EarningsEvents)  GenerateEarnings(ProcessLearnerCommand learnerSubmission)
+        public (ValidationResult Validation, List<EarningEvent> EarningEvents) GenerateEarnings(ProcessLearnerCommand learnerSubmission)
         {
             var validationResult = learnerValidator.Validate(learnerSubmission.Learner);
-            if (validationResult.Failed)
-                return (Validation: validationResult, EarningsEvents:null);
 
-            var earningsEvent =
-                apprenticeshipContractTypeEarningsEventBuilder.Build(learnerSubmission);
-            return (Validation: validationResult, EarningsEvents: earningsEvent); 
+            if (validationResult.Failed)
+                return (Validation: validationResult, EarningEvents: null);
+
+            var earningsEvent = new List<EarningEvent>();
+
+            earningsEvent.AddRange(apprenticeshipContractTypeEarningsEventBuilder.Build(learnerSubmission));
+            earningsEvent.AddRange(functionalSkillEarningsEventBuilder.Build(learnerSubmission));
+
+            return (Validation: validationResult, EarningEvents: earningsEvent);
         }
     }
 }
