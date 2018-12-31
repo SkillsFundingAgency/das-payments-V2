@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Messages.Core
             return IsMessage(type) && typeof(TDomainEvent).IsAssignableFrom(type);
         }
 
-        public static bool IsCommand<TPaymentsCommand>(this Type type) where TPaymentsCommand : PaymentsCommand
+        public static bool IsCommand<TPaymentsCommand>(this Type type) where TPaymentsCommand : IPaymentsCommand
         {
             return IsMessage(type) && typeof(TPaymentsCommand).IsAssignableFrom(type);
         }

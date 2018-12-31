@@ -12,7 +12,8 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Monitoring.JobStatus.Client;
+using SFA.DAS.Payments.Monitoring.Jobs.Client;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 {
@@ -58,7 +59,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 }
 
                 var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
-                var commands = new List<(DateTimeOffset StartTime, Guid MessageId)>();
+                var commands = new List<GeneratedMessage>();
                 foreach (var learner in fm36Output.Learners)
                 {
                     try
@@ -75,7 +76,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         };
                         var endpointInstance = await factory.GetEndpointInstance();
                         await endpointInstance.SendLocal(learnerCommand);
-                        commands.Add((DateTimeOffset.UtcNow, learnerCommand.CommandId));
+                        commands.Add(new GeneratedMessage { StartTime = DateTimeOffset.UtcNow, MessageId = learnerCommand.CommandId, MessageName = learnerCommand.GetType().Name });
                         paymentLogger.LogInfo(
                             $"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
                     }

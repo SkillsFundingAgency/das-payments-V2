@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.Messages.Core.Commands
 {
-    public abstract class PaymentsCommand: IPaymentsMessage
+    public abstract class PaymentsCommand: IPaymentsCommand
     {
         public Guid CommandId { get; set; }
         public DateTimeOffset RequestTime { get; set; }

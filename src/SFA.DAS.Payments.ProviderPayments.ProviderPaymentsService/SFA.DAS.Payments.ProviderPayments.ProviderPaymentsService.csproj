@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -31,8 +31,8 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.Model\SFA.DAS.Payments.Audit.Model.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.JobStatus.Client\SFA.DAS.Payments.Monitoring.JobStatus.Client.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.JobStatus.Messages\SFA.DAS.Payments.Monitoring.JobStatus.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Application\SFA.DAS.Payments.ProviderPayments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Domain\SFA.DAS.Payments.ProviderPayments.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj" />

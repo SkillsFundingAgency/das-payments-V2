@@ -173,21 +173,29 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.Paym
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Monitoring", "Monitoring", "{889F5FD9-D5A4-4CC5-9DB5-37D6934BFA2F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobStatus.Client", "SFA.DAS.Payments.Monitoring.JobStatus.Client\SFA.DAS.Payments.Monitoring.JobStatus.Client.csproj", "{66B42B94-B29B-48EA-9AB6-C96C11C1D9CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.Client", "SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj", "{66B42B94-B29B-48EA-9AB6-C96C11C1D9CE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobStatus.Messages", "SFA.DAS.Payments.Monitoring.JobStatus.Messages\SFA.DAS.Payments.Monitoring.JobStatus.Messages.csproj", "{9274ABB3-9F30-4320-A111-17BA07DBF568}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.Messages", "SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj", "{9274ABB3-9F30-4320-A111-17BA07DBF568}"
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.Monitoring.ServiceFabric", "SFA.DAS.Payments.Monitoring.ServiceFabric\SFA.DAS.Payments.Monitoring.ServiceFabric.sfproj", "{C7D441B0-203C-433A-890B-1DF14576C203}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobStatusService", "SFA.DAS.Payments.Monitoring.JobStatusService\SFA.DAS.Payments.Monitoring.JobStatusService.csproj", "{FA67CEFA-1F76-436F-A99D-3F90A2A597D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobsService", "SFA.DAS.Payments.Monitoring.JobsService\SFA.DAS.Payments.Monitoring.JobsService.csproj", "{FA67CEFA-1F76-436F-A99D-3F90A2A597D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobStatus.Application", "SFA.DAS.Payments.Monitoring.JobStatus.Application\SFA.DAS.Payments.Monitoring.JobStatus.Application.csproj", "{82FF6959-974C-4747-9C90-3DEDC3D8C9F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.Application", "SFA.DAS.Payments.Monitoring.Jobs.Application\SFA.DAS.Payments.Monitoring.Jobs.Application.csproj", "{82FF6959-974C-4747-9C90-3DEDC3D8C9F1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JobStatus", "JobStatus", "{48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jobs", "Jobs", "{48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0DBC1A28-3662-42C3-81D9-9080FFCF9F88}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests", "SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests\SFA.DAS.Payments.Monitoring.JobStatus.Application.UnitTests.csproj", "{B8278B33-E7F4-43F3-97D9-9151DF3E66A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests", "SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests\SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.csproj", "{B8278B33-E7F4-43F3-97D9-9151DF3E66A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobsStatusService", "SFA.DAS.Payments.Monitoring.JobsStatusService\SFA.DAS.Payments.Monitoring.JobsStatusService.csproj", "{F06EA128-FE0D-480B-9030-310DA02A05AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.JobsStatusService.Interfaces", "SFA.DAS.Payments.Monitoring.JobsStatusService.Interfaces\SFA.DAS.Payments.Monitoring.JobsStatusService.Interfaces.csproj", "{FAA3D877-C51A-44F7-86FF-0FD7A89AC056}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.AcceptanceTests", "SFA.DAS.Payments.Monitoring.AcceptanceTests\SFA.DAS.Payments.Monitoring.AcceptanceTests.csproj", "{11EC28D1-25B0-4A02-AD91-3AAD5F664E91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Jobs.Data", "SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj", "{D9849B05-C642-48F7-AA6D-FA917257AE45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -823,6 +831,38 @@ Global
 		{B8278B33-E7F4-43F3-97D9-9151DF3E66A4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B8278B33-E7F4-43F3-97D9-9151DF3E66A4}.Release|x64.ActiveCfg = Release|Any CPU
 		{B8278B33-E7F4-43F3-97D9-9151DF3E66A4}.Release|x64.Build.0 = Release|Any CPU
+		{F06EA128-FE0D-480B-9030-310DA02A05AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F06EA128-FE0D-480B-9030-310DA02A05AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F06EA128-FE0D-480B-9030-310DA02A05AF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F06EA128-FE0D-480B-9030-310DA02A05AF}.Debug|x64.Build.0 = Debug|Any CPU
+		{F06EA128-FE0D-480B-9030-310DA02A05AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F06EA128-FE0D-480B-9030-310DA02A05AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F06EA128-FE0D-480B-9030-310DA02A05AF}.Release|x64.ActiveCfg = Release|Any CPU
+		{F06EA128-FE0D-480B-9030-310DA02A05AF}.Release|x64.Build.0 = Release|Any CPU
+		{FAA3D877-C51A-44F7-86FF-0FD7A89AC056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAA3D877-C51A-44F7-86FF-0FD7A89AC056}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAA3D877-C51A-44F7-86FF-0FD7A89AC056}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FAA3D877-C51A-44F7-86FF-0FD7A89AC056}.Debug|x64.Build.0 = Debug|Any CPU
+		{FAA3D877-C51A-44F7-86FF-0FD7A89AC056}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAA3D877-C51A-44F7-86FF-0FD7A89AC056}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAA3D877-C51A-44F7-86FF-0FD7A89AC056}.Release|x64.ActiveCfg = Release|Any CPU
+		{FAA3D877-C51A-44F7-86FF-0FD7A89AC056}.Release|x64.Build.0 = Release|Any CPU
+		{11EC28D1-25B0-4A02-AD91-3AAD5F664E91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11EC28D1-25B0-4A02-AD91-3AAD5F664E91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11EC28D1-25B0-4A02-AD91-3AAD5F664E91}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{11EC28D1-25B0-4A02-AD91-3AAD5F664E91}.Debug|x64.Build.0 = Debug|Any CPU
+		{11EC28D1-25B0-4A02-AD91-3AAD5F664E91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11EC28D1-25B0-4A02-AD91-3AAD5F664E91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11EC28D1-25B0-4A02-AD91-3AAD5F664E91}.Release|x64.ActiveCfg = Release|Any CPU
+		{11EC28D1-25B0-4A02-AD91-3AAD5F664E91}.Release|x64.Build.0 = Release|Any CPU
+		{D9849B05-C642-48F7-AA6D-FA917257AE45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9849B05-C642-48F7-AA6D-FA917257AE45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9849B05-C642-48F7-AA6D-FA917257AE45}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D9849B05-C642-48F7-AA6D-FA917257AE45}.Debug|x64.Build.0 = Debug|Any CPU
+		{D9849B05-C642-48F7-AA6D-FA917257AE45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9849B05-C642-48F7-AA6D-FA917257AE45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9849B05-C642-48F7-AA6D-FA917257AE45}.Release|x64.ActiveCfg = Release|Any CPU
+		{D9849B05-C642-48F7-AA6D-FA917257AE45}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -905,6 +945,10 @@ Global
 		{48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534} = {889F5FD9-D5A4-4CC5-9DB5-37D6934BFA2F}
 		{0DBC1A28-3662-42C3-81D9-9080FFCF9F88} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
 		{B8278B33-E7F4-43F3-97D9-9151DF3E66A4} = {0DBC1A28-3662-42C3-81D9-9080FFCF9F88}
+		{F06EA128-FE0D-480B-9030-310DA02A05AF} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
+		{FAA3D877-C51A-44F7-86FF-0FD7A89AC056} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
+		{11EC28D1-25B0-4A02-AD91-3AAD5F664E91} = {889F5FD9-D5A4-4CC5-9DB5-37D6934BFA2F}
+		{D9849B05-C642-48F7-AA6D-FA917257AE45} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
