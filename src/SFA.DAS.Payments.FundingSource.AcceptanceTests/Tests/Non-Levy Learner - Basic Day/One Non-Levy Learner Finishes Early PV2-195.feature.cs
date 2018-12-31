@@ -135,7 +135,7 @@ this.FeatureBackground();
                         "p2",
                         "2",
                         "Completion (TT2)",
-                        "CoInvestedEmploer (FS3)",
+                        "CoInvestedEmployer (FS3)",
                         "375"});
             table2.AddRow(new string[] {
                         "p2",
@@ -147,7 +147,7 @@ this.FeatureBackground();
                         "p2",
                         "2",
                         "Balancing (TT3)",
-                        "CoInvestedEmploer (FS3)",
+                        "CoInvestedEmployer (FS3)",
                         "300"});
 #line 22
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
@@ -217,7 +217,7 @@ this.FeatureBackground();
                         "p2",
                         "1",
                         "Learning (TT1)",
-                        "CoInvestedEmploer (FS3)",
+                        "CoInvestedEmployer (FS3)",
                         "100"});
             table4.AddRow(new string[] {
                         "p2",
@@ -229,7 +229,7 @@ this.FeatureBackground();
                         "p2",
                         "2",
                         "Completion (TT2)",
-                        "CoInvestedEmploer (FS3)",
+                        "CoInvestedEmployer (FS3)",
                         "375"});
             table4.AddRow(new string[] {
                         "p2",
@@ -241,7 +241,7 @@ this.FeatureBackground();
                         "p2",
                         "2",
                         "Balancing (TT3)",
-                        "CoInvestedEmploer (FS3)",
+                        "CoInvestedEmployer (FS3)",
                         "300"});
 #line 43
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +
@@ -304,7 +304,7 @@ this.FeatureBackground();
                         "p2",
                         "4",
                         "Learning (TT1)",
-                        "CoInvestedEmploer (FS3)",
+                        "CoInvestedEmployer (FS3)",
                         "100"});
             table6.AddRow(new string[] {
                         "p2",
@@ -316,7 +316,7 @@ this.FeatureBackground();
                         "p2",
                         "5",
                         "Learning (TT1)",
-                        "CoInvestedEmploer (FS3)",
+                        "CoInvestedEmployer (FS3)",
                         "100"});
 #line 65
  testRunner.Then("the payment source component will generate the following contract type 2 coinvest" +

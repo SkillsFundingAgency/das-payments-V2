@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         }
 
         public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, string currentCollectionPeriodName, List<ProviderPayment> expectedPaymentInfo, ContractType contractType)
-            :this(dataContext,testSession, currentCollectionPeriodName)
+            : this(dataContext, testSession, currentCollectionPeriodName)
         {
             this.expectedPaymentInfo = expectedPaymentInfo;
             this.contractType = contractType;
@@ -43,18 +43,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var paymentInfo in expectedPaymentInfo)
             {
-                var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn);
-                coFundedSfa.Amount = paymentInfo.SfaCoFundedPayments;
-                coFundedSfa.FundingSource = FundingSourceType.CoInvestedSfa;
+                if (paymentInfo.SfaCoFundedPayments != 0)
+                {
+                    var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa, paymentInfo.SfaCoFundedPayments);
+                    expectedPayments.Add(coFundedSfa);
+                }
 
-                var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn);
-                coFundedEmp.Amount = paymentInfo.EmployerCoFundedPayments;
-                coFundedEmp.FundingSource = FundingSourceType.CoInvestedEmployer;
-            
-                expectedPayments.Add(coFundedSfa);
-                expectedPayments.Add(coFundedEmp);
+                if (paymentInfo.EmployerCoFundedPayments != 0)
+                {
+                    var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments);
+                    expectedPayments.Add(coFundedEmp);
+                }
+
+                if (paymentInfo.SfaFullyFundedPayments != 0)
+                {
+                    var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments);
+                    expectedPayments.Add(fullyFundedSfa);
+                }
             }
-
             return expectedPayments;
         }
 
@@ -68,7 +74,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.LearnerReferenceNumber == actual.LearnerReferenceNumber;
         }
 
-        private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn)
+        private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn, FundingSourceType fundingSource, decimal amount)
         {
             return new PaymentModel
             {
@@ -77,8 +83,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 DeliveryPeriod = paymentInfo.DeliveryPeriod.ToCalendarPeriod(),
                 TransactionType = paymentInfo.TransactionType,
                 ContractType = contractType,
-                Amount = paymentInfo.EmployerCoFundedPayments,
-                FundingSource = FundingSourceType.CoInvestedEmployer,
+                Amount = amount,
+                FundingSource = fundingSource,
                 LearnerReferenceNumber = testSession.GetLearner(paymentInfo.LearnerId).LearnRefNumber
             };
         }

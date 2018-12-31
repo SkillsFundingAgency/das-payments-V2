@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         {
         }
 
-        protected override CoInvestedPayment CreatePayment(RequiredCoInvestedPayment message)
+        protected override FundingSourcePayment CreatePayment(RequiredCoInvestedPayment message)
         {
             var amountToPay = message.SfaContributionPercentage * message.AmountDue;
 

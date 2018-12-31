@@ -10,22 +10,22 @@ using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
 {
     [TestFixture]
-    public class ApprenticeshipContractType2EarningProcessorTest
+    public class ApprenticeshipContractType2EarningProcessorTest : ProcessorTestBase
     {
-        private IApprenticeshipContractType2EarningProcessor processor;
+        private IApprenticeshipContractType2EarningProcessor earningProcessor;
         private long jobId;
         private long ukprn;
 
         [SetUp]
         public void SetUp()
         {
-            processor = new ApprenticeshipContractType2EarningProcessor();
+            earningProcessor = new ApprenticeshipContractType2EarningProcessor();
             jobId = 12345;
             ukprn = 12;
         }
 
         [Test]
-        public void TestHandleEarning()
+        public void TestHandleOnProgrammeEarning()
         {
             // arrange
             var collectionPeriod = new CalendarPeriod("1819-R03");
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             earning.OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new[] { onProgrammeEarning });
 
             // act
-            var paymentsDue = processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
+            var paymentsDue = earningProcessor.HandleOnProgrammeEarning(Ukprn, JobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
 
             // assert
             Assert.IsNotNull(paymentsDue);
@@ -80,6 +80,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             AssertPeriodsAreSame(earning, paymentsDue[1], onProgrammeEarning.Periods[1], collectionPeriod);
             AssertPeriodsAreSame(earning, paymentsDue[2], onProgrammeEarning.Periods[2], collectionPeriod);
         }
+
+       
 
         [Test]
         public void TestHandleZeroAmountEarning()
@@ -103,7 +105,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             };
 
             // act
-            var paymentsDue = processor.HandleOnProgrammeEarning(ukprn, jobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
+            var paymentsDue = earningProcessor.HandleOnProgrammeEarning(Ukprn, JobId, onProgrammeEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime);
 
             // assert
             Assert.IsNotNull(paymentsDue);
@@ -114,7 +116,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             var earning = new ApprenticeshipContractType2EarningEvent
             {
-                EarningYear = 2018,
                 EventTime = DateTimeOffset.UtcNow,
                 Learner = new Learner
                 {
@@ -153,7 +154,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(ukprn, jobId, null, new CalendarPeriod("1718-R02"), new Learner(), new LearningAim(), 100, DateTime.UtcNow);
+                earningProcessor.HandleOnProgrammeEarning(Ukprn, JobId, null, new CalendarPeriod("1718-R02"), new Learner(), new LearningAim(), 100, DateTime.UtcNow);
             }
             catch (ArgumentNullException ex)
             {
@@ -169,7 +170,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), null, new Learner(), new LearningAim(), 100, DateTime.UtcNow);
+                earningProcessor.HandleOnProgrammeEarning(Ukprn, JobId, new OnProgrammeEarning(), null, new Learner(), new LearningAim(), 100, DateTime.UtcNow);
             }
             catch (ArgumentNullException ex)
             {
@@ -185,7 +186,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), null, new LearningAim(), 100, DateTime.UtcNow);
+                earningProcessor.HandleOnProgrammeEarning(Ukprn, JobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), null, new LearningAim(), 100, DateTime.UtcNow);
             }
             catch (ArgumentNullException ex)
             {
@@ -201,7 +202,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             try
             {
-                processor.HandleOnProgrammeEarning(ukprn, jobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), new Learner(), null, 100, DateTime.UtcNow);
+                earningProcessor.HandleOnProgrammeEarning(Ukprn, JobId, new OnProgrammeEarning(), new CalendarPeriod("1718-R02"), new Learner(), null, 100, DateTime.UtcNow);
             }
             catch (ArgumentNullException ex)
             {
@@ -212,8 +213,8 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.Fail();
         }
 
-        private static void AssertPeriodsAreSame(ApprenticeshipContractType2EarningEvent earning, 
-                                                ApprenticeshipContractType2PaymentDueEvent paymentDue, 
+        private static void AssertPeriodsAreSame(ApprenticeshipContractTypeEarningsEvent earning,
+                                                ApprenticeshipContractTypePaymentDueEvent paymentDue, 
                                                 EarningPeriod earningPeriod, 
                                                 CalendarPeriod collectionPeriod)
         {
@@ -233,5 +234,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.AreEqual(earning.LearningAim.StandardCode, paymentDue.LearningAim.StandardCode);
             Assert.AreEqual(collectionPeriod, paymentDue.CollectionPeriod);
         }
+
+       
     }
 }

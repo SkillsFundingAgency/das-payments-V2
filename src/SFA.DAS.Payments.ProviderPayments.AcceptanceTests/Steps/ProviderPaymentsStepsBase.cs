@@ -54,6 +54,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 case FundingSourceType.CoInvestedEmployer:
                     paymentEvent = new EmployerCoInvestedFundingSourcePaymentEvent();
                     break;
+                case FundingSourceType.FullyFundedSfa:
+                    paymentEvent = new SfaFullyFundedFundingSourcePaymentEvent();
+                    break;
                 default:
                     throw new NotImplementedException("Unhandled Funding Source Type");
             }
@@ -63,7 +66,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             paymentEvent.ContractType = (ContractType)ContractType;
             paymentEvent.Learner = TestSession.Learner.ToLearner();
             paymentEvent.Ukprn = TestSession.Ukprn;
-            paymentEvent.OnProgrammeEarningType = fundingSourcePayment.Type;
+            paymentEvent.TransactionType = fundingSourcePayment.Type;
             paymentEvent.AmountDue = fundingSourcePayment.Amount;
             paymentEvent.JobId = TestSession.JobId;
             paymentEvent.EventTime = DateTimeOffset.UtcNow;

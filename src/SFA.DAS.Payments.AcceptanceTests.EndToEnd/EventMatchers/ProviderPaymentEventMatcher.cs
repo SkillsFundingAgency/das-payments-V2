@@ -5,6 +5,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
@@ -47,28 +48,54 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             {
                 var eventCollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod();
                 var deliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod();
-                var learner = new Learner { ReferenceNumber = testSession.GetLearner(providerPayment.LearnerId).LearnRefNumber};
-
-                var coFundedSfa = new SfaCoInvestedProviderPaymentEvent
+                var testLearner = testSession.GetLearner(providerPayment.LearnerId);
+                var learner = new Learner
                 {
-                    TransactionType = providerPayment.TransactionType,
-                    AmountDue = providerPayment.SfaCoFundedPayments,
-                    CollectionPeriod = eventCollectionPeriod,
-                    DeliveryPeriod = deliveryPeriod,
-                    Learner = learner
+                    ReferenceNumber = testLearner.LearnRefNumber,
+                    Uln = testLearner.Uln,
                 };
 
-                var coFundedEmp = new EmployerCoInvestedProviderPaymentEvent
+                if (providerPayment.SfaCoFundedPayments != 0)
                 {
-                    TransactionType = providerPayment.TransactionType,
-                    AmountDue = providerPayment.EmployerCoFundedPayments,
-                    CollectionPeriod = eventCollectionPeriod,
-                    DeliveryPeriod = deliveryPeriod,
-                    Learner = learner
-                };
+                    var coFundedSfa = new SfaCoInvestedProviderPaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.SfaCoFundedPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        FundingSourceType = FundingSourceType.CoInvestedSfa
+                    };
+                    expectedPayments.Add(coFundedSfa);
+                }
 
-                expectedPayments.Add(coFundedSfa);
-                expectedPayments.Add(coFundedEmp);
+                if (providerPayment.EmployerCoFundedPayments != 0)
+                {
+                    var coFundedEmp = new EmployerCoInvestedProviderPaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.EmployerCoFundedPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        FundingSourceType = FundingSourceType.CoInvestedEmployer
+                    };
+                    expectedPayments.Add(coFundedEmp);
+                }
+
+                if (providerPayment.SfaFullyFundedPayments != 0)
+                {
+                    var fullyFundedSfa = new FullyFundedSfaProviderPaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.SfaFullyFundedPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner
+                    };
+                    expectedPayments.Add(fullyFundedSfa);
+                }
+
             }
 
             return expectedPayments;
@@ -81,7 +108,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.AmountDue == actual.AmountDue &&
                    expected.CollectionPeriod.Name == actual.CollectionPeriod.Name &&
                    expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name &&
-                   expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber;
+                   expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
+                   expected.Learner.Uln == actual.Learner.Uln;
         }
     }
 }

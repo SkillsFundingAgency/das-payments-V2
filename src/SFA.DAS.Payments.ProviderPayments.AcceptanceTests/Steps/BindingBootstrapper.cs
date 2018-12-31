@@ -33,6 +33,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<ProviderPaymentEvent>());
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
+            routing.RouteToEndpoint(typeof(SfaFullyFundedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(SfaCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(EmployerCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPaymentEndPointName);
