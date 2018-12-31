@@ -41,6 +41,16 @@ Scenario Outline:Non-levy learner - on standard , Disadvantage Uplift 21-27% not
 		| Delivery Period           | On-Programme | Completion | Balancing |
 		| Aug/Current Academic Year | 1000         | 0          | 0         |
 		| Sep/Current Academic Year | 0            | 3000       | 0         |
+		| Oct/Current Academic Year | 0            | 0          | 0         | 
+		| Nov/Current Academic Year | 0            | 0          | 0         | 
+		| Dec/Current Academic Year | 0            | 0          | 0         | 
+		| Jan/Current Academic Year | 0            | 0          | 0         |
+		| Feb/Current Academic Year | 0            | 0          | 0         | 
+		| Mar/Current Academic Year | 0            | 0          | 0         | 
+		| Apr/Current Academic Year | 0            | 0          | 0         |
+		| May/Current Academic Year | 0            | 0          | 0         | 
+		| Jun/Current Academic Year | 0            | 0          | 0         | 
+		| Jul/Current Academic Year | 0            | 0          | 0         |
 
     And only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |

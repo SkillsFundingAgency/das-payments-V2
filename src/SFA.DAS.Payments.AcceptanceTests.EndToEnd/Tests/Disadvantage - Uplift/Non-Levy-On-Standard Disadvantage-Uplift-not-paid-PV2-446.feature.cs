@@ -316,6 +316,56 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "3000",
                         "0"});
+            table5.AddRow(new string[] {
+                        "Oct/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "Nov/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "Dec/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "Jan/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "Feb/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "Mar/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "Apr/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "May/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "Jun/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
+            table5.AddRow(new string[] {
+                        "Jul/Current Academic Year",
+                        "0",
+                        "0",
+                        "0"});
 #line 42
  testRunner.Then("the following learner earnings should be generated", ((string)(null)), table5, "Then ");
 #line hidden
@@ -337,7 +387,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "3000",
                         "0"});
-#line 47
+#line 57
     testRunner.And("only the following payments will be calculated", ((string)(null)), table6, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -358,7 +408,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "2700",
                         "300",
                         "Completion"});
-#line 51
+#line 61
  testRunner.And("only the following provider payments will be recorded", ((string)(null)), table7, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -379,7 +429,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "2700",
                         "300",
                         "Completion"});
-#line 55
+#line 65
  testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table8, "And ");
 #line hidden
             this.ScenarioCleanup();
