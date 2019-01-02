@@ -273,3 +273,4 @@ App.Debug.config
 **/ApplicationParameters/Local.1Node.xml
 **/ApplicationParameters/Local.5Node.xml
 *.bak
+*.feature.cs
