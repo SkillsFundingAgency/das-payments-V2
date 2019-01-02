@@ -138,10 +138,10 @@ this.FeatureBackground();
 #line 21
  testRunner.Given("a provider earnings job has already been recorded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 22
- testRunner.When("the final messages for the job are sucessfully processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("the final messages for the job are failed to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 23
  testRunner.Then("the job monitoring service should update the status of the job to show that it ha" +
-                    "s completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+                    "s completed with errors", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

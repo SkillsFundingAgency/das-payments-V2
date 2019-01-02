@@ -1,11 +1,11 @@
 ﻿using Autofac;
+using NServiceBus;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 
-namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Infrastructure.Ioc
+namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
 {
-    public class JobStatusModule: Module
+    public class JobsModule: Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -22,6 +22,8 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Infrastructure.Ioc
             builder.RegisterType<JobStatusService>()
                 .As<IJobStatusService>()
                 .InstancePerLifetimeScope();
+            //builder.RegisterBuildCallback(c =>
+            //    c.Resolve<EndpointConfiguration>().LimitMessageProcessingConcurrencyTo(1));
         }
     }
 }

@@ -135,6 +135,32 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             await MessageSession.Send(JobDetails).ConfigureAwait(false);
         }
 
+        [When(@"the final messages for the job are failed to be processed")]
+        public async Task WhenTheFinalMessagesForTheJobAreFailedToBeProcessed()
+        {
+            foreach (var generatedMessage in GeneratedMessages)
+            {
+                await MessageSession.Send(new RecordJobMessageProcessingStatus
+                {
+                    JobId = JobDetails.JobId,
+                    MessageName = generatedMessage.MessageName,
+                    EndTime = DateTimeOffset.UtcNow,
+                    Succeeded = false,
+                    Id = generatedMessage.MessageId
+                });
+            }
+        }
+
+        [Then(@"the job monitoring service should update the status of the job to show that it has completed with errors")]
+        public async Task ThenTheJobMonitoringServiceShouldUpdateTheStatusOfTheJobToShowThatItHasCompletedWithErrors()
+        {
+            await WaitForIt(() =>
+            {
+                return DataContext.Jobs.Any(j => j.Id == Job.Id && j.Status == JobStatus.CompletedWithErrors);
+            }, $"Status was not updated to Completed for job: {Job.Id}, Dc job id: {JobDetails.JobId}");
+        }
+
+
         [Then(@"the job monitoring service should record the job")]
         public async Task ThenTheJobMonitoringServiceShouldRecordTheJob()
         {

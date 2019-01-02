@@ -50,17 +50,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
         public async Task SaveNewProviderEarningsJob(JobModel jobDetails, ProviderEarningsJobModel providerEarningsJobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                Jobs.Add(jobDetails);
-                await SaveChangesAsync(cancellationToken);
-                providerEarningsJobDetails.Id = jobDetails.Id;
-                ProviderEarningsJobs.Add(providerEarningsJobDetails);
-                jobSteps.ForEach(step => step.JobId = jobDetails.Id);
-                JobSteps.AddRange(jobSteps);
-                await SaveChangesAsync(cancellationToken);
-                scope.Complete();
-            }
+            Jobs.Add(jobDetails);
+            await SaveChangesAsync(cancellationToken);
+            providerEarningsJobDetails.Id = jobDetails.Id;
+            ProviderEarningsJobs.Add(providerEarningsJobDetails);
+            jobSteps.ForEach(step => step.JobId = jobDetails.Id);
+            JobSteps.AddRange(jobSteps);
+            await SaveChangesAsync(cancellationToken);
         }
 
         public async Task<long> GetJobIdFromDcJobId(long dcJobId)
@@ -70,10 +66,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 .FirstOrDefaultAsync();
         }
 
-        public Task SaveJobSteps(List<JobStepModel> jobSteps)
+        public async Task SaveJobSteps(List<JobStepModel> jobSteps)
         {
-            jobSteps.AddRange(jobSteps.Where(step => step.Id == 0));
-            return SaveChangesAsync();
+            JobSteps.AddRange(jobSteps.Where(step => step.Id == 0));
+            await SaveChangesAsync();
         }
 
         public async Task<List<JobStepModel>> GetJobSteps(List<Guid> messageIds)
@@ -87,7 +83,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 .GroupBy(step => step.Status)
                 .Select(grp => new
                 {
-                    grp.Key, Count = grp.Count()
+                    grp.Key,
+                    Count = grp.Count()
                 })
                 .ToDictionaryAsync(item => item.Key, item => item.Count);
         }
@@ -95,7 +92,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         public async Task<DateTimeOffset> GetLastJobStepEndTime(long jobId)
         {
             var time = await JobSteps
-                .Where(step => step.JobId == jobId && step.EndTime!=null)
+                .Where(step => step.JobId == jobId && step.EndTime != null)
                 .Select(step => step.EndTime)
                 .OrderByDescending(endTime => endTime)
                 .FirstOrDefaultAsync();

@@ -30,7 +30,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             IJsonSerializationService serializationService,
             IEndpointInstanceFactory factory,
             IProviderEarningsJobStatusClientFactory jobStatusClientFactory
-            //IProviderEarningsJobStatusClient jobStatusClient
             )
         {
             this.paymentLogger = paymentLogger;
@@ -38,7 +37,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.serializationService = serializationService;
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
             this.jobStatusClientFactory = jobStatusClientFactory ?? throw new ArgumentNullException(nameof(jobStatusClientFactory));
-            //this.jobStatusClient = jobStatusClient ?? throw new ArgumentNullException(nameof(jobStatusClient));
         }
 
 

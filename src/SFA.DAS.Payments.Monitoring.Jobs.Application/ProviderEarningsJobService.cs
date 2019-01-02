@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 Status = JobStepStatus.Queued,
 
             }).ToList();
-            await dataContext.SaveNewProviderEarningsJob(jobDetails,providerEarningsJobDetails,jobSteps);
+            await dataContext.SaveNewProviderEarningsJob(jobDetails, providerEarningsJobDetails, jobSteps);
             logger.LogInfo($"Finished saving the job to the db.  Job id: {jobDetails.Id}, DC Job Id: {startedEvent.JobId}, Ukprn: {startedEvent.Ukprn}.");
         }
 
@@ -96,12 +96,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 jobStep.StartTime = generatedMessage.StartTime;
                 jobStep.ParentMessageId = jobMessageStatus.Id;
             }
+
             await dataContext.SaveJobSteps(jobSteps);
 
             if (!jobMessageStatus.GeneratedMessages.Any())
             {
                 logger.LogDebug($"No messages were generated as a result of processing this message therefore the job may have finished. Job: {jobId}.");
-                await jobsStatusService.JobStepsCompleted(jobMessageStatus.JobId);
+                await jobsStatusService.JobStepsCompleted(jobId);
             }
             logger.LogInfo($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
         }

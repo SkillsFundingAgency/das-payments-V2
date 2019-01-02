@@ -18,11 +18,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
 
         public override async Task Invoke(IIncomingLogicalMessageContext context, Func<Task> next)
         {
-            var eventIds = new List<GeneratedMessage>();
+            var generatedMessages = new List<GeneratedMessage>();
             var paymentMessage = context.Message.Instance as IPaymentsMessage;
             if (paymentMessage != null)
             {
-                context.Extensions.Set("event_ids", eventIds);
+                context.Extensions.Set(JobStatusBehaviourConstants.GeneratedMessagesKey, generatedMessages);
             }
 
             await next().ConfigureAwait(false);
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
             if (paymentMessage == null)
                 return;
             var jobStatusClient = factory.Create();
-            await jobStatusClient.ProcessedJobMessage(paymentMessage.JobId, context.GetMessageId(), eventIds)
+            await jobStatusClient.ProcessedJobMessage(paymentMessage.JobId, context.GetMessageId(), generatedMessages)
                 .ConfigureAwait(false);
         }
     }
