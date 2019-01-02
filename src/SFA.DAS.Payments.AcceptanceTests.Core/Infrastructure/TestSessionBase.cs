@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using Autofac;
+using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using TechTalk.SpecFlow;
 
@@ -26,6 +28,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var scope = context.Get<ILifetimeScope>("container_scope");
             context.Remove("container_scope");
             scope.Dispose();
+        }
+
+        protected static void LogTestSession(SpecFlowContext context)
+        {
+            var testSession = context.Get<TestSession>();
+            Trace.WriteLine("Finished scenario with:\n" +
+                              $"Ukprn: {testSession.Ukprn}\n" +
+                              $"Job ID: {testSession.JobId}\n" +
+                              $"Learners:\n" +
+                              $"\t{string.Join("\n\t", testSession.Learners)}");
         }
     }
 }
