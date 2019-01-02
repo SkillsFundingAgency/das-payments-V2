@@ -72,6 +72,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var messagingFactory = MessagingFactory.CreateFromConnectionString(Config.ServiceBusConnectionString);
+            
+            
             var receiver = await messagingFactory.CreateMessageReceiverAsync(Config.AcceptanceTestsEndpointName, ReceiveMode.ReceiveAndDelete);
             while (true)
             {

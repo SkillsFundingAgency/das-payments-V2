@@ -12,9 +12,9 @@ namespace SFA.DAS.Payments.Monitoring.JobStatus.Application.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new JobStatusDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+                    return new JobsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
                 })
-                .As<IJobStatusDataContext>()
+                .As<IJobsDataContext>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<ProviderEarningsJobService>()
                 .As<IProviderEarningsJobService>()

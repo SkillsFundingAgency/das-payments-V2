@@ -10,7 +10,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 {
-    public interface IJobStatusDataContext
+    public interface IJobsDataContext
     {
         Task SaveNewProviderEarningsJob(JobModel jobDetails, ProviderEarningsJobModel providerEarningsJobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken));
         Task<long> GetJobIdFromDcJobId(long dcJobId);
@@ -22,14 +22,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime);
     }
 
-    public class JobStatusDataContext : DbContext, IJobStatusDataContext
+    public class JobsDataContext : DbContext, IJobsDataContext
     {
         private readonly string connectionString;
         public virtual DbSet<JobModel> Jobs { get; set; }
-        public virtual DbSet<ProviderEarningsJobModel> ProviderEarnings { get; set; }
+        public virtual DbSet<ProviderEarningsJobModel> ProviderEarningsJobs { get; set; }
         public virtual DbSet<JobStepModel> JobSteps { get; set; }
 
-        public JobStatusDataContext(string connectionString)
+        public JobsDataContext(string connectionString)
         {
             this.connectionString = connectionString;
         }
@@ -55,9 +55,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 Jobs.Add(jobDetails);
                 await SaveChangesAsync(cancellationToken);
                 providerEarningsJobDetails.Id = jobDetails.Id;
-                ProviderEarnings.Add(providerEarningsJobDetails);
+                ProviderEarningsJobs.Add(providerEarningsJobDetails);
                 jobSteps.ForEach(step => step.JobId = jobDetails.Id);
-                jobSteps.AddRange(jobSteps);
+                JobSteps.AddRange(jobSteps);
                 await SaveChangesAsync(cancellationToken);
                 scope.Complete();
             }
@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
         public async Task<long> GetJobIdFromDcJobId(long dcJobId)
         {
-            return await ProviderEarnings.Where(providerEarnings => providerEarnings.DcJobId == dcJobId)
+            return await ProviderEarningsJobs.Where(providerEarnings => providerEarnings.DcJobId == dcJobId)
                 .Select(providerEarnings => providerEarnings.Id)
                 .FirstOrDefaultAsync();
         }

@@ -18,10 +18,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
     public class ProviderEarningsJobService : IProviderEarningsJobService
     {
         private readonly IPaymentLogger logger;
-        private readonly IJobStatusDataContext dataContext;
+        private readonly IJobsDataContext dataContext;
         private readonly IJobsStatusServiceFacade jobsStatusService;
 
-        public ProviderEarningsJobService(IPaymentLogger logger, IJobStatusDataContext dataContext, IJobsStatusServiceFacade jobsStatusService)
+        public ProviderEarningsJobService(IPaymentLogger logger, IJobsDataContext dataContext, IJobsStatusServiceFacade jobsStatusService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));

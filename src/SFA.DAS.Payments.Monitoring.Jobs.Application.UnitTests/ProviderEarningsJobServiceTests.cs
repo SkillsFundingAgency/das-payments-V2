@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 Status = JobStepStatus.Queued,
             };
             mocker = AutoMock.GetLoose();
-            var mockDataContext = mocker.Mock<IJobStatusDataContext>();
+            var mockDataContext = mocker.Mock<IJobsDataContext>();
             mockDataContext.Setup(x => x.GetJobIdFromDcJobId(It.IsAny<long>()))
                 .Returns(Task.FromResult<long>(99));
 
@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
             var service = mocker.Create<ProviderEarningsJobService>();
             await service.JobStarted(jobStarted);
-            mocker.Mock<IJobStatusDataContext>()
+            mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveNewProviderEarningsJob(
                     It.Is<JobModel>(job =>
                         job.StartTime == jobStarted.StartTime && job.Status == Data.Model.JobStatus.InProgress),
@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         public async Task Records_Status_Of_Completed_JobStep()
         {
             await JobStepCompleted();
-            mocker.Mock<IJobStatusDataContext>()
+            mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
                     list.Any(item =>
                         item.Id == jobStep.Id &&
@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         {
             jobSteps.Clear();
             await JobStepCompleted();
-            mocker.Mock<IJobStatusDataContext>()
+            mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
                     list.Any(item =>
                         item.Id == 0 &&
@@ -125,7 +125,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
             jobMessageStatus.GeneratedMessages.Add(generatedMessage);
             await JobStepCompleted();
-            mocker.Mock<IJobStatusDataContext>()
+            mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
                     list.Any(item =>
                         item.MessageId == generatedMessage.MessageId &&
@@ -154,7 +154,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 
             });
             await JobStepCompleted();
-            mocker.Mock<IJobStatusDataContext>()
+            mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
                     list.Any(item =>
                         item.ParentMessageId == jobMessageStatus.Id &&

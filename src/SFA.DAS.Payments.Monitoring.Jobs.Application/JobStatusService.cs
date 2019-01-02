@@ -14,10 +14,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
     public class JobStatusService : IJobStatusService
     {
-        private readonly IJobStatusDataContext dataContext;
+        private readonly IJobsDataContext dataContext;
         private readonly IPaymentLogger logger;
 
-        public JobStatusService(IJobStatusDataContext dataContext, IPaymentLogger logger)
+        public JobStatusService(IJobsDataContext dataContext, IPaymentLogger logger)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
