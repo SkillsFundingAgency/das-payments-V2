@@ -1,10 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
     public static class EnumHelper
     {
+        private static readonly HashSet<TransactionType> OnProgTypes = new HashSet<TransactionType>(Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<int>().Select(t => (TransactionType) t));
+        private static readonly HashSet<TransactionType> IncentiveTypes = new HashSet<TransactionType>(Enum.GetValues(typeof(IncentiveEarningType)).Cast<int>().Select(t => (TransactionType)t));
+        private static readonly HashSet<TransactionType> FunctionalSkillTypes = new HashSet<TransactionType>(Enum.GetValues(typeof(FunctionalSkillType)).Cast<int>().Select(t => (TransactionType)t));
+
+        public static bool IsOnProgType(TransactionType type)
+        {
+            return OnProgTypes.Contains(type);
+        }
+
+        public static bool IsIncentiveType(TransactionType type)
+        {
+            return IncentiveTypes.Contains(type);
+        }
+
+        public static bool IsFunctionalSkillType(TransactionType type)
+        {
+            return FunctionalSkillTypes.Contains(type);
+        }
+
         public static TransactionType ToTransactionType(string transactionType)
         {
             transactionType = transactionType.ToLower();
@@ -61,6 +84,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                     return "PriceEpisodeFirstDisadvantagePayment";
                 case TransactionType.SecondDisadvantagePayment:
                     return "PriceEpisodeSecondDisadvantagePayment";
+                case TransactionType.OnProgrammeMathsAndEnglish:
+                    return "MathEngOnProgPayment";
+                case TransactionType.BalancingMathsAndEnglish:
+                    return "MathEngBalPayment";
+
                 default:
                     throw new NotImplementedException($"Cannot get FM36 attribute name.  Unhandled transaction type: {transactionType}");
             }

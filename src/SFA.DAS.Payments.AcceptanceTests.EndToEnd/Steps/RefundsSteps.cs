@@ -3,6 +3,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,40 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var earnings = CreateEarnings(table);
             
             PreviousEarnings = earnings;
+
+            // for new style specs where no ILR specified
+            if (PreviousIlr == null)
+            {
+                PreviousIlr = new List<Training>();
+                foreach (var aim in TestSession.Learners.SelectMany(l => l.Aims).ToList())
+                {
+                    var firstPriceEpisode = aim.PriceEpisodes.First();
+
+                    var training = new Training
+                    {
+                        AimReference = aim.AimReference,
+                        AimSequenceNumber = aim.AimSequenceNumber,
+                        ActualDuration = aim.ActualDuration,
+                        //BalancingPayment = 
+                        CompletionStatus = aim.CompletionStatus.ToString(),
+                        ContractType = firstPriceEpisode.ContractType,
+                        FrameworkCode = aim.FrameworkCode,
+                        FundingLineType = aim.FundingLineType,
+                        LearnerId = aim.LearnerId,
+                        PathwayCode = aim.PathwayCode,
+                        PlannedDuration = aim.PlannedDuration,
+                        ProgrammeType = aim.ProgrammeType,
+                        SfaContributionPercentage = firstPriceEpisode.SfaContributionPercentage,
+                        StandardCode = aim.StandardCode,
+                        StartDate = aim.StartDate,
+                        TotalAssessmentPrice = firstPriceEpisode.TotalAssessmentPrice,
+                        TotalTrainingPrice = firstPriceEpisode.TotalTrainingPrice,
+                        Uln = TestSession.GetLearner(aim.LearnerId).Uln
+                    };
+
+                    PreviousIlr.Add(training);
+                }
+            }
         }
 
         [Given(@"the following provider payments had been generated")]
@@ -53,7 +88,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var learnerEarning =
                     PreviousEarnings.First(e => e.LearnerId == p.LearnerId && e.DeliveryPeriod == p.DeliveryPeriod);
                 return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, learnerEarning);
-            });
+            }).ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
             var currentHistory = await dataContext.Payment.Where(p => p.Ukprn == TestSession.Ukprn).ToListAsync();

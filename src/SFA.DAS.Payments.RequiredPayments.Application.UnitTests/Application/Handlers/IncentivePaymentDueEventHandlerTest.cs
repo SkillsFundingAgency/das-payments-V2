@@ -94,7 +94,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 DeliveryPeriod = new CalendarPeriod(2018, 9),
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
-                Type = IncentiveType.Balancing16To18FrameworkUplift
+                Type = IncentivePaymentType.Balancing16To18FrameworkUplift
             };
 
             var paymentHistoryEntities = new[] { new PaymentHistoryEntity() }; 
@@ -125,7 +125,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 DeliveryPeriod = new CalendarPeriod(2018, 9),
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
-                Type = IncentiveType.Completion16To18FrameworkUplift
+                Type = IncentivePaymentType.Completion16To18FrameworkUplift
             };
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];

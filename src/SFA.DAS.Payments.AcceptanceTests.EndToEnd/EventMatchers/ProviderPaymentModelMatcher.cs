@@ -34,7 +34,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<PaymentModel> GetActualEvents()
         {
             return dataContext.Payment.Where(p => p.JobId == testSession.JobId &&
-                                                  p.CollectionPeriod.Name == currentCollectionPeriodName).ToList();
+                                                  p.CollectionPeriod.Name == currentCollectionPeriodName &&
+                                                  p.Ukprn == testSession.Ukprn).ToList();
         }
 
         protected override IList<PaymentModel> GetExpectedEvents()
@@ -45,19 +46,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             {
                 if (paymentInfo.SfaCoFundedPayments != 0)
                 {
-                    var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa, paymentInfo.SfaCoFundedPayments);
+                    var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa, paymentInfo.SfaCoFundedPayments, testSession.JobId);
                     expectedPayments.Add(coFundedSfa);
                 }
 
                 if (paymentInfo.EmployerCoFundedPayments != 0)
                 {
-                    var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments);
+                    var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId);
                     expectedPayments.Add(coFundedEmp);
                 }
 
                 if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
-                    var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments);
+                    var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId);
                     expectedPayments.Add(fullyFundedSfa);
                 }
             }
@@ -71,10 +72,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.ContractType == actual.ContractType &&
                    expected.FundingSource == actual.FundingSource &&
                    expected.Amount == actual.Amount &&
-                   expected.LearnerReferenceNumber == actual.LearnerReferenceNumber;
+                   expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
+                   expected.Ukprn == actual.Ukprn &&
+                   expected.JobId == actual.JobId;
+
         }
 
-        private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn, FundingSourceType fundingSource, decimal amount)
+        private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn, FundingSourceType fundingSource, decimal amount, long jobId)
         {
             return new PaymentModel
             {
@@ -85,7 +89,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 ContractType = contractType,
                 Amount = amount,
                 FundingSource = fundingSource,
-                LearnerReferenceNumber = testSession.GetLearner(paymentInfo.LearnerId).LearnRefNumber
+                LearnerReferenceNumber = testSession.GetLearner(paymentInfo.LearnerId).LearnRefNumber,
+                JobId = jobId
             };
         }
     }

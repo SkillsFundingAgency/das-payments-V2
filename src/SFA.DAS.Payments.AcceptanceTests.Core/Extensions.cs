@@ -172,7 +172,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         public static string GetCollectionYear(this CalendarPeriod calendarPeriod)
         {
-            return calendarPeriod.Name.Split('-').FirstOrDefault();
+            return calendarPeriod.AcademicYear;
         }
 
         public static decimal ToPercent(this string stringPercent)

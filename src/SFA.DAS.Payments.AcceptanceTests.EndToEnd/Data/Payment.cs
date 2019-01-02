@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
@@ -11,7 +10,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public decimal OnProgramme { get; set; }
         public decimal Completion { get; set; }
         public decimal Balancing { get; set; }
-
-        public IDictionary<IncentiveType, decimal> IncentiveValues { get; set; } = new Dictionary<IncentiveType, decimal>();
+        public IDictionary<IncentivePaymentType, decimal> IncentiveValues { get; set; } = new Dictionary<IncentivePaymentType, decimal>();
     }
 }

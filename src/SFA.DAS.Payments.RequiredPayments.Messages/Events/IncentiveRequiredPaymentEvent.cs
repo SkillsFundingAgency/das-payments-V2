@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
     public class IncentiveRequiredPaymentEvent: RequiredPaymentEvent
     {
-        public IncentiveType Type { get; set; }
+        public IncentivePaymentType Type { get; set; }
         public ContractType ContractType { get; set; }
     }
 }

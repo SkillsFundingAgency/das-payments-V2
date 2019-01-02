@@ -249,7 +249,7 @@
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2PaymentDueEventHandler.cs" />
-    <Compile Include="Handlers\FunctionalSkillEarningsEventHandler.cs" />
+    <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
@@ -257,6 +257,11 @@
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
+    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy learner, provider changes aim sequence numbers PV2-393.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -413,6 +418,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>

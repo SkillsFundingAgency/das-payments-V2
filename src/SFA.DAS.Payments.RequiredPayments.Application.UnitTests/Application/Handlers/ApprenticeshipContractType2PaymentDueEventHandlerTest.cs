@@ -177,7 +177,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                     PriceEpisodeIdentifier = "2",
                     CollectionPeriod = new CalendarPeriod(2018, 9).Name,
                     DeliveryPeriod = new  CalendarPeriod(2018, 9).Name,
-                    TransactionType = (int)IncentiveType.Balancing16To18FrameworkUplift,
+                    TransactionType = (int)IncentiveEarningType.Balancing16To18FrameworkUplift,
                     Ukprn = 1,
                     LearnAimReference = paymentDue.LearningAim.Reference,
                     LearnerReferenceNumber = paymentDue.Learner.ReferenceNumber,

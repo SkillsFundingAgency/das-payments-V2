@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using FastMember;
 using SFA.DAS.Payments.Model.Core;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -8,6 +9,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public static class MappingExtensions
     {
+        private static readonly TypeAccessor PeriodAccessor = TypeAccessor.Create(typeof(PriceEpisodePeriodisedValues));
+
+        public static decimal? GetPeriodValue(this PriceEpisodePeriodisedValues periodisedValues, int period)
+        {
+            return (decimal?) PeriodAccessor[periodisedValues, "Period" + period];
+        }
+
+        public static bool IsMainAim(this LearningDelivery learningDelivery)
+        {
+            return learningDelivery.LearningDeliveryValues.LearnAimRef == "ZPROG001";
+        }
+
         public static void AddPeriodValue(this List<EarningPeriod> earningPeriods, decimal? periodValue, byte period, string priceEpisodeIdentifier)
         {
             earningPeriods.Add(new EarningPeriod { Period = period, PriceEpisodeIdentifier = priceEpisodeIdentifier, Amount = periodValue ?? 0 });
@@ -31,12 +44,31 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return result;
         }
 
-        public static PriceEpisode GetLatestPriceEpisode(this List<PriceEpisode> priceEpisodes)
+        public static PriceEpisode GetLatestOnProgPriceEpisode(this List<PriceEpisode> priceEpisodes)
         {
             return priceEpisodes
-                .Where(priceEpisode => priceEpisode.PriceEpisodeValues?.EpisodeStartDate.HasValue ?? false)
+                .Where(IsOnProgPriceEpisode)
                 .OrderByDescending(priceEpisode => priceEpisode.PriceEpisodeValues?.EpisodeStartDate)
                 .FirstOrDefault();
+        }
+
+        private static readonly HashSet<string> OnProgAttributeNames = new HashSet<string>(new[]
+        {
+            "PriceEpisodeBalancePayment", "PriceEpisodeCompletionPayment", "PriceEpisodeOnProgPayment"
+        });
+
+        private static bool IsOnProgPriceEpisode(PriceEpisode priceEpisode)
+        {
+            if (priceEpisode.PriceEpisodeValues?.EpisodeStartDate == null)
+                return false;
+
+            if (priceEpisode.PriceEpisodePeriodisedValues == null)
+                return false;
+
+            if (priceEpisode.PriceEpisodePeriodisedValues == null)
+                return false;
+
+            return priceEpisode.PriceEpisodePeriodisedValues.Any(p => OnProgAttributeNames.Contains(p.AttributeName));
         }
     }
 }
