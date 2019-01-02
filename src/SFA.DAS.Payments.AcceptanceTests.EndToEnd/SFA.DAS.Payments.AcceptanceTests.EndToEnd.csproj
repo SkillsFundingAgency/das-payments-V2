@@ -347,6 +347,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Change start date forward within calendar month - PV2-282.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Learning Support\Non-Levy Learner requires learning support - PV2-488.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy Learner requires learning support - PV2-488.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Learning Support\Non-Levy Learner requires learning support - PV2-489.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy Learner requires learning support - PV2-489.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Refunds\Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature.cs">
       <DependentUpon>Non-levy learner provider retrospectively notifies a withdrawal - PV2-251.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -489,6 +499,14 @@
     <None Include="Tests\Non-Levy Learner - Learner Change of Circumstances\Change start date forward within calendar month - PV2-282.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Change start date forward within calendar month - PV2-282.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Learning Support\Non-Levy Learner requires learning support - PV2-489.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy Learner requires learning support - PV2-489.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Learning Support\Non-Levy Learner requires learning support - PV2-488.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy Learner requires learning support - PV2-488.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Refunds\Non-levy standard learner, payments made then price is changed retrospectively from beginning PV2-258.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
