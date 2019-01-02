@@ -13,6 +13,31 @@ using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
+    public static class SfaContributionPercentageExtensions
+    {
+        private static readonly TypeAccessor PeriodAccessor = TypeAccessor.Create(typeof(PriceEpisodePeriodisedValues));
+
+        public static decimal? CalculateSfaContributionPercentage(this List<PriceEpisode> source, int period,
+            string priceEpisodeIdentifier)
+        {
+            if (priceEpisodeIdentifier == null)
+            {
+                return null;
+            }
+            var priceEpisode = source.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier);
+            var value = priceEpisode.PriceEpisodePeriodisedValues
+                .Where(x => x.AttributeName == "PriceEpisodeSFAContribPct")
+                .Select(p => (decimal?)PeriodAccessor[p, "Period" + period])
+                .SingleOrDefault();
+
+            if (value == null)
+            {
+                value = priceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct;
+            }
+
+            return value;
+        }
+    }
 
     public class OnProgrammeEarningValueResolver : IValueResolver<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent, ReadOnlyCollection<OnProgrammeEarning>>
     {
@@ -40,7 +65,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             var allPeriods = source.PriceEpisodes.Select(p => p.PriceEpisodePeriodisedValues.SingleOrDefault(v => v.AttributeName == attributeName))
                 .Where(p => p != null)
                 .ToArray();
-
+            
             var periods = new EarningPeriod[12];
 
             for (byte i = 1; i <= 12; i++)
@@ -48,12 +73,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 var periodValues = allPeriods.Select(p => (decimal?) periodAccessor[p, "Period" + i]).ToArray();
                 var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
                 var priceEpisodeIdentifier = periodValue == 0 ? null : source.PriceEpisodes[periodValues.IndexOf(periodValue)].PriceEpisodeIdentifier;
+                var sfaContributionPercentage = source.PriceEpisodes.CalculateSfaContributionPercentage(i, priceEpisodeIdentifier);
 
                 periods[i - 1] = new EarningPeriod
                 {
                     Period = i,
                     Amount = periodValue,
-                    PriceEpisodeIdentifier = priceEpisodeIdentifier
+                    PriceEpisodeIdentifier = priceEpisodeIdentifier,
+                    SfaContributionPercentage = sfaContributionPercentage,
                 };
             }
 

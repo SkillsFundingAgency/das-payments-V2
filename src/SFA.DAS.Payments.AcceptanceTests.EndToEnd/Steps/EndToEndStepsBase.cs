@@ -216,6 +216,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var aimPeriodisedValues = new List<PriceEpisodePeriodisedValues>();
 
+            PriceEpisodePeriodisedValues sfaContributionPeriodisedValue = null;
+
+            if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
+            {
+                sfaContributionPeriodisedValue = new PriceEpisodePeriodisedValues { AttributeName = "PriceEpisodeSFAContribPct", };
+                aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
+            }
+            
             foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
                                                         e.AimSequenceNumber == aim.AimSequenceNumber))
             {
@@ -231,8 +239,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     SetPeriodValue(period, periodisedValues, earningValue.Value);
                 }
-            }
 
+                if (sfaContributionPeriodisedValue != null)
+                {
+                    SetPeriodValue(period, sfaContributionPeriodisedValue, earning.SfaContributionPercentage.ToPercent());
+                }
+            }
+            
             var priceEpisodePrefix = (aim.StandardCode != 0)
                 ? $"{aim.ProgrammeType}-{aim.StandardCode}"
                 : $"{aim.ProgrammeType}-{aim.FrameworkCode}-{aim.PathwayCode}";

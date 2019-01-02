@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
                     LearningAim = learningAim.Clone(),
                     Learner = learner.Clone(),
                     Type = onProgEarning.Type,
-                    SfaContributionPercentage = sfaContributionPercentage,
+                    SfaContributionPercentage = period.SfaContributionPercentage ?? sfaContributionPercentage,
                     AmountDue = period.Amount,
                     CollectionPeriod = collectionPeriod,
                     EventTime = DateTimeOffset.UtcNow,
