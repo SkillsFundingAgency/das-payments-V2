@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var expectedPayments = new List<ProviderPaymentEvent>();
 
-            foreach (var providerPayment in paymentSpec.Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name))
+            foreach (var providerPayment in paymentSpec.Where(p => p.CollectionPeriod.ToCalendarPeriod().Name == collectionPeriod.Name))
             {
                 var eventCollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod();
                 var deliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod();

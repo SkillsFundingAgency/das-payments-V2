@@ -133,7 +133,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>()
-                .Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == CurrentCollectionPeriod.Name)
+                .Where(p => p.CollectionPeriod.ToCalendarPeriod().Name == CurrentCollectionPeriod.Name)
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();

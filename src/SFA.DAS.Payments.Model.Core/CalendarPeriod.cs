@@ -16,8 +16,8 @@ namespace SFA.DAS.Payments.Model.Core
             set => FromName(value);
         }
 
-        public CalendarPeriod() 
-            : this((short) DateTime.UtcNow.Year, (byte) DateTime.UtcNow.Month)
+        public CalendarPeriod()
+            : this((short)DateTime.UtcNow.Year, (byte)DateTime.UtcNow.Month)
         {
         }
 
@@ -82,10 +82,10 @@ namespace SFA.DAS.Payments.Model.Core
 
             var increment = period < 6 ? 0 : 1;
 
-            Year = (short) (2000 + year + increment);
-            Month = (byte) (period < 6 ? period + 7 : period - 5);
+            Year = (short)(2000 + year + increment);
+            Month = (byte)(period < 6 ? period + 7 : period - 5);
             name = newName;
-            Period = (byte) period;
+            Period = (byte)period;
             AcademicYear = newName.Substring(0, 4);
         }
 
@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.Model.Core
 
         public CalendarPeriod Clone()
         {
-            return (CalendarPeriod) MemberwiseClone();
+            return (CalendarPeriod)MemberwiseClone();
         }
 
         public override int GetHashCode()
