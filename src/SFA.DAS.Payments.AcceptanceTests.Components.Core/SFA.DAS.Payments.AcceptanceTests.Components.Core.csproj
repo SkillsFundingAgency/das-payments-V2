@@ -90,17 +90,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <TransformOnBuild>true</TransformOnBuild>
-    </None>
-    <None Include="App.Debug.config">
-      <DependentUpon>App.config</DependentUpon>
-      <IsTransformFile>true</IsTransformFile>
-    </None>
-    <None Include="App.Release.config">
-      <DependentUpon>App.config</DependentUpon>
-      <IsTransformFile>true</IsTransformFile>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
