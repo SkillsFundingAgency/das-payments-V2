@@ -98,7 +98,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Funding Line Type",
                         "SFA Contribution Percentage"});
             table1.AddRow(new string[] {
-                        "06/Sep/Last Academic Year",
+                        "06/Aug/Last Academic Year",
                         "12 months",
                         "15000",
                         "06/Aug/Last Academic Year",
@@ -324,7 +324,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "06/Aug/Last Academic Year",
                         "12 months",
-                        "completed",
+                        "continuing",
                         "Act2",
                         "1",
                         "ZPROG001",
@@ -335,7 +335,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "90%"});
 #line 39
     testRunner.But("the Provider now changes the Learner details as follows", ((string)(null)), table4, "But ");
-#line 42
+#line 43
  testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -346,14 +346,14 @@ this.ScenarioInitialize(scenarioInfo);
                         "SecondDisadvantagePayment"});
             table5.AddRow(new string[] {
                         "Aug/Current Academic Year",
-                        "1000",
+                        "0",
                         "0",
                         "0",
                         "150"});
             table5.AddRow(new string[] {
                         "Sep/Current Academic Year",
                         "0",
-                        "3000",
+                        "0",
                         "0",
                         "0"});
             table5.AddRow(new string[] {
@@ -416,7 +416,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "0"});
-#line 43
+#line 45
  testRunner.Then("the following learner earnings should be generated", ((string)(null)), table5, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -429,18 +429,11 @@ this.ScenarioInitialize(scenarioInfo);
             table6.AddRow(new string[] {
                         "R01/Current Academic Year",
                         "Aug/Current Academic Year",
-                        "1000",
+                        "0",
                         "0",
                         "0",
                         "150"});
-            table6.AddRow(new string[] {
-                        "R02/Current Academic Year",
-                        "Sep/Current Academic Year",
-                        "0",
-                        "3000",
-                        "0",
-                        "0"});
-#line 58
+#line 60
     testRunner.And("only the following payments will be calculated", ((string)(null)), table6, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -453,25 +446,11 @@ this.ScenarioInitialize(scenarioInfo);
             table7.AddRow(new string[] {
                         "R01/Current Academic Year",
                         "Aug/Current Academic Year",
-                        "900",
-                        "100",
-                        "0",
-                        "Learning"});
-            table7.AddRow(new string[] {
-                        "R01/Current Academic Year",
-                        "Aug/Current Academic Year",
                         "0",
                         "0",
                         "150",
                         "SecondDisadvantagePayment"});
-            table7.AddRow(new string[] {
-                        "R02/Current Academic Year",
-                        "Sep/Current Academic Year",
-                        "2700",
-                        "300",
-                        "0",
-                        "Completion"});
-#line 62
+#line 64
  testRunner.And("only the following provider payments will be recorded", ((string)(null)), table7, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -484,25 +463,11 @@ this.ScenarioInitialize(scenarioInfo);
             table8.AddRow(new string[] {
                         "R01/Current Academic Year",
                         "Aug/Current Academic Year",
-                        "900",
-                        "100",
-                        "0",
-                        "Learning"});
-            table8.AddRow(new string[] {
-                        "R01/Current Academic Year",
-                        "Aug/Current Academic Year",
                         "0",
                         "0",
                         "150",
                         "SecondDisadvantagePayment"});
-            table8.AddRow(new string[] {
-                        "R02/Current Academic Year",
-                        "Sep/Current Academic Year",
-                        "2700",
-                        "300",
-                        "0",
-                        "Completion"});
-#line 67
+#line 68
  testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table8, "And ");
 #line hidden
             this.ScenarioCleanup();

@@ -35,12 +35,12 @@ Scenario Outline:Non-levy learner - on standard , Disadvantage Uplift 1-10% not 
 
     But the Provider now changes the Learner details as follows
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 06/Aug/Last Academic Year | 12 months        | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 20             | 1            | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| 06/Aug/Last Academic Year | 12 months        | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 12 months       | continuing        | Act2          | 1                   | ZPROG001      | 593            | 20             | 1            | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing |
-		| Aug/Current Academic Year | 1000         | 0          | 0         |
-		| Sep/Current Academic Year | 0            | 3000       | 0         |
+		| Aug/Current Academic Year | 0            | 0          | 0         |
+		| Sep/Current Academic Year | 0            | 0          | 0         |
 		| Oct/Current Academic Year | 0            | 0          | 0         | 
 		| Nov/Current Academic Year | 0            | 0          | 0         | 
 		| Dec/Current Academic Year | 0            | 0          | 0         | 
@@ -52,18 +52,10 @@ Scenario Outline:Non-levy learner - on standard , Disadvantage Uplift 1-10% not 
 		| Jun/Current Academic Year | 0            | 0          | 0         |
 		| Jul/Current Academic Year | 0            | 0          | 0         |
 
-    And only the following payments will be calculated
-		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 0            | 3000       | 0         |
-	And only the following provider payments will be recorded
-		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments |Transaction Type    |
-		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         |Learning            |
-		| R02/Current Academic Year | Sep/Current Academic Year | 2700                   | 300                         |Completion          |
-	And at month end only the following provider payments will be generated
-		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments |Transaction Type    |
-		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         |Learning            |
-		| R02/Current Academic Year | Sep/Current Academic Year | 2700                   | 300                         |Completion          |      
+    And no payments will be calculated
+	And no provider payments will be recorded
+	And at month end no provider payments will be generated
+	
 	Examples:
         | Collection_Period         |
 		| R01/Current Academic Year |

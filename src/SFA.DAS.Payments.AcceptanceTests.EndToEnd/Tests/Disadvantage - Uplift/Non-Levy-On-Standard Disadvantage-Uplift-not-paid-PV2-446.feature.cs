@@ -97,7 +97,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Funding Line Type",
                         "SFA Contribution Percentage"});
             table1.AddRow(new string[] {
-                        "06/Sep/Last Academic Year",
+                        "06/Aug/Last Academic Year",
                         "12 months",
                         "15000",
                         "06/Aug/Last Academic Year",
@@ -288,7 +288,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "06/Aug/Last Academic Year",
                         "12 months",
-                        "completed",
+                        "continuing",
                         "Act2",
                         "1",
                         "ZPROG001",
@@ -308,13 +308,13 @@ this.ScenarioInitialize(scenarioInfo);
                         "Balancing"});
             table5.AddRow(new string[] {
                         "Aug/Current Academic Year",
-                        "1000",
+                        "0",
                         "0",
                         "0"});
             table5.AddRow(new string[] {
                         "Sep/Current Academic Year",
                         "0",
-                        "3000",
+                        "0",
                         "0"});
             table5.AddRow(new string[] {
                         "Oct/Current Academic Year",
@@ -368,69 +368,12 @@ this.ScenarioInitialize(scenarioInfo);
                         "0"});
 #line 42
  testRunner.Then("the following learner earnings should be generated", ((string)(null)), table5, "Then ");
-#line hidden
-            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Collection Period",
-                        "Delivery Period",
-                        "On-Programme",
-                        "Completion",
-                        "Balancing"});
-            table6.AddRow(new string[] {
-                        "R01/Current Academic Year",
-                        "Aug/Current Academic Year",
-                        "1000",
-                        "0",
-                        "0"});
-            table6.AddRow(new string[] {
-                        "R02/Current Academic Year",
-                        "Sep/Current Academic Year",
-                        "0",
-                        "3000",
-                        "0"});
 #line 57
-    testRunner.And("only the following payments will be calculated", ((string)(null)), table6, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Collection Period",
-                        "Delivery Period",
-                        "SFA Co-Funded Payments",
-                        "Employer Co-Funded Payments",
-                        "Transaction Type"});
-            table7.AddRow(new string[] {
-                        "R01/Current Academic Year",
-                        "Aug/Current Academic Year",
-                        "900",
-                        "100",
-                        "Learning"});
-            table7.AddRow(new string[] {
-                        "R02/Current Academic Year",
-                        "Sep/Current Academic Year",
-                        "2700",
-                        "300",
-                        "Completion"});
-#line 61
- testRunner.And("only the following provider payments will be recorded", ((string)(null)), table7, "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Collection Period",
-                        "Delivery Period",
-                        "SFA Co-Funded Payments",
-                        "Employer Co-Funded Payments",
-                        "Transaction Type"});
-            table8.AddRow(new string[] {
-                        "R01/Current Academic Year",
-                        "Aug/Current Academic Year",
-                        "900",
-                        "100",
-                        "Learning"});
-            table8.AddRow(new string[] {
-                        "R02/Current Academic Year",
-                        "Sep/Current Academic Year",
-                        "2700",
-                        "300",
-                        "Completion"});
-#line 65
- testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table8, "And ");
+    testRunner.And("no payments will be calculated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 58
+ testRunner.And("no provider payments will be recorded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 59
+ testRunner.And("at month end no provider payments will be generated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }
