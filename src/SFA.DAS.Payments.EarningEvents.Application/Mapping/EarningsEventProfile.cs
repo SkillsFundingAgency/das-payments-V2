@@ -39,9 +39,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>();
 
             CreateMap<IntermediateLearningAim, FunctionalSkillEarningsEvent>()
-                .Ignore(dest => dest.Earnings)
-                ;
-                
+                .ForMember(destinationMember => destinationMember.Earnings, opt => opt.ResolveUsing<FunctionalSkillsEarningValueResolver>());
+
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.ULN));

@@ -13,29 +13,29 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     {
 
         // ReSharper disable once InconsistentNaming
-        private static string IncentiveEarningTypeToFM36AttributeName(IncentiveType incentiveEarningType)
+        private static string IncentiveEarningTypeToFM36AttributeName(IncentiveEarningType incentiveEarningType)
         {
             switch (incentiveEarningType)
             {
-                case IncentiveType.First16To18EmployerIncentive:
+                case IncentiveEarningType.First16To18EmployerIncentive:
                     return "PriceEpisodeFirstEmp1618Pay";
-                case IncentiveType.First16To18ProviderIncentive:
+                case IncentiveEarningType.First16To18ProviderIncentive:
                     return "PriceEpisodeFirstProv1618Pay";
-                case IncentiveType.Second16To18EmployerIncentive:
+                case IncentiveEarningType.Second16To18EmployerIncentive:
                     return "PriceEpisodeSecondEmp1618Pay";
-                case IncentiveType.Second16To18ProviderIncentive:
+                case IncentiveEarningType.Second16To18ProviderIncentive:
                     return "PriceEpisodeSecondProv1618Pay";
-                case IncentiveType.OnProgramme16To18FrameworkUplift:
+                case IncentiveEarningType.OnProgramme16To18FrameworkUplift:
                     return "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment";
-                case IncentiveType.Completion16To18FrameworkUplift:
+                case IncentiveEarningType.Completion16To18FrameworkUplift:
                     return "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment";
-                case IncentiveType.Balancing16To18FrameworkUplift:
+                case IncentiveEarningType.Balancing16To18FrameworkUplift:
                     return "PriceEpisodeApplic1618FrameworkUpliftBalancing";
-                case IncentiveType.FirstDisadvantagePayment:
+                case IncentiveEarningType.FirstDisadvantagePayment:
                     return "PriceEpisodeFirstDisadvantagePayment";
-                case IncentiveType.SecondDisadvantagePayment:
+                case IncentiveEarningType.SecondDisadvantagePayment:
                     return "PriceEpisodeSecondDisadvantagePayment";
-                case IncentiveType.LearningSupport:
+                case IncentiveEarningType.LearningSupport:
                     return "PriceEpisodeLSFCash"; //TODO: Get definitive answer from Khush/David Young
 
                 default :
@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             }
         }
 
-        private IncentiveEarning CreateIncentiveEarning(FM36Learner source, IncentiveType incentiveType)
+        private IncentiveEarning CreateIncentiveEarning(FM36Learner source, IncentiveEarningType incentiveType)
         {
             var result = new IncentiveEarning
             {
@@ -62,18 +62,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return result;
         }
 
-        private static readonly IncentiveType[] IncentiveTypes =
+        private static readonly IncentiveEarningType[] IncentiveTypes =
         {
-            IncentiveType.First16To18EmployerIncentive,
-            IncentiveType.First16To18ProviderIncentive,
-            IncentiveType.Second16To18EmployerIncentive,
-            IncentiveType.Second16To18ProviderIncentive,
-            IncentiveType.OnProgramme16To18FrameworkUplift,
-            IncentiveType.Completion16To18FrameworkUplift,
-            IncentiveType.Balancing16To18FrameworkUplift,
-            IncentiveType.FirstDisadvantagePayment,
-            IncentiveType.SecondDisadvantagePayment,
-            IncentiveType.LearningSupport
+            IncentiveEarningType.First16To18EmployerIncentive,
+            IncentiveEarningType.First16To18ProviderIncentive,
+            IncentiveEarningType.Second16To18EmployerIncentive,
+            IncentiveEarningType.Second16To18ProviderIncentive,
+            IncentiveEarningType.OnProgramme16To18FrameworkUplift,
+            IncentiveEarningType.Completion16To18FrameworkUplift,
+            IncentiveEarningType.Balancing16To18FrameworkUplift,
+            IncentiveEarningType.FirstDisadvantagePayment,
+            IncentiveEarningType.SecondDisadvantagePayment,
+            IncentiveEarningType.LearningSupport
         };
 
         public ReadOnlyCollection<IncentiveEarning> Resolve(IntermediateLearningAim source, ApprenticeshipContractTypeEarningsEvent destination, ReadOnlyCollection<IncentiveEarning> destMember, ResolutionContext context)

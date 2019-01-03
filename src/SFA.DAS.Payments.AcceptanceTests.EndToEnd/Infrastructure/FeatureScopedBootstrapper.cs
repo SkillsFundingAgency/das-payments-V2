@@ -70,5 +70,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             var testSession = context.Get<TestSession>();
             testSession.CompleteScenario();
         }
+
+        [AfterScenario]
+        public static void AfterScenarioLogger(FeatureContext context)
+        {
+            LogTestSession(context);
+        }
     }
 }

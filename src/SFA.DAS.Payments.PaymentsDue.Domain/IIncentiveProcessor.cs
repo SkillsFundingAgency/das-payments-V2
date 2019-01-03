@@ -8,8 +8,13 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
     public interface IIncentiveProcessor
     {
-        IncentivePaymentDueEvent[] HandleIncentiveEarnings(long ukprn, long jobId,
-            IncentiveEarning incentiveEarning, CalendarPeriod collectionPeriod, Learner learner,
-            LearningAim learningAim, decimal sfaContributionPercentage, DateTime ilrSubmissionDate, ContractType contractType);
+        IncentivePaymentDueEvent[] HandleIncentiveEarnings(
+            Submission submission,
+            IncentiveEarning incentiveEarning,
+            Learner learner,
+            LearningAim learningAim,
+            decimal sfaContributionPercentage,
+            ContractType contractType
+        );
     }
 }

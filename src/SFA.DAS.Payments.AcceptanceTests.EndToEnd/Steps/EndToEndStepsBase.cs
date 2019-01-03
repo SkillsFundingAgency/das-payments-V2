@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected List<Training> PreviousIlr
         {
-            get => Get<List<Training>>("previous_training");
+            get => !Context.TryGetValue<List<Training>>("previous_training", out var previousIlr) ? null : previousIlr;
             set => Set(value, "previous_training");
         }
 
@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             Console.WriteLine($"Current collection period name is: {period.Name}.");
             CurrentCollectionPeriod = period;
             CollectionPeriod = CurrentCollectionPeriod.Period;
-            CollectionYear = CurrentCollectionPeriod.Name.Split('-').FirstOrDefault();
+            CollectionYear = CurrentCollectionPeriod.AcademicYear;
         }
 
         protected void AddTestLearners(List<Training> training)
@@ -121,7 +121,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected void AddTestAims(IEnumerable<Aim> aims)
+        protected void AddTestAims(IList<Aim> aims)
         {
             if (TestSession.AtLeastOneScenarioCompleted)
             {
@@ -135,6 +135,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     throw new Exception("There is an aim without a matching learner");
                 }
+
+                // replace aim if exists but only if it was added earlier
+                var existingAim = learner.Aims.FirstOrDefault(a => a.AimReference == aim.AimReference);
+                if (existingAim != null && !aims.Contains(existingAim))
+                    learner.Aims.Remove(existingAim);
+
                 learner.Aims.Add(aim);
             }
         }
@@ -167,16 +173,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ContractType = learnerTraining.ContractType,
                 PriceEpisodeIdentifier = "pe-1",
                 FundingSource = fundingSourceType,
-                LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
+                LearningAimPathwayCode = learnerTraining.PathwayCode,
                 LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
                 LearningAimReference = learnerTraining.AimReference,
-                LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
+                LearningAimStandardCode = learnerTraining.StandardCode,
                 IlrSubmissionDateTime = submissionTime,
                 ExternalId = Guid.NewGuid(),
                 Amount = amount,
                 LearningAimFundingLineType = learnerTraining.FundingLineType,
                 LearnerUln = providerPayment.Uln,
-                LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
+                LearningAimFrameworkCode = learnerTraining.FrameworkCode,
                 LearningAimProgrammeType = learnerTraining.ProgrammeType
             };
         }
@@ -429,7 +435,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var payments = table.CreateSet<Payment>().ToList();
 
-            for (var i = 0; i < table.RowCount-1; i++)
+            for (var i = 0; i < table.RowCount; i++)
             {
                 var tableRow = table.Rows[i];
                 var payment = payments[i];
@@ -438,7 +444,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     var name = headerCell.Replace(" ", null).Replace("-", null);
 
-                    if (!Enum.TryParse<IncentiveType>(name, true, out var transactionType))
+                    if (!Enum.TryParse<IncentivePaymentType>(name, true, out var transactionType))
                         continue;
 
                     if (!decimal.TryParse(tableRow[headerCell], out var amount))

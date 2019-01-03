@@ -9,7 +9,6 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -25,9 +24,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly CalendarPeriod collectionPeriod;
         private readonly IList<Earning> earningSpecs;
         private readonly IList<FM36Learner> learnerSpecs;
-        private readonly TransactionType[] incentiveTypes;
-        private readonly TransactionType[] onProgTypes;
-        private readonly TransactionType[] functionalSkillTypes;
 
         public EarningEventMatcher(IList<Earning> earningSpecs, TestSession testSession, CalendarPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
         {
@@ -35,10 +31,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             this.testSession = testSession;
             this.collectionPeriod = collectionPeriod;
             this.learnerSpecs = learnerSpecs;
-
-            incentiveTypes = Enum.GetValues(typeof(IncentiveType)).Cast<IncentiveType>().Select(x => (TransactionType)x).ToArray();
-            onProgTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<OnProgrammeEarningType>().Select(x => (TransactionType)x).ToArray();
-            functionalSkillTypes = Enum.GetValues(typeof(FunctionalSkillType)).Cast<FunctionalSkillType>().Select(x => (TransactionType)x).ToArray();
         }
 
         protected override IList<EarningEvent> GetActualEvents()
@@ -89,11 +81,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
                     var fullListOfTransactionTypes = aimEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
-                    var onProgEarnings = fullListOfTransactionTypes.Where(t => onProgTypes.Contains(t)).ToList();
-                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => functionalSkillTypes.Contains(t)).ToList();
-                    var incentiveEarnings = fullListOfTransactionTypes.Where(t => incentiveTypes.Contains(t)).ToList();
+                    var onProgEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsOnProgType).ToList();
+                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsFunctionalSkillType).ToList();
+                    var incentiveEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsIncentiveType).ToList();
 
-                    if (onProgEarnings.Any())
+                    if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
                     {
                         var onProgEarning = new ApprenticeshipContractType2EarningEvent
                         {
@@ -116,13 +108,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         result.Add(onProgEarning);
                     }
 
-                    if (functionalSkillEarnings.Any())
+                    if (aimSpec.AimReference != "ZPROG001" && functionalSkillEarnings.Any())
                     {
-                        var onProgEarning = new FunctionalSkillEarningsEvent
+                        var functionalSkillEarning = new FunctionalSkillEarningsEvent
                         {
                             CollectionPeriod = collectionPeriod,
                             Ukprn = testSession.Ukprn,
-                            Earnings = onProgEarnings.Select(tt => new FunctionalSkillEarning
+                            Earnings = functionalSkillEarnings.Select(tt => new FunctionalSkillEarning
                             {
                                 Type = (FunctionalSkillType)(int)tt,
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
@@ -136,7 +128,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             Learner = learner,
                             LearningAim = learningAim
                         };
-                        result.Add(onProgEarning);
+                        result.Add(functionalSkillEarning);
                     }
 
                     if (incentiveEarnings.Any())
@@ -147,7 +139,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             Ukprn = testSession.Ukprn,
                             IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
                             {
-                                Type = (IncentiveType)(int)tt,
+                                Type = (IncentiveEarningType)(int)tt,
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],

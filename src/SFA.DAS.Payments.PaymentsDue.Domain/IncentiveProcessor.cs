@@ -10,16 +10,20 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
     public class IncentiveProcessor : IIncentiveProcessor
     {
-        public IncentivePaymentDueEvent[] HandleIncentiveEarnings(long ukprn, long jobId,
-            IncentiveEarning incentiveEarning, CalendarPeriod collectionPeriod, Learner learner,
+        public IncentivePaymentDueEvent[] HandleIncentiveEarnings(
+            Submission submission,
+            IncentiveEarning incentiveEarning,
+            Learner learner,
             LearningAim learningAim,
-            decimal sfaContributionPercentage, DateTime ilrSubmissionDate, ContractType contractType)
+            decimal sfaContributionPercentage,
+            ContractType contractType
+        )
         {
             if (incentiveEarning == null)
                 throw new ArgumentNullException(nameof(incentiveEarning));
 
-            if (collectionPeriod == null)
-                throw new ArgumentNullException(nameof(collectionPeriod));
+            if (submission.CollectionPeriod == null)
+                throw new ArgumentNullException(nameof(submission.CollectionPeriod));
 
             if (learner == null)
                 throw new ArgumentNullException(nameof(learner));
@@ -29,23 +33,21 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
 
             var paymentsDue = new List<IncentivePaymentDueEvent>();
 
-            foreach (var period in incentiveEarning.Periods.Where(earning => earning.Period <= collectionPeriod.Period))
+            foreach (var period in incentiveEarning.Periods.Where(earning => earning.Period <= submission.CollectionPeriod.Period))
             {
                 paymentsDue.Add(new IncentivePaymentDueEvent
                 {
-                    JobId = jobId,
-                    Ukprn = ukprn,
-                    DeliveryPeriod =
-                        new CalendarPeriod(collectionPeriod.Name.Split('-').FirstOrDefault(),
-                            period.Period),
+                    JobId = submission.JobId,
+                    Ukprn = submission.Ukprn,
+                    DeliveryPeriod = new CalendarPeriod(submission.CollectionPeriod.AcademicYear, period.Period),
                     LearningAim = learningAim.Clone(),
                     Learner = learner.Clone(),
                     AmountDue = period.Amount,
-                    CollectionPeriod = collectionPeriod,
+                    CollectionPeriod = submission.CollectionPeriod,
                     EventTime = DateTimeOffset.UtcNow,
                     PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
-                    IlrSubmissionDateTime = ilrSubmissionDate,
-                    Type = incentiveEarning.Type,
+                    IlrSubmissionDateTime = submission.IlrSubmissionDate,
+                    Type = (IncentivePaymentType) incentiveEarning.Type,
                     ContractType = contractType
                 });
             }

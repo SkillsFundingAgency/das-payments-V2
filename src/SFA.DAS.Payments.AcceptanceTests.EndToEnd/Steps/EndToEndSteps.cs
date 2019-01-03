@@ -62,12 +62,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(learners);
         }
 
+        [Given(@"aims details are changed as follows")]
+        public void GivenAimsDetailsAreChangedAsFollows(Table table)
+        {
+            AimsProcessedForJob.Remove(TestSession.JobId);
+            AddTestAims(table.CreateSet<Aim>().ToList());
+        }
+
         [Given(@"the following aims")]
         public void GivenTheFollowingAims(Table table)
         {
-            var aims = table.CreateSet<Aim>();
+            var aims = table.CreateSet<Aim>().ToList();
             AddTestAims(aims);
         }
+
+        private static readonly HashSet<long> PriceEpisodesProcessedForJob = new HashSet<long>();
+
+        [Given(@"price details are changed as follows")]
+        public void GivenPriceDetailsAreChangedAsFollows(Table table)
+        {
+            PriceEpisodesProcessedForJob.Remove(TestSession.JobId);
+            GivenPriceDetailsAsFollows(table);
+        }
+
 
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
@@ -79,25 +96,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var newPriceEpisodes = table.CreateSet<Price>().ToList();
             CurrentPriceEpisodes = newPriceEpisodes;
+
             if (TestSession.Learners.Any(x => x.Aims.Count > 0))
             {
                 foreach (var newPriceEpisode in newPriceEpisodes)
                 {
+                    Aim aim;
                     try
                     {
-                        var aim = TestSession.Learners.SelectMany(x => x.Aims)
+                        aim = TestSession.Learners.SelectMany(x => x.Aims)
                             .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
-                        if (aim == null)
-                        {
-                            throw new Exception("There is a price episode without a matching aim");
-                        }
-
-                        aim.PriceEpisodes.Add(newPriceEpisode);
                     }
                     catch (Exception)
                     {
                         throw new Exception("There are too many aims with the same sequence number");
                     }
+
+                    if (aim == null)
+                    {
+                        throw new Exception("There is a price episode without a matching aim");
+                    }
+
+                    aim.PriceEpisodes.Add(newPriceEpisode);
                 }
             }
         }

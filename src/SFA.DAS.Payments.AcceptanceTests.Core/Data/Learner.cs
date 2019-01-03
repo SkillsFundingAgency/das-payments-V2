@@ -13,5 +13,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public string LearnerIdentifier { get; set; }
         public List<Aim> Aims { get; set; } = new List<Aim>();
+
+        public override string ToString()
+        {
+            return $"Learn Ref Number: [ {LearnRefNumber} ]\tUln: [ {Uln} ]\t\tLearner Identifier: [ {LearnerIdentifier} ]";
+        }
     }
 }
