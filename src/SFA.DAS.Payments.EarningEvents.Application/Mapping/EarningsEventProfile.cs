@@ -28,17 +28,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
+                .Ignore(dest => dest.SfaContributionPercentage)
                 ;
 
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>()
-                .ForMember(destinationMember => destinationMember.AgreementId, opt => opt.Ignore());
+                .Ignore(dest => dest.AgreementId)
+                ;
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>();
 
             CreateMap<IntermediateLearningAim, FunctionalSkillEarningsEvent>()
-                .ForMember(dest => dest.Earnings, opt => opt.Ignore());
-
+                .Ignore(dest => dest.Earnings)
+                ;
+                
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.ULN));

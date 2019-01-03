@@ -14,7 +14,6 @@ using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.
 
 namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
 {
-
     [TestFixture]
     public class MappingTest
     {
@@ -249,6 +248,35 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         }
 
         [Test]
+        public void Maps_SfaContribution_With_Earnings_When_SfaContribution_Present()
+        {
+            var learningAimWithSfaContribution = learningAim;
+            learningAimWithSfaContribution.PriceEpisodes.First().PriceEpisodePeriodisedValues.Add(new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeSFAContribPct",
+                Period1 = 0.91m,
+                Period2 = 0.91m,
+                Period3 = 0.91m,
+                Period4 = 0.91m,
+                Period5 = 0.91m,
+                Period6 = 0.91m,
+                Period7 = 0.91m,
+                Period8 = 0.91m,
+                Period9 = 0.91m,
+                Period10 = 0.91m,
+                Period11 = 0.91m,
+                Period12 = 0.91m,
+            });
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
+            var learning =
+                earningEvent.OnProgrammeEarnings.FirstOrDefault(earnings =>
+                    earnings.Type == OnProgrammeEarningType.Learning);
+            learning.Should().NotBeNull();
+            learning.Periods.Should().HaveCount(12);
+            learning.Periods.All(period => period.SfaContributionPercentage == 0.91m).Should().BeTrue();
+        }
+
+        [Test]
         public void Maps_Completion_Earnings()
         {
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
@@ -299,7 +327,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("ZPROG001");
-
         }
 
         [Test]
