@@ -126,6 +126,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (Context.ContainsKey("current_collection_period") && CurrentCollectionPeriod.Name != collectionPeriod.ToDate().ToCalendarPeriod().Name)
                 await RequiredPaymentsCacheCleaner.ClearCaches(TestSession);
 
+            await Task.Delay(Config.TimeToPause);
+
             SetCollectionPeriod(collectionPeriod);
         }
 
