@@ -1,19 +1,17 @@
-﻿using System;
-using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
-    public interface IIncentiveProcessor
+    public interface IFunctionalSkillsEarningProcessor
     {
-        IncentivePaymentDueEvent[] HandleIncentiveEarnings(
+        IncentivePaymentDueEvent[] HandleEarning(
             Submission submission,
-            IncentiveEarning incentiveEarning,
+            FunctionalSkillEarning earning,
             Learner learner,
             LearningAim learningAim,
-            decimal sfaContributionPercentage,
             ContractType contractType
         );
     }

@@ -25,6 +25,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             builder.RegisterType<ApprenticeshipContractTypeEarningsEventBuilder>()
                 .As<IApprenticeshipContractTypeEarningsEventBuilder>()
                 .InstancePerLifetimeScope();
+            builder.RegisterType<FunctionalSkillEarningEventBuilder>()
+                .As<IFunctionalSkillEarningsEventBuilder>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipContractTypeEarningsEventFactory>()
                 .As<IApprenticeshipContractTypeEarningsEventFactory>()
                 .InstancePerLifetimeScope();

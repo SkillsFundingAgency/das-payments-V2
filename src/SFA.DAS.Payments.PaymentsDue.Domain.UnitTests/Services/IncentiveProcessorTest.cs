@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
 
         [Test]
         [TestCaseSource(nameof(GetIncentiveTypes))]
-        public void TestHandleIncentiveEarning(IncentiveType type)
+        public void TestHandleIncentiveEarning(IncentiveEarningType type)
         {
             // arrange
             var collectionPeriod = new CalendarPeriod("1819-R03");
@@ -67,9 +67,10 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
                 })
             };
             earning.IncentiveEarnings = new ReadOnlyCollection<IncentiveEarning>(new[] { incentiveEarning });
+            var submission = new Submission { Ukprn = Ukprn, JobId = JobId, CollectionPeriod = collectionPeriod, IlrSubmissionDate = earning.IlrSubmissionDateTime };
 
             // act
-            var paymentsDue = incentiveProcessor.HandleIncentiveEarnings(Ukprn, JobId, incentiveEarning, collectionPeriod, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, earning.IlrSubmissionDateTime, ContractType.Act2);
+            var paymentsDue = incentiveProcessor.HandleIncentiveEarnings(submission, incentiveEarning, earning.Learner, earning.LearningAim, earning.SfaContributionPercentage, ContractType.Act2);
 
             // assert
             Assert.IsNotNull(paymentsDue);
@@ -87,7 +88,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         {
             Assert.AreEqual(earning.Ukprn, paymentDue.Ukprn);
             Assert.AreEqual(earning.PriceEpisodes[0].Identifier, paymentDue.PriceEpisodeIdentifier);
-            Assert.AreEqual(earning.IncentiveEarnings[0].Type, paymentDue.Type);
+            Assert.AreEqual((int)earning.IncentiveEarnings[0].Type, (int)paymentDue.Type);
             Assert.AreEqual(earningPeriod.Period, paymentDue.DeliveryPeriod.Period);
             Assert.AreEqual(earningPeriod.Amount, paymentDue.AmountDue);
             Assert.AreEqual(earning.Learner.ReferenceNumber, paymentDue.Learner.ReferenceNumber);
@@ -101,9 +102,9 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
             Assert.AreEqual(collectionPeriod, paymentDue.CollectionPeriod);
         }
 
-        private static IEnumerable<IncentiveType> GetIncentiveTypes()
+        private static IEnumerable<IncentiveEarningType> GetIncentiveTypes()
         {
-            return Enum.GetValues(typeof(IncentiveType)).Cast<IncentiveType>();
+            return Enum.GetValues(typeof(IncentiveEarningType)).Cast<IncentiveEarningType>();
         }
     }
 }

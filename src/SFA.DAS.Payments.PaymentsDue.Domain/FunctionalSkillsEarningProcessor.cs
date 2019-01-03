@@ -8,32 +8,19 @@ using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.PaymentsDue.Domain
 {
-    public class IncentiveProcessor : IIncentiveProcessor
+    public class FunctionalSkillsEarningProcessor : IFunctionalSkillsEarningProcessor
     {
-        public IncentivePaymentDueEvent[] HandleIncentiveEarnings(
+        public IncentivePaymentDueEvent[] HandleEarning(
             Submission submission,
-            IncentiveEarning incentiveEarning,
+            FunctionalSkillEarning functionalSkillEarning,
             Learner learner,
             LearningAim learningAim,
-            decimal sfaContributionPercentage,
             ContractType contractType
         )
         {
-            if (incentiveEarning == null)
-                throw new ArgumentNullException(nameof(incentiveEarning));
-
-            if (submission.CollectionPeriod == null)
-                throw new ArgumentNullException(nameof(submission.CollectionPeriod));
-
-            if (learner == null)
-                throw new ArgumentNullException(nameof(learner));
-
-            if (learningAim == null)
-                throw new ArgumentNullException(nameof(learningAim));
-
             var paymentsDue = new List<IncentivePaymentDueEvent>();
 
-            foreach (var period in incentiveEarning.Periods.Where(earning => earning.Period <= submission.CollectionPeriod.Period))
+            foreach (var period in functionalSkillEarning.Periods.Where(earning => earning.Period <= submission.CollectionPeriod.Period))
             {
                 paymentsDue.Add(new IncentivePaymentDueEvent
                 {
@@ -42,12 +29,12 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
                     DeliveryPeriod = new CalendarPeriod(submission.CollectionPeriod.AcademicYear, period.Period),
                     LearningAim = learningAim.Clone(),
                     Learner = learner.Clone(),
+                    Type = (IncentivePaymentType) functionalSkillEarning.Type,
                     AmountDue = period.Amount,
                     CollectionPeriod = submission.CollectionPeriod,
                     EventTime = DateTimeOffset.UtcNow,
                     PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
                     IlrSubmissionDateTime = submission.IlrSubmissionDate,
-                    Type = (IncentivePaymentType) incentiveEarning.Type,
                     ContractType = contractType
                 });
             }

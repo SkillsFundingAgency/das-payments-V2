@@ -116,7 +116,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         {
             var paymentEvent = new IncentiveRequiredPaymentEvent();
             MapCommon(requiredPayment, paymentEvent);
-            paymentEvent.Type = (IncentiveType)requiredPayment.Type;
+            paymentEvent.Type = (IncentivePaymentType)requiredPayment.Type;
             paymentEvent.ContractType = (ContractType)ContractType;
             return paymentEvent;
         }

@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.Model.Core
         public short Year { get; set; }
         public byte Month { get; set; }
         public byte Period { get; set; }
+        public string AcademicYear { get; set; }
 
         public string Name
         {
@@ -26,7 +27,8 @@ namespace SFA.DAS.Payments.Model.Core
             Month = month;
             Period = (byte)(month > 7 ? month - 7 : month + 5);
             var firstYear = (month < 8 ? year - 1 : year) - 2000;
-            Name = string.Concat(firstYear, firstYear + 1, "-R", Period.ToString("00"));
+            AcademicYear = string.Concat(firstYear, firstYear + 1);
+            Name = string.Concat(AcademicYear, "-R", Period.ToString("00"));
         }
 
         public CalendarPeriod(string years, byte period)
@@ -47,7 +49,8 @@ namespace SFA.DAS.Payments.Model.Core
             Year = (short)(2000 + year + (period < 6 ? 0 : 1));
             Month = (byte)(period < 6 ? period + 7 : period - 5);
             Period = period;
-            Name = string.Concat(year, year + 1, "-R", period.ToString("00"));
+            AcademicYear = string.Concat(year, year + 1);
+            Name = string.Concat(AcademicYear, "-R", period.ToString("00"));
         }
 
         public CalendarPeriod(string name)
@@ -83,6 +86,7 @@ namespace SFA.DAS.Payments.Model.Core
             Month = (byte) (period < 6 ? period + 7 : period - 5);
             name = newName;
             Period = (byte) period;
+            AcademicYear = newName.Substring(0, 4);
         }
 
         public DateTime LastDayOfMonthAfter(int periods)
