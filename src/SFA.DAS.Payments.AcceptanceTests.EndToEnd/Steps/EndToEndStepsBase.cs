@@ -353,7 +353,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         newValues = currentValues;
                     }
 
-                    currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
+                    if (EnumHelper.IsOnProgType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) &&
+                        aim.AimReference == "ZPROG001")
+                    {
+                        currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
+                    }
+                    else if (EnumHelper.IsFunctionalSkillType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) &&
+                             aim.AimReference != "ZPROG001")
+                    {
+                        currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
+                    }
+                    else if (newValues.AttributeName == "PriceEpisodeSFAContribPct")
+                    {
+                        currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
+                    }
                 }
             }
 

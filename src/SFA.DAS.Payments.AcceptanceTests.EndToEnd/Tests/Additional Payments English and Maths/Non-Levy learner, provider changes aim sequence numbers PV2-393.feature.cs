@@ -301,7 +301,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "06/Aug/Current Academic Year",
                         "Act2",
                         "1",
-                        ""});
+                        "90%"});
 #line 41
  testRunner.And("price details are changed as follows", ((string)(null)), table7, "And ");
 #line 45

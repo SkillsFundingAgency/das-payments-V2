@@ -65,7 +65,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"aims details are changed as follows")]
         public void GivenAimsDetailsAreChangedAsFollows(Table table)
         {
-            AimsProcessedForJob.Remove(TestSession.JobId);
             AddTestAims(table.CreateSet<Aim>().ToList());
         }
 

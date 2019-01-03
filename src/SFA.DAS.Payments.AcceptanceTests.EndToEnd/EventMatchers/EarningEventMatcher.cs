@@ -154,7 +154,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                         result.Add(incentiveEarning);
                     }
-
                 }
             }
 

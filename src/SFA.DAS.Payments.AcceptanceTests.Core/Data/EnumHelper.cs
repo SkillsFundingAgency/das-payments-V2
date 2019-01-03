@@ -93,5 +93,46 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                     throw new NotImplementedException($"Cannot get FM36 attribute name.  Unhandled transaction type: {transactionType}");
             }
         }
+
+        public static TransactionType ToTransactionTypeFromAttributeName(this string attributeName)
+        {
+            switch (attributeName)
+            {
+                case "PriceEpisodeOnProgPayment":
+                    return TransactionType.Learning;
+                case "PriceEpisodeBalancePayment":
+                    return TransactionType.Balancing;
+                case "PriceEpisodeCompletionPayment":
+                    return TransactionType.Completion;
+                case "PriceEpisodeLSFCash":
+                    return TransactionType.LearningSupport;
+                case "PriceEpisodeFirstEmp1618Pay":
+                    return TransactionType.First16To18EmployerIncentive;
+                case "PriceEpisodeFirstProv1618Pay":
+                    return TransactionType.First16To18ProviderIncentive;
+                case "PriceEpisodeSecondEmp1618Pay":
+                    return TransactionType.Second16To18EmployerIncentive;
+                case "PriceEpisodeSecondProv1618Pay":
+                    return TransactionType.Second16To18ProviderIncentive;
+                case "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment":
+                    return TransactionType.OnProgramme16To18FrameworkUplift;
+                case "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment":
+                    return TransactionType.Completion16To18FrameworkUplift;
+                case "PriceEpisodeApplic1618FrameworkUpliftBalancing":
+                    return TransactionType.Balancing16To18FrameworkUplift;
+                case "PriceEpisodeFirstDisadvantagePayment":
+                    return TransactionType.FirstDisadvantagePayment;
+                case "PriceEpisodeSecondDisadvantagePayment":
+                    return TransactionType.SecondDisadvantagePayment;
+                case "MathEngOnProgPayment":
+                    return TransactionType.OnProgrammeMathsAndEnglish;
+                case "MathEngBalPayment":
+                    return TransactionType.BalancingMathsAndEnglish;
+
+                default:
+                    throw new NotImplementedException(
+                        $"Cannot get transaction type.  Unhandled FM36 Attribute Name: {attributeName}");
+            }
+        }
     }
 }
