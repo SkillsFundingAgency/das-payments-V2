@@ -1,6 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain;
+using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
@@ -12,12 +15,23 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
         {
         }
 
-        protected override ApprenticeshipContractType2RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2PaymentDueEvent paymentDue)
+        protected override ApprenticeshipContractType2RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2PaymentDueEvent paymentDue, Payment[] payments)
         {
+            var sfaContributionPercentage = paymentDue.SfaContributionPercentage;
+
+            // YUCK: refund with 0 earning
+            // TODO: work out the better way of doing it
+            if (sfaContributionPercentage == 0 && paymentDue.AmountDue == 0 && payments.Length > 0)
+            {
+                var sfaContribution = payments.Where(p => p.FundingSource == FundingSourceType.CoInvestedSfa).Sum(p => p.Amount);
+                var employerContribution = payments.Where(p => p.FundingSource == FundingSourceType.CoInvestedEmployer).Sum(p => p.Amount);
+                sfaContributionPercentage = sfaContribution / (sfaContribution + employerContribution);
+            }
+
             return new ApprenticeshipContractType2RequiredPaymentEvent
             {
                 OnProgrammeEarningType = paymentDue.Type,
-                SfaContributionPercentage = paymentDue.SfaContributionPercentage,
+                SfaContributionPercentage = sfaContributionPercentage
             };
         }
 
