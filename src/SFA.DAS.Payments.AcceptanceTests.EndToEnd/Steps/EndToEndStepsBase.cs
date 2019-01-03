@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     {
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
+        protected DcHelper DcHelper => Get<DcHelper>();
         protected static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
 
         protected List<Price> CurrentPriceEpisodes
@@ -60,6 +61,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected EndToEndStepsBase(FeatureContext context) : base(context)
         {
+        }
+
+        protected void AddNewIlr(Table table)
+        {
+            var ilr = table.CreateSet<Training>().ToList();
+            CurrentIlr = ilr;
+            AddTestLearners(CurrentIlr);
         }
 
         protected void SetCollectionPeriod(string collectionPeriod)
@@ -116,12 +124,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddTestAims(IList<Aim> aims)
         {
-            if (AimsProcessedForJob.Contains(TestSession.JobId))
+            if (TestSession.AtLeastOneScenarioCompleted)
             {
                 return;
             }
 
-            AimsProcessedForJob.Add(TestSession.JobId);
             foreach (var aim in aims)
             {
                 var learner = TestSession.Learners.FirstOrDefault(x => x.LearnerIdentifier == aim.LearnerId);
@@ -437,8 +444,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     },
                     PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                 };
-
-
+                
                 foreach (var currentValues in periodisedValues)
                 {
                     PriceEpisodePeriodisedValues newValues;
@@ -473,7 +479,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);
         }
-
         
         protected static List<Earning> CreateEarnings(Table table)
         {
@@ -555,6 +560,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
             await MessageSession.Send(command);
         }
-
     }
 }

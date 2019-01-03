@@ -20,6 +20,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
+        [Given("\"(.*)\" previously submitted the following learner details")]
+        public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetailsForProvider(
+            string providerId,
+            Table table)
+        {
+            GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetails(table);
+        }
+
         [Given(@"the provider previously submitted the following learner details")]
         public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetails(Table table)
         {
@@ -70,9 +78,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        [Given("the following payments had been generated for \"(.*)\"")]
+        public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(string providerId, Table table)
+        {
+            await GivenTheFollowingProviderPaymentsHadBeenGenerated(table);
+        }
+
         [Given(@"the following provider payments had been generated")]
         public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
+            if (TestSession.AtLeastOneScenarioCompleted)
+            {
+                return;
+            }
+
             var payments = table.CreateSet<ProviderPayment>().ToList();
             foreach (var payment in payments)
             {
@@ -104,14 +123,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await dataContext.SaveChangesAsync();
         }
 
-        [Given(@"the Provider now changes the Learner details as follows")]
-        public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
-        {
-            var ilr = table.CreateSet<Training>().ToList();
-            CurrentIlr = ilr;
-            AddTestLearners(CurrentIlr);
-        }
-
         [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]
         public void TheProviderChangesTheLearnersUln(long newUln)
         {
@@ -125,6 +136,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (Context.ContainsKey("current_collection_period") && CurrentCollectionPeriod.Name != collectionPeriod.ToDate().ToCalendarPeriod().Name)
                 await RequiredPaymentsCacheCleaner.ClearCaches(TestSession);
+
+            await Task.Delay(Config.TimeToPause);
 
             SetCollectionPeriod(collectionPeriod);
         }
