@@ -23,14 +23,30 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Services
 
         public PaymentDueEvent[] CreatePaymentsDue(ApprenticeshipContractType2EarningEvent message)
         {
-            var onProgEvents = message.OnProgrammeEarnings?.SelectMany(earning => act2EarningProcessor.HandleOnProgrammeEarning(message.Ukprn, message.JobId,
-                earning, message.CollectionPeriod, message.Learner, message.LearningAim,
-                message.SfaContributionPercentage, message.IlrSubmissionDateTime)).ToList();
+            var submission = new Submission
+            {
+                JobId = message.JobId,
+                Ukprn = message.Ukprn,
+                CollectionPeriod = message.CollectionPeriod,
+                IlrSubmissionDate = message.IlrSubmissionDateTime
+            };
 
-            var incentiveEvents = message.IncentiveEarnings?
-                .SelectMany(earning => incentiveEarningProcessor.HandleIncentiveEarnings(message.Ukprn, message.JobId,
-                    earning, message.CollectionPeriod, message.Learner, message.LearningAim,
-                    message.SfaContributionPercentage, message.IlrSubmissionDateTime, ContractType.Act2)).ToList();
+            var onProgEvents = message.OnProgrammeEarnings?.SelectMany(earning => act2EarningProcessor.HandleOnProgrammeEarning(
+                submission,
+                earning,
+                message.Learner,
+                message.LearningAim,
+                message.SfaContributionPercentage
+            )).ToList();
+
+            var incentiveEvents = message.IncentiveEarnings?.SelectMany(earning => incentiveEarningProcessor.HandleIncentiveEarnings(
+                submission,
+                earning,
+                message.Learner,
+                message.LearningAim,
+                message.SfaContributionPercentage,
+                ContractType.Act2
+            )).ToList();
 
             var result = new List<PaymentDueEvent>();
 

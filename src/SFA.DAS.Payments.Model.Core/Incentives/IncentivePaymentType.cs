@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.Model.Core.Incentives
 {
-    public enum IncentiveType
+    public enum IncentivePaymentType
     {
         First16To18EmployerIncentive = 4,
         First16To18ProviderIncentive = 5,
@@ -11,6 +11,8 @@
         Balancing16To18FrameworkUplift = 10,
         FirstDisadvantagePayment = 11,
         SecondDisadvantagePayment = 12,
+        OnProgrammeMathsAndEnglish = 13,
+        BalancingMathsAndEnglish = 14,
         LearningSupport = 15
     }
 }
