@@ -2,7 +2,6 @@
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
@@ -16,7 +15,6 @@ using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
-using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -25,6 +23,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     {
         public EndToEndSteps(FeatureContext context) : base(context)
         {
+        }
+
+        [BeforeScenario()]
+        public void ResetJob()
+        {
+            if (!Context.ContainsKey("new_feature"))
+                NewFeature = true;
+            var newJobId = TestSession.GenerateId();
+            Console.WriteLine($"Using new job. Previous job id: {TestSession.JobId}, new job id: {newJobId}");
+            TestSession.SetJobId(newJobId);
+        }
+
+        [AfterScenario()]
+        public void CleanUpScenario()
+        {
+            NewFeature = false;
         }
 
         [Given(@"the provider is providing training for the following learners")]
@@ -77,7 +91,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
         {
-            if (PriceEpisodesProcessedForJob.Contains(TestSession.JobId))
+            if (PriceEpisodesProcessedForJob.Contains(TestSession.JobId) || !NewFeature)
             {
                 return;
             }
@@ -94,7 +108,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     Aim aim;
                     try
                     {
-                        aim = TestSession.Learners.SelectMany(x => x.Aims)
+                        aim = TestSession.Learners
+                            .SelectMany(x => x.Aims)
                             .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
                     }
                     catch (Exception)

@@ -24,6 +24,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     public abstract class EndToEndStepsBase : StepsBase
     {
+        public bool NewFeature
+        {
+            get => Get<bool>("new_feature");
+            set => Set(value, "new_feature");
+        }
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
         protected static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
@@ -116,7 +121,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddTestAims(IList<Aim> aims)
         {
-            if (AimsProcessedForJob.Contains(TestSession.JobId))
+            if (AimsProcessedForJob.Contains(TestSession.JobId) || !NewFeature)
             {
                 return;
             }
