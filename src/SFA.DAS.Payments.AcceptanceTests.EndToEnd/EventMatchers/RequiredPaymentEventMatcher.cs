@@ -1,18 +1,17 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core;
+﻿using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public class RequiredPaymentEventMatcher : BaseMatcher<RequiredPaymentEvent>
-    {
+    {        
         private readonly TestSession testSession;
         private readonly CalendarPeriod collectionPeriod;
         private readonly List<Payment> paymentSpec;
@@ -31,7 +30,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<RequiredPaymentEvent> GetActualEvents()
         {
             return RequiredPaymentEventHandler.ReceivedEvents
-                .Where(e => e.Ukprn == testSession.Ukprn && e.CollectionPeriod == collectionPeriod && e.JobId == testSession.JobId).ToList();
+                .Where(e => e.Ukprn == testSession.Ukprn && 
+                            e.CollectionPeriod.Name == collectionPeriod.Name && 
+                            e.JobId == testSession.JobId).ToList();
         }
 
         protected override IList<RequiredPaymentEvent> GetExpectedEvents()
@@ -43,39 +44,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var payment in paymentsToValidate)
             {
-                if (payment.OnProgramme != 0)
-                {
-                    var learningPayment = new ApprenticeshipContractType2RequiredPaymentEvent
-                    {
-                        AmountDue = payment.OnProgramme,
-                        OnProgrammeEarningType = OnProgrammeEarningType.Learning,
-                        DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
-                    };
-                    expectedPayments.Add(learningPayment);
-                }
-
-                if (payment.Balancing != 0)
-                {
-                    var balancingPayment = new ApprenticeshipContractType2RequiredPaymentEvent
-                    {
-                        AmountDue = payment.Balancing,
-                        OnProgrammeEarningType = OnProgrammeEarningType.Balancing,
-                        DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
-                    };
-
-                    expectedPayments.Add(balancingPayment);
-                }
-
-                if (payment.Completion != 0)
-                {
-                    var completionPayment = new ApprenticeshipContractType2RequiredPaymentEvent
-                    {
-                        AmountDue = payment.Completion,
-                        OnProgrammeEarningType = OnProgrammeEarningType.Completion,
-                        DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
-                    };
-                    expectedPayments.Add(completionPayment);
-                }
+                AddOnProgPayment(payment, expectedPayments, payment.OnProgramme, OnProgrammeEarningType.Learning);
+                AddOnProgPayment(payment, expectedPayments, payment.Balancing, OnProgrammeEarningType.Balancing);
+                AddOnProgPayment(payment, expectedPayments, payment.Completion, OnProgrammeEarningType.Completion);
 
                 foreach (var incentiveTypeKey in payment.IncentiveValues.Keys)
                 {
@@ -93,6 +64,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             }
 
             return expectedPayments;
+        }
+
+        private static void AddOnProgPayment(Payment paymentSpec, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, OnProgrammeEarningType type)
+        {
+            var payment = new ApprenticeshipContractType2RequiredPaymentEvent
+            {
+                AmountDue = amountDue,
+                OnProgrammeEarningType = type,
+                DeliveryPeriod = paymentSpec.DeliveryPeriod.ToCalendarPeriod()
+            };
+
+            if (payment.AmountDue != 0)
+                expectedPayments.Add(payment);
         }
 
         protected override bool Match(RequiredPaymentEvent expected, RequiredPaymentEvent actual)

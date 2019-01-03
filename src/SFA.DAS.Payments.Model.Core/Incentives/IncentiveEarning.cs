@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.Model.Core.Incentives
 {
     public class IncentiveEarning
     {
-        public IncentiveType Type { get; set; }
+        public IncentiveEarningType Type { get; set; }
         public DateTime CensusDate { get; set; }
         public ReadOnlyCollection<EarningPeriod> Periods { get; set; }
     }

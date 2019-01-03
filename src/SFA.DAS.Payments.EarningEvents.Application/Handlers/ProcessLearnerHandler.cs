@@ -21,17 +21,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         public async Task Handle(ProcessLearnerCommand message, IMessageHandlerContext context)
         {
             logger.LogDebug($"Handling ILR learner submission. Job: {message.JobId}, Ukprn: {message.Ukprn}, Collection year: {message.CollectionYear}, Learner: {message.Learner.LearnRefNumber}");
-            var earningEvent = learnerSubmissionProcessor.GenerateEarnings(message);
-            if (earningEvent.Validation.Failed)
+            var processorResult = learnerSubmissionProcessor.GenerateEarnings(message);
+            if (processorResult.Validation.Failed)
             {
                 logger.LogInfo($"ILR Learner Submission failed validation. Job: {message.JobId}, Ukprn: {message.Ukprn}, Collection year: {message.CollectionYear}, Learner: {message.Learner.LearnRefNumber}");
                 context.DoNotContinueDispatchingCurrentMessageToHandlers();
                 return;
             }
 
-            foreach (var earningsEvent in earningEvent.EarningsEvents)
+            foreach (var earningEvent in processorResult.EarningEvents)
             {
-                await context.Publish(earningsEvent).ConfigureAwait(false);
+                await context.Publish(earningEvent).ConfigureAwait(false);
             }
 
             logger.LogInfo($"Finished handling ILR learner submission.Job: { message.JobId}, Ukprn: { message.Ukprn}, Collection year: { message.CollectionYear}, Learner: { message.Learner.LearnRefNumber}.");

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -169,29 +170,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return new CalendarPeriod(yearName.ToAcademicYear(), period);
         }
 
-        //public static string GetCollectionYear(this CalendarPeriod calendarPeriod)
-        //{
-        //    return calendarPeriod.Name.Split('-').FirstOrDefault();
-        //}
+        public static string GetCollectionYear(this CalendarPeriod calendarPeriod)
+        {
+            return calendarPeriod.AcademicYear;
+        }
 
         public static decimal ToPercent(this string stringPercent)
         {
             return decimal.Parse(stringPercent.TrimEnd('%')) / 100m;
         }
 
-        private static Dictionary<int, PropertyInfo> periodisedProperties;
+        private static ConcurrentDictionary<int, PropertyInfo> periodisedProperties;
 
-        private static Dictionary<int, PropertyInfo> PeriodisedProperties
+        private static ConcurrentDictionary<int, PropertyInfo> PeriodisedProperties
         {
             get
             {
                 if (periodisedProperties == null)
                 {
-                    periodisedProperties = new Dictionary<int, PropertyInfo>();
+                    periodisedProperties = new ConcurrentDictionary<int, PropertyInfo>();
 
                     for (var i = 1; i < 13; i++)
                     {
-                        periodisedProperties.Add(i, typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + i));
+                        periodisedProperties.TryAdd(i, typeof(PriceEpisodePeriodisedValues).GetProperty("Period" + i));
                     }
                 }
 
@@ -202,13 +203,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         public static decimal? GetValue(this PriceEpisodePeriodisedValues values, int period)
         {
-
-            return (decimal?) PeriodisedProperties[period].GetValue(values);
+            return (decimal?)GetPropertyInfo(period).GetValue(values);
         }
 
         public static void SetValue(this PriceEpisodePeriodisedValues values, int period, decimal? value)
         {
-            PeriodisedProperties[period].SetValue(values, value);
+            GetPropertyInfo(period).SetValue(values, value);
         }
+
+        private static PropertyInfo GetPropertyInfo(int period)
+        {
+            if (!PeriodisedProperties.TryGetValue(period, out var propertyInfo))
+                throw new KeyNotFoundException($"There is no Periodised Property Info found for Period {period}");
+
+            return propertyInfo;
+        }
+
     }
 }

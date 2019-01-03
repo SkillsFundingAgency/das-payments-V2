@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
         {
             return new FunctionalSkillEarningsEvent
             {
-                Earnings = new FunctionalSkillEarning[]
+                Earnings = new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning
                     {
@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                             new EarningPeriod{ Period = 1, Amount = 100, PriceEpisodeIdentifier = "pe-1"}
                         }.AsReadOnly()
                     },
-                }
+                }.AsReadOnly()
             };
         }
 

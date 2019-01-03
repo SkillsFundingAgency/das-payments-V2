@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
         [Test]
         public void Maps_CollectionYear()
         {
-            Mapper.Map<TDest>(PaymentEvent).CollectionYear.Should().Be(PaymentEvent.CollectionPeriod.GetCollectionYear());
+            Mapper.Map<TDest>(PaymentEvent).CollectionYear.Should().Be(PaymentEvent.CollectionPeriod.AcademicYear);
         }
 
         [Test]

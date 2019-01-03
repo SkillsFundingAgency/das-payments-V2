@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.PaymentsDue
         }
 
         [TestCaseSource(nameof(GetIncentiveTypes))]
-        public void Maps_IncentiveTypes(IncentiveType incentiveType)
+        public void Maps_IncentiveTypes(IncentivePaymentType incentiveType)
         {
             PaymentEvent.Type = incentiveType;
             var model = Mapper.Map<PaymentsDueEventModel>(PaymentEvent);
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.PaymentsDue
 
         public static Array GetIncentiveTypes()
         {
-            return GetEnumValues<IncentiveType>();
+            return GetEnumValues<IncentivePaymentType>();
         }
 
         [TestCaseSource(nameof(GetContractTypes))]

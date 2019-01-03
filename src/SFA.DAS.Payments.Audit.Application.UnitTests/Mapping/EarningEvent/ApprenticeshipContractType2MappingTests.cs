@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                 {
                     new IncentiveEarning
                     {
-                        Type = IncentiveType.Balancing16To18FrameworkUplift,
+                        Type = IncentiveEarningType.Balancing16To18FrameworkUplift,
                         CensusDate = DateTime.Today,
                         Periods = new List<EarningPeriod>
                         {
