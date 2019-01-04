@@ -257,6 +257,46 @@
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
+    <Compile Include="Tests\Disadvantage - Uplift\Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantage - Uplift\Non-Levy-On Framework-Disadvantage-Uplift-11-20-paid-PV2-436.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On Framework-Disadvantage-Uplift-11-20-paid-PV2-436.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantage - Uplift\Non-Levy-On-Framework-Disadvantage-Uplift 21-27-paid-PV2-437.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Framework-Disadvantage-Uplift 21-27-paid-PV2-437.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantage - Uplift\Non-Levy-On-Framework-Disadvantage-Uplift not paid-PV2-438.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Framework-Disadvantage-Uplift not paid-PV2-438.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantage - Uplift\Non-Levy-On-Standard Disadvantage-Uplift-not-paid-PV2-446.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Standard Disadvantage-Uplift-not-paid-PV2-446.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantage - Uplift\Non-Levy-On-Standard-Disadvantage-Uplift 1-10-not paid-PV2-443.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift 1-10-not paid-PV2-443.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantage - Uplift\Non-Levy-On-Standard-Disadvantage-Uplift-11-20-not paid-PV2-444.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift-11-20-not paid-PV2-444.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantage - Uplift\Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -443,6 +483,38 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Disadvantage - Uplift\Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantage - Uplift\Non-Levy-On Framework-Disadvantage-Uplift-11-20-paid-PV2-436.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On Framework-Disadvantage-Uplift-11-20-paid-PV2-436.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantage - Uplift\Non-Levy-On-Framework-Disadvantage-Uplift 21-27-paid-PV2-437.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Framework-Disadvantage-Uplift 21-27-paid-PV2-437.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantage - Uplift\Non-Levy-On-Framework-Disadvantage-Uplift not paid-PV2-438.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Framework-Disadvantage-Uplift not paid-PV2-438.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantage - Uplift\Non-Levy-On-Standard Disadvantage-Uplift-not-paid-PV2-446.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Standard Disadvantage-Uplift-not-paid-PV2-446.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantage - Uplift\Non-Levy-On-Standard-Disadvantage-Uplift 1-10-not paid-PV2-443.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Standard-Disadvantage-Uplift 1-10-not paid-PV2-443.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantage - Uplift\Non-Levy-On-Standard-Disadvantage-Uplift-11-20-not paid-PV2-444.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Standard-Disadvantage-Uplift-11-20-not paid-PV2-444.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantage - Uplift\Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs</LastGenOutput>

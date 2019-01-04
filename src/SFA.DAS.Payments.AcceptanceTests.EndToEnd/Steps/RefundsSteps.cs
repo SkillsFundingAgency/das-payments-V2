@@ -1,6 +1,8 @@
 ﻿using Autofac;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.Application.Repositories;
 using System;
 using System.Collections.Generic;
@@ -41,7 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheFollowingEarningsHadBeenGeneratedForTheLearner(Table table)
         {
             var earnings = CreateEarnings(table);
-            
+
             PreviousEarnings = earnings;
 
             // for new style specs where no ILR specified
@@ -136,9 +138,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
             if (Context.ContainsKey("current_collection_period") && CurrentCollectionPeriod.Name != collectionPeriod.ToDate().ToCalendarPeriod().Name)
+            {
                 await RequiredPaymentsCacheCleaner.ClearCaches(TestSession);
-
-            await Task.Delay(Config.TimeToPause);
+                await Task.Delay(Config.TimeToPause);
+            }
 
             SetCollectionPeriod(collectionPeriod);
         }
@@ -154,7 +157,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var contractType = CurrentIlr == null
                 ? TestSession.Learners.First().Aims.First().PriceEpisodes.First().ContractType
                 : CurrentIlr.First().ContractType;
-                    
+
             var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
