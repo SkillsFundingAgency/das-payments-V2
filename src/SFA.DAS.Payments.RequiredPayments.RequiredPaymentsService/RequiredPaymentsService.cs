@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Application;
@@ -44,15 +46,15 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(actorId.GetStringId());
         }
 
-        public async Task<RequiredPaymentEvent> HandlePaymentDueEvent(PaymentDueEvent paymentDueEvent, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling PaymentDue for {apprenticeshipKey}");
 
             await Initialise().ConfigureAwait(false);
 
-            var handler = lifetimeScope.ResolveKeyed<IPaymentDueEventHandler>(paymentDueEvent.GetType());
+            var handler = lifetimeScope.ResolveKeyed<IEarningEventHandler>(earningEvent.GetType());
             
-            var requiredPaymentEvents = await handler.HandlePaymentDue(paymentDueEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+            var requiredPaymentEvents = await handler.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
 
             return requiredPaymentEvents;
         }

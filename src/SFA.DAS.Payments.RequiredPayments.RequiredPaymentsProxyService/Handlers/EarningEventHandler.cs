@@ -9,19 +9,22 @@ using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public class PaymentDueEventHandler : IHandleMessages<PaymentDueEvent>
+    public class EarningEventHandler : IHandleMessages<EarningEvent>
     {
         private readonly IApprenticeshipKeyService apprenticeshipKeyService;
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger paymentLogger;
         private readonly ILifetimeScope lifetimeScope;
 
-        public PaymentDueEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
+        public EarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
             IActorProxyFactory proxyFactory,
             IPaymentLogger paymentLogger,
             ILifetimeScope lifetimeScope)
@@ -32,7 +35,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             this.lifetimeScope = lifetimeScope;
         }
 
-        public async Task Handle(PaymentDueEvent message, IMessageHandlerContext context)
+        public async Task Handle(EarningEvent message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
 
@@ -53,10 +56,10 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
                 var actorId = new ActorId(key);
                 var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                RequiredPaymentEvent requiredPaymentEvent;
+                IReadOnlyCollection<RequiredPaymentEvent> requiredPaymentEvent;
                 try
                 {
-                    requiredPaymentEvent = await actor.HandlePaymentDueEvent(message, CancellationToken.None).ConfigureAwait(false);
+                    requiredPaymentEvent = await actor.HandleEarningEvent(message, CancellationToken.None).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -67,7 +70,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 try
                 {
                     if (requiredPaymentEvent != null)
-                        await context.Publish(requiredPaymentEvent).ConfigureAwait(false);
+                        await Task.WhenAll(requiredPaymentEvent.Select(context.Publish)).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
