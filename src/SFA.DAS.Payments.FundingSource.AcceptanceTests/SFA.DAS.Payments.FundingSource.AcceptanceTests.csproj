@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props')" />
   <Import Project="..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props')" />
   <Import Project="..\packages\Microsoft.NET.Test.Sdk.15.9.0\build\net45\Microsoft.Net.Test.Sdk.props" Condition="Exists('..\packages\Microsoft.NET.Test.Sdk.15.9.0\build\net45\Microsoft.Net.Test.Sdk.props')" />
   <Import Project="..\packages\Microsoft.CodeCoverage.15.9.0\build\netstandard1.0\Microsoft.CodeCoverage.props" Condition="Exists('..\packages\Microsoft.CodeCoverage.15.9.0\build\netstandard1.0\Microsoft.CodeCoverage.props')" />
@@ -177,7 +178,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="TechTalk.SpecFlow, Version=2.4.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <HintPath>..\packages\SpecFlow.2.4.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
+      <HintPath>..\packages\SpecFlow.2.4.1\lib\net45\TechTalk.SpecFlow.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +192,11 @@
     <Compile Include="Steps\ACT2TransTypes1to3BasicTestsSteps.cs" />
     <Compile Include="Steps\FundingSourceSteps.cs" />
     <Compile Include="TestConfiguration.cs" />
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion TT2 and Balancing TT3.feature.cs">
+      <DependentUpon>Completion TT2 and Balancing TT3.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature.cs">
       <DependentUpon>Fully funded - ALL TT1 TT2 and TT3.feature</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -216,40 +222,35 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ALL TT1 TT2 and TT3.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Balancing %28TT3%29.feature.cs">
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion TT2 and Learning TT1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Completion %28TT2%29 and Balancing %28TT3%29.feature</DependentUpon>
+      <DependentUpon>Completion TT2 and Learning TT1.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Learning %28TT1%29.feature.cs">
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion TT2 only.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Completion %28TT2%29 and Learning %28TT1%29.feature</DependentUpon>
+      <DependentUpon>Completion TT2 only.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 only.feature.cs">
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Completion TT2 only.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Completion %28TT2%29 only.feature</DependentUpon>
+      <DependentUpon>Fully funded - Completion TT2 only.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Completion %28TT2%29 only.feature.cs">
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Learning TT1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Fully funded - Completion %28TT2%29 only.feature</DependentUpon>
+      <DependentUpon>Fully funded - Learning TT1.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Learning %28TT1%29.feature.cs">
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning TT1 only - multiple periods.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Fully funded - Learning %28TT1%29.feature</DependentUpon>
+      <DependentUpon>Learning TT1 only - multiple periods.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - multiple periods.feature.cs">
+    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning TT1 only - single period.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Learning %28TT1%29 only - multiple periods.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - single period.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Learning %28TT1%29 only - single period.feature</DependentUpon>
+      <DependentUpon>Learning TT1 only - single period.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature.cs">
       <AutoGen>True</AutoGen>
@@ -278,6 +279,10 @@
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion TT2 and Balancing TT3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Completion TT2 and Balancing TT3.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - ALL TT1 TT2 and TT3.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Fully funded - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
@@ -298,33 +303,29 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Balancing %28TT3%29.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion TT2 and Learning TT1.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion %28TT2%29 and Balancing %28TT3%29.feature.cs</LastGenOutput>
+      <LastGenOutput>Completion TT2 and Learning TT1.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 and Learning %28TT1%29.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion TT2 only.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion %28TT2%29 and Learning %28TT1%29.feature.cs</LastGenOutput>
+      <LastGenOutput>Completion TT2 only.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Completion %28TT2%29 only.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Completion TT2 only.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Completion %28TT2%29 only.feature.cs</LastGenOutput>
+      <LastGenOutput>Fully funded - Completion TT2 only.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Completion %28TT2%29 only.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Learning TT1.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Fully funded - Completion %28TT2%29 only.feature.cs</LastGenOutput>
+      <LastGenOutput>Fully funded - Learning TT1.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Fully funded - Learning %28TT1%29.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning TT1 only - multiple periods.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Fully funded - Learning %28TT1%29.feature.cs</LastGenOutput>
+      <LastGenOutput>Learning TT1 only - multiple periods.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - multiple periods.feature">
+    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning TT1 only - single period.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learning %28TT1%29 only - multiple periods.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\ACT2_TransTypes_1to3_Basic_Tests\Learning %28TT1%29 only - single period.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learning %28TT1%29 only - single period.feature.cs</LastGenOutput>
+      <LastGenOutput>Learning TT1 only - single period.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -377,16 +378,17 @@
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\SpecFlow.2.4.0\build\SpecFlow.targets" Condition="Exists('..\packages\SpecFlow.2.4.0\build\SpecFlow.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\SpecFlow.2.4.0\build\SpecFlow.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.2.4.0\build\SpecFlow.targets'))" />
     <Error Condition="!Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.11.0\build\NUnit.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ServiceFabric.Actors.3.2.162\build\net45\Microsoft.ServiceFabric.Actors.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ServiceFabric.Actors.3.2.162\build\net45\Microsoft.ServiceFabric.Actors.targets'))" />
     <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props'))" />
+    <Error Condition="!Exists('..\packages\SpecFlow.2.4.1\build\SpecFlow.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.2.4.1\build\SpecFlow.targets'))" />
+    <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props'))" />
+    <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.targets'))" />
   </Target>
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
   <Target Name="App_config_AfterCompile" AfterTargets="AfterCompile" Condition="Exists('App.$(Configuration).config')">
@@ -410,4 +412,6 @@
   </Target>
   <Import Project="..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets" Condition="Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets')" />
   <Import Project="..\packages\Microsoft.ServiceFabric.Actors.3.2.162\build\net45\Microsoft.ServiceFabric.Actors.targets" Condition="Exists('..\packages\Microsoft.ServiceFabric.Actors.3.2.162\build\net45\Microsoft.ServiceFabric.Actors.targets')" />
+  <Import Project="..\packages\SpecFlow.2.4.1\build\SpecFlow.targets" Condition="Exists('..\packages\SpecFlow.2.4.1\build\SpecFlow.targets')" />
+  <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.targets" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.targets')" />
 </Project>
