@@ -1,26 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public class ApprenticeshipContractType2EarningEventProcessor : EarningEventProcessorBase<ApprenticeshipContractType2EarningEvent, ApprenticeshipContractType2RequiredPaymentEvent>
+    public class ApprenticeshipContractType2EarningEventProcessor : EarningEventProcessorBase<ApprenticeshipContractType2EarningEvent, RequiredPaymentEvent>
     {
         public ApprenticeshipContractType2EarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
             : base(paymentKeyService, mapper, paymentDueProcessor)
         {
         }
 
-        protected override ApprenticeshipContractType2RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2EarningEvent paymentDue, int type)
+        protected override RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2EarningEvent paymentDue, int type)
         {
-            return new ApprenticeshipContractType2RequiredPaymentEvent
+            if (Enum.IsDefined(typeof(OnProgrammeEarningType), type))
             {
-                OnProgrammeEarningType = (OnProgrammeEarningType)type,
-                SfaContributionPercentage = paymentDue.SfaContributionPercentage,
+                return new ApprenticeshipContractType2RequiredPaymentEvent
+                {
+                    OnProgrammeEarningType = (OnProgrammeEarningType) type,
+                    SfaContributionPercentage = paymentDue.SfaContributionPercentage,
+                };
+            }
+
+            return new IncentiveRequiredPaymentEvent
+            {
+                Type = (IncentivePaymentType)type,
+                ContractType = ContractType.Act2
             };
         }
 

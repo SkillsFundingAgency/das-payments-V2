@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,12 +29,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.paymentDueProcessor = paymentDueProcessor;
         }
 
-        public async Task<IReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(EarningEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(EarningEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
         {
             if (earningEvent == null)
                 throw new ArgumentNullException(nameof(earningEvent));
 
-            var result = new List<TRequiredPayment>();
+            var result = new List<RequiredPaymentEvent>();
 
             foreach (var periodAndType in GetPeriods((TEarningEvent) earningEvent))
             {
@@ -77,7 +78,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 result.Add(requiredPayment);
             }
 
-            return result;
+            return result.AsReadOnly();
 
         }
 
