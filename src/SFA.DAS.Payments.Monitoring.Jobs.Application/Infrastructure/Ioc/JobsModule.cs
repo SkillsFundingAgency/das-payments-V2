@@ -22,8 +22,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<JobStatusService>()
                 .As<IJobStatusService>()
                 .InstancePerLifetimeScope();
-            //builder.RegisterBuildCallback(c =>
-            //    c.Resolve<EndpointConfiguration>().LimitMessageProcessingConcurrencyTo(1));
+            builder.RegisterBuildCallback(c =>
+                c.Resolve<EndpointConfiguration>().LimitMessageProcessingConcurrencyTo(1));
         }
     }
 }

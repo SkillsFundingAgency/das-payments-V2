@@ -19,6 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<Dictionary<JobStepStatus, int>> GetJobStepsStatus(long jobId);
         Task<DateTimeOffset> GetLastJobStepEndTime(long jobId);
         Task<JobModel> GetJob(long jobId);
+        Task<ProviderEarningsJobModel> GetEarningsJob(long jobId);
         Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime);
     }
 
@@ -102,6 +103,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         public async Task<JobModel> GetJob(long jobId)
         {
             return await Jobs.FirstOrDefaultAsync(job => job.Id == jobId);
+        }
+
+        public async Task<ProviderEarningsJobModel> GetEarningsJob(long jobId)
+        {
+            return await ProviderEarningsJobs
+                .Include(job => job.Job)
+                .FirstOrDefaultAsync(earningsJob => earningsJob.Id == jobId);
         }
 
         public async Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime)

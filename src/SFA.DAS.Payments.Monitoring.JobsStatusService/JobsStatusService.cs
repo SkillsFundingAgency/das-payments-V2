@@ -46,11 +46,12 @@ namespace SFA.DAS.Payments.Monitoring.JobsStatusService
             return Task.CompletedTask;
         }
 
-        public async Task JobStepsCompleted(long jobId)
+        public async Task<(bool Finished, DateTimeOffset? endTime)> JobStepsCompleted(long jobId)
         {
             logger.LogVerbose($"Performing job steps completed for job: {jobId}");
-            await jobStatusService.JobStepsCompleted(jobId);
-            logger.LogDebug($"Finished performing job steps completed for job: {jobId}");
+            var finished =  await jobStatusService.JobStepsCompleted(jobId);
+            logger.LogDebug($"Finished performing job steps completed for job: {jobId}.  Finished: {finished}");
+            return finished;
         }
     }
 }

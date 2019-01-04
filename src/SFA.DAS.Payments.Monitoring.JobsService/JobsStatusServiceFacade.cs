@@ -19,20 +19,19 @@ namespace SFA.DAS.Payments.Monitoring.JobsService
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task JobStepsCompleted(long jobId)
+        public async Task<(bool Finished, DateTimeOffset? endTime)> JobStepsCompleted(long jobId)
         {
             var actorId = new ActorId(jobId.ToString());
             var actor = proxyFactory.CreateActorProxy<IJobsStatusService>(new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsStatusServiceActorService"), actorId);
             try
             {
-                await actor.JobStepsCompleted(jobId);
+                return await actor.JobStepsCompleted(jobId);
             }
             catch (Exception e)
             {
                 logger.LogError($"Error invoking the JobStatusStats actor service for job: {jobId}.  Error: {e.Message}", e);
                 throw;
             }
-
         }
     }
 }

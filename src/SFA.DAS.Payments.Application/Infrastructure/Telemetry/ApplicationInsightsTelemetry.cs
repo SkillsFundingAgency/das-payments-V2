@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
         public void TrackDuration(string durationName, TimeSpan duration)
         {
             //telemetry.TrackMetric($"Forecasting {durationName} Duration", duration.TotalMilliseconds, properties);
-            telemetry.GetMetric($"Duration: {durationName}").TrackValue(duration.TotalMilliseconds);
+            telemetry.TrackEvent($"Event: {durationName}", properties, new Dictionary<string, double> { { "duration", duration.TotalMilliseconds } });
         }
 
         public void TrackDependency(string dependencyType, string dependencyName, DateTimeOffset startTime, TimeSpan duration, bool success)
