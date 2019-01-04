@@ -30,13 +30,12 @@ namespace SFA.DAS.Payments.Monitoring.JobsService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            logger.LogInfo("Creating Service Instance Listeners For NonLevyFundedService");
+            logger.LogInfo("Creating Service Instance Listeners For Job Service");
 
             return new List<ServiceInstanceListener>
             {
                 new ServiceInstanceListener(context =>lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
             };
         }
-
     }
 }

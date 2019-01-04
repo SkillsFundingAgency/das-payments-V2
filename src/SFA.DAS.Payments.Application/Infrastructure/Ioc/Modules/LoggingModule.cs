@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 .As<LoggerOptions>()
                 .SingleInstance();
             builder.RegisterType<VersionInfo>().As<IVersionInfo>().SingleInstance();
+            builder.RegisterType<PaymentsLoggerConfigurationBuilder>().As<ILoggerConfigurationBuilder>().InstancePerLifetimeScope();
             builder.Register(c =>
                 {
                     var loggerOptions = c.Resolve<LoggerOptions>();
@@ -51,7 +52,10 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 .SingleInstance();
             builder.RegisterType<ExecutionContext>().As<IExecutionContext>().InstancePerLifetimeScope();
             builder.RegisterType<ExecutionContextFactory>().As<IExecutionContextFactory>().InstancePerLifetimeScope();
-            builder.RegisterType<SerilogLoggerFactory>().As<ISerilogLoggerFactory>().InstancePerLifetimeScope();
+            builder.RegisterType<PaymentsSerilogLoggerFactory>()
+                .UsingConstructor(typeof(ILoggerConfigurationBuilder))
+                .As<ISerilogLoggerFactory>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<PaymentLogger>()
                 .As<IPaymentLogger,ILogger>()
                 .InstancePerLifetimeScope();

@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
             if (paymentMessage == null)
                 return;
             var jobStatusClient = factory.Create();
-            await jobStatusClient.ProcessedJobMessage(paymentMessage.JobId, context.GetMessageId(), generatedMessages)
+            await jobStatusClient.ProcessedJobMessage(paymentMessage.JobId,  context.GetMessageId(), paymentMessage.GetType().FullName, generatedMessages)
                 .ConfigureAwait(false);
         }
     }

@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
     public interface IProviderEarningsJobStatusClient
     {
         Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages);
-        Task ProcessedJobMessage(long jobId, Guid messageId, List<GeneratedMessage> generatedMessages);
+        Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages);
     }
 
     public class ProviderEarningsJobStatusClient : IProviderEarningsJobStatusClient
@@ -43,13 +43,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             logger.LogDebug($"Sent request to record start of provider earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
         }
 
-        public async Task ProcessedJobMessage(long jobId, Guid messageId, List<GeneratedMessage> generatedMessages)
+        public async Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages)
         {
             logger.LogVerbose($"Sending request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
             var itemProcessedEvent = new RecordJobMessageProcessingStatus
             {
                 JobId = jobId,
                 Id = messageId,
+                MessageName = messageName,
                 EndTime = DateTimeOffset.UtcNow,
                 GeneratedMessages = generatedMessages ?? new List<GeneratedMessage>(),
                 Succeeded = true
