@@ -272,11 +272,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy employer, provider moves forward course start date %28adds in English and Maths%29 after payments have occurred PV2-465.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner - learning support OPP and completion payments - PV2-4631.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-levy learner - learning support OPP and completion payments - PV2-463.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
