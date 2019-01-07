@@ -27,7 +27,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
         protected DcHelper DcHelper => Get<DcHelper>();
-        protected static readonly HashSet<long> AimsProcessedForJob = new HashSet<long>();
 
         protected List<Price> CurrentPriceEpisodes
         {
@@ -197,110 +196,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var aim in testLearner.Aims)
             {
-                var aimPeriodisedValues = new List<PriceEpisodePeriodisedValues>();
-
-                foreach (var earning in earnings)
-                {
-                    IDictionary<TransactionType, decimal> earningValues;
-                    
-                    if (earning.AimSequenceNumber.HasValue) // aim is specified in earning - trust it
-                    {
-                        if (earning.AimSequenceNumber.Value != aim.AimSequenceNumber)
-                            continue;
-
-                        earningValues = earning.Values;
-                    }
-                    else if (aim.AimReference == "ZPROG001") // need to guess here, use maths & english earning for maths & english aim, same for on prog
-                    {
-                        earningValues = earning.Values.Where(e => EnumHelper.IsOnProgType(e.Key)).ToDictionary(e => e.Key, e => e.Value);
-                    }
-                    else
-                    {
-                        earningValues = earning.Values.Where(e => EnumHelper.IsFunctionalSkillType(e.Key)).ToDictionary(e => e.Key, e => e.Value);
-                    }
-
-                    PopulatePeriodisedValues(aimPeriodisedValues, earningValues, earning.DeliveryCalendarPeriod.Period);
-                }
-
-                var priceEpisodesForAim = new List<PriceEpisode>();
-
-                foreach (var priceEpisode in aim.PriceEpisodes)
-                {
-                    var episodeStartDate = priceEpisode.TotalTrainingPriceEffectiveDate.ToDate();
-
-                    var newPriceEpisode = new PriceEpisode
-                    {
-                        PriceEpisodeIdentifier = priceEpisode.PriceEpisodeId ?? priceEpisode.PriceDetails,
-                        PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>(),
-                        PriceEpisodeValues = new PriceEpisodeValues(),
-                    };
-
-                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = priceEpisode.AimSequenceNumber;
-                    newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = episodeStartDate;
-                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType = priceEpisode.ContractType == Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
-                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
-                    newPriceEpisode.PriceEpisodeValues.TNP1 = priceEpisode.TotalTrainingPrice;
-                    newPriceEpisode.PriceEpisodeValues.TNP2 = priceEpisode.TotalAssessmentPrice;
-                    newPriceEpisode.PriceEpisodeValues.TNP3 = priceEpisode.ResidualTrainingPrice;
-                    newPriceEpisode.PriceEpisodeValues.TNP4 = priceEpisode.ResidualAssessmentPrice;
-                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice = newPriceEpisode.PriceEpisodeValues.TNP1 + newPriceEpisode.PriceEpisodeValues.TNP2;
-                    newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct = aim.AimReference == "ZPROG001" ? priceEpisode.SfaContributionPercentage.ToPercent() : 1;
-
-                    priceEpisodesForAim.Add(newPriceEpisode);
-                }
-
-                var orderedPriceEpisodes = priceEpisodesForAim
-                    .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
-                    .ToList();
-
-                for (var i = 0; i < orderedPriceEpisodes.Count; i++)
-                {
-                    var currentPriceEpisode = priceEpisodesForAim[i];
-                    var tnpStartDate = orderedPriceEpisodes
-                        .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
-                                    currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
-                        .PriceEpisodeValues.EpisodeStartDate;
-                    currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
-                    if (i + 1 < orderedPriceEpisodes.Count &&
-                        orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.HasValue)
-                    {
-                        currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
-                            orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.AddDays(-1);
-                    }
-                    else if (aim.ActualDurationAsTimespan.HasValue)
-                    {
-                        currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
-                            aim.StartDate.ToDate() + aim.ActualDurationAsTimespan;
-                    }
-
-                    var episodeStart = currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value.ToCalendarPeriod();
-                    var episodeLastPeriod = currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate?.ToCalendarPeriod().Period ?? 12;
-
-                    foreach (var currentValues in aimPeriodisedValues)
-                    {
-                        PriceEpisodePeriodisedValues newValues;
-
-                        // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
-                        if ((episodeStart.Period > 1 && episodeStart.GetCollectionYear() == CollectionYear) || episodeLastPeriod < 12)
-                        {
-                            newValues = new PriceEpisodePeriodisedValues { AttributeName = currentValues.AttributeName };
-
-                            for (var p = 1; p < 13; p++)
-                            {
-                                var amount = p >= episodeStart.Period && p <= episodeLastPeriod ? currentValues.GetValue(p) : 0;
-                                newValues.SetValue(p, amount);
-                            }
-                        }
-                        else // put everything as is for previous years
-                        {
-                            newValues = currentValues;
-                        }
-
-                        currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
-                    }
-                }
-
-                learner.PriceEpisodes.AddRange(priceEpisodesForAim);
+                learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
 
                 var learningDelivery = new LearningDelivery
                 {
@@ -322,137 +218,129 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        private static void PopulatePeriodisedValues(IList<PriceEpisodePeriodisedValues> aimPeriodisedValues, IDictionary<TransactionType, decimal> earningValues, byte period)
+        private List<PriceEpisode> GeneratePriceEpisodes(Aim aim, IList<Earning> earnings)
         {
-            foreach (var earningValue in earningValues)
-            {
-                var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
-                if (periodisedValues == null)
-                {
-                    periodisedValues = new PriceEpisodePeriodisedValues {AttributeName = earningValue.Key.ToAttributeName()};
-                    aimPeriodisedValues.Add(periodisedValues);
-                }
+            var aimPeriodisedValues = new List<PriceEpisodePeriodisedValues>();
 
-                SetPeriodValue(period, periodisedValues, earningValue.Value);
+            PriceEpisodePeriodisedValues sfaContributionPeriodisedValue = null;
+
+            if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
+            {
+                sfaContributionPeriodisedValue = new PriceEpisodePeriodisedValues { AttributeName = "PriceEpisodeSFAContribPct", };
+                aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
             }
-        }
-
-        protected void PopulateLearner(FM36Learner learner, Training training, List<Earning> earnings)
-        {
-            var values = new List<PriceEpisodePeriodisedValues>();
-
-            foreach (var earning in earnings)
+            
+            foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
+                                                        e.AimSequenceNumber == aim.AimSequenceNumber))
             {
-                PopulatePeriodisedValues(values, earning.Values, earning.DeliveryCalendarPeriod.Period);
-            }
-
-            learner.PriceEpisodes = GetPriceEpisodes(training, values, CurrentPriceEpisodes, earnings, CollectionYear);
-
-            var testLearner = TestSession.Learners.First(x => x.LearnRefNumber == learner.LearnRefNumber);
-            learner.ULN = testLearner.Uln;
-            var course = testLearner.Course;
-
-            learner.LearningDeliveries = new List<LearningDelivery>(new[]
-            {
-                new LearningDelivery
+                var period = earning.DeliveryCalendarPeriod.Period;
+                foreach (var earningValue in earning.Values)
                 {
-                    AimSeqNumber = training.AimSequenceNumber,
-                    LearningDeliveryValues = new LearningDeliveryValues
+                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
+                    if (periodisedValues == null)
                     {
-                        LearnAimRef = training.AimReference,
-                        LearnDelInitialFundLineType = training.FundingLineType,
-                        StdCode = course.StandardCode,
-                        FworkCode = course.FrameworkCode,
-                        ProgType = course.ProgrammeType,
-                        PwayCode = course.PathwayCode,
+                        periodisedValues = new PriceEpisodePeriodisedValues { AttributeName = earningValue.Key.ToAttributeName() };
+                        aimPeriodisedValues.Add(periodisedValues);
                     }
-                }
-            });
-        }
 
-        private static List<PriceEpisode> GetPriceEpisodes(
-            Training learnerEarnings,
-            List<PriceEpisodePeriodisedValues> periodisedValues,
-            List<Price> priceEpisodes,
-            List<Earning> earnings, 
-            string collectionYear)
-        {
-            if (priceEpisodes == null)
-            {
-                priceEpisodes = new List<Price>
+                    SetPeriodValue(period, periodisedValues, earningValue.Value);
+                }
+
+                if (sfaContributionPeriodisedValue != null)
                 {
-                    new Price
-                    {
-                        TotalAssessmentPrice = learnerEarnings.TotalAssessmentPrice,
-                        TotalTrainingPrice = learnerEarnings.TotalTrainingPrice,
-                        TotalAssessmentPriceEffectiveDate = learnerEarnings.StartDate,
-                        TotalTrainingPriceEffectiveDate = learnerEarnings.StartDate
-                    }
-                };
+                    SetPeriodValue(period, sfaContributionPeriodisedValue, earning.SfaContributionPercentage.ToPercent());
+                }
             }
+            
+            var priceEpisodePrefix = (aim.StandardCode != 0)
+                ? $"{aim.ProgrammeType}-{aim.StandardCode}"
+                : $"{aim.ProgrammeType}-{aim.FrameworkCode}-{aim.PathwayCode}";
 
-            var result = new List<PriceEpisode>();
+            var priceEpisodesForAim = new List<PriceEpisode>();
 
-            for (var i = 0; i < priceEpisodes.Count; i++)
+            foreach (var priceEpisode in aim.PriceEpisodes)
             {
-                var episode = priceEpisodes[i];
-                DateTime? actualEndDate = null;
+                var id = CalculatePriceEpisodeIdentifier(priceEpisode, priceEpisodePrefix);
 
-                if (i < priceEpisodes.Count - 1)
-                {
-                    var nextEpisodeStartDate = priceEpisodes[i + 1].TotalTrainingPriceEffectiveDate.ToDate();
-                    actualEndDate = nextEpisodeStartDate.AddMonths(-1);
-                }
-
-                var episodeStart = episode.TotalTrainingPriceEffectiveDate.ToCalendarPeriod();
-                var episodeLastPeriod = actualEndDate?.ToCalendarPeriod().Period ?? 12;
-                var episodeAcademicYear = int.Parse(episodeStart.Name.Substring(0, 4));
                 var firstEarningForPriceEpisode = earnings.First(e =>
                 {
                     var deliveryPeriod = e.DeliveryCalendarPeriod;
                     var earningAcademicYear = int.Parse(deliveryPeriod.Name.Substring(0, 4));
-                    return earningAcademicYear * 100 + deliveryPeriod.Period >= episodeAcademicYear * 100 + episodeStart.Period;
+                    return earningAcademicYear * 100 + deliveryPeriod.Period >=
+                           int.Parse(priceEpisode.EpisodeStartDate.ToCalendarPeriod().Name
+                               .Substring(0, 4)) * 100 + priceEpisode
+                               .EpisodeStartDate.ToCalendarPeriod().Period;
                 });
+                var sfaContributionPercent = (firstEarningForPriceEpisode.SfaContributionPercentage ??
+                                  priceEpisode.SfaContributionPercentage).ToPercent();
 
-                var sfaPercent = (firstEarningForPriceEpisode.SfaContributionPercentage ?? learnerEarnings.SfaContributionPercentage).ToPercent();
-
-                var priceEpisode = new PriceEpisode
+                var newPriceEpisode = new PriceEpisode
                 {
-                    PriceEpisodeIdentifier = "pe-" + (i + 1),
-                    PriceEpisodeValues = new PriceEpisodeValues
-                    {
-                        EpisodeStartDate = episode.TotalTrainingPriceEffectiveDate.ToDate(),
-                        PriceEpisodeCompletionElement = learnerEarnings.CompletionAmount,
-                        PriceEpisodeCompleted = learnerEarnings.CompletionStatus.Equals("completed", StringComparison.OrdinalIgnoreCase),
-                        TNP1 = episode.TotalTrainingPrice,
-                        TNP2 = episode.TotalAssessmentPrice,
-                        TNP3 = episode.ResidualTrainingPrice,
-                        TNP4 = episode.ResidualAssessmentPrice,
-                        PriceEpisodeInstalmentValue = learnerEarnings.InstallmentAmount,
-                        PriceEpisodePlannedInstalments = learnerEarnings.NumberOfInstallments,
-                        PriceEpisodeActualInstalments = learnerEarnings.ActualInstallments,
-                        PriceEpisodeBalancePayment = learnerEarnings.BalancingPayment,
-                        PriceEpisodeFundLineType = learnerEarnings.FundingLineType,
-                        PriceEpisodeBalanceValue = learnerEarnings.BalancingPayment,
-                        PriceEpisodeCompletionPayment = learnerEarnings.CompletionAmount,
-                        PriceEpisodeContractType = learnerEarnings.ContractType.ToString("G"),
-                        PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
-                        PriceEpisodePlannedEndDate = episode.TotalTrainingPriceEffectiveDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
-                        PriceEpisodeActualEndDate = actualEndDate,
-                        PriceEpisodeSFAContribPct = sfaPercent,
-                        PriceEpisodeAimSeqNumber = learnerEarnings.AimSequenceNumber,
-                    },
-                    PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
+                    PriceEpisodeIdentifier = id,
+                    PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>(),
+                    PriceEpisodeValues = new PriceEpisodeValues(),
                 };
-                
-                foreach (var currentValues in periodisedValues)
+
+                newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = CalculateAimSequenceNumber(priceEpisode);
+                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = priceEpisode.EpisodeStartDate;
+                newPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType = CalculateContractType(priceEpisode);
+                newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
+                newPriceEpisode.PriceEpisodeValues.TNP1 = priceEpisode.TotalTrainingPrice;
+                newPriceEpisode.PriceEpisodeValues.TNP2 = priceEpisode.TotalAssessmentPrice;
+                newPriceEpisode.PriceEpisodeValues.TNP3 = priceEpisode.ResidualTrainingPrice;
+                newPriceEpisode.PriceEpisodeValues.TNP4 = priceEpisode.ResidualAssessmentPrice;
+                newPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice = priceEpisode.TotalTNPPrice;
+                newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct = sfaContributionPercent;
+
+                priceEpisodesForAim.Add(newPriceEpisode);
+            }
+
+            var orderedPriceEpisodes = priceEpisodesForAim
+                .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
+                .ToList();
+            for (var i = 0; i < orderedPriceEpisodes.Count; i++)
+            {
+                var currentPriceEpisode = priceEpisodesForAim[i];
+                var tnpStartDate = orderedPriceEpisodes
+                    .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
+                                currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
+                    .PriceEpisodeValues.EpisodeStartDate;
+                currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
+
+                if (aim.ActualDurationAsTimespan.HasValue)
+                {
+                    currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
+                        aim.StartDate.ToDate() + aim.ActualDurationAsTimespan;
+                }
+
+                if (i + 1 < orderedPriceEpisodes.Count &&
+                         orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.HasValue)
+                {
+                    var actualEndDate = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.AddDays(-1);
+                    if (currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.HasValue)
+                    {
+                        if (actualEndDate < currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate)
+                        {
+                            currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate = actualEndDate;
+                        }
+                    }
+                    else
+                    {
+                        currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate = actualEndDate;
+                    }
+                }
+
+                var episodeLastPeriod = LastOnProgPeriod(currentPriceEpisode);
+                var episodeStart = currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value.ToCalendarPeriod();
+
+                foreach (var currentValues in aimPeriodisedValues)
                 {
                     PriceEpisodePeriodisedValues newValues;
 
                     // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
-                    if ((episodeStart.Period > 1 && episodeStart.GetCollectionYear() == collectionYear) || episodeLastPeriod < 12)
+                    if (episodeStart.GetCollectionYear() == CollectionYear && (episodeStart.Period > 1 || episodeLastPeriod < 12))
                     {
-                        newValues = new PriceEpisodePeriodisedValues {AttributeName = currentValues.AttributeName};
+                        newValues = new PriceEpisodePeriodisedValues { AttributeName = currentValues.AttributeName };
 
                         for (var p = 1; p < 13; p++)
                         {
@@ -465,13 +353,53 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         newValues = currentValues;
                     }
 
-                    priceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
+                    if (newValues.AttributeName == "PriceEpisodeSFAContribPct" && aim.AimReference == "ZPROG001")
+                    {
+                        currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
+                    }
+                    else if ((EnumHelper.IsOnProgType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) ||
+                        EnumHelper.IsIncentiveType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName))) &&
+                        aim.AimReference == "ZPROG001")
+                    {
+                        currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
+                    }
+                    else if (EnumHelper.IsFunctionalSkillType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) &&
+                             aim.AimReference != "ZPROG001")
+                    {
+                        currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
+                    }
                 }
-
-                result.Add(priceEpisode);
             }
 
-            return result;
+            return priceEpisodesForAim;
+
+            // Local methods
+            int CalculateAimSequenceNumber(Price priceEpisode)
+            {
+                return (priceEpisode.AimSequenceNumber == 0)
+                    ? aim.AimSequenceNumber
+                    : priceEpisode.AimSequenceNumber;
+            }
+
+            string CalculateContractType(Price priceEpisode)
+            {
+                return priceEpisode.ContractType ==
+                       Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
+            }
+
+            byte LastOnProgPeriod(PriceEpisode currentPriceEpisode)
+            {
+                return currentPriceEpisode.PriceEpisodeValues
+                           .PriceEpisodeActualEndDate?.ToLastOnProgPeriod().Period ?? 12;
+            }
+        }
+
+        private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
+        {
+            var episodeStartDate = priceEpisode.EpisodeStartDate;
+            return string.IsNullOrEmpty(priceEpisode.PriceEpisodeId)
+                ? $"{priceEpisodePrefix}-{episodeStartDate.Day:D2}/{episodeStartDate.Month:D2}/{episodeStartDate.Year}"
+                : priceEpisode.PriceEpisodeId;
         }
 
         private static void SetPeriodValue(int period, PriceEpisodePeriodisedValues periodisedValues, decimal amount)
@@ -479,7 +407,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);
         }
-        
+
         protected static List<Earning> CreateEarnings(Table table)
         {
             var earnings = table.CreateSet<Earning>().ToList();

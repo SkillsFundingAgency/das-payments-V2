@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Model.Core.Entities;
+﻿using System;
+using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow.Assist.Attributes;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
@@ -18,6 +19,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string SfaContributionPercentage { get; set; }
         public decimal ResidualTrainingPrice { get; set; }
         public decimal ResidualAssessmentPrice { get; set; }
+        public string ResidualTrainingPriceEffectiveDate { get; set; }
 
+        public DateTime EpisodeStartDate =>
+            ResidualAssessmentPrice == 0 && ResidualTrainingPrice == 0
+                ? TotalTrainingPriceEffectiveDate.ToDate()
+                : ResidualTrainingPriceEffectiveDate.ToDate();
+
+        public decimal TotalTNPPrice =>
+            (ResidualTrainingPrice == 0 && ResidualAssessmentPrice == 0)
+                ? TotalTrainingPrice + TotalAssessmentPrice
+                : ResidualTrainingPrice + ResidualAssessmentPrice;
     }
 }

@@ -65,7 +65,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"aims details are changed as follows")]
         public void GivenAimsDetailsAreChangedAsFollows(Table table)
         {
-            AimsProcessedForJob.Remove(TestSession.JobId);
             AddTestAims(table.CreateSet<Aim>().ToList());
         }
 
@@ -128,34 +127,55 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var earnings = CreateEarnings(table);
             var learners = new List<FM36Learner>();
 
-            if (CurrentIlr == null)
-            {
-                // Learner -> Aims -> Price Episodes
-                foreach (var testSessionLearner in TestSession.Learners)
-                {
-                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
-                    var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
-                    PopulateLearner(learner, testSessionLearner, learnerEarnings);
-
-                    await SendProcessLearnerCommand(learner);
-
-                    learners.Add(learner);
-                }
-            }
-            else
+            if (CurrentIlr != null)
             {
                 foreach (var training in CurrentIlr)
                 {
-                    var learnerId = training.LearnerId;
-                    var learner = new FM36Learner {LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber};
-                    var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
+                    var aim = new Aim(training);
+                    var aims = new List<Aim> {aim};
+                    AddTestAims(aims);
 
-                    PopulateLearner(learner, training, learnerEarnings);
-
-                    await SendProcessLearnerCommand(learner);
-                    
-                    learners.Add(learner);
+                    if (CurrentPriceEpisodes == null)
+                    {
+                        aim.PriceEpisodes.Add(new Price
+                        {
+                            AimSequenceNumber = training.AimSequenceNumber,
+                            TotalAssessmentPrice = training.TotalAssessmentPrice,
+                            TotalTrainingPrice = training.TotalTrainingPrice,
+                            TotalTrainingPriceEffectiveDate = training.StartDate,
+                            TotalAssessmentPriceEffectiveDate = training.StartDate,
+                            SfaContributionPercentage = training.SfaContributionPercentage,
+                        });
+                    }
+                    else
+                    {
+                        foreach (var currentPriceEpisode in CurrentPriceEpisodes)
+                        {
+                            if (currentPriceEpisode.AimSequenceNumber == 0)
+                            {
+                                aims.Single().PriceEpisodes.Add(currentPriceEpisode);
+                            }
+                            else
+                            {
+                                var matchingAim = aims.First(x => x.AimSequenceNumber ==
+                                                                  currentPriceEpisode.AimSequenceNumber);
+                                matchingAim.PriceEpisodes.Add(currentPriceEpisode);
+                            }
+                        }
+                    }
                 }
+            }
+            
+            // Learner -> Aims -> Price Episodes
+            foreach (var testSessionLearner in TestSession.Learners)
+            {
+                var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
+                var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
+                PopulateLearner(learner, testSessionLearner, learnerEarnings);
+
+                await SendProcessLearnerCommand(learner);
+
+                learners.Add(learner);
             }
             
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);

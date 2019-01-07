@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using Autofac.Core;
 using Autofac.Extras.Moq;
 using AutoMapper;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.PaymentsDue.Messages.Events;
@@ -17,7 +17,7 @@ using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
-using SFA.DAS.Payments.RequiredPayments.Domain.Services;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Handlers
@@ -196,6 +196,68 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
             Assert.IsNotNull(actualRequiredPayment);
             Assert.AreEqual("2", actualRequiredPayment.PriceEpisodeIdentifier);
 
+        }
+
+        [Test]
+        [TestCase(null, null, null, 0)]
+        [TestCase(900, null, null, 1)]
+        [TestCase(900, 100, null, .9)]
+        [TestCase(900, 50, 50, .9)]
+        public async Task TestSfaContributionIsCalculatedForZeroEarningRefunds(decimal? sfaContribution, decimal? employerContribution1, decimal? employerContribution2, decimal expectedPercent)
+        {
+            // arrange
+            var paymentDue = new ApprenticeshipContractType2PaymentDueEvent
+            {
+                Ukprn = 1,
+                PriceEpisodeIdentifier = "priceEpisodeIdentifier",
+                AmountDue = 0,
+                SfaContributionPercentage = 0,
+                CollectionPeriod = new CalendarPeriod(2018, 10),
+                DeliveryPeriod = new CalendarPeriod(2018, 9),
+                Learner = CreateLearner(),
+                LearningAim = CreateLearningAim(),
+                Type = OnProgrammeEarningType.Balancing
+            };
+
+            var paymentHistoryEntities = new List<PaymentHistoryEntity>();
+
+            if (sfaContribution.HasValue)
+                paymentHistoryEntities.Add(CreatePaymentEntity(sfaContribution.Value, paymentDue, FundingSourceType.CoInvestedSfa));
+
+            if (employerContribution1.HasValue)
+                paymentHistoryEntities.Add(CreatePaymentEntity(employerContribution1.Value, paymentDue, FundingSourceType.CoInvestedEmployer));
+
+            if (employerContribution2.HasValue)
+                paymentHistoryEntities.Add(CreatePaymentEntity(employerContribution2.Value, paymentDue, FundingSourceType.CoInvestedEmployer));
+
+            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey(paymentDue.LearningAim.Reference, (int)OnProgrammeEarningType.Balancing, paymentDue.DeliveryPeriod)).Returns("payment key").Verifiable();
+            paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities.ToArray())).Verifiable();
+            paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(0, It.IsAny<Payment[]>())).Returns(-100).Verifiable();
+
+            // act
+            var actualRequiredPayment = await act2PaymentDueEventHandler.HandlePaymentDue(paymentDue, paymentHistoryCacheMock.Object, CancellationToken.None);
+
+            // assert
+            Assert.IsNotNull(actualRequiredPayment);
+            Assert.AreEqual(expectedPercent, ((ApprenticeshipContractType2RequiredPaymentEvent)actualRequiredPayment).SfaContributionPercentage);
+        }
+
+        private static PaymentHistoryEntity CreatePaymentEntity(decimal amount, ApprenticeshipContractType2PaymentDueEvent paymentDue, FundingSourceType fundingSourceType)
+        {
+            return new PaymentHistoryEntity
+            {
+                Amount = amount,
+                FundingSource = fundingSourceType,
+                TransactionType = (int)OnProgrammeEarningType.Learning,
+                PriceEpisodeIdentifier = "2",
+                CollectionPeriod = new CalendarPeriod(2018, 9).Name,
+                DeliveryPeriod = new CalendarPeriod(2018, 9).Name,
+                Ukprn = 1,
+                LearnAimReference = paymentDue.LearningAim.Reference,
+                LearnerReferenceNumber = paymentDue.Learner.ReferenceNumber,
+                ExternalId = Guid.NewGuid()
+
+            };
         }
 
         private static LearningAim CreateLearningAim()

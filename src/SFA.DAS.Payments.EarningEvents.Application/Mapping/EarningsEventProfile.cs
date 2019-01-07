@@ -28,10 +28,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
-                .ForMember(destinationMember => destinationMember.SfaContributionPercentage, opt => opt.ResolveUsing((cmd, ev) => cmd.Learner.PriceEpisodes.GetLatestOnProgPriceEpisode()?.PriceEpisodeValues.PriceEpisodeSFAContribPct));
+                .Ignore(dest => dest.SfaContributionPercentage)
+                ;
+
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>()
-                .ForMember(destinationMember => destinationMember.AgreementId, opt => opt.Ignore());
+                .Ignore(dest => dest.AgreementId)
+                ;
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>();
 

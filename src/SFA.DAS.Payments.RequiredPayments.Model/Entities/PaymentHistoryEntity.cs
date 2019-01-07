@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
 {
@@ -13,5 +14,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         public string DeliveryPeriod { get; set; }
         public string CollectionPeriod { get; set; }
         public decimal Amount { get; set; }
+        public FundingSourceType FundingSource { get; set; }
     }
 }
