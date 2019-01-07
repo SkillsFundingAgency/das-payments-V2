@@ -66,9 +66,9 @@ Scenario Outline: Non-levy learner taking single Level 1 aim, progressing to and
 	# Note the order of Aim Sequence Number
 	And price details are changed as follows
 		| Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-		| 1st price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   |                             |
+		| 1st price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 100%                        |
 		| 2nd price details | 9000                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 90%                         |
-		| 3rd price details | 0                    | 09/Aug/Current Academic Year        | 0                      | 09/Aug/Current Academic Year          | Act2          | 3                   |                             |
+		| 3rd price details | 0                    | 09/Aug/Current Academic Year        | 0                      | 09/Aug/Current Academic Year          | Act2          | 3                   | 100%                        |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	# New OnProgrammeMathsAndEnglish column
 	Then the following learner earnings should be generated
