@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         }
 
-        protected abstract TRequiredPayment CreateRequiredPayment(TEarningEvent paymentDue, int type);
+        protected abstract TRequiredPayment CreateRequiredPayment(TEarningEvent earningEvent, int type);
 
         protected abstract IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(TEarningEvent earningEvent);
     }

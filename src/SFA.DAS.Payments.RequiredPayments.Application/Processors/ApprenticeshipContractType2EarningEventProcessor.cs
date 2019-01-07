@@ -18,14 +18,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         {
         }
 
-        protected override RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2EarningEvent paymentDue, int type)
+        protected override RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2EarningEvent earningEvent, int type)
         {
             if (Enum.IsDefined(typeof(OnProgrammeEarningType), type))
             {
                 return new ApprenticeshipContractType2RequiredPaymentEvent
                 {
                     OnProgrammeEarningType = (OnProgrammeEarningType) type,
-                    SfaContributionPercentage = paymentDue.SfaContributionPercentage,
+                    SfaContributionPercentage = earningEvent.SfaContributionPercentage,
                 };
             }
 

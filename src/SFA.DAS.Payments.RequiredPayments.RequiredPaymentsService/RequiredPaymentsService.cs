@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
         public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(EarningEvent earningEvent, CancellationToken cancellationToken)
         {
-            paymentLogger.LogVerbose($"Handling PaymentDue for {apprenticeshipKey}");
+            paymentLogger.LogVerbose($"Handling EarningEvent for {apprenticeshipKey}");
 
             await Initialise().ConfigureAwait(false);
 

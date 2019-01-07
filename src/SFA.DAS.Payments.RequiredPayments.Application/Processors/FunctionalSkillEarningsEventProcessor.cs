@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         {
         }
 
-        protected override IncentiveRequiredPaymentEvent CreateRequiredPayment(FunctionalSkillEarningsEvent paymentDue, int type)
+        protected override IncentiveRequiredPaymentEvent CreateRequiredPayment(FunctionalSkillEarningsEvent earningEvent, int type)
         {
             return new IncentiveRequiredPaymentEvent
             {
