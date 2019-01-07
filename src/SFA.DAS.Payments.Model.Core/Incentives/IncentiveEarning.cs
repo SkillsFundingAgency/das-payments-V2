@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.Model.Core.Incentives
 {
-    public class IncentiveEarning
+    public class IncentiveEarning : Earning
     {
         public IncentiveEarningType Type { get; set; }
-        public DateTime CensusDate { get; set; }
-        public ReadOnlyCollection<EarningPeriod> Periods { get; set; }
     }
 }

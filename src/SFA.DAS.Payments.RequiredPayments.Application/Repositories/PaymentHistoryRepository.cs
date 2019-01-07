@@ -39,7 +39,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     payment.PriceEpisodeIdentifier,
                     payment.DeliveryPeriod,
                     payment.CollectionPeriod,
-                    payment.Amount
+                    payment.Amount,
+                    payment.FundingSource
                 })
                 .ToListAsync(cancellationToken);
 
@@ -53,7 +54,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
                 DeliveryPeriod = payment.DeliveryPeriod.Name,
                 CollectionPeriod = payment.CollectionPeriod.Name,
-                Amount = payment.Amount
+                Amount = payment.Amount,
+                FundingSource = payment.FundingSource
             })
             .ToList();
         }

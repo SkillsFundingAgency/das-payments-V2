@@ -28,13 +28,13 @@ Scenario Outline: Non-Levy standard learner, price is changed and a negative amo
         | R02/Current Academic Year | Sep/Current Academic Year | 675                    | 75                          | Learning         |
 
     But the Provider now changes the Learner details as follows
-        | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | 1        | start of academic year | 12 months        | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             | 12 months       | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
+        | 1        | start of academic year | 12 months        | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             | 12 months       | continuing        | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
 
 	And price details as follows
-        | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date |
-        | 1st price details | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             |
-        | 2nd price details | 1200                 | Oct/Current Academic Year           | 200                    | Oct/Current Academic Year             |
+        | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage |
+        | 1st price details | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             | 90%                         |
+        | 2nd price details | 1200                 | Oct/Current Academic Year           | 200                    | Oct/Current Academic Year             | 90%                         |
 
     When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
