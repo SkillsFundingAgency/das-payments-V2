@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -7,6 +8,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain;
+using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
@@ -18,20 +20,31 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         {
         }
 
-        protected override RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2EarningEvent earningEvent, int type)
+        protected override RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2EarningEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments)
         {
-            if (Enum.IsDefined(typeof(OnProgrammeEarningType), type))
+            if (Enum.IsDefined(typeof(OnProgrammeEarningType), periodAndType.type))
             {
+                var sfaContributionPercentage = periodAndType.period.SfaContributionPercentage.GetValueOrDefault(earningEvent.SfaContributionPercentage);
+
+                // YUCK: refund with 0 earning
+                // TODO: work out the better way of doing it
+                if (sfaContributionPercentage == 0 && periodAndType.period.Amount == 0 && payments.Length > 0)
+                {
+                    var sfaContribution = payments.Where(p => p.FundingSource == FundingSourceType.CoInvestedSfa).Sum(p => p.Amount);
+                    var employerContribution = payments.Where(p => p.FundingSource == FundingSourceType.CoInvestedEmployer).Sum(p => p.Amount);
+                    sfaContributionPercentage = sfaContribution / (sfaContribution + employerContribution);
+                }
+            
                 return new ApprenticeshipContractType2RequiredPaymentEvent
                 {
-                    OnProgrammeEarningType = (OnProgrammeEarningType) type,
-                    SfaContributionPercentage = earningEvent.SfaContributionPercentage,
+                    OnProgrammeEarningType = (OnProgrammeEarningType) periodAndType.type,
+                    SfaContributionPercentage = sfaContributionPercentage,
                 };
             }
 
             return new IncentiveRequiredPaymentEvent
             {
-                Type = (IncentivePaymentType)type,
+                Type = (IncentivePaymentType)periodAndType.type,
                 ContractType = ContractType.Act2
             };
         }

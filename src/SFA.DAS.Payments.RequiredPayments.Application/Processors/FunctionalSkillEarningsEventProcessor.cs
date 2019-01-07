@@ -5,6 +5,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.RequiredPayments.Domain;
+using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
@@ -16,11 +17,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         {
         }
 
-        protected override IncentiveRequiredPaymentEvent CreateRequiredPayment(FunctionalSkillEarningsEvent earningEvent, int type)
+        protected override IncentiveRequiredPaymentEvent CreateRequiredPayment(FunctionalSkillEarningsEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments)
         {
             return new IncentiveRequiredPaymentEvent
             {
-                Type = (IncentivePaymentType)type,
+                Type = (IncentivePaymentType)periodAndType.type,
                 ContractType = ContractType.Act2
             };
         }

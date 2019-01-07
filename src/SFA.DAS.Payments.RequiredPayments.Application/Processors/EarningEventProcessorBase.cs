@@ -41,6 +41,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 if (periodAndType.period.Period > earningEvent.CollectionPeriod.Period) // cut off future periods
                     continue;
 
+
                 var deliveryPeriod = new CalendarPeriod(earningEvent.CollectionYear, periodAndType.period.Period);
                 var key = paymentKeyService.GeneratePaymentKey(earningEvent.LearningAim.Reference, periodAndType.type, deliveryPeriod);
 
@@ -62,7 +63,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 else
                     priceEpisodeIdentifier = periodAndType.period.PriceEpisodeIdentifier;
 
-                var requiredPayment = CreateRequiredPayment((TEarningEvent) earningEvent, periodAndType.type);
+                var requiredPayment = CreateRequiredPayment((TEarningEvent) earningEvent, periodAndType, payments);
 
                 requiredPayment.AmountDue = amountDue;
                 requiredPayment.Learner = earningEvent.Learner.Clone();
@@ -82,7 +83,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         }
 
-        protected abstract TRequiredPayment CreateRequiredPayment(TEarningEvent earningEvent, int type);
+        protected abstract TRequiredPayment CreateRequiredPayment(TEarningEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments);
 
         protected abstract IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(TEarningEvent earningEvent);
     }
