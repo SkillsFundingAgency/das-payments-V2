@@ -25,13 +25,16 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Services
                 IlrSubmissionDate = message.IlrSubmissionDateTime
             };
 
-            return message.Earnings.SelectMany(earning => earningProcessor.HandleEarning(
+            var paymentsDue = message.Earnings.SelectMany(earning => earningProcessor.HandleEarning(
                 submission,
                 earning,
                 message.Learner,
                 message.LearningAim,
                 ContractType.Act2
-            )).ToArray();
+            ))
+            .ToList();
+            paymentsDue.ForEach(paymentDue => paymentDue.EarningEventId = message.EventId);
+            return paymentsDue.ToArray();
         }
     }
 }

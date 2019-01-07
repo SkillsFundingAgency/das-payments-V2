@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
             jobStep = new JobStepModel
             {
-                JobId = jobMessageStatus.JobId,
+                JobId = 21,
                 StartTime = DateTimeOffset.UtcNow.AddSeconds(-10),
                 MessageName = "Message1",
                 MessageId = jobMessageStatus.Id,
@@ -45,7 +45,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             var mockDataContext = mocker.Mock<IJobsDataContext>();
             mockDataContext.Setup(x => x.GetJobIdFromDcJobId(It.IsAny<long>()))
                 .Returns(Task.FromResult<long>(99));
-
+            mockDataContext.Setup(x => x.GetJobByDcJobId(It.IsAny<long>()))
+                .Returns(Task.FromResult<JobModel>(new JobModel { Id = jobStep.JobId, DcJobId = jobMessageStatus.JobId }));
             jobSteps = new List<JobStepModel> { jobStep };
             mockDataContext
                 .Setup(dc => dc.GetJobSteps(It.IsAny<List<Guid>>()))
@@ -69,14 +70,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             var service = mocker.Create<ProviderEarningsJobService>();
             await service.JobStarted(jobStarted);
             mocker.Mock<IJobsDataContext>()
-                .Verify(dc => dc.SaveNewProviderEarningsJob(
+                .Verify(dc => dc.SaveNewJob(
                     It.Is<JobModel>(job =>
-                        job.StartTime == jobStarted.StartTime && job.Status == Data.Model.JobStatus.InProgress),
-                    It.Is<ProviderEarningsJobModel>(providerJob =>
-                        providerJob.DcJobId == jobStarted.JobId && providerJob.CollectionPeriod == jobStarted.CollectionPeriod
-                                                                && providerJob.CollectionYear == jobStarted.CollectionYear
-                                                                && providerJob.IlrSubmissionTime == jobStarted.IlrSubmissionTime
-                                                                && providerJob.Ukprn == jobStarted.Ukprn),
+                        job.StartTime == jobStarted.StartTime
+                        && job.JobType == JobType.EarningsJob
+                        && job.Status == Data.Model.JobStatus.InProgress && job.DcJobId == jobStarted.JobId
+                        && job.CollectionPeriod == jobStarted.CollectionPeriod
+                        && job.CollectionYear == jobStarted.CollectionYear
+                        && job.IlrSubmissionTime == jobStarted.IlrSubmissionTime
+                        && job.Ukprn == jobStarted.Ukprn),
                     It.IsAny<List<JobStepModel>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 

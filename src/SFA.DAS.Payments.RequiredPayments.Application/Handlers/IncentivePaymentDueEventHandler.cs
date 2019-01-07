@@ -17,7 +17,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             return new IncentiveRequiredPaymentEvent
             {
                 Type = paymentDue.Type,
-                ContractType = paymentDue.ContractType
+                ContractType = paymentDue.ContractType,
+                PaymentsDueEventId = paymentDue.EventId
             };
         }
 

@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             {
                 OnProgrammeEarningType = paymentDue.Type,
                 SfaContributionPercentage = paymentDue.SfaContributionPercentage,
+                PaymentsDueEventId = paymentDue.EventId
             };
         }
 

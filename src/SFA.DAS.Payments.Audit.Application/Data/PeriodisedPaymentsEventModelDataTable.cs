@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         protected override DataRow CreateDataRow(T eventModel)
         {
             var dataRow = base.CreateDataRow(eventModel);
-            dataRow["PriceEpisodeIdentifier"] = eventModel.PriceEpisodeIdentifier;
+            dataRow["PriceEpisodeIdentifier"] = eventModel.PriceEpisodeIdentifier ?? string.Empty;
             dataRow["ContractType"] = (byte)eventModel.ContractType;
             dataRow["TransactionType"] = (byte)eventModel.TransactionType;
             dataRow["Amount"] = eventModel.Amount;

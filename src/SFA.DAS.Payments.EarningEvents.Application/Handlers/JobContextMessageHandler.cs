@@ -23,20 +23,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IFileService azureFileService;
         private readonly IJsonSerializationService serializationService;
         private readonly IEndpointInstanceFactory factory;
-        private readonly IProviderEarningsJobStatusClientFactory jobStatusClientFactory;
+        private readonly IProviderEarningsJobClientFactory jobClientFactory;
 
         public JobContextMessageHandler(IPaymentLogger paymentLogger,
             IFileService azureFileService,
             IJsonSerializationService serializationService,
             IEndpointInstanceFactory factory,
-            IProviderEarningsJobStatusClientFactory jobStatusClientFactory
+            IProviderEarningsJobClientFactory jobClientFactory
             )
         {
             this.paymentLogger = paymentLogger;
             this.azureFileService = azureFileService;
             this.serializationService = serializationService;
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            this.jobStatusClientFactory = jobStatusClientFactory ?? throw new ArgumentNullException(nameof(jobStatusClientFactory));
+            this.jobClientFactory = jobClientFactory ?? throw new ArgumentNullException(nameof(jobClientFactory));
         }
 
 
@@ -85,7 +85,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     }
                 }
 
-                var jobStatusClient = jobStatusClientFactory.Create();
+                var jobStatusClient = jobClientFactory.Create();
                 await jobStatusClient.StartJob(message.JobId, fm36Output.UKPRN, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year),
                     (byte)collectionPeriod, commands);
                 paymentLogger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");

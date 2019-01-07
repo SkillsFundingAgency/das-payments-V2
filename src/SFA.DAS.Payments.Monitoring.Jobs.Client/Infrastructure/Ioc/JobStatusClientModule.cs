@@ -11,12 +11,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ProviderEarningsJobStatusClient>()
-                .As<IProviderEarningsJobStatusClient>()
+            builder.RegisterType<ProviderEarningsJobClient>()
+                .As<IProviderEarningsJobClient>()
                 .SingleInstance();
 
-            builder.RegisterType<ProviderEarningsJobStatusClientFactory>()
-                .As<IProviderEarningsJobStatusClientFactory>()
+            builder.RegisterType<ProviderEarningsJobClientFactory>()
+                .As<IProviderEarningsJobClientFactory>()
                 .SingleInstance();
 
             builder.RegisterType<JobStatusIncomingMessageBehaviour>()

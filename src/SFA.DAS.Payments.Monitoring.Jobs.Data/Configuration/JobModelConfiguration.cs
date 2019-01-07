@@ -15,8 +15,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration
             builder.Property(x => x.StartTime).HasColumnName(@"StartTime").IsRequired();
             builder.Property(x => x.EndTime).HasColumnName(@"EndTime");
             builder.Property(x => x.Status).HasColumnName(@"Status");
-            //builder.HasMany<ProviderEarningsJobModel>(x => x.ProviderEarnings).WithOne(x => x.Job);
-            //builder.HasMany<JobStepModel>(x => x.JobEvents).WithOne(x => x.Job);
+            builder.Property(x => x.DcJobId).HasColumnName(@"DCJobId").IsRequired();
+            builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn");
+            builder.Property(x => x.IlrSubmissionTime).HasColumnName(@"IlrSubmissionTime");
+            builder.Property(x => x.CollectionYear).HasColumnName(@"CollectionYear");
+            builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
         }
     }
 }

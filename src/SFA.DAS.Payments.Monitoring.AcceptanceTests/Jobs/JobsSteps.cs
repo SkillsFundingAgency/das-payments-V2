@@ -98,20 +98,18 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
             Job = new JobModel
             {
+                JobType = JobType.EarningsJob,
                 StartTime = JobDetails.StartTime,
-                Status = JobStatus.InProgress
-            };
-            DataContext.Jobs.Add(Job);
-            await DataContext.SaveChangesAsync();
-            DataContext.ProviderEarningsJobs.Add(new ProviderEarningsJobModel
-            {
                 CollectionPeriod = JobDetails.CollectionPeriod,
                 CollectionYear = JobDetails.CollectionYear,
                 Ukprn = JobDetails.Ukprn,
                 DcJobId = JobDetails.JobId,
                 IlrSubmissionTime = JobDetails.IlrSubmissionTime,
-                Id = Job.Id
-            });
+                Status = JobStatus.InProgress
+            };
+            DataContext.Jobs.Add(Job);
+            await DataContext.SaveChangesAsync();
+
             DataContext.JobSteps.AddRange(GeneratedMessages.Select(msg => new JobStepModel { JobId = Job.Id, StartTime = msg.StartTime, MessageName = msg.MessageName, MessageId = msg.MessageId, Status = JobStepStatus.Queued }));
             await DataContext.SaveChangesAsync();
         }
@@ -166,10 +164,8 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             await WaitForIt(() =>
             {
-                var job = DataContext.ProviderEarningsJobs
-                    .Where(x => x.DcJobId == JobDetails.JobId)
-                    .Select(x => x.Job)
-                    .FirstOrDefault();
+                var job = DataContext.Jobs
+                    .FirstOrDefault(x => x.DcJobId == JobDetails.JobId);
 
                 if (job == null)
                     return false;

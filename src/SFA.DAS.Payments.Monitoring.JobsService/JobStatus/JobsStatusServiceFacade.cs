@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.JobsStatusService.Interfaces;
 
-namespace SFA.DAS.Payments.Monitoring.JobsService
+namespace SFA.DAS.Payments.Monitoring.JobsService.JobStatus
 {
     public class JobsStatusServiceFacade : IJobsStatusServiceFacade
     {

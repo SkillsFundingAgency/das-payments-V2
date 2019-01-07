@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         {
             var dataRow = periods.NewRow();
             dataRow["EarningEventId"] = eventModel.EarningEventId;
-            dataRow["PriceEpisodeIdentifier"] = eventModel.PriceEpisodeIdentifier;
+            dataRow["PriceEpisodeIdentifier"] = eventModel.PriceEpisodeIdentifier ?? string.Empty;
             dataRow["TransactionType"] = (byte)eventModel.TransactionType;
             dataRow["DeliveryPeriod"] = eventModel.DeliveryPeriod;
             dataRow["Amount"] = eventModel.Amount;
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         {
             var dataRow = priceEpisodes.NewRow();
             dataRow["EarningEventId"] = priceEpisodeModel.EarningEventId;
-            dataRow["PriceEpisodeIdentifier"] = priceEpisodeModel.PriceEpisodeIdentifier;
+            dataRow["PriceEpisodeIdentifier"] = priceEpisodeModel.PriceEpisodeIdentifier ?? string.Empty;
             dataRow["SfaContributionPercentage"] = priceEpisodeModel.SfaContributionPercentage;
             dataRow["StartDate"] = priceEpisodeModel.StartDate;
             dataRow["PlannedEndDate"] = priceEpisodeModel.PlannedEndDate;

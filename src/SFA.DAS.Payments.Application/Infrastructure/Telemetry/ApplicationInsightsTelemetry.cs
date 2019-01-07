@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
         public ApplicationInsightsTelemetry(TelemetryClient telemetry)
         {
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
-            properties = new Dictionary<string, string> { { "MachineName", Environment.MachineName } };
+            properties = new Dictionary<string, string> { { "MachineName", Environment.MachineName }, { "ProcessName", System.Diagnostics.Process.GetCurrentProcess().ProcessName } };
         }
 
         public void AddProperty(string propertyName, string value)

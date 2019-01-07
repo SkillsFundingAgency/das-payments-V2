@@ -582,6 +582,10 @@
       <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj">
+      <Project>{9274abb3-9f30-4320-a111-17ba07dbf568}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Messages</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.Messages\SFA.DAS.Payments.PaymentsDue.Messages.csproj">
       <Project>{58746D22-1336-4EA0-8651-B107471E4035}</Project>
       <Name>SFA.DAS.Payments.PaymentsDue.Messages</Name>

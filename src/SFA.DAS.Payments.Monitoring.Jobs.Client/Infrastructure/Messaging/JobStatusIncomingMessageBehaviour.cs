@@ -9,9 +9,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
 {
     public class JobStatusIncomingMessageBehaviour : Behavior<IIncomingLogicalMessageContext>
     {
-        private readonly IProviderEarningsJobStatusClientFactory factory;
+        private readonly IProviderEarningsJobClientFactory factory;
 
-        public JobStatusIncomingMessageBehaviour(IProviderEarningsJobStatusClientFactory factory)
+        public JobStatusIncomingMessageBehaviour(IProviderEarningsJobClientFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }

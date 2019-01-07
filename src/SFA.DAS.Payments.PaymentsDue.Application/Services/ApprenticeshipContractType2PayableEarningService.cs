@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.Services
 
             if (incentiveEvents != null )
                 result.AddRange(incentiveEvents);
-
+            result.ForEach(paymentDue =>paymentDue.EarningEventId = message.EventId);
             return result.ToArray();
         }
     }

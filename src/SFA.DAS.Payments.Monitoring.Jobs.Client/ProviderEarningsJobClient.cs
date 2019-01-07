@@ -8,18 +8,18 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 {
-    public interface IProviderEarningsJobStatusClient
+    public interface IProviderEarningsJobClient
     {
         Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages);
         Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages);
     }
 
-    public class ProviderEarningsJobStatusClient : IProviderEarningsJobStatusClient
+    public class ProviderEarningsJobClient : IProviderEarningsJobClient
     {
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
 
-        public ProviderEarningsJobStatusClient(IEndpointInstanceFactory factory, IPaymentLogger logger)
+        public ProviderEarningsJobClient(IEndpointInstanceFactory factory, IPaymentLogger logger)
         {
 
             messageSession = factory?.GetEndpointInstance().Result ?? throw new ArgumentNullException();

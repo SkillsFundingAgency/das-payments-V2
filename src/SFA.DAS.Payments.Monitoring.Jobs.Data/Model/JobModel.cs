@@ -5,11 +5,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data.Model
     public class JobModel
     {
         public long Id { get; set; }
+        public JobType JobType { get; set; }
         public DateTimeOffset StartTime { get; set; }
         public DateTimeOffset? EndTime { get; set; }
         public JobStatus Status { get; set; }
-
-        //public virtual List<ProviderEarningsJobModel> ProviderEarnings { get; set; }
-        //public virtual List<JobStepModel> JobEvents { get; set; }
+        public long? DcJobId { get; set; }
+        public long? Ukprn { get; set; }
+        public DateTime? IlrSubmissionTime { get; set; }
+        public short CollectionYear { get; set; }
+        public byte CollectionPeriod { get; set; }
     }
 }

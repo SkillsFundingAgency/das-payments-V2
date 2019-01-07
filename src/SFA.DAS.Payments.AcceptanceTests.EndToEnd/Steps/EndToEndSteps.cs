@@ -12,6 +12,7 @@ using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -213,13 +214,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
+            var monthEndJobId = TestSession.GenerateId();
+            Console.WriteLine($"Month end job id: {monthEndJobId}");
+            TestSession.SetJobId(monthEndJobId);
             var monthEndCommand = new ProcessProviderMonthEndCommand
             {
                 CollectionPeriod = CurrentCollectionPeriod,
                 Ukprn = TestSession.Ukprn,
-                JobId = TestSession.JobId
+                JobId = monthEndJobId
             };
-            await MessageSession.Send(monthEndCommand);
+            //TODO: remove when DC have implemented the Month End Task
+            var startedMonthEndJob = new RecordStartedProcessingMonthEndJob
+            {
+                JobId = monthEndJobId,
+                CollectionPeriod = CollectionPeriod,
+                CollectionYear = short.Parse(CollectionYear),
+                GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
+                {
+                    StartTime = DateTimeOffset.UtcNow,
+                    MessageName = monthEndCommand.GetType().FullName,
+                    MessageId = monthEndCommand.CommandId
+                }}
+            };
+            await MessageSession.Send(startedMonthEndJob).ConfigureAwait(false);
+
+            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
             var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");

@@ -7,5 +7,6 @@
 	[Status] TINYINT NOT NULL CONSTRAINT FK_JobEvent__JobEventStatus FOREIGN KEY REFERENCES [Payments2].[JobEventStatus] (Id) CONSTRAINT DF_Job_Event__Status DEFAULT (1),
 	StartTime DATETIMEOFFSET NULL,
 	EndTime DATETIMEOFFSET NULL, 
-    MessageName NVARCHAR(250) NOT NULL
+    MessageName NVARCHAR(250) NOT NULL,
+	CreationDate DATETIME NOT NULL CONSTRAINT DF_JobEvent__CreationDate DEFAULT (GETDATE())
 )

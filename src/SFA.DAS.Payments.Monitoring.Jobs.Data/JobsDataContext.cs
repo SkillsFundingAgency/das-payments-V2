@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
@@ -12,14 +11,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 {
     public interface IJobsDataContext
     {
-        Task SaveNewProviderEarningsJob(JobModel jobDetails, ProviderEarningsJobModel providerEarningsJobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveNewJob(JobModel jobDetails,List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveNewMonthEndJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken));
         Task<long> GetJobIdFromDcJobId(long dcJobId);
+        Task<JobModel> GetJobByDcJobId(long dcJobId);
         Task SaveJobSteps(List<JobStepModel> jobSteps);
         Task<List<JobStepModel>> GetJobSteps(List<Guid> messageIds);
         Task<Dictionary<JobStepStatus, int>> GetJobStepsStatus(long jobId);
         Task<DateTimeOffset> GetLastJobStepEndTime(long jobId);
         Task<JobModel> GetJob(long jobId);
-        Task<ProviderEarningsJobModel> GetEarningsJob(long jobId);
         Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime);
     }
 
@@ -27,7 +27,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
     {
         private readonly string connectionString;
         public virtual DbSet<JobModel> Jobs { get; set; }
-        public virtual DbSet<ProviderEarningsJobModel> ProviderEarningsJobs { get; set; }
         public virtual DbSet<JobStepModel> JobSteps { get; set; }
 
         public JobsDataContext(string connectionString)
@@ -41,7 +40,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             modelBuilder.HasDefaultSchema("Payments2");
             modelBuilder.ApplyConfiguration(new JobModelConfiguration());
             modelBuilder.ApplyConfiguration(new JobStepModelConfiguration());
-            modelBuilder.ApplyConfiguration(new ProviderEarningsJobModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -49,12 +47,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public async Task SaveNewProviderEarningsJob(JobModel jobDetails, ProviderEarningsJobModel providerEarningsJobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveNewJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken))
         {
             Jobs.Add(jobDetails);
             await SaveChangesAsync(cancellationToken);
-            providerEarningsJobDetails.Id = jobDetails.Id;
-            ProviderEarningsJobs.Add(providerEarningsJobDetails);
+            jobSteps.ForEach(step => step.JobId = jobDetails.Id);
+            JobSteps.AddRange(jobSteps);
+            await SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task SaveNewMonthEndJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Jobs.Add(jobDetails);
+            await SaveChangesAsync(cancellationToken);
             jobSteps.ForEach(step => step.JobId = jobDetails.Id);
             JobSteps.AddRange(jobSteps);
             await SaveChangesAsync(cancellationToken);
@@ -62,8 +67,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
         public async Task<long> GetJobIdFromDcJobId(long dcJobId)
         {
-            return await ProviderEarningsJobs.Where(providerEarnings => providerEarnings.DcJobId == dcJobId)
-                .Select(providerEarnings => providerEarnings.Id)
+            return await Jobs.Where(job => job.DcJobId == dcJobId)
+                .Select(job => job.Id)
                 .FirstOrDefaultAsync();
         }
 
@@ -104,12 +109,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         {
             return await Jobs.FirstOrDefaultAsync(job => job.Id == jobId);
         }
-
-        public async Task<ProviderEarningsJobModel> GetEarningsJob(long jobId)
+        public async Task<JobModel> GetJobByDcJobId(long dcJobId)
         {
-            return await ProviderEarningsJobs
-                .Include(job => job.Job)
-                .FirstOrDefaultAsync(earningsJob => earningsJob.Id == jobId);
+            return await Jobs.FirstOrDefaultAsync(job => job.DcJobId == dcJobId);
         }
 
         public async Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime)
