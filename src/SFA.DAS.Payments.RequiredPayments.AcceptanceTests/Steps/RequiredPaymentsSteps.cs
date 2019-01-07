@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
@@ -18,8 +20,6 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
     [Binding]
     public class RequiredPaymentsSteps : RequiredPaymentsStepsBase
     {
-        private const bool trace = true;
-
         public RequiredPaymentsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
@@ -27,33 +27,56 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [When(@"a payments due event is received")]
         public async Task WhenAPaymentsDueEventIsReceived()
         {
-            var payments = PaymentsDue.Select(CreatePaymentDueEvent).ToList();
-            foreach (var paymentDue in payments)
-            {
-                await MessageSession.Send(paymentDue).ConfigureAwait(false);
+            var earnings = PaymentsDue.GroupBy(p => p.LearnerId).Select(CreateEarningEvent).ToList();
 
+            foreach (var earningEvent in earnings)
+            {
+                await MessageSession.Send(earningEvent).ConfigureAwait(false);
             }
         }
 
-        private ApprenticeshipContractTypePaymentDueEvent CreatePaymentDueEvent(OnProgrammePaymentDue paymentDue)
+        private ApprenticeshipContractTypeEarningsEvent CreateEarningEvent(IGrouping<string, OnProgrammePaymentDue> group)
         {
-            var payment = ContractType == 1
-                ? (ApprenticeshipContractTypePaymentDueEvent)new ApprenticeshipContractType1PaymentDueEvent()
-                : new ApprenticeshipContractType2PaymentDueEvent();
+
+            var earningEvent = ContractType == 1
+                ? (ApprenticeshipContractTypeEarningsEvent)new ApprenticeshipContractType1EarningEvent()
+                : new ApprenticeshipContractType2EarningEvent();
+
             var testSessionLearner =
-                TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == paymentDue.LearnerId) ??
+                TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == group.Key) ??
                 TestSession.Learner;
-            payment.Learner = testSessionLearner.ToLearner();
-            payment.Ukprn = TestSession.Ukprn;
-            payment.SfaContributionPercentage = SfaContributionPercentage;
-            payment.Type = paymentDue.Type;
-            payment.AmountDue = paymentDue.Amount;
-            payment.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
-            payment.DeliveryPeriod = new CalendarPeriod(CollectionYear, paymentDue.DeliveryPeriod);
-            payment.JobId = TestSession.JobId;
-            payment.LearningAim = testSessionLearner.Course.ToLearningAim();
-            payment.PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier;
-            return payment;
+
+            earningEvent.Learner = testSessionLearner.ToLearner();
+            earningEvent.Ukprn = TestSession.Ukprn;
+            earningEvent.SfaContributionPercentage = SfaContributionPercentage;
+            earningEvent.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
+            earningEvent.CollectionYear = CollectionYear;
+            earningEvent.JobId = TestSession.JobId;
+            earningEvent.LearningAim = testSessionLearner.Course.ToLearningAim();
+
+            var onProgrammeEarnings = new List<OnProgrammeEarning>();
+
+            foreach (var learnerEarning in group)
+            {
+                var onProgrammeEarning = new OnProgrammeEarning
+                {
+                    Type = learnerEarning.Type,
+                    Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                    {
+                        new EarningPeriod
+                        {
+                            Amount = learnerEarning.Amount,
+                            Period = learnerEarning.DeliveryPeriod,
+                            PriceEpisodeIdentifier = learnerEarning.PriceEpisodeIdentifier
+                        }
+
+                    })
+                };
+                onProgrammeEarnings.Add(onProgrammeEarning);
+            }
+
+            earningEvent.OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(onProgrammeEarnings);
+            return earningEvent;
         }
 
         [Then(@"the required payments component will only generate contract type (.*) required payments")]
