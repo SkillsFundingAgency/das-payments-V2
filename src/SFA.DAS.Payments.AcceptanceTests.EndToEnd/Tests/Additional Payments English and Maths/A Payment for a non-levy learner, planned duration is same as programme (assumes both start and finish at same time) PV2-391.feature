@@ -5,21 +5,21 @@
  #| n/a                                   |
  #| 42% for remaining period|
 	
-Feature: Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break - COMPLETES ON TIME, RETURNS TO SAME PROVIDER PV2-392
+Feature: Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break - COMPLETES ON TIME, RETURNS TO SAME PROVIDER PV2-391
 
-Scenario Outline: Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392
+Scenario Outline: Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-391
 	Given the following learners
         | Learner Reference Number | Uln      |
         | abc123                   | 12345678 |
 	# New field - Aim Type
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
-		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        | 5 months        | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | planned break     |
-		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        | 5 months        | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | planned break     |
+		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        | 5 months        | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        | 5 months        | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
 	And price details as follows	
 	# Price details
         | Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | 1st price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   |                             |
+        | 1st price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 100%                        |
         | 2nd price details | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 90%                         |
     And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |

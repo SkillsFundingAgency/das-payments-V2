@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_AdditionalPaymentsEnglishAndMaths
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.AdditionalPaymentsEnglishAndMaths
 {
     using TechTalk.SpecFlow;
     
@@ -19,8 +19,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Non-levy learner, requires english or maths at level 2 with prior funding adjustm" +
-        "ent after break - COMPLETES ON TIME, RETURNS TO SAME PROVIDER PV2-392")]
-    public partial class Non_LevyLearnerRequiresEnglishOrMathsAtLevel2WithPriorFundingAdjustmentAfterBreak_COMPLETESONTIMERETURNSTOSAMEPROVIDERPV2_392Feature
+        "ent after break - COMPLETES ON TIME, RETURNS TO SAME PROVIDER PV2-391")]
+    public partial class Non_LevyLearnerRequiresEnglishOrMathsAtLevel2WithPriorFundingAdjustmentAfterBreak_COMPLETESONTIMERETURNSTOSAMEPROVIDERPV2_391Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-levy learner, requires english or maths at level 2 with prior funding adjustm" +
-                    "ent after break - COMPLETES ON TIME, RETURNS TO SAME PROVIDER PV2-392", null, ProgrammingLanguage.CSharp, ((string[])(null)));
+                    "ent after break - COMPLETES ON TIME, RETURNS TO SAME PROVIDER PV2-391", null, ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Non-levy learner, requires english or maths at level 2 with prior funding adjustm" +
-            "ent after break PV2-392")]
+            "ent after break PV2-391")]
         [NUnit.Framework.TestCaseAttribute("R01/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R02/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R03/Current Academic Year", null)]
@@ -81,10 +81,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
         [NUnit.Framework.TestCaseAttribute("R05/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R06/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R07/Current Academic Year", null)]
-        public virtual void Non_LevyLearnerRequiresEnglishOrMathsAtLevel2WithPriorFundingAdjustmentAfterBreakPV2_392(string collection_Period, string[] exampleTags)
+        public virtual void Non_LevyLearnerRequiresEnglishOrMathsAtLevel2WithPriorFundingAdjustmentAfterBreakPV2_391(string collection_Period, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non-levy learner, requires english or maths at level 2 with prior funding adjustm" +
-                    "ent after break PV2-392", null, exampleTags);
+                    "ent after break PV2-391", null, exampleTags);
 #line 10
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
@@ -121,7 +121,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "1",
                         "2",
                         "16-18 Apprenticeship Non-Levy",
-                        "planned break"});
+                        "continuing"});
             table2.AddRow(new string[] {
                         "Programme",
                         "ZPROG001",
@@ -133,7 +133,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "1",
                         "2",
                         "16-18 Apprenticeship Non-Levy",
-                        "planned break"});
+                        "continuing"});
 #line 15
  testRunner.And("the following aims", ((string)(null)), table2, "And ");
 #line hidden
@@ -154,7 +154,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "06/Aug/Last Academic Year",
                         "Act2",
                         "1",
-                        ""});
+                        "100%"});
             table3.AddRow(new string[] {
                         "2nd price details",
                         "15000",

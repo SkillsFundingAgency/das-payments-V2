@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_AdditionalPaymentsEnglishAndMaths
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.AdditionalPaymentsEnglishAndMaths
 {
     using TechTalk.SpecFlow;
     
@@ -18,24 +18,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "2.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Non-levy learner, taking single Level 1 aim, progressing to and completing single" +
-        " Level 2 aim, completes to time PV2-387")]
-    public partial class Non_LevyLearnerTakingSingleLevel1AimProgressingToAndCompletingSingleLevel2AimCompletesToTimePV2_387Feature
+    [NUnit.Framework.DescriptionAttribute("Non-levy learner, learner moves start date forward, on prog payments and english/" +
+        "maths will be refunded PV2-466")]
+    public partial class Non_LevyLearnerLearnerMovesStartDateForwardOnProgPaymentsAndEnglishMathsWillBeRefundedPV2_466Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature"
+#line 1 "Non-Levy employer, learner moves start date forward, no prog payments and English and Maths refunded PV2-466.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-levy learner, taking single Level 1 aim, progressing to and completing single" +
-                    " Level 2 aim, completes to time PV2-387", "\tAs a provider,\r\n\tI want a non-levy learner taking single Level 1 aim, progressin" +
-                    "g to and completing single Level 2 aim, completes to time, to be paid the correc" +
-                    "t amount\r\n\tSo that I am accurately paid my apprenticeship provision.", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Non-levy learner, learner moves start date forward, on prog payments and english/" +
+                    "maths will be refunded PV2-466", null, ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -74,10 +72,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Non-levy learner taking single Level 1 aim, progressing to and completing single " +
-            "Level 2 aim, completes to time PV2-387")]
-        [NUnit.Framework.TestCaseAttribute("R01/Current Academic Year", null)]
-        [NUnit.Framework.TestCaseAttribute("R02/Current Academic Year", null)]
+        [NUnit.Framework.DescriptionAttribute("Non-levy learner provider changes aim sequence numbers after payments have alread" +
+            "y occurred PV2-466")]
         [NUnit.Framework.TestCaseAttribute("R03/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R04/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R05/Current Academic Year", null)]
@@ -88,11 +84,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
         [NUnit.Framework.TestCaseAttribute("R10/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R11/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R12/Current Academic Year", null)]
-        public virtual void Non_LevyLearnerTakingSingleLevel1AimProgressingToAndCompletingSingleLevel2AimCompletesToTimePV2_387(string collection_Period, string[] exampleTags)
+        public virtual void Non_LevyLearnerProviderChangesAimSequenceNumbersAfterPaymentsHaveAlreadyOccurredPV2_466(string collection_Period, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non-levy learner taking single Level 1 aim, progressing to and completing single " +
-                    "Level 2 aim, completes to time PV2-387", null, exampleTags);
-#line 5
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Non-levy learner provider changes aim sequence numbers after payments have alread" +
+                    "y occurred PV2-466", null, exampleTags);
+#line 3
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line hidden
@@ -102,7 +98,7 @@ this.ScenarioInitialize(scenarioInfo);
             table1.AddRow(new string[] {
                         "abc123",
                         "12345678"});
-#line 6
+#line 4
  testRunner.Given("the following learners", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -120,7 +116,7 @@ this.ScenarioInitialize(scenarioInfo);
             table2.AddRow(new string[] {
                         "Maths or English",
                         "12345",
-                        "06/Aug/Last Academic Year",
+                        "06/Aug/Current Academic Year",
                         "12 months",
                         "",
                         "1",
@@ -132,8 +128,8 @@ this.ScenarioInitialize(scenarioInfo);
             table2.AddRow(new string[] {
                         "Programme",
                         "ZPROG001",
-                        "06/Aug/Last Academic Year",
-                        "24 months",
+                        "06/Aug/Current Academic Year",
+                        "12 months",
                         "",
                         "2",
                         "403",
@@ -141,7 +137,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "2",
                         "16-18 Apprenticeship Non-Levy",
                         "continuing"});
-#line 10
+#line 8
  testRunner.And("the following aims", ((string)(null)), table2, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -156,22 +152,22 @@ this.ScenarioInitialize(scenarioInfo);
             table3.AddRow(new string[] {
                         "1st price details",
                         "0",
-                        "06/Aug/Last Academic Year",
+                        "06/Aug/Current Academic Year",
                         "0",
-                        "06/Aug/Last Academic Year",
+                        "06/Aug/Current Academic Year",
                         "Act2",
                         "1",
-                        ""});
+                        "100%"});
             table3.AddRow(new string[] {
                         "2nd price details",
                         "9000",
-                        "06/Aug/Last Academic Year",
+                        "06/Aug/Current Academic Year",
                         "0",
-                        "06/Aug/Last Academic Year",
+                        "06/Aug/Current Academic Year",
                         "Act2",
                         "2",
                         "90%"});
-#line 14
+#line 12
  testRunner.And("price details as follows", ((string)(null)), table3, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -181,79 +177,79 @@ this.ScenarioInitialize(scenarioInfo);
                         "Balancing",
                         "OnProgrammeMathsAndEnglish"});
             table4.AddRow(new string[] {
-                        "Aug/Last Academic Year",
+                        "Aug/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Sep/Last Academic Year",
+                        "Sep/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Oct/Last Academic Year",
+                        "Oct/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Nov/Last Academic Year",
+                        "Nov/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Dec/Last Academic Year",
+                        "Dec/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Jan/Last Academic Year",
+                        "Jan/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Feb/Last Academic Year",
+                        "Feb/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Mar/Last Academic Year",
+                        "Mar/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Apr/Last Academic Year",
+                        "Apr/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "May/Last Academic Year",
+                        "May/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Jun/Last Academic Year",
+                        "Jun/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
             table4.AddRow(new string[] {
-                        "Jul/Last Academic Year",
+                        "Jul/Current Academic Year",
                         "600",
                         "0",
                         "0",
                         "39.25"});
-#line 19
- testRunner.And("the following earnings had been generated for the learner", ((string)(null)), table4, "And ");
+#line 17
+    testRunner.And("the following earnings had been generated for the learner", ((string)(null)), table4, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -263,175 +259,35 @@ this.ScenarioInitialize(scenarioInfo);
                         "SFA Fully-Funded Payments",
                         "Transaction Type"});
             table5.AddRow(new string[] {
-                        "R01/Last Academic Year",
-                        "Aug/Last Academic Year",
+                        "R01/Current Academic Year",
+                        "Aug/Current Academic Year",
                         "540",
                         "60",
                         "0",
                         "Learning"});
             table5.AddRow(new string[] {
-                        "R02/Last Academic Year",
-                        "Sep/Last Academic Year",
+                        "R02/Current Academic Year",
+                        "Sep/Current Academic Year",
                         "540",
                         "60",
                         "0",
                         "Learning"});
             table5.AddRow(new string[] {
-                        "R03/Last Academic Year",
-                        "Oct/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R04/Last Academic Year",
-                        "Nov/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R05/Last Academic Year",
-                        "Dec/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R06/Last Academic Year",
-                        "Jan/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R07/Last Academic Year",
-                        "Feb/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R08/Last Academic Year",
-                        "Mar/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R09/Last Academic Year",
-                        "Apr/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R10/Last Academic Year",
-                        "May/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R11/Last Academic Year",
-                        "Jun/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R12/Last Academic Year",
-                        "Jul/Last Academic Year",
-                        "540",
-                        "60",
-                        "0",
-                        "Learning"});
-            table5.AddRow(new string[] {
-                        "R01/Last Academic Year",
-                        "Aug/Last Academic Year",
+                        "R01/Current Academic Year",
+                        "Aug/Current Academic Year",
                         "0",
                         "0",
                         "39.25",
                         "OnProgrammeMathsAndEnglish"});
             table5.AddRow(new string[] {
-                        "R02/Last Academic Year",
-                        "Sep/Last Academic Year",
+                        "R02/Current Academic Year",
+                        "Sep/Current Academic Year",
                         "0",
                         "0",
                         "39.25",
                         "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R03/Last Academic Year",
-                        "Oct/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R04/Last Academic Year",
-                        "Nov/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R05/Last Academic Year",
-                        "Dec/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R06/Last Academic Year",
-                        "Jan/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R07/Last Academic Year",
-                        "Feb/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R08/Last Academic Year",
-                        "Mar/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R09/Last Academic Year",
-                        "Apr/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R10/Last Academic Year",
-                        "May/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R11/Last Academic Year",
-                        "Jun/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-            table5.AddRow(new string[] {
-                        "R12/Last Academic Year",
-                        "Jul/Last Academic Year",
-                        "0",
-                        "0",
-                        "39.25",
-                        "OnProgrammeMathsAndEnglish"});
-#line 33
- testRunner.And("the following provider payments had been generated", ((string)(null)), table5, "And ");
+#line 31
+    testRunner.And("the following provider payments had been generated", ((string)(null)), table5, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "Aim Type",
@@ -448,41 +304,29 @@ this.ScenarioInitialize(scenarioInfo);
             table6.AddRow(new string[] {
                         "Maths or English",
                         "12345",
-                        "06/Aug/Last Academic Year",
+                        "06/Oct/Current Academic Year",
                         "12 months",
-                        "12 months",
+                        "",
                         "1",
                         "403",
                         "1",
                         "2",
                         "16-18 Apprenticeship Non-Levy",
-                        "completed"});
+                        "continuing"});
             table6.AddRow(new string[] {
                         "Programme",
                         "ZPROG001",
-                        "06/Aug/Last Academic Year",
-                        "24 months",
-                        "",
-                        "2",
-                        "403",
-                        "1",
-                        "2",
-                        "16-18 Apprenticeship Non-Levy",
-                        "continuing"});
-            table6.AddRow(new string[] {
-                        "Maths or English",
-                        "12345",
-                        "09/Aug/Current Academic Year",
+                        "06/Oct/Current Academic Year",
                         "12 months",
                         "",
-                        "3",
+                        "2",
                         "403",
                         "1",
                         "2",
                         "16-18 Apprenticeship Non-Levy",
                         "continuing"});
-#line 60
- testRunner.But("aims details are changed as follows", ((string)(null)), table6, "But ");
+#line 39
+    testRunner.But("aims details are changed as follows", ((string)(null)), table6, "But ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "Price Details",
@@ -494,35 +338,26 @@ this.ScenarioInitialize(scenarioInfo);
                         "Aim Sequence Number",
                         "SFA Contribution Percentage"});
             table7.AddRow(new string[] {
-                        "1st price details",
+                        "3rd price details",
                         "0",
-                        "06/Aug/Last Academic Year",
+                        "06/Oct/Current Academic Year",
                         "0",
-                        "06/Aug/Last Academic Year",
+                        "06/Oct/Current Academic Year",
                         "Act2",
                         "1",
-                        ""});
+                        "100%"});
             table7.AddRow(new string[] {
-                        "2nd price details",
+                        "4th price details",
                         "9000",
-                        "06/Aug/Last Academic Year",
+                        "06/Oct/Current Academic Year",
                         "0",
-                        "06/Aug/Last Academic Year",
+                        "06/Oct/Current Academic Year",
                         "Act2",
                         "2",
                         "90%"});
-            table7.AddRow(new string[] {
-                        "3rd price details",
-                        "0",
-                        "09/Aug/Current Academic Year",
-                        "0",
-                        "09/Aug/Current Academic Year",
-                        "Act2",
-                        "3",
-                        ""});
-#line 67
+#line 45
  testRunner.And("price details are changed as follows", ((string)(null)), table7, "And ");
-#line 72
+#line 49
  testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -533,16 +368,16 @@ this.ScenarioInitialize(scenarioInfo);
                         "OnProgrammeMathsAndEnglish"});
             table8.AddRow(new string[] {
                         "Aug/Current Academic Year",
-                        "600",
                         "0",
                         "0",
-                        "39.25"});
+                        "0",
+                        "0"});
             table8.AddRow(new string[] {
                         "Sep/Current Academic Year",
-                        "600",
                         "0",
                         "0",
-                        "39.25"});
+                        "0",
+                        "0"});
             table8.AddRow(new string[] {
                         "Oct/Current Academic Year",
                         "600",
@@ -603,8 +438,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "39.25"});
-#line 74
- testRunner.Then("the following learner earnings should be generated", ((string)(null)), table8, "Then ");
+#line 51
+    testRunner.Then("the following learner earnings should be generated", ((string)(null)), table8, "Then ");
 #line hidden
             TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -614,19 +449,19 @@ this.ScenarioInitialize(scenarioInfo);
                         "Balancing",
                         "OnProgrammeMathsAndEnglish"});
             table9.AddRow(new string[] {
-                        "R01/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Aug/Current Academic Year",
-                        "600",
+                        "-600",
                         "0",
                         "0",
-                        "39.25"});
+                        "-39.25"});
             table9.AddRow(new string[] {
-                        "R02/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Sep/Current Academic Year",
-                        "600",
+                        "-600",
                         "0",
                         "0",
-                        "39.25"});
+                        "-39.25"});
             table9.AddRow(new string[] {
                         "R03/Current Academic Year",
                         "Oct/Current Academic Year",
@@ -697,8 +532,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "0",
                         "39.25"});
-#line 88
- testRunner.And("only the following payments will be calculated", ((string)(null)), table9, "And ");
+#line 65
+    testRunner.And("only the following payments will be calculated", ((string)(null)), table9, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -708,17 +543,17 @@ this.ScenarioInitialize(scenarioInfo);
                         "SFA Fully-Funded Payments",
                         "Transaction Type"});
             table10.AddRow(new string[] {
-                        "R01/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Aug/Current Academic Year",
-                        "540",
-                        "60",
+                        "-540",
+                        "-60",
                         "0",
                         "Learning"});
             table10.AddRow(new string[] {
-                        "R02/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Sep/Current Academic Year",
-                        "540",
-                        "60",
+                        "-540",
+                        "-60",
                         "0",
                         "Learning"});
             table10.AddRow(new string[] {
@@ -792,18 +627,18 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "Learning"});
             table10.AddRow(new string[] {
-                        "R01/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Aug/Current Academic Year",
                         "0",
                         "0",
-                        "39.25",
+                        "-39.25",
                         "OnProgrammeMathsAndEnglish"});
             table10.AddRow(new string[] {
-                        "R02/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Sep/Current Academic Year",
                         "0",
                         "0",
-                        "39.25",
+                        "-39.25",
                         "OnProgrammeMathsAndEnglish"});
             table10.AddRow(new string[] {
                         "R03/Current Academic Year",
@@ -875,8 +710,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "39.25",
                         "OnProgrammeMathsAndEnglish"});
-#line 103
- testRunner.And("only the following provider payments will be recorded", ((string)(null)), table10, "And ");
+#line 80
+    testRunner.And("only the following provider payments will be recorded", ((string)(null)), table10, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                         "Collection Period",
@@ -886,17 +721,17 @@ this.ScenarioInitialize(scenarioInfo);
                         "SFA Fully-Funded Payments",
                         "Transaction Type"});
             table11.AddRow(new string[] {
-                        "R01/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Aug/Current Academic Year",
-                        "540",
-                        "60",
+                        "-540",
+                        "-60",
                         "0",
                         "Learning"});
             table11.AddRow(new string[] {
-                        "R02/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Sep/Current Academic Year",
-                        "540",
-                        "60",
+                        "-540",
+                        "-60",
                         "0",
                         "Learning"});
             table11.AddRow(new string[] {
@@ -970,18 +805,18 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "Learning"});
             table11.AddRow(new string[] {
-                        "R01/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Aug/Current Academic Year",
                         "0",
                         "0",
-                        "39.25",
+                        "-39.25",
                         "OnProgrammeMathsAndEnglish"});
             table11.AddRow(new string[] {
-                        "R02/Current Academic Year",
+                        "R03/Current Academic Year",
                         "Sep/Current Academic Year",
                         "0",
                         "0",
-                        "39.25",
+                        "-39.25",
                         "OnProgrammeMathsAndEnglish"});
             table11.AddRow(new string[] {
                         "R03/Current Academic Year",
@@ -1053,7 +888,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "0",
                         "39.25",
                         "OnProgrammeMathsAndEnglish"});
-#line 129
+#line 106
  testRunner.And("at month end only the following provider payments will be generated", ((string)(null)), table11, "And ");
 #line hidden
             this.ScenarioCleanup();

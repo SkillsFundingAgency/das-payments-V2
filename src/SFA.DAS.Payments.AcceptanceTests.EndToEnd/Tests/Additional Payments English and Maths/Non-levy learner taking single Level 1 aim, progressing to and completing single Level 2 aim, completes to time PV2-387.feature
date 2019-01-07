@@ -14,22 +14,22 @@ Scenario Outline: Non-levy learner taking single Level 1 aim, progressing to and
 	And price details as follows
 	# Price details
 		| Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-		| 1st price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   |                             |
+		| 1st price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 100%                        |
 		| 2nd price details | 9000                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 90%                         |
 	And the following earnings had been generated for the learner
-	| Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
-	| Aug/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Sep/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Oct/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Nov/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Dec/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Jan/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Feb/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Mar/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Apr/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| May/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Jun/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	| Jul/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
+		| Aug/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Sep/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Oct/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Nov/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Dec/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Jan/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Feb/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Mar/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Apr/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| May/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Jun/Last Academic Year | 600          | 0          | 0         | 39.25                      |
+		| Jul/Last Academic Year | 600          | 0          | 0         | 39.25                      |
 	And the following provider payments had been generated
 		| Collection Period      | Delivery Period        | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type           |
 		| R01/Last Academic Year | Aug/Last Academic Year | 540                    | 60                          | 0                         | Learning                   |

@@ -13,7 +13,7 @@ Scenario Outline: Non-levy learner taking level 3 aim and completes on time so n
 	And price details as follows		
         | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 1st price details | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 90%                         |
-        | 2nd price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   |                             |
+        | 2nd price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 100%                        |
 	# New OnProgrammeMathsAndEnglish column
     And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
@@ -64,21 +64,22 @@ Scenario Outline: Non-levy learner taking level 3 aim and completes on time so n
 		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        | 12 months       | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | completed         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	# New OnProgrammeMathsAndEnglish column
-    Then the following learner earnings should be generated
-        | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
-        | Aug/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Sep/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Oct/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Nov/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Dec/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Jan/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Feb/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Mar/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Apr/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | May/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Jun/Current Academic Year | 0            | 0          | 0         | 0                          |
-        | Jul/Current Academic Year | 0            | 0          | 0         | 0                          |
-	# No payment
+	Then no learner earnings should be generated
+ #   Then the following learner earnings should be generated
+ #       | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
+ #       | Aug/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Sep/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Oct/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Nov/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Dec/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Jan/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Feb/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Mar/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Apr/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | May/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Jun/Current Academic Year | 0            | 0          | 0         | 0                          |
+ #       | Jul/Current Academic Year | 0            | 0          | 0         | 0                          |
+	## No payment
 	And no provider payments will be recorded
 
 Examples: 

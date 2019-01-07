@@ -135,6 +135,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (existingAim != null && !aims.Contains(existingAim))
                     learner.Aims.Remove(existingAim);
 
+                var deletedAims = learner.Aims.Except(aims).ToList();
+
+                deletedAims.ForEach(d => learner.Aims.Remove(d));
+
                 learner.Aims.Add(aim);
             }
         }

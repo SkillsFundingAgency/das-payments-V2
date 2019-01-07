@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_AdditionalPaymentsEnglishAndMaths
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.AdditionalPaymentsEnglishAndMaths
 {
     using TechTalk.SpecFlow;
     
@@ -19,8 +19,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Learner taking single level 2 aim, 0 prior funding adjustment, completes to time," +
-        " no funding generated PV2-391")]
-    public partial class LearnerTakingSingleLevel2Aim0PriorFundingAdjustmentCompletesToTimeNoFundingGeneratedPV2_391Feature
+        " no funding generated PV2-392")]
+    public partial class LearnerTakingSingleLevel2Aim0PriorFundingAdjustmentCompletesToTimeNoFundingGeneratedPV2_392Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Learner taking single level 2 aim, 0 prior funding adjustment, completes to time," +
-                    " no funding generated PV2-391", "\tAs a provider,\r\n\tI want a payment for a non-levy learner, planned duration is sa" +
+                    " no funding generated PV2-392", "\tAs a provider,\r\n\tI want a payment for a non-levy learner, planned duration is sa" +
                     "me as programme (assumes both start and finish at same time), to be paid the cor" +
                     "rect amount\r\n\tSo that I am accurately paid my apprenticeship provision.", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Learner taking single level 2 aim, 0 prior funding adjustment, completes to time," +
-            " no funding generated PV2-391")]
+            " no funding generated PV2-392")]
         [NUnit.Framework.TestCaseAttribute("R01/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R02/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R03/Current Academic Year", null)]
@@ -88,10 +88,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests.Non_LevyLearner_Additi
         [NUnit.Framework.TestCaseAttribute("R10/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R11/Current Academic Year", null)]
         [NUnit.Framework.TestCaseAttribute("R12/Current Academic Year", null)]
-        public virtual void LearnerTakingSingleLevel2Aim0PriorFundingAdjustmentCompletesToTimeNoFundingGeneratedPV2_391(string collection_Period, string[] exampleTags)
+        public virtual void LearnerTakingSingleLevel2Aim0PriorFundingAdjustmentCompletesToTimeNoFundingGeneratedPV2_392(string collection_Period, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Learner taking single level 2 aim, 0 prior funding adjustment, completes to time," +
-                    " no funding generated PV2-391", null, exampleTags);
+                    " no funding generated PV2-392", null, exampleTags);
 #line 10
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
@@ -170,7 +170,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "06/Aug/Last Academic Year",
                         "Act2",
                         "2",
-                        ""});
+                        "100%"});
 #line 20
  testRunner.And("price details as follows", ((string)(null)), table3, "And ");
 #line hidden
@@ -363,88 +363,9 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.But("aims details are changed as follows", ((string)(null)), table6, "But ");
 #line 58
  testRunner.When(string.Format("the amended ILR file is re-submitted for the learners in collection period {0}", collection_Period), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Delivery Period",
-                        "On-Programme",
-                        "Completion",
-                        "Balancing",
-                        "OnProgrammeMathsAndEnglish"});
-            table7.AddRow(new string[] {
-                        "Aug/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Sep/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Oct/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Nov/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Dec/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Jan/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Feb/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Mar/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Apr/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "May/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Jun/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
-            table7.AddRow(new string[] {
-                        "Jul/Current Academic Year",
-                        "0",
-                        "0",
-                        "0",
-                        "0"});
 #line 60
-    testRunner.Then("the following learner earnings should be generated", ((string)(null)), table7, "Then ");
-#line 75
+ testRunner.Then("no learner earnings should be generated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 62
  testRunner.And("no provider payments will be recorded", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();

@@ -15,7 +15,6 @@ using SFA.DAS.Payments.Application.Repositories;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
-using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -214,6 +213,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var dataContext = Container.Resolve<IPaymentsDataContext>();
             var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
+        }
+
+        [Then(@"no learner earnings should be generated")]
+        public async Task ThenNoLearnerEarningsWillBeRecorded()
+        {
+            var matcher = new EarningEventMatcher(null, TestSession, CurrentCollectionPeriod, null);
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Earning Event check failure");
         }
 
         [Then(@"at month end no provider payments will be generated")]

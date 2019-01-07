@@ -12,7 +12,7 @@ Scenario Outline: Non-levy learner provider changes aim sequence numbers after p
 	And price details as follows	
 	# Price details
         | Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | 1st price details | 0                    | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | Act2          | 1                   |                             |
+        | 1st price details | 0                    | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | Act2          | 1                   | 100%                        |
         | 2nd price details | 9000                 | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | Act2          | 2                   | 90%                         |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
@@ -44,7 +44,7 @@ Scenario Outline: Non-levy learner provider changes aim sequence numbers after p
 	# Note the order of Aim Sequence Number
 	And price details are changed as follows		
         | Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | 3rd price details | 0                    | 06/Oct/Current Academic Year        | 0                      | 06/Oct/Current Academic Year          | Act2          | 1                   |                             |
+        | 3rd price details | 0                    | 06/Oct/Current Academic Year        | 0                      | 06/Oct/Current Academic Year          | Act2          | 1                   | 100%                        |
         | 4th price details | 9000                 | 06/Oct/Current Academic Year        | 0                      | 06/Oct/Current Academic Year          | Act2          | 2                   | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	# New OnProgrammeMathsAndEnglish column
