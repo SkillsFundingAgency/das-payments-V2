@@ -31,21 +31,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private Mock<IRepositoryCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
         private Mock<IApprenticeshipKeyService> apprenticeshipKeyServiceMock;
         private Mock<IPaymentHistoryRepository> paymentHistoryRepositoryMock;
+        private Mapper mapper;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile<RequiredPaymentsProfile>();
-            });
-            Mapper.AssertConfigurationIsValid();
-        }
-
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            Mapper.Reset();
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<RequiredPaymentsProfile>());
+            config.AssertConfigurationIsValid();
+            mapper = new Mapper(config);
         }
 
         [SetUp]
@@ -59,7 +52,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             act2EarningEventProcessor = mocker.Create<ApprenticeshipContractType2EarningEventProcessor>(
                 new NamedParameter("apprenticeshipKey", "key"), 
-                new NamedParameter("mapper", Mapper.Instance));
+                new NamedParameter("mapper", mapper));
         }
 
         [TearDown]

@@ -31,19 +31,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private Mock<IApprenticeshipKeyService> apprenticeshipKeyServiceMock;
         private Mock<IPaymentHistoryRepository> paymentHistoryRepositoryMock;
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            Mapper.Initialize(cfg => { cfg.AddProfile<RequiredPaymentsProfile>(); });
-            Mapper.AssertConfigurationIsValid();
-        }
-
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            Mapper.Reset();
-        }
-
         [SetUp]
         public void SetUp()
         {
