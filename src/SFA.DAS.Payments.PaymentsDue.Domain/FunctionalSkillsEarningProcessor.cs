@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
                 {
                     JobId = submission.JobId,
                     Ukprn = submission.Ukprn,
-                    DeliveryPeriod = new CalendarPeriod(submission.CollectionPeriod.AcademicYear, period.Period),
+                    DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod(submission.CollectionPeriod.AcademicYear, period.Period),
                     LearningAim = learningAim.Clone(),
                     Learner = learner.Clone(),
                     Type = (IncentivePaymentType) functionalSkillEarning.Type,

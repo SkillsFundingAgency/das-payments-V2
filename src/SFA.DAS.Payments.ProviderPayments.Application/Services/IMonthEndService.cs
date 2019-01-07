@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public interface IMonthEndService
     {
-        Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<PaymentModel>> GetMonthEndPayments(int collectionYear, int collectionPeriod, long ukprn, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

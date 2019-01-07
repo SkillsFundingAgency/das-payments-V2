@@ -7,24 +7,33 @@ namespace SFA.DAS.Payments.Model.Core
         public int Year { get; set; }
         public int Month { get; set; }
         public int Period { get; set; }
-        public int AcademicYear { get; set; }
+        public string AcademicYear { get; set; }
         public string Name { get; set; }
 
-        public static CollectionPeriod CreateFromAcademicYearAndPeriod(int academicYear, int period)
+        public static CollectionPeriod CreateFromAcademicYearAndPeriod(string academicYear, int period)
         {
+            if (string.IsNullOrEmpty(academicYear) || academicYear.Length != 4)
+            {
+                throw new ArgumentNullException(nameof(academicYear), "Please ensure that the academic year is of format '1819'");
+            }
+
             var result = new CollectionPeriod();
             if (period < 6)
             {
                 result.Month = period + 7;
+                if (int.TryParse(academicYear.Substring(0,2), out var year)) result.Year = 2000 + year;
             }
             else
             {
                 result.Month = period - 5;
+                if (int.TryParse(academicYear.Substring(2), out var year)) result.Year = 2000 + year;
             }
-            Period = (byte)(month > 7 ? month - 7 : month + 5);
-            var firstYear = (month < 8 ? year - 1 : year) - 2000;
-            AcademicYear = string.Concat(firstYear, firstYear + 1);
-            Name = string.Concat(AcademicYear, "-R", Period.ToString("00"));
+
+            result.Period = period;
+            result.AcademicYear = academicYear;
+            result.Name = $"{academicYear}-R{period:D2}";
+
+            return result;
         }
 
         public CollectionPeriod Clone()
@@ -40,7 +49,35 @@ namespace SFA.DAS.Payments.Model.Core
             return (DeliveryPeriod) MemberwiseClone();
         }
 
+        public int Period { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
         public string Identifier { get; set; }
+
+        public static DeliveryPeriod CreateFromAcademicYearAndPeriod(string academicYear, int period)
+        {
+            if (string.IsNullOrEmpty(academicYear) || academicYear.Length != 4)
+            {
+                throw new ArgumentNullException(nameof(academicYear), "Please ensure that the academic year is of format '1819'");
+            }
+
+            var result = new DeliveryPeriod();
+            if (period < 6)
+            {
+                result.Month = period + 7;
+                if (int.TryParse(academicYear.Substring(0, 2), out var year)) result.Year = 2000 + year;
+            }
+            else
+            {
+                result.Month = period - 5;
+                if (int.TryParse(academicYear.Substring(2), out var year)) result.Year = 2000 + year;
+            }
+
+            result.Period = period;
+            result.Identifier = $"{result.Year}-{result.Month:D2}";
+
+            return result;
+        }
     }
 
     public class CalendarPeriod2
