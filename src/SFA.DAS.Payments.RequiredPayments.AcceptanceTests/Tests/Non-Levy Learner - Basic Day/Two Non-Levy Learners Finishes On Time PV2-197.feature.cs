@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Non_LevyLearne
                         "Completion (TT2)",
                         "2400"});
 #line 13
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table61, "And ");
+ testRunner.And("the earning events component generates the following contract type 2 earnings:", ((string)(null)), table61, "And ");
 #line hidden
         }
         
@@ -159,7 +159,7 @@ this.FeatureBackground();
 #line 23
  testRunner.Given("the following historical contract type 2 payments exist:", ((string)(null)), table62, "Given ");
 #line 28
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table63 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
@@ -203,7 +203,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line 39
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table64 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
@@ -274,7 +274,7 @@ this.FeatureBackground();
 #line 52
  testRunner.Given("the following historical contract type 2 payments exist:", ((string)(null)), table65, "Given ");
 #line 56
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table66 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",

@@ -79,47 +79,47 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Non_LevyLearne
 #line 7
  testRunner.And("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId"});
-            table20.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "L1"});
-            table20.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "L2"});
 #line 8
- testRunner.And("following learners are undertaking training with a training provider", ((string)(null)), table20, "And ");
+ testRunner.And("following learners are undertaking training with a training provider", ((string)(null)), table1, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table21.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "L1",
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table21.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Completion (TT2)",
                         "3750"});
-            table21.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Balancing (TT3)",
                         "3000"});
-            table21.AddRow(new string[] {
+            table2.AddRow(new string[] {
                         "L2",
                         "p4",
                         "1",
                         "Learning (TT1)",
                         "1000"});
 #line 12
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table21, "And ");
+ testRunner.And("the earning events component generates the following contract type 2 earnings:", ((string)(null)), table2, "And ");
 #line hidden
         }
         
@@ -140,42 +140,42 @@ this.FeatureBackground();
 #line 23
  testRunner.Given("the current collection period is R02", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table22.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "L1",
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table22.AddRow(new string[] {
+            table3.AddRow(new string[] {
                         "L2",
                         "p4",
                         "1",
                         "Learning (TT1)",
                         "1000"});
 #line 24
- testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table22, "And ");
+ testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table3, "And ");
 #line 29
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table23.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Completion (TT2)",
                         "3750"});
-            table23.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
@@ -183,7 +183,7 @@ this.FeatureBackground();
                         "3000"});
 #line 30
  testRunner.Then("the required payments component will only generate contract type 2 required payme" +
-                    "nts", ((string)(null)), table23, "Then ");
+                    "nts", ((string)(null)), table4, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -205,63 +205,63 @@ this.FeatureBackground();
 #line 39
  testRunner.Given("the current collection period is R05", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table24.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "L2",
                         "p4",
                         "5",
                         "Completion (TT2)",
                         "3000"});
 #line 40
- testRunner.And("the payments due component generates more payments due:", ((string)(null)), table24, "And ");
+ testRunner.And("the earning events component generates more earnings:", ((string)(null)), table5, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table25.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "L1",
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table25.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Completion (TT2)",
                         "3750"});
-            table25.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Balancing (TT3)",
                         "3000"});
-            table25.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "L2",
                         "p4",
                         "1",
                         "Learning (TT1)",
                         "1000"});
 #line 43
- testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table25, "And ");
+ testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table6, "And ");
 #line 50
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table26.AddRow(new string[] {
+            table7.AddRow(new string[] {
                         "L2",
                         "p4",
                         "5",
@@ -269,7 +269,7 @@ this.FeatureBackground();
                         "3000"});
 #line 51
  testRunner.Then("the required payments component will only generate contract type 2 required payme" +
-                    "nts", ((string)(null)), table26, "Then ");
+                    "nts", ((string)(null)), table7, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -293,33 +293,33 @@ this.FeatureBackground();
 #line 60
  testRunner.Given("the current collection period is R02", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 61
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table27 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table27.AddRow(new string[] {
+            table8.AddRow(new string[] {
                         "L1",
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table27.AddRow(new string[] {
+            table8.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Completion (TT2)",
                         "3750"});
-            table27.AddRow(new string[] {
+            table8.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Balancing (TT3)",
                         "3000"});
-            table27.AddRow(new string[] {
+            table8.AddRow(new string[] {
                         "L2",
                         "p4",
                         "1",
@@ -327,7 +327,7 @@ this.FeatureBackground();
                         "1000"});
 #line 62
  testRunner.Then("the required payments component will only generate contract type 2 required payme" +
-                    "nts", ((string)(null)), table27, "Then ");
+                    "nts", ((string)(null)), table8, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -351,54 +351,54 @@ this.FeatureBackground();
 #line 74
  testRunner.Given("the current collection period is R05", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-            TechTalk.SpecFlow.Table table28 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table28.AddRow(new string[] {
+            table9.AddRow(new string[] {
                         "L2",
                         "p4",
                         "5",
                         "Completion (TT2)",
                         "3000"});
 #line 75
- testRunner.And("the payments due component generates more payments due:", ((string)(null)), table28, "And ");
+ testRunner.And("the earning events component generates more earnings:", ((string)(null)), table9, "And ");
 #line 78
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table29 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                         "LearnerId",
                         "PriceEpisodeIdentifier",
                         "Delivery Period",
                         "TransactionType",
                         "Amount"});
-            table29.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "L1",
                         "p2",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table29.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Completion (TT2)",
                         "3750"});
-            table29.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "L1",
                         "p2",
                         "2",
                         "Balancing (TT3)",
                         "3000"});
-            table29.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "L2",
                         "p4",
                         "1",
                         "Learning (TT1)",
                         "1000"});
-            table29.AddRow(new string[] {
+            table10.AddRow(new string[] {
                         "L2",
                         "p4",
                         "5",
@@ -406,7 +406,7 @@ this.FeatureBackground();
                         "3000"});
 #line 79
  testRunner.Then("the required payments component will only generate contract type 2 required payme" +
-                    "nts", ((string)(null)), table29, "Then ");
+                    "nts", ((string)(null)), table10, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

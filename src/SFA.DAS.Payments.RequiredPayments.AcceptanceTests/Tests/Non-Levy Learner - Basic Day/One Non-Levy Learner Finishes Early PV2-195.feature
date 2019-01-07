@@ -12,7 +12,7 @@ Scenario: A non-DAS learner, learner finishes early
 	Given the current collection period is R02
 	And the payments are for the current collection year
 
-	And the payments due component generates the following contract type 2 payments due:	
+	And the earning events component generates the following contract type 2 earnings:	
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 1				| Learning (TT1)	| 1000		|
 	| p2                     | 2				| Completion (TT2)	| 3750		|
@@ -22,7 +22,7 @@ Scenario: A non-DAS learner, learner finishes early
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 1				| Learning (TT1)	| 1000		|
 
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 2				| Completion (TT2)	| 3750		|
@@ -37,13 +37,13 @@ Scenario: A non-DAS learner, learner finishes early - no history
 	Given the current collection period is R02
 	And the payments are for the current collection year
 
-	And the payments due component generates the following contract type 2 payments due:	
+	And the earning events component generates the following contract type 2 earnings:	
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 1				| Learning (TT1)	| 1000		|
 	| p2                     | 2				| Completion (TT2)	| 3750		|
 	| p2                     | 2				| Balancing (TT3)	| 3000		|
 
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p2                     | 1				| Learning (TT1)	| 1000		|
@@ -56,7 +56,7 @@ Scenario: A non-DAS learner, learner withdraws after qualifying period
 	Given the current collection period is R06
 	And the payments are for the current collection year
 
-	And the payments due component generates the following contract type 2 payments due:	
+	And the earning events component generates the following contract type 2 earnings:	
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p1                     | 2				| Learning (TT1)	| 1000		|
 	| p1                     | 3				| Learning (TT1)	| 1000		|
@@ -70,7 +70,7 @@ Scenario: A non-DAS learner, learner withdraws after qualifying period
 	| p1                     | 4				| Learning (TT1)	| 1000		|
 	| p1                     | 5				| Learning (TT1)	| 1000		|
 
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will not generate any contract type 2 payable earnings
 
 @withdrawal
@@ -80,7 +80,7 @@ Scenario: A non-DAS learner, learner withdraws after qualifying period - partial
 	Given the current collection period is R06
 	And the payments are for the current collection year
 
-	And the payments due component generates the following contract type 2 payments due:	
+	And the earning events component generates the following contract type 2 earnings:	
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p1                     | 2				| Learning (TT1)	| 1000		|
 	| p1                     | 3				| Learning (TT1)	| 1000		|
@@ -92,7 +92,7 @@ Scenario: A non-DAS learner, learner withdraws after qualifying period - partial
 	| p1                     | 2				| Learning (TT1)	| 1000		|
 	| p1                     | 3				| Learning (TT1)	| 1000		|
 
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p1                     | 4				| Learning (TT1)	| 1000		|

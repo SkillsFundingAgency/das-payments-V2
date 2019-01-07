@@ -148,7 +148,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "Learning (TT1)",
                         "600"});
 #line 9
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table43, "And ");
+ testRunner.And("the earning events component generates the following contract type 2 earnings:", ((string)(null)), table43, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table44 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -235,7 +235,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line 43
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 44
  testRunner.Then("the required payments component will not generate any contract type 2 Learning (T" +
                     "T1) payable earnings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -254,7 +254,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line 47
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 48
  testRunner.Then("the required payments component will not generate any contract type 2 Completion " +
                     "(TT2) payable earnings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -273,7 +273,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line 51
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 52
  testRunner.Then("the required payments component will not generate any contract type 2 Balancing (" +
                     "TT3) payable earnings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

@@ -97,7 +97,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests.Non_LevyLearne
                         "Completion (TT2)",
                         "3000"});
 #line 9
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table16, "And ");
+ testRunner.And("the earning events component generates the following contract type 2 earnings:", ((string)(null)), table16, "And ");
 #line hidden
         }
         
@@ -129,7 +129,7 @@ this.FeatureBackground();
 #line 17
  testRunner.Given("the following historical contract type 2 payments exist:", ((string)(null)), table17, "Given ");
 #line 21
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -165,7 +165,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 3
 this.FeatureBackground();
 #line 31
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",

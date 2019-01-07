@@ -152,7 +152,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Tests
                         "Completion (TT2)",
                         "1500"});
 #line 9
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table67, "And ");
+ testRunner.And("the earning events component generates the following contract type 2 earnings:", ((string)(null)), table67, "And ");
 #line hidden
         }
         
@@ -169,7 +169,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line 28
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table68 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -263,7 +263,7 @@ this.FeatureBackground();
 #line 48
  testRunner.Given("the SFA contribution percentage is 90%", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 49
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table69 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -418,7 +418,7 @@ this.FeatureBackground();
 #line 69
  testRunner.Given("the following historical contract type 2 payments exist:", ((string)(null)), table70, "Given ");
 #line 83
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table71 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",

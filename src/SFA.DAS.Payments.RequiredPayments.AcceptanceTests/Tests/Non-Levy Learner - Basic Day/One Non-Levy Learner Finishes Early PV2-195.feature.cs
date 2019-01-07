@@ -119,7 +119,7 @@ this.FeatureBackground();
                         "Balancing (TT3)",
                         "3000"});
 #line 15
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table1, "And ");
+ testRunner.And("the earning events component generates the following contract type 2 earnings:", ((string)(null)), table1, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -134,7 +134,7 @@ this.FeatureBackground();
 #line 21
  testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table2, "And ");
 #line 25
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -200,9 +200,9 @@ this.FeatureBackground();
                         "Balancing (TT3)",
                         "3000"});
 #line 40
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table4, "And ");
+ testRunner.And("the earning events component generates the following contract type 2 earnings:", ((string)(null)), table4, "And ");
 #line 46
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -274,7 +274,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "1000"});
 #line 59
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table6, "And ");
+ testRunner.And("the earning events component generates the following contract type 2 earnings:", ((string)(null)), table6, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -304,7 +304,7 @@ this.FeatureBackground();
 #line 66
  testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table7, "And ");
 #line 73
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 74
  testRunner.Then("the required payments component will not generate any contract type 2 payable ear" +
                     "nings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -357,7 +357,7 @@ this.FeatureBackground();
                         "Learning (TT1)",
                         "1000"});
 #line 83
- testRunner.And("the payments due component generates the following contract type 2 payments due:", ((string)(null)), table8, "And ");
+ testRunner.And("the earning events component generates the following contract type 2 earnings:", ((string)(null)), table8, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
@@ -377,7 +377,7 @@ this.FeatureBackground();
 #line 90
  testRunner.And("the following historical contract type 2 payments exist:", ((string)(null)), table9, "And ");
 #line 95
- testRunner.When("a payments due event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("an earning event is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                         "PriceEpisodeIdentifier",
