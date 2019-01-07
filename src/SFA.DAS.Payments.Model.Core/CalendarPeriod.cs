@@ -2,7 +2,48 @@
 
 namespace SFA.DAS.Payments.Model.Core
 {
-    public class CalendarPeriod
+    public class CollectionPeriod
+    {
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public int Period { get; set; }
+        public int AcademicYear { get; set; }
+        public string Name { get; set; }
+
+        public static CollectionPeriod CreateFromAcademicYearAndPeriod(int academicYear, int period)
+        {
+            var result = new CollectionPeriod();
+            if (period < 6)
+            {
+                result.Month = period + 7;
+            }
+            else
+            {
+                result.Month = period - 5;
+            }
+            Period = (byte)(month > 7 ? month - 7 : month + 5);
+            var firstYear = (month < 8 ? year - 1 : year) - 2000;
+            AcademicYear = string.Concat(firstYear, firstYear + 1);
+            Name = string.Concat(AcademicYear, "-R", Period.ToString("00"));
+        }
+
+        public CollectionPeriod Clone()
+        {
+            return (CollectionPeriod) MemberwiseClone();
+        }
+    }
+
+    public class DeliveryPeriod
+    {
+        public DeliveryPeriod Clone()
+        {
+            return (DeliveryPeriod) MemberwiseClone();
+        }
+
+        public string Identifier { get; set; }
+    }
+
+    public class CalendarPeriod2
     {
         private string name;
         public short Year { get; set; }
@@ -16,12 +57,12 @@ namespace SFA.DAS.Payments.Model.Core
             set => FromName(value);
         }
 
-        public CalendarPeriod() 
+        public CalendarPeriod2() 
             : this((short) DateTime.UtcNow.Year, (byte) DateTime.UtcNow.Month)
         {
         }
 
-        public CalendarPeriod(short year, byte month)
+        public CalendarPeriod2(short year, byte month)
         {
             Year = year;
             Month = month;
@@ -31,7 +72,7 @@ namespace SFA.DAS.Payments.Model.Core
             Name = string.Concat(AcademicYear, "-R", Period.ToString("00"));
         }
 
-        public CalendarPeriod(string years, byte period)
+        public CalendarPeriod2(string years, byte period)
         {
             if (years == null)
                 throw new ArgumentNullException(nameof(years));
@@ -53,7 +94,7 @@ namespace SFA.DAS.Payments.Model.Core
             Name = string.Concat(AcademicYear, "-R", period.ToString("00"));
         }
 
-        public CalendarPeriod(string name)
+        public CalendarPeriod2(string name)
         {
             FromName(name);
         }
@@ -100,9 +141,9 @@ namespace SFA.DAS.Payments.Model.Core
             return string.Concat(Name, " ", Year, "-", Month);
         }
 
-        public CalendarPeriod Clone()
+        public CalendarPeriod2 Clone()
         {
-            return (CalendarPeriod) MemberwiseClone();
+            return (CalendarPeriod2) MemberwiseClone();
         }
 
         public override int GetHashCode()
@@ -112,16 +153,16 @@ namespace SFA.DAS.Payments.Model.Core
 
         public override bool Equals(object other)
         {
-            return Equals(other as CalendarPeriod);
+            return Equals(other as CalendarPeriod2);
         }
 
-        public bool Equals(CalendarPeriod other)
+        public bool Equals(CalendarPeriod2 other)
         {
             if (other == null) return false;
             return Year == other.Year && (Month == other.Month || Period == other.Period);
         }
 
-        public static bool operator ==(CalendarPeriod a, CalendarPeriod b)
+        public static bool operator ==(CalendarPeriod2 a, CalendarPeriod2 b)
         {
             if ((object)a == null)
                 return (object)b == null;
@@ -129,7 +170,7 @@ namespace SFA.DAS.Payments.Model.Core
             return a.Equals(b);
         }
 
-        public static bool operator !=(CalendarPeriod a, CalendarPeriod b)
+        public static bool operator !=(CalendarPeriod2 a, CalendarPeriod2 b)
         {
             return !(a == b);
         }

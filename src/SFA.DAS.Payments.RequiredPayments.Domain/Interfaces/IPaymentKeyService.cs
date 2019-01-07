@@ -4,6 +4,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain
 {
     public interface IPaymentKeyService
     {
-        string GeneratePaymentKey(string learnAimReference, int transactionType, CalendarPeriod deliveryPeriod);
+        string GeneratePaymentKey(string learnAimReference, int transactionType, DeliveryPeriod deliveryPeriod);
     }
 }

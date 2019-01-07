@@ -1,7 +1,6 @@
 ﻿using System;
 using AutoMapper;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 
@@ -12,15 +11,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
     {
         public ProviderPaymentsProfile()
         {
-
             CreateMap<FundingSourcePaymentEvent, PaymentModel>()
                 .Include<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>()
                 .Include<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>()
                 .Include<SfaFullyFundedFundingSourcePaymentEvent, PaymentModel>()
                 .ForMember(dest => dest.ExternalId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.CollectionPeriod.Year, source.CollectionPeriod.Month)))
-                .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.DeliveryPeriod.Year, source.DeliveryPeriod.Month)))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod))
+                .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(source => source.AmountDue))
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                 .ForMember(dest => dest.FundingSource, opt => opt.MapFrom(source => source.FundingSourceType))
@@ -49,8 +47,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .Include<PaymentModel, SfaFullyFundedProviderPaymentEvent>()
                 .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(source => source.ExternalId))
                 .ForMember(dest => dest.EventTime, opt => opt.ResolveUsing(src => DateTime.UtcNow))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.CollectionPeriod.Year, source.CollectionPeriod.Month)))
-                .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => new CalendarPeriod(source.DeliveryPeriod.Year, source.DeliveryPeriod.Month)))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod))
+                .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(source => source.Amount))
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                 .ForMember(dest => dest.FundingSourceType, opt => opt.MapFrom(source => source.FundingSource))

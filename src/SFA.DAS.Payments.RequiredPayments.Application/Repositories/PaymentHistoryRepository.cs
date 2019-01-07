@@ -52,8 +52,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 LearnAimReference = payment.LearningAimReference,
                 TransactionType = (int)payment.TransactionType,
                 PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
-                DeliveryPeriod = payment.DeliveryPeriod.Name,
-                CollectionPeriod = payment.CollectionPeriod.Name,
+                DeliveryPeriod = payment.DeliveryPeriod,
+                CollectionPeriod = payment.CollectionPeriod,
                 Amount = payment.Amount,
                 FundingSource = payment.FundingSource
             })

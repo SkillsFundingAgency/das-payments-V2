@@ -10,8 +10,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages
         public Guid ExternalId { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
         public decimal AmountDue { get; set; }
-        public CalendarPeriod CollectionPeriod { get; set; }
-        public CalendarPeriod DeliveryPeriod { get; set; }
+        public CollectionPeriod CollectionPeriod { get; set; }
+        public DeliveryPeriod DeliveryPeriod { get; set; }
         public DateTimeOffset EventTime { get; set; }
         public long Ukprn { get; set; }
         public Learner Learner { get; set; }

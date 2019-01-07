@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
@@ -11,8 +10,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
         {
             CreateMap<PaymentHistoryEntity, Payment>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.DeliveryPeriod, opt => opt.ResolveUsing(src => new CalendarPeriod(src.DeliveryPeriod)))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => new CalendarPeriod(src.CollectionPeriod)));
+                .ForMember(dest => dest.DeliveryPeriod, opt => opt.ResolveUsing(src => src.DeliveryPeriod))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod));
         }
     }
 }

@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Interfaces
     {
         Task HandlePayment(PaymentModel message, CancellationToken cancellationToken);
 
-        Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<PaymentModel>> GetMonthEndPayments(int collectionYear, int collectionPeriod, CancellationToken cancellationToken);
 
         Task HandleIlrSubMission(IlrSubmittedEvent message, CancellationToken cancellationToken);
     }

@@ -26,7 +26,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                             p.CollectionPeriod.Month == collectionPeriodMonth)
                 .ToListAsync(cancellationToken);
             return payments;
-
         }
 
         public async Task<List<long>> GetMonthEndUkprns(short collectionYear, byte collectionPeriodMonth, CancellationToken cancellationToken = default(CancellationToken))
@@ -57,7 +56,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
         {
             await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);
             await paymentsDataContext.SaveChangesAsync(cancellationToken);
-
         }
     }
 }

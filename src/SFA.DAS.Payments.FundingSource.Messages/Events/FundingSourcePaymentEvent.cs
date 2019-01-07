@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
 
         public decimal AmountDue { get; set; }
 
-        public CalendarPeriod DeliveryPeriod { get; set; }
+        public DeliveryPeriod DeliveryPeriod { get; set; }
 
         public ContractType ContractType { get; set; }
 
@@ -19,6 +19,5 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
         public TransactionType TransactionType { get; set; }
 
         public FundingSourceType FundingSourceType { get; set; }
-
     }
 }

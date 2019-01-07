@@ -8,6 +8,6 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain
         public long Ukprn { get; set; }
         public long JobId { get; set; }
         public DateTime IlrSubmissionDate { get; set; }
-        public CalendarPeriod CollectionPeriod { get; set; }
+        public CollectionPeriod CollectionPeriod { get; set; }
     }
 }
