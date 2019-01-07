@@ -32,9 +32,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 {
                     var sfaContribution = payments.Where(p => p.FundingSource == FundingSourceType.CoInvestedSfa).Sum(p => p.Amount);
                     var employerContribution = payments.Where(p => p.FundingSource == FundingSourceType.CoInvestedEmployer).Sum(p => p.Amount);
-                    sfaContributionPercentage = sfaContribution / (sfaContribution + employerContribution);
+                    if (sfaContribution + employerContribution == 0) // protection from div by 0
+                    {
+                        sfaContributionPercentage = 0;
+                    }
+                    else
+                    {
+                        sfaContributionPercentage = sfaContribution / (sfaContribution + employerContribution);
+                    }
                 }
-            
+
                 return new ApprenticeshipContractType2RequiredPaymentEvent
                 {
                     OnProgrammeEarningType = (OnProgrammeEarningType) periodAndType.type,
