@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Earning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Earning;
 using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
 
@@ -153,7 +154,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                         result.Add(incentiveEarning);
                     }
-
                 }
             }
 

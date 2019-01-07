@@ -7,12 +7,23 @@ using System.Reflection;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
     public static class Extensions
     {
+        public static CalendarPeriod ToLastOnProgPeriod(this DateTime date)
+        {
+            var lastDayOfMonth = DateTime.DaysInMonth(date.Year, date.Month);
+            if (date.Day < lastDayOfMonth)
+            {
+                var newDate = date.AddMonths(-1);
+                return newDate.ToCalendarPeriod();
+            }
+
+            return date.ToCalendarPeriod();
+        }
+
         public static CalendarPeriod ToCalendarPeriod(this DateTime date)
         {
             return new CalendarPeriod((short)date.Year, (byte)date.Month);
@@ -177,7 +188,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         public static decimal ToPercent(this string stringPercent)
         {
-            return decimal.Parse(stringPercent.TrimEnd('%')) / 100m;
+            if (decimal.TryParse(stringPercent.TrimEnd('%'), out var result))
+            {
+                return result / 100;
+            }
+            throw new Exception("Please include the SFA Contribution % in the price episodes or earnings");
         }
 
         private static ConcurrentDictionary<int, PropertyInfo> periodisedProperties;

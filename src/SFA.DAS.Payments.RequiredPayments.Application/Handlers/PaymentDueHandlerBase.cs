@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             else
                 priceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier;
 
-            var requiredPayment = CreateRequiredPayment((TPaymentDue) paymentDue);
+            var requiredPayment = CreateRequiredPayment((TPaymentDue) paymentDue, payments);
 
             requiredPayment.AmountDue = amountDue;
             requiredPayment.Learner = paymentDue.Learner.Clone();
@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             return requiredPayment;
         }
 
-        protected abstract TRequiredPayment CreateRequiredPayment(TPaymentDue paymentDue);
+        protected abstract TRequiredPayment CreateRequiredPayment(TPaymentDue paymentDue, Payment[] payments);
 
         protected abstract int GetTransactionType(TPaymentDue paymentDue);
     }

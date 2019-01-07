@@ -5,5 +5,6 @@
         public string PriceEpisodeIdentifier { get; set; }
         public byte Period { get; set; }
         public decimal Amount { get; set; }
+        public decimal? SfaContributionPercentage { get; set; }
     }
 }

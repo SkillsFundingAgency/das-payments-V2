@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
+namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
     public class Training
     {

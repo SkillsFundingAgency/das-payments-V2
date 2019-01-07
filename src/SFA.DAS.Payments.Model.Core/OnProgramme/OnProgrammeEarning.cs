@@ -1,10 +1,7 @@
-﻿using System.Collections.ObjectModel;
-
-namespace SFA.DAS.Payments.Model.Core.OnProgramme
+﻿namespace SFA.DAS.Payments.Model.Core.OnProgramme
 {
-    public class OnProgrammeEarning
+    public class OnProgrammeEarning : Earning
     {
         public OnProgrammeEarningType Type { get; set; }
-        public ReadOnlyCollection<EarningPeriod> Periods { get; set; }
     }
 }
