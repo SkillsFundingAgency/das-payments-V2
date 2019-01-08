@@ -38,6 +38,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             var config = new TestsConfiguration();
             Builder = new ContainerBuilder();
             Builder.RegisterType<TestsConfiguration>().SingleInstance();
+            Builder.RegisterType<DcHelper>().SingleInstance();
             EndpointConfiguration = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
             Builder.RegisterInstance(EndpointConfiguration)
                 .SingleInstance();
@@ -83,7 +84,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         }
 
 
-        [TestCase(5, 1000, 1)]
+        [TestCase(5, 100, 1)]
         public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerCount, int collectionPeriod)
         {
             Randomizer.Seed = new Random(8675309);
@@ -91,11 +92,11 @@ namespace SFA.DAS.Payments.PerformanceTests
                 .Select(i => new TestSession(i))
                 .ToList();
             var ilrSubmissions = new List<Task>();
-            //if (providerLearnerCount > 1)
-            //{
-            //    DeliveryTime = DateTimeOffset.UtcNow.AddSeconds(providerLearnerCount >= 10000 ? 600 : providerLearnerCount >= 1000 ? 300 : 60);
-            //    Console.WriteLine($"Using delivery time of: {DeliveryTime:O}");
-            //}
+            if (providerLearnerCount > 1)
+            {
+                DeliveryTime = DateTimeOffset.UtcNow.AddSeconds(providerLearnerCount >= 10000 ? 600 : providerLearnerCount >= 1000 ? 300 : 60);
+                Console.WriteLine($"Using delivery time of: {DeliveryTime:O}");
+            }
 
             var learnerId = 1;
             foreach (var session in sessions)
@@ -137,6 +138,8 @@ namespace SFA.DAS.Payments.PerformanceTests
                 LearnerStartTimes.Add(fm36Learner.LearnRefNumber, DateTime.Now);
                 Console.WriteLine($"Sent learner.  Ukprn: {session.Ukprn}, Learner: {fm36Learner.LearnRefNumber}, Time: {DateTime.Now:o}");
             }
+            var dcHelper = Container.Resolve<DcHelper>();
+            await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, "1819", (byte)collectionPeriod, session.JobId);
         }
 
         [OneTimeTearDown]

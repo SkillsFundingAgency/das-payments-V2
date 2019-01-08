@@ -1,4 +1,4 @@
-﻿using System;   
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         public static TestsConfiguration Config => new TestsConfiguration();
         protected FM36Learner CreateFM36Learner(TestSession session, Learner testLearner)
         {
-            var learner = new FM36Learner {LearnRefNumber = testLearner.LearnRefNumber};
+            var learner = new FM36Learner { LearnRefNumber = testLearner.LearnRefNumber };
             var startDate = new DateTime(DateTime.Today.Year + (DateTime.Today.Month < 8 ? -1 : 0), 8, 1);
             var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
             {
@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                     PriceEpisodeFundLineType = testLearner.Course.FundingLineType,
                     PriceEpisodeBalanceValue = 0,
                     PriceEpisodeCompletionPayment = 3000,
-                    PriceEpisodeContractType = ContractType.ContractWithEmployer.ToString("G"),
+                    PriceEpisodeContractType = ContractType.Act2.ToString("G"),
                     PriceEpisodeOnProgPayment = 1000,
                     PriceEpisodePlannedEndDate = startDate.AddMonths(12),
                     PriceEpisodeSFAContribPct = .9M,
@@ -53,16 +53,23 @@ namespace SFA.DAS.Payments.PerformanceTests
             {
                 AttributeName = "PriceEpisodeCompletionPayment",
             };
-            SetPeriodValue(12,completionEarnings,3000);
+            SetPeriodValue(12, completionEarnings, 3000);
             var balancingEarnings = new PriceEpisodePeriodisedValues
             {
                 AttributeName = "PriceEpisodeBalancePayment",
             };
 
-            learner.PriceEpisodes = new List<ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode>(new[] { priceEpisode });
+            var sfaContributionValues = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeSFAContribPct"
+            };
+            Enumerable.Range(1, 12).ToList().ForEach(i => SetPeriodValue(i, sfaContributionValues, .9M));
+
+            learner.PriceEpisodes = new List<PriceEpisode>(new[] { priceEpisode });
             priceEpisode.PriceEpisodePeriodisedValues.Add(learningValues);
             priceEpisode.PriceEpisodePeriodisedValues.Add(completionEarnings);
             priceEpisode.PriceEpisodePeriodisedValues.Add(balancingEarnings);
+            priceEpisode.PriceEpisodePeriodisedValues.Add(sfaContributionValues);
 
             learner.LearningDeliveries = new List<LearningDelivery>(new[]
             {
