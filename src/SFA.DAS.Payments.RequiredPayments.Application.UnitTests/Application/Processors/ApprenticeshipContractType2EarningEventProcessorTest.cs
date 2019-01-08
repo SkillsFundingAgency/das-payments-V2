@@ -327,7 +327,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             },
                             new EarningPeriod
                             {
-                                Amount = 100,
+                                Amount = 200,
                                 Period = (byte)(period.Period + 1),
                                 PriceEpisodeIdentifier = "2"
                             }
