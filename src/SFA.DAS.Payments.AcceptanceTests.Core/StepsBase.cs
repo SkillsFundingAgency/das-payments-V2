@@ -47,6 +47,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     if (lastRun) return;
                     lastRun = true;
                 }
+                else
+                    lastRun = false;
 
                 await Task.Delay(Config.TimeToPause);
             }
@@ -65,6 +67,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     if (lastRun) return;
                     lastRun = true;
                 }
+                else
+                    lastRun = false;
 
                 await Task.Delay(Config.TimeToPause);
             }
@@ -86,6 +90,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     if (lastRun) return;
                     lastRun = true;
                 }
+                else
+                    lastRun = false;
                 await Task.Delay(Config.TimeToPause);
             }
 

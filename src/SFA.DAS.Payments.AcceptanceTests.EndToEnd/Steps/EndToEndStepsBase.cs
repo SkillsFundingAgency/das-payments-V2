@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddTestAims(IList<Aim> aims)
         {
-            if (AimsProcessedForJob.Contains(TestSession.JobId) || !NewFeature)
+            if (TestSession.AtLeastOneScenarioCompleted || !NewFeature)
             {
                 return;
             }

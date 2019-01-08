@@ -121,8 +121,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     Aim aim;
                     try
                     {
-                        aim = TestSession.Learners
-                            .SelectMany(x => x.Aims)
+                        aim = TestSession.Learners.SelectMany(x => x.Aims)
                             .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
                     }
                     catch (Exception)
@@ -151,7 +150,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in CurrentIlr)
                 {
                     var aim = new Aim(training);
-                    var aims = new List<Aim> {aim};
+                    var aims = new List<Aim> { aim };
                     AddTestAims(aims);
 
                     if (CurrentPriceEpisodes == null)
@@ -176,15 +175,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             }
                             else
                             {
-                                var matchingAim = aims.First(x => x.AimSequenceNumber ==
-                                                                  currentPriceEpisode.AimSequenceNumber);
+                                var matchingAim = aims.First(x => x.AimSequenceNumber == currentPriceEpisode.AimSequenceNumber);
                                 matchingAim.PriceEpisodes.Add(currentPriceEpisode);
                             }
                         }
                     }
                 }
             }
-            
+
             // Learner -> Aims -> Price Episodes
             foreach (var testSessionLearner in TestSession.Learners)
             {
@@ -192,10 +190,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
                 PopulateLearner(learner, testSessionLearner, learnerEarnings);
 
-                await SendProcessLearnerCommand(learner);
-
+//                await SendProcessLearnerCommand(learner);
                 learners.Add(learner);
             }
+
             var dcHelper = Container.Resolve<DcHelper>();
             await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, CollectionYear, CollectionPeriod, TestSession.JobId);
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);

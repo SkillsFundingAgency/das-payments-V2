@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Handlers
             return new ApprenticeshipContractType2RequiredPaymentEvent
             {
                 OnProgrammeEarningType = paymentDue.Type,
-                PaymentsDueEventId = paymentDue.EventId
+                PaymentsDueEventId = paymentDue.EventId,
                 SfaContributionPercentage = sfaContributionPercentage
             };
         }
