@@ -25,6 +25,10 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
         {
             telemetry.TrackEvent($"Event: {eventName}", properties);
         }
+        public void TrackEvent(string eventName, double count)
+        {
+            telemetry.TrackEvent($"Event: {eventName}", properties, new Dictionary<string, double> { { "count", count } });
+        }
 
         public void TrackDuration(string durationName, TimeSpan duration)
         {

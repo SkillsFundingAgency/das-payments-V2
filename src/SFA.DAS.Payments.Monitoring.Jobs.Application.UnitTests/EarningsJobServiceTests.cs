@@ -13,7 +13,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 {
     [TestFixture]
-    public class ProviderEarningsJobServiceTests
+    public class EarningsJobServiceTests
     {
         private AutoMock mocker;
         private JobStepModel jobStep;
@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 IlrSubmissionTime = DateTime.UtcNow.AddMinutes(-20),
                 StartTime = DateTimeOffset.UtcNow,
             };
-            var service = mocker.Create<ProviderEarningsJobService>();
+            var service = mocker.Create<EarningsJobService>();
             await service.JobStarted(jobStarted);
             mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveNewJob(
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 
         private async Task JobStepCompleted()
         {
-            var service = mocker.Create<ProviderEarningsJobService>();
+            var service = mocker.Create<EarningsJobService>();
             await service.JobStepCompleted(jobMessageStatus);
         }
 
@@ -164,15 +164,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                         item.Status == JobStepStatus.Completed &&
                         item.StartTime == generatedMessage.StartTime))), Times.Once);
 
-        }
-
-        [Test]
-        public async Task Uses_JobStatusStats_Service_Complete_Job_If_No_Generated_Messages()
-        {
-            jobMessageStatus.GeneratedMessages.Clear();
-            await JobStepCompleted();
-            mocker.Mock<IJobsStatusServiceFacade>()
-                .Verify(facade => facade.JobStepsCompleted(It.Is<long>(id => id == jobStep.JobId)), Times.Once());
         }
 
     }

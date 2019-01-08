@@ -2,19 +2,16 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.Monitoring.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="Monitoring_JobsService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="Monitoring_JobsStatusServiceActorService_PartitionCount" DefaultValue="1" />
-    <Parameter Name="Monitoring_JobsStatusServiceActorService_MinReplicaSetSize" DefaultValue="2" />
-    <Parameter Name="Monitoring_JobsStatusServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="Monitoring_JobsStatusService_InstanceCount" DefaultValue="1" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_EndpointName" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds" DefaultValue="150" />
+    <Parameter Name="Monitoring_JobsService_IntervalInSeconds" DefaultValue="10" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
-    <Parameter Name="JobsStatusServiceActorService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="JobsStatusServiceActorService_MinReplicaSetSize" DefaultValue="1" />
-    <Parameter Name="JobsStatusServiceActorService_TargetReplicaSetSize" DefaultValue="1" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -34,6 +31,8 @@
             <Parameter Name="EndpointName" Value="[Monitoring_JobsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[Monitoring_JobsService_FailedMessagesQueue]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="FailureTimeoutInSeconds" Value="[Monitoring_JobsService_FailureTimeoutInSeconds]" />
+            <Parameter Name="IntervalInSeconds" Value="[Monitoring_JobsService_IntervalInSeconds]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -70,10 +69,10 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <Service Name="JobsStatusServiceActorService" GeneratedIdRef="6ec87aa9-eaee-4569-98f5-a50bb34c5bd0|None">
-      <StatefulService ServiceTypeName="JobsStatusServiceActorServiceType" TargetReplicaSetSize="[Monitoring_JobsStatusServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[Monitoring_JobsStatusServiceActorService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[Monitoring_JobsStatusServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
-      </StatefulService>
+    <Service Name="SFA.DAS.Payments.Monitoring.JobsStatusService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.Monitoring.JobsStatusServiceType" InstanceCount="[Monitoring_JobsStatusService_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
     </Service>
   </DefaultServices>
 </ApplicationManifest>

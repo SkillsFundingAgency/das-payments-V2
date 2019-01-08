@@ -11,8 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 {
     public interface IJobsDataContext
     {
-        Task SaveNewJob(JobModel jobDetails,List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken));
-        Task SaveNewMonthEndJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveNewJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken));
         Task<long> GetJobIdFromDcJobId(long dcJobId);
         Task<JobModel> GetJobByDcJobId(long dcJobId);
         Task SaveJobSteps(List<JobStepModel> jobSteps);
@@ -21,6 +20,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<DateTimeOffset> GetLastJobStepEndTime(long jobId);
         Task<JobModel> GetJob(long jobId);
         Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime);
+        Task<List<JobModel>> GetInProgressJobs();
+        Task UpdateJob(JobModel job, CancellationToken cancellationToken = default(CancellationToken));
+
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -56,12 +58,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             await SaveChangesAsync(cancellationToken);
         }
 
-        public async Task SaveNewMonthEndJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UpdateJob(JobModel job, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Jobs.Add(jobDetails);
-            await SaveChangesAsync(cancellationToken);
-            jobSteps.ForEach(step => step.JobId = jobDetails.Id);
-            JobSteps.AddRange(jobSteps);
+            if (job.Id < 1)
+                Jobs.Add(job);
+            else
+                Jobs.Attach(job).State = EntityState.Modified;
             await SaveChangesAsync(cancellationToken);
         }
 
@@ -93,6 +95,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                     Count = grp.Count()
                 })
                 .ToDictionaryAsync(item => item.Key, item => item.Count);
+        }
+
+        public async Task<List<JobModel>> GetInProgressJobs()
+        {
+            return await Jobs
+                .Where(job => job.Status == JobStatus.InProgress)
+                .ToListAsync();
         }
 
         public async Task<DateTimeOffset> GetLastJobStepEndTime(long jobId)

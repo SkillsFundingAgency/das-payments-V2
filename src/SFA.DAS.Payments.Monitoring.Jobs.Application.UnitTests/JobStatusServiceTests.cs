@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using Moq;
@@ -10,7 +11,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 {
     [TestFixture]
-    public class JobStatsServiceTests
+    public class JobStatusServiceTests
     {
         private AutoMock mocker;
         private Dictionary<JobStepStatus, int> stepsStatuses;
@@ -50,11 +51,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         public async Task Records_Job_Completed_If_No_Errors()
         {
             var service = mocker.Create<JobStatusService>();
-            await service.JobStepsCompleted(job.Id);
+            await service.UpdateStatus(job ,default(CancellationToken));
             mocker.Mock<IJobsDataContext>()
-                .Verify(dc => dc.SaveJobStatus(It.Is<long>(id => id == job.Id),
-                        It.Is<Data.Model.JobStatus>(status => status == Data.Model.JobStatus.Completed),
-                        It.Is<DateTimeOffset>(time => time == lastJobStepEndTime)),
+                .Verify(dc => dc.UpdateJob(It.Is<JobModel>(j => j.Id == job.Id && j.Status == JobStatus.Completed),It.IsAny<CancellationToken>()),
                     Times.Once);
         }
 
@@ -63,11 +62,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         {
             stepsStatuses.Add(JobStepStatus.Failed, 1);
             var service = mocker.Create<JobStatusService>();
-            await service.JobStepsCompleted(job.Id);
+            await service.UpdateStatus(job, default(CancellationToken));
             mocker.Mock<IJobsDataContext>()
-                .Verify(dc => dc.SaveJobStatus(It.Is<long>(id => id == job.Id),
-                        It.Is<Data.Model.JobStatus>(status => status == Data.Model.JobStatus.CompletedWithErrors),
-                        It.Is<DateTimeOffset>(time => time == lastJobStepEndTime)),
+                .Verify(dc => dc.UpdateJob(It.Is<JobModel>(j => j.Id == job.Id && j.Status == JobStatus.CompletedWithErrors), It.IsAny<CancellationToken>()),
                     Times.Once);
         }
 
@@ -76,7 +73,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         {
             stepsStatuses.Add(JobStepStatus.Queued, 1);
             var service = mocker.Create<JobStatusService>();
-            await service.JobStepsCompleted(job.Id);
+            await service.UpdateStatus(job, default(CancellationToken));
             mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveJobStatus(It.IsAny<long>(),
                         It.IsAny<Data.Model.JobStatus>(),
@@ -89,7 +86,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         {
             stepsStatuses.Add(JobStepStatus.Processing, 1);
             var service = mocker.Create<JobStatusService>();
-            await service.JobStepsCompleted(job.Id);
+            await service.UpdateStatus(job, default(CancellationToken));
             mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveJobStatus(It.IsAny<long>(),
                         It.IsAny<Data.Model.JobStatus>(),

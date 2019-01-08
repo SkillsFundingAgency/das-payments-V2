@@ -13,15 +13,17 @@ namespace SFA.DAS.Payments.Monitoring.JobsStatusService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForActor<JobsStatusService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<JobsStatusService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }
             }
             catch (Exception e)
             {
-                ActorEventSource.Current.ActorHostInitializationFailed(e.ToString());
-                throw;
+                {
+                    ServiceEventSource.Current.ServiceHostInitializationFailed(e.ToString());
+                    throw;
+                }
             }
         }
     }

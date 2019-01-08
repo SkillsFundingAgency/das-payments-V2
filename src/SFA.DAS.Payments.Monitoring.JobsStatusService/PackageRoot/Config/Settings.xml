@@ -18,5 +18,7 @@
     <Parameter Name="EndpointName" Value="sfa-das-payments-monitoring-jobsstatus" />
     <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-monitoring-jobsstatus-errors" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="FailureTimeoutInSeconds" Value="150" />
+    <Parameter Name="IntervalInSeconds" Value="10" />
   </Section>
 </Settings>

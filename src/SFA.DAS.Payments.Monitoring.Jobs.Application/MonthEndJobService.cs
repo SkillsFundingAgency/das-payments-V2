@@ -48,11 +48,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 Status = JobStepStatus.Queued,
 
             }).ToList();
-            await dataContext.SaveNewMonthEndJob(jobDetails, jobSteps);
+            await dataContext.SaveNewJob(jobDetails, jobSteps);
+            telemetry.AddProperty("JobType", jobDetails.JobType.ToString("G"));
             telemetry.AddProperty("JobId", startedJobCommand.JobId.ToString());
             telemetry.AddProperty("CollectionPeriod", startedJobCommand.CollectionPeriod.ToString());
             telemetry.AddProperty("CollectionYear", startedJobCommand.CollectionYear.ToString());
-            telemetry.TrackEvent("Started Month End Job");
+            telemetry.TrackEvent("Started Job");
             logger.LogDebug($"Finished recording new month end job.  Job Id: {startedJobCommand.JobId}, Collection period: {startedJobCommand.CollectionYear}-{startedJobCommand.CollectionPeriod}.");
         }
 

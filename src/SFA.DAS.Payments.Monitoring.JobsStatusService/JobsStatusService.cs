@@ -1,57 +1,60 @@
 ﻿using System;
+using System.Fabric;
+using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
+using Microsoft.ServiceFabric.Services.Runtime;
+using Polly;
+using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.JobsStatusService.Interfaces;
 
 namespace SFA.DAS.Payments.Monitoring.JobsStatusService
 {
-    /// <remarks>
-    /// This class represents an actor.
-    /// Every ActorID maps to an instance of this class.
-    /// The StatePersistence attribute determines persistence and replication of actor state:
-    ///  - Persisted: State is written to disk and replicated.
-    ///  - Volatile: State is kept in memory only and replicated.
-    ///  - None: State is kept in memory only and not replicated.
-    /// </remarks>
-    [StatePersistence(StatePersistence.None)]
-    public class JobsStatusService : Actor, IJobsStatusService
+    
+
+    public class JobsStatusService : StatelessService
     {
         private readonly IPaymentLogger logger;
-        private readonly IJobStatusService jobStatusService;
-
-        /// <summary>
-        /// Initializes a new instance of JobStatusStatsService
-        /// </summary>
-        /// <param name="actorService">The Microsoft.ServiceFabric.Actors.Runtime.ActorService that will host this actor instance.</param>
-        /// <param name="actorId">The Microsoft.ServiceFabric.Actors.ActorId for this actor instance.</param>
-        /// <param name="logger"></param>
-        /// <param name="jobStatusService"></param>
-        public JobsStatusService(ActorService actorService, ActorId actorId, IPaymentLogger logger, IJobStatusService jobStatusService)
-            : base(actorService, actorId)
+        private readonly TimeSpan interval;
+        private readonly Policy policy;
+        public JobsStatusService(StatelessServiceContext context, IPaymentLogger logger, IConfigurationHelper configurationHelper)
+            : base(context)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.jobStatusService = jobStatusService ?? throw new ArgumentNullException(nameof(jobStatusService));
+            var intervalInSeconds = int.Parse(configurationHelper.GetSetting("IntervalInSeconds"));
+            interval = TimeSpan.FromSeconds(intervalInSeconds);
+            policy = Policy.Handle<Exception>()
+                .CircuitBreakerAsync(5, TimeSpan.FromSeconds(int.Parse(configurationHelper.GetSetting("FailureTimeoutInSeconds"))));
+
         }
 
-        /// <summary>
-        /// This method is called whenever an actor is activated.
-        /// An actor is activated the first time any of its methods are invoked.
-        /// </summary>
-        protected override Task OnActivateAsync()
+        protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            ActorEventSource.Current.ActorMessage(this, "Actor activated.");
-            return Task.CompletedTask;
-        }
-
-        public async Task<(bool Finished, DateTimeOffset? endTime)> JobStepsCompleted(long jobId)
-        {
-            logger.LogVerbose($"Performing job steps completed for job: {jobId}");
-            var finished =  await jobStatusService.JobStepsCompleted(jobId);
-            logger.LogDebug($"Finished performing job steps completed for job: {jobId}.  Finished: {finished}");
-            return finished;
+            try
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    logger.LogVerbose($"Starting status update process.");
+                    using (var scope = ContainerFactory.Container.BeginLifetimeScope())
+                    {
+                        var completedJobsService = scope.Resolve<ICompletedJobsService>();
+                        await policy.ExecuteAsync(() => completedJobsService.UpdateCompletedJobs(cancellationToken));
+                        await Task.Delay(interval, cancellationToken);
+                    }
+                    logger.LogDebug("Finished status update process.");
+                    await Task.Delay(interval, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogFatal($"Fatal error running JobStatus Service. Error: {ex}", ex);
+                throw;
+            }
         }
     }
 }

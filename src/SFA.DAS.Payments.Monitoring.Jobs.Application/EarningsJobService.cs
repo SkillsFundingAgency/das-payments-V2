@@ -10,24 +10,22 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 {
-    public interface IProviderEarningsJobService
+    public interface IEarningsJobService
     {
         Task JobStarted(RecordStartedProcessingProviderEarningsJob startedEvent);
         Task JobStepCompleted(RecordJobMessageProcessingStatus stepCompleted);
     }
 
-    public class ProviderEarningsJobService : IProviderEarningsJobService
+    public class EarningsJobService : IEarningsJobService
     {
         private readonly IPaymentLogger logger;
         private readonly IJobsDataContext dataContext;
-        private readonly IJobsStatusServiceFacade jobsStatusService;
         private readonly ITelemetry telemetry;
 
-        public ProviderEarningsJobService(IPaymentLogger logger, IJobsDataContext dataContext, IJobsStatusServiceFacade jobsStatusService, ITelemetry telemetry)
+        public EarningsJobService(IPaymentLogger logger, IJobsDataContext dataContext, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-            this.jobsStatusService = jobsStatusService ?? throw new ArgumentNullException(nameof(jobsStatusService));
             this.telemetry = telemetry;
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
@@ -55,6 +53,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
             }).ToList();
             await dataContext.SaveNewJob(jobDetails, jobSteps);
+            telemetry.AddProperty("JobType", JobType.EarningsJob.ToString("G"));
             telemetry.AddProperty("Ukprn", startedEvent.Ukprn.ToString());
             telemetry.AddProperty("JobId", startedEvent.JobId.ToString());
             telemetry.AddProperty("CollectionPeriod", startedEvent.CollectionPeriod.ToString());
@@ -107,19 +106,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
             await dataContext.SaveJobSteps(jobSteps);
 
-            if (!jobMessageStatus.GeneratedMessages.Any())
-            {
-                logger.LogDebug($"No messages were generated as a result of processing this message therefore the job may have finished. Job: {jobId}.");
-                var result = await jobsStatusService.JobStepsCompleted(jobId);
-                if (result.Finished)
-                {
-                    telemetry.AddProperty("Ukprn", job.Ukprn?.ToString() ?? string.Empty);
-                    telemetry.AddProperty("JobId", job.DcJobId?.ToString() ?? string.Empty);
-                    telemetry.AddProperty("CollectionPeriod", job.CollectionPeriod.ToString());
-                    telemetry.AddProperty("CollectionYear", job.CollectionYear.ToString());
-                    telemetry.TrackDuration("Finished Job", result.endTime.Value - job.StartTime);
-                }
-            }
             if (completedStep.StartTime.HasValue)
             {
                 telemetry.AddProperty("MessageName", completedStep.MessageName);

@@ -16,14 +16,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 })
                 .As<IJobsDataContext>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<ProviderEarningsJobService>()
-                .As<IProviderEarningsJobService>()
+            builder.RegisterType<EarningsJobService>()
+                .As<IEarningsJobService>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<MonthEndJobService>()
                 .As<IMonthEndJobService>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<JobStatusService>()
                 .As<IJobStatusService>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<CompletedJobsService>()
+                .As<ICompletedJobsService>()
                 .InstancePerLifetimeScope();
             builder.RegisterBuildCallback(c =>
                 c.Resolve<EndpointConfiguration>().LimitMessageProcessingConcurrencyTo(1));

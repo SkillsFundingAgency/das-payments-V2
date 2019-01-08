@@ -9,12 +9,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
     public class StartedProcessingProviderEarningsEventHandler : IHandleMessages<RecordStartedProcessingProviderEarningsJob>
     {
         private readonly IPaymentLogger logger;
-        private readonly IProviderEarningsJobService providerEarningsService;
+        private readonly IEarningsJobService earningsService;
 
-        public StartedProcessingProviderEarningsEventHandler(IPaymentLogger logger, IProviderEarningsJobService providerEarningsService)
+        public StartedProcessingProviderEarningsEventHandler(IPaymentLogger logger, IEarningsJobService earningsService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.providerEarningsService = providerEarningsService ?? throw new ArgumentNullException(nameof(providerEarningsService));
+            this.earningsService = earningsService ?? throw new ArgumentNullException(nameof(earningsService));
         }
 
         public async Task Handle(RecordStartedProcessingProviderEarningsJob message, IMessageHandlerContext context)
@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
             try
             {
                 logger.LogVerbose($"Handling provider earnings job. Job Id: {message.JobId}.");
-                await providerEarningsService.JobStarted(message);
+                await earningsService.JobStarted(message);
                 logger.LogDebug($"Finished handling provider earnings job. Job Id: {message.JobId}.");
 
             }

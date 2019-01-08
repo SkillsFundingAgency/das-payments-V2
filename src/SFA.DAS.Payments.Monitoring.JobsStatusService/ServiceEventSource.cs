@@ -2,9 +2,9 @@
 using System.Diagnostics.Tracing;
 using System.Fabric;
 
-namespace SFA.DAS.Payments.Monitoring.JobsService
+namespace SFA.DAS.Payments.Monitoring.JobsStatusService
 {
-    [EventSource(Name = "MyCompany-SFA.DAS.Payments.Monitoring.ServiceFabric-SFA.DAS.Payments.Monitoring.JobsService")]
+    [EventSource(Name = "MyCompany-SFA.DAS.Payments.Monitoring.ServiceFabric-SFA.DAS.Payments.Monitoring.JobStatusService")]
     internal sealed class ServiceEventSource : EventSource
     {
         public static readonly ServiceEventSource Current = new ServiceEventSource();
