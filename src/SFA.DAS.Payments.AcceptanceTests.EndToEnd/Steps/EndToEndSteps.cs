@@ -2,7 +2,6 @@
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
 using System.Collections.Generic;
@@ -58,6 +57,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(PreviousIlr);
         }
 
+        [Given(@"the Provider now changes the Learner details as follows")]
+        public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
+        {
+            AddNewIlr(table);
+        }
+
+        [Given("the Learner has now changed to \"(.*)\" as follows")]
+        public void GivenTheLearnerChangesProvider(string providerId, Table table)
+        {
+            if (!TestSession.AtLeastOneScenarioCompleted)
+            {
+                TestSession.RegenerateUkprn();
+                AddNewIlr(table);
+            }
+        }
+
         [Given(@"the following learners")]
         public void GivenTheFollowingLearners(Table table)
         {
@@ -68,7 +83,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"aims details are changed as follows")]
         public void GivenAimsDetailsAreChangedAsFollows(Table table)
         {
-            AimsProcessedForJob.Remove(TestSession.JobId);
             AddTestAims(table.CreateSet<Aim>().ToList());
         }
 
@@ -92,12 +106,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
         {
-            if (PriceEpisodesProcessedForJob.Contains(TestSession.JobId) || !NewFeature)
+            if (TestSession.AtLeastOneScenarioCompleted)
             {
                 return;
             }
-
-            PriceEpisodesProcessedForJob.Add(TestSession.JobId);
 
             var newPriceEpisodes = table.CreateSet<Price>().ToList();
             CurrentPriceEpisodes = newPriceEpisodes;
@@ -134,67 +146,61 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var earnings = CreateEarnings(table);
             var learners = new List<FM36Learner>();
 
-            if (CurrentIlr == null)
-            {
-                // Learner -> Aims -> Price Episodes
-                foreach (var testSessionLearner in TestSession.Learners)
-                {
-                    var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
-                    var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
-                    PopulateLearner(learner, testSessionLearner, learnerEarnings);
-
-                    var command = new ProcessLearnerCommand
-                    {
-                        Learner = learner,
-                        CollectionPeriod = CurrentCollectionPeriod.Period,
-                        CollectionYear = CollectionYear,
-                        Ukprn = TestSession.Ukprn,
-                        JobId = TestSession.JobId,
-                        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                        RequestTime = DateTimeOffset.UtcNow,
-                        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????          
-                    };
-
-                    //                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                    //                    await MessageSession.Send(command);
-
-                    learners.Add(learner);
-                }
-            }
-            else
+            if (CurrentIlr != null)
             {
                 foreach (var training in CurrentIlr)
                 {
-                    var learnerId = training.LearnerId;
-                    var learner = new FM36Learner { LearnRefNumber = TestSession.GetLearner(learnerId).LearnRefNumber };
-                    var learnerEarnings = earnings.Where(e => e.LearnerId == learnerId).ToList();
+                    var aim = new Aim(training);
+                    var aims = new List<Aim> {aim};
+                    AddTestAims(aims);
 
-                    PopulateLearner(learner, training, learnerEarnings);
-
-                    var command = new ProcessLearnerCommand
+                    if (CurrentPriceEpisodes == null)
                     {
-                        Learner = learner,
-                        CollectionPeriod = CurrentCollectionPeriod.Period,
-                        CollectionYear = CollectionYear,
-                        Ukprn = TestSession.Ukprn,
-                        JobId = TestSession.JobId,
-                        IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                        RequestTime = DateTimeOffset.UtcNow,
-                        SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????                    
-                    };
-
-                    //                    Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-                    //                    await MessageSession.Send(command);
-
-                    learners.Add(learner);
+                        aim.PriceEpisodes.Add(new Price
+                        {
+                            AimSequenceNumber = training.AimSequenceNumber,
+                            TotalAssessmentPrice = training.TotalAssessmentPrice,
+                            TotalTrainingPrice = training.TotalTrainingPrice,
+                            TotalTrainingPriceEffectiveDate = training.StartDate,
+                            TotalAssessmentPriceEffectiveDate = training.StartDate,
+                            SfaContributionPercentage = training.SfaContributionPercentage,
+                        });
+                    }
+                    else
+                    {
+                        foreach (var currentPriceEpisode in CurrentPriceEpisodes)
+                        {
+                            if (currentPriceEpisode.AimSequenceNumber == 0)
+                            {
+                                aims.Single().PriceEpisodes.Add(currentPriceEpisode);
+                            }
+                            else
+                            {
+                                var matchingAim = aims.First(x => x.AimSequenceNumber ==
+                                                                  currentPriceEpisode.AimSequenceNumber);
+                                matchingAim.PriceEpisodes.Add(currentPriceEpisode);
+                            }
+                        }
+                    }
                 }
+            }
+            
+            // Learner -> Aims -> Price Episodes
+            foreach (var testSessionLearner in TestSession.Learners)
+            {
+                var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
+                var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
+                PopulateLearner(learner, testSessionLearner, learnerEarnings);
+
+                await SendProcessLearnerCommand(learner);
+
+                learners.Add(learner);
             }
             var dcHelper = Container.Resolve<DcHelper>();
             await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, CollectionYear, CollectionPeriod, TestSession.JobId);
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
-
 
         [Then(@"only the following payments will be calculated")]
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)

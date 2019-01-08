@@ -11,11 +11,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
     {
         public LearnRefNumberGenerator LearnRefNumberGenerator { get; }
         public string SessionId { get; }
-        public long Ukprn { get; }
+        public long Ukprn { get; private set; }
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
         public long JobId { get; private set; }
         public DateTime IlrSubmissionTime { get; set; }
+        public bool AtLeastOneScenarioCompleted { get; private set; }
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
@@ -56,6 +57,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return id;
         }
 
+        public void RegenerateUkprn()
+        {
+            Ukprn = GenerateId();
+        }
+
         public string GenerateLearnerReference(string learnerId)
         {
             return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
@@ -90,6 +96,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public void SessionEnd()
         {
             //TODO: clean up Ids
+        }
+
+        public void CompleteScenario()
+        {
+            AtLeastOneScenarioCompleted = true;
         }
     }
 }
