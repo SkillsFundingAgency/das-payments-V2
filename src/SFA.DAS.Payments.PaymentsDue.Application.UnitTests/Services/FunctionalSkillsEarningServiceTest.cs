@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
 
             var message = new FunctionalSkillEarningsEvent
             {
-                CollectionPeriod = new CalendarPeriod("1819-R01"),
+                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 1),
                 CollectionYear = "1819",
                 EventTime = DateTimeOffset.Now,
                 IlrSubmissionDateTime = DateTime.Today,

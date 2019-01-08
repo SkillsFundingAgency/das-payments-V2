@@ -2,7 +2,14 @@
 
 namespace SFA.DAS.Payments.Model.Core
 {
-    public class CollectionPeriod
+    public interface IContainCalendarPeriodData
+    {
+        int Year { get; set; }
+        int Month { get; set; }
+        int Period { get; set; }
+    }
+
+    public class CollectionPeriod : IContainCalendarPeriodData
     {
         public int Year { get; set; }
         public int Month { get; set; }
@@ -42,7 +49,7 @@ namespace SFA.DAS.Payments.Model.Core
         }
     }
 
-    public class DeliveryPeriod
+    public class DeliveryPeriod : IContainCalendarPeriodData
     {
         public DeliveryPeriod Clone()
         {

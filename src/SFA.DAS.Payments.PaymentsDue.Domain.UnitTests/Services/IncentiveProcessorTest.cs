@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         public void TestHandleIncentiveEarning(IncentiveEarningType type)
         {
             // arrange
-            var collectionPeriod = new CalendarPeriod("1819-R03");
+            var collectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 3);
             var earning = GetEarning();
 
             var incentiveEarning = new IncentiveEarning
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         private static void AssertPeriodsAreSame(ApprenticeshipContractTypeEarningsEvent earning,
             IncentivePaymentDueEvent paymentDue,
             EarningPeriod earningPeriod,
-            CalendarPeriod collectionPeriod)
+            CollectionPeriod collectionPeriod)
         {
             Assert.AreEqual(earning.Ukprn, paymentDue.Ukprn);
             Assert.AreEqual(earning.PriceEpisodes[0].Identifier, paymentDue.PriceEpisodeIdentifier);

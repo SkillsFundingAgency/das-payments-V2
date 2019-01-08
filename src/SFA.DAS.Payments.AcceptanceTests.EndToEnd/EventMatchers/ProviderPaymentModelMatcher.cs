@@ -4,7 +4,9 @@ using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -82,9 +84,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             return new PaymentModel
             {
-                CollectionPeriod = paymentInfo.CollectionPeriod.ToCalendarPeriod(),
+                CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(paymentInfo.CollectionPeriod).Build(),
                 Ukprn = ukprn,
-                DeliveryPeriod = paymentInfo.DeliveryPeriod.ToCalendarPeriod(),
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(paymentInfo.DeliveryPeriod).Build(),
                 TransactionType = paymentInfo.TransactionType,
                 ContractType = contractType,
                 Amount = amount,

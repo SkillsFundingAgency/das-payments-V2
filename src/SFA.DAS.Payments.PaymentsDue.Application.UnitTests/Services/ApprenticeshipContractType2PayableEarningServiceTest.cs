@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
             {
                 Learner = new Learner(),
                 LearningAim = new LearningAim(),
-                CollectionPeriod = new CalendarPeriod("1819R01"),
+                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 1),
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new[]
                 {
                     new OnProgrammeEarning()
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Application.UnitTests.Services
             {
                 Learner = new Learner(),
                 LearningAim = new LearningAim(),
-                CollectionPeriod = new CalendarPeriod("1819R01"),
+                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 1),
                 IncentiveEarnings = new ReadOnlyCollection<IncentiveEarning>(new[]
                 {
                     new IncentiveEarning()

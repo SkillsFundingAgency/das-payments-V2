@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             // arrange
             var learnAimRef = "6";
             var transactionType = 3;
-            var deliveryPeriod = new CalendarPeriod("1819", 5);
+            var deliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 5);
 
             // act
             var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, deliveryPeriod);
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             // arrange
             var learnAimRef = "B";
             var transactionType = 3;
-            var deliveryPeriod = new CalendarPeriod("1819", 5);
+            var deliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 5);
 
             // act
             var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, deliveryPeriod);
@@ -40,7 +40,5 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             Assert.IsFalse(key.Contains("B"));
             Assert.IsTrue(key.Contains("b"));
         }
-
-
     }
 }

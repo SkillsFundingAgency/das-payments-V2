@@ -19,6 +19,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Handlers
 {
@@ -99,14 +100,18 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 Ukprn = 1,
                 PriceEpisodeIdentifier = "2",
                 AmountDue = 100,
-                CollectionPeriod = new CalendarPeriod(2018, 9),
-                DeliveryPeriod = new CalendarPeriod(2018, 9),
+                CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
                 Type = OnProgrammeEarningType.Learning
             };
 
-            var paymentHistoryEntities = new[] { new PaymentHistoryEntity { CollectionPeriod = "1819-R02", DeliveryPeriod = "1819-R02"} };
+            var paymentHistoryEntities = new[] { new PaymentHistoryEntity
+            {
+                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
+                DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
+            } };
 
             mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, paymentDue.DeliveryPeriod)).Returns("payment key").Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
@@ -130,8 +135,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 Ukprn = 1,
                 PriceEpisodeIdentifier = "2",
                 AmountDue = 100,
-                CollectionPeriod = new CalendarPeriod(2018, 9),
-                DeliveryPeriod = new CalendarPeriod(2018, 9),
+                CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
                 Type = OnProgrammeEarningType.Learning
@@ -162,8 +167,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 Ukprn = 1,
                 PriceEpisodeIdentifier = priceEpisodeIdentifier,
                 AmountDue = amount,
-                CollectionPeriod = new CalendarPeriod(2018, 10),
-                DeliveryPeriod = new CalendarPeriod(2018, 9),
+                CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(10).Build(),
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
                 Type = OnProgrammeEarningType.Balancing
@@ -175,8 +180,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 {
                     Amount = 100,
                     PriceEpisodeIdentifier = "2",
-                    CollectionPeriod = new CalendarPeriod(2018, 9).Name,
-                    DeliveryPeriod = new  CalendarPeriod(2018, 9).Name,
+                    CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
+                    DeliveryPeriod = new DeliveryPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
                     TransactionType = (int)IncentiveEarningType.Balancing16To18FrameworkUplift,
                     Ukprn = 1,
                     LearnAimReference = paymentDue.LearningAim.Reference,
@@ -212,8 +217,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 PriceEpisodeIdentifier = "priceEpisodeIdentifier",
                 AmountDue = 0,
                 SfaContributionPercentage = 0,
-                CollectionPeriod = new CalendarPeriod(2018, 10),
-                DeliveryPeriod = new CalendarPeriod(2018, 9),
+                CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(10).Build(),
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
                 Type = OnProgrammeEarningType.Balancing
@@ -250,8 +255,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 FundingSource = fundingSourceType,
                 TransactionType = (int)OnProgrammeEarningType.Learning,
                 PriceEpisodeIdentifier = "2",
-                CollectionPeriod = new CalendarPeriod(2018, 9).Name,
-                DeliveryPeriod = new CalendarPeriod(2018, 9).Name,
+                CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
                 Ukprn = 1,
                 LearnAimReference = paymentDue.LearningAim.Reference,
                 LearnerReferenceNumber = paymentDue.Learner.ReferenceNumber,

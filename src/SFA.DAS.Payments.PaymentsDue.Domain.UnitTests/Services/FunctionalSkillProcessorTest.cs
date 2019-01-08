@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         public void TestHandleIncentiveEarning()
         {
             // arrange
-            var collectionPeriod = new CalendarPeriod("1819-R03");
+            var collectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 3);
             var learner = new Learner
             {
                 ReferenceNumber = "1",

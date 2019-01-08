@@ -128,8 +128,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             paymentEvent.AmountDue = requiredPayment.Amount;
             paymentEvent.JobId = TestSession.JobId;
             paymentEvent.EventTime = DateTimeOffset.UtcNow;
-            paymentEvent.CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod);
-            paymentEvent.DeliveryPeriod = new CalendarPeriod(GetYear(requiredPayment.DeliveryPeriod, CollectionYear).ToString(), requiredPayment.DeliveryPeriod);
+            paymentEvent.CollectionPeriod = Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod);
+            paymentEvent.DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, requiredPayment.DeliveryPeriod);
             paymentEvent.IlrSubmissionDateTime = TestSession.IlrSubmissionTime;
             paymentEvent.LearningAim = TestSession.Learner.Course.ToLearningAim();
             paymentEvent.PriceEpisodeIdentifier = requiredPayment.PriceEpisodeIdentifier;

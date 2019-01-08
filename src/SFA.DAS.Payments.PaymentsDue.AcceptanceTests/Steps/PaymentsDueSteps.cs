@@ -1,5 +1,4 @@
-﻿using System;
-using NServiceBus;
+﻿using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -31,7 +30,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
         {
             foreach (var act2EarningEvent in Act2EarningEvents)
             {
-                act2EarningEvent.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
+                act2EarningEvent.CollectionPeriod = Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod);
                 await MessageSession.Send(act2EarningEvent);
             }
         }
@@ -78,7 +77,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                     for (var i = 0; i < unexpected.Count; i++)
                     {
                         var e = unexpected[i];
-                        Debug.WriteLine($"{i + 1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
+                        Debug.WriteLine($"{i + 1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.Type}, DeliveryPeriod:{e.DeliveryPeriod.Identifier}, CollectionPeriod:{e.CollectionPeriod.Name}");
                     }
                 }
             }
@@ -130,7 +129,7 @@ namespace SFA.DAS.Payments.PaymentsDue.AcceptanceTests.Steps
                     Ukprn = TestSession.Ukprn,
                     IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
                     JobId = TestSession.JobId,
-                    CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
+                    CollectionPeriod = Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
                     Learner = new Learner
                     {
                         ReferenceNumber = testLearner.LearnRefNumber,                        

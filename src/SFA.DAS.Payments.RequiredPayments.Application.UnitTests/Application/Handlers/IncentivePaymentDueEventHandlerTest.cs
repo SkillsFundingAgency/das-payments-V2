@@ -15,6 +15,7 @@ using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Handlers
 {
@@ -90,8 +91,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 Ukprn = 1,
                 PriceEpisodeIdentifier = "2",
                 AmountDue = 100,
-                CollectionPeriod = new CalendarPeriod(2018, 9),
-                DeliveryPeriod = new CalendarPeriod(2018, 9),
+                CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
                 Type = IncentivePaymentType.Balancing16To18FrameworkUplift
@@ -121,8 +122,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ha
                 Ukprn = 1,
                 PriceEpisodeIdentifier = "2",
                 AmountDue = 100,
-                CollectionPeriod = new CalendarPeriod(2018, 9),
-                DeliveryPeriod = new CalendarPeriod(2018, 9),
+                CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithYear(2018).WithMonth(9).Build(),
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
                 Type = IncentivePaymentType.Completion16To18FrameworkUplift

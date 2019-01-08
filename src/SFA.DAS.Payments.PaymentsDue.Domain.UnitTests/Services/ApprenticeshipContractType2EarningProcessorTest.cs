@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         public void TestHandleOnProgrammeEarning()
         {
             // arrange
-            var collectionPeriod = new CalendarPeriod("1819-R03");
+            var collectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 3);
             var earning = GetEarning();
             var onProgrammeEarning = new OnProgrammeEarning
             {
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         public void TestHandleZeroAmountEarning()
         {
             // arrange
-            var collectionPeriod = new CalendarPeriod("1819-R03");
+            var collectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 3);
 
             var earning = GetEarning();
             var onProgrammeEarning = new OnProgrammeEarning
@@ -113,7 +113,13 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         [Test]
         public void TestNullEarning()
         {
-            var submission = new Submission { Ukprn = Ukprn, JobId = JobId, CollectionPeriod = new CalendarPeriod("1718-R02"), IlrSubmissionDate = DateTime.Now };
+            var submission = new Submission
+            {
+                Ukprn = Ukprn,
+                JobId = JobId,
+                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1718", 2),
+                IlrSubmissionDate = DateTime.Now
+            };
             try
             {
                 earningProcessor.HandleOnProgrammeEarning(submission, null, new Learner(), new LearningAim(), 100);
@@ -147,7 +153,13 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         [Test]
         public void TestNullLearnerPeriod()
         {
-            var submission = new Submission { Ukprn = Ukprn, JobId = JobId, CollectionPeriod = new CalendarPeriod("1718-R02"), IlrSubmissionDate = DateTime.Now };
+            var submission = new Submission
+            {
+                Ukprn = Ukprn,
+                JobId = JobId,
+                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1718", 2),
+                IlrSubmissionDate = DateTime.Now
+            };
             try
             {
                 earningProcessor.HandleOnProgrammeEarning(submission, new OnProgrammeEarning(), null, new LearningAim(), 100);
@@ -164,7 +176,13 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         [Test]
         public void TestNullLearnAimPeriod()
         {
-            var submission = new Submission { Ukprn = Ukprn, JobId = JobId, CollectionPeriod = new CalendarPeriod("1718-R02"), IlrSubmissionDate = DateTime.Now };
+            var submission = new Submission
+            {
+                Ukprn = Ukprn,
+                JobId = JobId,
+                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1718", 2),
+                IlrSubmissionDate = DateTime.Now
+            };
             try
             {
                 earningProcessor.HandleOnProgrammeEarning(submission, new OnProgrammeEarning(), new Learner(), null, 100);
@@ -181,7 +199,7 @@ namespace SFA.DAS.Payments.PaymentsDue.Domain.UnitTests.Services
         private static void AssertPeriodsAreSame(ApprenticeshipContractTypeEarningsEvent earning,
                                                 ApprenticeshipContractTypePaymentDueEvent paymentDue, 
                                                 EarningPeriod earningPeriod, 
-                                                CalendarPeriod collectionPeriod)
+                                                CollectionPeriod collectionPeriod)
         {
             Assert.AreEqual(earning.Ukprn, paymentDue.Ukprn);
             Assert.AreEqual(earning.SfaContributionPercentage, paymentDue.SfaContributionPercentage);

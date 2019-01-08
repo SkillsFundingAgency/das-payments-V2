@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 {
     public class Earning
     {
-        private CalendarPeriod deliveryPeriod;
+        private DeliveryPeriod deliveryPeriod;
 
-        public CalendarPeriod DeliveryCalendarPeriod =>
-            deliveryPeriod ?? (deliveryPeriod = DeliveryPeriod.ToDate().ToCalendarPeriod());
+        public DeliveryPeriod DeliveryCalendarPeriod =>
+            deliveryPeriod ?? (deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(DeliveryPeriod).Build());
 
         public string DeliveryPeriod { get; set; }
         public decimal OnProgramme { get; set; }

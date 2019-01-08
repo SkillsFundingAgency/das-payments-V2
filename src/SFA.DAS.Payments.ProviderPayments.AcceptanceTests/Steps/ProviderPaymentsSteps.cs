@@ -1,9 +1,6 @@
 ﻿using NServiceBus;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
-using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -109,21 +106,16 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         && TestSession.JobId == receivedEvent.JobId
                     ));
             }, "Failed to find all the provider payment events");
-
         }
-
-
+        
         private async Task SendMonthEndEvent()
         {
             await MessageSession.Send(new ProcessProviderMonthEndCommand()
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = TestSession.JobId,
-                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
+                CollectionPeriod = Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
             }).ConfigureAwait(false);
-
         }
-
-
     }
 }

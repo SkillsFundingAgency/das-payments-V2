@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
@@ -46,14 +47,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     FundingSource = FundingSourceType.CoInvestedEmployer,
                     SfaContributionPercentage = 0.9m,
                     JobId = 1,
-                    DeliveryPeriod = new CalendarPeriod
+                    DeliveryPeriod = new DeliveryPeriod
                     {
                         Year = 2018,
                         Month = 2,
                         Period = 7,
-                        Name = "1819-R07"
+                        Identifier = "1819-07"
                     },
-                    CollectionPeriod = new CalendarPeriod
+                    CollectionPeriod = new CollectionPeriod
                     {
                         Year = 2018,
                         Month = 3,
@@ -93,7 +94,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 Ukprn = ukprn,
                 JobId = jobId,
                 IlrSubmissionDateTime = DateTime.MaxValue,
-                CollectionPeriod = new CalendarPeriod(2018, 2)
+                CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(2).Build(),
             };
 
             ilrSubmittedEventCache = mocker.Mock<IDataCache<IlrSubmittedEvent>>();

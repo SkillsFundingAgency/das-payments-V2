@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
+using SFA.DAS.Payments.Tests.Core;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -119,7 +121,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .Where(p => !currentHistory.Any(historicPayment =>
                     historicPayment.LearnerReferenceNumber == p.LearnerReferenceNumber &&
                     historicPayment.TransactionType == p.TransactionType &&
-                    historicPayment.DeliveryPeriod.Name == p.DeliveryPeriod.Name))
+                    historicPayment.DeliveryPeriod.Identifier == p.DeliveryPeriod.Identifier))
                 .ToList();
 
             dataContext.Payment.AddRange(previousPayments);
@@ -137,7 +139,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
         {
-            if (Context.ContainsKey("current_collection_period") && CurrentCollectionPeriod.Name != collectionPeriod.ToDate().ToCalendarPeriod().Name)
+            if (Context.ContainsKey("current_collection_period") && CurrentCollectionPeriod.Name != new CollectionPeriodBuilder().WithSpecDate(collectionPeriod).Build().Name)
             {
                 await RequiredPaymentsCacheCleaner.ClearCaches(TestSession);
                 await Task.Delay(Config.TimeToPause);
@@ -150,7 +152,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>()
-                .Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == CurrentCollectionPeriod.Name)
+                .Where(p => new CollectionPeriodBuilder().WithSpecDate(p.CollectionPeriod).Build().Name == CurrentCollectionPeriod.Name)
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
