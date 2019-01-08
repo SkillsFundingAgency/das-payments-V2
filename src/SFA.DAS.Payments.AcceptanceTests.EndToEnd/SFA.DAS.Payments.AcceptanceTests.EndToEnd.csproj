@@ -267,11 +267,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner - learning support OPP and completion payments - PV2-4631.feature.cs">
-      <DependentUpon>Non-levy learner - learning support OPP and completion payments - PV2-463.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Include="Tests\Additional Payments English and Maths\Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-389.feature.cs">
       <DependentUpon>Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-389.feature</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -289,6 +284,11 @@
     </Compile>
     <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs">
       <DependentUpon>Non-Levy learner, provider changes aim sequence numbers PV2-393.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner - learning support OPP and completion payments - PV2-463.feature.cs">
+      <DependentUpon>Non-levy learner - learning support OPP and completion payments - PV2-463.feature</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -462,10 +462,15 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner\Provider Change of Circumstances\Remain with same Employer - PV2-3251.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner\Provider Change of Circumstances\Remain with same Employer - PV2-325.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Remain with same Employer - PV2-325.feature</DependentUpon>
+    </Compile>
+	 <Compile Include="Tests\Non-Levy Learner\Provider Change of Circumstances\Remain with same Employer with a gap in learning - PV2-324.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Remain with same Employer with a gap in learning - PV2-324.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Non-Levy Learner\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature.cs">
       <AutoGen>True</AutoGen>
@@ -563,7 +568,7 @@
     </None>
     <None Include="Tests\Additional Payments English and Maths\Non-levy learner - learning support OPP and completion payments - PV2-463.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-4631.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-463.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Additional Payments English and Maths\Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-389.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -719,11 +724,11 @@
     </None>
     <None Include="Tests\Non-Levy Learner\Provider Change of Circumstances\Remain with same Employer - PV2-325.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Remain with same Employer - PV2-3251.feature.cs</LastGenOutput>
+      <LastGenOutput>Remain with same Employer - PV2-325.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner\Provider Change of Circumstances\Remain with same Employer with a gap in learning - PV2-324.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Remain with same Employer with a gap in learning - PV2-3241.feature.cs</LastGenOutput>
+      <LastGenOutput>Remain with same Employer with a gap in learning - PV2-324.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
