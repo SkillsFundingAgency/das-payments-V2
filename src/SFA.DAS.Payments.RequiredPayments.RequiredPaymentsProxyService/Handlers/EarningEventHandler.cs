@@ -1,5 +1,4 @@
-﻿using Autofac;
-using ESFA.DC.Logging.Interfaces;
+﻿using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
@@ -21,24 +20,22 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
         private readonly IApprenticeshipKeyService apprenticeshipKeyService;
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger paymentLogger;
-        private readonly ILifetimeScope lifetimeScope;
+        private readonly ESFA.DC.Logging.ExecutionContext executionContext;
 
         public EarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
             IActorProxyFactory proxyFactory,
             IPaymentLogger paymentLogger,
-            ILifetimeScope lifetimeScope)
+            IExecutionContext executionContext)
         {
             this.apprenticeshipKeyService = apprenticeshipKeyService;
             this.proxyFactory = proxyFactory ?? new ActorProxyFactory();
             this.paymentLogger = paymentLogger;
-            this.lifetimeScope = lifetimeScope;
+            this.executionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
         }
 
         public async Task Handle(EarningEvent message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
-
-            var executionContext = (ESFA.DC.Logging.ExecutionContext)lifetimeScope.Resolve<IExecutionContext>();
             executionContext.JobId = message.JobId.ToString();
 
             try
