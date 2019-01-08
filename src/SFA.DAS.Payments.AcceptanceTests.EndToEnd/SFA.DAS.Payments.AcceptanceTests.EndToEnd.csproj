@@ -257,13 +257,13 @@
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
-    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, planned duration is same as programme %28assumes both start and finish at same time%29 PV2-391.feature.cs">
-      <DependentUpon>Non-Levy learner, planned duration is same as programme %28assumes both start and finish at same time%29 PV2-391.feature</DependentUpon>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, planned duration is same as programme %28start and finish at same time%29 PV2-391.feature.cs">
+      <DependentUpon>Non-Levy learner, planned duration is same as programme %28start and finish at same time%29 PV2-391.feature</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy employer, provider moves forward course start date %28adds in English and Maths%29 after payments have occurred PV2-465.feature.cs">
-      <DependentUpon>Non-Levy employer, provider moves forward course start date %28adds in English and Maths%29 after payments have occurred PV2-465.feature</DependentUpon>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature.cs">
+      <DependentUpon>Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -553,13 +553,13 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
-    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, planned duration is same as programme %28assumes both start and finish at same time%29 PV2-391.feature">
+    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, planned duration is same as programme %28start and finish at same time%29 PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy learner, planned duration is same as programme %28assumes both start and finish at same time%29 PV2-391.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-Levy learner, planned duration is same as programme %28start and finish at same time%29 PV2-391.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Additional Payments English and Maths\Non-Levy employer, provider moves forward course start date %28adds in English and Maths%29 after payments have occurred PV2-465.feature">
+    <None Include="Tests\Additional Payments English and Maths\Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy employer, provider moves forward course start date %28adds in English and Maths%29 after payments have occurred PV2-465.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Additional Payments English and Maths\Non-levy learner - learning support OPP and completion payments - PV2-463.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
