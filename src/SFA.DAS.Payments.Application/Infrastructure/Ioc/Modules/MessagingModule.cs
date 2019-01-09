@@ -35,6 +35,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
                 endpointConfiguration.EnableInstallers();
 
+                if(config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
+                
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()

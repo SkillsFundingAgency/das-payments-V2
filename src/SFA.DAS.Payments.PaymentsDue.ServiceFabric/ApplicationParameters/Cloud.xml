@@ -7,5 +7,7 @@
     <Parameter Name="PaymentsDueService_EndpointName" Value="__PaymentsDueService_EndpointName__" />
     <Parameter Name="PaymentsDueService_FailedMessagesQueue" Value="__PaymentsDueService_FailedMessagesQueue__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
+    <Parameter Name="LoggingMinimumLevel" Value="__LoggingMinimumLevel__" />
+    <Parameter Name="ProcessMessageSequentially" Value="__ProcessMessageSequentially__" />
   </Parameters>
 </Application>

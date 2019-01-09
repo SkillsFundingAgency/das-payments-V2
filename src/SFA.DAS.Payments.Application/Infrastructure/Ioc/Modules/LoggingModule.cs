@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Autofac;
+﻿using Autofac;
 using ESFA.DC.Logging;
 using ESFA.DC.Logging.Config;
 using ESFA.DC.Logging.Config.Interfaces;
@@ -7,6 +6,8 @@ using ESFA.DC.Logging.Enums;
 using ESFA.DC.Logging.Interfaces;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core.Configuration;
+using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
 {
@@ -29,19 +30,26 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 {
                     var loggerOptions = c.Resolve<LoggerOptions>();
                     var versionInfo = c.Resolve<IVersionInfo>();
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+
+                    if (!Enum.TryParse(configHelper.GetSetting("LoggingMinimumLevel"),  out LogLevel loggingMinimumLevel))
+                    {
+                        loggingMinimumLevel = LogLevel.Information;
+                    }
+                    
                     return new ApplicationLoggerSettings
                     {
                         ApplicationLoggerOutputSettingsCollection = new List<IApplicationLoggerOutputSettings>
                         {
                             new MsSqlServerApplicationLoggerOutputSettings
                             {
-                                MinimumLogLevel = LogLevel.Verbose,
+                                MinimumLogLevel = loggingMinimumLevel,
                                 ConnectionString = loggerOptions.LoggerConnectionString,
                             },
 
                             new ConsoleApplicationLoggerOutputSettings
                             {
-                                MinimumLogLevel = LogLevel.Verbose
+                                MinimumLogLevel = loggingMinimumLevel
                             },
                         },
                         TaskKey = versionInfo.ServiceReleaseVersion
@@ -53,7 +61,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.RegisterType<ExecutionContextFactory>().As<IExecutionContextFactory>().InstancePerLifetimeScope();
             builder.RegisterType<SerilogLoggerFactory>().As<ISerilogLoggerFactory>().InstancePerLifetimeScope();
             builder.RegisterType<PaymentLogger>()
-                .As<IPaymentLogger,ILogger>()
+                .As<IPaymentLogger, ILogger>()
                 .InstancePerLifetimeScope();
         }
     }

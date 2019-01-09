@@ -16,6 +16,8 @@
     <Parameter Name="SubscriptionName" Value="" />
     <Parameter Name="JobStatusQueueName" Value="" />
     <Parameter Name="TopicName" Value="" />
+    <Parameter Name="LoggingMinimumLevel" Value="" />
+    <Parameter Name="ProcessMessageSequentially" Value="" />
   </Section>
 
 </Settings>
