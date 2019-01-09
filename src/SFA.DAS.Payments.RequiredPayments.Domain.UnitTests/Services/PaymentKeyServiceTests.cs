@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             // assert
             Assert.AreEqual(0, key.IndexOf("6", StringComparison.Ordinal), "LearnAimRef should go first");
             Assert.Less(key.IndexOf("6", StringComparison.Ordinal), key.IndexOf("3", StringComparison.Ordinal), "TransactionType should be after LearnAimRef");
-            Assert.Less(key.IndexOf("3", StringComparison.Ordinal), key.IndexOf("5", StringComparison.Ordinal), "DeliveryPeriod should be after TransactionType");
+            Assert.Less(key.IndexOf("3", StringComparison.Ordinal), key.IndexOf("12", StringComparison.Ordinal), "DeliveryPeriod should be after TransactionType");
         }
 
         [Test]

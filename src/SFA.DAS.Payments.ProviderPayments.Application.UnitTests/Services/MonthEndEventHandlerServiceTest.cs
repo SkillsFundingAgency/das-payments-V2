@@ -32,6 +32,5 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             await monthEndEventHandlerService.GetMonthEndUkprns(2018, 3);
             providerPaymentsRepository.Verify();
         }
-
     }
 }

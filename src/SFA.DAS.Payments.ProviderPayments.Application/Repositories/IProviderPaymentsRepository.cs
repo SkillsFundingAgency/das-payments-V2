@@ -9,13 +9,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
     public interface IProviderPaymentsRepository
     {
         Task SavePayment(PaymentModel paymentData, CancellationToken cancellationToken = default(CancellationToken));
-        Task<List<PaymentModel>> GetMonthEndPayments(int collectionYear, int collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken));
-        Task<List<long>> GetMonthEndUkprns(int collectionYear,
-            int collectionPeriodMonth, 
-                                            CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<long>> GetMonthEndUkprns(short collectionYear,
+            byte collectionPeriodMonth,
+            CancellationToken cancellationToken = default(CancellationToken));
 
-        Task DeleteOldMonthEndPayment(int collectionYear, 
-                                        int collectionPeriodMonth, 
+        Task DeleteOldMonthEndPayment(short collectionYear, 
+                                        byte collectionPeriodMonth, 
                                         long ukprn,
                                         DateTime currentIlrSubmissionDateTime, 
                                         CancellationToken cancellationToken = default(CancellationToken));

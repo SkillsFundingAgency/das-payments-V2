@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
@@ -38,14 +37,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     ev.JobId == testSession.JobId &&
                     ev.CollectionPeriod.Name == collectionPeriod.Name)
                 .ToList();
-
         }
 
         protected override IList<ProviderPaymentEvent> GetExpectedEvents()
         {
             var expectedPayments = new List<ProviderPaymentEvent>();
 
-            foreach (var providerPayment in paymentSpec.Where(p => new CollectionPeriodBuilder().WithSpecDate(p.CollectionPeriod).Build().AcademicYear == collectionPeriod.Name))
+            foreach (var providerPayment in paymentSpec.Where(p => new CollectionPeriodBuilder().WithSpecDate(p.CollectionPeriod).Build().Name == collectionPeriod.Name))
             {
                 var eventCollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build();
                 var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(); 

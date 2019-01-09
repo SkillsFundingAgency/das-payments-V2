@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             this.paymentsDataContext = paymentsDataContext;
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndPayments(int collectionYear, int collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriodMonth, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
             var payments = await paymentsDataContext
                 .Payment.Where(p => p.Ukprn == ukprn &&
@@ -28,7 +28,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             return payments;
         }
 
-        public async Task<List<long>> GetMonthEndUkprns(int collectionYear, int collectionPeriodMonth, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<long>> GetMonthEndUkprns(short collectionYear, byte collectionPeriodMonth,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             return await paymentsDataContext
                    .Payment.Where(p => p.CollectionPeriod.Year == collectionYear && p.CollectionPeriod.Month == collectionPeriodMonth)
@@ -36,8 +37,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                    .ToListAsync(cancellationToken);
         }
 
-        public async Task DeleteOldMonthEndPayment(int collectionYear,
-                                                    int collectionPeriodMonth,
+        public async Task DeleteOldMonthEndPayment(short collectionYear,
+                                                    byte collectionPeriodMonth,
                                                     long ukprn,
                                                     DateTime currentIlrSubmissionDateTime,
                                                     CancellationToken cancellationToken = default(CancellationToken))

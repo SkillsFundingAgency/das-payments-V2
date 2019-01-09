@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
             await paymentsService.ProcessPayment(message, cancellationToken);
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndPayments(int collectionYear, int collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             return await monthEndService.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
         }

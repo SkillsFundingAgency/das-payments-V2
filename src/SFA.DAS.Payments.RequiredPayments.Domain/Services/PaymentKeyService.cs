@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 {
                     learnAimReference.ToLowerInvariant(),
                     transactionType.ToString(CultureInfo.InvariantCulture),
-                    deliveryPeriod.Identifier,
+                    deliveryPeriod.Identifier.Trim(),
                 }
             );
         }

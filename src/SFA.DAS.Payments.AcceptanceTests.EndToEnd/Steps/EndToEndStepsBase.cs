@@ -392,15 +392,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                        Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
             }
 
-            // Local methods
-            int CalculateAimSequenceNumber(Price priceEpisode)
-            {
-                return (priceEpisode.AimSequenceNumber == 0)
-                    ? aim.AimSequenceNumber
-                    : priceEpisode.AimSequenceNumber;
-            }
-        }
-
             byte LastOnProgPeriod(PriceEpisode currentPriceEpisode)
             {
                 if (currentPriceEpisode.PriceEpisodeValues

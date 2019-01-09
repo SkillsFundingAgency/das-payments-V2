@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
     }
 
     public class CalendarPeriodBuilder<TBuilder, T> : CalendarPeriodBuilder
-        where T : IContainCalendarPeriodData, new()
+        where T : SfaPeriodBaseClass, new()
         where TBuilder : CalendarPeriodBuilder<TBuilder, T>
     {
         protected DeliveryPeriodBuilderType BuilderType { get; set; }
@@ -36,21 +36,21 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
             }
 
             var instance = new T();
-            instance.Month = Date.Month;
-            instance.Year = Date.Year;
+            instance.Month = (byte)Date.Month;
+            instance.Year = (short)Date.Year;
             if (instance.Month < 8)
             {
-                instance.Period = instance.Month + 4;
+                instance.Period = (byte)(instance.Month + 5);
             }
             else
             {
-                instance.Period = instance.Month - 7;
+                instance.Period = (byte)(instance.Month - 7);
             }
 
             return instance;
         }
 
-        public TBuilder WithSpecDate(string date)
+        public virtual TBuilder WithSpecDate(string date)
         {
             return WithDate(date.ToDate());
         }

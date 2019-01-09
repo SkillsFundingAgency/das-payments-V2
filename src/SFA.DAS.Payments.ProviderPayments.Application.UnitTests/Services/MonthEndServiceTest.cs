@@ -26,8 +26,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
         private Mock<IDataCache<IlrSubmittedEvent>> ilrSubmittedEventCache;
         private Mock<IValidateIlrSubmission> validateIlrSubmission;
-
-
+        
         private long ukprn = 10000;
         private long jobId = 10000;
         private List<PaymentModel> payments;
@@ -84,7 +83,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verifiable();
 
             providerPaymentsRepository
-                          .Setup(o => o.GetMonthEndPayments(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                          .Setup(o => o.GetMonthEndPayments(
+                              It.IsAny<short>(), 
+                              It.IsAny<byte>(), 
+                              It.IsAny<long>(), 
+                              It.IsAny<CancellationToken>()))
                           .ReturnsAsync(payments)
                           .Verifiable();
 
@@ -115,15 +118,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(Task.CompletedTask);
 
             ilrSubmittedEventCache
-                .Setup(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)))
+                .Setup(o => o.Add(ukprn.ToString(), 
+                    It.IsAny<IlrSubmittedEvent>(), 
+                    default(CancellationToken)))
                 .Returns(Task.CompletedTask);
 
             validateIlrSubmission = mocker.Mock<IValidateIlrSubmission>();
             validateIlrSubmission
                 .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(true);
-
-
+            
             monthEndService = mocker.Create<MonthEndService>();
         }
 
@@ -142,7 +146,5 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                                                     It.IsAny<long>(),
                                                     It.IsAny<CancellationToken>()), Times.Once);
         }
-
-
     }
 }
