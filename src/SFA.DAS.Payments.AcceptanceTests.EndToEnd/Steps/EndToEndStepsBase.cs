@@ -198,7 +198,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             learner.PriceEpisodes = new List<PriceEpisode>();
             learner.LearningDeliveries = new List<LearningDelivery>();
 
-            foreach (var aim in testLearner.Aims)
+            foreach (var aim in testLearner.Aims.Where(a =>
+            {
+                var aimStartDate = a.StartDate.ToDate();
+                var aimStartPeriod = aimStartDate.ToCalendarPeriod();
+                var aimDuration = a.ActualDurationAsTimespan ?? a.PlannedDurationAsTimespan;
+
+                return aimStartPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear ||
+                       aimStartDate + aimDuration >=
+                       new DateTime(CurrentCollectionPeriod.Year, CurrentCollectionPeriod.Month, aimStartDate.Day) && a.CompletionStatus != CompletionStatus.Completed ||
+                    aimStartDate + aimDuration >= new DateTime(CurrentCollectionPeriod.Year, CurrentCollectionPeriod.Month, aimStartDate.Day) && a.AimReference == "ZPROG001" && a.CompletionStatus == CompletionStatus.Completed;
+            }))
             {
                 learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
 
