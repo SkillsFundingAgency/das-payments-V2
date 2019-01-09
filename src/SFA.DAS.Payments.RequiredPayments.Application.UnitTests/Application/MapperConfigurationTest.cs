@@ -10,18 +10,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
     [TestFixture]
     public class MapperConfigurationTest
     {
+        private IMapper mapper;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile<RequiredPaymentsProfile>();
-            });
-            Mapper.AssertConfigurationIsValid();
-
-            //Mapper.Initialize(cfg => AutoMapperConfigurationFactory.CreateMappingConfig());
-            //Mapper.AssertConfigurationIsValid();
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<RequiredPaymentsProfile>());
+            config.AssertConfigurationIsValid();
+            mapper = new Mapper(config);
         }
 
         [Test]
@@ -32,7 +28,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 CollectionPeriod = "1819-R11",
                 DeliveryPeriod = "1819-R10"
             };
-            Mapper.Instance.Map<PaymentHistoryEntity, Payment>(payment);
+
+            mapper.Map<PaymentHistoryEntity, Payment>(payment);
         }
     }
 }

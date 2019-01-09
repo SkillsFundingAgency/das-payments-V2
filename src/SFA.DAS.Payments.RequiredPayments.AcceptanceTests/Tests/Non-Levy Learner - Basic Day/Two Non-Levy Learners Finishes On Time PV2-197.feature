@@ -10,7 +10,7 @@ Background:
 	| L1		|
 	| L2		|
 
-	And the payments due component generates the following contract type 2 payments due:	
+	And the earning events component generates the following contract type 2 earnings:	
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
 	| L1		| p2                     | 2				| Completion (TT2)| 3000   |
@@ -25,7 +25,7 @@ Scenario: Completion for both
 	| L1		| p2                     | 1				| Learning (TT1)	| 1000		|
 	| L2		| p3                     | 1				| Learning (TT1)	| 800		|
 
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L1		| p2                     | 2 				| Completion (TT2)	| 3000		|
@@ -36,7 +36,7 @@ Scenario: Completion for both
 @NoHistory
 
 Scenario: Learning and Completion for both
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L1		| p2                     | 1 				| Learning (TT1)	| 1000		|
@@ -53,7 +53,7 @@ Scenario: Learning for 1 and Completion for both - 1 learner has history
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L1		| p2                     | 1				| Learning (TT1)	| 1000		|
 
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| L2		| p2                     | 1				| Learning (TT1)	| 800		|
