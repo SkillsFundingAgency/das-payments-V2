@@ -41,13 +41,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             };
         }
 
-        private T ParseToEnum<T>(string source, string destinationName) where T : struct, Enum
-        {
-            if (!Enum.TryParse<T>(source, true, out T result))
-                throw new ArgumentException($"Cannot parse the key part to type: {typeof(T).Name}. Destination member: {destinationName}, source value: '{source}'");
-            return result;
-        }
-
         private int ParseToInt(string source, string destinationName)
         {
             if (!int.TryParse(source, out var result))
