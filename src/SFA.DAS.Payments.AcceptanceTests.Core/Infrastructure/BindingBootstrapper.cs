@@ -83,7 +83,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 {
                     break;
                 }
-            };
+            }
+
+            var queueDescription = namespaceManager.GetQueue(Config.AcceptanceTestsEndpointName);
+            if (queueDescription.DefaultMessageTimeToLive != Config.DefaultMessageTimeToLive)
+            {
+                queueDescription.DefaultMessageTimeToLive = Config.DefaultMessageTimeToLive;
+                namespaceManager.UpdateQueue(queueDescription);
+            }
+
             Console.WriteLine($"Finished purging messages from {Config.AcceptanceTestsEndpointName}. Took: {stopwatch.ElapsedMilliseconds}ms");
         } 
 
