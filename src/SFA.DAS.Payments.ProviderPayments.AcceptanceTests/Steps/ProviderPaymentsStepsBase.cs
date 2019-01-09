@@ -30,14 +30,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 .Where(o => o.JobId == jobId)
                 .ToListAsync();
 
-            payments.ForEach(o =>
-            {
-                o.CollectionPeriod = new CollectionPeriodBuilder().WithYear(o.CollectionPeriod.Year)
-                    .WithMonth(o.CollectionPeriod.Month).Build();
-                o.DeliveryPeriod = new DeliveryPeriodBuilder().WithYear(o.DeliveryPeriod.Year)
-                    .WithMonth(o.DeliveryPeriod.Month).Build();
-            });
-
             return payments;
         }
 

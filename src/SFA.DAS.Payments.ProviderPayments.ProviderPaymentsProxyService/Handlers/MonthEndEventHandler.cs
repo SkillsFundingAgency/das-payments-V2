@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
 
             try
             {
-                var monthEndUkprns = await monthEndEventHandlerService.GetMonthEndUkprns(message.CollectionPeriod.Year, message.CollectionPeriod.Month);
+                var monthEndUkprns = await monthEndEventHandlerService.GetMonthEndUkprns(message.CollectionPeriod.Name);
 
                 if (monthEndUkprns == null || !monthEndUkprns.Any())
                 {

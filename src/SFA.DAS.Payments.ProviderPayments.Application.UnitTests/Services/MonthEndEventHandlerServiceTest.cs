@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         {
             providerPaymentsRepository = new Mock<IProviderPaymentsRepository>();
             providerPaymentsRepository
-                .Setup(o => o.GetMonthEndUkprns(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
+                .Setup(o => o.GetMonthEndUkprns(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<long> { 1, 2, 3 })
                 .Verifiable();
 
@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         [Test]
         public async Task GetMonthEndUkprnsShouldCallRequiredServices()
         {
-            await monthEndEventHandlerService.GetMonthEndUkprns(2018, 3);
+            await monthEndEventHandlerService.GetMonthEndUkprns("1819-R01");
             providerPaymentsRepository.Verify();
         }
     }

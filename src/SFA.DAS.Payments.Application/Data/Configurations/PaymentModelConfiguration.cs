@@ -17,9 +17,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.Amount).HasColumnName(@"Amount");
             builder.OwnsOne(p => p.CollectionPeriod, cp =>
             {
-                cp.Property(x => x.Month).HasColumnName(@"CollectionPeriodMonth").IsRequired();
                 cp.Property(x => x.Name).HasColumnName(@"CollectionPeriodName").IsRequired();
-                cp.Property(x => x.Year).HasColumnName(@"CollectionPeriodYear").IsRequired();
                 cp.Ignore(x => x.Period);
                 cp.Ignore(x => x.AcademicYear);
             });

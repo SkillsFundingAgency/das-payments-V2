@@ -8,25 +8,26 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
 
         public CollectionPeriod Build()
         {
-            var builtInstance = BuildInstance();
+            string academicYear;
 
-            if (builtInstance.Month < 8)
+            if (Month < 8)
             {
-                builtInstance.AcademicYear = $"{builtInstance.Year - 2000 - 1}{builtInstance.Year - 2000}";
+                academicYear = $"{Year - 2000 - 1}{Year - 2000}";
             }
             else
             {
-                builtInstance.AcademicYear = $"{builtInstance.Year - 2000}{builtInstance.Year - 2000 + 1}";
+                academicYear = $"{Year - 2000}{Year - 2000 + 1}";
             }
             
-            if (Period != byte.MaxValue)
+            var name = $"{academicYear}-R{Period:D2}";
+
+            var instance = new CollectionPeriod
             {
-                builtInstance.Period = Period;
-            }
-
-            builtInstance.Name = $"{builtInstance.AcademicYear}-R{builtInstance.Period:D2}";
-
-            return builtInstance;
+                AcademicYear = academicYear,
+                Name = name,
+                Period = Period,
+            };
+            return instance;
         }
 
         public override CollectionPeriodBuilder WithSpecDate(string date)
@@ -35,6 +36,8 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
             {
                 var modifiedDate = date.Replace("R13", "R12").Replace("R14", "R12");
                 base.WithSpecDate(modifiedDate);
+                Year = Date.Year;
+                Month = Date.Month;
                 Period = byte.Parse(date.Substring(1, 2));
             }
             else
@@ -43,6 +46,18 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
             }
 
             return this;
+        }
+
+        public CollectionPeriod BuildFromName(string name)
+        {
+            var collectionPeriod = new CollectionPeriod
+            {
+                Name = name,
+                Period = byte.Parse(name.Substring(6,2)),
+                AcademicYear = name.Substring(0, 4),
+            };
+
+            return collectionPeriod;
         }
     }
 }

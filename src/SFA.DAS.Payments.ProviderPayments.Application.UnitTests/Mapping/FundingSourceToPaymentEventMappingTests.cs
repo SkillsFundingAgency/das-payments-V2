@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
         {
             var employerCoInvested = new EmployerCoInvestedFundingSourcePaymentEvent
             {
-                CollectionPeriod = new CollectionPeriod {Period = 12, Month = 7, Year = 2019, Name = "1819-R12"},
+                CollectionPeriod = new CollectionPeriod {Period = 12, AcademicYear = "2019", Name = "1819-R12"},
                 Learner = new Learner {ReferenceNumber = "1234-ref", Uln = 123456 },
                 TransactionType = TransactionType.Completion,
                 Ukprn = 12345,
@@ -55,8 +55,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
             payment.CollectionPeriod.Should().NotBeNull();
             payment.CollectionPeriod.Name.Should().BeEquivalentTo(employerCoInvested.CollectionPeriod.Name);
-            payment.CollectionPeriod.Month.Should().Be(employerCoInvested.CollectionPeriod.Month);
-            payment.CollectionPeriod.Year.Should().Be(employerCoInvested.CollectionPeriod.Year);
             payment.CollectionPeriod.Period.Should().Be(employerCoInvested.CollectionPeriod.Period);
             
             payment.DeliveryPeriod.Identifier.Should().BeEquivalentTo(employerCoInvested.DeliveryPeriod.Identifier);

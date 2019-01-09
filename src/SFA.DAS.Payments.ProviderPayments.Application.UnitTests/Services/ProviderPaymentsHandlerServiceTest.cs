@@ -56,8 +56,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     },
                     CollectionPeriod = new CollectionPeriod
                     {
-                        Year = 2018,
-                        Month = 3,
+                        AcademicYear = "1819",
                         Period = 8,
                         Name = "1819-R08"
                     },
@@ -85,9 +84,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verifiable();
 
             providerPaymentsRepository
-                          .Setup(o => o.GetMonthEndPayments(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(payments)
-                          .Verifiable();
+                .Setup(o => o.GetMonthEndPayments(It.IsAny<string>(),
+                    It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(payments)
+                .Verifiable();
 
             ilrSubmittedEvent = new IlrSubmittedEvent
             {

@@ -8,8 +8,6 @@
 	PriceEpisodeIdentifier NVARCHAR(50) NOT NULL,
     Amount DECIMAL(15,5) NOT NULL,
 	CollectionPeriodName CHAR(8) NOT NULL,
-	CollectionPeriodMonth TINYINT NOT NULL,
-	CollectionPeriodYear SMALLINT NOT NULL,
 	DeliveryPeriodName char(7) NOT NULL,
 	DeliveryPeriodMonth TINYINT NOT NULL,
 	DeliveryPeriodYear SMALLINT NOT NULL,
@@ -47,8 +45,7 @@ CREATE INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
 (
   [Ukprn],
   [CollectionPeriodName],
-  [JobId],
-  [CollectionPeriodMonth]
+  [JobId]
 ) 
 
 GO

@@ -17,21 +17,6 @@ namespace SFA.DAS.Payments.Model.Core
             }
 
             var result = new CollectionPeriod();
-            if (period < 6)
-            {
-                result.Month = (byte)(period + 7);
-                if (int.TryParse(academicYear.Substring(0,2), out var year)) result.Year = (short)(2000 + year);
-            }
-            else
-            {
-                result.Month = (byte)(period - 5);
-                if (int.TryParse(academicYear.Substring(2), out var year)) result.Year = (short)(2000 + year);
-            }
-
-            if (period > 12)
-            {
-                result.Month++;
-            }
 
             result.Period = period;
             result.AcademicYear = academicYear;

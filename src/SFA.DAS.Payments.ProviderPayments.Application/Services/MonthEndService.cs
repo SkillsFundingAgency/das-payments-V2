@@ -16,13 +16,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.providerPaymentsRepository = providerPaymentsRepository;
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndPayments(
-            short collectionYear, 
-            byte collectionPeriod,
-            long ukprn, 
+        public async Task<List<PaymentModel>> GetMonthEndPayments(string collectionPeriodName,
+            long ukprn,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var payments = await providerPaymentsRepository.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
+            var payments = await providerPaymentsRepository.GetMonthEndPayments(collectionPeriodName, ukprn, cancellationToken);
             return payments.ToList();
         }
     }

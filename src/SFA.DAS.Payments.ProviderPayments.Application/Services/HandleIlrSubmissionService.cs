@@ -50,8 +50,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
             paymentLogger.LogDebug($"Successfully Updated current Ilr Submission Data for Ukprn {message.Ukprn} and Job Id {message.JobId}");
 
-            await providerPaymentsRepository.DeleteOldMonthEndPayment(message.CollectionPeriod.Year,
-                message.CollectionPeriod.Month,
+            await providerPaymentsRepository.DeleteOldMonthEndPayment(message.CollectionPeriod.Name,
                 message.Ukprn,
                 message.IlrSubmissionDateTime,
                 cancellationToken);

@@ -54,8 +54,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     },
                     CollectionPeriod = new CollectionPeriod
                     {
-                        Year = 2018,
-                        Month = 3,
+                        AcademicYear = "1819-R08",
                         Period = 8,
                         Name = "1819-R08"
                     },
@@ -83,17 +82,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verifiable();
 
             providerPaymentsRepository
-                          .Setup(o => o.GetMonthEndPayments(
-                              It.IsAny<short>(), 
-                              It.IsAny<byte>(), 
+                          .Setup(o => o.GetMonthEndPayments(It.IsAny<string>(), 
                               It.IsAny<long>(), 
                               It.IsAny<CancellationToken>()))
                           .ReturnsAsync(payments)
                           .Verifiable();
 
             providerPaymentsRepository
-                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(),
-                                                        It.IsAny<byte>(),
+                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<string>(),
                                                         It.IsAny<long>(),
                                                         It.IsAny<DateTime>(),
                                                         It.IsAny<CancellationToken>()))
@@ -138,11 +134,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             const byte month = 9;
             var cancellationToken = new CancellationToken();
 
-            var results = await monthEndService.GetMonthEndPayments(year, month, ukprn, cancellationToken);
+            var results = await monthEndService.GetMonthEndPayments("1819-R02", ukprn, cancellationToken);
 
             Assert.IsNotNull(results);
-            providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.IsAny<short>(),
-                                                    It.IsAny<byte>(),
+            providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.IsAny<string>(),
                                                     It.IsAny<long>(),
                                                     It.IsAny<CancellationToken>()), Times.Once);
         }
