@@ -9,7 +9,7 @@ Background:
 	| LearnerId | 
 	| L1		|
 	| L2		|
-	And the payments due component generates the following contract type 2 payments due:	
+	And the earning events component generates the following contract type 2 earnings:	
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| L1		| p2                     | 1				| Learning (TT1)  | 1000   |
 	| L1		| p2                     | 2				| Completion (TT2)| 3750   |
@@ -26,7 +26,7 @@ Scenario: 2_non_levy_learners_1finishes_Early
 	| L1		| p2                     | 1				| Learning (TT1)	| 1000   |
 	| L2		| p4                     | 1				| Learning (TT1)	| 1000   |
 	
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount |
 	| L1		| p2                     | 2				| Completion (TT2)	| 3750   |
@@ -37,7 +37,7 @@ Scenario: 2_non_levy_learners_1finishes_Early
 
 Scenario: 2_non_levy_learners_1finishes_Late
 	Given the current collection period is R05
-	And the payments due component generates more payments due:
+	And the earning events component generates more earnings:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| L2		| p4                     | 5				| Completion (TT2)| 3000   |
 	And the following historical contract type 2 payments exist:
@@ -47,7 +47,7 @@ Scenario: 2_non_levy_learners_1finishes_Late
 	| L1		| p2                     | 2				| Balancing (TT3)	| 3000   |
 	| L2		| p4                     | 1				| Learning (TT1)	| 1000   |
 
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount |
 	| L2		| p4                     | 5				| Completion (TT2)	| 3000   |
@@ -58,7 +58,7 @@ Scenario: 2_non_levy_learners_1finishes_Late
 
 Scenario: 2_non_levy_learners_1finishes_Early - No history
 	Given the current collection period is R02
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount |
 	| L1		| p2                     | 1				| Learning (TT1)	| 1000   |
@@ -72,10 +72,10 @@ Scenario: 2_non_levy_learners_1finishes_Early - No history
 
 Scenario: 2_non_levy_learners_1finishes_Late - No history
 	Given the current collection period is R05
-	And the payments due component generates more payments due:
+	And the earning events component generates more earnings:
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType | Amount |
 	| L2		| p4                     | 5				| Completion (TT2)| 3000   |
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| LearnerId | PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount |
 	| L1		| p2                     | 1				| Learning (TT1)	| 1000   |
