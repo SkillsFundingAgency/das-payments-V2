@@ -2,7 +2,6 @@
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -174,12 +173,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var period = earning.DeliveryCalendarPeriod.Period;
             return fm36Learner.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv =>
                 pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
-                pepv.AttributeName == transactionType.ToAttributeName()
-                //&&
-                //(pe.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.HasValue &&
-                //pe.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Value.ToCalendarPeriod() ==
-                //earning.DeliveryCalendarPeriod) || !pe.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.HasValue
-                                                                   ))?.PriceEpisodeIdentifier;
+                pepv.AttributeName == transactionType.ToAttributeName()))?.PriceEpisodeIdentifier;
         }
 
         protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)

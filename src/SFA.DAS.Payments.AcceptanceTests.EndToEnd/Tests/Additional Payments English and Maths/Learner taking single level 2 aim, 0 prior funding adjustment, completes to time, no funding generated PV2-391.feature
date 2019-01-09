@@ -3,11 +3,11 @@
 #| n/a                                   |
 #| 0%                                    |
 
-Feature: Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-392
+Feature: Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391
 	As a provider,
 	I want a payment for a non-levy learner, planned duration is same as programme (assumes both start and finish at same time), to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.
-Scenario Outline: Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-392
+Scenario Outline: Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391
 	Given the following learners
         | Learner Reference Number | Uln      |
         | abc123                   | 12345678 |

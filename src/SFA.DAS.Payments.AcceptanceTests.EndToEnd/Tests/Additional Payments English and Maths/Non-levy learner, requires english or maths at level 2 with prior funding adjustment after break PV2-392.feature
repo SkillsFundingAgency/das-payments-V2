@@ -5,9 +5,9 @@
  #| n/a                                   |
  #| 42% for remaining period|
 	
-Feature: Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break - COMPLETES ON TIME, RETURNS TO SAME PROVIDER PV2-391
+Feature: Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break - COMPLETES ON TIME, RETURNS TO SAME PROVIDER PV2-392
 
-Scenario Outline: Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-391
+Scenario Outline: Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392
 	Given the following learners
         | Learner Reference Number | Uln      |
         | abc123                   | 12345678 |
