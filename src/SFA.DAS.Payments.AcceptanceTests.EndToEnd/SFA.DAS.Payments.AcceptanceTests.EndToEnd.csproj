@@ -271,6 +271,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature.cs">
       <DependentUpon>Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -563,6 +568,10 @@
     <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
