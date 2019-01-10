@@ -6,7 +6,7 @@ Background:
 	And the payments are for the current collection year
 	And a learner is undertaking a training with a training provider
 	And the SFA contribution percentage is 100%
-	And the payments due component generates the following contract type 2 payments due:	
+	And the earning events component generates the following contract type 2 earnings:	
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p1                     | 1				| Learning (TT1)	| 500		|
 	| p1                     | 2				| Learning (TT1)	| 500		|
@@ -25,7 +25,7 @@ Background:
 @SmallEmployerNonDas
 
 Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p1                     | 1				| Learning (TT1)	| 500		|
@@ -46,7 +46,7 @@ Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start
 
 Scenario: AC5- Payment for a 16-18 non-DAS learner, employer is not small
 	Given the SFA contribution percentage is 90%
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p1                     | 1				| Learning (TT1)	| 500		|
@@ -80,7 +80,7 @@ Scenario: AC1-Payment for a 16-18 non-DAS learner, small employer at start and h
 	| p1                     | 10				| Learning (TT1)	| 500		|
 	| p1                     | 11				| Learning (TT1)	| 500		|
 
-	When a payments due event is received
+	When an earning event is received
 	Then the required payments component will only generate contract type 2 required payments
 	| PriceEpisodeIdentifier | Delivery Period	| TransactionType   | Amount	|
 	| p1                     | 12				| Learning (TT1)	| 500		|

@@ -1,16 +1,17 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
-    //[Obsolete("This is a temporary binding to show how to use StepsBase and MessageSender.")]
     [Binding]
     public class ACT2On_ProgrammePaymentsSteps : StepsBase
     {
@@ -18,45 +19,58 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
         }
 
-        protected ApprenticeshipContractType2PaymentDueEvent PaymentDueEvent
+        protected ApprenticeshipContractType2EarningEvent EarningEvent
         {
-            get => Get<ApprenticeshipContractType2PaymentDueEvent>();
+            get => Get<ApprenticeshipContractType2EarningEvent>();
             set => Set(value);
         }
-        
+
 
         [Given(@"the learner has some on-programme earnings")]
         public void GivenTheLearnerHasSomeOn_ProgrammeEarnings()
         {
-            PaymentDueEvent = new ApprenticeshipContractType2PaymentDueEvent
+            SetCurrentCollectionYear();
+
+            EarningEvent = new ApprenticeshipContractType2EarningEvent
             {
                 JobId = TestSession.JobId,
                 Ukprn = TestSession.Ukprn,
-                Learner = new Learner { ReferenceNumber = "12345", Uln = 12345 },
+                Learner = new Learner {ReferenceNumber = "12345", Uln = 12345},
                 LearningAim = new LearningAim
-                    {
-                        FrameworkCode = 1234,
-                        PathwayCode = 1234,
-                        ProgrammeType = 1,
-                        Reference = "Ref-1234",
-                        StandardCode = 1,
-                        FundingLineType = "Funding-LineType"
+                {
+                    FrameworkCode = 1234,
+                    PathwayCode = 1234,
+                    ProgrammeType = 1,
+                    Reference = "Ref-1234",
+                    StandardCode = 1,
+                    FundingLineType = "Funding-LineType"
                 },
-                DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1718", 10),
                 CollectionPeriod = Payments.Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod("1718", 10),
-                AmountDue = 1000,
-                Type = OnProgrammeEarningType.Learning,
-                PriceEpisodeIdentifier = "p1-1",
-                SfaContributionPercentage = 0.90m
+                CollectionYear = CollectionYear,
+                SfaContributionPercentage = 0.90m,
+                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
+                {
+                    new OnProgrammeEarning
+                    {
+                        Type = OnProgrammeEarningType.Learning,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                        {
+                            new EarningPeriod
+                            {
+                                Period = 10,
+                                Amount = 1000,
+                                PriceEpisodeIdentifier = "p1-1"
+                            }
+                        })
+                    }
+                })
             };
-            
         }
-        
+
         [When(@"the earnings are sent to the required payments service")]
         public async Task WhenTheEarningsAreSentToTheRequiredPaymentsService()
-        {
-            
-            await MessageSession.Send(PaymentDueEvent).ConfigureAwait(false);
+        {            
+            await MessageSession.Send(EarningEvent).ConfigureAwait(false);
         }
         
         [Then(@"the service should generate the required payments")]
@@ -65,10 +79,17 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             await WaitForIt(() =>
             {
                 return ApprenticeshipContractType2Handler.ReceivedEvents
-                    .Any(receivedEvent => receivedEvent.AmountDue == PaymentDueEvent.AmountDue &&
-                                          receivedEvent.DeliveryPeriod?.Period == PaymentDueEvent.DeliveryPeriod.Period &&
-                                          receivedEvent.Ukprn == TestSession.Ukprn &&
-                                          receivedEvent.JobId == TestSession.JobId);
+                    .Any(receivedEvent =>
+                    {
+                        var spec = EarningEvent.OnProgrammeEarnings[0].Periods.SingleOrDefault(p => p.Period == receivedEvent.DeliveryPeriod.Period);
+
+                        if (spec == null)
+                            return false;
+
+                        return receivedEvent.AmountDue == spec.Amount &&
+                               receivedEvent.Ukprn == TestSession.Ukprn &&
+                               receivedEvent.JobId == TestSession.JobId;
+                    });
             },"Failed to find all the required payment events");
         }
     }

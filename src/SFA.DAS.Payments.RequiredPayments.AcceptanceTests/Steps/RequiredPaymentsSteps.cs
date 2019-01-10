@@ -1,68 +1,90 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
+using OnProgrammeEarning = SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data.OnProgrammeEarning;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
     public class RequiredPaymentsSteps : RequiredPaymentsStepsBase
     {
-        private const bool trace = true;
-
         public RequiredPaymentsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
 
-        [When(@"a payments due event is received")]
-        public async Task WhenAPaymentsDueEventIsReceived()
+        [When(@"an earning event is received")]
+        public async Task WhenAnEarningEventIsReceived()
         {
-            var payments = PaymentsDue.Select(CreatePaymentDueEvent).ToList();
-            foreach (var paymentDue in payments)
-            {
-                await MessageSession.Send(paymentDue).ConfigureAwait(false);
+            var earnings = Earnings.GroupBy(p => p.LearnerId).Select(CreateEarningEvent).ToList();
 
+            foreach (var earningEvent in earnings)
+            {
+                await MessageSession.Send(earningEvent).ConfigureAwait(false);
             }
         }
 
-        private ApprenticeshipContractTypePaymentDueEvent CreatePaymentDueEvent(OnProgrammePaymentDue paymentDue)
+        private ApprenticeshipContractTypeEarningsEvent CreateEarningEvent(IGrouping<string, OnProgrammeEarning> group)
         {
-            var payment = ContractType == 1
-                ? (ApprenticeshipContractTypePaymentDueEvent)new ApprenticeshipContractType1PaymentDueEvent()
-                : new ApprenticeshipContractType2PaymentDueEvent();
+
+            var earningEvent = ContractType == 1
+                ? (ApprenticeshipContractTypeEarningsEvent)new ApprenticeshipContractType1EarningEvent()
+                : new ApprenticeshipContractType2EarningEvent();
+
             var testSessionLearner =
-                TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == paymentDue.LearnerId) ??
+                TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == group.Key) ??
                 TestSession.Learner;
-            payment.Learner = testSessionLearner.ToLearner();
-            payment.Ukprn = TestSession.Ukprn;
-            payment.SfaContributionPercentage = SfaContributionPercentage;
-            payment.Type = paymentDue.Type;
-            payment.AmountDue = paymentDue.Amount;
-            payment.CollectionPeriod =Payments.Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod);
-            payment.DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, paymentDue.DeliveryPeriod);
-            payment.JobId = TestSession.JobId;
-            payment.LearningAim = testSessionLearner.Course.ToLearningAim();
-            payment.PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier;
-            return payment;
+
+            earningEvent.Learner = testSessionLearner.ToLearner();
+            earningEvent.Ukprn = TestSession.Ukprn;
+            earningEvent.SfaContributionPercentage = SfaContributionPercentage;
+            earningEvent.CollectionPeriod = Payments.Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod);
+            earningEvent.CollectionYear = CollectionYear;
+            earningEvent.JobId = TestSession.JobId;
+            earningEvent.LearningAim = testSessionLearner.Course.ToLearningAim();
+
+            var onProgrammeEarnings = new List<Payments.Model.Core.OnProgramme.OnProgrammeEarning>();
+
+            foreach (var learnerEarning in group)
+            {
+                var onProgrammeEarning = new Payments.Model.Core.OnProgramme.OnProgrammeEarning
+                {
+                    Type = learnerEarning.Type,
+                    Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                    {
+                        new EarningPeriod
+                        {
+                            Amount = learnerEarning.Amount,
+                            Period = learnerEarning.DeliveryPeriod,
+                            PriceEpisodeIdentifier = learnerEarning.PriceEpisodeIdentifier
+                        }
+
+                    })
+                };
+                onProgrammeEarnings.Add(onProgrammeEarning);
+            }
+
+            earningEvent.OnProgrammeEarnings = new ReadOnlyCollection<Payments.Model.Core.OnProgramme.OnProgrammeEarning>(onProgrammeEarnings);
+            return earningEvent;
         }
 
         [Then(@"the required payments component will only generate contract type (.*) required payments")]
         public async Task ThenTheRequiredPaymentsComponentWillOnlyGenerateContractTypeRequiredPayments(int p0, Table table)
         {
             var expectedPaymentsEvents = table
-                .CreateSet<OnProgrammePaymentDue>().ToArray();//TODO: fix to use a required payments model
+                .CreateSet<OnProgrammeEarning>().ToArray();//TODO: fix to use a required payments model
             await WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events or unexpected events found");
         }
 
@@ -92,29 +114,29 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 
         private bool MatchUnexpectedRequiredPayment(OnProgrammeEarningType? type)
         {
-            var result = PaymentsDue.Where(x => !type.HasValue || x.Type == type).ToList().All(paymentDue =>
+            var result = Earnings.Where(x => !type.HasValue || x.Type == type).ToList().All(earning =>
                 !ApprenticeshipContractType2Handler.ReceivedEvents.Any(receivedEvent =>
                     TestSession.JobId == receivedEvent.JobId
-                    && paymentDue.Amount == receivedEvent.AmountDue
+                    && earning.Amount == receivedEvent.AmountDue
                     && TestSession.Learners.Any(l => l.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber)
-                    && paymentDue.Type == receivedEvent.OnProgrammeEarningType
+                    && earning.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && paymentDue.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
+                    && earning.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
                     && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
                 ));
 #if DEBUG
             if (!result)
             {
                 Debug.WriteLine("Found unexpected events. Trace:");
-                TraceMismatch(PaymentsDue.ToArray(), ApprenticeshipContractType2Handler.ReceivedEvents.ToArray());
+                TraceMismatch(Earnings.ToArray(), ApprenticeshipContractType2Handler.ReceivedEvents.ToArray());
             }
 #endif
             return result;
         }
 
-        private (bool pass, string reason)MatchRequiredPayment(OnProgrammePaymentDue[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
+        private (bool pass, string reason)MatchRequiredPayment(OnProgrammeEarning[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
         {
-            OnProgrammePaymentDue[] events;
+            OnProgrammeEarning[] events;
 
             if (type.HasValue)
             {
@@ -180,7 +202,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             }
         }
 
-        private void TraceMismatch(OnProgrammePaymentDue[] expectedPaymentsEvents, ApprenticeshipContractType2RequiredPaymentEvent[] receivedEvents)
+        private void TraceMismatch(OnProgrammeEarning[] expectedPaymentsEvents, ApprenticeshipContractType2RequiredPaymentEvent[] receivedEvents)
         {
             for (var i = 0; i < expectedPaymentsEvents.Length; i++)
             {

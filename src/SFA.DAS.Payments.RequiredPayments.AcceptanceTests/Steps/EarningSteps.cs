@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
@@ -9,7 +8,7 @@ using TechTalk.SpecFlow.Assist;
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
 {
     [Binding]
-    public class EarningSteps: StepsBase
+    public class EarningSteps: RequiredPaymentsStepsBase
     {
         public EarningSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
@@ -75,6 +74,20 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [Given(@"the following completion earnings for period (.*):")]
         public void GivenTheFollowingCompletionEarnings(int period, Table table)
         {
+        }
+
+        [Given(@"the earning events component generates the following contract type (.*) earnings:")]
+        public void GivenTheEarningEventsComponentGeneratesTheFollowingContractTypeEarningEvents(byte contractType, Table payments)
+        {
+            ContractType = contractType;
+            Earnings = payments.CreateSet<OnProgrammeEarning>()
+                .ToList();
+        }
+
+        [Given(@"the earning events component generates more earnings:")]
+        public void GivenTheEarningEventsComponentGeneratesMoreEarningEvents(Table payments)
+        {
+            Earnings.AddRange(payments.CreateSet<OnProgrammeEarning>().ToList());
         }
     }
 }
