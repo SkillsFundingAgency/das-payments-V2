@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builders\CalendarPeriodBuilder.cs" />
     <Compile Include="Builders\CollectionPeriodBuilder.cs" />
     <Compile Include="Builders\DeliveryPeriodBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
