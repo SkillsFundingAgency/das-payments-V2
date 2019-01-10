@@ -18,7 +18,16 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
             {
                 academicYear = $"{Year - 2000}{Year - 2000 + 1}";
             }
-            
+
+            if (Month < 8)
+            {
+                Period = (byte)(Month + 5);
+            }
+            else
+            {
+                Period = (byte)(Month - 7);
+            }
+
             var name = $"{academicYear}-R{Period:D2}";
 
             var instance = new CollectionPeriod
@@ -36,14 +45,15 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
             {
                 var modifiedDate = date.Replace("R13", "R12").Replace("R14", "R12");
                 base.WithSpecDate(modifiedDate);
-                Year = Date.Year;
-                Month = Date.Month;
-                Period = byte.Parse(date.Substring(1, 2));
             }
             else
             {
                 base.WithSpecDate(date);
             }
+
+            Year = Date.Year;
+            Month = Date.Month;
+            Period = byte.Parse(date.Substring(1, 2));
 
             return this;
         }

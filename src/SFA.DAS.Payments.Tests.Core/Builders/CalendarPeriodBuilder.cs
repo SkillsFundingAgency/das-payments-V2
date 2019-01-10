@@ -35,6 +35,8 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
             BuilderType = DeliveryPeriodBuilderType.WithDate;
 
             Date = date;
+            Year = date.Year;
+            Month = date.Month;
             return (TBuilder) this;
         }
 

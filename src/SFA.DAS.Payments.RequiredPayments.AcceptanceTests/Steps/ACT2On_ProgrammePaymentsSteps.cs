@@ -42,8 +42,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                         StandardCode = 1,
                         FundingLineType = "Funding-LineType"
                 },
-                DeliveryPeriod = new CalendarPeriod("1718-R10"),
-                CollectionPeriod = new CalendarPeriod("1718-R10"),
+                DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1718", 10),
+                CollectionPeriod = Payments.Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod("1718", 10),
                 AmountDue = 1000,
                 Type = OnProgrammeEarningType.Learning,
                 PriceEpisodeIdentifier = "p1-1",

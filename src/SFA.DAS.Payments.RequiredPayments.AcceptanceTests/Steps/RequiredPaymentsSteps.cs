@@ -50,8 +50,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             payment.SfaContributionPercentage = SfaContributionPercentage;
             payment.Type = paymentDue.Type;
             payment.AmountDue = paymentDue.Amount;
-            payment.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
-            payment.DeliveryPeriod = new CalendarPeriod(CollectionYear, paymentDue.DeliveryPeriod);
+            payment.CollectionPeriod =Payments.Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod);
+            payment.DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, paymentDue.DeliveryPeriod);
             payment.JobId = TestSession.JobId;
             payment.LearningAim = testSessionLearner.Course.ToLearningAim();
             payment.PriceEpisodeIdentifier = paymentDue.PriceEpisodeIdentifier;
@@ -176,7 +176,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             for (var i = 0; i < unexpected.Count; i++)
             {
                 var e = unexpected[i];
-                Debug.WriteLine($"{i + 1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.OnProgrammeEarningType}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
+                Debug.WriteLine($"{i + 1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.OnProgrammeEarningType}, DeliveryPeriod:{e.DeliveryPeriod.Identifier}, CollectionPeriod:{e.CollectionPeriod.Name}");
             }
         }
 
