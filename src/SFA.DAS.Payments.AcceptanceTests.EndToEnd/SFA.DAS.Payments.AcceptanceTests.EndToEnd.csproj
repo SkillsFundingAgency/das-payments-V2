@@ -271,11 +271,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature.cs">
       <DependentUpon>Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -290,11 +285,6 @@
       <DependentUpon>Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, deleted aim reference for English and Maths, payments are reconciled PV2-464.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy learner, deleted aim reference for English and Maths, payments are reconciled PV2-464.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature.cs">
       <DependentUpon>Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature</DependentUpon>
@@ -584,10 +574,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature.cs</LastGenOutput>
-    </None>
     <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature.cs</LastGenOutput>
@@ -599,10 +585,6 @@
     <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, deleted aim reference for English and Maths, payments are reconciled PV2-464.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy learner, deleted aim reference for English and Maths, payments are reconciled PV2-464.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Additional Payments English and Maths\Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
