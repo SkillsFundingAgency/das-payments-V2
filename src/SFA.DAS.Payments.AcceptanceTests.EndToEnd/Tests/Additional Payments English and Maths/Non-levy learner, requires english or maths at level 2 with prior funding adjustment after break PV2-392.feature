@@ -11,13 +11,11 @@ Scenario Outline: Non-levy learner, requires english or maths at level 2 with pr
 	Given the following learners
         | Learner Reference Number | Uln      |
         | abc123                   | 12345678 |
-	# New field - Aim Type
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
 		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        | 5 months        | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
 		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        | 5 months        | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
 	And price details as follows	
-	# Price details
         | Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 1st price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 100%                        |
         | 2nd price details | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 90%                         |
@@ -47,19 +45,15 @@ Scenario Outline: Non-levy learner, requires english or maths at level 2 with pr
         | R03/Last Academic Year | Oct/Last Academic Year | 0                      | 0                           | 39.25                     | OnProgrammeMathsAndEnglish |
         | R04/Last Academic Year | Nov/Last Academic Year | 0                      | 0                           | 39.25                     | OnProgrammeMathsAndEnglish |
         | R05/Last Academic Year | Dec/Last Academic Year | 0                      | 0                           | 39.25                     | OnProgrammeMathsAndEnglish |
-	# Note - Planned duration shorten after planned break
     But aims details are changed as follows
 		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
 		| Maths or English | 12345         | 06/Aug/Current Academic Year | 7 months         |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
 		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 7 months         |                 | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
-	# New step 
-	# Note the new price details
 	And price details are changed as follows		
         | Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 3rd price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 100%                        |
         | 4th price details | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
-	# New OnProgrammeMathsAndEnglish column
     Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
         | Aug/Current Academic Year | 1000         | 0          | 0         | 28.26                      |
@@ -83,7 +77,6 @@ Scenario Outline: Non-levy learner, requires english or maths at level 2 with pr
         | R05/Current Academic Year | Dec/Current Academic Year | 1000         | 0          | 0         | 28.26                      |
         | R06/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         | 28.26                      |
         | R07/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         | 28.26                      |
-	# New transaction type and SFA Fully-Funded Payments column
     And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type           |
         | R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | 0                         | Learning                   |

@@ -67,17 +67,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         AimReference = learnerSpec.Course.LearnAimRef
                     });
 
-                foreach (var aimSpec in learnerSpec.Aims.Where(a =>
-                {
-                    var aimStartDate = a.StartDate.ToDate();
-                    var aimStartPeriod = aimStartDate.ToCalendarPeriod();
-                    var aimDuration = a.ActualDurationAsTimespan ?? a.PlannedDurationAsTimespan;
-
-                    return aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear ||
-                           aimStartDate + aimDuration >=
-                           new DateTime(collectionPeriod.Year, collectionPeriod.Month, aimStartDate.Day) && a.CompletionStatus != CompletionStatus.Completed ||
-                           aimStartDate + aimDuration >= new DateTime(collectionPeriod.Year, collectionPeriod.Month, aimStartDate.Day) && a.AimReference == "ZPROG001" && a.CompletionStatus == CompletionStatus.Completed;
-                }))
+                foreach (var aimSpec in learnerSpec.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, collectionPeriod,
+                    a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference)))
                 {
                     var learningAim = new LearningAim
                     {
