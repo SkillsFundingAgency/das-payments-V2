@@ -11,12 +11,10 @@ Scenario Outline: Learner taking single level 2 aim, 0 prior funding adjustment,
 	Given the following learners
         | Learner Reference Number | Uln      |
         | abc123                   | 12345678 |
-	# Additional field Aim Type is just for readability and not used in the code
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
 		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
 		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        |                 | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
-	# Price details
 	And price details as follows		
         | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 1st price details | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 90%                         |
@@ -49,16 +47,12 @@ Scenario Outline: Learner taking single level 2 aim, 0 prior funding adjustment,
         | R10/Last Academic Year | May/Last Academic Year | 900                    | 100                         | Learning         |
         | R11/Last Academic Year | Jun/Last Academic Year | 900                    | 100                         | Learning         |
         | R12/Last Academic Year | Jul/Last Academic Year | 900                    | 100                         | Learning         |
-	# New step 
-	# Additional field Aim Type is just for readability and not used in the code
     But aims details are changed as follows
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
 		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
 		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        | 12 months       | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | completed         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
-	# No learner earnings
 	Then no learner earnings should be generated
-	# No payment
 	And no provider payments will be recorded
 
 Examples: 

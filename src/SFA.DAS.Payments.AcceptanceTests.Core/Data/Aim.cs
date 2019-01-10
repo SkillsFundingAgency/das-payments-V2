@@ -45,41 +45,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string AimReference { get; set; }
         public string StartDate { get; set; }
         public string PlannedDuration { get; set; }
-        public TimeSpan? PlannedDurationAsTimespan
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(PlannedDuration))
-                {
-                    return null;
-                }
-
-                if (PlannedDuration.Contains("months"))
-                {
-                    var months = int.Parse(PlannedDuration.Replace("months", string.Empty));
-                    return StartDate.ToDate().AddMonths(months) - StartDate.ToDate();
-                }
-                throw new Exception($"Could not parse PlannedDuration: {PlannedDuration}");
-            }
-        }
+        public TimeSpan? PlannedDurationAsTimespan => PlannedDuration.ToTimeSpan(StartDate);
         public string ActualDuration { get; set; }
-        public TimeSpan? ActualDurationAsTimespan
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(ActualDuration))
-                {
-                    return null;
-                }
-
-                if (ActualDuration.Contains("months"))
-                {
-                    var months = int.Parse(ActualDuration.Replace("months", string.Empty));
-                    return StartDate.ToDate().AddMonths(months) - StartDate.ToDate();
-                }
-                throw new Exception($"Could not parse ActualDuration: {ActualDuration}");
-            }
-        }
+        public TimeSpan? ActualDurationAsTimespan => ActualDuration.ToTimeSpan(StartDate);
 
         public int AimSequenceNumber { get; set; }
         public int ProgrammeType { get; set; }
