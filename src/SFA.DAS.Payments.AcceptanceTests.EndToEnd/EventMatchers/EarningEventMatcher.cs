@@ -182,28 +182,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             // find first price episode with non-zero value for a period
             var period = earning.DeliveryCalendarPeriod.Period;
-            return fm36Learner.PriceEpisodes
-            //    .Where(pe =>
-            //{
-            //    var priceEpisodeValues = pe.PriceEpisodeValues;
-            //    var tnpStartDate = priceEpisodeValues.EpisodeEffectiveTNPStartDate;
-            //    var deliveryCalendarPeriod = earning.DeliveryCalendarPeriod;
-
-            //    if (tnpStartDate.HasValue)
-            //    {
-            //        var tnpStartPeriod = tnpStartDate.Value.ToCalendarPeriod();
-            //        var episodeEndDate = pe.PriceEpisodeValues.PriceEpisodeActualEndDate ??
-            //                             pe.PriceEpisodeValues.PriceEpisodePlannedEndDate;
-
-            //        return tnpStartPeriod.AcademicYear == deliveryCalendarPeriod.AcademicYear ||
-            //                           episodeEndDate.HasValue && episodeEndDate.Value >=
-            //                           new DateTime(deliveryCalendarPeriod.Year, deliveryCalendarPeriod.Month, tnpStartDate.Value.Day) && (!pe.PriceEpisodeValues.PriceEpisodeCompleted.HasValue || !pe.PriceEpisodeValues.PriceEpisodeCompleted.Value);
-            //    }
-
-            //    return false;
-            //})
-                .SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
-                                                                                 pepv.AttributeName == transactionType.ToAttributeName()))?.PriceEpisodeIdentifier;
+            return fm36Learner.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv =>
+                pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
+                pepv.AttributeName == transactionType.ToAttributeName()))?.PriceEpisodeIdentifier;
         }
 
         protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)

@@ -248,7 +248,6 @@
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
-    <Compile Include="Handlers\ApprenticeshipContractType2PaymentDueEventHandler.cs" />
     <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
@@ -257,13 +256,8 @@
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
-    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, planned duration is same as programme PV2-391.feature.cs">
-      <DependentUpon>Non-Levy learner, planned duration is same as programme PV2-391.feature</DependentUpon>
+    <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
+      <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -272,28 +266,23 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-389.feature.cs">
-      <DependentUpon>Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-389.feature</DependentUpon>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature.cs">
+      <DependentUpon>Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-390.feature.cs">
-      <DependentUpon>Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-390.feature</DependentUpon>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature.cs">
+      <DependentUpon>Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, funding agreed within band maximum, planned duration is same as programme PV2-392.feature.cs">
-      <DependentUpon>Non-Levy learner, funding agreed within band maximum, planned duration is same as programme PV2-392.feature</DependentUpon>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature.cs">
+      <DependentUpon>Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs">
       <DependentUpon>Non-Levy learner, provider changes aim sequence numbers PV2-393.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner - learning support OPP and completion payments - PV2-463.feature.cs">
-      <DependentUpon>Non-levy learner - learning support OPP and completion payments - PV2-463.feature</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -563,33 +552,25 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
-    <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature">
+    <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, planned duration is same as programme PV2-391.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy learner, planned duration is same as programme PV2-391.feature.cs</LastGenOutput>
+      <LastGenOutput>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Additional Payments English and Maths\Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Additional Payments English and Maths\Non-levy learner - learning support OPP and completion payments - PV2-463.feature">
+    <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-463.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Additional Payments English and Maths\Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-389.feature">
+    <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-389.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Additional Payments English and Maths\Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-390.feature">
+    <None Include="Tests\Additional Payments English and Maths\Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy Learner, funding agreed within band maximum, planned duration is same as programme PV2-390.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, funding agreed within band maximum, planned duration is same as programme PV2-392.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy learner, funding agreed within band maximum, planned duration is same as programme PV2-392.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -824,10 +805,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
       <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.Messages\SFA.DAS.Payments.PaymentsDue.Messages.csproj">
-      <Project>{58746D22-1336-4EA0-8651-B107471E4035}</Project>
-      <Name>SFA.DAS.Payments.PaymentsDue.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8}</Project>

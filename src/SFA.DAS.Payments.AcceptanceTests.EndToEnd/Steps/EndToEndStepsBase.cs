@@ -128,24 +128,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 return;
             }
 
-            foreach (var aim in aims)
+            var allAimsPerLearner = aims.GroupBy(a => a.LearnerId);
+
+            foreach (var learnerAims in allAimsPerLearner)
             {
-                var learner = TestSession.Learners.FirstOrDefault(x => x.LearnerIdentifier == aim.LearnerId);
+                var learner = TestSession.Learners.FirstOrDefault(x => x.LearnerIdentifier == learnerAims.Key);
                 if (learner == null)
                 {
                     throw new Exception("There is an aim without a matching learner");
                 }
 
-                // replace aim if exists but only if it was added earlier
-                var existingAim = learner.Aims.FirstOrDefault(a => a.AimReference == aim.AimReference);
-                if (existingAim != null && !aims.Contains(existingAim))
-                    learner.Aims.Remove(existingAim);
+                learner.Aims.Clear();
 
-                var deletedAims = learner.Aims.Except(aims).ToList();
-
-                deletedAims.ForEach(d => learner.Aims.Remove(d));
-
-                learner.Aims.Add(aim);
+                learner.Aims.AddRange(learnerAims);
             }
         }
 
