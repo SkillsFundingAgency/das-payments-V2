@@ -23,10 +23,4 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.ServiceProcess">
-      <HintPath>..\..\..\..\Windows\Microsoft.NET\Framework\v2.0.50727\System.ServiceProcess.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

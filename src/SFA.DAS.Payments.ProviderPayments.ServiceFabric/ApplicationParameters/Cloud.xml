@@ -9,7 +9,7 @@
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" Value="__ProviderPaymentsService_FailedMessagesQueue__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
-    <Parameter Name="LoggingMinimumLevel" Value="__LoggingMinimumLevel__" />
+    <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="__ProcessMessageSequentially__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
     <Parameter Name="ProviderPaymentsService_EndpointName" Value="__ProviderPaymentsService_EndpointName__" />

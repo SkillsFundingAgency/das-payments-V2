@@ -11,7 +11,7 @@
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value=""/>
     <Parameter Name="FailedMessagesQueue" Value=""/>
-    <Parameter Name="LoggingMinimumLevel" Value="" />
+    <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
   </Section>
 

@@ -5,7 +5,7 @@
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
-    <Parameter Name="LoggingMinimumLevel" DefaultValue="" />
+    <Parameter Name="LogLevel" DefaultValue="" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="" />
     <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="" />
     <Parameter Name="NonLevyFundedService_FailedMessagesQueue" DefaultValue="" />
@@ -26,7 +26,7 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[NonLevyFundedService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[NonLevyFundedService_FailedMessagesQueue]" />
-            <Parameter Name="LoggingMinimumLevel" Value="[LoggingMinimumLevel]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
           </Section>
         </Settings>
