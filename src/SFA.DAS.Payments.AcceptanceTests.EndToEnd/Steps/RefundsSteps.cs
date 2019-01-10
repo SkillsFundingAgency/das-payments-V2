@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             Console.WriteLine($"Previous job id: {previousJobId}");
             var previousPayments = payments.SelectMany(p =>
             {
-                var learnerTraining = PreviousIlr.First(t => t.LearnerId == p.LearnerId);
+                var learnerTraining = PreviousIlr;//.First(t => t.LearnerId == p.LearnerId);
                 var learnerEarning =
                     PreviousEarnings.First(e => e.LearnerId == p.LearnerId && e.DeliveryPeriod == p.DeliveryPeriod);
                 return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, learnerEarning);
