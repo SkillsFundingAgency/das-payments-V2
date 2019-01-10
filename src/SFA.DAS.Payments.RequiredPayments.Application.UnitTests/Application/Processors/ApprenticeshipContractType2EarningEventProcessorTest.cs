@@ -123,7 +123,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
             } };
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, deliveryPeriod)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, It.IsAny<DeliveryPeriod>()))
+                .Callback<string, int, DeliveryPeriod>((_, __, delPeriod) =>
+                {
+                    Assert.AreEqual(delPeriod.Identifier, deliveryPeriod.Identifier);
+                })
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(1).Verifiable();
 
@@ -171,7 +177,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, deliveryPeriod)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, It.IsAny<DeliveryPeriod>()))
+                .Callback<string, int, DeliveryPeriod>((_, __, delPeriod) =>
+                {
+                    Assert.AreEqual(delPeriod.Identifier, deliveryPeriod.Identifier);
+                })
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(0).Verifiable();
 
@@ -233,7 +245,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 }
             };
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey(earningEvent.LearningAim.Reference, (int)OnProgrammeEarningType.Balancing, deliveryPeriod)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>()
+                .Setup(s => s.GeneratePaymentKey(earningEvent.LearningAim.Reference, (int)OnProgrammeEarningType.Balancing, It.IsAny<DeliveryPeriod>()))
+                .Callback<string, int, DeliveryPeriod>((_, __, delPeriod) =>
+                {
+                    Assert.AreEqual(delPeriod.Identifier, deliveryPeriod.Identifier);
+                })
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(amount, It.IsAny<Payment[]>())).Returns(-100).Verifiable();
 
@@ -295,7 +314,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             if (employerContribution2.HasValue)
                 paymentHistoryEntities.Add(CreatePaymentEntity(employerContribution2.Value, earningEvent, FundingSourceType.CoInvestedEmployer));
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey(earningEvent.LearningAim.Reference, (int)OnProgrammeEarningType.Balancing, deliveryPeriod)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>()
+                .Setup(s => s.GeneratePaymentKey(earningEvent.LearningAim.Reference, (int)OnProgrammeEarningType.Balancing, It.IsAny<DeliveryPeriod>()))
+                .Callback<string, int, DeliveryPeriod>((_, __, delPeriod) =>
+                {
+                    Assert.AreEqual(delPeriod.Identifier, deliveryPeriod.Identifier);
+                })
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities.ToArray())).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(0, It.IsAny<Payment[]>())).Returns(-100).Verifiable();
 
@@ -347,7 +373,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, deliveryPeriod)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, It.IsAny<DeliveryPeriod>()))
+                .Callback<string, int, DeliveryPeriod>((_, __, delPeriod) =>
+                {
+                    Assert.AreEqual(delPeriod.Identifier, deliveryPeriod.Identifier);
+                })
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(100).Verifiable();
 
