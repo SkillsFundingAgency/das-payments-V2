@@ -38,7 +38,7 @@ Scenario Outline: Non-levy learner provider deletes english/maths aim, earlier p
 	# Additional field Aim Type is just for readability and not used in the code
     But aims details are changed as follows
 		| Aim Type  | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
-		| Programme | ZPROG001      | 06/Oct/Current Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Programme | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
 	# New step 
 	# Note the order of Aim Sequence Number
 	And price details are changed as follows		
