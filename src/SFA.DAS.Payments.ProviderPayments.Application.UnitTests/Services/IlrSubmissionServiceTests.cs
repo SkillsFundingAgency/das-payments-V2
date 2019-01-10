@@ -101,7 +101,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 Ukprn = ukprn,
                 JobId = jobId,
                 IlrSubmissionDateTime = DateTime.MaxValue,
-                CollectionPeriod = new CollectionPeriodBuilder().WithYear(2018).WithMonth(2).Build(),
+                CollectionPeriod = new CollectionPeriodBuilder().WithDate(new DateTime(2018, 2, 1)).Build(),
             };
 
             ilrSubmittedEventCache = mocker.Mock<IDataCache<IlrSubmittedEvent>>();
