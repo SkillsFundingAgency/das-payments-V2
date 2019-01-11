@@ -4,10 +4,11 @@ using System.Diagnostics;
 namespace SFA.DAS.Payments.Model.Core
 {
     [DebuggerDisplay("Collection: {Name}")]
-    public class CollectionPeriod : SfaPeriodBaseClass
+    public class CollectionPeriod 
     {
         public string AcademicYear { get; set; }
         public string Name { get; set; }
+        public byte Period { get; set; }
 
         public static CollectionPeriod CreateFromAcademicYearAndPeriod(string academicYear, byte period)
         {

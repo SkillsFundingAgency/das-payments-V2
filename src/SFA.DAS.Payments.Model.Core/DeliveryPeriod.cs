@@ -4,12 +4,12 @@ using System.Diagnostics;
 namespace SFA.DAS.Payments.Model.Core
 {
     [DebuggerDisplay("Delivery: {Identifier}")]
-    public class DeliveryPeriod : SfaPeriodBaseClass
+    public class DeliveryPeriod 
     {
         public short Year { get; set; }
         public byte Month { get; set; }
         private byte period = 0;
-        public override byte Period
+        public byte Period
         {
             get
             {
