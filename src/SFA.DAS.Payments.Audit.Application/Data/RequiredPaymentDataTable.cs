@@ -10,14 +10,14 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         {
             DataTable.Columns.AddRange(new[]
             {
-                new DataColumn("PaymentsDueId", typeof(Guid)),
+                new DataColumn("EarningEventId", typeof(Guid)),
             });
         }
 
         protected override DataRow CreateDataRow(RequiredPaymentEventModel eventModel)
         {
             var dataRow = base.CreateDataRow(eventModel);
-            dataRow["PaymentsDueId"] = eventModel.PaymentsDueEventId;
+            dataRow["EarningEventId"] = eventModel.EarningEventId;
             return dataRow;
         }
 

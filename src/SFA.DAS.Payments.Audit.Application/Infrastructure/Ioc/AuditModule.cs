@@ -3,7 +3,6 @@ using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.PaymentsDue;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
 using SFA.DAS.Payments.Audit.Model;
 
@@ -19,18 +18,12 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<RequiredPaymentEventProcessor>()
                 .As<IRequiredPaymentEventProcessor>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<PaymentsDueEventProcessor>()
-                .As<IPaymentsDueEventProcessor>()
-                .InstancePerLifetimeScope();
             builder.RegisterType<EarningEventProcessor>()
                 .As<IEarningEventProcessor>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<FundingSourceDataTable>()
                 .As<IPaymentsEventModelDataTable<FundingSourceEventModel>>();
-
-            builder.RegisterType<PaymentsDueDataTable>()
-                .As<IPaymentsEventModelDataTable<PaymentsDueEventModel>>();
 
             builder.RegisterType<RequiredPaymentDataTable>()
                 .As<IPaymentsEventModelDataTable<RequiredPaymentEventModel>>();

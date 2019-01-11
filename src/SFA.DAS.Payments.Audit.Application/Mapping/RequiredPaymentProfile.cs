@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.Mapping
@@ -14,7 +13,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
                 .Include<IncentiveRequiredPaymentEvent, RequiredPaymentEventModel>()
                 .Include<ApprenticeshipContractType2RequiredPaymentEvent, RequiredPaymentEventModel>()
                 .MapPeriodisedCommon()
-                .ForMember(dest => dest.PaymentsDueEventId, opt => opt.MapFrom(source => source.PaymentsDueEventId))
+                .ForMember(dest => dest.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
                 .ForMember(dest => dest.ContractType, opt => opt.Ignore())
                 .ForMember(dest => dest.TransactionType, opt => opt.Ignore())
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.Ignore())

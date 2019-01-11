@@ -6,7 +6,6 @@ using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
 {
@@ -63,7 +62,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
 
         public static Array GetContractTypes()
         {
-            return PeriodisedEventMappingTests<IncentivePaymentDueEvent, PaymentsDueEventModel>.GetEnumValues<ContractType>();
+            return GetEnumValues<ContractType>();
         }
 
         [Test]

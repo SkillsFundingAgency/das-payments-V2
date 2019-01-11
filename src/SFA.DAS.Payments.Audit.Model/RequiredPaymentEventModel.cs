@@ -4,6 +4,6 @@ namespace SFA.DAS.Payments.Audit.Model
 {
     public class RequiredPaymentEventModel : PeriodisedPaymentsEventModel
     {
-        public Guid PaymentsDueEventId { get; set; }
+        public Guid EarningEventId { get; set; }
     }
 }

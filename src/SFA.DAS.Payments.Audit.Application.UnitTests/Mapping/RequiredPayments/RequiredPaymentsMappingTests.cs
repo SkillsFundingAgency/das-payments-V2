@@ -4,7 +4,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Application.Mapping;
 using SFA.DAS.Payments.Audit.Model;
-using SFA.DAS.Payments.PaymentsDue.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
@@ -16,17 +15,17 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
         {
             cfg.AddProfile<RequiredPaymentProfile>();
         }
-        
+
         [Test]
         public void Maps_EarningEventId()
         {
-            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).PaymentsDueEventId.Should().Be(PaymentEvent.PaymentsDueEventId);
+            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).EarningEventId.Should().Be(PaymentEvent.EarningEventId);
         }
 
         protected override void PopulateCommonProperties(TSource paymentEvent)
         {
             base.PopulateCommonProperties(paymentEvent);
-            paymentEvent.PaymentsDueEventId = Guid.NewGuid();
+            paymentEvent.EarningEventId = Guid.NewGuid();
         }
     }
 }
