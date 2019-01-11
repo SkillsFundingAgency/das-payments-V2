@@ -23,6 +23,6 @@
 	AgreementId NVARCHAR(255) NULL, 
 	IlrSubmissionDateTime DATETIME2 NOT NULL,
 	JobId  BIGINT NOT NULL,
-	EventTime DATETIME NOT NULL,
-	CreationDate DATETIME NOT NULL CONSTRAINT DF_RequiredPaymentEvent__CreationDate DEFAULT (GETDATE())
+	EventTime DATETIMEOFFSET NOT NULL,
+	CreationDate DATETIME2 NOT NULL CONSTRAINT DF_RequiredPaymentEvent__CreationDate DEFAULT (SYSDATETIME())
 )

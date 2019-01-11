@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                     DeliveryPeriod = item.period.Period,
                     Amount = item.period.Amount,
                     PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,
+                    SfaContributionPercentage = item.period.SfaContributionPercentage,
                     EarningEventId = source.EventId
                 }) ?? new List<EarningEventPeriodModel>()
             );

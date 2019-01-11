@@ -6,5 +6,6 @@
 	TransactionType TINYINT NOT NULL, 
 	DeliveryPeriod TINYINT NOT NULL, 
 	Amount DECIMAL(15,5) NOT NULL,
+	SfaContributionPercentage DECIMAL(15,5) NULL,
 	CreationDate DATETIME2 NOT NULL CONSTRAINT DF_EarningEventPeriod__CreationDate DEFAULT (SYSDATETIME()),	
 )

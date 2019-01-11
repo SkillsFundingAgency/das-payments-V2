@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("PriceEpisodeIdentifier"),
                 new DataColumn("TransactionType"),
                 new DataColumn("DeliveryPeriod"),
+                new DataColumn("SfaContributionPercentage",typeof(decimal)){AllowDBNull = true},
                 new DataColumn("Amount"),
             });
             priceEpisodes = new DataTable("Payments2.EarningEventPriceEpisode");
@@ -65,6 +66,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["PriceEpisodeIdentifier"] = eventModel.PriceEpisodeIdentifier ?? string.Empty;
             dataRow["TransactionType"] = (byte)eventModel.TransactionType;
             dataRow["DeliveryPeriod"] = eventModel.DeliveryPeriod;
+            dataRow["SfaContributionPercentage"] = (object)eventModel.SfaContributionPercentage ?? DBNull.Value;
             dataRow["Amount"] = eventModel.Amount;
             return dataRow;
         }

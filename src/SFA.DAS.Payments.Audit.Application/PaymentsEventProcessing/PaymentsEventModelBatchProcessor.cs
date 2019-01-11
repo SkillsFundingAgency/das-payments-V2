@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -59,8 +60,14 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                             {
                                 bulkCopy.ColumnMappings.Clear();
                                 bulkCopy.DestinationTableName = data.Count > 1 ? table.TableName : dataTable.TableName;
+                                foreach (DataRow tableRow in table.Rows)
+                                {
+                                    var row = tableRow.ItemArray.Aggregate(string.Empty, (currText, field) => string.Concat(currText, ", ", field ?? "null"));
+                                    logger.LogVerbose($"Saving row to table: {bulkCopy.DestinationTableName}, Row: {row}");
+                                }
                                 foreach (DataColumn dataColumn in table.Columns)
                                     bulkCopy.ColumnMappings.Add(dataColumn.ColumnName, dataColumn.ColumnName);
+
                                 await bulkCopy.WriteToServerAsync(table, cancellationToken);
                             }
                             logger.LogDebug($"Finished bulk copying {batch.Count} of {typeof(T).Name} records.");
