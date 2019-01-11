@@ -13,7 +13,7 @@
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="DcStorageConnectionString" Value="__DcStorageConnectionString__" />
     <Parameter Name="TopicName" Value="__TopicName__" />
-    <Parameter Name="LoggingMinimumLevel" Value="__LoggingMinimumLevel__" />
+    <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="__ProcessMessageSequentially__" />
   </Parameters>
 </Application>
