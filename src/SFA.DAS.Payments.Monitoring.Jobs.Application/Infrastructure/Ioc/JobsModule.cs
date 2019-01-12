@@ -1,11 +1,12 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Caching.Memory;
 using NServiceBus;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
 {
-    public class JobsModule: Module
+    public class JobsModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -19,6 +20,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<EarningsJobService>()
                 .As<IEarningsJobService>()
                 .InstancePerLifetimeScope();
+            builder.RegisterType<JobStepService>()
+                .As<IJobStepService>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<MonthEndJobService>()
                 .As<IMonthEndJobService>()
                 .InstancePerLifetimeScope();
@@ -28,8 +32,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<CompletedJobsService>()
                 .As<ICompletedJobsService>()
                 .InstancePerLifetimeScope();
-//            builder.RegisterBuildCallback(c =>
-//                c.Resolve<EndpointConfiguration>().LimitMessageProcessingConcurrencyTo(1));
+            builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
+                .As<IMemoryCache>()
+                .SingleInstance();
         }
     }
 }

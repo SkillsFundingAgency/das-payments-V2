@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
@@ -53,6 +54,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Returns(Task.FromResult<List<JobStepModel>>(jobSteps));
             mockDataContext.Setup(dc => dc.GetJobIdFromDcJobId(It.IsAny<long>()))
                 .Returns(Task.FromResult<long>(1));
+            object job = new JobModel {Id = jobStep.JobId, DcJobId = jobMessageStatus.JobId};
+            mocker.Mock<IMemoryCache>()
+                .Setup(cache => cache.TryGetValue(It.IsAny<string>(), out job))
+                .Returns(true);
         }
 
         [Test]
@@ -84,7 +89,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 
         private async Task JobStepCompleted()
         {
-            var service = mocker.Create<EarningsJobService>();
+            var service = mocker.Create<JobStepService>();
             await service.JobStepCompleted(jobMessageStatus);
         }
 

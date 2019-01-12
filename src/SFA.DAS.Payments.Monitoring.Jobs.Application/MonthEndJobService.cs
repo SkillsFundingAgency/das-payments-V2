@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         private readonly IJobsDataContext dataContext;
         private readonly ITelemetry telemetry;
 
-        public MonthEndJobService(IPaymentLogger logger, IJobsDataContext dataContext, IJobsStatusServiceFacade jobsStatusService, ITelemetry telemetry)
+        public MonthEndJobService(IPaymentLogger logger, IJobsDataContext dataContext, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
@@ -46,7 +46,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 StartTime = msg.StartTime,
                 MessageName = msg.MessageName,
                 Status = JobStepStatus.Queued,
-
             }).ToList();
             await dataContext.SaveNewJob(jobDetails, jobSteps);
             telemetry.AddProperty("JobType", jobDetails.JobType.ToString("G"));

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Core;
@@ -25,14 +26,24 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
         {
             telemetry.TrackEvent($"Event: {eventName}", properties);
         }
+
         public void TrackEvent(string eventName, double count)
         {
             telemetry.TrackEvent($"Event: {eventName}", properties, new Dictionary<string, double> { { "count", count } });
         }
 
+        public void TrackEvent(string eventName, Dictionary<string, double> metrics)
+        {
+            telemetry.TrackEvent($"Event: {eventName}", properties, metrics);
+        }
+
+        public void TrackEvent(string eventName, Dictionary<string, string> eventProperties, Dictionary<string, double> metrics)
+        {
+            telemetry.TrackEvent($"Event: {eventName}", properties.ConcatDictionary(eventProperties), metrics);
+        }
+
         public void TrackDuration(string durationName, TimeSpan duration)
         {
-            //telemetry.TrackMetric($"Forecasting {durationName} Duration", duration.TotalMilliseconds, properties);
             telemetry.TrackEvent($"Event: {durationName}", properties, new Dictionary<string, double> { { "duration", duration.TotalMilliseconds } });
         }
 

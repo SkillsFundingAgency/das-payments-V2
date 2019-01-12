@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,12 +53,21 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             await dataContext.UpdateJob(job, cancellationToken);
             if (cancellationToken.IsCancellationRequested)
                 return;
+            telemetry.AddProperty("Id", job.Id.ToString());
             telemetry.AddProperty("JobType", job.JobType.ToString("G"));
             telemetry.AddProperty("Ukprn", job.Ukprn?.ToString() ?? string.Empty);
-            telemetry.AddProperty("External Job Id", job.DcJobId?.ToString() ?? string.Empty);
+            telemetry.AddProperty("ExternalJobId", job.DcJobId?.ToString() ?? string.Empty);
             telemetry.AddProperty("CollectionPeriod", job.CollectionPeriod.ToString());
             telemetry.AddProperty("CollectionYear", job.CollectionYear.ToString());
-            telemetry.TrackDuration("Finished Job", job.EndTime.Value - job.StartTime);
+            telemetry.AddProperty("Status", job.Status.ToString("G"));
+            var metrics = new Dictionary<string, double>
+            {
+                {"Duration", (job.EndTime.Value - job.StartTime).TotalMilliseconds},
+                {"MessageCount", stepsStatus.Values.Sum()},
+            };
+            if (job.JobType == JobType.EarningsJob)
+                metrics.Add("Learner Count", job.LearnerCount ?? 0);
+            telemetry.TrackEvent("Finished Job", metrics);
             logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {status}, end time: {endTime}");
         }
     }

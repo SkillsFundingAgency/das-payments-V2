@@ -8,6 +8,7 @@
 	DCJobId BIGINT NULL,
 	Ukprn BIGINT NULL, 
 	IlrSubmissionTime DATETIME NULL,
+	LearnerCount INT NULL,
 	CollectionYear SMALLINT NOT NULL,
 	CollectionPeriod TINYINT NOT NULL,
 	INDEX IX_Job__DCJobId_Ukprn NONCLUSTERED (DCJobId, Ukprn)

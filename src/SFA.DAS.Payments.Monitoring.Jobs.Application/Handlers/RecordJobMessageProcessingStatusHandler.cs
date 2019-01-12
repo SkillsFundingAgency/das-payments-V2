@@ -9,12 +9,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
     public class RecordJobMessageProcessingStatusHandler : IHandleMessages<RecordJobMessageProcessingStatus>
     {
         private readonly IPaymentLogger logger;
-        private readonly IEarningsJobService earningsService;
+        private readonly IJobStepService jobStepService;
 
-        public RecordJobMessageProcessingStatusHandler(IPaymentLogger logger, IEarningsJobService earningsService)
+        public RecordJobMessageProcessingStatusHandler(IPaymentLogger logger, IJobStepService jobStepService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.earningsService = earningsService ?? throw new ArgumentNullException(nameof(earningsService));
+            this.jobStepService = jobStepService ?? throw new ArgumentNullException(nameof(jobStepService));
         }
 
         public async Task Handle(RecordJobMessageProcessingStatus message, IMessageHandlerContext context)
@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
             try
             {
                 logger.LogVerbose($"Handling job message processed. DC Job Id: {message.JobId}, message name: {message.MessageName}, id: {message.Id}");
-                await earningsService.JobStepCompleted(message);
+                await jobStepService.JobStepCompleted(message);
                 logger.LogDebug($"Finished handling job message processed. DC Job Id: {message.JobId}, message name: {message.MessageName}, id: {message.Id}");
             }
             catch (Exception ex)
