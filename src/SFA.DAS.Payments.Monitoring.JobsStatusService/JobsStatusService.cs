@@ -9,6 +9,7 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using Polly;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.JobsStatusService.Interfaces;
@@ -30,7 +31,6 @@ namespace SFA.DAS.Payments.Monitoring.JobsStatusService
             interval = TimeSpan.FromSeconds(intervalInSeconds);
             policy = Policy.Handle<Exception>()
                 .CircuitBreakerAsync(5, TimeSpan.FromSeconds(int.Parse(configurationHelper.GetSetting("FailureTimeoutInSeconds"))));
-
         }
 
         protected override async Task RunAsync(CancellationToken cancellationToken)
@@ -42,9 +42,13 @@ namespace SFA.DAS.Payments.Monitoring.JobsStatusService
                     logger.LogVerbose($"Starting status update process.");
                     using (var scope = ContainerFactory.Container.BeginLifetimeScope())
                     {
-                        var completedJobsService = scope.Resolve<ICompletedJobsService>();
-                        await policy.ExecuteAsync(() => completedJobsService.UpdateCompletedJobs(cancellationToken));
-                        await Task.Delay(interval, cancellationToken);
+                        var telemetry = scope.Resolve<ITelemetry>();
+                        using (var operation = telemetry.StartOperation("CompletedJobsProcessing"))
+                        {
+                            var completedJobsService = scope.Resolve<ICompletedJobsService>();
+                            await policy.ExecuteAsync(() => completedJobsService.UpdateCompletedJobs(cancellationToken));
+                            telemetry.StopOperation(operation);
+                        }
                     }
                     logger.LogDebug("Finished status update process.");
                     await Task.Delay(interval, cancellationToken);
