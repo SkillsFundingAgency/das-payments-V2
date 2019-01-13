@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Stores_New_Jobs()
         {
-            var jobStarted = new RecordStartedProcessingProviderEarningsJob
+            var jobStarted = new RecordStartedProcessingEarningsJob
             {
                 CollectionPeriod = 1,
                 CollectionYear = 1819,

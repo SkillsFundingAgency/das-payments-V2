@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands
 {
-    public class RecordStartedProcessingProviderEarningsJob : JobsCommand
+    public class RecordStartedProcessingEarningsJob : JobsCommand
     {
         public DateTime IlrSubmissionTime { get; set; }
         public long Ukprn { get; set; }
@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands
         public DateTimeOffset StartTime { get; set; }
         public List<GeneratedMessage> GeneratedMessages { get; set; }
 
-        public RecordStartedProcessingProviderEarningsJob()
+        public RecordStartedProcessingEarningsJob()
         {
             StartTime = DateTimeOffset.UtcNow;
             GeneratedMessages = new List<GeneratedMessage>();

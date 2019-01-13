@@ -11,12 +11,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ProviderEarningsJobClient>()
-                .As<IProviderEarningsJobClient>()
+            builder.RegisterType<EarningsJobClient>()
+                .As<IEarningsJobClient>()
                 .SingleInstance();
 
-            builder.RegisterType<ProviderEarningsJobClientFactory>()
-                .As<IProviderEarningsJobClientFactory>()
+            builder.RegisterType<EarningsJobClientFactory>()
+                .As<IEarningsJobClientFactory>()
                 .SingleInstance();
 
             builder.RegisterType<JobStatusIncomingMessageBehaviour>()
@@ -29,10 +29,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
             builder.RegisterBuildCallback(c =>
             {
                 var config = c.Resolve<IConfigurationHelper>();
-                var jobStatusEndpointName = config.GetSettingOrDefault("monitoring-jobs-endpoint", "sfa-das-payments-monitoring-jobs");
+                var jobsEndpointName = config.GetSettingOrDefault("monitoring-jobs-endpoint", "sfa-das-payments-monitoring-jobs");
                 EndpointConfigurationEvents.ConfiguringTransport += (object sender, TransportExtensions<AzureServiceBusTransport> e) =>
                 {
-                    e.Routing().RouteToEndpoint(typeof(RecordStartedProcessingProviderEarningsJob).Assembly, jobStatusEndpointName);
+                    e.Routing().RouteToEndpoint(typeof(RecordStartedProcessingEarningsJob).Assembly, jobsEndpointName);
                 };
                 var endpointConfig = c.Resolve<EndpointConfiguration>();
                 endpointConfig.Notifications.Errors.MessageSentToErrorQueue += Errors_MessageSentToErrorQueue;
@@ -44,7 +44,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                     "Job Status Incoming message behaviour");
                 c.Resolve<EndpointConfiguration>().Pipeline.Register(typeof(JobStatusOutgoingMessageBehaviour),
                     "Job Status Outgoing message behaviour");
-
             });
         }
 

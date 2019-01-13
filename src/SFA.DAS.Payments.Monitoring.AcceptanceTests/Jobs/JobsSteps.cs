@@ -30,9 +30,9 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             set => Set(value);
         }
 
-        public RecordStartedProcessingProviderEarningsJob JobDetails
+        public RecordStartedProcessingEarningsJob JobDetails
         {
-            get => Get<RecordStartedProcessingProviderEarningsJob>();
+            get => Get<RecordStartedProcessingEarningsJob>();
             set => Set(value);
         }
 
@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
             };
-            JobDetails = new RecordStartedProcessingProviderEarningsJob
+            JobDetails = new RecordStartedProcessingEarningsJob
             {
                 JobId = TestSession.JobId,
                 CollectionPeriod = CollectionPeriod,
@@ -85,7 +85,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
             };
-            JobDetails = new RecordStartedProcessingProviderEarningsJob
+            JobDetails = new RecordStartedProcessingEarningsJob
             {
                 JobId = TestSession.JobId,
                 CollectionPeriod = CollectionPeriod,

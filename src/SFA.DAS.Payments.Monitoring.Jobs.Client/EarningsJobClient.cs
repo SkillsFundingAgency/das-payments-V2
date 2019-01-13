@@ -8,30 +8,31 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 {
-    public interface IProviderEarningsJobClient
+    public interface IEarningsJobClient
     {
-        Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages);
+        Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime);
         Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages);
     }
 
-    public class ProviderEarningsJobClient : IProviderEarningsJobClient
+    public class EarningsJobClient : IEarningsJobClient
     {
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
 
-        public ProviderEarningsJobClient(IEndpointInstanceFactory factory, IPaymentLogger logger)
+        public EarningsJobClient(IEndpointInstanceFactory factory, IPaymentLogger logger)
         {
 
             messageSession = factory?.GetEndpointInstance().Result ?? throw new ArgumentNullException();
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages)
+        public async Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime)
         {
-            logger.LogVerbose($"Sending request to record start of provider earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
+            logger.LogVerbose($"Sending request to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
             generatedMessages.ForEach(message => logger.LogVerbose($"Learner command event id: {message.MessageId}"));
-            var providerEarningsEvent = new RecordStartedProcessingProviderEarningsJob
+            var providerEarningsEvent = new RecordStartedProcessingEarningsJob
             {
+                StartTime = startTime,
                 JobId = jobId,
                 Ukprn = ukprn,
                 IlrSubmissionTime = ilrSubmissionTime,
@@ -40,7 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 GeneratedMessages = generatedMessages
             };
             await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
-            logger.LogDebug($"Sent request to record start of provider earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
+            logger.LogDebug($"Sent request to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
         }
 
         public async Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages)

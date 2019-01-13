@@ -105,16 +105,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                     logger.LogVerbose($"Now generating telemetry for completed message {step.MessageId}, {step.MessageName}");
                     var props = new Dictionary<string, string>
                     {
-                        { "MessageName", step.MessageName },
-                        { "JobType", job.JobType.ToString("G")},
-                        { "Id", job.Id.ToString()},
-                        { "ExternalJobId", job.DcJobId.ToString() },
-                        { "CollectionPeriod", job.CollectionPeriod.ToString() },
-                        { "CollectionYear", job.CollectionYear.ToString()}
+                        { TelemetryKeys.MessageName, step.MessageName },
+                        { TelemetryKeys.JobType, job.JobType.ToString("G")},
+                        { "JobId", job.Id.ToString()},
+                        { TelemetryKeys.Id, step.Id.ToString() },
+                        { "MessageId",step.MessageId.ToString("N") },
+                        { TelemetryKeys.ExternalJobId, job.DcJobId.ToString() },
+                        { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString() },
+                        { TelemetryKeys.CollectionYear, job.CollectionYear.ToString()}
                     };
                     if (job.Ukprn != null)
-                        props.Add("Ukprn", job.Ukprn.ToString());
-                    telemetry.TrackEvent("Processed Message", props, new Dictionary<string, double> { { "Duration", (step.EndTime.Value - step.StartTime.Value).TotalMilliseconds } });
+                        props.Add(TelemetryKeys.Ukprn, job.Ukprn.ToString());
+                    telemetry.TrackEvent("Processed Message", props, new Dictionary<string, double> { { TelemetryKeys.Duration, (step.EndTime.Value - step.StartTime.Value).TotalMilliseconds } });
                 });
         }
 

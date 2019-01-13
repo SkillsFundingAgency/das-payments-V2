@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
@@ -13,7 +14,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
     public interface IEarningsJobService
     {
-        Task JobStarted(RecordStartedProcessingProviderEarningsJob startedEvent);
+        Task JobStarted(RecordStartedProcessingEarningsJob startedEvent);
     }
 
     public class EarningsJobService : IEarningsJobService
@@ -30,7 +31,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task JobStarted(RecordStartedProcessingProviderEarningsJob startedEvent)
+        public async Task JobStarted(RecordStartedProcessingEarningsJob startedEvent)
         {
             logger.LogDebug($"Now recording new provider earnings job.  Job Id: {startedEvent.JobId}, Ukprn: {startedEvent.Ukprn}.");
             var jobDetails = new JobModel
@@ -53,7 +54,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 Status = JobStepStatus.Queued,
 
             }).ToList();
-            await dataContext.SaveNewJob(jobDetails, jobSteps);
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                await dataContext.SaveNewJob(jobDetails, jobSteps);
+                scope.Complete();
+            }
             telemetry.AddProperty("JobType", JobType.EarningsJob.ToString("G"));
             telemetry.AddProperty("Ukprn", startedEvent.Ukprn.ToString());
             telemetry.AddProperty("Id", jobDetails.Id.ToString());
