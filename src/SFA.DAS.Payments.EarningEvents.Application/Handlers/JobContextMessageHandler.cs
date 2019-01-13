@@ -51,93 +51,65 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             logger.LogDebug($"Processing Earning Event Service event for Job Id : {message.JobId}");
             try
             {
-                FM36Global fm36Output;
-                var startTime = DateTimeOffset.UtcNow;
-                var stopwatch = new Stopwatch();
-                var fileReference = message.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString();
-                var container = message.KeyValuePairs[JobContextMessageKey.Container].ToString();
-                logger.LogDebug($"Deserialising FM36Output for job: {message.JobId}, using file reference: {fileReference}, container: {container}");
-                stopwatch.Start();
-                using (var stream = await azureFileService.OpenReadStreamAsync(
-                    fileReference,
-                    container,
-                    cancellationToken))
+                using (var operation = telemetry.StartOperation("FM36Processing"))
                 {
-                    fm36Output = serializationService.Deserialize<FM36Global>(stream);
+                    var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
+                    var fm36Output = await GetFm36Global(message, collectionPeriod, cancellationToken);
+                    var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, cancellationToken);
+                    telemetry.TrackEvent("Sent All ProcessLearnerCommand Messages",
+                        new Dictionary<string, string>
+                        {
+                            { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
+                            { TelemetryKeys.CollectionYear, fm36Output.Year},
+                            { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                            { TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
+                        },
+                        new Dictionary<string, double>
+                        {
+                            { TelemetryKeys.Duration, duration}
+                        });
+                    telemetry.StopOperation(operation);
+                    logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
+                    return true;
                 }
-                stopwatch.Stop();
-                logger.LogDebug($"Finished getting FM36Output for Job: {message.JobId}, took {stopwatch.ElapsedMilliseconds}ms.");
-                var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
-                telemetry.TrackEvent("Deserialize FM36Global",
-                    new Dictionary<string, string>
-                    {
-                        { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
-                        { TelemetryKeys.CollectionYear, fm36Output.Year},
-                        { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
-                        { TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
-                    },
-                    new Dictionary<string, double>
-                    {
-                        { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds}
-                    });
-
-                logger.LogVerbose("Now building commands.");
-                var commands = fm36Output
-                    .Learners
-                    .Select(learner => Build(learner, message.JobId,
-                        message.SubmissionDateTimeUtc, fm36Output.Year, collectionPeriod, fm36Output.UKPRN))
-                    .ToList();
-
-                var jobStatusClient = jobClientFactory.Create();
-                var messageName = typeof(ProcessLearnerCommand).FullName;
-                logger.LogVerbose($"Now sending the start job command for job: {message.JobId}");
-                await jobStatusClient.StartJob(message.JobId,
-                    fm36Output.UKPRN,
-                    message.SubmissionDateTimeUtc,
-                    short.Parse(fm36Output.Year),
-                    (byte)collectionPeriod,
-                    commands.Select(cmd => new GeneratedMessage { StartTime = startTime, MessageId = cmd.CommandId, MessageName = messageName }).ToList(),
-                    startTime);
-                logger.LogDebug($"Now sending the process learner commands for job: {message.JobId}");
-                stopwatch.Restart();
-                var endpointInstance = await factory.GetEndpointInstance();
-                foreach (var learnerCommand in commands)
-                {
-                    try
-                    {
-                        await endpointInstance.SendLocal(learnerCommand);
-                        logger.LogVerbose(
-                            $"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError($"Error sending the command: ProcessLearnerCommand. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Error: {ex.Message}", ex);
-                        throw;
-                    }
-                }
-                stopwatch.Stop();
-                logger.LogDebug($"Took {stopwatch.ElapsedMilliseconds}ms to send {commands.Count} Process Learner Commands for Job: {message.JobId}");
-                telemetry.TrackEvent("Sent All ProcessLearnerCommand Messages",
-                    new Dictionary<string, string>
-                    {
-                        { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
-                        { TelemetryKeys.CollectionYear, fm36Output.Year},
-                        { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
-                        { TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
-                    },
-                    new Dictionary<string, double>
-                    {
-                        { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds}
-                    });
-
-                logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
-                return true;
             }
             catch (Exception ex)
             {
                 logger.LogError("Error while handling EarningService event", ex);
                 throw;
             }
+        }
+
+        private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken )
+        {
+            FM36Global fm36Output;
+            var fileReference = message.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString();
+            var container = message.KeyValuePairs[JobContextMessageKey.Container].ToString();
+            logger.LogDebug($"Deserialising FM36Output for job: {message.JobId}, using file reference: {fileReference}, container: {container}");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            using (var stream = await azureFileService.OpenReadStreamAsync(
+                fileReference,
+                container,
+                cancellationToken))
+            {
+                fm36Output = serializationService.Deserialize<FM36Global>(stream);
+            }
+            stopwatch.Stop();
+            logger.LogDebug($"Finished getting FM36Output for Job: {message.JobId}, took {stopwatch.ElapsedMilliseconds}ms.");
+            telemetry.TrackEvent("Deserialize FM36Global",
+                new Dictionary<string, string>
+                {
+                    { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
+                    { TelemetryKeys.CollectionYear, fm36Output.Year},
+                    { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                    { TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
+                },
+                new Dictionary<string, double>
+                {
+                    { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds}
+                });
+            return fm36Output;
         }
 
         private static ProcessLearnerCommand Build(FM36Learner learner, long jobId, DateTime ilrSubmissionDateTime, string collectionYear, int collectionPeriod, long ukprn)
@@ -152,6 +124,50 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 CollectionPeriod = collectionPeriod,
                 Ukprn = ukprn
             };
+        }
+
+        private async Task<double> ProcessFm36Global(JobContextMessage message, int collectionPeriod, FM36Global fm36Output, CancellationToken cancellationToken)
+        {
+            logger.LogVerbose("Now building commands.");
+            var startTime = DateTimeOffset.UtcNow;
+            var commands = fm36Output
+                .Learners
+                .Select(learner => Build(learner, message.JobId,
+                    message.SubmissionDateTimeUtc, fm36Output.Year, collectionPeriod, fm36Output.UKPRN))
+                .ToList();
+
+            var jobStatusClient = jobClientFactory.Create();
+            var messageName = typeof(ProcessLearnerCommand).FullName;
+            logger.LogVerbose($"Now sending the start job command for job: {message.JobId}");
+            await jobStatusClient.StartJob(message.JobId, fm36Output.UKPRN, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), (byte)collectionPeriod,
+                commands.Select(cmd => new GeneratedMessage { StartTime = startTime, MessageId = cmd.CommandId, MessageName = messageName }).ToList(), startTime);
+            logger.LogDebug($"Now sending the process learner commands for job: {message.JobId}");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var endpointInstance = await factory.GetEndpointInstance();
+            foreach (var learnerCommand in commands)
+            {
+                try
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        logger.LogWarning($"Cancellation requested, will now stop sending learners for job: {message.JobId}");
+                        return stopwatch.ElapsedMilliseconds;
+                    }
+
+                    await endpointInstance.SendLocal(learnerCommand);
+                    logger.LogVerbose(
+                        $"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"Error sending the command: ProcessLearnerCommand. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Error: {ex.Message}", ex);
+                    throw;
+                }
+            }
+            stopwatch.Stop();
+            logger.LogDebug($"Took {stopwatch.ElapsedMilliseconds}ms to send {commands.Count} Process Learner Commands for Job: {message.JobId}");
+            return stopwatch.ElapsedMilliseconds;
         }
     }
 }

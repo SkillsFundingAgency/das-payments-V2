@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+﻿using Autofac;
+using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 
 namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessing

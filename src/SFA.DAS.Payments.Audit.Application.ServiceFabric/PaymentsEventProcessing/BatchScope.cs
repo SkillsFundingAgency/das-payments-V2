@@ -2,6 +2,9 @@
 using System.Threading.Tasks;
 using System.Transactions;
 using Autofac;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
 using SFA.DAS.Payments.Audit.Model;
@@ -13,20 +16,23 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessi
     {
         private readonly ILifetimeScope lifetimeScope;
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
-        //private readonly TransactionScope transactionScope;
+        private readonly ITelemetry telemetry;
+        private readonly IOperationHolder<RequestTelemetry> operation;
         public BatchScope(ILifetimeScope lifetimeScope)
         {
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
             var stateManager = lifetimeScope.Resolve<IReliableStateManagerProvider>().Current;
             transactionProvider = lifetimeScope.Resolve<IReliableStateManagerTransactionProvider>();
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = stateManager.CreateTransaction();
-            //transactionScope = new TransactionScope();
+            telemetry = lifetimeScope.Resolve<ITelemetry>();
+            operation = telemetry.StartOperation("AuditBatchProcessing");
         }
 
         public void Dispose()
         {
+            telemetry?.StopOperation(operation);
+            operation?.Dispose();
             transactionProvider.Current.Dispose();
-        //    transactionScope.Dispose();
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = null;
             lifetimeScope?.Dispose();
         }
@@ -43,7 +49,6 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessi
 
         public async Task Commit()
         {
-        //    transactionScope.Complete();
             await transactionProvider.Current.CommitAsync();
         }
     }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Core;
 
@@ -9,11 +11,11 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
 {
     public class ApplicationInsightsTelemetry : ITelemetry, IDisposable
     {
-        private TelemetryClient telemetry;
+        private TelemetryClient telemetryClient;
         private readonly Dictionary<string, string> properties;
-        public ApplicationInsightsTelemetry(TelemetryClient telemetry)
+        public ApplicationInsightsTelemetry(TelemetryClient telemetryClient)
         {
-            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+            this.telemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
             properties = new Dictionary<string, string> { { "MachineName", Environment.MachineName }, { "ProcessName", System.Diagnostics.Process.GetCurrentProcess().ProcessName } };
         }
 
@@ -24,38 +26,48 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
 
         public void TrackEvent(string eventName)
         {
-            telemetry.TrackEvent($"Event: {eventName}", properties);
+            telemetryClient.TrackEvent($"Event: {eventName}", properties);
         }
 
         public void TrackEvent(string eventName, double count)
         {
-            telemetry.TrackEvent($"Event: {eventName}", properties, new Dictionary<string, double> { { "count", count } });
+            telemetryClient.TrackEvent($"Event: {eventName}", properties, new Dictionary<string, double> { { TelemetryKeys.Count, count } });
         }
 
         public void TrackEvent(string eventName, Dictionary<string, double> metrics)
         {
-            telemetry.TrackEvent($"Event: {eventName}", properties, metrics);
+            telemetryClient.TrackEvent($"Event: {eventName}", properties, metrics);
         }
 
         public void TrackEvent(string eventName, Dictionary<string, string> eventProperties, Dictionary<string, double> metrics)
         {
-            telemetry.TrackEvent($"Event: {eventName}", properties.ConcatDictionary(eventProperties), metrics);
+            telemetryClient.TrackEvent($"Event: {eventName}", properties.ConcatDictionary(eventProperties), metrics);
         }
 
         public void TrackDuration(string durationName, TimeSpan duration)
         {
-            telemetry.TrackEvent($"Event: {durationName}", properties, new Dictionary<string, double> { { "duration", duration.TotalMilliseconds } });
+            telemetryClient.TrackEvent($"Event: {durationName}", properties, new Dictionary<string, double> { { TelemetryKeys.Duration, duration.TotalMilliseconds } });
         }
 
         public void TrackDependency(string dependencyType, string dependencyName, DateTimeOffset startTime, TimeSpan duration, bool success)
         {
-            telemetry.TrackDependency(dependencyType, $"Dependency: {dependencyName}", JsonConvert.SerializeObject(properties), startTime, duration, success);
+            telemetryClient.TrackDependency(dependencyType, $"Dependency: {dependencyName}", JsonConvert.SerializeObject(properties), startTime, duration, success);
+        }
+
+        public IOperationHolder<RequestTelemetry> StartOperation(string operationName = "PaymentMessageProcessing")
+        {
+            return telemetryClient.StartOperation<RequestTelemetry>(operationName);
+        }
+
+        public void StopOperation(IOperationHolder<RequestTelemetry> operation)
+        {
+            telemetryClient.StopOperation(operation);
         }
 
         private void ReleaseUnmanagedResources()
         {
-            telemetry?.Flush();
-            telemetry = null;
+            telemetryClient?.Flush();
+            telemetryClient = null;
         }
 
         public void Dispose()

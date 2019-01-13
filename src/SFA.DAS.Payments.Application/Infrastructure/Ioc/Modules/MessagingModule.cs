@@ -39,13 +39,13 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
                 endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
                 endpointConfiguration.EnableInstallers();
-                endpointConfiguration.Pipeline.Register(typeof(HandlerTimingBehaviour), "Sends handler timing to telemetry service.");
+                endpointConfiguration.Pipeline.Register(typeof(TelemetryHandlerBehaviour), "Sends handler timing to telemetry service.");
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()
             .SingleInstance();
 
-            builder.RegisterType<HandlerTimingBehaviour>();
+            builder.RegisterType<TelemetryHandlerBehaviour>();
             builder.RegisterType<EndpointInstanceFactory>()
                 .As<IEndpointInstanceFactory>()
                 .SingleInstance();
