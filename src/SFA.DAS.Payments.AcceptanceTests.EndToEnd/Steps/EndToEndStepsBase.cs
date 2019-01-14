@@ -346,7 +346,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                         for (var p = 1; p < 13; p++)
                         {
-                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod || PeriodisedValuesForBalancingAndCompletion().Contains(currentValues.AttributeName) && p > episodeLastPeriod ? currentValues.GetValue(p) : 0;
+                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod || 
+                                         (PeriodisedValuesForBalancingAndCompletion().Contains(currentValues.AttributeName) && p > episodeLastPeriod)
+                                ? currentValues.GetValue(p) 
+                                : 0;
                             newValues.SetValue(p, amount);
                         }
                     }
