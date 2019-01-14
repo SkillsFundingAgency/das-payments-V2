@@ -150,7 +150,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001");
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, earning, providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa));
+                list.Add(CreatePaymentModel(providerPayment, otherTraining?? onProgTraining, jobId, submissionTime, earning, providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa));
 
             if (providerPayment.EmployerCoFundedPayments > 0)
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer));
@@ -346,7 +346,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                         for (var p = 1; p < 13; p++)
                         {
-                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod ? currentValues.GetValue(p) : 0;
+                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod || PeriodisedValuesForBalancingAndCompletion().Contains(currentValues.AttributeName) && p > episodeLastPeriod ? currentValues.GetValue(p) : 0;
                             newValues.SetValue(p, amount);
                         }
                     }
@@ -489,6 +489,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
             await MessageSession.Send(command);
+        }
+
+        private IEnumerable<string> PeriodisedValuesForBalancingAndCompletion()
+        {
+            yield return TransactionType.BalancingMathsAndEnglish.ToAttributeName();
+            yield return TransactionType.Balancing16To18FrameworkUplift.ToAttributeName();
+            yield return TransactionType.Completion16To18FrameworkUplift.ToAttributeName();
         }
     }
 }

@@ -271,6 +271,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature.cs">
       <DependentUpon>Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -573,6 +578,10 @@
     <None Include="Tests\Additional Payments English and Maths\Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
