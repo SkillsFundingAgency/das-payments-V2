@@ -307,6 +307,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AimPeriodMatcher.cs" />
     <Compile Include="Automation\DcConfiguration.cs" />
     <Compile Include="Automation\DcHelper.cs" />
     <Compile Include="Automation\LearnRefNumberGenerator.cs" />
