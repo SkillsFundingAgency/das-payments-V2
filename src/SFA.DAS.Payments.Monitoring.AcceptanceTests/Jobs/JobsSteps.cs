@@ -70,7 +70,8 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 Ukprn = TestSession.Ukprn,
                 StartTime = DateTimeOffset.UtcNow,
                 IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-10),
-                GeneratedMessages = GeneratedMessages
+                GeneratedMessages = GeneratedMessages,
+                
             };
 
             Console.WriteLine($"Job details: {JobDetails.ToJson()}");
@@ -105,12 +106,21 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 Ukprn = JobDetails.Ukprn,
                 DcJobId = JobDetails.JobId,
                 IlrSubmissionTime = JobDetails.IlrSubmissionTime,
-                Status = JobStatus.InProgress
+                Status = JobStatus.InProgress,
+                LearnerCount = GeneratedMessages.Count
             };
             DataContext.Jobs.Add(Job);
             await DataContext.SaveChangesAsync();
-
-            DataContext.JobSteps.AddRange(GeneratedMessages.Select(msg => new JobStepModel { JobId = Job.Id, StartTime = msg.StartTime, MessageName = msg.MessageName, MessageId = msg.MessageId, Status = JobStepStatus.Queued }));
+            DataContext.JobSteps.AddRange(
+                GeneratedMessages.Select(msg => 
+                    new JobStepModel
+                    {
+                        JobId = Job.Id,
+                        StartTime = msg.StartTime,
+                        MessageName = msg.MessageName,
+                        MessageId = msg.MessageId,
+                        Status = JobStepStatus.Queued
+                    }));
             await DataContext.SaveChangesAsync();
         }
 

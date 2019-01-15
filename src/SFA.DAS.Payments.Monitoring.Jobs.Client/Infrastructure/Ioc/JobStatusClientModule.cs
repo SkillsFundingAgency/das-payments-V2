@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                     e.Routing().RouteToEndpoint(typeof(RecordStartedProcessingEarningsJob).Assembly, jobsEndpointName);
                 };
                 var endpointConfig = c.Resolve<EndpointConfiguration>();
-                endpointConfig.Notifications.Errors.MessageSentToErrorQueue += Errors_MessageSentToErrorQueue;
+                //endpointConfig.Notifications.Errors.MessageSentToErrorQueue += Errors_MessageSentToErrorQueue;
             });
 
             builder.RegisterBuildCallback(c =>

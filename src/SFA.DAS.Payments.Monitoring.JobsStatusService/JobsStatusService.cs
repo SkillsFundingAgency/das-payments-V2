@@ -3,8 +3,6 @@ using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using Microsoft.ServiceFabric.Actors;
-using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using Polly;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
@@ -12,7 +10,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
-using SFA.DAS.Payments.Monitoring.JobsStatusService.Interfaces;
 
 namespace SFA.DAS.Payments.Monitoring.JobsStatusService
 {

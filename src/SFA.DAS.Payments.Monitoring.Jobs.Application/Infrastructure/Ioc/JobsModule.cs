@@ -35,6 +35,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()
                 .SingleInstance();
+            builder.RegisterBuildCallback(c =>
+            {
+                var recoverability = c.Resolve<EndpointConfiguration>()
+                    .Recoverability();
+                recoverability.Immediate(immediate => immediate.NumberOfRetries(3));
+            });
         }
     }
 }
