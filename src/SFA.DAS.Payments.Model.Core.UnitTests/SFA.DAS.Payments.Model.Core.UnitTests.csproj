@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\GivenACollectionPeriod\WhenCallingCreateFromAcademicYearAndPeriod.cs" />
-    <Compile Include="Tests\GivenADeliveryPeriod\WhenCallingCreateFromAcademicYearAndPeriod.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

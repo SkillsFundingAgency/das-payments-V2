@@ -77,7 +77,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var period = new CollectionPeriodBuilder().WithSpecDate(collectionPeriod).Build();
             Console.WriteLine($"Current collection period name is: {period.Name}.");
             CurrentCollectionPeriod = period;
-            CollectionPeriod = (byte)CurrentCollectionPeriod.Period;
+            CollectionPeriod = CurrentCollectionPeriod.Period;
             CollectionYear = CurrentCollectionPeriod.AcademicYear;
         }
 
@@ -235,7 +235,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
                                                         e.AimSequenceNumber == aim.AimSequenceNumber))
             {
-                var period = earning.DeliveryCalendarPeriod.Period;
+                var period = earning.DeliveryCalendarPeriod;
                 foreach (var earningValue in earning.Values)
                 {
                     var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
@@ -269,12 +269,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     .Build();
 
                 var firstEarningForPriceEpisode = earnings
-                    .OrderBy(x => x.DeliveryCalendarPeriod.Period)
-                    .First(e =>
-                    {
-                        return string.CompareOrdinal(e.DeliveryCalendarPeriod.Identifier,
-                                   priceEpisodeStartDateAsDeliveryPeriod.Identifier) >= 0;
-                    });
+                    .OrderBy(x => x.DeliveryCalendarPeriod)
+                    .First(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod);
 
                 var sfaContributionPercent = (firstEarningForPriceEpisode.SfaContributionPercentage ??
                                   priceEpisode.SfaContributionPercentage).ToPercent();
@@ -400,8 +396,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     return 12;
                 }
 
-                return (byte) new DeliveryPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues
-                    .PriceEpisodeActualEndDate.Value).BuildLastOnProgPeriod().Period;
+                return new DeliveryPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues
+                    .PriceEpisodeActualEndDate.Value).BuildLastOnProgPeriod();
             }
         }
 

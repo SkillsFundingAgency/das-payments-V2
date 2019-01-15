@@ -59,14 +59,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment
                 {
                     Amount = 1,
-                    DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
-                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
                 },
                 new Payment
                 {
                     Amount = 3,
-                    DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
-                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
                 }
             };
 
@@ -88,8 +88,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment
                 {
                     Amount = 2,
-                    DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
-                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
                 }
             };
 
@@ -111,14 +111,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment
                 {
                     Amount = 3,
-                    DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
-                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
                 },
                 new Payment
                 {
                     Amount = 3,
-                    DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
-                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
                 }
             };
 
@@ -140,14 +140,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment
                 {
                     Amount = 3,
-                    DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
-                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
                 },
                 new Payment
                 {
                     Amount = 2,
-                    DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
-                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 2),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
                 }
             };
 

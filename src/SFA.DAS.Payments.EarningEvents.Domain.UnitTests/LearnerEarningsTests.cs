@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             var learnerSubmission =new ProcessLearnerCommand
             {
                 Learner = learner,
-                CollectionYear = "1819",
+                CollectionYear = 1819,
                 CollectionPeriod = 1,
                 Ukprn = 12345,
                 JobId = 1
@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             var learnerSubmission = new ProcessLearnerCommand
             {
                 Learner = learner,
-                CollectionYear = "1819",
+                CollectionYear = 1819,
                 CollectionPeriod = 1,
                 Ukprn = 12345,
                 JobId = 1

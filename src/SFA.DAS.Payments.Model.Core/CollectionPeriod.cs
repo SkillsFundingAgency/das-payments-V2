@@ -6,13 +6,13 @@ namespace SFA.DAS.Payments.Model.Core
     [DebuggerDisplay("Collection: {Name}")]
     public class CollectionPeriod 
     {
-        public string AcademicYear { get; set; }
+        public short AcademicYear { get; set; }
         public string Name { get; set; }
         public byte Period { get; set; }
 
-        public static CollectionPeriod CreateFromAcademicYearAndPeriod(string academicYear, byte period)
+        public static CollectionPeriod CreateFromAcademicYearAndPeriod(short academicYear, byte period)
         {
-            if (string.IsNullOrEmpty(academicYear) || academicYear.Length != 4)
+            if (academicYear < 1600 || academicYear > 2200)
             {
                 throw new ArgumentNullException(nameof(academicYear), "Please ensure that the academic year is of format '1819'");
             }

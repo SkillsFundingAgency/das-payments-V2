@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                          && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                          && TestSession.Ukprn == receivedEvent.Ukprn
                          && expectedEvent.PriceEpisodeIdentifier == receivedEvent.PriceEpisodeIdentifier
-                         && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
+                         && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod
                          && expectedEvent.Type == receivedEvent.TransactionType
                          && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
                          && expectedEvent.Amount == receivedEvent.AmountDue
@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             paymentEvent.JobId = TestSession.JobId;
             paymentEvent.EventTime = DateTimeOffset.UtcNow;
             paymentEvent.CollectionPeriod = Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod);
-            paymentEvent.DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, requiredPayment.DeliveryPeriod);
+            paymentEvent.DeliveryPeriod = requiredPayment.DeliveryPeriod;
             paymentEvent.IlrSubmissionDateTime = TestSession.IlrSubmissionTime;
             paymentEvent.LearningAim = TestSession.Learner.Course.ToLearningAim();
             paymentEvent.PriceEpisodeIdentifier = requiredPayment.PriceEpisodeIdentifier;

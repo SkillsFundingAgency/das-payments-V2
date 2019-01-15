@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
-                                    Period = (byte)e.DeliveryCalendarPeriod.Period,
+                                    Period = (byte)e.DeliveryCalendarPeriod,
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
-                                    Period = (byte)e.DeliveryCalendarPeriod.Period,
+                                    Period = (byte)e.DeliveryCalendarPeriod,
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
@@ -142,7 +142,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
-                                    Period = (byte)e.DeliveryCalendarPeriod.Period,
+                                    Period = (byte)e.DeliveryCalendarPeriod,
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
@@ -170,7 +170,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 return earning.PriceEpisodeIdentifier;
 
             // find first price episode with non-zero value for a period
-            var period = earning.DeliveryCalendarPeriod.Period;
+            var period = earning.DeliveryCalendarPeriod;
             return fm36Learner.PriceEpisodes
                 .SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues
                     .Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0 &&

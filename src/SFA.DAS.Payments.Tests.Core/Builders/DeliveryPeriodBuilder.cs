@@ -1,5 +1,4 @@
 ﻿using System;
-using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.Tests.Core.Builders
 {
@@ -9,7 +8,7 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
         protected int Year { get; set; } = -1;
         protected int Month { get; set; } = -1;
 
-        public DeliveryPeriod BuildLastOnProgPeriod()
+        public byte BuildLastOnProgPeriod()
         {
             var lastDayOfMonth = DateTime.DaysInMonth(Date.Year, Date.Month);
             if (Date.Day < lastDayOfMonth)
@@ -21,7 +20,7 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
             return Build();
         }
 
-        protected DeliveryPeriod BuildInstance()
+        public byte Build()
         {
             if (BuilderType == DeliveryPeriodBuilderType.None)
             {
@@ -38,26 +37,11 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
                 Date = new DateTime(Year, Month, 1);
             }
 
-            var instance = new DeliveryPeriod();
-            instance.Month = (byte)Date.Month;
-            instance.Year = (short)Date.Year;
-            if (instance.Month < 8)
+            if (Date.Month < 8)
             {
-                instance.Period = (byte)(instance.Month + 5);
+                return (byte)(Date.Month + 5);
             }
-            else
-            {
-                instance.Period = (byte)(instance.Month - 7);
-            }
-
-            return instance;
-        }
-
-        public DeliveryPeriod Build()
-        {
-            var builtInstance = BuildInstance();
-            builtInstance.Identifier = $"{builtInstance.Year}-{builtInstance.Month:D2}";
-            return builtInstance;
+            return (byte)(Date.Month - 7);
         }
 
         protected DeliveryPeriodBuilderType BuilderType { get; set; }

@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 
         public string PriceEpisodeIdentifier { get; set; }
         public decimal AmountDue { get; set; }
-        public DeliveryPeriod DeliveryPeriod { get; set; }
+        public byte DeliveryPeriod { get; set; }
 
         private static Type[] GetInheritors()
         {

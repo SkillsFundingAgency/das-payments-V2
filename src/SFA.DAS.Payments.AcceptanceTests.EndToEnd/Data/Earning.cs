@@ -7,10 +7,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 {
     public class Earning
     {
-        private DeliveryPeriod deliveryPeriod;
-
-        public DeliveryPeriod DeliveryCalendarPeriod =>
-            deliveryPeriod ?? (deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(DeliveryPeriod).Build());
+        public byte DeliveryCalendarPeriod => new DeliveryPeriodBuilder().WithSpecDate(DeliveryPeriod).Build();
 
         public string DeliveryPeriod { get; set; }
         public decimal OnProgramme { get; set; }

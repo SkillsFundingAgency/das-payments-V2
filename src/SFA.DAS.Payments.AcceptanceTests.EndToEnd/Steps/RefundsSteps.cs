@@ -117,7 +117,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .Where(p => !currentHistory.Any(historicPayment =>
                     historicPayment.LearnerReferenceNumber == p.LearnerReferenceNumber &&
                     historicPayment.TransactionType == p.TransactionType &&
-                    historicPayment.DeliveryPeriod.Identifier == p.DeliveryPeriod.Identifier))
+                    historicPayment.DeliveryPeriod == p.DeliveryPeriod))
                 .ToList();
 
             dataContext.Payment.AddRange(previousPayments);

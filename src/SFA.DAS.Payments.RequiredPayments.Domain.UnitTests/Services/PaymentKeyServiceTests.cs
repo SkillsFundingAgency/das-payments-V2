@@ -14,15 +14,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             // arrange
             var learnAimRef = "6";
             var transactionType = 3;
-            var deliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 5);
+            byte deliveryPeriod = 5;
+            short academicYear = 1516;
 
             // act
-            var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, deliveryPeriod);
+            var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, academicYear, deliveryPeriod);
 
             // assert
             Assert.AreEqual(0, key.IndexOf("6", StringComparison.Ordinal), "LearnAimRef should go first");
             Assert.Less(key.IndexOf("6", StringComparison.Ordinal), key.IndexOf("3", StringComparison.Ordinal), "TransactionType should be after LearnAimRef");
-            Assert.Less(key.IndexOf("3", StringComparison.Ordinal), key.IndexOf("12", StringComparison.Ordinal), "DeliveryPeriod should be after TransactionType");
+            Assert.Less(key.IndexOf("3", StringComparison.Ordinal), key.IndexOf("5", StringComparison.Ordinal), "DeliveryPeriod should be after TransactionType");
         }
 
         [Test]
@@ -31,10 +32,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             // arrange
             var learnAimRef = "B";
             var transactionType = 3;
-            var deliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 5);
+            byte deliveryPeriod = 5;
+            short academicYear = 1718;
 
             // act
-            var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, deliveryPeriod);
+            var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, academicYear, deliveryPeriod);
 
             // assert
             Assert.IsFalse(key.Contains("B"));

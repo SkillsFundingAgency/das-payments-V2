@@ -25,8 +25,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             var payment = new PaymentHistoryEntity
             {
-                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 11),
-                DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 10)
+                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 11),
+                DeliveryPeriod = 10
             };
 
             mapper.Map<PaymentHistoryEntity, Payment>(payment);

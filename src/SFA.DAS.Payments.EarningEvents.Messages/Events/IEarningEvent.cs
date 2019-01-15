@@ -8,6 +8,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
     {
         ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; }
         CollectionPeriod CollectionPeriod { get; }
-        string CollectionYear { get; }
+        short CollectionYear { get; }
     }
 }

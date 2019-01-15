@@ -27,8 +27,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             requiredPaymentEvent = new ApprenticeshipContractType2RequiredPaymentEvent
             {
                 AmountDue = 1000.00m,
-                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod("1819", 1),
-                DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod("1819", 1),
+                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 1),
+                DeliveryPeriod = 1,
                 EventTime = DateTime.UtcNow,
                 JobId = 1,
                 Learner = new Learner

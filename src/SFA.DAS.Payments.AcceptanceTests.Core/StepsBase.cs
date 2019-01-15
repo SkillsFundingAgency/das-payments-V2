@@ -2,6 +2,7 @@
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
@@ -10,7 +11,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
     {
         public SpecFlowContext Context { get; }
         public TestSession TestSession { get => Get<TestSession>(); set => Set(value); }
-        protected string CollectionYear { get => Get<string>("collection_year"); set => Set(value, "collection_year"); }
+        protected short CollectionYear { get => Get<short>("collection_year"); set => Set(value, "collection_year"); }
         protected byte CollectionPeriod { get => Get<byte>("collection_period"); set => Set(value, "collection_period"); }
         public static bool IsDevEnvironment => (Environment?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) ||
                                         (Environment?.Equals("LOCAL", StringComparison.OrdinalIgnoreCase) ?? false);
@@ -133,8 +134,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         protected void SetCurrentCollectionYear()
         {
-            var year = DateTime.Today.Year - 2000;
-            CollectionYear = DateTime.Today.Month < 9 ? $"{year - 1}{year}" : $"{year}{year + 1}";
+            CollectionYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;
         }
     }
 }

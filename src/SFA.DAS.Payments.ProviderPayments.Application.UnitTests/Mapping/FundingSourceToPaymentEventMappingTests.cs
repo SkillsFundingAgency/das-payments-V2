@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
         {
             var employerCoInvested = new EmployerCoInvestedFundingSourcePaymentEvent
             {
-                CollectionPeriod = new CollectionPeriod {Period = 12, AcademicYear = "2019", Name = "1819-R12"},
+                CollectionPeriod = new CollectionPeriod {Period = 12, AcademicYear = 1819, Name = "1819-R12"},
                 Learner = new Learner {ReferenceNumber = "1234-ref", Uln = 123456 },
                 TransactionType = TransactionType.Completion,
                 Ukprn = 12345,
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 JobId = 123,
                 AmountDue = 300,
                 FundingSourceType = FundingSourceType.CoInvestedEmployer,
-                DeliveryPeriod = new DeliveryPeriod { Period = 12, Month = 7, Year = 2019, Identifier = "1819-12" },
+                DeliveryPeriod = 12,
                 LearningAim = new LearningAim
                 {
                     PathwayCode = 12,
@@ -57,10 +57,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.CollectionPeriod.Name.Should().BeEquivalentTo(employerCoInvested.CollectionPeriod.Name);
             payment.CollectionPeriod.Period.Should().Be(employerCoInvested.CollectionPeriod.Period);
             
-            payment.DeliveryPeriod.Identifier.Should().BeEquivalentTo(employerCoInvested.DeliveryPeriod.Identifier);
-            payment.DeliveryPeriod.Month.Should().Be(employerCoInvested.DeliveryPeriod.Month);
-            payment.DeliveryPeriod.Year.Should().Be(employerCoInvested.DeliveryPeriod.Year);
-            payment.DeliveryPeriod.Period.Should().Be(employerCoInvested.DeliveryPeriod.Period);
+            payment.DeliveryPeriod.Should().Be(employerCoInvested.DeliveryPeriod);
         }
     }
 }

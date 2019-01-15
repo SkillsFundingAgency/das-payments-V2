@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public string PriceEpisodeIdentifier { get; set; }
         public decimal Amount { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
-        public DeliveryPeriod DeliveryPeriod { get; set; }
+        public byte DeliveryPeriod { get; set; }
         public string LearningAimReference { get; set; }
         public int LearningAimProgrammeType { get; set; }
         public int LearningAimStandardCode { get; set; }

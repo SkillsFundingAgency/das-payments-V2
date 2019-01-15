@@ -11,15 +11,15 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
 
         public CollectionPeriod Build()
         {
-            string academicYear;
+            short academicYear;
 
             if (Month < 8)
             {
-                academicYear = $"{Year - 2000 - 1}{Year - 2000}";
+                academicYear = (short)((Year - 2000 - 1) * 100 + (Year - 2000));
             }
             else
             {
-                academicYear = $"{Year - 2000}{Year - 2000 + 1}";
+                academicYear = (short)((Year - 2000) * 100 + (Year - 2000 + 1));
             }
 
             if (Month < 8)

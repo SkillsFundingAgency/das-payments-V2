@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override bool Match(PaymentModel expected, PaymentModel actual)
         {
             return expected.CollectionPeriod.Name == actual.CollectionPeriod.Name &&
-                   expected.DeliveryPeriod.Identifier == actual.DeliveryPeriod.Identifier &&
+                   expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.TransactionType == actual.TransactionType &&
                    expected.ContractType == actual.ContractType &&
                    expected.FundingSource == actual.FundingSource &&

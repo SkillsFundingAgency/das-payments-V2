@@ -47,16 +47,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     FundingSource = FundingSourceType.CoInvestedEmployer,
                     SfaContributionPercentage = 0.9m,
                     JobId = 1,
-                    DeliveryPeriod = new DeliveryPeriod
-                    {
-                        Year = 2018,
-                        Month = 2,
-                        Period = 7,
-                        Identifier = "1819-07"
-                    },
+                    DeliveryPeriod = 7,
                     CollectionPeriod = new CollectionPeriod
                     {
-                        AcademicYear = "1819",
+                        AcademicYear = 1819,
                         Period = 8,
                         Name = "1819-R08"
                     },

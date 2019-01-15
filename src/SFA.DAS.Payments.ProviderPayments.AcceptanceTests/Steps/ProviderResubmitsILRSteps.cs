@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 JobId = jobId,
                 SfaContributionPercentage = SfaContributionPercentage,
                 CollectionPeriod = Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
-                DeliveryPeriod = DeliveryPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, fundingSourcePayment.DeliveryPeriod),
+                DeliveryPeriod = fundingSourcePayment.DeliveryPeriod,
                 LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
                 LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
                 LearningAimFundingLineType = TestSession.Learner.Course.FundingLineType,

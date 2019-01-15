@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages
         public string PriceEpisodeIdentifier { get; set; }
         public decimal AmountDue { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
-        public DeliveryPeriod DeliveryPeriod { get; set; }
+        public byte DeliveryPeriod { get; set; }
         public DateTimeOffset EventTime { get; set; }
         public long Ukprn { get; set; }
         public Learner Learner { get; set; }
