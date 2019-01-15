@@ -6,5 +6,6 @@
         string StorageConnectionString { get; }
         string ServiceBusConnectionString { get; }
         string FailedMessagesQueue { get; }
+         bool ProcessMessageSequentially { get; }
     }
 }
