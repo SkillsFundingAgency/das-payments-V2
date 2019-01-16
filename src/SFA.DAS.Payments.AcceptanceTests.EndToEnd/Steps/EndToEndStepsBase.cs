@@ -388,8 +388,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             string CalculateContractType(Price priceEpisode)
             {
-                return priceEpisode.ContractType ==
-                       Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
+                return priceEpisode.ContractType == Model.Core.Entities.ContractType.Act1 ? "ContractWithEmployer" : "ContractWithSfa";
             }
 
             byte LastOnProgPeriod(PriceEpisode currentPriceEpisode)
