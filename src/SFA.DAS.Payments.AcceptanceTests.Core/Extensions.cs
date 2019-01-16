@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using NUnit.Framework;
-using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
