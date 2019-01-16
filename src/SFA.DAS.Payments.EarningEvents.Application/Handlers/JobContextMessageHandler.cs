@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 FM36Global fm36Output;
 
-                using (var stream = await azureFileService.OpenReadStreamAsync(message.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString(), message.KeyValuePairs[JobContextMessageKey.Container].ToString(), cancellationToken))
+                using (var stream = await azureFileService.OpenReadStreamAsync(message.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString().Replace("_", "/"), message.KeyValuePairs[JobContextMessageKey.Container].ToString(), cancellationToken))
                 {
                     fm36Output = serializationService.Deserialize<FM36Global>(stream);
                 }
