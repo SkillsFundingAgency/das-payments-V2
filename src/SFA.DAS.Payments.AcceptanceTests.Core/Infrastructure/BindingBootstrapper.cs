@@ -41,16 +41,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             Builder.RegisterInstance(transportConfig)
                 .As<TransportExtensions<AzureServiceBusTransport>>()
                 .SingleInstance();
+
             transportConfig
                 .UseForwardingTopology()
                 .ConnectionString(config.ServiceBusConnectionString)
-                .Transactions(TransportTransactionMode.ReceiveOnly);
+                .Transactions(TransportTransactionMode.ReceiveOnly)
+                .Queues()
+                .DefaultMessageTimeToLive(config.DefaultMessageTimeToLive);
+
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
             strategy.RuleNameSanitization(
                 ruleNameSanitizer: ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
             EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             EndpointConfiguration.EnableInstallers();
+            
         }
 
         [BeforeTestRun(Order = 50)]
@@ -82,7 +87,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 {
                     break;
                 }
-            };
+            }
+
+            var queueDescription = namespaceManager.GetQueue(Config.AcceptanceTestsEndpointName);
+            if (queueDescription.DefaultMessageTimeToLive != Config.DefaultMessageTimeToLive)
+            {
+                queueDescription.DefaultMessageTimeToLive = Config.DefaultMessageTimeToLive;
+                namespaceManager.UpdateQueue(queueDescription);
+            }
+
             Console.WriteLine($"Finished purging messages from {Config.AcceptanceTestsEndpointName}. Took: {stopwatch.ElapsedMilliseconds}ms");
         } 
 

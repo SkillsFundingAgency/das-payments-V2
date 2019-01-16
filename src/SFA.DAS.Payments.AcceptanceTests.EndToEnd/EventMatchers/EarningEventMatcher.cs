@@ -1,8 +1,8 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using System;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -67,7 +67,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         AimReference = learnerSpec.Course.LearnAimRef
                     });
 
-                foreach (var aimSpec in learnerSpec.Aims)
+                foreach (var aimSpec in learnerSpec.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, collectionPeriod,
+                    a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference)))
                 {
                     var learningAim = new LearningAim
                     {
@@ -172,11 +173,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             // find first price episode with non-zero value for a period
             var period = earning.DeliveryCalendarPeriod.Period;
-            return fm36Learner.PriceEpisodes
-                .SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues
-                    .Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
-                                 pepv.AttributeName == transactionType.ToAttributeName()))?
-                .PriceEpisodeIdentifier;
+            return fm36Learner.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv =>
+                pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
+                pepv.AttributeName == transactionType.ToAttributeName()))?.PriceEpisodeIdentifier;
         }
 
         protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)

@@ -13,6 +13,8 @@
     <Parameter Name="BatchSize" Value="500" />
     <Parameter Name="BatchFailureTimeoutInSeconds" Value="60" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ProcessMessageSequentially" Value="" />
   </Section>
   <!-- The content will be generated during build -->
 </Settings>

@@ -41,6 +41,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.EnableInstallers();
                 endpointConfiguration.Pipeline.Register(typeof(TelemetryHandlerBehaviour), "Sends handler timing to telemetry service.");
 
+                if(config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
+                
                 endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior),"Logs exceptions to the payments logger");
                 return endpointConfiguration;
             })
