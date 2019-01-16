@@ -14,12 +14,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
     [TestFixture]
     public class Act1MappingTest
     {
+        private IMapper mapper;
 
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
-            Mapper.Initialize(cfg => { cfg.AddProfile<EarningsEventProfile>(); });
-            Mapper.AssertConfigurationIsValid();
+            mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
 
             // act
-            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>(learningAim);
+            var earningEvent = mapper.Map<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>(learningAim);
 
             // assert
             earningEvent.AgreementId.Should().Be("id");
