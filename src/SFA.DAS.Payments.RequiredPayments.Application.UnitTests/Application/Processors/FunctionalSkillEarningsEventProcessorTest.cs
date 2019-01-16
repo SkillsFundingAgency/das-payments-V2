@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
@@ -73,7 +74,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestHandleNormalEvent()
         {
             // arrange
-            var period = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
             byte deliveryPeriod = 2;
 
             var earningEvent = new FunctionalSkillEarningsEvent
@@ -125,7 +126,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestNoEventProducedWhenZeroToPay()
         {
             // arrange
-            var period = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
             
             var earningEvent = new FunctionalSkillEarningsEvent
             {

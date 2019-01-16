@@ -9,6 +9,7 @@ using System;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
@@ -27,7 +28,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             requiredPaymentEvent = new ApprenticeshipContractType2RequiredPaymentEvent
             {
                 AmountDue = 1000.00m,
-                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 1),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1),
                 DeliveryPeriod = 1,
                 EventTime = DateTime.UtcNow,
                 JobId = 1,

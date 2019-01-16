@@ -4,6 +4,7 @@ using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -114,7 +115,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = TestSession.JobId,
-                CollectionPeriod = Model.Core.CollectionPeriod.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
             }).ConfigureAwait(false);
         }
     }

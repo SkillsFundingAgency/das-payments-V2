@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.Payments.Model.Core.Factories;
 
 namespace SFA.DAS.Payments.Model.Core.UnitTests.Tests.GivenACollectionPeriod
 {
@@ -20,7 +21,7 @@ namespace SFA.DAS.Payments.Model.Core.UnitTests.Tests.GivenACollectionPeriod
         [TestCase(1920, 14, 1920)]
         public void AcademicYearIsCorrect(short academicYear, byte period, short expected)
         {
-            var actual = CollectionPeriod.CreateFromAcademicYearAndPeriod(academicYear, period);
+            var actual = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(academicYear, period);
 
             actual.AcademicYear.Should().Be(expected);
         }
@@ -38,7 +39,7 @@ namespace SFA.DAS.Payments.Model.Core.UnitTests.Tests.GivenACollectionPeriod
         [TestCase(1920, 14, "1920-R14")]
         public void NameIsCorrect(short academicYear, byte period, string expected)
         {
-            var actual = CollectionPeriod.CreateFromAcademicYearAndPeriod(academicYear, period);
+            var actual = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(academicYear, period);
 
             actual.Name.Should().Be(expected);
         }
@@ -56,7 +57,7 @@ namespace SFA.DAS.Payments.Model.Core.UnitTests.Tests.GivenACollectionPeriod
         [TestCase(1920, 14, 14)]
         public void PeriodIsCorrect(short academicYear, byte period, byte expected)
         {
-            var actual = CollectionPeriod.CreateFromAcademicYearAndPeriod(academicYear, period);
+            var actual = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(academicYear, period);
 
             actual.Period.Should().Be(expected);
         }

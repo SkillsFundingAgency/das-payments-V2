@@ -12,6 +12,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
@@ -89,7 +90,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestHandleNormalEvent()
         {
             // arrange
-            var period = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
             byte deliveryPeriod = 2;
 
             var earningEvent = new ApprenticeshipContractType2EarningEvent
@@ -119,7 +120,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var paymentHistoryEntities = new[] { new PaymentHistoryEntity
             {
-                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 DeliveryPeriod = 2,
             } };
 
@@ -143,7 +144,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestNoEventProducedWhenZeroToPay()
         {
             // arrange
-            var period = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
             byte deliveryPeriod = 2;
 
             var earningEvent = new ApprenticeshipContractType2EarningEvent
@@ -193,7 +194,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestPriceEpisodeIdentifierPickedFromHistoryForRefunds(decimal amount, string priceEpisodeIdentifier)
         {
             // arrange
-            var period = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 3);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 3);
             var deliveryPeriod = (byte)2;
 
             var earningEvent = new ApprenticeshipContractType2EarningEvent
@@ -227,7 +228,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 {
                     Amount = 100,
                     PriceEpisodeIdentifier = "2",
-                    CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                     DeliveryPeriod = 2,
                     TransactionType = (int)IncentiveEarningType.Balancing16To18FrameworkUplift,
                     Ukprn = 1,
@@ -262,7 +263,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestSfaContributionIsCalculatedForZeroEarningRefunds(decimal? sfaContribution, decimal? employerContribution1, decimal? employerContribution2, decimal expectedPercent)
         {
             // arrange
-            var period = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 3);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 3);
             byte deliveryPeriod = 2;
 
             var earningEvent = new ApprenticeshipContractType2EarningEvent
@@ -323,7 +324,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestFuturePeriodsCutOff()
         {
             // arrange
-            var period = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
             
             var earningEvent = new ApprenticeshipContractType2EarningEvent
             {
@@ -382,7 +383,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 FundingSource = fundingSourceType,
                 TransactionType = (int)OnProgrammeEarningType.Learning,
                 PriceEpisodeIdentifier = "2",
-                CollectionPeriod = CollectionPeriod.CreateFromAcademicYearAndPeriod(1819, 2),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 DeliveryPeriod = 2,
                 Ukprn = 1,
                 LearnAimReference = paymentDue.LearningAim.Reference,

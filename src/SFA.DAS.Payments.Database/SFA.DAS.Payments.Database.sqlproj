@@ -67,7 +67,6 @@
     <Folder Include="Payments2\Views" />
     <Folder Include="Payments2\Tables" />
     <Folder Include="dbo\" />
-    <Folder Include="dbo\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\User_RO.sql" />
@@ -78,7 +77,6 @@
     <Build Include="Security\User_DsciUser.sql" />
     <Build Include="Payments2\Tables\Payment.sql" />
     <Build Include="Security\Schema_Payments2.sql" />
-    <Build Include="dbo\Views\dbo.DisplayDeploymentProperties_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
