@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -34,7 +35,19 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         PriceEpisodeIdentifier = "1",
                         PriceEpisodeValues = new PriceEpisodeValues
                         {
-                            PriceEpisodeContractType = "ContractWithSfa"
+                            PriceEpisodeContractType = "ContractWithSfa",
+                            PriceEpisodeAgreeId = "id"
+                        },
+                        PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
+                    }
+                },
+                LearningDeliveries = new List<LearningDelivery>
+                {
+                    new LearningDelivery
+                    {
+                        LearningDeliveryValues = new LearningDeliveryValues
+                        {
+                            LearnAimRef = "ld1"
                         }
                     }
                 }
@@ -57,7 +70,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>(learningAim);
 
             // assert
-
+            earningEvent.AgreementId.Should().Be("id");
         }
     }
 }
