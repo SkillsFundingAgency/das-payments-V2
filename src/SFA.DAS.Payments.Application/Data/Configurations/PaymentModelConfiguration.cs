@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             {
                 cp.Property(x => x.Name).HasColumnName(@"CollectionPeriodName").IsRequired();
                 cp.Ignore(x => x.Period);
-                cp.Ignore(x => x.AcademicYear);
+                cp.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear").IsRequired();
             });
             builder.Property(x => x.DeliveryPeriod).HasColumnName("DeliveryPeriod").IsRequired();
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();
