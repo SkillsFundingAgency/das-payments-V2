@@ -11,7 +11,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public class HandleIlrSubmissionService : IHandleIlrSubmissionService
     {
-
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
         private readonly IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache;
         private readonly IValidateIlrSubmission validateIlrSubmission;

@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.Audit.AcceptanceTests.Data.Entities
+﻿using System;
+
+namespace SFA.DAS.Payments.Audit.AcceptanceTests.Data.Entities
 {
     public class FundingSourceEvent
     {
@@ -23,8 +25,8 @@
         public string LearningAimFundingLineType { get; set; } // LearningAimFundingLineType (length: 100)
         public string AgreementId { get; set; } // AgreementId (length: 255)
         public long Ukprn { get; set; } // Ukprn
-        public System.DateTime IlrSubmissionDateTime { get; set; } // IlrSubmissionDateTime
+        public DateTime IlrSubmissionDateTime { get; set; } // IlrSubmissionDateTime
         public long JobId { get; set; } // JobId
-        public System.DateTime EventTime { get; set; } // EventTime
+        public DateTimeOffset EventTime { get; set; } // EventTime
     }
 }

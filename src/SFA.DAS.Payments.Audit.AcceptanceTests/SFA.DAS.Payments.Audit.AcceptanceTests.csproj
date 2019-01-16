@@ -38,6 +38,9 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.8.1\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
     </Reference>
@@ -179,11 +182,6 @@
     <Compile Include="Data\AuditDataContext.cs" />
     <Compile Include="Data\Configuration\FundingSourceEventConfiguration.cs" />
     <Compile Include="Data\Entities\FundingSourceEvent.cs" />
-    <Compile Include="EarningEvents\Audit Earning Events.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Audit Earning Events.feature</DependentUpon>
-    </Compile>
     <Compile Include="FundingSource\Audit Funding Source Events.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -237,10 +235,6 @@
     <None Include="app.Release.config">
       <DependentUpon>app.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
-    </None>
-    <None Include="EarningEvents\Audit Earning Events.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Audit Earning Events.feature.cs</LastGenOutput>
     </None>
     <None Include="FundingSource\Audit Funding Source Events.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

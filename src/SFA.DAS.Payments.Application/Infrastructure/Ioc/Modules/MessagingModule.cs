@@ -40,6 +40,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
                 endpointConfiguration.EnableInstallers();
                 endpointConfiguration.Pipeline.Register(typeof(TelemetryHandlerBehaviour), "Sends handler timing to telemetry service.");
+
+                endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior),"Logs exceptions to the payments logger");
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()
@@ -48,6 +50,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.RegisterType<TelemetryHandlerBehaviour>();
             builder.RegisterType<EndpointInstanceFactory>()
                 .As<IEndpointInstanceFactory>()
+                .SingleInstance();
+            builder.RegisterType<ExceptionHandlingBehavior>()
                 .SingleInstance();
         }
     }

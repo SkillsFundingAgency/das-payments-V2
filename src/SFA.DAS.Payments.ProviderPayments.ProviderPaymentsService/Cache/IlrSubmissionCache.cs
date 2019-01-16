@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Data;
 using Microsoft.ServiceFabric.Data.Collections;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
@@ -41,7 +40,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 
         public async Task Clear(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await state.ClearAsync(TimeSpan.FromSeconds(10), cancellationToken);
+            if (await Contains(key, cancellationToken))
+                await state.TryRemoveAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(5), cancellationToken);
         }
     }
 }

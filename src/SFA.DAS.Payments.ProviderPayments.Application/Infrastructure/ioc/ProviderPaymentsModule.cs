@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<HandleIlrSubmissionService>().AsImplementedInterfaces();
             builder.RegisterType<ValidateIlrSubmission>().AsImplementedInterfaces();
             builder.RegisterType<ProviderPaymentsRepository>().AsImplementedInterfaces();
             builder.RegisterType<MonthEndEventHandlerService>().AsImplementedInterfaces();
