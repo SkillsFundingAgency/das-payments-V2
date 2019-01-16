@@ -130,34 +130,35 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 return;
             }
 
-            foreach (var aim in aims)
+            var allAimsPerLearner = aims.GroupBy(a => a.LearnerId);
+
+            foreach (var learnerAims in allAimsPerLearner)
             {
-                var learner = TestSession.Learners.FirstOrDefault(x => x.LearnerIdentifier == aim.LearnerId);
+                var learner = TestSession.Learners.FirstOrDefault(x => x.LearnerIdentifier == learnerAims.Key);
                 if (learner == null)
                 {
                     throw new Exception("There is an aim without a matching learner");
                 }
 
-                // replace aim if exists but only if it was added earlier
-                var existingAim = learner.Aims.FirstOrDefault(a => a.AimReference == aim.AimReference);
-                if (existingAim != null && !aims.Contains(existingAim))
-                    learner.Aims.Remove(existingAim);
+                learner.Aims.Clear();
 
-                learner.Aims.Add(aim);
+                learner.Aims.AddRange(learnerAims);
             }
         }
 
-        protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, Earning earning)
+        protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, List<Training> learnerTraining, long jobId, DateTime submissionTime, Earning earning)
         {
+            var onProgTraining = learnerTraining.FirstOrDefault(t => t.AimReference == "ZPROG001");
+            var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001");
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, learnerTraining, jobId, submissionTime, earning, providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa));
+                list.Add(CreatePaymentModel(providerPayment, otherTraining?? onProgTraining, jobId, submissionTime, earning, providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa));
 
             if (providerPayment.EmployerCoFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, learnerTraining, jobId, submissionTime, earning, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer));
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer));
 
             if (providerPayment.SfaCoFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, learnerTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa));
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa));
 
             return list;
         }
@@ -196,7 +197,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             learner.PriceEpisodes = new List<PriceEpisode>();
             learner.LearningDeliveries = new List<LearningDelivery>();
 
-            foreach (var aim in testLearner.Aims)
+            foreach (var aim in testLearner.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, CurrentCollectionPeriod,
+                a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference)))
             {
                 learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
 
@@ -345,7 +347,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                         for (var p = 1; p < 13; p++)
                         {
-                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod ? currentValues.GetValue(p) : 0;
+                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod || 
+                                         (PeriodisedValuesForBalancingAndCompletion().Contains(currentValues.AttributeName) && p > episodeLastPeriod)
+                                ? currentValues.GetValue(p) 
+                                : 0;
                             newValues.SetValue(p, amount);
                         }
                     }
@@ -494,6 +499,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
             await MessageSession.Send(command);
+        }
+
+        private IEnumerable<string> PeriodisedValuesForBalancingAndCompletion()
+        {
+            yield return TransactionType.BalancingMathsAndEnglish.ToAttributeName();
+            yield return TransactionType.Balancing16To18FrameworkUplift.ToAttributeName();
+            yield return TransactionType.Completion16To18FrameworkUplift.ToAttributeName();
         }
     }
 }

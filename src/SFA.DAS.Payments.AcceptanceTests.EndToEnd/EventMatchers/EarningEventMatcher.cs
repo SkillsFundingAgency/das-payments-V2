@@ -66,7 +66,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         AimReference = learnerSpec.Course.LearnAimRef
                     });
 
-                foreach (var aimSpec in learnerSpec.Aims)
+                foreach (var aimSpec in learnerSpec.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, collectionPeriod,
+                    a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference)))
                 {
                     var learningAim = new LearningAim
                     {

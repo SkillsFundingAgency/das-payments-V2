@@ -40,6 +40,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return (decimal?)GetPropertyInfo(period).GetValue(values);
         }
 
+        public static TimeSpan? ToTimeSpan(this string duration, string startDate)
+        {
+            if (string.IsNullOrEmpty(duration))
+            {
+                return null;
+            }
+
+            if (duration.Contains("months"))
+            {
+                var months = int.Parse(duration.Replace("months", string.Empty));
+                return startDate.ToDate().AddMonths(months) - startDate.ToDate();
+            }
+            throw new Exception($"Could not parse duration: {duration}");
+        }
+
         public static void SetValue(this PriceEpisodePeriodisedValues values, int period, decimal? value)
         {
             GetPropertyInfo(period).SetValue(values, value);

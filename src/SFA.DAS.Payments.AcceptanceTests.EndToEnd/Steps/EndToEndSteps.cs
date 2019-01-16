@@ -220,6 +220,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }
 
+        [Then(@"no learner earnings should be generated")]
+        public async Task ThenNoLearnerEarningsWillBeRecorded()
+        {
+            var matcher = new EarningEventMatcher(null, TestSession, CurrentCollectionPeriod, null);
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Earning Event check failure");
+        }
+
         [Then(@"at month end no provider payments will be generated")]
         public async Task ThenAtMonthEndNoProviderPaymentsWillBeGenerated()
         {
