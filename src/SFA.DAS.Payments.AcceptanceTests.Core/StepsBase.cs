@@ -1,7 +1,15 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
+using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
@@ -10,6 +18,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
     {
         public SpecFlowContext Context { get; }
         public TestSession TestSession { get => Get<TestSession>(); set => Set(value); }
+        public ILifetimeScope Scope  => Get<ILifetimeScope>("container_scope"); 
         protected string CollectionYear { get => Get<string>("collection_year"); set => Set(value, "collection_year"); }
         protected byte CollectionPeriod { get => Get<byte>("collection_period"); set => Set(value, "collection_period"); }
         public static bool IsDevEnvironment => (Environment?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) ||
@@ -128,6 +137,47 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             var year = DateTime.Today.Year - 2000;
             CollectionYear = DateTime.Today.Month < 9 ? $"{year - 1}{year}" : $"{year}{year + 1}";
+        }
+
+        public async Task CreateTestEarningsJob(DateTimeOffset startTime, List<IPaymentsEvent> payments,
+            JobType jobType = JobType.ComponentAcceptanceTestEarningsJob)
+        {
+            await CreateJob(startTime,
+                payments.Select(payment => new GeneratedMessage
+                {
+                    StartTime = payment.EventTime, MessageName = payment.GetType().FullName, MessageId = payment.EventId
+                }).ToList());
+        }
+
+        public async Task CreateJob(DateTimeOffset startTime, List<GeneratedMessage> generatedMessages, JobType jobType = JobType.ComponentAcceptanceTestEarningsJob)
+        {
+
+            var job = new JobModel
+            {
+                CollectionPeriod = CollectionPeriod,
+                CollectionYear = short.Parse(CollectionYear),
+                StartTime = startTime,
+                Ukprn = TestSession.Ukprn,
+                DcJobId = TestSession.JobId,
+                IlrSubmissionTime = TestSession.IlrSubmissionTime,
+                JobType = JobType.ComponentAcceptanceTestEarningsJob,
+                LearnerCount = generatedMessages.Count,
+                Status = JobStatus.InProgress
+            };
+            var dataContext = Scope.Resolve<JobsDataContext>();
+            dataContext.Jobs.Add(job);
+            await dataContext.SaveChangesAsync();
+            Console.WriteLine($"Saved new test job to database. Job Id: {job.Id}");
+            dataContext.JobSteps.AddRange(generatedMessages.Select(msg => new JobStepModel
+            {
+                JobId = job.Id,
+                StartTime = msg.StartTime,
+                MessageName = msg.MessageName,
+                MessageId = msg.MessageId,
+                Status = JobStepStatus.Queued
+            }));
+            await dataContext.SaveChangesAsync();
+            Console.WriteLine($"Finished creating job and generated messages. Job id: {job.Id}, Test DC Job id: {job.DcJobId}");
         }
     }
 }

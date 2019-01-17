@@ -7,6 +7,7 @@ using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -55,8 +56,10 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [When(@"the funding source payments event are received")]
         public async Task WhenTheFundingSourcePaymentsEventAreReceivedAsync()
         {
-            var submissionTime = DateTime.UtcNow;
+            var startTime = DateTimeOffset.UtcNow;
+            var submissionTime = TestSession.IlrSubmissionTime;
             var payments = FundingSourcePayments.Select(p => CreateFundingSourcePaymentEvent(p, submissionTime)).ToList();
+            await CreateTestEarningsJob(startTime, payments.Cast<IPaymentsEvent>().ToList());
             foreach (var payment in payments)
             {
                 await MessageSession.Send(payment).ConfigureAwait(false);

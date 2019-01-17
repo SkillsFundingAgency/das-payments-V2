@@ -37,7 +37,15 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             {
                 paymentDataContext.Payment.Add(payment);
             }
-            paymentDataContext.SaveChanges();
+            try
+            {
+                paymentDataContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error storing the payments. Error: {ex.Message}.");
+                Console.WriteLine(ex);
+            }
             Console.WriteLine("Stored previous submission payments to the db.");
             var ilrSubmissionEvent = new IlrSubmittedEvent
             {

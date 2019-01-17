@@ -42,6 +42,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 return;
             logger.LogVerbose($"Job has finished, now getting time of last job step for job {job.Id}");
             var endTime = await dataContext.GetLastJobStepEndTime(job.Id);
+            if (endTime == null)
+            {
+                logger.LogWarning($"No end time found for finished job.  Job Id: {job.Id}.");
+                return;
+            }
             if (cancellationToken.IsCancellationRequested)
                 return;
             var status = stepsStatus.Keys.Any(key => key == JobStepStatus.Failed)

@@ -1,4 +1,8 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+﻿using System.Linq;
+using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
+using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Components.Core.Infrastructure
@@ -10,10 +14,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.Components.Core.Infrastructure
         {
         }
 
+        [BeforeTestRun(Order = 45)]
+        public static void CreateJobsDataContext()
+        {
+            Builder.Register(c =>
+            {
+                var configHelper = c.Resolve<TestsConfiguration>();
+                var dataContext = new JobsDataContext(configHelper.PaymentsConnectionString);
+                return dataContext;
+            }).InstancePerLifetimeScope();
+        }
+
         [BeforeScenario(Order = 0)]
         public void SetUpTestSession()
         {
             SetUpTestSession(Context);
+            Scope.Resolve<JobsDataContext>();
         }
 
         [AfterScenario(Order = 99)]

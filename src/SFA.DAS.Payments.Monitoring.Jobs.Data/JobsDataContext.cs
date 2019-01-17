@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveJobSteps(List<JobStepModel> jobSteps);
         Task<List<JobStepModel>> GetJobSteps(List<Guid> messageIds);
         Task<Dictionary<JobStepStatus, int>> GetJobStepsStatus(long jobId);
-        Task<DateTimeOffset> GetLastJobStepEndTime(long jobId);
+        Task<DateTimeOffset?> GetLastJobStepEndTime(long jobId);
         Task<JobModel> GetJob(long jobId);
         Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime);
         Task<List<JobModel>> GetInProgressJobs();
@@ -104,14 +104,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 .ToListAsync();
         }
 
-        public async Task<DateTimeOffset> GetLastJobStepEndTime(long jobId)
+        public async Task<DateTimeOffset?> GetLastJobStepEndTime(long jobId)
         {
             var time = await JobSteps
                 .Where(step => step.JobId == jobId && step.EndTime != null)
                 .Select(step => step.EndTime)
                 .OrderByDescending(endTime => endTime)
                 .FirstOrDefaultAsync();
-            return time.Value;
+            return time;
         }
 
         public async Task<JobModel> GetJob(long jobId)

@@ -43,6 +43,14 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 2)
 	INSERT INTO [Payments2].[JobType] values (2,'Month end job')
 GO 
 
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 3)
+	INSERT INTO [Payments2].[JobType] VALUES (3,'Component test earnings job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 4)
+	INSERT INTO [Payments2].[JobType] VALUES (4,'Component test month end job')
+GO 
+
 RAISERROR('		   Extended Property',10,1) WITH NOWAIT;
 GO
 

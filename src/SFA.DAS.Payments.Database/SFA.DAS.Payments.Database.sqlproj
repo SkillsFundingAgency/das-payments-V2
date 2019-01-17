@@ -66,7 +66,6 @@
     <Folder Include="Payments2" />
     <Folder Include="Payments2\Views" />
     <Folder Include="Payments2\Tables" />
-    <Folder Include="PostDeployment" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\User_RO.sql" />
@@ -90,7 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
-    <None Include="PostDeployment\Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="BUILD_BRANCHNAME">
