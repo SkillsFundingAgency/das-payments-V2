@@ -8,9 +8,6 @@ using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.Datalocks.DatalocksProxyService
 {
-    /// <summary>
-    /// An instance of this class is created for each service instance by the Service Fabric runtime.
-    /// </summary>
     public class DatalocksProxyService : StatelessService
     {
         private IEndpointCommunicationListener listener;
