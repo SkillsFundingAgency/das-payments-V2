@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.Datalocks.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.Datalocks.DatalocksProxyService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DatalocksProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DatalocksServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="DatalocksServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="DatalocksServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
@@ -11,8 +11,8 @@
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
-    <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
-    <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="DatalocksService_EndpointName" DefaultValue="" />
+    <Parameter Name="DatalocksService_FailedMessagesQueue" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -29,8 +29,8 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="EndpointName" Value="[DatalocksService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[DatalocksService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
           </Section>
@@ -50,8 +50,8 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="EndpointName" Value="[DatalocksService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[DatalocksService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
           </Section>
@@ -66,7 +66,7 @@
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.Datalocks.DatalocksProxyService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.Datalocks.DatalocksProxyServiceType" InstanceCount="[SFA.DAS.Payments.Datalocks.DatalocksProxyService_InstanceCount]">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.Datalocks.DatalocksProxyServiceType" InstanceCount="[DatalocksProxyService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
