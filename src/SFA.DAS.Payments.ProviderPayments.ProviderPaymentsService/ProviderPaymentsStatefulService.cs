@@ -12,7 +12,9 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
     [StatePersistence(StatePersistence.Persisted)]
     public class ProviderPaymentsStatefulService : AuditStatefulService<ProviderPaymentEventModel>
     {
-        public ProviderPaymentsStatefulService(StatefulServiceContext context, IPaymentLogger logger, ILifetimeScope lifetimeScope, IPaymentsEventModelBatchService<ProviderPaymentEventModel> batchService) : base(context, logger, lifetimeScope, batchService)
+        public ProviderPaymentsStatefulService(StatefulServiceContext context, IPaymentLogger logger, ILifetimeScope lifetimeScope, 
+            IPaymentsEventModelBatchService<ProviderPaymentEventModel> batchService) 
+            : base(context, logger, lifetimeScope, batchService)
         {
         }
     }

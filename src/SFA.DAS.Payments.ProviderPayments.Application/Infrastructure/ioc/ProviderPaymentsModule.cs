@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Audit.Application.Data;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
@@ -21,6 +22,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
             builder.RegisterType<ProviderPaymentDataTable>()
                 .As<IPaymentsEventModelDataTable<ProviderPaymentEventModel>>();
 
+            builder.RegisterType<ProviderPaymentsEventModelBatchProcessor>()
+                .As<IPaymentsEventModelBatchProcessor<ProviderPaymentEventModel>>()
+                .InstancePerLifetimeScope();
 
             builder.RegisterType<ProviderPaymentsService>()
                 .As<IProviderPaymentsService>();

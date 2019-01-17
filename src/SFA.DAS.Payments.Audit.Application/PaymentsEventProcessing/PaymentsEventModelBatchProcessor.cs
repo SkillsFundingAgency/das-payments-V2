@@ -36,6 +36,11 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             connectionString = configurationHelper.GetConnectionString("PaymentsConnectionString") ?? throw new ArgumentException("Failed to find the PaymentsConnectionString in the ConnectionStrings section.");
         }
 
+        protected virtual Task<bool> AllowPayment(T paymentModel)
+        {
+            return Task.FromResult(true);
+        }
+
         public async Task<int> Process(int batchSize, CancellationToken cancellationToken)
         {
             logger.LogVerbose("Processing batch.");

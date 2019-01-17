@@ -69,7 +69,6 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                         throw;
                     }
                 }
-
             } while (processedCount == batchSize);
         }
     }
