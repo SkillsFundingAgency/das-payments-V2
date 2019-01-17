@@ -1,6 +1,5 @@
 ﻿using System;
 using NUnit.Framework;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
@@ -14,10 +13,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             // arrange
             var learnAimRef = "6";
             var transactionType = 3;
-            var deliveryPeriod = new CalendarPeriod("1819", 5);
+            byte deliveryPeriod = 5;
+            short academicYear = 1516;
 
             // act
-            var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, deliveryPeriod);
+            var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, academicYear, deliveryPeriod);
 
             // assert
             Assert.AreEqual(0, key.IndexOf("6", StringComparison.Ordinal), "LearnAimRef should go first");
@@ -31,16 +31,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             // arrange
             var learnAimRef = "B";
             var transactionType = 3;
-            var deliveryPeriod = new CalendarPeriod("1819", 5);
+            byte deliveryPeriod = 5;
+            short academicYear = 1718;
 
             // act
-            var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, deliveryPeriod);
+            var key = new PaymentKeyService().GeneratePaymentKey(learnAimRef, transactionType, academicYear, deliveryPeriod);
 
             // assert
             Assert.IsFalse(key.Contains("B"));
             Assert.IsTrue(key.Contains("b"));
         }
-
-
     }
 }

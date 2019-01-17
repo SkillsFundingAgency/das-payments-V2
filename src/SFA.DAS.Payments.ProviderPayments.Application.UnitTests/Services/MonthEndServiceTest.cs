@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
@@ -25,8 +26,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
         private Mock<IDataCache<IlrSubmittedEvent>> ilrSubmittedEventCache;
         private Mock<IValidateIlrSubmission> validateIlrSubmission;
-
-
+        
         private long ukprn = 10000;
         private long jobId = 10000;
         private List<PaymentModel> payments;
@@ -45,17 +45,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     FundingSource = FundingSourceType.CoInvestedEmployer,
                     SfaContributionPercentage = 0.9m,
                     JobId = 1,
-                    DeliveryPeriod = new CalendarPeriod
+                    DeliveryPeriod = 7,
+                    CollectionPeriod = new CollectionPeriod
                     {
-                        Year = 2018,
-                        Month = 2,
-                        Period = 7,
-                        Name = "1819-R07"
-                    },
-                    CollectionPeriod = new CalendarPeriod
-                    {
-                        Year = 2018,
-                        Month = 3,
+                        AcademicYear = 1819,
                         Period = 8,
                         Name = "1819-R08"
                     },
@@ -83,13 +76,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verifiable();
 
             providerPaymentsRepository
-                          .Setup(o => o.GetMonthEndPayments(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                          .Setup(o => o.GetMonthEndPayments(It.IsAny<string>(), 
+                              It.IsAny<long>(), 
+                              It.IsAny<CancellationToken>()))
                           .ReturnsAsync(payments)
                           .Verifiable();
 
             providerPaymentsRepository
-                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(),
-                                                        It.IsAny<byte>(),
+                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<string>(),
                                                         It.IsAny<long>(),
                                                         It.IsAny<DateTime>(),
                                                         It.IsAny<CancellationToken>()))
@@ -101,7 +95,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 Ukprn = ukprn,
                 JobId = jobId,
                 IlrSubmissionDateTime = DateTime.MaxValue,
-                CollectionPeriod = new CalendarPeriod(2018, 2)
+                CollectionPeriod = new CollectionPeriodBuilder().WithDate(new DateTime(2018, 2, 1)).Build(),
             };
 
             ilrSubmittedEventCache = mocker.Mock<IDataCache<IlrSubmittedEvent>>();
@@ -114,15 +108,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(Task.CompletedTask);
 
             ilrSubmittedEventCache
-                .Setup(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)))
+                .Setup(o => o.Add(ukprn.ToString(), 
+                    It.IsAny<IlrSubmittedEvent>(), 
+                    default(CancellationToken)))
                 .Returns(Task.CompletedTask);
 
             validateIlrSubmission = mocker.Mock<IValidateIlrSubmission>();
             validateIlrSubmission
                 .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(true);
-
-
+            
             monthEndService = mocker.Create<MonthEndService>();
         }
 
@@ -133,15 +128,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             const byte month = 9;
             var cancellationToken = new CancellationToken();
 
-            var results = await monthEndService.GetMonthEndPayments(year, month, ukprn, cancellationToken);
+            var results = await monthEndService.GetMonthEndPayments("1819-R02", ukprn, cancellationToken);
 
             Assert.IsNotNull(results);
-            providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.IsAny<short>(),
-                                                    It.IsAny<byte>(),
+            providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.IsAny<string>(),
                                                     It.IsAny<long>(),
                                                     It.IsAny<CancellationToken>()), Times.Once);
         }
-
-
     }
 }

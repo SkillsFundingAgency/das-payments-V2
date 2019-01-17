@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
             var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, CancellationToken.None).ConfigureAwait(false);
 
-            var groupedHistory = paymentHistory.GroupBy(payment => paymentKeyService.GeneratePaymentKey(payment.LearnAimReference, payment.TransactionType, new CalendarPeriod(payment.DeliveryPeriod)))
+            var groupedHistory = paymentHistory.GroupBy(payment => paymentKeyService.GeneratePaymentKey(payment.LearnAimReference, payment.TransactionType, payment.CollectionPeriod.AcademicYear, payment.DeliveryPeriod))
                 .ToDictionary(c => c.Key, c => c.ToArray());
 
             foreach (var group in groupedHistory)
