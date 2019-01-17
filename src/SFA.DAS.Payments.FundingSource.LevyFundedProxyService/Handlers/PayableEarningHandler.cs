@@ -10,20 +10,21 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 {
-    public class EarningEventHandler : IHandleMessages<EarningEvent>
+    public class ApprenticeshipContractType1RequiredPaymentEventHandler : IHandleMessages<ApprenticeshipContractType1RequiredPaymentEvent>
     {
         private readonly IApprenticeshipKeyService apprenticeshipKeyService;
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger paymentLogger;
         private readonly ESFA.DC.Logging.ExecutionContext executionContext;
 
-        public EarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
+        public ApprenticeshipContractType1RequiredPaymentEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
             IActorProxyFactory proxyFactory,
             IPaymentLogger paymentLogger,
             IExecutionContext executionContext)
@@ -34,29 +35,19 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             this.executionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
         }
 
-        public async Task Handle(EarningEvent message, IMessageHandlerContext context)
+        public async Task Handle(ApprenticeshipContractType1RequiredPaymentEvent message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing LevyFundedProxyService event. Message Id : {context.MessageId}");
             executionContext.JobId = message.JobId.ToString();
 
             try
             {
-                var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
-                    message.Ukprn,
-                    message.Learner.ReferenceNumber,
-                    message.LearningAim.FrameworkCode,
-                    message.LearningAim.PathwayCode,
-                    message.LearningAim.ProgrammeType,
-                    message.LearningAim.StandardCode,
-                    message.LearningAim.Reference
-                );
-
-                var actorId = new ActorId(key);
+                var actorId = new ActorId(message.EmployerAccountId);
                 var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                IReadOnlyCollection<RequiredPaymentEvent> requiredPaymentEvent;
+                IReadOnlyCollection<FundingSourcePaymentEvent> requiredPaymentEvent;
                 try
                 {
-                    requiredPaymentEvent = await actor.HandleEarningEvent(message, CancellationToken.None).ConfigureAwait(false);
+                    requiredPaymentEvent = await actor.HandleRequiredPayment(message, CancellationToken.None).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
