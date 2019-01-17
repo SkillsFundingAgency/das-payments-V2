@@ -1,5 +1,4 @@
-﻿using System;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
@@ -21,11 +20,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
     public class EarningEventMatcher : BaseMatcher<EarningEvent>
     {
         private readonly TestSession testSession;
-        private readonly CalendarPeriod collectionPeriod;
+        private readonly CollectionPeriod collectionPeriod;
         private readonly IList<Earning> earningSpecs;
         private readonly IList<FM36Learner> learnerSpecs;
 
-        public EarningEventMatcher(IList<Earning> earningSpecs, TestSession testSession, CalendarPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
+        public EarningEventMatcher(IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
         {
             this.earningSpecs = earningSpecs;
             this.testSession = testSession;
@@ -48,7 +47,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             foreach (var learnerId in learnerIds)
             {
                 var learnerSpec = testSession.GetLearner(learnerId);
-                var fm36learner = learnerSpecs.Single(l => l.LearnRefNumber == learnerSpec.LearnRefNumber);
+                var fm36Learner = learnerSpecs.Single(l => l.LearnRefNumber == learnerSpec.LearnRefNumber);
                 var learner = new Learner
                 {
                     ReferenceNumber = learnerSpec.LearnRefNumber,
@@ -98,8 +97,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
-                                    Period = e.DeliveryCalendarPeriod.Period,
-                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36learner, tt)
+                                    Period = (byte)e.DeliveryCalendarPeriod,
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
                             JobId = testSession.JobId,
@@ -121,8 +120,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
-                                    Period = e.DeliveryCalendarPeriod.Period,
-                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36learner, tt)
+                                    Period = (byte)e.DeliveryCalendarPeriod,
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
                             JobId = testSession.JobId,
@@ -144,8 +143,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
-                                    Period = e.DeliveryCalendarPeriod.Period,
-                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36learner, tt)
+                                    Period = (byte)e.DeliveryCalendarPeriod,
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
                             JobId = testSession.JobId,
@@ -172,10 +171,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 return earning.PriceEpisodeIdentifier;
 
             // find first price episode with non-zero value for a period
-            var period = earning.DeliveryCalendarPeriod.Period;
-            return fm36Learner.PriceEpisodes.SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues.Any(pepv =>
-                pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
-                pepv.AttributeName == transactionType.ToAttributeName()))?.PriceEpisodeIdentifier;
+            var period = earning.DeliveryCalendarPeriod;
+            return fm36Learner.PriceEpisodes
+                .SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues
+                    .Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
+                                 pepv.AttributeName == transactionType.ToAttributeName()))?
+                .PriceEpisodeIdentifier;
         }
 
         protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)

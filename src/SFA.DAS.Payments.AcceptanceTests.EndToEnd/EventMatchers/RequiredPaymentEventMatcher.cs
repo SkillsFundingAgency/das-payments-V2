@@ -1,28 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public class RequiredPaymentEventMatcher : BaseMatcher<RequiredPaymentEvent>
     {        
         private readonly TestSession testSession;
-        private readonly CalendarPeriod collectionPeriod;
+        private readonly CollectionPeriod collectionPeriod;
         private readonly List<Payment> paymentSpec;
 
-        public RequiredPaymentEventMatcher(TestSession testSession, CalendarPeriod collectionPeriod)
+        public RequiredPaymentEventMatcher(TestSession testSession, CollectionPeriod collectionPeriod)
         {
             this.testSession = testSession;
             this.collectionPeriod = collectionPeriod;
         }
 
-        public RequiredPaymentEventMatcher(TestSession testSession, CalendarPeriod collectionPeriod, List<Payment> paymentSpec) : this(testSession, collectionPeriod)
+        public RequiredPaymentEventMatcher(TestSession testSession, CollectionPeriod collectionPeriod, List<Payment> paymentSpec) : this(testSession, collectionPeriod)
         {
             this.paymentSpec = paymentSpec;
         }
@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var expectedPayments = new List<RequiredPaymentEvent>();
 
             var paymentsToValidate =
-                paymentSpec.Where(e => e.CollectionPeriod.ToCalendarPeriod().Name == collectionPeriod.Name);
+                paymentSpec.Where(e => new CollectionPeriodBuilder().WithSpecDate(e.CollectionPeriod).Build().Name == collectionPeriod.Name);
 
             foreach (var payment in paymentsToValidate)
             {
@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         {
                             AmountDue = amount,
                             Type = incentiveTypeKey,
-                            DeliveryPeriod = payment.DeliveryPeriod.ToCalendarPeriod()
+                            DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(payment.DeliveryPeriod).Build(),
                         });
 
                 }    
@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             {
                 AmountDue = amountDue,
                 OnProgrammeEarningType = type,
-                DeliveryPeriod = paymentSpec.DeliveryPeriod.ToCalendarPeriod()
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(paymentSpec.DeliveryPeriod).Build(),
             };
 
             if (payment.AmountDue != 0)
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (expected.GetType() != actual.GetType())
                 return false;
 
-            return expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name &&
+            return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue &&
                    MatchAct(expected as ApprenticeshipContractTypeRequiredPaymentEvent, actual as ApprenticeshipContractTypeRequiredPaymentEvent) &&
                    MatchIncentive(expected as IncentiveRequiredPaymentEvent, actual as IncentiveRequiredPaymentEvent);

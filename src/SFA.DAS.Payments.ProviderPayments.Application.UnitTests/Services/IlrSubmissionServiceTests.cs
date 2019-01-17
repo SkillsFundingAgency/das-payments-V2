@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
@@ -45,17 +46,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     FundingSource = FundingSourceType.CoInvestedEmployer,
                     SfaContributionPercentage = 0.9m,
                     JobId = 1,
-                    DeliveryPeriod = new CalendarPeriod
+                    DeliveryPeriod = 7,
+                    CollectionPeriod = new CollectionPeriod
                     {
-                        Year = 2018,
-                        Month = 2,
-                        Period = 7,
-                        Name = "1819-R07"
-                    },
-                    CollectionPeriod = new CalendarPeriod
-                    {
-                        Year = 2018,
-                        Month = 3,
+                        AcademicYear = 1819,
                         Period = 8,
                         Name = "1819-R08"
                     },
@@ -83,16 +77,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verifiable();
 
             providerPaymentsRepository
-                          .Setup(o => o.GetMonthEndPayments(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                          .ReturnsAsync(payments)
-                          .Verifiable();
+                .Setup(o => o.GetMonthEndPayments(It.IsAny<string>(), It.IsAny<long>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(payments)
+                .Verifiable();
 
             providerPaymentsRepository
-                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(),
-                                                        It.IsAny<byte>(),
-                                                        It.IsAny<long>(),
-                                                        It.IsAny<DateTime>(),
-                                                        It.IsAny<CancellationToken>()))
+                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<string>(),
+                    It.IsAny<long>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
@@ -101,7 +95,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 Ukprn = ukprn,
                 JobId = jobId,
                 IlrSubmissionDateTime = DateTime.MaxValue,
-                CollectionPeriod = new CalendarPeriod(2018, 2)
+                CollectionPeriod = new CollectionPeriodBuilder().WithDate(new DateTime(2018, 2, 1)).Build(),
             };
 
             ilrSubmittedEventCache = mocker.Mock<IDataCache<IlrSubmittedEvent>>();
@@ -160,8 +154,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verify(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)), Times.Never);
 
             providerPaymentsRepository
-                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(),
-                    It.IsAny<byte>(),
+                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<string>(),
                     It.IsAny<long>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<CancellationToken>()), Times.Never);
@@ -183,8 +176,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verify(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)), Times.Once);
 
             providerPaymentsRepository
-                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<short>(),
-                    It.IsAny<byte>(),
+                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<string>(),
                     It.IsAny<long>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<CancellationToken>()), Times.Once);

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -14,16 +14,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
     {
         private readonly List<ProviderPayment> paymentSpec;
         private readonly TestSession testSession;
-        private readonly CalendarPeriod collectionPeriod;
+        private readonly CollectionPeriod collectionPeriod;
 
 
-        public ProviderPaymentEventMatcher(CalendarPeriod collectionPeriod, TestSession testSession)
+        public ProviderPaymentEventMatcher(CollectionPeriod collectionPeriod, TestSession testSession)
         {
             this.collectionPeriod = collectionPeriod;
             this.testSession = testSession;
         }
 
-        public ProviderPaymentEventMatcher(CalendarPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec)
+        public ProviderPaymentEventMatcher(CollectionPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec)
             : this(collectionPeriod, testSession)
         {
             this.paymentSpec = paymentSpec;
@@ -37,17 +37,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     ev.JobId == testSession.JobId &&
                     ev.CollectionPeriod.Name == collectionPeriod.Name)
                 .ToList();
-
         }
 
         protected override IList<ProviderPaymentEvent> GetExpectedEvents()
         {
             var expectedPayments = new List<ProviderPaymentEvent>();
 
-            foreach (var providerPayment in paymentSpec.Where(p => p.CollectionPeriod.ToDate().ToCalendarPeriod().Name == collectionPeriod.Name))
+            foreach (var providerPayment in paymentSpec.Where(p => new CollectionPeriodBuilder().WithSpecDate(p.CollectionPeriod).Build().Name == collectionPeriod.Name))
             {
-                var eventCollectionPeriod = providerPayment.CollectionPeriod.ToCalendarPeriod();
-                var deliveryPeriod = providerPayment.DeliveryPeriod.ToCalendarPeriod();
+                var eventCollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build();
+                var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(); 
                 var testLearner = testSession.GetLearner(providerPayment.LearnerId);
                 var learner = new Learner
                 {
@@ -107,7 +106,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.TransactionType == actual.TransactionType &&
                    expected.AmountDue == actual.AmountDue &&
                    expected.CollectionPeriod.Name == actual.CollectionPeriod.Name &&
-                   expected.DeliveryPeriod.Name == actual.DeliveryPeriod.Name &&
+                   expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
                    expected.Learner.Uln == actual.Learner.Uln;
         }

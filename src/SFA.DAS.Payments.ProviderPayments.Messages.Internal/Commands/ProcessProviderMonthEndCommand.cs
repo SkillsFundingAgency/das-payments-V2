@@ -7,7 +7,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands
     {
         public long Ukprn { get; set; }
         public long JobId { get; set; }
-        public CalendarPeriod CollectionPeriod { get; set; }
-
+        public CollectionPeriod CollectionPeriod { get; set; }
     }
 }

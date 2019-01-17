@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                             Learner = learner,
                             RequestTime = DateTimeOffset.UtcNow,
                             IlrSubmissionDateTime = message.SubmissionDateTimeUtc,
-                            CollectionYear = fm36Output.Year,
+                            CollectionYear = short.Parse(fm36Output.Year),
                             CollectionPeriod = collectionPeriod,
                             Ukprn = fm36Output.UKPRN
                         };

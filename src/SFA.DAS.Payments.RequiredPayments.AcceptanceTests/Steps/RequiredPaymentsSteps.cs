@@ -8,6 +8,7 @@ using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
@@ -50,7 +51,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             earningEvent.Learner = testSessionLearner.ToLearner();
             earningEvent.Ukprn = TestSession.Ukprn;
             earningEvent.SfaContributionPercentage = SfaContributionPercentage;
-            earningEvent.CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod);
+            earningEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod);
             earningEvent.CollectionYear = CollectionYear;
             earningEvent.JobId = TestSession.JobId;
             earningEvent.LearningAim = testSessionLearner.Course.ToLearningAim();
@@ -121,8 +122,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     && TestSession.Learners.Any(l => l.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber)
                     && earning.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && earning.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
-                    && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
+                    && earning.DeliveryPeriod == receivedEvent.DeliveryPeriod
+                    && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear.ToString())
                 ));
 #if DEBUG
             if (!result)
@@ -159,8 +160,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     && TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == expectedEvent.LearnerId)?.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber  //TestSession.Learners.Any(l => l.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber)  
                     && expectedEvent.Type == receivedEvent.OnProgrammeEarningType
                     && TestSession.Ukprn == receivedEvent.Ukprn
-                    && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
-                    && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)
+                    && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod
+                    && receivedEvent.CollectionPeriod.Name.Contains(CollectionYear.ToString())
                 )).ToList();
 
             var allFound = matchedExpectations.Count == expectedPaymentsEvents.Length;
@@ -198,7 +199,9 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             for (var i = 0; i < unexpected.Count; i++)
             {
                 var e = unexpected[i];
-                Debug.WriteLine($"{i + 1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.OnProgrammeEarningType}, DeliveryPeriod:{e.DeliveryPeriod.Name}, CollectionPeriod:{e.CollectionPeriod.Name}");
+                Debug.WriteLine($"{i + 1}: PE:{e.PriceEpisodeIdentifier}, AmountDue:{e.AmountDue}, " +
+                                $"LearnRefNumber:{e.Learner.ReferenceNumber}, Type:{e.OnProgrammeEarningType}, " +
+                                $"DeliveryPeriod:{e.DeliveryPeriod}, CollectionPeriod:{e.CollectionPeriod.Name}");
             }
         }
 
@@ -216,8 +219,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     if (expectedEvent.Amount != receivedEvent.AmountDue) mismatchedFields.Add($" Amount({expectedEvent.Amount}!={receivedEvent.AmountDue})");
                     if (learnerReference != receivedEvent.Learner?.ReferenceNumber) mismatchedFields.Add($"LearnRefNumber({learnerReference}!={receivedEvent.Learner?.ReferenceNumber})");
                     if (expectedEvent.Type != receivedEvent.OnProgrammeEarningType) mismatchedFields.Add($"Type({expectedEvent.Type}!={receivedEvent.OnProgrammeEarningType})");
-                    if (expectedEvent.DeliveryPeriod != receivedEvent.DeliveryPeriod?.Period) mismatchedFields.Add($"Period({expectedEvent.DeliveryPeriod}!={receivedEvent.DeliveryPeriod?.Period})");
-                    if (!receivedEvent.CollectionPeriod.Name.Contains(CollectionYear)) mismatchedFields.Add($"CollectionPeriod({receivedEvent.CollectionPeriod} does not contain {CollectionYear})");
+                    if (expectedEvent.DeliveryPeriod != receivedEvent.DeliveryPeriod) mismatchedFields.Add($"Period({expectedEvent.DeliveryPeriod}!={receivedEvent.DeliveryPeriod})");
+                    if (!receivedEvent.CollectionPeriod.Name.Contains(CollectionYear.ToString())) mismatchedFields.Add($"CollectionPeriod({receivedEvent.CollectionPeriod} does not contain {CollectionYear})");
 
                     if (mismatchedFields.Count == 0)
                         Debug.WriteLine($"Event {i + 1} of {expectedPaymentsEvents.Length}: match {k + 1}");

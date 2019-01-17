@@ -6,8 +6,8 @@ using Autofac;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -17,7 +17,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
     [Binding]
     public class ProviderResubmitsILRSteps : ProviderPaymentsStepsBase
     {
-
         protected long PreviousJobId { get => Get<long>("previous_job_id"); set => Set(value, "previous_job_id"); }
 
         public ProviderResubmitsILRSteps(ScenarioContext scenarioContext) : base(scenarioContext)
@@ -46,7 +45,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 JobId = PreviousJobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
@@ -65,8 +64,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 Amount = fundingSourcePayment.Amount,
                 JobId = jobId,
                 SfaContributionPercentage = SfaContributionPercentage,
-                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod),
-                DeliveryPeriod = new CalendarPeriod(GetYear(fundingSourcePayment.DeliveryPeriod, CollectionYear).ToString(), fundingSourcePayment.DeliveryPeriod),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
+                DeliveryPeriod = fundingSourcePayment.DeliveryPeriod,
                 LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
                 LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
                 LearningAimFundingLineType = TestSession.Learner.Course.FundingLineType,
@@ -90,7 +89,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 JobId = jobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
@@ -125,7 +124,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 JobId = jobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);

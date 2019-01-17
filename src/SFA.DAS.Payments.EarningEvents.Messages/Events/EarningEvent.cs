@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 
         public ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; set; }
 
-        public string CollectionYear { get; set; }
+        public short CollectionYear { get; set; }
 
         private static Type[] GetInheritors()
         {
