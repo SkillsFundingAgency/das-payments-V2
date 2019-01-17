@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
     {
         private AutoMock mocker;
         private Dictionary<JobStepStatus, int> stepsStatuses;
-        private DateTimeOffset lastJobStepEndTime;
+        private DateTimeOffset? lastJobStepEndTime;
         private JobModel job;
 
         [SetUp]
