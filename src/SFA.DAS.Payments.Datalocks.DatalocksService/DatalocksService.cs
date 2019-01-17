@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Datalocks.DatalocksService.Interfaces;
+using SFA.DAS.Payments.Datalocks.Messages;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.Datalocks.DatalocksService
@@ -15,7 +16,7 @@ namespace SFA.DAS.Payments.Datalocks.DatalocksService
         {
         }
 
-        public Task HandlePayment(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
+        public Task<IDatalockPayment> HandlePayment(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
         }
