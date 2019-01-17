@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.Handler
             {
                 var actorId = new ActorId(message.Ukprn.ToString());
                 var actor = proxyFactory.CreateActorProxy<ProviderPaymentsService.Interfaces.IProviderPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.ProviderPayments.ServiceFabric/ProviderPaymentsServiceActorService"), actorId);
-                var payments = await actor.GetMonthEndPayments(message.CollectionPeriod.Year, message.CollectionPeriod.Month, new CancellationToken());
+                var payments = await actor.GetMonthEndPayments(message.CollectionPeriod.Name, new CancellationToken());
                 foreach (var paymentEvent in payments.Select(MapToProviderPaymentEvent))
                 {
                     await context.Publish(paymentEvent);
