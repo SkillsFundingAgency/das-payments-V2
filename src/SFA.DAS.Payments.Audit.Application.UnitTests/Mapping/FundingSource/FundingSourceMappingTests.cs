@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.FundingSource
 
         public static Array GetTransactionTypes()
         {
-            return Enum.GetValues(typeof(TransactionType));
+            return GetEnumValues<TransactionType>();
         }
 
         [TestCaseSource(nameof(GetFundingSource))]
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.FundingSource
         }
         public static Array GetFundingSource()
         {
-            return Enum.GetValues(typeof(FundingSourceType));
+            return GetEnumValues<FundingSourceType>();
         }
 
         [Test]

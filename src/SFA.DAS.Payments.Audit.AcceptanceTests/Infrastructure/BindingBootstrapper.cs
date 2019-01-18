@@ -23,7 +23,6 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Infrastructure
                 .AsSelf()
                 .InstancePerLifetimeScope()
                 .AutoActivate();
-            //Builder.RegisterBuildCallback(c => c.Resolve<AuditDataContext>());
 
             Builder.Register((c, p) =>
             {
@@ -33,7 +32,6 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Infrastructure
                 .As<IPaymentsDataContext>()
                 .InstancePerLifetimeScope()
                 .AutoActivate();
-            //Builder.RegisterBuildCallback(c => c.Resolve<IPaymentsDataContext>());
         }
 
         [BeforeTestRun(Order = 51)]

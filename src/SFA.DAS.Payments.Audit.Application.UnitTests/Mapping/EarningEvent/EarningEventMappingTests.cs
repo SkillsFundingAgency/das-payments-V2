@@ -55,8 +55,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
         [TestCaseSource(nameof(GetContractTypes))]
         public void Maps_ContractType(ContractType contractType)
         {
-            PaymentEvent.ContractType = contractType;
-            Mapper.Map<FundingSourceEventModel>(PaymentEvent).ContractType.Should().Be(PaymentEvent.ContractType);
+            Mapper.Map<FundingSourceEventModel>(PaymentEvent).ContractType.Should().Be(ContractType.Act2);
         }
 
     }

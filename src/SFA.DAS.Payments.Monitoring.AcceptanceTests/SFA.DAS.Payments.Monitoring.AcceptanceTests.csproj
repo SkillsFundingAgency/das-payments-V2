@@ -164,11 +164,6 @@
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
-    <Compile Include="Jobs\Jobs.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Jobs.feature</DependentUpon>
-    </Compile>
     <Compile Include="Jobs\JobsSteps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestConfiguration.cs" />

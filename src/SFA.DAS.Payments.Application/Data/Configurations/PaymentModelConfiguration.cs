@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
 
             builder.Property(x => x.Id).HasColumnName(@"PaymentId").IsRequired();
             builder.Property(x => x.ExternalId).HasColumnName(@"ExternalId").IsRequired();
+            builder.Property(x => x.FundingSourceId).HasColumnName(@"FundingSourceEventId").IsRequired();
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier");
             builder.Property(x => x.Amount).HasColumnName(@"Amount");
             builder.OwnsOne(p => p.CollectionPeriod, cp =>

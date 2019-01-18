@@ -182,11 +182,6 @@
     <Compile Include="Data\AuditDataContext.cs" />
     <Compile Include="Data\Configuration\FundingSourceEventConfiguration.cs" />
     <Compile Include="Data\Entities\FundingSourceEvent.cs" />
-    <Compile Include="FundingSource\Audit Funding Source Events.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Audit Funding Source Events.feature</DependentUpon>
-    </Compile>
     <Compile Include="FundingSource\AuditFundingSourceEventsSteps.cs" />
     <Compile Include="FundingSource\FundingSourceTestData.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
