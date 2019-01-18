@@ -119,33 +119,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         public async Task ProcessEventShouldCallRequiredServices()
         {
             await providerPaymentsService.ProcessPayment(payments.First(), default(CancellationToken));
-
-            ilrSubmittedEventCache
-                .Verify(o => o.TryGet(ukprn.ToString(), default(CancellationToken)), Times.Once);
-
-            validateIlrSubmission
-                .Verify(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()), Times.Once);
-
+            
             mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
                 .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()));
 
             mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
                 .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()),Times.Once);
-        }
-
-        [Test]
-        public async Task ProcessEventShouldNotCallRepositoryIfPaymentEventIsInvalid()
-        {
-
-            validateIlrSubmission
-                .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
-                .Returns(false);
-
-            await providerPaymentsService.ProcessPayment(payments.First(), default(CancellationToken));
-
-            mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
-                .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()), Times.Never);
-
         }
     }
 }
