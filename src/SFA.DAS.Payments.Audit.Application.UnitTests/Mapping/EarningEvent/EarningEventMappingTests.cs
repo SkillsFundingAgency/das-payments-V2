@@ -52,11 +52,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
             model.PriceEpisodes.Count.Should().Be(PaymentEvent.PriceEpisodes.Count());
         }
 
-        [TestCaseSource(nameof(GetContractTypes))]
-        public void Maps_ContractType(ContractType contractType)
-        {
-            Mapper.Map<FundingSourceEventModel>(PaymentEvent).ContractType.Should().Be(ContractType.Act2);
-        }
+
 
     }
 }

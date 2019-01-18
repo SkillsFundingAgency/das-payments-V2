@@ -29,7 +29,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Components.Core.Infrastructure
         public void SetUpTestSession()
         {
             SetUpTestSession(Context);
-            Scope.Resolve<JobsDataContext>();
         }
 
         [AfterScenario(Order = 99)]

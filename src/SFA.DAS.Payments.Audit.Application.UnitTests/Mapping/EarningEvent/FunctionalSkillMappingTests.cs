@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
@@ -34,6 +35,13 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
         {
             var model = Mapper.Map<EarningEventModel>(PaymentEvent);
             model.Periods.Count.Should().Be(PaymentEvent.Earnings.SelectMany(x => x.Periods).Count());
+        }
+
+
+        [TestCaseSource(nameof(GetContractTypes))]
+        public void Maps_ContractType(ContractType contractType)
+        {
+            Mapper.Map<EarningEventModel>(PaymentEvent).ContractType.Should().Be(ContractType.Act2);
         }
 
     }

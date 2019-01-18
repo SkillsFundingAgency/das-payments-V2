@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             DataTable.Columns.AddRange(new[]
             {
                 new DataColumn("ExternalId", typeof(Guid)),
-                new DataColumn("FundingSourceId", typeof(Guid)),
+                new DataColumn("FundingSourceEventId", typeof(Guid)),
                 new DataColumn("FundingSource"),
                 new DataColumn("CollectionPeriodName"),
                 new DataColumn("CollectionPeriodYear"),
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             dataRow["TransactionType"] = (byte)eventModel.TransactionType;
             dataRow["Amount"] = eventModel.Amount;
             
-            dataRow["FundingSourceId"] = eventModel.FundingSourceId;
+            dataRow["FundingSourceEventId"] = eventModel.FundingSourceId;
             dataRow["FundingSource"] = (byte)eventModel.FundingSource;
 
             dataRow["CollectionPeriodName"] = eventModel.CollectionPeriodName;
