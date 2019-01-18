@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SFA.DAS.Payments.Datalocks.Messages
+namespace SFA.DAS.Payments.DataLocks.Messages
 {
-    public class PayableEarning: DatalockPaymentEvent
+    public class PayableEarning: DataLockPaymentEvent
     {
     }
 }

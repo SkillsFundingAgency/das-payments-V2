@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors.Runtime;
 
-namespace SFA.DAS.Payments.Datalocks.DatalocksService
+namespace SFA.DAS.Payments.DataLocks.DataLockService
 {
-    [EventSource(Name = "MyCompany-SFA.DAS.Payments.Datalocks.ServiceFabric-SFA.DAS.Payments.Datalocks.DatalocksService")]
+    [EventSource(Name = "MyCompany-SFA.DAS.Payments.DataLocks.ServiceFabric-SFA.DAS.Payments.DataLocks.DataLockService")]
     internal sealed class ActorEventSource : EventSource
     {
         public static readonly ActorEventSource Current = new ActorEventSource();

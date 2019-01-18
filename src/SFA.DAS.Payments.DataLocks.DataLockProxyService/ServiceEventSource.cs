@@ -2,9 +2,9 @@
 using System.Diagnostics.Tracing;
 using System.Fabric;
 
-namespace SFA.DAS.Payments.Datalocks.DatalocksProxyService
+namespace SFA.DAS.Payments.DataLocks.DataLockProxyService
 {
-    [EventSource(Name = "MyCompany-SFA.DAS.Payments.Datalocks.ServiceFabric-SFA.DAS.Payments.Datalocks.DatalocksProxyService")]
+    [EventSource(Name = "MyCompany-SFA.DAS.Payments.DataLocks.ServiceFabric-SFA.DAS.Payments.DataLocks.DataLockProxyService")]
     internal sealed class ServiceEventSource : EventSource
     {
         public static readonly ServiceEventSource Current = new ServiceEventSource();

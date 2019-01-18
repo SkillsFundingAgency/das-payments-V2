@@ -6,15 +6,15 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
-namespace SFA.DAS.Payments.Datalocks.DatalocksProxyService
+namespace SFA.DAS.Payments.DataLocks.DataLockProxyService
 {
-    public class DatalocksProxyService : StatelessService
+    public class DataLockProxyService : StatelessService
     {
         private IEndpointCommunicationListener listener;
         private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentLogger paymentLogger;
 
-        public DatalocksProxyService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
+        public DataLockProxyService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
         {
             this.lifetimeScope = lifetimeScope;
             this.paymentLogger = paymentLogger;
@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Datalocks.DatalocksProxyService
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            paymentLogger.LogInfo("Creating Service Instance Listeners For DatalocksProxyService");
+            paymentLogger.LogInfo("Creating Service Instance Listeners For DataLockProxyService");
 
             return new List<ServiceInstanceListener>
             {

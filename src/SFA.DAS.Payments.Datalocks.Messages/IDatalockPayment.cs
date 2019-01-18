@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
-namespace SFA.DAS.Payments.Datalocks.Messages
+namespace SFA.DAS.Payments.DataLocks.Messages
 {
-    public interface IDatalockPayment: IEarningEvent
+    public interface IDataLockPayment: IEarningEvent
     {
     }
 }

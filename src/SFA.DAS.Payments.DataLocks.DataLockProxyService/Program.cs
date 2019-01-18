@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using Castle.Core.Internal;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc;
 
-namespace SFA.DAS.Payments.Datalocks.DatalocksService
+[assembly: InternalsVisibleTo(InternalsVisible.ToDynamicProxyGenAssembly2)]
+namespace SFA.DAS.Payments.DataLocks.DataLockProxyService
 {
     internal static class Program
     {
@@ -10,17 +13,16 @@ namespace SFA.DAS.Payments.Datalocks.DatalocksService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForActor<DatalocksService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<DataLockProxyService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }
             }
             catch (Exception e)
             {
-                ActorEventSource.Current.ActorHostInitializationFailed(e.ToString());
+                ServiceEventSource.Current.ServiceHostInitializationFailed(e.ToString());
                 throw;
             }
         }
-
     }
 }

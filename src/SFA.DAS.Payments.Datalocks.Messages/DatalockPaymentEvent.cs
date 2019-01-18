@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
-namespace SFA.DAS.Payments.Datalocks.Messages
+namespace SFA.DAS.Payments.DataLocks.Messages
 {
-    public class DatalockPaymentEvent : ApprenticeshipContractType1EarningEvent , IDatalockPayment
+    public class DataLockPaymentEvent : ApprenticeshipContractType1EarningEvent , IDataLockPayment
     {
       
     }

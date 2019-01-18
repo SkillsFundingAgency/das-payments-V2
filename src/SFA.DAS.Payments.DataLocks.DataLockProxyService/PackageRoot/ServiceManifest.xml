@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceManifest Name="SFA.DAS.Payments.Datalocks.DatalocksProxyServicePkg"
+<ServiceManifest Name="SFA.DAS.Payments.DataLocks.DataLockProxyServicePkg"
                  Version="1.0.0"
                  xmlns="http://schemas.microsoft.com/2011/01/fabric"
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -7,14 +7,14 @@
   <ServiceTypes>
     <!-- This is the name of your ServiceType. 
          This name must match the string used in the RegisterServiceAsync call in Program.cs. -->
-    <StatelessServiceType ServiceTypeName="SFA.DAS.Payments.Datalocks.DatalocksProxyServiceType" />
+    <StatelessServiceType ServiceTypeName="SFA.DAS.Payments.DataLocks.DataLockProxyServiceType" />
   </ServiceTypes>
 
   <!-- Code package is your service executable. -->
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
       <ExeHost>
-        <Program>SFA.DAS.Payments.Datalocks.DatalocksProxyService.exe</Program>
+        <Program>SFA.DAS.Payments.DataLocks.DataLockProxyService.exe</Program>
       </ExeHost>
     </EntryPoint>
   </CodePackage>
