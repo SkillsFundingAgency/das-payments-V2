@@ -320,7 +320,6 @@
     <Compile Include="Data\EnumHelper.cs" />
     <Compile Include="Data\Aim.cs" />
     <Compile Include="Data\CompletionStatus.cs" />
-    <Compile Include="Data\Helper.cs" />
     <Compile Include="Data\Learner.cs" />
     <Compile Include="Data\DataExtensions.cs" />
     <Compile Include="Data\Payment.cs" />
@@ -335,7 +334,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -15,5 +15,5 @@
 	InstalmentAmount DECIMAL(15,5) NOT NULL,
 	CompletionAmount DECIMAL(15,5) NOT NULL,
 	Completed BIT NOT NULL,
-	CreationDate DATETIME2 NOT NULL CONSTRAINT DF_EarningEventPriceEpisode__CreationDate DEFAULT (SYSDATETIME())	
+	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	
 )

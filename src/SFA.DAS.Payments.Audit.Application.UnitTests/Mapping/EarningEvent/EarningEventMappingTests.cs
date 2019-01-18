@@ -10,6 +10,7 @@ using SFA.DAS.Payments.Audit.Application.Mapping;
 using SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
 {
@@ -50,5 +51,13 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
             var model = Mapper.Map<EarningEventModel>(PaymentEvent);
             model.PriceEpisodes.Count.Should().Be(PaymentEvent.PriceEpisodes.Count());
         }
+
+        [TestCaseSource(nameof(GetContractTypes))]
+        public void Maps_ContractType(ContractType contractType)
+        {
+            PaymentEvent.ContractType = contractType;
+            Mapper.Map<FundingSourceEventModel>(PaymentEvent).ContractType.Should().Be(PaymentEvent.ContractType);
+        }
+
     }
 }

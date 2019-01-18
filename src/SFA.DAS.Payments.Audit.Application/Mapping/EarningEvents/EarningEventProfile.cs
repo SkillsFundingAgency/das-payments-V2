@@ -19,11 +19,12 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.PriceEpisodes, opt => opt.ResolveUsing<EarningEventPriceEpisodeModelListResolver>())
                 ;
             CreateMap<ApprenticeshipContractType2EarningEvent, EarningEventModel>()
-                .ForMember(dest => dest.ContractType, opt => opt.UseValue<ContractType>(ContractType.Act2))
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))
                 .ForMember(dest => dest.Periods,opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
                 ;
 
             CreateMap<FunctionalSkillEarningsEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))  //TODO: fix for ACT1 events
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<FunctionalSkillEarningResolver>());
 
             CreateMap<PriceEpisode, EarningEventPriceEpisodeModel>()

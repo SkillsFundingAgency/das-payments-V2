@@ -26,7 +26,7 @@
 	IlrSubmissionDateTime DATETIME2 NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	JobId  BIGINT NOT NULL,
-	CreationDate DATETIME NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (GETDATE())
+	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (SYSDATETIMEOFFSET())
 )
 GO
 
