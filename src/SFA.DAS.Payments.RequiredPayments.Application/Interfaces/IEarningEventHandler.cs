@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
