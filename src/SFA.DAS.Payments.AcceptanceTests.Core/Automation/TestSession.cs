@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
-        private static ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
+        private static readonly ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
         public TestSession(long? ukprn = null)
         {
             courseFaker = new Faker<Course>();

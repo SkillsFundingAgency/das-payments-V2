@@ -121,9 +121,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             await providerPaymentsService.ProcessPayment(payments.First(), default(CancellationToken));
             
             mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
-                .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()));
-
-            mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
                 .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()),Times.Once);
         }
     }

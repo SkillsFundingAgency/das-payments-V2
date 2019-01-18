@@ -46,24 +46,19 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             dataRow["Ukprn"] = eventModel.Ukprn;
             dataRow["IlrSubmissionDateTime"] = eventModel.IlrSubmissionDateTime;
             dataRow["JobId"] = eventModel.JobId;
-            //dataRow["EventTime"] = eventModel.EventTime;
 
             dataRow["PriceEpisodeIdentifier"] = eventModel.PriceEpisodeIdentifier;
             dataRow["ContractType"] = (byte)eventModel.ContractType;
             dataRow["TransactionType"] = (byte)eventModel.TransactionType;
             dataRow["Amount"] = eventModel.Amount;
-            //dataRow["AgreementId"] = eventModel.AgreementId;
             
             dataRow["FundingSourceId"] = eventModel.FundingSourceId;
             dataRow["FundingSource"] = (byte)eventModel.FundingSource;
 
-            //dataRow["CollectionPeriod"] = eventModel.CollectionPeriod;
-            //dataRow["CollectionYear"] = eventModel.CollectionYear;
             dataRow["CollectionPeriodName"] = eventModel.CollectionPeriodName;
             dataRow["CollectionPeriodYear"] = eventModel.CollectionPeriodYear;
             dataRow["CollectionPeriodMonth"] = eventModel.CollectionPeriodMonth;
 
-            //dataRow["DeliveryPeriod"] = eventModel.DeliveryPeriod;
             dataRow["DeliveryPeriodName"] = eventModel.DeliveryPeriodName;
             dataRow["DeliveryPeriodYear"] = eventModel.DeliveryPeriodYear;
             dataRow["DeliveryPeriodMonth"] = eventModel.DeliveryPeriodMonth;
