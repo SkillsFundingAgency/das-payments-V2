@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 JobType = JobType.EarningsJob,
                 StartTime = startedEvent.StartTime,
                 CollectionPeriod = startedEvent.CollectionPeriod,
-                CollectionYear = startedEvent.CollectionYear,
+                AcademicYear = startedEvent.CollectionYear,
                 Ukprn = startedEvent.Ukprn,
                 DcJobId = startedEvent.JobId,
                 IlrSubmissionTime = startedEvent.IlrSubmissionTime,

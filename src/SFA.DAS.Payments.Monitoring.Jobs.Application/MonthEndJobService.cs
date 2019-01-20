@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 Status = JobStatus.InProgress,
                 JobType = JobType.MonthEndJob,
                 CollectionPeriod = startedJobCommand.CollectionPeriod,
-                CollectionYear = startedJobCommand.CollectionYear,
+                AcademicYear = startedJobCommand.CollectionYear,
                 DcJobId = startedJobCommand.JobId,
             };
             var jobSteps = startedJobCommand.GeneratedMessages.Select(msg => new JobStepModel

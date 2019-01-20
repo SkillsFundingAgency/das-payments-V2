@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             {
                 new DataColumn("EventId", typeof(Guid)),
                 new DataColumn("CollectionPeriod"),
-                new DataColumn("CollectionYear"),
+                new DataColumn("AcademicYear"),
                 new DataColumn("LearnerReferenceNumber"),
                 new DataColumn("LearnerUln"),
                 new DataColumn("LearningAimReference"),
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             var dataRow = DataTable.NewRow();
             dataRow["EventId"] = eventModel.EventId;
             dataRow["CollectionPeriod"] = eventModel.CollectionPeriod;
-            dataRow["CollectionYear"] = eventModel.CollectionYear;
+            dataRow["AcademicYear"] = eventModel.AcademicYear;
             dataRow["LearnerReferenceNumber"] = eventModel.LearnerReferenceNumber;
             dataRow["LearnerUln"] = eventModel.LearnerUln;
             dataRow["LearningAimReference"] = eventModel.LearningAimReference;

@@ -6,13 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
-using AutoMapper;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
-using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -75,13 +74,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestHandleNormalEvent()
         {
             // arrange
-            var deliveryPeriod = new CalendarPeriod(2018, 9);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
+            byte deliveryPeriod = 2;
 
             var earningEvent = new FunctionalSkillEarningsEvent
             {
                 Ukprn = 1,
-                CollectionPeriod = new CalendarPeriod(2018, 9),
-                CollectionYear = deliveryPeriod.AcademicYear,
+                CollectionPeriod = period,
+                CollectionYear = period.AcademicYear,
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         {
                             new EarningPeriod
                             {
-                                Period = deliveryPeriod.Period,
+                                Period = deliveryPeriod,
                                 Amount = 100,
                                 PriceEpisodeIdentifier = "2"
                             }
@@ -104,7 +104,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var paymentHistoryEntities = new[] { new PaymentHistoryEntity() }; 
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", (int)FunctionalSkillType.BalancingMathsAndEnglish, deliveryPeriod)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>()
+                .Setup(s => s.GeneratePaymentKey("9", (int)FunctionalSkillType.BalancingMathsAndEnglish, It.IsAny<short>(), It.IsAny<byte>()))
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(1).Verifiable();
 
@@ -123,13 +126,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestNoEventProducedWhenZeroToPay()
         {
             // arrange
-            var deliveryPeriod = new CalendarPeriod(2018, 9);
-
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
+            
             var earningEvent = new FunctionalSkillEarningsEvent
             {
                 Ukprn = 1,
-                CollectionPeriod = new CalendarPeriod(2018, 9),
-                CollectionYear = deliveryPeriod.AcademicYear,
+                CollectionPeriod = period,
+                CollectionYear = period.AcademicYear,
                 Learner = CreateLearner(),
                 LearningAim = CreateLearningAim(),
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
@@ -141,7 +144,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         {
                             new EarningPeriod
                             {
-                                Period = deliveryPeriod.Period,
+                                Period = 2,
                                 Amount = 100,
                                 PriceEpisodeIdentifier = "2"
                             }
@@ -152,7 +155,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", (int)FunctionalSkillType.OnProgrammeMathsAndEnglish, deliveryPeriod)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>()
+                .Setup(s => s.GeneratePaymentKey("9", (int)FunctionalSkillType.OnProgrammeMathsAndEnglish, It.IsAny<short>(), It.IsAny<byte>()))
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(0).Verifiable();
 

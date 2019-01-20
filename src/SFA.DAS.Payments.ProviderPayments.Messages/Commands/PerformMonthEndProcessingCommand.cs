@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages.Commands
 {
     public class PerformMonthEndProcessingCommand : PaymentsCommand
     {
-        public CalendarPeriod CollectionPeriod { get; set; }
+        public CollectionPeriod CollectionPeriod { get; set; }
     }
 }

@@ -11,27 +11,18 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.ToTable("Payment", "Payments2");
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).HasColumnName(@"PaymentId").IsRequired();
-            builder.Property(x => x.ExternalId).HasColumnName(@"ExternalId").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
+            builder.Property(x => x.EventId).HasColumnName(@"EventId").IsRequired();
+            builder.Property(x => x.EventTime).HasColumnName(@"EventTime").IsRequired();
             builder.Property(x => x.FundingSourceId).HasColumnName(@"FundingSourceEventId").IsRequired();
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier");
             builder.Property(x => x.Amount).HasColumnName(@"Amount");
             builder.OwnsOne(p => p.CollectionPeriod, cp =>
             {
-                cp.Property(x => x.Month).HasColumnName(@"CollectionPeriodMonth").IsRequired();
-                cp.Property(x => x.Name).HasColumnName(@"CollectionPeriodName").IsRequired();
-                cp.Property(x => x.Year).HasColumnName(@"CollectionPeriodYear").IsRequired();
-                cp.Ignore(x => x.Period);
-                cp.Ignore(x => x.AcademicYear);
+                cp.Property(x => x.Period).HasColumnName(@"CollectionPeriod").IsRequired();
+                cp.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear").IsRequired();
             });
-            builder.OwnsOne(p => p.DeliveryPeriod, cp =>
-            {
-                cp.Property(x => x.Month).HasColumnName(@"DeliveryPeriodMonth").IsRequired();
-                cp.Property(x => x.Year).HasColumnName(@"DeliveryPeriodYear").IsRequired();
-                cp.Property(x => x.Name).HasColumnName(@"DeliveryPeriodName").IsRequired();
-                cp.Ignore(x => x.Period);
-                cp.Ignore(x => x.AcademicYear);
-            });
+            builder.Property(x => x.DeliveryPeriod).HasColumnName("DeliveryPeriod").IsRequired();
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();
             builder.Property(x => x.LearnerReferenceNumber).HasColumnName(@"LearnerReferenceNumber").IsRequired();
             builder.Property(x => x.LearnerUln).HasColumnName(@"LearnerUln").IsRequired();

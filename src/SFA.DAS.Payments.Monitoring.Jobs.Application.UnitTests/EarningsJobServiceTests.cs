@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                         && job.JobType == JobType.EarningsJob
                         && job.Status == Data.Model.JobStatus.InProgress && job.DcJobId == jobStarted.JobId
                         && job.CollectionPeriod == jobStarted.CollectionPeriod
-                        && job.CollectionYear == jobStarted.CollectionYear
+                        && job.AcademicYear == jobStarted.CollectionYear
                         && job.IlrSubmissionTime == jobStarted.IlrSubmissionTime
                         && job.Ukprn == jobStarted.Ukprn),
                     It.IsAny<List<JobStepModel>>(), It.IsAny<CancellationToken>()), Times.Once);

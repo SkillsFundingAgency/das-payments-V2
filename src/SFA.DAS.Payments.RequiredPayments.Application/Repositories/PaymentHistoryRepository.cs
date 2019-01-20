@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                             apprenticeshipKey.StandardCode == payment.LearningAimStandardCode)
                 .Select(payment => new
                 {
-                    payment.ExternalId,
+                    ExternalId = payment.EventId,
                     payment.Ukprn,
                     payment.LearnerReferenceNumber,
                     payment.LearningAimReference,
@@ -52,8 +52,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 LearnAimReference = payment.LearningAimReference,
                 TransactionType = (int)payment.TransactionType,
                 PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
-                DeliveryPeriod = payment.DeliveryPeriod.Name,
-                CollectionPeriod = payment.CollectionPeriod.Name,
+                DeliveryPeriod = payment.DeliveryPeriod,
+                CollectionPeriod = payment.CollectionPeriod,
                 Amount = payment.Amount,
                 FundingSource = payment.FundingSource
             })

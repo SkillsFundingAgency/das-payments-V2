@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 
@@ -32,10 +33,9 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
                 currentExecutionContext.JobId = message.JobId.ToString();
                 logger.LogDebug(
-                    $"Processing Ilr Submitted Event for Message: {message.CollectionPeriod.Name}, Ukprn: {message.Ukprn}, Job id: {message.JobId}, Ilr submission time: {message.IlrSubmissionDateTime}");
+                    $"Processing Ilr Submitted Event for Message: {message.ToJson()}.");
                 await handleIlrSubmissionService.Handle(message, CancellationToken.None);
-                logger.LogInfo(
-                    $"Successfully processed Ilr Submitted Event for Job Id {message.JobId} and Message Type {message.GetType().Name}");
+                logger.LogInfo($"Successfully processed Ilr Submitted Event: {message.ToJson()}");
             }
             catch (Exception ex)
             {

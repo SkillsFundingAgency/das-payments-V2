@@ -124,7 +124,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                 {
                     Learner = fm36Learner,
                     CollectionPeriod = collectionPeriod,
-                    CollectionYear = "1819",
+                    CollectionYear = 1819,
                     Ukprn = session.Ukprn,
                     JobId = session.JobId,
                     IlrSubmissionDateTime = session.IlrSubmissionTime,
@@ -139,7 +139,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                 Console.WriteLine($"Sent learner.  Ukprn: {session.Ukprn}, Learner: {fm36Learner.LearnRefNumber}, Time: {DateTime.Now:o}");
             }
             var dcHelper = Container.Resolve<DcHelper>();
-            await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, "1819", (byte)collectionPeriod, session.JobId);
+            await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, 1819, (byte)collectionPeriod, session.JobId);
         }
 
         [OneTimeTearDown]

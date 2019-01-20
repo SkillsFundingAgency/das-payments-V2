@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn");
             builder.Property(x => x.IlrSubmissionTime).HasColumnName(@"IlrSubmissionTime");
             builder.Property(x => x.LearnerCount).HasColumnName(@"LearnerCount");
-            builder.Property(x => x.CollectionYear).HasColumnName(@"CollectionYear");
+            builder.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear");
             builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
         }
     }

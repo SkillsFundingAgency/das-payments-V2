@@ -43,12 +43,12 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public async Task Handle(ProcessProviderMonthEndCommand message, IMessageHandlerContext context)
         {
-            paymentLogger.LogInfo($"Processing Provider Month End Command for Message Id: {context.MessageId}");
+            paymentLogger.LogDebug($"Processing Provider Month End Command for Message Id: {context.MessageId}");
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
             try
             {
-                var payments = await monthEndService.GetMonthEndPayments(message.CollectionPeriod.Year, message.CollectionPeriod.Month, message.Ukprn, CancellationToken.None);
+                var payments = await monthEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn);
                 foreach (var paymentEvent in payments.Select(payment => MapToProviderPaymentEvent(payment, message.JobId)))
                 {
                     await context.Publish(paymentEvent);

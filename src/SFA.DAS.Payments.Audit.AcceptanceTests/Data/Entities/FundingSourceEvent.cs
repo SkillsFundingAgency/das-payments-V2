@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Data.Entities
         public byte FundingSourceType { get; set; } // FundingSourceType
         public decimal Amount { get; set; } // Amount
         public byte CollectionPeriod { get; set; } // CollectionPeriod
-        public string CollectionYear { get; set; } // CollectionYear (length: 4)
+        public short AcademicYear { get; set; } // CollectionYear (length: 4)
         public byte DeliveryPeriod { get; set; } // DeliveryPeriod
         public string LearnerReferenceNumber { get; set; } // LearnerReferenceNumber (length: 50)
         public long LearnerUln { get; set; } // LearnerUln

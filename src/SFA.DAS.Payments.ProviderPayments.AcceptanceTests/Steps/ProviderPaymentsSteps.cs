@@ -1,12 +1,10 @@
 ﻿using NServiceBus;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
-using SFA.DAS.Payments.ProviderPayments.Messages.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
@@ -82,7 +80,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         expectedContract == payment.ContractType
                         && TestSession.Learner.LearnRefNumber == payment.LearnerReferenceNumber
                         && TestSession.Ukprn == payment.Ukprn
-                        && expectedEvent.DeliveryPeriod == payment.DeliveryPeriod?.Period
+                        && expectedEvent.DeliveryPeriod == payment.DeliveryPeriod
                         && expectedEvent.Type == payment.TransactionType
                         && expectedEvent.FundingSourceType == payment.FundingSource
                         && expectedEvent.Amount == payment.Amount
@@ -105,28 +103,23 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         ContractType == receivedEvent.ContractType
                         && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
                         && TestSession.Ukprn == receivedEvent.Ukprn
-                        && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
+                        && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod
                         && expectedEvent.Type == receivedEvent.TransactionType
                         && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
                         && expectedEvent.Amount == receivedEvent.AmountDue
                         && TestSession.JobId == receivedEvent.JobId
                     ));
             }, "Failed to find all the provider payment events");
-
         }
-
-
+        
         private async Task SendMonthEndEvent()
         {
             await MessageSession.Send(new ProcessProviderMonthEndCommand()
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = TestSession.JobId,
-                CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod)
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
             }).ConfigureAwait(false);
-
         }
-
-
     }
 }

@@ -193,7 +193,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             var dcHelper = Container.Resolve<DcHelper>();
-            await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, CollectionYear, CollectionPeriod, TestSession.JobId);
+            await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, AcademicYear, CollectionPeriod, TestSession.JobId);
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
@@ -230,7 +230,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 JobId = monthEndJobId,
                 CollectionPeriod = CollectionPeriod,
-                CollectionYear = short.Parse(CollectionYear),
+                CollectionYear = AcademicYear,
                 GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
                 {
                     StartTime = DateTimeOffset.UtcNow,
@@ -250,7 +250,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenNoProviderPaymentsWillBeRecorded()
         {
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name);
+            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }
 

@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data.Model
         public long? Ukprn { get; set; }
         public DateTime? IlrSubmissionTime { get; set; }
         public int? LearnerCount { get; set; }
-        public short CollectionYear { get; set; }
+        public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
     }
 }

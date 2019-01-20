@@ -10,6 +10,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -34,8 +35,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         [Given(@"the earnings are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
         {
-            var year = DateTime.Today.Year - 2000;
-            CollectionYear = DateTime.Today.Month < 9 ? $"{year - 1}{year}" : $"{year}{year + 1}";
+            AcademicYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;
         }
 
         [Given(@"the current collection period is (.*)")]
@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         public async Task WhenTheILRIsSubmittedAndTheLearnerEarningsAreSentToTheEarningEventsService()
         {
             var learners = CreateLearners();
-            await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, CollectionYear, CollectionPeriod, TestSession.JobId).ConfigureAwait(true);
+            await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, AcademicYear, CollectionPeriod, TestSession.JobId).ConfigureAwait(true);
         }
 
         [Then(@"the earning events service will generate a contract type 2 earnings event for the learner")]

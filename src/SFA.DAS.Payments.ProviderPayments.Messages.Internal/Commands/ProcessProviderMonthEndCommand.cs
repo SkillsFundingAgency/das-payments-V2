@@ -8,7 +8,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands
     public class ProcessProviderMonthEndCommand: PaymentsCommand
     {
         public long Ukprn { get; set; }
-        public CalendarPeriod CollectionPeriod { get; set; }
-
+        public CollectionPeriod CollectionPeriod { get; set; }
     }
 }

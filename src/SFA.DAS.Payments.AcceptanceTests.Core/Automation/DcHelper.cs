@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
         private readonly IFileService azureFileService;
 
-        public DcHelper(IJsonSerializationService serializationService, 
+        public DcHelper(IJsonSerializationService serializationService,
             ITopicPublishService<JobContextDto> topicPublishingService,
             IFileService azureFileService)
         {
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
         }
 
-        public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, string collectionYear, byte collectionPeriod, long jobId)
+        public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, short collectionYear, byte collectionPeriod, long jobId)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 var ilrSubmission = new FM36Global
                 {
                     UKPRN = (int)ukprn,
-                    Year = collectionYear,
+                    Year = collectionYear.ToString(),
                     Learners = learners
                 };
                 var json = serializationService.Serialize(ilrSubmission);

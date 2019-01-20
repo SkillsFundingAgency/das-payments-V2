@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.Messages.Core.Events
     {
         public string PriceEpisodeIdentifier { get; set; }
         public decimal AmountDue { get; set; }
-        public CalendarPeriod DeliveryPeriod { get; set; }
+        public byte DeliveryPeriod { get; set; }
     }
 }

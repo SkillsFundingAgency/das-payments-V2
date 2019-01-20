@@ -2,7 +2,6 @@
 
 namespace SFA.DAS.Payments.Audit.Model
 {
-
     public interface IPeriodisedPaymentsEventModel: IPaymentsEventModel
     {
          string PriceEpisodeIdentifier { get; set; }

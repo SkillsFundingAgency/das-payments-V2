@@ -34,8 +34,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
             try
             {
-                var monthEndUkprns = await monthEndEventHandlerService.GetMonthEndUkprns(message.CollectionPeriod.Year, message.CollectionPeriod.Month);
-
+                var monthEndUkprns = await monthEndEventHandlerService.GetMonthEndUkprns(message.CollectionPeriod);
                 if (monthEndUkprns == null || !monthEndUkprns.Any())
                 {
                     paymentLogger.LogWarning("No Provider Ukprn found for month end payment");
@@ -48,12 +47,10 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                     {
                         Ukprn = ukprn,
                         JobId = message.JobId,
-                        CollectionPeriod = message.CollectionPeriod.Clone()
+                        CollectionPeriod = message.CollectionPeriod
                     });
                 }
-
                 paymentLogger.LogInfo($"Successfully processed Month End Event for Job Id {message.JobId} and Message Type {message.GetType().Name}");
-
             }
             catch (Exception ex)
             {

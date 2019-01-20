@@ -524,41 +524,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-352.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 16-18 learner large employer at start changed to small employer PV2-352.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 16-18 learner second employment status with same employer but small employer flag removed PV2-331.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 16-18 learner second employment status with same employer but small employer flag removed PV2-331.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 16-18 learner with a small employer at start PV2-326.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 16-18 learner with a small employer at start PV2-326.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -787,34 +752,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-352.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 16-18 learner large employer at start changed to small employer PV2-352.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 16-18 learner second employment status with same employer but small employer flag removed PV2-331.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 16-18 learner second employment status with same employer but small employer flag removed PV2-331.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 16-18 learner with a small employer at start PV2-326.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 16-18 learner with a small employer at start PV2-326.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.AcceptanceTests.Core\SFA.DAS.Payments.AcceptanceTests.Core.csproj">
@@ -864,6 +801,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj">
       <Project>{21918F17-1310-4276-BEF5-64243F9E0C31}</Project>
       <Name>SFA.DAS.Payments.RequiredPayments.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Tests.Core\SFA.DAS.Payments.Tests.Core.csproj">
+      <Project>{64B5C1EB-36A9-4A56-AD6B-B70C90FC23D7}</Project>
+      <Name>SFA.DAS.Payments.Tests.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

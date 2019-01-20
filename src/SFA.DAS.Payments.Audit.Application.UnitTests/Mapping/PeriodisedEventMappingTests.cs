@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Messages.Core.Events;
-using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
 {
@@ -15,7 +14,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
         {
             base.PopulateCommonProperties(paymentEvent);
             paymentEvent.AmountDue = 500;
-            paymentEvent.DeliveryPeriod = new CalendarPeriod(2018,1);
+            paymentEvent.DeliveryPeriod = 1;
             paymentEvent.PriceEpisodeIdentifier = "pe-1";
         }
 
@@ -29,7 +28,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
         [Test]
         public void Maps_DeliveryPeriod()
         {
-            Mapper.Map<TDest>(PaymentEvent).DeliveryPeriod.Should().Be(PaymentEvent.DeliveryPeriod.Period);
+            Mapper.Map<TDest>(PaymentEvent).DeliveryPeriod.Should().Be(PaymentEvent.DeliveryPeriod);
         }
 
         [Test]

@@ -5,7 +5,7 @@
 	Ukprn BIGINT NOT NULL,
 	ContractType  TINYINT NOT NULL,
 	CollectionPeriod TINYINT NOT NULL,
-	CollectionYear NVARCHAR(4) NOT NULL,
+	AcademicYear SMALLINT NOT NULL,
 	LearnerReferenceNumber  NVARCHAR(50) NOT NULL,
 	LearnerUln  BIGINT NOT NULL,
 	LearningAimReference   NVARCHAR(8) NOT NULL,

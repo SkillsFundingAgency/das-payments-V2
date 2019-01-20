@@ -66,6 +66,7 @@
     <Folder Include="Payments2" />
     <Folder Include="Payments2\Views" />
     <Folder Include="Payments2\Tables" />
+    <Folder Include="dbo\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\User_RO.sql" />

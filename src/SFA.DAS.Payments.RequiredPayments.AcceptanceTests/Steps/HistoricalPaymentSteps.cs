@@ -8,6 +8,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -79,15 +80,15 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return new PaymentModel
             {
                 
-                ExternalId = Guid.NewGuid(),
+                EventId = Guid.NewGuid(),
                 FundingSourceId =  Guid.NewGuid(),
                 Ukprn = TestSession.Ukprn,
                 LearnerReferenceNumber = testSessionLearner.LearnRefNumber,
                 LearnerUln = testSessionLearner.Uln,
                 PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
                 Amount = GetFundingAmount(payment.Amount, fundingSource),
-                CollectionPeriod = new CalendarPeriod(CollectionYear, CollectionPeriod),
-                DeliveryPeriod = new CalendarPeriod(CollectionYear, payment.Delivery_Period),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
+                DeliveryPeriod = payment.Delivery_Period,
                 LearningAimReference = testSessionLearner.Course.LearnAimRef,
                 LearningAimProgrammeType = testSessionLearner.Course.ProgrammeType,
                 LearningAimStandardCode = testSessionLearner.Course.StandardCode,

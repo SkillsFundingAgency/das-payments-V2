@@ -41,9 +41,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 if (periodAndType.period.Period > earningEvent.CollectionPeriod.Period) // cut off future periods
                     continue;
 
-
-                var deliveryPeriod = new CalendarPeriod(earningEvent.CollectionYear, periodAndType.period.Period);
-                var key = paymentKeyService.GeneratePaymentKey(earningEvent.LearningAim.Reference, periodAndType.type, deliveryPeriod);
+                var deliveryPeriod = periodAndType.period.Period;
+                var key = paymentKeyService.GeneratePaymentKey(earningEvent.LearningAim.Reference, periodAndType.type, earningEvent.CollectionYear, deliveryPeriod);
 
                 var paymentHistoryValue = await paymentHistoryCache.TryGet(key, cancellationToken);
 
@@ -68,11 +67,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 requiredPayment.AmountDue = amountDue;
                 requiredPayment.Learner = earningEvent.Learner.Clone();
                 requiredPayment.Ukprn = earningEvent.Ukprn;
-                requiredPayment.CollectionPeriod = earningEvent.CollectionPeriod.Clone();
+                requiredPayment.CollectionPeriod = earningEvent.CollectionPeriod;
                 requiredPayment.DeliveryPeriod = deliveryPeriod;
                 requiredPayment.LearningAim = earningEvent.LearningAim.Clone();
                 requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
-                requiredPayment.EventTime = DateTimeOffset.UtcNow;
                 requiredPayment.JobId = earningEvent.JobId;
                 requiredPayment.IlrSubmissionDateTime = earningEvent.IlrSubmissionDateTime;
 

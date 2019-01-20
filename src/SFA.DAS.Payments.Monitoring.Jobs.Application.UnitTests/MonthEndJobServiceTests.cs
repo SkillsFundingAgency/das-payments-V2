@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                         && job.Status == JobStatus.InProgress 
                         && job.DcJobId == jobStarted.JobId
                         && job.CollectionPeriod == jobStarted.CollectionPeriod
-                        && job.CollectionYear == jobStarted.CollectionYear
+                        && job.AcademicYear == jobStarted.CollectionYear
                         && job.IlrSubmissionTime == null
                         && job.Ukprn == null),
                     It.IsAny<List<JobStepModel>>(), 

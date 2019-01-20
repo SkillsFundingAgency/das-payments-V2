@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
 using SFA.DAS.Payments.ProviderPayments.Model;
 
@@ -49,14 +50,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     SfaContributionPercentage = 0.9m,
                     JobId = 1,
                     DeliveryPeriod = 7,
-                    DeliveryPeriodName= "1819-R07",
-                    DeliveryPeriodYear = 2018,
-                    DeliveryPeriodMonth = 2,
-                    
                     CollectionPeriod = 8,
-                    CollectionPeriodYear = 2018,
-                    CollectionPeriodName = "1819-R08",
-                    CollectionPeriodMonth = 3,
+                    AcademicYear = 1819,
                     IlrSubmissionDateTime = DateTime.UtcNow,
                     ContractType = ContractType.Act1,
                     PriceEpisodeIdentifier = "P-1",
@@ -85,7 +80,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 Ukprn = ukprn,
                 JobId = jobId,
                 IlrSubmissionDateTime = DateTime.MaxValue,
-                CollectionPeriod = new CalendarPeriod(2018, 2)
+                CollectionPeriod = new CollectionPeriodBuilder().WithDate(new DateTime(2018, 2, 1)).Build(),
             };
 
             ilrSubmittedEventCache = mocker.Mock<IDataCache<IlrSubmittedEvent>>();
@@ -111,8 +106,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(Task.CompletedTask);
 
             providerPaymentsService = mocker.Create<ProviderPaymentsService>();
-
-
         }
 
         [Test]

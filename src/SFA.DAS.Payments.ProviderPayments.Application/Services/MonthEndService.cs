@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
@@ -16,11 +17,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.providerPaymentsRepository = providerPaymentsRepository;
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndPayments(short collectionYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentModel>> GetMonthEndPayments(CollectionPeriod collectionPeriod,
+            long ukprn,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            var payments = await providerPaymentsRepository.GetMonthEndPayments(collectionYear, collectionPeriod, ukprn, cancellationToken);
-            return payments.ToList();
+            return await providerPaymentsRepository.GetMonthEndPayments(collectionPeriod, ukprn, cancellationToken);
         }
-
     }
 }

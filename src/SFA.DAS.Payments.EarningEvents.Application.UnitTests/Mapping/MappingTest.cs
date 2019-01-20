@@ -192,7 +192,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             processLearnerCommand = new ProcessLearnerCommand
             {
                 Learner = fm36Learner,
-                CollectionYear = "1819",
+                CollectionYear = 1819,
                 Ukprn = 12345,
                 JobId = 69,
                 CollectionPeriod = 1,
@@ -221,7 +221,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         public void Maps_Collection_Year()
         {
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
-            earningEvent.CollectionYear.Should().Be("1819");
+            earningEvent.CollectionYear.Should().Be(1819);
         }
 
         [Test]

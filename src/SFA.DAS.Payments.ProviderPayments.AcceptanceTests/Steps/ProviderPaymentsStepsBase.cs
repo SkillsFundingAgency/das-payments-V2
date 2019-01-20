@@ -3,7 +3,6 @@ using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using System;
@@ -11,19 +10,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SFA.DAS.Payments.Model.Core.Factories;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 {
     public abstract class ProviderPaymentsStepsBase : StepsBase
     {
-
         public List<FundingSourcePayment> FundingSourcePayments { get => Get<List<FundingSourcePayment>>(); set => Set(value); }
 
         protected ProviderPaymentsStepsBase(ScenarioContext scenarioContext) : base(scenarioContext)
-        {
-
-        }
+        {}
 
         protected async Task<List<PaymentModel>> GetPaymentsAsync(long jobId)
         {
@@ -32,14 +29,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 .Where(o => o.JobId == jobId)
                 .ToListAsync();
 
-            payments.ForEach(o =>
-            {
-                o.CollectionPeriod = new CalendarPeriod(o.CollectionPeriod.Year, o.CollectionPeriod.Month);
-                o.DeliveryPeriod = new CalendarPeriod(o.DeliveryPeriod.Year, o.DeliveryPeriod.Month);
-            });
-
             return payments;
-
         }
 
         protected FundingSourcePaymentEvent CreateFundingSourcePaymentEvent(FundingSourcePayment fundingSourcePayment, DateTime? submissionTime )
@@ -71,8 +61,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             paymentEvent.JobId = TestSession.JobId;
             paymentEvent.EventTime = DateTimeOffset.UtcNow;
             paymentEvent.SfaContributionPercentage = SfaContributionPercentage;
-            paymentEvent.CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod);
-            paymentEvent.DeliveryPeriod = new CalendarPeriod(GetYear(fundingSourcePayment.DeliveryPeriod, CollectionYear).ToString(), fundingSourcePayment.DeliveryPeriod);
+            paymentEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod);
+            paymentEvent.DeliveryPeriod = fundingSourcePayment.DeliveryPeriod;
             paymentEvent.LearningAim = TestSession.Learner.Course.ToLearningAim();
             paymentEvent.PriceEpisodeIdentifier = "P1";
             return paymentEvent;

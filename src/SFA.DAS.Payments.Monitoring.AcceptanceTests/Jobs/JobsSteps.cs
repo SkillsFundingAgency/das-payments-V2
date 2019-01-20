@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 JobType = JobType.EarningsJob,
                 StartTime = JobDetails.StartTime,
                 CollectionPeriod = JobDetails.CollectionPeriod,
-                CollectionYear = JobDetails.CollectionYear,
+                AcademicYear = JobDetails.CollectionYear,
                 Ukprn = JobDetails.Ukprn,
                 DcJobId = JobDetails.JobId,
                 IlrSubmissionTime = JobDetails.IlrSubmissionTime,

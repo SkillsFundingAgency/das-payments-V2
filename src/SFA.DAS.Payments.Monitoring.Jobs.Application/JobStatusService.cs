@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             telemetry.AddProperty(TelemetryKeys.Ukprn, job.Ukprn?.ToString() ?? string.Empty);
             telemetry.AddProperty(TelemetryKeys.ExternalJobId, job.DcJobId?.ToString() ?? string.Empty);
             telemetry.AddProperty(TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString());
-            telemetry.AddProperty(TelemetryKeys.CollectionYear, job.CollectionYear.ToString());
+            telemetry.AddProperty(TelemetryKeys.AcademicYear, job.AcademicYear.ToString());
             telemetry.AddProperty(TelemetryKeys.Status, job.Status.ToString("G"));
             var metrics = new Dictionary<string, double>
             {

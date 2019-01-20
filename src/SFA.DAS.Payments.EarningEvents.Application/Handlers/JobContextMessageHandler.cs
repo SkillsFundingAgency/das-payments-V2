@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         new Dictionary<string, string>
                         {
                             { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
-                            { TelemetryKeys.CollectionYear, fm36Output.Year},
+                            { TelemetryKeys.AcademicYear, fm36Output.Year},
                             { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
                             { TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
                         },
@@ -101,7 +101,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 new Dictionary<string, string>
                 {
                     { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
-                    { TelemetryKeys.CollectionYear, fm36Output.Year},
+                    { TelemetryKeys.AcademicYear, fm36Output.Year},
                     { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
                     { TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
                 },
@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             return fm36Output;
         }
 
-        private static ProcessLearnerCommand Build(FM36Learner learner, long jobId, DateTime ilrSubmissionDateTime, string collectionYear, int collectionPeriod, long ukprn)
+        private static ProcessLearnerCommand Build(FM36Learner learner, long jobId, DateTime ilrSubmissionDateTime, short academicYear, int collectionPeriod, long ukprn)
         {
             return new ProcessLearnerCommand
             {
@@ -120,7 +120,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 Learner = learner,
                 RequestTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = ilrSubmissionDateTime,
-                CollectionYear = collectionYear,
+                CollectionYear = academicYear,
                 CollectionPeriod = collectionPeriod,
                 Ukprn = ukprn
             };
@@ -133,7 +133,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             var commands = fm36Output
                 .Learners
                 .Select(learner => Build(learner, message.JobId,
-                    message.SubmissionDateTimeUtc, fm36Output.Year, collectionPeriod, fm36Output.UKPRN))
+                    message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), collectionPeriod, fm36Output.UKPRN))
                 .ToList();
 
             var jobStatusClient = jobClientFactory.Create();

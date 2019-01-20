@@ -6,6 +6,7 @@ using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
 {
@@ -40,7 +41,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
                 ReferenceNumber = "LR-12345",
                 Uln = 12345678
             };
-            paymentEvent.CollectionPeriod = new CalendarPeriod(2018, 12);
+            paymentEvent.CollectionPeriod = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build();
             paymentEvent.IlrSubmissionDateTime = DateTime.UtcNow;
             paymentEvent.JobId = 1234;
             paymentEvent.LearningAim = new LearningAim
@@ -81,7 +82,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
         [Test]
         public void Maps_CollectionYear()
         {
-            Mapper.Map<TDest>(PaymentEvent).CollectionYear.Should().Be(PaymentEvent.CollectionPeriod.AcademicYear);
+            Mapper.Map<TDest>(PaymentEvent).AcademicYear.Should().Be(PaymentEvent.CollectionPeriod.AcademicYear);
         }
 
         [Test]

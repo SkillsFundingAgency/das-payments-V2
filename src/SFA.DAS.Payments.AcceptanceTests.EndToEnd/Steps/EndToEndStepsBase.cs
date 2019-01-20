@@ -14,6 +14,8 @@ using NServiceBus;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.Tests.Core;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -57,9 +59,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "previous_earnings");
         }
 
-        public CalendarPeriod CurrentCollectionPeriod
+        public CollectionPeriod CurrentCollectionPeriod
         {
-            get => Get<CalendarPeriod>("current_collection_period");
+            get => Get<CollectionPeriod>("current_collection_period");
             set => Set(value, "current_collection_period");
         }
 
@@ -77,11 +79,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected void SetCollectionPeriod(string collectionPeriod)
         {
             Console.WriteLine($"Current collection period is: {collectionPeriod}.");
-            var period = collectionPeriod.ToCalendarPeriod();
-            Console.WriteLine($"Current collection period name is: {period.Name}.");
+            var period = new CollectionPeriodBuilder().WithSpecDate(collectionPeriod).Build();
+            Console.WriteLine($"Current collection period name is: {period.ToJson()}.");
             CurrentCollectionPeriod = period;
             CollectionPeriod = CurrentCollectionPeriod.Period;
-            CollectionYear = CurrentCollectionPeriod.AcademicYear;
+            AcademicYear = CurrentCollectionPeriod.AcademicYear;
         }
 
         protected void AddTestLearners(List<Training> training)
@@ -170,8 +172,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             return new PaymentModel
             {
-                CollectionPeriod = providerPayment.CollectionPeriod.ToDate().ToCalendarPeriod(),
-                DeliveryPeriod = providerPayment.DeliveryPeriod.ToDate().ToCalendarPeriod(),
+                CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build(),
+                DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(),
                 Ukprn = TestSession.Ukprn,
                 JobId = jobId,
                 SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
@@ -184,7 +186,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 LearningAimReference = learnerTraining.AimReference,
                 LearningAimStandardCode = learnerTraining.StandardCode,
                 IlrSubmissionDateTime = submissionTime,
-                ExternalId = Guid.NewGuid(),
+                EventId = Guid.NewGuid(),
                 Amount = amount,
                 LearningAimFundingLineType = learnerTraining.FundingLineType,
                 LearnerUln = providerPayment.Uln,
@@ -240,7 +242,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
                                                         e.AimSequenceNumber == aim.AimSequenceNumber))
             {
-                var period = earning.DeliveryCalendarPeriod.Period;
+                var period = earning.DeliveryCalendarPeriod;
                 foreach (var earningValue in earning.Values)
                 {
                     var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
@@ -269,15 +271,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 var id = CalculatePriceEpisodeIdentifier(priceEpisode, priceEpisodePrefix);
 
-                var firstEarningForPriceEpisode = earnings.First(e =>
-                {
-                    var deliveryPeriod = e.DeliveryCalendarPeriod;
-                    var earningAcademicYear = int.Parse(deliveryPeriod.Name.Substring(0, 4));
-                    return earningAcademicYear * 100 + deliveryPeriod.Period >=
-                           int.Parse(priceEpisode.EpisodeStartDate.ToCalendarPeriod().Name
-                               .Substring(0, 4)) * 100 + priceEpisode
-                               .EpisodeStartDate.ToCalendarPeriod().Period;
-                });
+                var priceEpisodeStartDateAsDeliveryPeriod = new DeliveryPeriodBuilder()
+                    .WithDate(priceEpisode.EpisodeStartDate)
+                    .Build();
+
+                var firstEarningForPriceEpisode = earnings
+                    .OrderBy(x => x.DeliveryCalendarPeriod)
+                    .First(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod);
+
                 var sfaContributionPercent = (firstEarningForPriceEpisode.SfaContributionPercentage ??
                                   priceEpisode.SfaContributionPercentage).ToPercent();
 
@@ -338,14 +339,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
 
                 var episodeLastPeriod = LastOnProgPeriod(currentPriceEpisode);
-                var episodeStart = currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value.ToCalendarPeriod();
-
+                var episodeStart = new CollectionPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value).Build();
+                
                 foreach (var currentValues in aimPeriodisedValues)
                 {
                     PriceEpisodePeriodisedValues newValues;
 
                     // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
-                    if (episodeStart.GetCollectionYear() == CollectionYear && (episodeStart.Period > 1 || episodeLastPeriod < 12))
+                    if (episodeStart.AcademicYear == AcademicYear && (episodeStart.Period > 1 || episodeLastPeriod < 12))
                     {
                         newValues = new PriceEpisodePeriodisedValues { AttributeName = currentValues.AttributeName };
 
@@ -399,8 +400,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             byte LastOnProgPeriod(PriceEpisode currentPriceEpisode)
             {
-                return currentPriceEpisode.PriceEpisodeValues
-                           .PriceEpisodeActualEndDate?.ToLastOnProgPeriod().Period ?? 12;
+                if (currentPriceEpisode.PriceEpisodeValues
+                        .PriceEpisodeActualEndDate == null)
+                {
+                    return 12;
+                }
+
+                return new DeliveryPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues
+                    .PriceEpisodeActualEndDate.Value).BuildLastOnProgPeriod();
             }
         }
 
@@ -487,7 +494,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 Learner = learner,
                 CollectionPeriod = CurrentCollectionPeriod.Period,
-                CollectionYear = CollectionYear,
+                CollectionYear = AcademicYear,
                 Ukprn = TestSession.Ukprn,
                 JobId = TestSession.JobId,
                 IlrSubmissionDateTime = TestSession.IlrSubmissionTime,

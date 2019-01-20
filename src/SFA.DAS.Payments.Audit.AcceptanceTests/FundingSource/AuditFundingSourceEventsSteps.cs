@@ -11,6 +11,7 @@ using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -66,8 +67,8 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.FundingSource
                 Uln = TestSession.Learner.Uln
             };
             fundingSourceEvent.AmountDue = testData.Amount;
-            fundingSourceEvent.CollectionPeriod = new CalendarPeriod((short)DateTime.Today.Year, (byte)DateTime.Today.Month);
-            fundingSourceEvent.DeliveryPeriod = new CalendarPeriod((short)DateTime.Today.Year, (byte)DateTime.Today.Month);
+            fundingSourceEvent.CollectionPeriod = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build();
+            fundingSourceEvent.DeliveryPeriod = 1;
             fundingSourceEvent.IlrSubmissionDateTime = TestSession.IlrSubmissionTime;
             fundingSourceEvent.JobId = TestSession.JobId;
             fundingSourceEvent.LearningAim = new LearningAim

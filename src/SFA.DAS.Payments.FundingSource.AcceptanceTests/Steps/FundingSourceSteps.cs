@@ -2,13 +2,13 @@
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.FundingSource.AcceptanceTests.Data;
 using SFA.DAS.Payments.FundingSource.AcceptanceTests.Handlers;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -94,7 +94,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                          && TestSession.Learner.LearnRefNumber == receivedEvent?.Learner?.ReferenceNumber
                          && TestSession.Ukprn == receivedEvent.Ukprn
                          && expectedEvent.PriceEpisodeIdentifier == receivedEvent.PriceEpisodeIdentifier
-                         && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod?.Period
+                         && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod
                          && expectedEvent.Type == receivedEvent.TransactionType
                          && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
                          && expectedEvent.Amount == receivedEvent.AmountDue
@@ -132,8 +132,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             paymentEvent.AmountDue = requiredPayment.Amount;
             paymentEvent.JobId = TestSession.JobId;
             paymentEvent.EventTime = DateTimeOffset.UtcNow;
-            paymentEvent.CollectionPeriod = new CalendarPeriod(GetYear(CollectionPeriod, CollectionYear).ToString(), CollectionPeriod);
-            paymentEvent.DeliveryPeriod = new CalendarPeriod(GetYear(requiredPayment.DeliveryPeriod, CollectionYear).ToString(), requiredPayment.DeliveryPeriod);
+            paymentEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod);
+            paymentEvent.DeliveryPeriod = requiredPayment.DeliveryPeriod;
             paymentEvent.IlrSubmissionDateTime = TestSession.IlrSubmissionTime;
             paymentEvent.LearningAim = TestSession.Learner.Course.ToLearningAim();
             paymentEvent.PriceEpisodeIdentifier = requiredPayment.PriceEpisodeIdentifier;

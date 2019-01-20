@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Data.Configuration
             builder.Property(x => x.FundingSourceType).HasColumnName(@"FundingSourceType");
             builder.Property(x => x.Amount).HasColumnName(@"Amount");
             builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
-            builder.Property(x => x.CollectionYear).HasColumnName(@"CollectionYear");
+            builder.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear");
             builder.Property(x => x.DeliveryPeriod).HasColumnName(@"DeliveryPeriod");
             builder.Property(x => x.LearnerReferenceNumber).HasColumnName(@"LearnerReferenceNumber");
             builder.Property(x => x.LearnerUln).HasColumnName(@"LearnerUln");

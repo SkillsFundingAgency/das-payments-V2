@@ -5,7 +5,6 @@ using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.ProviderPayments.Application.Mapping;
 using SFA.DAS.Payments.ProviderPayments.Model;
 
@@ -30,7 +29,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
         {
             var employerCoInvested = new EmployerCoInvestedFundingSourcePaymentEvent
             {
-                CollectionPeriod = new CalendarPeriod {Period = 12, Month = 7, Year = 2019, Name = "1819-R12"},
+                CollectionPeriod = new CollectionPeriod {Period = 12, AcademicYear = 1819},
                 Learner = new Learner {ReferenceNumber = "1234-ref", Uln = 123456 },
                 TransactionType = TransactionType.Completion,
                 Ukprn = 12345,
@@ -40,7 +39,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 JobId = 123,
                 AmountDue = 300,
                 FundingSourceType = FundingSourceType.CoInvestedEmployer,
-                DeliveryPeriod = new CalendarPeriod { Period = 12, Month = 7, Year = 2019, Name = "1819-R12" },
+                DeliveryPeriod = 12,
                 LearningAim = new LearningAim
                 {
                     PathwayCode = 12,
@@ -56,14 +55,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
             payment.CollectionPeriod.Should().Be(employerCoInvested.CollectionPeriod.Period);
-            payment.CollectionPeriodName.Should().BeEquivalentTo(employerCoInvested.CollectionPeriod.Name);
-            payment.CollectionPeriodMonth.Should().Be(employerCoInvested.CollectionPeriod.Month);
-            payment.CollectionPeriodYear.Should().Be(employerCoInvested.CollectionPeriod.Year);
-            
-            payment.DeliveryPeriodName.Should().BeEquivalentTo(employerCoInvested.CollectionPeriod.Name);
-            payment.DeliveryPeriodMonth.Should().Be(employerCoInvested.CollectionPeriod.Month);
-            payment.DeliveryPeriodYear.Should().Be(employerCoInvested.CollectionPeriod.Year);
-            payment.DeliveryPeriod.Should().Be(employerCoInvested.CollectionPeriod.Period);
+            payment.AcademicYear.Should().Be(employerCoInvested.CollectionPeriod.AcademicYear);
+            payment.DeliveryPeriod.Should().Be(employerCoInvested.DeliveryPeriod);
+            payment.FundingSourceId.Should().Be(employerCoInvested.EventId);
+            payment.ContractType.Should().Be(employerCoInvested.ContractType);
+            payment.SfaContributionPercentage.Should().Be(employerCoInvested.SfaContributionPercentage);
+            payment.Amount.Should().Be(employerCoInvested.AmountDue);
+            payment.FundingSource.Should().Be(employerCoInvested.FundingSourceType);
+            payment.JobId.Should().Be(employerCoInvested.JobId);
+            payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime);
         }
     }
 }

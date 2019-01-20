@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
             return mappingExpression
                     .MapCommon()
                     .ForMember(dest => dest.Amount, opt => opt.MapFrom(source => source.AmountDue))
-                    .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod.Period))
+                    .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                     .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
                 ;
         }
@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
             return mappingExpression
                     .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.EventId))
                     .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Period))
-                    .ForMember(dest => dest.CollectionYear, opt => opt.MapFrom(source => source.CollectionPeriod.AcademicYear))
+                    .ForMember(dest => dest.AcademicYear, opt => opt.MapFrom(source => source.CollectionPeriod.AcademicYear))
                     .ForMember(dest => dest.EventTime, opt => opt.MapFrom(source => source.EventTime))
                     .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
                     .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))

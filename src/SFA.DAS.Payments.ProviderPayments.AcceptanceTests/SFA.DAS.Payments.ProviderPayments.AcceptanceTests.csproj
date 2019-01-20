@@ -384,6 +384,10 @@
       <Project>{f41ed226-c11e-44c3-825a-c40143f0fef9}</Project>
       <Name>SFA.DAS.Payments.ProviderPayments.Messages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Tests.Core\SFA.DAS.Payments.Tests.Core.csproj">
+      <Project>{64B5C1EB-36A9-4A56-AD6B-B70C90FC23D7}</Project>
+      <Name>SFA.DAS.Payments.Tests.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />

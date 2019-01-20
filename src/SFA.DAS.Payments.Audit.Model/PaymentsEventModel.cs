@@ -18,13 +18,13 @@ namespace SFA.DAS.Payments.Audit.Model
         DateTime IlrSubmissionDateTime { get; set; }
         long JobId { get; set; }
         DateTimeOffset EventTime { get; set; }
-        string CollectionYear { get; set; }
+        short AcademicYear { get; set; }
     }
 
     public abstract class PaymentsEventModel : IPaymentsEventModel
     {
         public Guid EventId { get; set; }
-        public string CollectionYear { get; set; }
+        public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
         public string LearnerReferenceNumber { get; set; }
         public long LearnerUln { get; set; }

@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                         { "MessageId",step.MessageId.ToString("N") },
                         { TelemetryKeys.ExternalJobId, job.DcJobId.ToString() },
                         { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString() },
-                        { TelemetryKeys.CollectionYear, job.CollectionYear.ToString()}
+                        { TelemetryKeys.AcademicYear, job.AcademicYear.ToString()}
                     };
                     if (job.Ukprn != null)
                         props.Add(TelemetryKeys.Ukprn, job.Ukprn.ToString());

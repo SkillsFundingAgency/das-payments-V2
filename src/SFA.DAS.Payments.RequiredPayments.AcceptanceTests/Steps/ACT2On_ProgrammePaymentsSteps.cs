@@ -6,6 +6,7 @@ using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
 using TechTalk.SpecFlow;
@@ -45,8 +46,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     StandardCode = 1,
                     FundingLineType = "Funding-LineType"
                 },
-                CollectionPeriod = new CalendarPeriod("1718-R10"),
-                CollectionYear = CollectionYear,
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1718, 10),
+                CollectionYear = AcademicYear,
                 SfaContributionPercentage = 0.90m,
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
                 {
@@ -81,7 +82,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 return ApprenticeshipContractType2Handler.ReceivedEvents
                     .Any(receivedEvent =>
                     {
-                        var spec = EarningEvent.OnProgrammeEarnings[0].Periods.SingleOrDefault(p => p.Period == receivedEvent.DeliveryPeriod.Period);
+                        var spec = EarningEvent.OnProgrammeEarnings[0].Periods.SingleOrDefault(p => p.Period == receivedEvent.DeliveryPeriod);
 
                         if (spec == null)
                             return false;

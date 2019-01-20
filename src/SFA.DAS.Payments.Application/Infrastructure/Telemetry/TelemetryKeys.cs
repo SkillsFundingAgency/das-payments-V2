@@ -8,7 +8,7 @@
         public static string Status = "Status";
 
         public static string CollectionPeriod = "CollectionPeriod";
-        public static string CollectionYear = "CollectionYear";
+        public static string AcademicYear = "AcademicYear";
         public static string ExternalJobId = "ExternalJobId";
         public static string MessageName = "MessageName";
         public static string JobType = "JobType";

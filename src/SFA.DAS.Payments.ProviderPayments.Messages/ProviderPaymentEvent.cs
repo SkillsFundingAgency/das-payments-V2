@@ -1,7 +1,5 @@
 ﻿using SFA.DAS.Payments.Messages.Core.Events;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using System;
 
 namespace SFA.DAS.Payments.ProviderPayments.Messages
 {
