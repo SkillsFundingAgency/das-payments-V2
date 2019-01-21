@@ -12,6 +12,7 @@
     <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds" DefaultValue="150" />
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" DefaultValue="10" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
+    <Parameter Name="LogLevel" DefaultValue="Information" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
