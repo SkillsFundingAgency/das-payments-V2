@@ -38,10 +38,10 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             {
                 var actorId = new ActorId(message.EmployerAccountId);
                 var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                IReadOnlyCollection<FundingSourcePaymentEvent> requiredPaymentEvent;
+                IReadOnlyCollection<FundingSourcePaymentEvent> fundingSourcePaymentEvents;
                 try
                 {
-                    requiredPaymentEvent = await actor.HandleRequiredPayment(message, CancellationToken.None).ConfigureAwait(false);
+                    fundingSourcePaymentEvents = await actor.HandleRequiredPayment(message, CancellationToken.None).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -51,8 +51,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
                 try
                 {
-                    if (requiredPaymentEvent != null)
-                        await Task.WhenAll(requiredPaymentEvent.Select(context.Publish)).ConfigureAwait(false);
+                    if (fundingSourcePaymentEvents != null)
+                        await Task.WhenAll(fundingSourcePaymentEvents.Select(context.Publish)).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
