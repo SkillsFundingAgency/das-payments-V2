@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 
@@ -11,12 +12,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
     {
         private PaymentDueProcessor paymentDueProcessor;
 
+        [SetUp]
+        public void SetUp()
+        {
+            paymentDueProcessor = new PaymentDueProcessor();
+        }
+
         [Test]
         public void TestNullPaymentHistory()
         {
             // arrange
-            paymentDueProcessor = new PaymentDueProcessor();
-
             // act
             // assert
             try
@@ -36,8 +41,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestNoPaymentFound()
         {
             // arrange
-            paymentDueProcessor = new PaymentDueProcessor();
-
             var history = new Payment[0];
 
             // act
@@ -81,8 +84,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestOnePaymentFound()
         {
             // arrange
-            paymentDueProcessor = new PaymentDueProcessor();
-
             var history = new []
             {
                 new Payment
@@ -104,8 +105,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestMultiplePaymentsFoundWithMorePaidThanDue()
         {
             // arrange
-            paymentDueProcessor = new PaymentDueProcessor();
-
             var history = new []
             {
                 new Payment
@@ -133,8 +132,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestMultiplePaymentsFoundWithSamePaidAsDue()
         {
             // arrange
-            paymentDueProcessor = new PaymentDueProcessor();
-
             var history = new []
             {
                 new Payment
@@ -156,6 +153,37 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 
             // assert
             Assert.AreEqual(0, amount);
+        }
+
+        [Test]
+        [TestCase(.89, 100, 0, .89)]
+        [TestCase(.89, 0, 1, .89)]
+        [TestCase(.89, 0, 0, .89)]
+        [TestCase(0, 100, 0, 0)]
+        [TestCase(0, 100, 2, 0)]
+        [TestCase(0, 0, 2, .5)]
+        [TestCase(0, 0, 1, 1)]
+        public void TestCalculateSfaContributionPercentageDefaultsToEarning(decimal earningPercentage, decimal amountDue, int numberOfHistoricalPayments, decimal expectedResult)
+        {
+            // arrange
+            var history = new Payment[numberOfHistoricalPayments];
+            for (int i = 0; i < numberOfHistoricalPayments; i++)
+            {
+                history[i] = new Payment
+                {
+                    Amount = 100,
+                    DeliveryPeriod = new CalendarPeriod("1819R02"),
+                    CollectionPeriod = new CalendarPeriod("1819R02"),
+                    PriceEpisodeIdentifier = "1",
+                    FundingSource = i % 2 == 0 ? FundingSourceType.CoInvestedSfa : FundingSourceType.CoInvestedEmployer
+                };
+            }
+
+            // act
+            var actualResult = paymentDueProcessor.CalculateSfaContributionPercentage(earningPercentage, amountDue, history);
+
+            // assert
+            Assert.AreEqual(expectedResult, actualResult);
         }
     }
 }

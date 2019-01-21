@@ -8,8 +8,8 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Messages.Core.Events;
 
@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 IReadOnlyCollection<RequiredPaymentEvent> requiredPaymentEvent;
                 try
                 {
-                    requiredPaymentEvent = await actor.HandleEarningEvent(message, CancellationToken.None).ConfigureAwait(false);
+                    requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -84,5 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 throw;
             }
         }
+
+        protected abstract Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(T message, IRequiredPaymentsService actor);
     }
 }

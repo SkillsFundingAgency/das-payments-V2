@@ -14,11 +14,11 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public abstract class EarningEventProcessorBase<TEarningEvent, TRequiredPayment> : IEarningEventHandler
+    public abstract class EarningEventProcessorBase<TEarningEvent, TRequiredPayment>
         where TEarningEvent : EarningEvent
         where TRequiredPayment : RequiredPaymentEvent
     {
-        private readonly IPaymentDueProcessor paymentDueProcessor;
+        protected readonly IPaymentDueProcessor paymentDueProcessor;
         private readonly IPaymentKeyService paymentKeyService;
         private readonly IMapper mapper;
 

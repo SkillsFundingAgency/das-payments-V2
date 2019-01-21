@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
+using System.Threading;
+using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -10,10 +12,11 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public class ApprenticeshipContractType2EarningEventProcessor : EarningEventProcessorBase<ApprenticeshipContractType2EarningEvent, RequiredPaymentEvent>
+    public class ApprenticeshipContractType2EarningEventProcessor : EarningEventProcessorBase<ApprenticeshipContractType2EarningEvent, RequiredPaymentEvent>, IApprenticeshipContractTypeEarningsEventProcessor
     {
         public ApprenticeshipContractType2EarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
             : base(paymentKeyService, mapper, paymentDueProcessor)
@@ -24,23 +27,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         {
             if (Enum.IsDefined(typeof(OnProgrammeEarningType), periodAndType.type))
             {
-                var sfaContributionPercentage = periodAndType.period.SfaContributionPercentage.GetValueOrDefault(earningEvent.SfaContributionPercentage);
-
-                // YUCK: refund with 0 earning
                 // TODO: work out the better way of doing it
-                if (sfaContributionPercentage == 0 && periodAndType.period.Amount == 0 && payments.Length > 0)
-                {
-                    var sfaContribution = payments.Where(p => p.FundingSource == FundingSourceType.CoInvestedSfa).Sum(p => p.Amount);
-                    var employerContribution = payments.Where(p => p.FundingSource == FundingSourceType.CoInvestedEmployer).Sum(p => p.Amount);
-                    if (sfaContribution + employerContribution == 0) // protection from div by 0
-                    {
-                        sfaContributionPercentage = 0;
-                    }
-                    else
-                    {
-                        sfaContributionPercentage = sfaContribution / (sfaContribution + employerContribution);
-                    }
-                }
+                var sfaContributionPercentage = periodAndType.period.SfaContributionPercentage.GetValueOrDefault(earningEvent.SfaContributionPercentage);
+                sfaContributionPercentage = paymentDueProcessor.CalculateSfaContributionPercentage(sfaContributionPercentage, periodAndType.period.Amount, payments);
 
                 return new ApprenticeshipContractType2RequiredPaymentEvent
                 {
@@ -83,6 +72,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             }
 
             return result;
+        }
+
+        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> ProcessApprenticeshipContractTypeEarningsEventEvent(ApprenticeshipContractTypeEarningsEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> repositoryCache, CancellationToken cancellationToken)
+        {
+            // TODO: move this to automapper profile instead
+            return await HandleEarningEvent(earningEvent, repositoryCache, cancellationToken).ConfigureAwait(false);
         }
     }
 }
