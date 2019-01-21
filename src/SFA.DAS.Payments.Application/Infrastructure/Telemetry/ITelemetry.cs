@@ -15,6 +15,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
         void TrackDuration(string durationName, TimeSpan duration);
         void TrackDependency(string dependencyType, string dependencyName, DateTimeOffset startTime, TimeSpan duration, bool success);
         IOperationHolder<RequestTelemetry> StartOperation(string operationName = "PaymentMessageProcessing");
-        void StopOperation(IOperationHolder<RequestTelemetry> operation);
+        void StopOperation(IOperationHolder<RequestTelemetry> operation); 
     }
 }
