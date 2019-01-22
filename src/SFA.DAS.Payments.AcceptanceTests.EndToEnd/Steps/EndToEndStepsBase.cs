@@ -176,6 +176,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        protected async Task SaveTestCommitments()
+        {
+            dataContext.Payment.AddRange(previousPayments);
+            await dataContext.SaveChangesAsync();
+        }
+
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, List<Training> learnerTraining, long jobId, DateTime submissionTime, Earning earning)
         {
             var onProgTraining = learnerTraining.FirstOrDefault(t => t.AimReference == "ZPROG001");
