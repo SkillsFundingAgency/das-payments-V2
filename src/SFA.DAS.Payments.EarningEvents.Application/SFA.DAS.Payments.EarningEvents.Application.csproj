@@ -12,7 +12,6 @@
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="ESFA.DC.FileService" Version="0.1.15-beta0001" />
-    <PackageReference Include="ESFA.DC.Queueing" Version="0.1.14-beta0001" />
     <PackageReference Include="FastMember" Version="1.4.1" />
     <PackageReference Include="ESFA.DC.JobContext.Interface" Version="0.2.5-beta0001" />
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.0.3" />
