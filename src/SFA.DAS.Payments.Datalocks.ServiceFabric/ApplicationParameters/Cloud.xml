@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Parameters>
+    <Parameter Name="DataLockProxyService_InstanceCount" Value="__DataLockProxyService_InstanceCount__" />
+    <Parameter Name="DataLockServiceActorService_PartitionCount" Value="__DataLockServiceActorService_PartitionCount__" />
+    <Parameter Name="DataLockServiceActorService_MinReplicaSetSize" Value="__DataLockServiceActorService_MinReplicaSetSize__" />
+    <Parameter Name="DataLockServiceActorService_TargetReplicaSetSize" Value="__DataLockServiceActorService_TargetReplicaSetSize__" />
+    <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
+    <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
+    <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />
+    <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ProcessMessageSequentially" Value="false" />
+    <Parameter Name="DataLockService_EndpointName" Value="__DataLockService_EndpointName__" />
+    <Parameter Name="DataLockService_FailedMessagesQueue" Value="__DataLockService_FailedMessagesQueue__" />
+  </Parameters>
+</Application>
