@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Application\SFA.DAS.Payments.ProviderPayments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Tests.Core\SFA.DAS.Payments.Tests.Core.csproj" />
   </ItemGroup>
 
 </Project>

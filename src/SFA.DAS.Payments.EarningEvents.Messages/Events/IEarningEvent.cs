@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
     public interface IEarningEvent : IPaymentsEvent
     {
         ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; }
-        CalendarPeriod CollectionPeriod { get; }
-        string CollectionYear { get; }
+        CollectionPeriod CollectionPeriod { get; }
+        short CollectionYear { get; }
     }
 }

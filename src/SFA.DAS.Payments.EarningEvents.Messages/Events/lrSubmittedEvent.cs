@@ -10,6 +10,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public DateTimeOffset EventTime { get; set; }
         public long Ukprn { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
-        public CalendarPeriod CollectionPeriod { get; set; }
+        public CollectionPeriod CollectionPeriod { get; set; }
     }
 }
