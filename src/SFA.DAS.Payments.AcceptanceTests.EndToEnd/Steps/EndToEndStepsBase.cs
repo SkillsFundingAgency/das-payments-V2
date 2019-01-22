@@ -60,6 +60,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "current_collection_period");
         }
 
+        public List<Commitment> Commitments
+        {
+            get
+            {
+                if (!Context.TryGetValue<List<Commitment>>("commitments", out var commitments))
+                {
+                    Set(new List<Commitment>(), "commitments");
+                    commitments = Get<List<Commitment>>("commitments");
+                }
+                return  commitments;
+            }
+        }
+
         protected EndToEndStepsBase(FeatureContext context) : base(context)
         {
         }
@@ -143,6 +156,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Aims.Clear();
 
                 learner.Aims.AddRange(learnerAims);
+            }
+        }
+
+        protected void AddTestCommitments(IEnumerable<Commitment> commitments)
+        {
+            foreach (var commitment in commitments)
+            {
+                var existingCommitment = Commitments.FirstOrDefault(x => x.Identifier == commitment.Identifier);
+                if (existingCommitment == null)
+                {
+                    Commitments.Add(commitment);
+                }
+                else
+                {
+                    existingCommitment.StartDate = commitment.StartDate;
+                    existingCommitment.AgreedCost = commitment.AgreedCost;
+                }
             }
         }
 

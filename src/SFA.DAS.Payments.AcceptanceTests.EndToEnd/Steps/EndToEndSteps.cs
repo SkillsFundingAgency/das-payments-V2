@@ -84,6 +84,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             GivenPriceDetailsAsFollows(table);
         }
 
+        [Given(@"the following commitments exist")]
+        public void GivenTheFollowingCommitmentsExist(Table table)
+        {
+            var commitments = table.CreateSet<Commitment>();
+            AddTestCommitments(commitments);
+        }
 
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)

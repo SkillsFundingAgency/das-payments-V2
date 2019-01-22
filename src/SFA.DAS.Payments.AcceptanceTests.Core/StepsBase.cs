@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
