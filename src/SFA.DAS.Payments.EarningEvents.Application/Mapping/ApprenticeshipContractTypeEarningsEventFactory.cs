@@ -6,8 +6,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public class ApprenticeshipContractTypeEarningsEventFactory : IApprenticeshipContractTypeEarningsEventFactory
     {
-        public const string Act1 = "ContractWithEmployer";
-        public const string Act2 = "ContractWithSfa";
+        public const string Act1 = "Levy Contract";
+        public const string Act2 = "Non-Levy Contract";
 
         public ApprenticeshipContractTypeEarningsEvent Create(string contractType)
         {
