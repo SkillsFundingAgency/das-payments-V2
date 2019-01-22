@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
@@ -56,7 +55,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var processLearnerCommand = new ProcessLearnerCommand
             {
                 Learner = fm36Learner,
-                CollectionYear = "1819",
+                CollectionYear = 1819,
                 Ukprn = 12345,
                 JobId = 69,
                 CollectionPeriod = 1,
