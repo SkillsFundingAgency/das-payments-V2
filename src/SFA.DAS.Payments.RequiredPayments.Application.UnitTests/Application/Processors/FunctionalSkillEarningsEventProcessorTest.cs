@@ -6,15 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
-using AutoMapper;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
-using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
+using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
@@ -82,8 +81,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Ukprn = 1,
                 CollectionPeriod = new CalendarPeriod(2018, 9),
                 CollectionYear = deliveryPeriod.AcademicYear,
-                Learner = CreateLearner(),
-                LearningAim = CreateLearningAim(),
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning
@@ -130,8 +129,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Ukprn = 1,
                 CollectionPeriod = new CalendarPeriod(2018, 9),
                 CollectionYear = deliveryPeriod.AcademicYear,
-                Learner = CreateLearner(),
-                LearningAim = CreateLearningAim(),
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning
@@ -161,28 +160,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             // assert
             Assert.AreEqual(0, actualRequiredPayment.Count);
-        }
-
-        private static LearningAim CreateLearningAim()
-        {
-            return new LearningAim
-            {
-                ProgrammeType = 5,
-                PathwayCode = 6,
-                StandardCode = 7,
-                FrameworkCode = 8,
-                Reference = "9",
-                FundingLineType = "11"
-            };
-        }
-
-        private static Learner CreateLearner()
-        {
-            return new Learner
-            {
-                ReferenceNumber = "3",
-                Uln = 4
-            };
         }
     }
 }

@@ -14,7 +14,7 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public abstract class EarningEventProcessorBase<TEarningEvent, TRequiredPayment> : IEarningEventProcessor<TEarningEvent>
+    public abstract class EarningEventProcessorBase<TEarningEvent> : IEarningEventProcessor<TEarningEvent>
         where TEarningEvent : IEarningEvent
     {
         protected readonly IPaymentDueProcessor paymentDueProcessor;
@@ -61,8 +61,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 else
                     priceEpisodeIdentifier = periodAndType.period.PriceEpisodeIdentifier;
 
-
-                //var requiredPayment = mapper.Map<TRequiredPayment>(earningEvent);
                 var requiredPayment = CreateRequiredPayment(earningEvent, periodAndType, payments);
 
                 requiredPayment.AmountDue = amountDue;
@@ -70,15 +68,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
 
                 mapper.Map(earningEvent, requiredPayment);
-
-                //requiredPayment.EventTime = DateTimeOffset.UtcNow;
-
-                //requiredPayment.Learner = earningEvent.Learner.Clone();
-                //requiredPayment.Ukprn = earningEvent.Ukprn;
-                //requiredPayment.CollectionPeriod = earningEvent.CollectionPeriod.Clone();
-                //requiredPayment.LearningAim = earningEvent.LearningAim.Clone();
-                //requiredPayment.JobId = earningEvent.JobId;
-                //requiredPayment.IlrSubmissionDateTime = earningEvent.IlrSubmissionDateTime;
 
                 result.Add(requiredPayment);
             }

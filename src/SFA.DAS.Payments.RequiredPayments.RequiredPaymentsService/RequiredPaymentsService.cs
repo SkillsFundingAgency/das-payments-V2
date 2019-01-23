@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly ApprenticeshipKey apprenticeshipKey;
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
         private readonly IPaymentKeyService paymentKeyService;
-        private readonly IApprenticeshipContractTypeEarningsEventProcessor apprenticeshipContractTypeEarningsEventProcessor;
+        private readonly IApprenticeshipContractType2EarningsEventProcessor apprenticeshipContractTypeEarningsEventProcessor;
         private readonly IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor;
         private readonly IPayableEarningEventProcessor payableEarningEventProcessor;
 
@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             IApprenticeshipKeyService apprenticeshipKeyService,
             IPaymentHistoryRepository paymentHistoryRepository,
             IPaymentKeyService paymentKeyService, 
-            IApprenticeshipContractTypeEarningsEventProcessor apprenticeshipContractTypeEarningsEventProcessor, 
+            IApprenticeshipContractType2EarningsEventProcessor apprenticeshipContractTypeEarningsEventProcessor, 
             IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor, 
             IPayableEarningEventProcessor payableEarningEventProcessor) 
             : base(actorService, actorId)

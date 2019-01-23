@@ -16,6 +16,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
+using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -95,8 +96,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Ukprn = 1,
                 CollectionPeriod = period,
                 CollectionYear = period.AcademicYear,
-                Learner = CreateLearner(),
-                LearningAim = CreateLearningAim(),
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
@@ -143,8 +144,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Ukprn = 1,
                 CollectionPeriod = period,
                 CollectionYear = period.AcademicYear,
-                Learner = CreateLearner(),
-                LearningAim = CreateLearningAim(),
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
@@ -190,8 +191,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Ukprn = 1,
                 CollectionPeriod = new CalendarPeriod(2018, 10),
                 CollectionYear = deliveryPeriod.AcademicYear,
-                Learner = CreateLearner(),
-                LearningAim = CreateLearningAim(),
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
@@ -252,8 +253,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 SfaContributionPercentage = 0,
                 CollectionPeriod = new CalendarPeriod(2018, 10),
                 CollectionYear = deliveryPeriod.AcademicYear,
-                Learner = CreateLearner(),
-                LearningAim = CreateLearningAim(),
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
@@ -299,8 +300,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Ukprn = 1,
                 CollectionPeriod = period,
                 CollectionYear = period.AcademicYear,
-                Learner = CreateLearner(),
-                LearningAim = CreateLearningAim(),
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
@@ -340,29 +341,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             Assert.AreEqual(1, actualRequiredPayment.Count);
             Assert.AreEqual(100, actualRequiredPayment.First().AmountDue);
             Assert.AreEqual(earningEvent.LearningAim.Reference, actualRequiredPayment.First().LearningAim.Reference);
-        }
-
-
-        private static LearningAim CreateLearningAim()
-        {
-            return new LearningAim
-            {
-                ProgrammeType = 5,
-                PathwayCode = 6,
-                StandardCode = 7,
-                FrameworkCode = 8,
-                Reference = "9",
-                FundingLineType = "11"
-            };
-        }
-
-        private static Learner CreateLearner()
-        {
-            return new Learner
-            {
-                ReferenceNumber = "3",
-                Uln = 4
-            };
         }
     }
 }

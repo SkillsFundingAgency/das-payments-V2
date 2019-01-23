@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
+using SFA.DAS.Payments.DataLocks.Messages;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -12,14 +14,32 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public class ApprenticeshipContractType2EarningEventProcessor : EarningEventProcessorBase<ApprenticeshipContractType2EarningEvent, RequiredPaymentEvent>, IApprenticeshipContractTypeEarningsEventProcessor
+    public class ApprenticeshipContractType2EarningEventProcessor : ApprenticeshipContractTypeEarningEventProcessor<ApprenticeshipContractType2RequiredPaymentEvent, ApprenticeshipContractType2EarningEvent>, IApprenticeshipContractType2EarningsEventProcessor
     {
-        public ApprenticeshipContractType2EarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
+        public ApprenticeshipContractType2EarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor) 
+            : base(paymentKeyService, mapper, paymentDueProcessor)
+        {
+        }
+    }
+
+    public class PayableEarningEventProcessor : ApprenticeshipContractTypeEarningEventProcessor<ApprenticeshipContractType1RequiredPaymentEvent, PayableEarningEvent>, IPayableEarningEventProcessor
+    {
+        public PayableEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
+            : base(paymentKeyService, mapper, paymentDueProcessor)
+        {
+        }
+    }
+
+    public abstract class ApprenticeshipContractTypeEarningEventProcessor<TRequiredPaymentEvent, TEarningEvent> : EarningEventProcessorBase<TEarningEvent>
+        where TRequiredPaymentEvent : ApprenticeshipContractTypeRequiredPaymentEvent
+        where TEarningEvent : IContractTypeEarningEvent
+    {
+        protected ApprenticeshipContractTypeEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
             : base(paymentKeyService, mapper, paymentDueProcessor)
         {
         }
 
-        protected override RequiredPaymentEvent CreateRequiredPayment(ApprenticeshipContractType2EarningEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments)
+        protected override RequiredPaymentEvent CreateRequiredPayment(TEarningEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments)
         {
             if (Enum.IsDefined(typeof(OnProgrammeEarningType), periodAndType.type))
             {
@@ -27,11 +47,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 var sfaContributionPercentage = periodAndType.period.SfaContributionPercentage.GetValueOrDefault(earningEvent.SfaContributionPercentage);
                 sfaContributionPercentage = paymentDueProcessor.CalculateSfaContributionPercentage(sfaContributionPercentage, periodAndType.period.Amount, payments);
 
-                return new ApprenticeshipContractType2RequiredPaymentEvent
-                {
-                    OnProgrammeEarningType = (OnProgrammeEarningType) periodAndType.type,
-                    SfaContributionPercentage = sfaContributionPercentage,
-                };
+                var requiredPayment = Activator.CreateInstance<TRequiredPaymentEvent>();
+                requiredPayment.OnProgrammeEarningType = (OnProgrammeEarningType) periodAndType.type;
+                requiredPayment.SfaContributionPercentage = sfaContributionPercentage;
+                return requiredPayment;
             }
 
             return new IncentiveRequiredPaymentEvent
@@ -41,7 +60,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             };
         }
 
-        protected override IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(ApprenticeshipContractType2EarningEvent earningEvent)
+        protected override IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(TEarningEvent earningEvent)
         {
             var result = new List<(EarningPeriod period, int type)>();
 
@@ -69,11 +88,5 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
             return result;
         }
-
-        //public async Task<ReadOnlyCollection<RequiredPaymentEvent>> ProcessApprenticeshipContractTypeEarningsEventEvent(ApprenticeshipContractTypeEarningsEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> repositoryCache, CancellationToken cancellationToken)
-        //{
-        //    // TODO: move this to automapper profile instead
-        //    return await HandleEarningEvent(earningEvent, repositoryCache, cancellationToken).ConfigureAwait(false);
-        //}
     }
 }
