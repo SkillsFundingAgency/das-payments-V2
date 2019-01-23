@@ -6,11 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
+using AutoMapper;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
@@ -29,6 +31,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private Mock<IRepositoryCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
         private Mock<IApprenticeshipKeyService> apprenticeshipKeyServiceMock;
         private Mock<IPaymentHistoryRepository> paymentHistoryRepositoryMock;
+        private Mapper mapper;
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<RequiredPaymentsProfile>());
+            config.AssertConfigurationIsValid();
+            mapper = new Mapper(config);
+        }
 
         [SetUp]
         public void SetUp()
@@ -39,7 +50,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             apprenticeshipKeyServiceMock = mocker.Mock<IApprenticeshipKeyService>();
             paymentHistoryRepositoryMock = mocker.Mock<IPaymentHistoryRepository>();
 
-            eventProcessor = mocker.Create<FunctionalSkillEarningsEventProcessor>(new NamedParameter("apprenticeshipKey", "key"));
+
+            eventProcessor = mocker.Create<FunctionalSkillEarningsEventProcessor>(new NamedParameter("apprenticeshipKey", "key"), new NamedParameter("mapper", mapper));
         }
 
         [TearDown]
@@ -101,7 +113,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 })
             };
 
-            var paymentHistoryEntities = new[] { new PaymentHistoryEntity() }; 
+            var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = "1819-R02", DeliveryPeriod = "1819-R02"}};
 
             mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", (int)FunctionalSkillType.BalancingMathsAndEnglish, deliveryPeriod)).Returns("payment key").Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
