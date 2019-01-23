@@ -110,8 +110,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, learnerEarning);
             }).ToList();
 
-            var dataContext = Container.Resolve<IPaymentsDataContext>();
-            var currentHistory = await dataContext.Payment.Where(p => p.Ukprn == TestSession.Ukprn).ToListAsync();
+            var currentHistory = await DataContext.Payment.Where(p => p.Ukprn == TestSession.Ukprn).ToListAsync();
 
             previousPayments = previousPayments
                 .Where(p => !currentHistory.Any(historicPayment =>
@@ -120,8 +119,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     historicPayment.DeliveryPeriod == p.DeliveryPeriod))
                 .ToList();
 
-            dataContext.Payment.AddRange(previousPayments);
-            await dataContext.SaveChangesAsync();
+            DataContext.Payment.AddRange(previousPayments);
+            await DataContext.SaveChangesAsync();
         }
 
         [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]

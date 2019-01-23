@@ -11,6 +11,8 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -27,6 +29,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     public abstract class EndToEndStepsBase : StepsBase
     {
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
+
+        private IPaymentsDataContext dataContext = null;
+        protected IPaymentsDataContext DataContext
+        {
+            get
+            {
+                if (dataContext == null)
+                {
+                    dataContext = Container.Resolve<IPaymentsDataContext>();
+                }
+
+                return dataContext;
+            }
+        }
 
         protected DcHelper DcHelper => Get<DcHelper>();
 
@@ -178,8 +194,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task SaveTestCommitments()
         {
-            dataContext.Payment.AddRange(previousPayments);
-            await dataContext.SaveChangesAsync();
+            DataContext.Commitment.AddRange(Commitments.ToModel());
+            await DataContext.SaveChangesAsync();
         }
 
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, List<Training> learnerTraining, long jobId, DateTime submissionTime, Earning earning)
