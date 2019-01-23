@@ -337,6 +337,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
+      <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
+      <Name>SFA.DAS.Payments.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages.Internal\SFA.DAS.Payments.EarningEvents.Messages.Internal.csproj">
+      <Project>{B5FF4D1A-925D-4979-9363-4C8298C483B8}</Project>
+      <Name>SFA.DAS.Payments.EarningEvents.Messages.Internal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>
       <Name>SFA.DAS.Payments.Messages.Core</Name>
@@ -344,6 +352,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
       <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj">
+      <Project>{66B42B94-B29B-48EA-9AB6-C96C11C1D9CE}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj">
       <Project>{D9849B05-C642-48F7-AA6D-FA917257AE45}</Project>

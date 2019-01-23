@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
 
         public EarningEventsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
-            dcHelper = Container.Resolve<DcHelper>();
+            dcHelper = Scope.Resolve<DcHelper>();
         }
 
         [Given(@"the earnings are for the current collection year")]
