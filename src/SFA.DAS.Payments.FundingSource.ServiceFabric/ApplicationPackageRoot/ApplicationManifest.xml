@@ -2,14 +2,20 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.FundingSource.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="NonLevyFundedService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="LevyFundedProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="" />
+    <Parameter Name="LevyFundedService_EndpointName" DefaultValue="" />
     <Parameter Name="NonLevyFundedService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
+    <Parameter Name="LevyFundedService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="LevyFundedServiceActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -35,16 +41,58 @@
       </ConfigOverride>
     </ConfigOverrides>
   </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.FundingSource.LevyFundedProxyServicePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[LevyFundedService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[LevyFundedService_FailedMessagesQueue]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.FundingSource.LevyFundedServicePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
+  </ServiceManifestImport>
   <DefaultServices>
-    <!-- The section below creates instances of service types, when an instance of this 
-         application type is created. You can also create one or more instances of service type using the 
-         ServiceFabric PowerShell module.
-         
-         The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.FundingSource.NonLevyFundedService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.NonLevyFundedServiceType" InstanceCount="[NonLevyFundedService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
+    </Service>
+    <Service Name="SFA.DAS.Payments.FundingSource.LevyFundedProxyService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.LevyFundedProxyServiceType" InstanceCount="[LevyFundedProxyService_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="LevyFundedServiceActorService" GeneratedIdRef="6df920bd-0d33-4d6b-bbdf-875e7589732d|Persisted">
+      <StatefulService ServiceTypeName="LevyFundedServiceActorServiceType" TargetReplicaSetSize="[LevyFundedServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[LevyFundedServiceActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[LevyFundedServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
     </Service>
   </DefaultServices>
 </ApplicationManifest>

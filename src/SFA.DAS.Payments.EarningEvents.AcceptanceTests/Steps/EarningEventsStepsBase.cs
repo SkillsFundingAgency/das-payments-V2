@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                         PriceEpisodeFundLineType = learnerEarnings.FundingLineType,
                         PriceEpisodeBalanceValue = learnerEarnings.BalancingPayment,
                         PriceEpisodeCompletionPayment = learnerEarnings.CompletionAmount,
-                        PriceEpisodeContractType = "Act2",  //TODO: Needs to work for ACT1 too
+                        PriceEpisodeContractType = "Non-Levy Contract",  //TODO: Needs to work for ACT1 too
                         PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
                         PriceEpisodePlannedEndDate = learnerEarnings.LearnerStartDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
                         PriceEpisodeSFAContribPct = SfaContributionPercentage,
