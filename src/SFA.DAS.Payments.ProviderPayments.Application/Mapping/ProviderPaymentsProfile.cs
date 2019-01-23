@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .Include<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>()
                 .Include<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>()
                 .Include<SfaFullyFundedFundingSourcePaymentEvent, PaymentModel>()
+                .Include<LevyFundingSourcePaymentEvent, PaymentModel>()
                 .ForMember(dest => dest.ExternalId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Clone()))
@@ -40,11 +41,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>();
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>();
             CreateMap<SfaFullyFundedFundingSourcePaymentEvent, PaymentModel>();
+            CreateMap<LevyFundingSourcePaymentEvent, PaymentModel>();
 
             CreateMap<PaymentModel, ProviderPaymentEvent>()
                 .Include<PaymentModel, EmployerCoInvestedProviderPaymentEvent>()
                 .Include<PaymentModel, SfaCoInvestedProviderPaymentEvent>()
                 .Include<PaymentModel, SfaFullyFundedProviderPaymentEvent>()
+                .Include<PaymentModel, LevyProviderPaymentEvent>()
                 .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(source => source.ExternalId))
                 .ForMember(dest => dest.EventTime, opt => opt.ResolveUsing(src => DateTime.UtcNow))
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Clone()))
@@ -70,6 +73,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<PaymentModel, EmployerCoInvestedProviderPaymentEvent>();
             CreateMap<PaymentModel, SfaCoInvestedProviderPaymentEvent>();
             CreateMap<PaymentModel, SfaFullyFundedProviderPaymentEvent>();
+            CreateMap<PaymentModel, LevyProviderPaymentEvent>();
         }
     }
 }
