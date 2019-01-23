@@ -178,7 +178,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learners.Add(learner);
             }
             
-            var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
+            var matcher =  EventMatcherFactory.BuildEarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
 
@@ -223,7 +223,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"no learner earnings should be generated")]
         public async Task ThenNoLearnerEarningsWillBeRecorded()
         {
-            var matcher = new EarningEventMatcher(null, TestSession, CurrentCollectionPeriod, null);
+            var matcher =  EventMatcherFactory.BuildEarningEventMatcher(null, TestSession, CurrentCollectionPeriod, null);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Earning Event check failure");
         }
 

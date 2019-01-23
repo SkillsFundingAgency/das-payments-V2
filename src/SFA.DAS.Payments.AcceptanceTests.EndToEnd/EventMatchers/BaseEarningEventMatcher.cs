@@ -17,14 +17,14 @@ using Learner = SFA.DAS.Payments.Model.Core.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
-    public class EarningEventMatcher : BaseMatcher<EarningEvent>
+    public abstract class BaseEarningEventMatcher : BaseMatcher<EarningEvent> 
     {
         private readonly TestSession testSession;
         private readonly CollectionPeriod collectionPeriod;
         private readonly IList<Earning> earningSpecs;
         private readonly IList<FM36Learner> learnerSpecs;
 
-        public EarningEventMatcher(IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
+        protected BaseEarningEventMatcher(IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
         {
             this.earningSpecs = earningSpecs;
             this.testSession = testSession;
@@ -87,24 +87,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
                     {
-                        var onProgEarning = new ApprenticeshipContractType2EarningEvent
-                        {
-                            CollectionPeriod = collectionPeriod,
-                            Ukprn = testSession.Ukprn,
-                            OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
-                            {
-                                Type = (OnProgrammeEarningType)(int)tt,
-                                Periods = aimEarningSpecs.Select(e => new EarningPeriod
-                                {
-                                    Amount = e.Values[tt],
-                                    Period = (byte)e.DeliveryCalendarPeriod,
-                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                                }).ToList().AsReadOnly()
-                            }).ToList().AsReadOnly(),
-                            JobId = testSession.JobId,
-                            Learner = learner,
-                            LearningAim = learningAim
-                        };
+                        var onProgEarning = CreateOnProgEarning(onProgEarnings, aimEarningSpecs, fm36Learner, learner, learningAim);
                         result.Add(onProgEarning);
                     }
 
@@ -133,25 +116,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (incentiveEarnings.Any())
                     {
-                        var incentiveEarning = new ApprenticeshipContractType2EarningEvent
-                        {
-                            CollectionPeriod = collectionPeriod,
-                            Ukprn = testSession.Ukprn,
-                            IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
-                            {
-                                Type = (IncentiveEarningType)(int)tt,
-                                Periods = aimEarningSpecs.Select(e => new EarningPeriod
-                                {
-                                    Amount = e.Values[tt],
-                                    Period = (byte)e.DeliveryCalendarPeriod,
-                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                                }).ToList().AsReadOnly()
-                            }).ToList().AsReadOnly(),
-                            JobId = testSession.JobId,
-                            Learner = learner,
-                            LearningAim = learningAim
-                        };
-
+                        var incentiveEarning = CreateIncentiveEarning(incentiveEarnings, aimEarningSpecs, fm36Learner, learner, learningAim);
                         result.Add(incentiveEarning);
                     }
                 }
@@ -160,7 +125,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return result;
         }
 
-        private string FindPriceEpisodeIdentifier(decimal value, Earning earning, FM36Learner fm36Learner, TransactionType transactionType)
+        protected string FindPriceEpisodeIdentifier(decimal value, Earning earning, FM36Learner fm36Learner, TransactionType transactionType)
         {
             // null for 0 values
             if (value == 0)
@@ -195,13 +160,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedEvent.LearningAim.StandardCode != actualEvent.LearningAim.StandardCode)
                 return false;
 
-            if (!MatchOnProgrammeEarnings(expectedEvent as ApprenticeshipContractType2EarningEvent, actualEvent as ApprenticeshipContractType2EarningEvent))
+            if (ValidateOnProgEarnings(expectedEvent, actualEvent))
                 return false;
 
             return true;
         }
 
-        private bool MatchOnProgrammeEarnings(ApprenticeshipContractType2EarningEvent expectedEvent, ApprenticeshipContractType2EarningEvent actualEvent)
+        protected bool MatchOnProgrammeEarnings(ApprenticeshipContractTypeEarningsEvent expectedEvent, ApprenticeshipContractTypeEarningsEvent actualEvent)
         {
             if (expectedEvent == null)
                 return true;
@@ -251,5 +216,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             return true;
         }
+
+
+        protected abstract ApprenticeshipContractTypeEarningsEvent CreateOnProgEarning(
+            List<TransactionType> onProgEarnings, 
+            List<Earning> aimEarningSpecs, 
+            FM36Learner fm36Learner,
+            Learner learner, 
+            LearningAim learningAim);
+
+        protected abstract ApprenticeshipContractTypeEarningsEvent CreateIncentiveEarning(
+            List<TransactionType> incentiveEarnings, 
+            List<Earning> aimEarningSpecs, 
+            FM36Learner fm36Learner,
+            Learner learner,
+            LearningAim learningAim);
+
+        protected abstract bool ValidateOnProgEarnings(EarningEvent expectedEvent, EarningEvent actualEvent);
+
     }
 }
