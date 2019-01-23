@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
         protected override async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(ApprenticeshipContractType2EarningEvent message, IRequiredPaymentsService actor)
         {
-            return await actor.HandleApprenticeshipContractTypeEarningsEvent(message, CancellationToken.None).ConfigureAwait(false);
+            return await actor.HandleApprenticeship2ContractTypeEarningsEvent(message, CancellationToken.None).ConfigureAwait(false);
         }
     }
 }

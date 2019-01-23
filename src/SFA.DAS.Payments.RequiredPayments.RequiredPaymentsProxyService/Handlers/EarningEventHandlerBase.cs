@@ -15,7 +15,7 @@ using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public abstract class EarningEventHandlerBase<T> : IHandleMessages<T> where T : EarningEvent
+    public abstract class EarningEventHandlerBase<T> : IHandleMessages<T> where T : PaymentsEvent
     {
         private readonly IApprenticeshipKeyService apprenticeshipKeyService;
         private readonly IActorProxyFactory proxyFactory;

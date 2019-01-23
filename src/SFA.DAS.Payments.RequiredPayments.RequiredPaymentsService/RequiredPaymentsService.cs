@@ -53,13 +53,13 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(actorId.GetStringId());
         }
 
-        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleApprenticeshipContractTypeEarningsEvent(ApprenticeshipContractTypeEarningsEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling ApprenticeshipContractTypeEarningsEvent for {apprenticeshipKey}");
 
             await Initialise().ConfigureAwait(false);
 
-            return await apprenticeshipContractTypeEarningsEventProcessor.ProcessApprenticeshipContractTypeEarningsEventEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+            return await apprenticeshipContractTypeEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
@@ -68,15 +68,16 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
             await Initialise().ConfigureAwait(false);
 
-            return await functionalSkillEarningsEventProcessor.ProcessFunctionalSkillEarningsEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+            return await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
         }
+
         public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandlePayableEarningEvent(PayableEarningEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling PayableEarningEvent for {apprenticeshipKey}");
 
             await Initialise().ConfigureAwait(false);
 
-            return await payableEarningEventProcessor.ProcessPayableEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+            return await payableEarningEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
         }
 
         protected override async Task OnActivateAsync()

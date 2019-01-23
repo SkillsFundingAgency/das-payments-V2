@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Model.Core;
 namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
     [KnownType("GetInheritors")]
-    public abstract class RequiredPaymentEvent : PaymentsEvent,IRequiredPayment
+    public abstract class RequiredPaymentEvent : PaymentsEvent, IRequiredPayment
     {
         private static Type[] inheritors;
 

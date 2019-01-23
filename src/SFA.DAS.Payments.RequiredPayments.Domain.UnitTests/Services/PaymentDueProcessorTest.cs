@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 {
@@ -184,6 +190,47 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 
             // assert
             Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        [Test]
+        [TestCase(0, 0, null, null, null, 0)] // calc skipped if no history
+        [TestCase(.9, 0, 900, null, null, .9)] // calc skipped if earning has %
+        [TestCase(0, 100, 900, null, null, 0)] // calc skipped if earning has amount
+        [TestCase(0, 0, 900, null, null, 1)]
+        [TestCase(0, 0, 900, 100, null, .9)]
+        [TestCase(0, 0, 900, 50, 50, .9)]
+        public void TestCalculateSfaContributionPercentage(decimal earningSfaContribPercent, decimal amountDue, decimal? sfaContribution, decimal? employerContribution1, decimal? employerContribution2, decimal expectedResult )
+        {
+            // arrange
+            var paymentHistoryEntities = new List<Payment>();
+
+            if (sfaContribution.HasValue)
+                paymentHistoryEntities.Add(CreatePaymentEntity(sfaContribution.Value, FundingSourceType.CoInvestedSfa));
+
+            if (employerContribution1.HasValue)
+                paymentHistoryEntities.Add(CreatePaymentEntity(employerContribution1.Value, FundingSourceType.CoInvestedEmployer));
+
+            if (employerContribution2.HasValue)
+                paymentHistoryEntities.Add(CreatePaymentEntity(employerContribution2.Value, FundingSourceType.CoInvestedEmployer));
+
+            // act
+            var actualResult = paymentDueProcessor.CalculateSfaContributionPercentage(earningSfaContribPercent, amountDue, paymentHistoryEntities.ToArray());
+
+            // assert
+            Assert.AreEqual(expectedResult, actualResult);
+
+        }
+
+        private static Payment CreatePaymentEntity(decimal amount, FundingSourceType fundingSourceType)
+        {
+            return new Payment
+            {
+                Amount = amount,
+                FundingSource = fundingSourceType,
+                PriceEpisodeIdentifier = "2",
+                CollectionPeriod = new CalendarPeriod(2018, 9),
+                DeliveryPeriod = new CalendarPeriod(2018, 9)
+            };
         }
     }
 }

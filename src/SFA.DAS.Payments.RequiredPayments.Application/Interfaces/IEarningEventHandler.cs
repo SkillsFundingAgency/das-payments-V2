@@ -9,18 +9,26 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application
 {
-    public interface IApprenticeshipContractTypeEarningsEventProcessor
+    public interface IEarningEventProcessor<TEarningEvent>
+        where TEarningEvent : IEarningEvent
     {
-        Task<ReadOnlyCollection<RequiredPaymentEvent>> ProcessApprenticeshipContractTypeEarningsEventEvent(ApprenticeshipContractTypeEarningsEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> repositoryCache, CancellationToken cancellationToken);
+        Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(
+            TEarningEvent earningEvent,
+            IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache,
+            CancellationToken cancellationToken
+        );
     }
 
-    public interface IFunctionalSkillEarningsEventProcessor
+
+    public interface IApprenticeshipContractTypeEarningsEventProcessor : IEarningEventProcessor<ApprenticeshipContractType2EarningEvent>
     {
-        Task<ReadOnlyCollection<RequiredPaymentEvent>> ProcessFunctionalSkillEarningsEvent(FunctionalSkillEarningsEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> repositoryCache, CancellationToken cancellationToken);
     }
 
-    public interface IPayableEarningEventProcessor
+    public interface IFunctionalSkillEarningsEventProcessor : IEarningEventProcessor<FunctionalSkillEarningsEvent>
     {
-        Task<ReadOnlyCollection<RequiredPaymentEvent>> ProcessPayableEarningEvent(PayableEarningEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> repositoryCache, CancellationToken cancellationToken);
+    }
+
+    public interface IPayableEarningEventProcessor : IEarningEventProcessor<PayableEarningEvent>
+    {
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using AutoMapper;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Messages;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -29,7 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         public void TestEarningEventMap()
         {
             // arrange
-            EarningEvent payableEarning = CreateEarning();
+            PayableEarningEvent payableEarning = CreateEarning();
 
             // act
             var requiredPayments = mapper.Map<ReadOnlyCollection<RequiredPaymentEvent>>(payableEarning);
@@ -89,7 +90,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             }
         }
 
-        private static EarningEvent CreateEarning()
+        private static PayableEarningEvent CreateEarning()
         {
             return new PayableEarningEvent
             {

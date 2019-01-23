@@ -14,9 +14,8 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public abstract class EarningEventProcessorBase<TEarningEvent, TRequiredPayment>
-        where TEarningEvent : EarningEvent
-        where TRequiredPayment : RequiredPaymentEvent
+    public abstract class EarningEventProcessorBase<TEarningEvent, TRequiredPayment> : IEarningEventProcessor<TEarningEvent>
+        where TEarningEvent : IEarningEvent
     {
         protected readonly IPaymentDueProcessor paymentDueProcessor;
         private readonly IPaymentKeyService paymentKeyService;
@@ -29,18 +28,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.paymentDueProcessor = paymentDueProcessor;
         }
 
-        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(EarningEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
         {
             if (earningEvent == null)
                 throw new ArgumentNullException(nameof(earningEvent));
 
             var result = new List<RequiredPaymentEvent>();
 
-            foreach (var periodAndType in GetPeriods((TEarningEvent) earningEvent))
+            foreach (var periodAndType in GetPeriods(earningEvent))
             {
                 if (periodAndType.period.Period > earningEvent.CollectionPeriod.Period) // cut off future periods
                     continue;
-
 
                 var deliveryPeriod = new CalendarPeriod(earningEvent.CollectionYear, periodAndType.period.Period);
                 var key = paymentKeyService.GeneratePaymentKey(earningEvent.LearningAim.Reference, periodAndType.type, deliveryPeriod);
@@ -57,24 +55,30 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     continue;
 
                 string priceEpisodeIdentifier;
-                
+
                 if (amountDue < 0 && payments.Length > 0) // refunds need to use price episode ID that they are refunding
                     priceEpisodeIdentifier = payments[0].PriceEpisodeIdentifier;
                 else
                     priceEpisodeIdentifier = periodAndType.period.PriceEpisodeIdentifier;
 
-                var requiredPayment = CreateRequiredPayment((TEarningEvent) earningEvent, periodAndType, payments);
+
+                //var requiredPayment = mapper.Map<TRequiredPayment>(earningEvent);
+                var requiredPayment = CreateRequiredPayment(earningEvent, periodAndType, payments);
 
                 requiredPayment.AmountDue = amountDue;
-                requiredPayment.Learner = earningEvent.Learner.Clone();
-                requiredPayment.Ukprn = earningEvent.Ukprn;
-                requiredPayment.CollectionPeriod = earningEvent.CollectionPeriod.Clone();
                 requiredPayment.DeliveryPeriod = deliveryPeriod;
-                requiredPayment.LearningAim = earningEvent.LearningAim.Clone();
                 requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
-                requiredPayment.EventTime = DateTimeOffset.UtcNow;
-                requiredPayment.JobId = earningEvent.JobId;
-                requiredPayment.IlrSubmissionDateTime = earningEvent.IlrSubmissionDateTime;
+
+                mapper.Map(earningEvent, requiredPayment);
+
+                //requiredPayment.EventTime = DateTimeOffset.UtcNow;
+
+                //requiredPayment.Learner = earningEvent.Learner.Clone();
+                //requiredPayment.Ukprn = earningEvent.Ukprn;
+                //requiredPayment.CollectionPeriod = earningEvent.CollectionPeriod.Clone();
+                //requiredPayment.LearningAim = earningEvent.LearningAim.Clone();
+                //requiredPayment.JobId = earningEvent.JobId;
+                //requiredPayment.IlrSubmissionDateTime = earningEvent.IlrSubmissionDateTime;
 
                 result.Add(requiredPayment);
             }
@@ -83,7 +87,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         }
 
-        protected abstract TRequiredPayment CreateRequiredPayment(TEarningEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments);
+        protected abstract RequiredPaymentEvent CreateRequiredPayment(TEarningEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments);
 
         protected abstract IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(TEarningEvent earningEvent);
     }

@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
-    public abstract class ApprenticeshipContractTypeEarningsEvent : EarningEvent
+    public abstract class ApprenticeshipContractTypeEarningsEvent : EarningEvent, IContractTypeEarningEvent
     {
         public decimal SfaContributionPercentage { get; set; }
         public ReadOnlyCollection<OnProgrammeEarning> OnProgrammeEarnings { get; set; }
