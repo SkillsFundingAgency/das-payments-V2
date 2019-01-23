@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SFA.DAS.Payments.FundingSource.LevyFundedServicePkg" Version="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <ServiceTypes>
+    <!-- This is the name of your ServiceType. 
+         This name must match the string used in the RegisterServiceAsync call in Program.cs. -->
+    <StatelessServiceType ServiceTypeName="SFA.DAS.Payments.RequiredPayments.ProviderPaymentsServiceType" />
+    <StatefulServiceType ServiceTypeName="LevyFundedServiceActorServiceType" HasPersistedState="true">
+      <Extensions>
+        <Extension Name="__GeneratedServiceType__" GeneratedId="6df920bd-0d33-4d6b-bbdf-875e7589732d|Persisted">
+          <GeneratedNames xmlns="http://schemas.microsoft.com/2015/03/fabact-no-schema">
+            <DefaultService Name="LevyFundedServiceActorService" />
+            <ReplicatorEndpoint Name="LevyFundedServiceActorServiceReplicatorEndpoint" />
+            <ReplicatorConfigSection Name="LevyFundedServiceActorServiceReplicatorConfig" />
+            <ReplicatorSecurityConfigSection Name="LevyFundedServiceActorServiceReplicatorSecurityConfig" />
+            <StoreConfigSection Name="LevyFundedServiceActorServiceLocalStoreConfig" />
+            <ServiceEndpointV2_1 Name="LevyFundedServiceActorServiceEndpointV2_1" />
+          </GeneratedNames>
+        </Extension>
+      </Extensions>
+    </StatefulServiceType>
+  </ServiceTypes>
+  <!-- Code package is your service executable. -->
+  <CodePackage Name="Code" Version="1.0.0">
+    <EntryPoint>
+      <ExeHost>
+        <Program>SFA.DAS.Payments.FundingSource.LevyFundedService.exe</Program>
+      </ExeHost>
+    </EntryPoint>
+  </CodePackage>
+  <!-- Config package is the contents of the Config directory under PackageRoot that contains an 
+       independently-updateable and versioned set of custom configuration settings for your service. -->
+  <ConfigPackage Name="Config" Version="1.0.0" />
+  <Resources>
+    <Endpoints>
+      <!-- This endpoint is used by the communication listener to obtain the port on which to 
+           listen. Please note that if your service is partitioned, this port is shared with 
+           replicas of different partitions that are placed in your code. -->
+      <Endpoint Name="ServiceEndpoint" />
+      <Endpoint Name="LevyFundedServiceActorServiceEndpointV2_1" />
+      <Endpoint Name="LevyFundedServiceActorServiceReplicatorEndpoint" />
+    </Endpoints>
+  </Resources>
+</ServiceManifest>
