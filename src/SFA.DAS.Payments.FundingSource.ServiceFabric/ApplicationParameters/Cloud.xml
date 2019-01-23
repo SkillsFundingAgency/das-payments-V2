@@ -2,11 +2,17 @@
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="NonLevyFundedService_InstanceCount" Value="__NonLevyFundedService_InstanceCount__" />
+    <Parameter Name="LevyFundedProxyService_InstanceCount" Value="__LevyFundedProxyService_InstanceCount__" />
+    <Parameter Name="LevyFundedServiceActorService_PartitionCount" Value="__LevyFundedServiceActorService_PartitionCount__" />
+    <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize" Value="__LevyFundedServiceActorService_TargetReplicaSetSize__" />
+    <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" Value="__LevyFundedServiceActorService_MinReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="NonLevyFundedService_EndpointName" Value="__NonLevyFundedService_EndpointName__" />
+    <Parameter Name="LevyFundedService_EndpointName" Value="__LevyFundedService_EndpointName__" />
     <Parameter Name="NonLevyFundedService_FailedMessagesQueue" Value="__NonLevyFundedService_FailedMessagesQueue__" />
+    <Parameter Name="LevyFundedService_FailedMessagesQueue" Value="__LevyFundedService_FailedMessagesQueue__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
   </Parameters>

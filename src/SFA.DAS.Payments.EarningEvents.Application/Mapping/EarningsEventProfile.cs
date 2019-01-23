@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -34,7 +35,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>()
-                .Ignore(dest => dest.AgreementId)
+                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(aim => aim.PriceEpisodes[0].PriceEpisodeValues.PriceEpisodeAgreeId))
                 ;
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>();
