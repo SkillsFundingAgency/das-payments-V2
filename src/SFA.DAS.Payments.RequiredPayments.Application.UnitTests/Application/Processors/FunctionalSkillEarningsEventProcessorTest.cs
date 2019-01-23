@@ -6,12 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
+using AutoMapper;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
@@ -113,7 +115,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 })
             };
 
-            var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = "1819-R02", DeliveryPeriod = "1819-R02"}};
+            var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2), DeliveryPeriod = 2}};
 
             mocker.Mock<IPaymentKeyService>()
                 .Setup(s => s.GeneratePaymentKey("9", (int)FunctionalSkillType.BalancingMathsAndEnglish, It.IsAny<short>(), It.IsAny<byte>()))

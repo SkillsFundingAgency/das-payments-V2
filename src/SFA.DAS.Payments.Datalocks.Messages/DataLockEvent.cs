@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.DataLocks.Messages
     public abstract class DataLockEvent : PaymentsEvent, IContractType1EarningEvent
     {
         public ReadOnlyCollection<PriceEpisode> PriceEpisodes { get; set; }
-        public string CollectionYear { get; set; }
+        public short CollectionYear { get; set; }
         public string AgreementId { get; set; }
         public decimal SfaContributionPercentage { get; set; }
         public ReadOnlyCollection<OnProgrammeEarning> OnProgrammeEarnings { get; set; }

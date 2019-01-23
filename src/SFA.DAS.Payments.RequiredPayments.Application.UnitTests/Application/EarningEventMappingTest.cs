@@ -7,6 +7,7 @@ using SFA.DAS.Payments.DataLocks.Messages;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
@@ -147,10 +148,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             return new FunctionalSkillEarningsEvent
             {
-                CollectionYear = "1819",
+                CollectionYear = 1819,
                 Learner = new Learner {ReferenceNumber = "R", Uln = 10},
                 Ukprn = 20,
-                CollectionPeriod = new CalendarPeriod(2019, 1),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 7),
                 LearningAim = new LearningAim
                 {
                     FundingLineType = "flt",
@@ -194,10 +195,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 EmployerAccountId = 101,
                 CommitmentId = 102,
                 AgreementId = "103",
-                CollectionYear = "1819",
+                CollectionYear = 1819,
                 Learner = new Learner {ReferenceNumber = "R", Uln = 10},
                 Ukprn = 20,
-                CollectionPeriod = new CalendarPeriod(2019, 1),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 7),
                 LearningAim = new LearningAim
                 {
                     FundingLineType = "flt",

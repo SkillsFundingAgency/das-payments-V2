@@ -40,6 +40,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 if (periodAndType.period.Period > earningEvent.CollectionPeriod.Period) // cut off future periods
                     continue;
 
+                var key = paymentKeyService.GeneratePaymentKey(earningEvent.LearningAim.Reference, periodAndType.type, earningEvent.CollectionYear, periodAndType.period.Period);
                 var paymentHistoryValue = await paymentHistoryCache.TryGet(key, cancellationToken);
 
                 var payments = paymentHistoryValue.HasValue
@@ -61,7 +62,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 var requiredPayment = CreateRequiredPayment(earningEvent, periodAndType, payments);
 
                 requiredPayment.AmountDue = amountDue;
-                requiredPayment.DeliveryPeriod = deliveryPeriod;
+                requiredPayment.DeliveryPeriod = periodAndType.period.Period;
                 requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
 
                 mapper.Map(earningEvent, requiredPayment);

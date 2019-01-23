@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
-using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 {
@@ -178,8 +173,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 history[i] = new Payment
                 {
                     Amount = 100,
-                    DeliveryPeriod = new CalendarPeriod("1819R02"),
-                    CollectionPeriod = new CalendarPeriod("1819R02"),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819,2),
                     PriceEpisodeIdentifier = "1",
                     FundingSource = i % 2 == 0 ? FundingSourceType.CoInvestedSfa : FundingSourceType.CoInvestedEmployer
                 };
@@ -228,8 +223,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 Amount = amount,
                 FundingSource = fundingSourceType,
                 PriceEpisodeIdentifier = "2",
-                CollectionPeriod = new CalendarPeriod(2018, 9),
-                DeliveryPeriod = new CalendarPeriod(2018, 9)
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
+                DeliveryPeriod = 2
             };
         }
     }
