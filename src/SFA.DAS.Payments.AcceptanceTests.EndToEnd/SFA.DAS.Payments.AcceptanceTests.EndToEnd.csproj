@@ -521,41 +521,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-352.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 16-18 learner large employer at start changed to small employer PV2-352.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 16-18 learner second employment status with same employer but small employer flag removed PV2-331.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 16-18 learner second employment status with same employer but small employer flag removed PV2-331.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 16-18 learner with a small employer at start PV2-326.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 16-18 learner with a small employer at start PV2-326.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Small Employer\Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -784,34 +749,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 16-18 learner large employer at start changed to small employer PV2-351.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 16-18 learner large employer at start changed to small employer PV2-352.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 16-18 learner large employer at start changed to small employer PV2-352.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 16-18 learner second employment status with same employer but small employer flag removed PV2-331.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 16-18 learner second employment status with same employer but small employer flag removed PV2-331.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 16-18 learner with a small employer at start PV2-326.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 16-18 learner with a small employer at start PV2-326.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 19-24 learner care leaver paid employment at start PV2-329.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Small Employer\Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.AcceptanceTests.Core\SFA.DAS.Payments.AcceptanceTests.Core.csproj">
@@ -858,6 +795,10 @@
       <Project>{21918F17-1310-4276-BEF5-64243F9E0C31}</Project>
       <Name>SFA.DAS.Payments.RequiredPayments.Messages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Tests.Core\SFA.DAS.Payments.Tests.Core.csproj">
+      <Project>{64B5C1EB-36A9-4A56-AD6B-B70C90FC23D7}</Project>
+      <Name>SFA.DAS.Payments.Tests.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
@@ -871,13 +812,13 @@
     <Error Condition="!Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.11.0\build\NUnit.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets'))" />
     <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets'))" />
     <Error Condition="!Exists('..\packages\SpecFlow.2.4.1\build\SpecFlow.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.2.4.1\build\SpecFlow.targets'))" />
     <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props'))" />
     <Error Condition="!Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets" Condition="Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\build\Microsoft.Azure.Services.AppAuthentication.targets')" />
-  <Import Project="..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets')" />
   <Import Project="..\packages\SpecFlow.2.4.1\build\SpecFlow.targets" Condition="Exists('..\packages\SpecFlow.2.4.1\build\SpecFlow.targets')" />
   <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.targets" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.targets')" />
+  <Import Project="..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets')" />
 </Project>

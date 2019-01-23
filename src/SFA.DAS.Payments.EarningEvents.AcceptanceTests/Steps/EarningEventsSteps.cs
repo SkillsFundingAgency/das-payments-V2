@@ -10,6 +10,7 @@ using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -34,8 +35,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         [Given(@"the earnings are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
         {
-            var year = DateTime.Today.Year - 2000;
-            CollectionYear = DateTime.Today.Month < 9 ? $"{year - 1}{year}" : $"{year}{year + 1}";
+            CollectionYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;
         }
 
         [Given(@"the current collection period is (.*)")]

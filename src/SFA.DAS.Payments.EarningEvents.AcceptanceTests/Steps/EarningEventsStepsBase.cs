@@ -5,6 +5,7 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data;
+using SFA.DAS.Payments.Tests.Core;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
@@ -45,7 +46,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                         PriceEpisodeFundLineType = learnerEarnings.FundingLineType,
                         PriceEpisodeBalanceValue = learnerEarnings.BalancingPayment,
                         PriceEpisodeCompletionPayment = learnerEarnings.CompletionAmount,
-                        PriceEpisodeContractType = "Act2",  //TODO: Needs to work for ACT1 too
+                        PriceEpisodeContractType = "Non-Levy Contract",  //TODO: Needs to work for ACT1 too
                         PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
                         PriceEpisodePlannedEndDate = learnerEarnings.LearnerStartDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
                         PriceEpisodeSFAContribPct = SfaContributionPercentage,

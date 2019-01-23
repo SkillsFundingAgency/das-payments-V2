@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             azureFileService = container.Resolve<IFileService>();
         }
 
-        public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, string collectionYear)
+        public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, short collectionYear)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 var ilrSubmission = new FM36Global
                 {
                     UKPRN = (int)ukprn,
-                    Year = collectionYear,
+                    Year = collectionYear.ToString(),
                     Learners = learners
                 };
                 var json = serializationService.Serialize(ilrSubmission);

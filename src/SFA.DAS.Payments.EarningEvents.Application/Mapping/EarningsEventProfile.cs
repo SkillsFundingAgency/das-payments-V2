@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -20,7 +22,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.EventTime, opt => opt.UseValue(DateTimeOffset.UtcNow))
                 .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => new CalendarPeriod(src.CollectionYear, (byte)src.CollectionPeriod)))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.CollectionYear, (byte)src.CollectionPeriod)))
                 .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source => source))
                 ;
 
@@ -34,7 +36,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>()
-                .Ignore(dest => dest.AgreementId)
+                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(aim => aim.PriceEpisodes[0].PriceEpisodeValues.PriceEpisodeAgreeId))
                 ;
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>();

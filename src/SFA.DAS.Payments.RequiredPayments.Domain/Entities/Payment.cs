@@ -14,8 +14,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
 
         public string PriceEpisodeIdentifier { get; set; }
 
-        public CalendarPeriod DeliveryPeriod { get; set; }
+        public byte DeliveryPeriod { get; set; }
 
-        public CalendarPeriod CollectionPeriod { get; set; }
+        public CollectionPeriod CollectionPeriod { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
@@ -89,7 +90,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestHandleNormalEvent()
         {
             // arrange
-            var period = new CalendarPeriod(2018, 9);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
+            byte deliveryPeriod = 2;
 
             var earningEvent = new ApprenticeshipContractType2EarningEvent
             {
@@ -108,7 +110,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             new EarningPeriod
                             {
                                 Amount = 100,
-                                Period = period.Period,
+                                Period = deliveryPeriod,
                                 PriceEpisodeIdentifier = "2"
                             }
                         })
@@ -116,9 +118,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 })
             };
 
-            var paymentHistoryEntities = new[] { new PaymentHistoryEntity { CollectionPeriod = "1819-R02", DeliveryPeriod = "1819-R02"} };
+            var paymentHistoryEntities = new[] { new PaymentHistoryEntity
+            {
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
+                DeliveryPeriod = 2,
+            } };
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, period)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, It.IsAny<short>(), It.IsAny<byte>()))
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(1).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateSfaContributionPercentage(0, 100, It.IsAny<Payment[]>())).Returns(100).Verifiable();
@@ -137,7 +145,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestNoEventProducedWhenZeroToPay()
         {
             // arrange
-            var period = new CalendarPeriod(2018, 9);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
+            byte deliveryPeriod = 2;
 
             var earningEvent = new ApprenticeshipContractType2EarningEvent
             {
@@ -156,7 +165,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             new EarningPeriod
                             {
                                 Amount = 100,
-                                Period = period.Period,
+                                Period = deliveryPeriod,
                                 PriceEpisodeIdentifier = "2"
                             }
                         })
@@ -166,7 +175,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, period)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, It.IsAny<short>(), It.IsAny<byte>()))
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(0).Verifiable();
 
@@ -184,13 +195,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestPriceEpisodeIdentifierPickedFromHistoryForRefunds(decimal amount, string priceEpisodeIdentifier)
         {
             // arrange
-            var deliveryPeriod = new CalendarPeriod(2018, 9);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 3);
+            var deliveryPeriod = (byte)2;
 
             var earningEvent = new ApprenticeshipContractType2EarningEvent
             {
                 Ukprn = 1,
-                CollectionPeriod = new CalendarPeriod(2018, 10),
-                CollectionYear = deliveryPeriod.AcademicYear,
+                CollectionPeriod = period,
+                CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
@@ -203,7 +215,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             new EarningPeriod
                             {
                                 Amount = amount,
-                                Period = deliveryPeriod.Period,
+                                Period = deliveryPeriod,
                                 PriceEpisodeIdentifier = priceEpisodeIdentifier
                             }
                         })
@@ -217,8 +229,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 {
                     Amount = 100,
                     PriceEpisodeIdentifier = "2",
-                    CollectionPeriod = new CalendarPeriod(2018, 9).Name,
-                    DeliveryPeriod = new  CalendarPeriod(2018, 9).Name,
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
+                    DeliveryPeriod = 2,
                     TransactionType = (int)IncentiveEarningType.Balancing16To18FrameworkUplift,
                     Ukprn = 1,
                     LearnAimReference = earningEvent.LearningAim.Reference,
@@ -227,7 +239,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 }
             };
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey(earningEvent.LearningAim.Reference, (int)OnProgrammeEarningType.Balancing, deliveryPeriod)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>()
+                .Setup(s => s.GeneratePaymentKey(earningEvent.LearningAim.Reference, (int)OnProgrammeEarningType.Balancing,
+                    It.IsAny<short>(), It.IsAny<byte>()))
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(amount, It.IsAny<Payment[]>())).Returns(-100).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateSfaContributionPercentage(0, amount, It.IsAny<Payment[]>())).Returns(100).Verifiable();
@@ -245,14 +261,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestSfaContributionIsCalculatedForZeroEarningRefunds()
         {
             // arrange
-            var deliveryPeriod = new CalendarPeriod(2018, 9);
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 3);
+            byte deliveryPeriod = 2;
 
             var earningEvent = new ApprenticeshipContractType2EarningEvent
             {
                 Ukprn = 1,
                 SfaContributionPercentage = 0,
-                CollectionPeriod = new CalendarPeriod(2018, 10),
-                CollectionYear = deliveryPeriod.AcademicYear,
+                CollectionPeriod = period,
+                CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
@@ -264,7 +281,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         {
                             new EarningPeriod
                             {
-                                Period = deliveryPeriod.Period,
+                                Period = deliveryPeriod,
                                 Amount = 0,
                                 PriceEpisodeIdentifier = "priceEpisodeIdentifier",
                                 SfaContributionPercentage = 0
@@ -276,7 +293,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var paymentHistoryEntities = new List<PaymentHistoryEntity>();
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey(earningEvent.LearningAim.Reference, (int)OnProgrammeEarningType.Balancing, deliveryPeriod)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>()
+                .Setup(s => s.GeneratePaymentKey(earningEvent.LearningAim.Reference, (int)OnProgrammeEarningType.Balancing,
+                    It.IsAny<short>(), It.IsAny<byte>()))
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities.ToArray())).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(0, It.IsAny<Payment[]>())).Returns(-100).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateSfaContributionPercentage(0, 0, It.IsAny<Payment[]>())).Returns(.77m).Verifiable();
@@ -293,8 +314,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public async Task TestFuturePeriodsCutOff()
         {
             // arrange
-            var period = new CalendarPeriod(2018, 9);
-
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
+            
             var earningEvent = new ApprenticeshipContractType2EarningEvent
             {
                 Ukprn = 1,
@@ -328,7 +349,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];
 
-            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, period)).Returns("payment key").Verifiable();
+            mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1,It.IsAny<short>(), It.IsAny<byte>()))
+                .Returns("payment key")
+                .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(100).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateSfaContributionPercentage(0, 100, It.IsAny<Payment[]>())).Returns(100).Verifiable();

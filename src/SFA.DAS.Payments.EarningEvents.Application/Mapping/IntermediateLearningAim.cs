@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         }
 
         protected IntermediateLearningAim(FM36Learner learner, LearningDelivery aim,
-            IEnumerable<PriceEpisode> priceEpisodes, long ukprn, string collectionYear,
+            IEnumerable<PriceEpisode> priceEpisodes, long ukprn, short collectionYear,
             int collectionPeriod, DateTime ilrSubmissionDateTime, long jobId)
         {
             Aim = aim;
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public List<PriceEpisode> PriceEpisodes { get; protected set; } = new List<PriceEpisode>();
         public FM36Learner Learner { get; protected set; }
         public long Ukprn { get; protected set; }
-        public string CollectionYear { get; protected set; }
+        public short CollectionYear { get; protected set; }
         public int CollectionPeriod { get; protected set; }
         public DateTime IlrSubmissionDateTime { get; protected set; }
         public long JobId { get; set; }

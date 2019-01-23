@@ -40,9 +40,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 if (periodAndType.period.Period > earningEvent.CollectionPeriod.Period) // cut off future periods
                     continue;
 
-                var deliveryPeriod = new CalendarPeriod(earningEvent.CollectionYear, periodAndType.period.Period);
-                var key = paymentKeyService.GeneratePaymentKey(earningEvent.LearningAim.Reference, periodAndType.type, deliveryPeriod);
-
                 var paymentHistoryValue = await paymentHistoryCache.TryGet(key, cancellationToken);
 
                 var payments = paymentHistoryValue.HasValue

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
@@ -68,14 +68,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment
                 {
                     Amount = 1,
-                    DeliveryPeriod = new CalendarPeriod("1819R02"),
-                    CollectionPeriod = new CalendarPeriod("1819R02"),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 },
                 new Payment
                 {
                     Amount = 3,
-                    DeliveryPeriod = new CalendarPeriod("1819R02"),
-                    CollectionPeriod = new CalendarPeriod("1819R02"),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 }
             };
 
@@ -95,8 +95,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment
                 {
                     Amount = 2,
-                    DeliveryPeriod = new CalendarPeriod("1819R02"),
-                    CollectionPeriod = new CalendarPeriod("1819R02")
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 }
             };
 
@@ -116,14 +116,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment
                 {
                     Amount = 3,
-                    DeliveryPeriod = new CalendarPeriod("1819R02"),
-                    CollectionPeriod = new CalendarPeriod("1819R02"),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 },
                 new Payment
                 {
                     Amount = 3,
-                    DeliveryPeriod = new CalendarPeriod("1819R02"),
-                    CollectionPeriod = new CalendarPeriod("1819R02"),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 }
             };
 
@@ -143,14 +143,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment
                 {
                     Amount = 3,
-                    DeliveryPeriod = new CalendarPeriod("1819R02"),
-                    CollectionPeriod = new CalendarPeriod("1819R02"),
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 },
                 new Payment
                 {
                     Amount = 2,
-                    DeliveryPeriod = new CalendarPeriod("1819R02"),
-                    CollectionPeriod = new CalendarPeriod("1819R02")
+                    DeliveryPeriod = 2,
+                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 }
             };
 
