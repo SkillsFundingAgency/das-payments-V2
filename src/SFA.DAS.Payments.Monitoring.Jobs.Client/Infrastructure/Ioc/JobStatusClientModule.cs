@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
             builder.RegisterBuildCallback(c =>
             {
                 var config = c.Resolve<IConfigurationHelper>();
-                var jobsEndpointName = config.GetSettingOrDefault("monitoring-jobs-endpoint", "sfa-das-payments-monitoring-jobs");
+                var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
                 EndpointConfigurationEvents.ConfiguringTransport += (object sender, TransportExtensions<AzureServiceBusTransport> e) =>
                 {
                     e.Routing().RouteToEndpoint(typeof(RecordStartedProcessingEarningsJob).Assembly, jobsEndpointName);

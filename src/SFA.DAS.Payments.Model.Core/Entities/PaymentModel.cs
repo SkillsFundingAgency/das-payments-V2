@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
     public class PaymentModel
     {
         public long Id { get; set; }
-        public Guid FundingSourceId { get; set; }
+        public Guid FundingSourceEventId { get; set; }
         public Guid EventId { get; set; }
         public DateTimeOffset EventTime { get; set; }
         public long Ukprn { get; set; }

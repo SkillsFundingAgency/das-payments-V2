@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             {
                 
                 EventId = Guid.NewGuid(),
-                FundingSourceId =  Guid.NewGuid(),
+                FundingSourceEventId =  Guid.NewGuid(),
                 Ukprn = TestSession.Ukprn,
                 LearnerReferenceNumber = testSessionLearner.LearnRefNumber,
                 LearnerUln = testSessionLearner.Uln,

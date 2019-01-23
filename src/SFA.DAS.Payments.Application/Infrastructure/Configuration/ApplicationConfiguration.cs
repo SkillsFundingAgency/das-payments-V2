@@ -1,7 +1,6 @@
-﻿using ESFA.DC.Logging.Enums;
-using SFA.DAS.Payments.Core.Configuration;
+﻿using SFA.DAS.Payments.Core.Configuration;
 
-namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Configuration
+namespace SFA.DAS.Payments.Application.Infrastructure.Configuration
 {
     public class ApplicationConfiguration: IApplicationConfiguration
     {
