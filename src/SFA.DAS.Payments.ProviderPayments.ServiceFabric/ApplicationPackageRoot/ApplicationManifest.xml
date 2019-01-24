@@ -15,6 +15,7 @@
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
+    <Parameter Name="BatchIntervalInSeconds" DefaultValue="10" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsServicePkg" ServiceManifestVersion="1.0.0" />
@@ -33,6 +34,7 @@
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="BatchIntervalInSeconds" Value="[BatchIntervalInSeconds]" />
           </Section>
         </Settings>
       </ConfigOverride>
