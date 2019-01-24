@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService
 {
     public class LevyFundedProxyService : StatelessService
     {
-        private IEndpointCommunicationListener listener;
+        private IStatelessEndpointCommunicationListener listener;
         private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentLogger paymentLogger;
 
@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService
 
             return new List<ServiceInstanceListener>
             {
-                new ServiceInstanceListener(context =>listener = lifetimeScope.Resolve<IEndpointCommunicationListener>())
+                new ServiceInstanceListener(context =>listener = lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
             };
         }
     }

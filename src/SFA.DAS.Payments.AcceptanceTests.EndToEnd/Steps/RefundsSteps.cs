@@ -133,22 +133,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriod)
+        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriodText)
         {
-            if (Context.ContainsKey("current_collection_period") && CurrentCollectionPeriod.Name != new CollectionPeriodBuilder().WithSpecDate(collectionPeriod).Build().Name)
+            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
+            if (Context.ContainsKey("current_collection_period") && (CurrentCollectionPeriod.Period != collectionPeriod.Period  || CurrentCollectionPeriod.AcademicYear != collectionPeriod.AcademicYear))
             {
                 await RequiredPaymentsCacheCleaner.ClearCaches(TestSession);
                 await Task.Delay(Config.TimeToPause);
             }
 
-            SetCollectionPeriod(collectionPeriod);
+            SetCollectionPeriod(collectionPeriodText);
         }
 
         [Then(@"only the following provider payments will be recorded")]
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>()
-                .Where(p => new CollectionPeriodBuilder().WithSpecDate(p.CollectionPeriod).Build().Name == CurrentCollectionPeriod.Name)
+                .Where(p => p.ParsedCollectionPeriod.Period == CurrentCollectionPeriod.Period && p.ParsedCollectionPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear)
                 .ToList();
 
             var dataContext = Container.Resolve<IPaymentsDataContext>();
@@ -156,7 +157,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ? TestSession.Learners.First().Aims.First().PriceEpisodes.First().ContractType
                 : CurrentIlr.First().ContractType;
 
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name, expectedPayments, contractType);
+            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
     }

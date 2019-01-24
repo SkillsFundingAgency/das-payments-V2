@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [Given(@"the following historical contract type (.*) payments exist:")]
         public void GivenTheFollowingHistoricalContractTypePaymentsExist(int p0, Table table)
         {
-            AddHistoricalPayments(table.CreateSet<HistoricalPayment>().ToList());
+                AddHistoricalPayments(table.CreateSet<HistoricalPayment>().ToList());
         }
 
         private List<PaymentModel> ToPayments(HistoricalPayment payment)
@@ -79,13 +79,15 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             Assert.IsNotNull(testSessionLearner, $"Test session learner with learner id: '{payment.LearnerId}' not found.");
             return new PaymentModel
             {
-                ExternalId = Guid.NewGuid(),
+                
+                EventId = Guid.NewGuid(),
+                FundingSourceEventId =  Guid.NewGuid(),
                 Ukprn = TestSession.Ukprn,
                 LearnerReferenceNumber = testSessionLearner.LearnRefNumber,
                 LearnerUln = testSessionLearner.Uln,
                 PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
                 Amount = GetFundingAmount(payment.Amount, fundingSource),
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
                 DeliveryPeriod = payment.Delivery_Period,
                 LearningAimReference = testSessionLearner.Course.LearnAimRef,
                 LearningAimProgrammeType = testSessionLearner.Course.ProgrammeType,

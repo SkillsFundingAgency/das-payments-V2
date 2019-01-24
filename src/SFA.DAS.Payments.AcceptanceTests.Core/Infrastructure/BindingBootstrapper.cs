@@ -9,7 +9,9 @@ using Microsoft.ServiceBus.Messaging;
 using NServiceBus;
 using NServiceBus.Faults;
 using NServiceBus.Features;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
@@ -25,6 +27,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var config = new TestsConfiguration();
             Builder = new ContainerBuilder();
             Builder.RegisterType<TestsConfiguration>().SingleInstance();
+            Builder.RegisterType<DcHelper>().SingleInstance();
+            Builder.RegisterType<EarningsJobClient>()
+                .As<IEarningsJobClient>()
+                .InstancePerLifetimeScope();
             EndpointConfiguration = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
             Builder.RegisterInstance(EndpointConfiguration)
                 .SingleInstance();
@@ -75,6 +81,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var messagingFactory = MessagingFactory.CreateFromConnectionString(Config.ServiceBusConnectionString);
+            
+            
             var receiver = await messagingFactory.CreateMessageReceiverAsync(Config.AcceptanceTestsEndpointName, ReceiveMode.ReceiveAndDelete);
             while (true)
             {

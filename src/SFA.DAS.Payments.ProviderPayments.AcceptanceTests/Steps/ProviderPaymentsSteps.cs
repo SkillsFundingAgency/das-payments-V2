@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Model.Core.Factories;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -53,8 +54,10 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [When(@"the funding source payments event are received")]
         public async Task WhenTheFundingSourcePaymentsEventAreReceivedAsync()
         {
-            var submissionTime = DateTime.UtcNow;
+            var startTime = DateTimeOffset.UtcNow;
+            var submissionTime = TestSession.IlrSubmissionTime;
             var payments = FundingSourcePayments.Select(p => CreateFundingSourcePaymentEvent(p, submissionTime)).ToList();
+            await CreateTestEarningsJob(startTime, payments.Cast<IPaymentsEvent>().ToList());
             foreach (var payment in payments)
             {
                 await MessageSession.Send(payment).ConfigureAwait(false);
@@ -115,7 +118,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = TestSession.JobId,
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
             }).ConfigureAwait(false);
         }
     }

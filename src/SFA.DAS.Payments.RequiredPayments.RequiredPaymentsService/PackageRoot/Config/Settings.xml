@@ -11,6 +11,7 @@
     <Parameter Name="FailedMessagesQueue" Value="" />
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
   </Section>
   <Section Name="RequiredPaymentsServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="RequiredPaymentsServiceActorServiceReplicatorEndpoint" />
