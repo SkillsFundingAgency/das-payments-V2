@@ -62,7 +62,7 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <Service Name="ProviderPaymentsServiceActorService" GeneratedIdRef="262c2fc4-cb5a-422c-8966-97fac891d901|Volatile">
+    <Service Name="ProviderPaymentsServiceActorService" GeneratedIdRef="b1b523b8-f4c5-4f5e-92cd-702d65054ccd|Volatile">
       <StatefulService ServiceTypeName="ProviderPaymentsServiceActorServiceType" TargetReplicaSetSize="[ProviderPaymentsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ProviderPaymentsServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[ProviderPaymentsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
