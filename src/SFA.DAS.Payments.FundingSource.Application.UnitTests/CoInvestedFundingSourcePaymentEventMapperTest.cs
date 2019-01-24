@@ -63,6 +63,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
 
             var expectedPayment = new SfaCoInvestedFundingSourcePaymentEvent
             {
+                RequiredPaymentEventId = requiredPaymentEvent.EventId,
                 AmountDue = 900.00m,
                 ContractType = ContractType.Act2,
                 SfaContributionPercentage = requiredPaymentEvent.SfaContributionPercentage,
@@ -75,10 +76,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 LearningAim = requiredPaymentEvent.LearningAim,
                 PriceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier,
                 Ukprn = requiredPaymentEvent.Ukprn,
-                FundingSourceType =FundingSourceType.CoInvestedSfa
+                FundingSourceType = FundingSourceType.CoInvestedSfa
             };
 
             var actualSfaCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredPaymentEvent, coInvestedPayment);
+            expectedPayment.EventId = actualSfaCoInvestedPayment.EventId;
+            expectedPayment.EventTime = actualSfaCoInvestedPayment.EventTime;
 
             actualSfaCoInvestedPayment.Should().BeEquivalentTo(expectedPayment);
         }
@@ -96,6 +99,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
 
             var expectedPayment = new EmployerCoInvestedFundingSourcePaymentEvent
             {
+                EventId = Guid.NewGuid(),
+                RequiredPaymentEventId = requiredPaymentEvent.EventId,
                 AmountDue = 100.00m,
                 ContractType = ContractType.Act2,
                 SfaContributionPercentage = requiredPaymentEvent.SfaContributionPercentage,
@@ -111,10 +116,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 FundingSourceType = FundingSourceType.CoInvestedEmployer
             };
 
-          
+
 
             var actualEmployerCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredPaymentEvent, coInvestedPayment);
-
+            expectedPayment.EventId = actualEmployerCoInvestedPayment.EventId;
+            expectedPayment.EventTime = actualEmployerCoInvestedPayment.EventTime;
             actualEmployerCoInvestedPayment.Should().BeEquivalentTo(expectedPayment);
         }
 

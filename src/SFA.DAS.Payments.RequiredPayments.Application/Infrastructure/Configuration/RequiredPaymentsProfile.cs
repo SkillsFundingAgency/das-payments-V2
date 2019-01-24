@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
             CreateMap<PaymentHistoryEntity, Payment>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.ResolveUsing(src => src.DeliveryPeriod))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod.Clone()));
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod));
         }
     }
 }

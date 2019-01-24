@@ -14,20 +14,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
     {
         private readonly IPaymentsDataContext dataContext;
         private readonly TestSession testSession;
-        private readonly string currentCollectionPeriodName;
+        private readonly CollectionPeriod currentCollectionPeriod;
         private readonly List<ProviderPayment> expectedPaymentInfo;
         private readonly ContractType contractType;
 
 
-        public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, string currentCollectionPeriodName)
+        public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, CollectionPeriod currentCollectionPeriod)
         {
             this.dataContext = dataContext;
             this.testSession = testSession;
-            this.currentCollectionPeriodName = currentCollectionPeriodName;
+            this.currentCollectionPeriod = currentCollectionPeriod;
         }
 
-        public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, string currentCollectionPeriodName, List<ProviderPayment> expectedPaymentInfo, ContractType contractType)
-            : this(dataContext, testSession, currentCollectionPeriodName)
+        public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, CollectionPeriod currentCollectionPeriod, List<ProviderPayment> expectedPaymentInfo, ContractType contractType)
+            : this(dataContext, testSession, currentCollectionPeriod)
         {
             this.expectedPaymentInfo = expectedPaymentInfo;
             this.contractType = contractType;
@@ -35,9 +35,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override IList<PaymentModel> GetActualEvents()
         {
-            return dataContext.Payment.Where(p => p.JobId == testSession.JobId &&
-                                                  p.CollectionPeriod.Name == currentCollectionPeriodName &&
-                                                  p.Ukprn == testSession.Ukprn).ToList();
+            return dataContext.Payment
+                .Where(p => p.JobId == testSession.JobId &&
+                                                  p.CollectionPeriod.Period == currentCollectionPeriod.Period &&
+                                                  p.CollectionPeriod.AcademicYear == currentCollectionPeriod.AcademicYear &&
+                                                  p.Ukprn == testSession.Ukprn)
+                .ToList();
         }
 
         protected override IList<PaymentModel> GetExpectedEvents()
@@ -69,7 +72,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(PaymentModel expected, PaymentModel actual)
         {
-            return expected.CollectionPeriod.Name == actual.CollectionPeriod.Name &&
+            return expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
+                   expected.CollectionPeriod.AcademicYear== actual.CollectionPeriod.AcademicYear &&
                    expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.TransactionType == actual.TransactionType &&
                    expected.ContractType == actual.ContractType &&

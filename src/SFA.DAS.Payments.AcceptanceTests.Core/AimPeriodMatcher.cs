@@ -19,23 +19,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             var aimStartDate = startDate.ToDate();
             var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
             var aimDuration = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
-            var collectionPeriodReferenceDate = DateFromCollectionPeriodName(collectionPeriod.Name);
+            var collectionPeriodReferenceDate = DateFromCollectionPeriod(collectionPeriod);
 
             return aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear ||
                    (aimStartDate + aimDuration >= collectionPeriodReferenceDate && completionStatus != CompletionStatus.Completed) ||
                    (aimStartDate + aimDuration >= collectionPeriodReferenceDate && aimReference == "ZPROG001" && completionStatus == CompletionStatus.Completed);
         }
 
-        private static DateTime DateFromCollectionPeriodName(string collectionPeriodName)
+        private static DateTime DateFromCollectionPeriod(CollectionPeriod collectionPeriod)
         {
-            var year = int.Parse(collectionPeriodName.Substring(0, 2)) + 2000;
-            var period = int.Parse(collectionPeriodName.Substring(6));
+            var year = collectionPeriod.AcademicYear / 100 + 2000;
 
-            if (period < 6)
-            {
-                return new DateTime(year, period + 7, 1);
-            }
-            return new DateTime(year + 1, period - 5, 1);
+            return collectionPeriod.Period < 6 
+                ? new DateTime(year, collectionPeriod.Period + 7, 1) 
+                : new DateTime(year + 1, collectionPeriod.Period - 5, 1);
         }
     }
 }

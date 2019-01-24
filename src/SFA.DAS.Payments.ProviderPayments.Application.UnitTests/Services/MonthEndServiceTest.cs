@@ -49,14 +49,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     CollectionPeriod = new CollectionPeriod
                     {
                         AcademicYear = 1819,
-                        Period = 8,
-                        Name = "1819-R08"
+                        Period = 8
                     },
                     IlrSubmissionDateTime = DateTime.UtcNow,
                     ContractType = ContractType.Act1,
                     PriceEpisodeIdentifier = "P-1",
                     LearnerReferenceNumber = "100500",
-                    ExternalId = Guid.NewGuid(),
+                    EventId = Guid.NewGuid(),
                     LearningAimFundingLineType = "16-18",
                     LearningAimPathwayCode = 1,
                     LearningAimReference = "1",
@@ -76,14 +75,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verifiable();
 
             providerPaymentsRepository
-                          .Setup(o => o.GetMonthEndPayments(It.IsAny<string>(), 
+                          .Setup(o => o.GetMonthEndPayments(It.IsAny<CollectionPeriod>(), 
                               It.IsAny<long>(), 
                               It.IsAny<CancellationToken>()))
                           .ReturnsAsync(payments)
                           .Verifiable();
 
             providerPaymentsRepository
-                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<string>(),
+                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<CollectionPeriod>(),
                                                         It.IsAny<long>(),
                                                         It.IsAny<DateTime>(),
                                                         It.IsAny<CancellationToken>()))
@@ -125,11 +124,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         public async Task GetMonthEndPaymentsShouldReturnPaymentsFromRepository()
         {
             var cancellationToken = new CancellationToken();
-            var results = await monthEndService.GetMonthEndPayments("1819-R02", ukprn, cancellationToken);
+
+            var results = await monthEndService.GetMonthEndPayments(new CollectionPeriod{Period = 2, AcademicYear = 1819}, ukprn, cancellationToken);
 
             Assert.IsNotNull(results);
-            providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.IsAny<string>(),
-                                                    It.IsAny<long>(),
+            providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.Is<CollectionPeriod>(cp => cp.AcademicYear == 1819 && cp.Period == 2),
+                                                    It.Is<long>(x => x == ukprn),
                                                     It.IsAny<CancellationToken>()), Times.Once);
         }
     }

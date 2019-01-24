@@ -36,7 +36,6 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
             var instance = new CollectionPeriod
             {
                 AcademicYear = academicYear,
-                Name = name,
                 Period = Period,
             };
             return instance;
