@@ -18,11 +18,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.PriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
                 .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.MapFrom(source => source.Aim))
-                .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.MapFrom(source => source.CollectionYear))
-                .ForMember(destinationMember => destinationMember.EventTime, opt => opt.UseValue(DateTimeOffset.UtcNow))
+                .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.MapFrom(source => source.AcademicYear))
                 .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.CollectionYear, (byte)src.CollectionPeriod)))
+                .ForMember(destinationMember => destinationMember.EventTime, opt => opt.Ignore())
+                .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore())
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.AcademicYear, (byte)src.CollectionPeriod)))
                 .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source => source))
                 ;
 

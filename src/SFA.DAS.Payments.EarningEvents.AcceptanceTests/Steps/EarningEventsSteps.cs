@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using NUnit.Framework;
@@ -29,13 +30,13 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
 
         public EarningEventsSteps(ScenarioContext scenarioContext) : base(scenarioContext)
         {
-            dcHelper = new DcHelper(Container);
+            dcHelper = Scope.Resolve<DcHelper>();
         }
 
         [Given(@"the earnings are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
         {
-            CollectionYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;
+            AcademicYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;
         }
 
         [Given(@"the current collection period is (.*)")]
@@ -68,7 +69,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         public async Task WhenTheILRIsSubmittedAndTheLearnerEarningsAreSentToTheEarningEventsService()
         {
             var learners = CreateLearners();
-            await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, CollectionYear).ConfigureAwait(true);
+            await dcHelper.SendIlrSubmission(learners, TestSession.Ukprn, AcademicYear, CollectionPeriod, TestSession.JobId).ConfigureAwait(true);
         }
 
         [Then(@"the earning events service will generate a contract type 2 earnings event for the learner")]

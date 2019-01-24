@@ -35,7 +35,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 .Where(ev =>
                     ev.Ukprn == testSession.Ukprn &&
                     ev.JobId == testSession.JobId &&
-                    ev.CollectionPeriod.Name == collectionPeriod.Name)
+                    ev.CollectionPeriod.Period == collectionPeriod.Period && 
+                    ev.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
                 .ToList();
         }
 
@@ -43,7 +44,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var expectedPayments = new List<ProviderPaymentEvent>();
 
-            foreach (var providerPayment in paymentSpec.Where(p => new CollectionPeriodBuilder().WithSpecDate(p.CollectionPeriod).Build().Name == collectionPeriod.Name))
+            foreach (var providerPayment in paymentSpec.Where(p => p.ParsedCollectionPeriod.Period == collectionPeriod.Period 
+                                                                   && p.ParsedCollectionPeriod.AcademicYear == collectionPeriod.AcademicYear))
             {
                 var eventCollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build();
                 var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(); 
@@ -84,7 +86,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                 if (providerPayment.SfaFullyFundedPayments != 0)
                 {
-                    var fullyFundedSfa = new FullyFundedSfaProviderPaymentEvent
+                    var fullyFundedSfa = new SfaFullyFundedProviderPaymentEvent
                     {
                         TransactionType = providerPayment.TransactionType,
                         AmountDue = providerPayment.SfaFullyFundedPayments,
@@ -105,7 +107,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.GetType() == actual.GetType() &&
                    expected.TransactionType == actual.TransactionType &&
                    expected.AmountDue == actual.AmountDue &&
-                   expected.CollectionPeriod.Name == actual.CollectionPeriod.Name &&
+                   expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
+                   expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
                    expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
                    expected.Learner.Uln == actual.Learner.Uln;

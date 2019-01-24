@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                     FundingLineType = "Funding-LineType"
                 },
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1718, 10),
-                CollectionYear = CollectionYear,
+                CollectionYear = AcademicYear,
                 SfaContributionPercentage = 0.90m,
                 OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
                 {

@@ -22,9 +22,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Include<IEarningEvent, ApprenticeshipContractTypeRequiredPaymentEvent>()
                 .Include<PayableEarningEvent, ApprenticeshipContractType1RequiredPaymentEvent>()
                 .Include<FunctionalSkillEarningsEvent, IncentiveRequiredPaymentEvent>()
+                .ForMember(requiredPayment => requiredPayment.EarningEventId, opt => opt.MapFrom(earning => earning.EventId))
                 .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.DeliveryPeriod, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.PriceEpisodeIdentifier, opt => opt.Ignore())
+                .ForMember(requiredPayment => requiredPayment.CollectionPeriod, opt => opt.MapFrom(earning => earning.CollectionPeriod.Clone()))
                 .ForMember(requiredPayment => requiredPayment.Learner, opt => opt.MapFrom(earning => earning.Learner.Clone()))
                 .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 ;

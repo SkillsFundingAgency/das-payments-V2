@@ -69,6 +69,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             Assert.AreEqual(requiredPayment.Learner.Uln, earning.Learner.Uln);
             Assert.AreEqual(requiredPayment.Learner.ReferenceNumber, earning.Learner.ReferenceNumber);
             Assert.AreEqual(requiredPayment.Ukprn, earning.Ukprn);
+            Assert.AreNotSame(requiredPayment.CollectionPeriod, earning.CollectionPeriod);
             Assert.AreEqual(requiredPayment.CollectionPeriod.Name, earning.CollectionPeriod.Name);
             Assert.AreNotSame(requiredPayment.LearningAim, earning.LearningAim);
             Assert.AreEqual(requiredPayment.LearningAim.PathwayCode, earning.LearningAim.PathwayCode);
@@ -80,69 +81,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             Assert.AreEqual(requiredPayment.JobId, earning.JobId);
             Assert.AreEqual(requiredPayment.IlrSubmissionDateTime, earning.IlrSubmissionDateTime);
         }
-
-        //[Test]
-        //public void TestPayableEarningEventMap()
-        //{
-        //    // arrange
-        //    var payableEarning = (PayableEarningEvent)CreatePayableEarning();
-
-        //    // act
-        //    var requiredPayments = mapper.Map<ReadOnlyCollection<RequiredPaymentEvent>>(payableEarning);
-
-        //    // assert
-        //    Assert.IsNotNull(requiredPayments);
-        //    Assert.IsNotEmpty(requiredPayments);
-        //    Assert.AreEqual(12, requiredPayments.Count);
-
-        //    for (var i = 1; i < 13; i++)
-        //    {
-        //        var requiredPayment = requiredPayments[i - 1];
-        //        var act1RequiredPayment = requiredPayment as ApprenticeshipContractType1RequiredPaymentEvent;
-        //        Assert.IsNotNull(act1RequiredPayment);
-        //        Assert.AreEqual(payableEarning.EmployerAccountId, act1RequiredPayment.EmployerAccountId);
-        //        Assert.AreEqual(payableEarning.CommitmentId, act1RequiredPayment.CommitmentId);
-        //        Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId);
-        //    }
-        //}
-        //[Test]
-        //public void TestFunctionalSkillEarningEventMap()
-        //{
-        //    // arrange
-        //    var payableEarning = CreateFunctionalSkillEarningsEvent();
-
-        //    // act
-        //    var requiredPayments = mapper.Map<ReadOnlyCollection<RequiredPaymentEvent>>(payableEarning);
-
-        //    // assert
-        //    Assert.IsNotNull(requiredPayments);
-        //    Assert.IsNotEmpty(requiredPayments);
-        //    Assert.AreEqual(12, requiredPayments.Count);
-
-        //    for (var i = 1; i < 13; i++)
-        //    {
-        //        var requiredPayment = requiredPayments[i - 1];
-        //        Assert.AreEqual(100, requiredPayment.AmountDue);
-        //        Assert.AreEqual("1", requiredPayment.PriceEpisodeIdentifier);
-        //        Assert.AreEqual(i, requiredPayment.DeliveryPeriod.Period);
-
-        //        Assert.IsInstanceOf<ApprenticeshipContractType1RequiredPaymentEvent>(requiredPayment);
-        //        Assert.AreNotSame(requiredPayment.Learner, payableEarning.Learner);
-        //        Assert.AreEqual(requiredPayment.Learner.Uln, payableEarning.Learner.Uln);
-        //        Assert.AreEqual(requiredPayment.Learner.ReferenceNumber, payableEarning.Learner.ReferenceNumber);
-        //        Assert.AreEqual(requiredPayment.Ukprn, payableEarning.Ukprn);
-        //        Assert.AreEqual(requiredPayment.CollectionPeriod.Name, payableEarning.CollectionPeriod.Name);
-        //        Assert.AreNotSame(requiredPayment.LearningAim, payableEarning.LearningAim);
-        //        Assert.AreEqual(requiredPayment.LearningAim.PathwayCode, payableEarning.LearningAim.PathwayCode);
-        //        Assert.AreEqual(requiredPayment.LearningAim.FrameworkCode, payableEarning.LearningAim.FrameworkCode);
-        //        Assert.AreEqual(requiredPayment.LearningAim.FundingLineType, payableEarning.LearningAim.FundingLineType);
-        //        Assert.AreEqual(requiredPayment.LearningAim.ProgrammeType, payableEarning.LearningAim.ProgrammeType);
-        //        Assert.AreEqual(requiredPayment.LearningAim.Reference, payableEarning.LearningAim.Reference);
-        //        Assert.AreEqual(requiredPayment.LearningAim.StandardCode, payableEarning.LearningAim.StandardCode);
-        //        Assert.AreEqual(requiredPayment.JobId, payableEarning.JobId);
-        //        Assert.AreEqual(requiredPayment.IlrSubmissionDateTime, payableEarning.IlrSubmissionDateTime);
-        //    }
-        //}
 
         private static FunctionalSkillEarningsEvent CreateFunctionalSkillEarningsEvent()
         {

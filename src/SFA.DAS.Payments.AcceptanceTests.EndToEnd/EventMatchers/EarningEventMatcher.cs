@@ -35,9 +35,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override IList<EarningEvent> GetActualEvents()
         {
-            return EarningEventHandler.ReceivedEvents.Where(e => e.JobId == testSession.JobId
-                                                                                 && e.CollectionPeriod.Name == collectionPeriod.Name
-                                                                                 && e.Ukprn == testSession.Ukprn).ToList();
+            return EarningEventHandler.ReceivedEvents
+                       .Where(e => e.JobId == testSession.JobId 
+                                   && e.CollectionPeriod.Period == collectionPeriod.Period 
+                                   &&  e.CollectionYear == collectionPeriod.AcademicYear 
+                                   && e.Ukprn == testSession.Ukprn)
+                .ToList();
         }
 
         protected override IList<EarningEvent> GetExpectedEvents()
@@ -185,7 +188,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (expectedEvent.GetType() != actualEvent.GetType())
                 return false;
 
-            if (expectedEvent.CollectionPeriod.Name != actualEvent.CollectionPeriod.Name ||
+            if (expectedEvent.CollectionPeriod.Period != actualEvent.CollectionPeriod.Period ||
+                expectedEvent.CollectionPeriod.AcademicYear != actualEvent.CollectionPeriod.AcademicYear ||
                 expectedEvent.Learner.ReferenceNumber != actualEvent.Learner.ReferenceNumber ||
                 //expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
                 expectedEvent.LearningAim.Reference != actualEvent.LearningAim.Reference ||

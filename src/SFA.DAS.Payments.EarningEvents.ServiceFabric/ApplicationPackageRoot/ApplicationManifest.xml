@@ -13,6 +13,7 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="DcStorageConnectionString" DefaultValue="" />
     <Parameter Name="TopicName" DefaultValue="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
   </Parameters>
@@ -38,6 +39,7 @@
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
             <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
           </Section>

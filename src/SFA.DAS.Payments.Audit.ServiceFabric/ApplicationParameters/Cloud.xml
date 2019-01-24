@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.Audit.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Parameters>
+    <Parameter Name="Audit_RequiredPaymentService_MinReplicaSetSize" Value="__Audit_RequiredPaymentService_MinReplicaSetSize__" />
+    <Parameter Name="Audit_RequiredPaymentService_PartitionCount" Value="__Audit_RequiredPaymentService_PartitionCount__" />
+    <Parameter Name="Audit_RequiredPaymentService_TargetReplicaSetSize" Value="__Audit_RequiredPaymentService_TargetReplicaSetSize__" />
+    <Parameter Name="Audit_FundingSourceService_MinReplicaSetSize" Value="__Audit_FundingSourceService_MinReplicaSetSize__" />
+    <Parameter Name="Audit_FundingSourceService_PartitionCount" Value="__Audit_FundingSourceService_PartitionCount__" />
+    <Parameter Name="Audit_FundingSourceService_TargetReplicaSetSize" Value="__Audit_FundingSourceService_TargetReplicaSetSize__" />
+    <Parameter Name="Audit_EarningEventsService_MinReplicaSetSize" Value="__Audit_EarningEventsService_MinReplicaSetSize__" />
+    <Parameter Name="Audit_EarningEventsService_PartitionCount" Value="__Audit_EarningEventsService_PartitionCount__" />
+    <Parameter Name="Audit_EarningEventsService_TargetReplicaSetSize" Value="__Audit_EarningEventsService_TargetReplicaSetSize__" />
+    <Parameter Name="Audit_EarningEvents_EndpointName" Value="__Audit_EarningEvents_EndpointName__" />
+    <Parameter Name="Audit_EarningEvents_FailedMessagesQueue" Value="__Audit_EarningEvents_FailedMessagesQueue__" />
+    <Parameter Name="Audit_FundingSource_EndpointName" Value="__Audit_FundingSource_EndpointName__" />
+    <Parameter Name="Audit_FundingSource_FailedMessagesQueue" Value="__Audit_FundingSource_FailedMessagesQueue__" />
+    <Parameter Name="Audit_RequiredPayments_EndpointName" Value="__Audit_RequiredPayments_EndpointName__" />
+    <Parameter Name="Audit_RequiredPayments_FailedMessagesQueue" Value="__Audit_RequiredPayments_FailedMessagesQueue__" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
+    <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
+    <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
+    <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
+  </Parameters>
+</Application>
