@@ -32,46 +32,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override ApprenticeshipContractTypeEarningsEvent CreateOnProgEarning(List<TransactionType> onProgEarnings, List<Earning> aimEarningSpecs, FM36Learner fm36Learner, Learner learner, LearningAim learningAim)
         {
-            return new ApprenticeshipContractType2EarningEvent
-            {
-                CollectionPeriod = collectionPeriod,
-                Ukprn = testSession.Ukprn,
-                OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
-                {
-                    Type = (OnProgrammeEarningType)(int)tt,
-                    Periods = aimEarningSpecs.Select(e => new EarningPeriod
-                    {
-                        Amount = e.Values[tt],
-                        Period = (byte)e.DeliveryCalendarPeriod,
-                        PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                    }).ToList().AsReadOnly()
-                }).ToList().AsReadOnly(),
-                JobId = testSession.JobId,
-                Learner = learner,
-                LearningAim = learningAim
-            };
+            var onProgEvent = new ApprenticeshipContractType2EarningEvent();
+            return MapToApprenticeshipContractTypeEarningsEventWithoutIncentives(onProgEvent,onProgEarnings, aimEarningSpecs, fm36Learner, learner, learningAim);
         }
-
         protected override ApprenticeshipContractTypeEarningsEvent CreateIncentiveEarning(List<TransactionType> incentiveEarnings, List<Earning> aimEarningSpecs, FM36Learner fm36Learner, Learner learner, LearningAim learningAim)
         {
-            return new ApprenticeshipContractType2EarningEvent
-            {
-                CollectionPeriod = collectionPeriod,
-                Ukprn = testSession.Ukprn,
-                IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
-                {
-                    Type = (IncentiveEarningType)(int)tt,
-                    Periods = aimEarningSpecs.Select(e => new EarningPeriod
-                    {
-                        Amount = e.Values[tt],
-                        Period = (byte)e.DeliveryCalendarPeriod,
-                        PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                    }).ToList().AsReadOnly()
-                }).ToList().AsReadOnly(),
-                JobId = testSession.JobId,
-                Learner = learner,
-                LearningAim = learningAim
-            };
+            var incentiveEvent = new ApprenticeshipContractType2EarningEvent();
+            return MapToApprenticeshipContractTypeEarningsEventWithIncentives(incentiveEvent, incentiveEarnings, aimEarningSpecs, fm36Learner, learner, learningAim);
         }
 
         protected override bool ValidateOnProgEarnings(EarningEvent expectedEvent, EarningEvent actualEvent)

@@ -17,7 +17,7 @@ using Learner = SFA.DAS.Payments.Model.Core.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
-    public abstract class BaseEarningEventMatcher : BaseMatcher<EarningEvent> 
+    public abstract class BaseEarningEventMatcher : BaseMatcher<EarningEvent>
     {
         private readonly TestSession testSession;
         private readonly CollectionPeriod collectionPeriod;
@@ -35,9 +35,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<EarningEvent> GetActualEvents()
         {
             return EarningEventHandler.ReceivedEvents
-                       .Where(e => e.JobId == testSession.JobId 
-                                   && e.CollectionPeriod.Period == collectionPeriod.Period 
-                                   &&  e.CollectionYear == collectionPeriod.AcademicYear 
+                       .Where(e => e.JobId == testSession.JobId
+                                   && e.CollectionPeriod.Period == collectionPeriod.Period
+                                   && e.CollectionYear == collectionPeriod.AcademicYear
                                    && e.Ukprn == testSession.Ukprn)
                 .ToList();
         }
@@ -106,7 +106,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
-                                    Period = (byte)e.DeliveryCalendarPeriod,
+                                    Period = e.DeliveryCalendarPeriod,
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
@@ -221,17 +221,74 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return true;
         }
 
+        protected ApprenticeshipContractTypeEarningsEvent MapToApprenticeshipContractTypeEarningsEventWithoutIncentives(
+            ApprenticeshipContractTypeEarningsEvent earningsEvent,
+            List<TransactionType> onProgEarnings,
+            List<Earning> aimEarningSpecs,
+            FM36Learner fm36Learner,
+            Learner learner,
+            LearningAim learningAim)
+        {
+            earningsEvent = MapToApprenticeshipContractTypeEarningsEvent(earningsEvent, learner, learningAim);
+            earningsEvent.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
+            {
+                Type = (OnProgrammeEarningType)(int)tt,
+                Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                {
+                    Amount = e.Values[tt],
+                    Period = e.DeliveryCalendarPeriod,
+                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                }).ToList().AsReadOnly()
+            }).ToList().AsReadOnly();
+            return earningsEvent;
+        }
+
+        protected ApprenticeshipContractTypeEarningsEvent MapToApprenticeshipContractTypeEarningsEventWithIncentives(
+            ApprenticeshipContractTypeEarningsEvent earningsEvent,
+            List<TransactionType> incentiveEarnings,
+            List<Earning> aimEarningSpecs,
+            FM36Learner fm36Learner,
+            Learner learner,
+            LearningAim learningAim)
+        {
+            earningsEvent = MapToApprenticeshipContractTypeEarningsEvent(earningsEvent, learner, learningAim);
+            earningsEvent.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
+            {
+                Type = (IncentiveEarningType)(int)tt,
+                Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                {
+                    Amount = e.Values[tt],
+                    Period = e.DeliveryCalendarPeriod,
+                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                }).ToList().AsReadOnly()
+            }).ToList().AsReadOnly();
+            return earningsEvent;
+        }
+
+        private ApprenticeshipContractTypeEarningsEvent MapToApprenticeshipContractTypeEarningsEvent(
+            ApprenticeshipContractTypeEarningsEvent earningsEvent,
+            Learner learner,
+            LearningAim learningAim)
+        {
+            earningsEvent.CollectionPeriod = collectionPeriod;
+            earningsEvent.Ukprn = testSession.Ukprn;
+            earningsEvent.JobId = testSession.JobId;
+            earningsEvent.Learner = learner;
+            earningsEvent.LearningAim = learningAim;
+
+            return earningsEvent;
+        }
 
         protected abstract ApprenticeshipContractTypeEarningsEvent CreateOnProgEarning(
-            List<TransactionType> onProgEarnings, 
-            List<Earning> aimEarningSpecs, 
+            List<TransactionType> onProgEarnings,
+            List<Earning> aimEarningSpecs,
             FM36Learner fm36Learner,
-            Learner learner, 
+            Learner learner,
             LearningAim learningAim);
 
         protected abstract ApprenticeshipContractTypeEarningsEvent CreateIncentiveEarning(
-            List<TransactionType> incentiveEarnings, 
-            List<Earning> aimEarningSpecs, 
+            List<TransactionType> incentiveEarnings,
+            List<Earning> aimEarningSpecs,
             FM36Learner fm36Learner,
             Learner learner,
             LearningAim learningAim);
