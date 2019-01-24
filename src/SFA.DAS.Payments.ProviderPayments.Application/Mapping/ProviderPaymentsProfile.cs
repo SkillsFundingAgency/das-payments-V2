@@ -1,7 +1,6 @@
 ﻿using System;
 using AutoMapper;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using SFA.DAS.Payments.ProviderPayments.Model;
@@ -13,14 +12,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
     {
         public ProviderPaymentsProfile()
         {
-            CreateMap<FundingSourcePaymentEvent, PaymentModel>()
-                .Include<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>()
-                .Include<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>()
-                .Include<SfaFullyFundedFundingSourcePaymentEvent, PaymentModel>()
-                .Include<LevyFundingSourcePaymentEvent, PaymentModel>()
-                .ForMember(dest => dest.EventId, opt => opt.ResolveUsing<Guid>(src => Guid.NewGuid()))
+            CreateMap<FundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .Include<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .Include<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .Include<SfaFullyFundedFundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .Include<LevyFundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .ForMember(dest => dest.EventId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
                 .ForMember(dest => dest.FundingSourceId, opt => opt.MapFrom(source => source.EventId))
-                .ForMember(dest => dest.ExternalId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Period))
                 .ForMember(dest => dest.AcademicYear, opt => opt.MapFrom(source => source.CollectionPeriod.AcademicYear))
@@ -44,10 +42,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore());
 
-            CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, PaymentModel>();
-            CreateMap<SfaCoInvestedFundingSourcePaymentEvent, PaymentModel>();
-            CreateMap<SfaFullyFundedFundingSourcePaymentEvent, PaymentModel>();
-            CreateMap<LevyFundingSourcePaymentEvent, PaymentModel>();
+            CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
+            CreateMap<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
+            CreateMap<SfaFullyFundedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
+            CreateMap<LevyFundingSourcePaymentEvent, ProviderPaymentEventModel>();
 
             CreateMap<PaymentModel, ProviderPaymentEvent>()
                 .Include<PaymentModel, EmployerCoInvestedProviderPaymentEvent>()
@@ -55,9 +53,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .Include<PaymentModel, SfaFullyFundedProviderPaymentEvent>()
                 .Include<PaymentModel, LevyProviderPaymentEvent>()
                 .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.EventId))
-                .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(source => source.ExternalId))
                 .ForMember(dest => dest.EventTime, opt => opt.ResolveUsing(src => DateTime.UtcNow))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Clone()))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(source => source.Amount))
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))

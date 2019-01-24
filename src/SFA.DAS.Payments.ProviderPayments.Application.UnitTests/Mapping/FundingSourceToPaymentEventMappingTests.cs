@@ -29,6 +29,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
         {
             var employerCoInvested = new EmployerCoInvestedFundingSourcePaymentEvent
             {
+                EventId = Guid.NewGuid(),
                 CollectionPeriod = new CollectionPeriod {Period = 12, AcademicYear = 1819},
                 Learner = new Learner {ReferenceNumber = "1234-ref", Uln = 123456 },
                 TransactionType = TransactionType.Completion,
@@ -50,7 +51,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                     Reference = "1234567-aim-ref"
                 },
                 IlrSubmissionDateTime = DateTime.UtcNow,
-                EventTime = DateTimeOffset.UtcNow
+                EventTime = DateTimeOffset.UtcNow,
+                RequiredPaymentEventId = Guid.NewGuid()
             };
             var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
@@ -73,7 +75,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
 
             var levy = new LevyFundingSourcePaymentEvent
             {
-                CollectionPeriod = new CollectionPeriod {Period = 12, AcademicYear = 1819, Name = "1819-R12"},
+                EventId = Guid.NewGuid(),
+                CollectionPeriod = new CollectionPeriod {Period = 12, AcademicYear = 1819},
                 Learner = new Learner {ReferenceNumber = "1234-ref", Uln = 123456},
                 TransactionType = TransactionType.Completion,
                 Ukprn = 12345,
@@ -95,14 +98,22 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 },
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 EventTime = DateTimeOffset.UtcNow,
-                AgreementId = agreementId
+                AgreementId = agreementId,
+                RequiredPaymentEventId = Guid.NewGuid()
             };
 
-            var payment = Mapper.Map<LevyFundingSourcePaymentEvent, PaymentModel>(levy);
+            var payment = Mapper.Map<LevyFundingSourcePaymentEvent, ProviderPaymentEventModel>(levy);
             payment.Ukprn.Should().Be(levy.Ukprn);
-            payment.CollectionPeriod.Should().NotBeNull();
-            payment.CollectionPeriod.Name.Should().BeEquivalentTo(levy.CollectionPeriod.Name);
-            payment.CollectionPeriod.Period.Should().Be(levy.CollectionPeriod.Period);
+            payment.CollectionPeriod.Should().Be(levy.CollectionPeriod.Period);
+            payment.AcademicYear.Should().Be(levy.CollectionPeriod.AcademicYear);
+            payment.DeliveryPeriod.Should().Be(levy.DeliveryPeriod);
+            payment.FundingSourceId.Should().Be(levy.EventId);
+            payment.ContractType.Should().Be(levy.ContractType);
+            payment.SfaContributionPercentage.Should().Be(levy.SfaContributionPercentage);
+            payment.Amount.Should().Be(levy.AmountDue);
+            payment.FundingSource.Should().Be(levy.FundingSourceType);
+            payment.JobId.Should().Be(levy.JobId);
+            payment.IlrSubmissionDateTime.Should().Be(levy.IlrSubmissionDateTime);
         }
     }
 }
