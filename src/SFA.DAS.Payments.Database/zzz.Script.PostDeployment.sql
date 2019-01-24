@@ -7,6 +7,50 @@ Post-Deployment Script
 SET NOCOUNT ON;
 GO
 
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 1)
+	INSERT INTO [Payments2].[JobStatus]  values (1,'In progress')
+GO	
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 2)
+	INSERT INTO [Payments2].[JobStatus]  VALUES (2,'Completed')
+GO	
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 3)
+	INSERT INTO [Payments2].[JobStatus]  values (3,'completed with errors')
+GO	
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobEventStatus]  WHERE [Id] = 1)
+	INSERT INTO [Payments2].[JobEventStatus] values (1,'Queued')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobEventStatus]  WHERE [Id] = 2)
+	INSERT INTO [Payments2].[JobEventStatus] values (2,'Processing')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobEventStatus]  WHERE [Id] = 3)
+	INSERT INTO [Payments2].[JobEventStatus] values (3,'Completed')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobEventStatus]  WHERE [Id] = 4)
+	INSERT INTO [Payments2].[JobEventStatus] values (4,'Failed')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 1)
+	INSERT INTO [Payments2].[JobType] values (1,'Earnings job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 2)
+	INSERT INTO [Payments2].[JobType] values (2,'Month end job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 3)
+	INSERT INTO [Payments2].[JobType] VALUES (3,'Component test earnings job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 4)
+	INSERT INTO [Payments2].[JobType] VALUES (4,'Component test month end job')
+GO 
+
 RAISERROR('		   Extended Property',10,1) WITH NOWAIT;
 GO
 

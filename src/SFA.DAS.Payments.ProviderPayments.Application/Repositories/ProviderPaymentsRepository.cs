@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -18,33 +19,36 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             this.paymentsDataContext = paymentsDataContext;
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndPayments(string collectionPeriodName, long ukprn,
+        public async Task<List<PaymentModel>> GetMonthEndPayments(CollectionPeriod collectionPeriod, long ukprn,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var payments = await paymentsDataContext
-                .Payment.Where(p => p.Ukprn == ukprn &&
-                            p.CollectionPeriod.Name == collectionPeriodName)
+            return await paymentsDataContext.Payment
+                .Where(p => p.Ukprn == ukprn && 
+                            p.CollectionPeriod.Period == collectionPeriod.Period && 
+                            p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
                 .ToListAsync(cancellationToken);
-            return payments;
         }
 
-        public async Task<List<long>> GetMonthEndUkprns(string collectionPeriodName,
+        public async Task<List<long>> GetMonthEndProviders(CollectionPeriod collectionPeriod,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return await paymentsDataContext
-                   .Payment.Where(p => p.CollectionPeriod.Name == collectionPeriodName)
+                   .Payment.Where(p =>
+                        p.CollectionPeriod.Period == collectionPeriod.Period &&
+                        p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
                    .Select(o => o.Ukprn)
                    .ToListAsync(cancellationToken);
         }
 
-        public async Task DeleteOldMonthEndPayment(string collectionPeriodName,
+        public async Task DeleteOldMonthEndPayment(CollectionPeriod collectionPeriod,
             long ukprn,
             DateTime currentIlrSubmissionDateTime,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var oldSubmittedIlrPayments = paymentsDataContext.Payment
-                .Where(p => p.CollectionPeriod.Name == collectionPeriodName &&
-                            p.Ukprn == ukprn &&
+                .Where(p => p.Ukprn == ukprn &&
+                            p.CollectionPeriod.Period == collectionPeriod.Period &&
+                            p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                             p.IlrSubmissionDateTime < currentIlrSubmissionDateTime);
 
             paymentsDataContext.Payment.RemoveRange(oldSubmittedIlrPayments);

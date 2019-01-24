@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -21,6 +23,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     {
         public EndToEndSteps(FeatureContext context) : base(context)
         {
+        }
+
+        [BeforeScenario()]
+        public void ResetJob()
+        {
+            if (!Context.ContainsKey("new_feature"))
+                NewFeature = true;
+            var newJobId = TestSession.GenerateId();
+            Console.WriteLine($"Using new job. Previous job id: {TestSession.JobId}, new job id: {newJobId}");
+            TestSession.SetJobId(newJobId);
+        }
+
+        [AfterScenario()]
+        public void CleanUpScenario()
+        {
+            NewFeature = false;
         }
 
         [Given(@"the provider is providing training for the following learners")]
@@ -132,7 +150,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in CurrentIlr)
                 {
                     var aim = new Aim(training);
-                    var aims = new List<Aim> {aim};
+                    var aims = new List<Aim> { aim };
                     AddTestAims(aims);
 
                     if (CurrentPriceEpisodes == null)
@@ -157,27 +175,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             }
                             else
                             {
-                                var matchingAim = aims.First(x => x.AimSequenceNumber ==
-                                                                  currentPriceEpisode.AimSequenceNumber);
+                                var matchingAim = aims.First(x => x.AimSequenceNumber == currentPriceEpisode.AimSequenceNumber);
                                 matchingAim.PriceEpisodes.Add(currentPriceEpisode);
                             }
                         }
                     }
                 }
             }
-            
+
             // Learner -> Aims -> Price Episodes
             foreach (var testSessionLearner in TestSession.Learners)
             {
                 var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
                 var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
                 PopulateLearner(learner, testSessionLearner, learnerEarnings);
-
-                await SendProcessLearnerCommand(learner);
-
                 learners.Add(learner);
             }
-            
+
+            var dcHelper = Scope.Resolve<DcHelper>();
+            await dcHelper.SendLearnerCommands(learners, TestSession.Ukprn, AcademicYear, CollectionPeriod, TestSession.JobId, TestSession.IlrSubmissionTime);
             var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
@@ -200,13 +216,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
+            var monthEndJobId = TestSession.GenerateId();
+            Console.WriteLine($"Month end job id: {monthEndJobId}");
+            TestSession.SetJobId(monthEndJobId);
             var monthEndCommand = new ProcessProviderMonthEndCommand
             {
                 CollectionPeriod = CurrentCollectionPeriod,
                 Ukprn = TestSession.Ukprn,
-                JobId = TestSession.JobId
+                JobId = monthEndJobId
             };
-            await MessageSession.Send(monthEndCommand);
+            //TODO: remove when DC have implemented the Month End Task
+            var startedMonthEndJob = new RecordStartedProcessingMonthEndJob
+            {
+                JobId = monthEndJobId,
+                CollectionPeriod = CollectionPeriod,
+                CollectionYear = AcademicYear,
+                GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
+                {
+                    StartTime = DateTimeOffset.UtcNow,
+                    MessageName = monthEndCommand.GetType().FullName,
+                    MessageId = monthEndCommand.CommandId
+                }}
+            };
+            await MessageSession.Send(startedMonthEndJob).ConfigureAwait(false);
+
+            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
             var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
@@ -216,7 +250,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenNoProviderPaymentsWillBeRecorded()
         {
             var dataContext = Container.Resolve<IPaymentsDataContext>();
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod.Name);
+            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }
 

@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.ProviderPayments.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="ProviderPaymentsProxyService_InstanceCount" Value="__ProviderPaymentsProxyService_InstanceCount__" />
-    <Parameter Name="ProviderPaymentsServiceActorService_PartitionCount" Value="__ProviderPaymentsServiceActorService_PartitionCount__" />
-    <Parameter Name="ProviderPaymentsServiceActorService_TargetReplicaSetSize" Value="__ProviderPaymentsServiceActorService_TargetReplicaSetSize__" />
-    <Parameter Name="ProviderPaymentsServiceActorService_MinReplicaSetSize" Value="__ProviderPaymentsServiceActorService_MinReplicaSetSize__" />
+    <Parameter Name="ProviderPaymentsService_PartitionCount" Value="__ProviderPaymentsService_PartitionCount__" />
+    <Parameter Name="ProviderPaymentsService_MinReplicaSetSize" Value="__ProviderPaymentsService_MinReplicaSetSize__" />
+    <Parameter Name="ProviderPaymentsService_TargetReplicaSetSize" Value="__ProviderPaymentsService_TargetReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" Value="__ProviderPaymentsService_FailedMessagesQueue__" />
@@ -13,5 +12,6 @@
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
     <Parameter Name="ProviderPaymentsService_EndpointName" Value="__ProviderPaymentsService_EndpointName__" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
   </Parameters>
 </Application>

@@ -5,6 +5,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 {
@@ -19,7 +20,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         {
             providerPaymentsRepository = new Mock<IProviderPaymentsRepository>();
             providerPaymentsRepository
-                .Setup(o => o.GetMonthEndUkprns(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(o => o.GetMonthEndProviders(It.IsAny<CollectionPeriod>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<long> { 1, 2, 3 })
                 .Verifiable();
 
@@ -29,7 +30,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         [Test]
         public async Task GetMonthEndUkprnsShouldCallRequiredServices()
         {
-            await monthEndEventHandlerService.GetMonthEndUkprns("1819-R01");
+            await monthEndEventHandlerService.GetMonthEndUkprns(new CollectionPeriod { Period = 1, AcademicYear = 1819 });
             providerPaymentsRepository.Verify();
         }
     }

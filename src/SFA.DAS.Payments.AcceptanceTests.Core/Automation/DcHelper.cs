@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -15,6 +16,11 @@ using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using NServiceBus;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -24,14 +30,65 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
         private readonly IFileService azureFileService;
 
-        public DcHelper(IContainer container)
+        public DcHelper(IJsonSerializationService serializationService,
+            ITopicPublishService<JobContextDto> topicPublishingService,
+            IFileService azureFileService)
         {
-            serializationService = container.Resolve<IJsonSerializationService>();
-            topicPublishingService = container.Resolve<ITopicPublishService<JobContextDto>>();
-            azureFileService = container.Resolve<IFileService>();
+            this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
+            this.topicPublishingService = topicPublishingService ?? throw new ArgumentNullException(nameof(topicPublishingService));
+            this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
         }
 
-        public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, short collectionYear)
+        //TODO: Remove when integration with DC services in Test environment is working
+        public async Task SendLearnerCommands(List<FM36Learner> learners, long ukprn, short collectionYear, 
+            byte collectionPeriod, long jobId, DateTime ilrSubmissionTime)
+        {
+            try
+            {
+                var startTime = DateTimeOffset.UtcNow;
+                var commands = learners.Select(learner => new ProcessLearnerCommand
+                    {
+                        JobId = jobId,
+                        CollectionPeriod = collectionPeriod,
+                        CollectionYear = collectionYear,
+                        IlrSubmissionDateTime = ilrSubmissionTime,
+                        SubmissionDate = ilrSubmissionTime,
+                        Ukprn = ukprn,
+                        Learner = learner
+                    })
+                    .ToList();
+                var startedJob = new RecordStartedProcessingEarningsJob
+                {
+                    JobId = jobId,
+                    CollectionPeriod = collectionPeriod,
+                    CollectionYear = collectionYear,
+                    StartTime = startTime,
+                    Ukprn = ukprn,
+                    IlrSubmissionTime = ilrSubmissionTime,
+                    GeneratedMessages = commands.Select(command => new GeneratedMessage
+                    {
+                        StartTime = command.RequestTime,
+                        MessageName = command.GetType().FullName,
+                        MessageId = command.CommandId
+                    }).ToList()
+                };
+                Console.WriteLine($"Sending job started message: {startedJob.ToJson()}");
+                await TestSessionBase.MessageSession.Send(startedJob).ConfigureAwait(false);
+                foreach (var processLearnerCommand in commands)
+                {
+                    await TestSessionBase.MessageSession.Send(processLearnerCommand).ConfigureAwait(false); 
+                    Console.WriteLine($"sent process learner command: {processLearnerCommand.ToJson()}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending the learner commands. Error: {ex.Message}");
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, short collectionYear, byte collectionPeriod, long jobId)
         {
             try
             {
@@ -52,7 +109,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
                 var dto = new JobContextDto
                 {
-                    JobId = 1,
+                    JobId = jobId,
                     KeyValuePairs = new Dictionary<string, object>
                     {
                         {JobContextMessageKey.FundingFm36Output, messagePointer},
@@ -60,7 +117,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                         {JobContextMessageKey.UkPrn, ukprn},
                         {JobContextMessageKey.Username, "Bob"},
                         {JobContextMessageKey.Container, DcConfiguration.DcBlobStorageContainer },
-                        {JobContextMessageKey.ReturnPeriod, 1 }
+                        {JobContextMessageKey.ReturnPeriod, collectionPeriod }
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
                     TopicPointer = 0,

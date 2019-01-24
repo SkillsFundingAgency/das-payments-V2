@@ -22,32 +22,23 @@ Background:
 @CoInvested
 
 Scenario: Contract Type 2 Learning payment
-
 	When required payments event is received
-
 	Then the payment source component will generate the following contract type 2 coinvested payments:
-
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType | FundingSource            | Amount |
 	| learnref1      | 10000 | p1                     | 9               | 10000 | Learning (TT1)  | CoInvestedSfa (FS2)      | 900    |
 	| learnref1      | 10000 | p1                     | 9               | 10000 | Learning (TT1)  | CoInvestedEmployer (FS3) | 100    |
 
 Scenario: Contract Type 2 On Programme Completion payment
-
 	When required payments event is received
-
 	Then the payment source component will generate the following contract type 2 coinvested payments:
-
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType  | FundingSource            | Amount |
 	| learnref1      | 10000 | p1                     | 10              | 10000 | Completion (TT2) | CoInvestedSfa (FS2)      | 2700   |
 	| learnref1      | 10000 | p1                     | 10              | 10000 | Completion (TT2) | CoInvestedEmployer (FS3) | 300    |
 
 
 Scenario: Contract Type 2 On Programme Balancing payment
-
 	When required payments event is received
-
 	Then the payment source component will generate the following contract type 2 coinvested payments:
-
 	| LearnRefNumber | Ukprn | PriceEpisodeIdentifier | Delivery Period | ULN   | TransactionType | FundingSource            | Amount |
 	| learnref1      | 10000 | p1                     | 10              | 10000 | Balancing (TT3) | CoInvestedSfa (FS2)      | 2700   |
 	| learnref1      | 10000 | p1                     | 10              | 10000 | Balancing (TT3) | CoInvestedEmployer (FS3) | 300    |

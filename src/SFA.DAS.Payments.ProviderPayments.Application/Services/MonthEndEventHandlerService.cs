@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
@@ -14,10 +15,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.providerPaymentsRepository = providerPaymentsRepository;
         }
 
-        public Task<List<long>> GetMonthEndUkprns(string collectionPeriodName,
+        public Task<List<long>> GetMonthEndUkprns(CollectionPeriod collectionPeriod,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return providerPaymentsRepository.GetMonthEndUkprns(collectionPeriodName, cancellationToken);
+            return providerPaymentsRepository.GetMonthEndProviders(collectionPeriod, cancellationToken);
         }
     }
 }

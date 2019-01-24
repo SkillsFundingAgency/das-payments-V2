@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Autofac;
+using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using TechTalk.SpecFlow;
@@ -14,7 +15,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         }
         protected static void SetUpTestSession(SpecFlowContext context)
         {
-            var scope = Container.BeginLifetimeScope();
+            var scope = Container.BeginLifetimeScope(builder => builder.RegisterInstance<IMessageSession>(MessageSession));
             context.Set(scope, "container_scope");
             var testSession = new TestSession();
             context.Set(testSession);
