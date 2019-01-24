@@ -16,18 +16,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public class ApprenticeshipContractType2EarningEventMatcher: BaseEarningEventMatcher
     {
-        private readonly IList<Earning> earningSpecs;
-        private readonly TestSession testSession;
-        private readonly CollectionPeriod collectionPeriod;
-        private readonly IList<FM36Learner> learnerSpecs;
-
+        
         public ApprenticeshipContractType2EarningEventMatcher(IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
             : base(earningSpecs, testSession, collectionPeriod, learnerSpecs)
         {
-            this.earningSpecs = earningSpecs;
-            this.testSession = testSession;
-            this.collectionPeriod = collectionPeriod;
-            this.learnerSpecs = learnerSpecs;
         }
 
         protected override ApprenticeshipContractTypeEarningsEvent CreateOnProgEarning(List<TransactionType> onProgEarnings, List<Earning> aimEarningSpecs, FM36Learner fm36Learner, Learner learner, LearningAim learningAim)
