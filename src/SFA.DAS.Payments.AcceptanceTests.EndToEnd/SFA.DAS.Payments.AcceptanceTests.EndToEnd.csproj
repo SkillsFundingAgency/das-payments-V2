@@ -242,6 +242,7 @@
     <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
+    <Compile Include="EventMatchers\ApprenticeshipContractType1EarningEventMatcher.cs" />
     <Compile Include="EventMatchers\ApprenticeshipContractType2EarningEventMatcher.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
     <Compile Include="EventMatchers\BaseEarningEventMatcher.cs" />
