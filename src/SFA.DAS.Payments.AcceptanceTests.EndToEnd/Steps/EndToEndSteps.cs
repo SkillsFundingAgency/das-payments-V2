@@ -194,8 +194,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var dcHelper = Scope.Resolve<DcHelper>();
             await dcHelper.SendLearnerCommands(learners, TestSession.Ukprn, AcademicYear, CollectionPeriod, TestSession.JobId, TestSession.IlrSubmissionTime);
-            var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
-            
+    
             var matcher =  EventMatcherFactory.BuildEarningEventMatcher(CurrentPriceEpisodes,CurrentIlr, earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
