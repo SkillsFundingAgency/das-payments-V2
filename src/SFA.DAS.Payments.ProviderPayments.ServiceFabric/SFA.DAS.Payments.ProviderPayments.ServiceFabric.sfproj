@@ -32,7 +32,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService\SFA.DAS.Payments.ProviderPayments.ProviderPaymentsProxyService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService\SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

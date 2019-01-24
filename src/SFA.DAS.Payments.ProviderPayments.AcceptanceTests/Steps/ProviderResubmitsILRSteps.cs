@@ -36,8 +36,15 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             {
                 paymentDataContext.Payment.Add(payment);
             }
-
-            paymentDataContext.SaveChanges();
+            try
+            {
+                paymentDataContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error storing the payments. Error: {ex.Message}.");
+                Console.WriteLine(ex);
+            }
             Console.WriteLine("Stored previous submission payments to the db.");
             var ilrSubmissionEvent = new IlrSubmittedEvent
             {
@@ -45,8 +52,9 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 JobId = PreviousJobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
             };
+            await Task.Delay(Config.TimeToPause); //TODO: Find out why immediate retries aren't working in the services.
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
         }
@@ -64,7 +72,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 Amount = fundingSourcePayment.Amount,
                 JobId = jobId,
                 SfaContributionPercentage = SfaContributionPercentage,
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
                 DeliveryPeriod = fundingSourcePayment.DeliveryPeriod,
                 LearningAimPathwayCode = TestSession.Learner.Course.PathwayCode,
                 LearningAimFrameworkCode = TestSession.Learner.Course.FrameworkCode,
@@ -72,7 +80,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 LearningAimProgrammeType = TestSession.Learner.Course.ProgrammeType,
                 LearningAimReference = TestSession.Learner.Course.LearnAimRef,
                 LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
-                ExternalId = Guid.NewGuid(),
+                EventId = Guid.NewGuid(),
                 LearnerUln = TestSession.Learner.Uln,
                 PriceEpisodeIdentifier = "P1"
             };
@@ -89,7 +97,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 JobId = jobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
@@ -124,7 +132,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 JobId = jobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);

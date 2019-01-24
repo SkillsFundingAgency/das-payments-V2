@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Fabric;
+using Autofac;
 using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Client;
 using SFA.DAS.Payments.Core.Configuration;
@@ -13,6 +14,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
             builder.RegisterType<ActorProxyFactory>().As<IActorProxyFactory>();
             builder.RegisterServiceFabricSupport();
             builder.RegisterType<ServiceFabricConfigurationHelper>().As<IConfigurationHelper>().SingleInstance();
+            builder.RegisterType<ReliableStateManagerProvider>().As<IReliableStateManagerProvider>().SingleInstance();
         }
     }
 }

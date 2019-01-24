@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc
         public static ContainerBuilder CreateBuilder()
         {
             var builder = new ContainerBuilder();
-            RegisterModules(builder);
+            RegisterModules(builder); 
             return builder;
         }
 

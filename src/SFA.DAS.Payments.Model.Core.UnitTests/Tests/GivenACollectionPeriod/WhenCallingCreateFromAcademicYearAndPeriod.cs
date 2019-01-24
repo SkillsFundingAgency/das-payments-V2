@@ -26,24 +26,6 @@ namespace SFA.DAS.Payments.Model.Core.UnitTests.Tests.GivenACollectionPeriod
             actual.AcademicYear.Should().Be(expected);
         }
 
-        [TestCase(1819, 1, "1819-R01")]
-        [TestCase(1819, 2, "1819-R02")]
-        [TestCase(1819, 3, "1819-R03")]
-        [TestCase(1819, 10, "1819-R10")]
-        [TestCase(1819, 11, "1819-R11")]
-        [TestCase(1819, 12, "1819-R12")]
-        [TestCase(1819, 13, "1819-R13")]
-        [TestCase(1819, 14, "1819-R14")]
-        [TestCase(1920, 1, "1920-R01")]
-        [TestCase(1920, 12, "1920-R12")]
-        [TestCase(1920, 14, "1920-R14")]
-        public void NameIsCorrect(short academicYear, byte period, string expected)
-        {
-            var actual = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(academicYear, period);
-
-            actual.Name.Should().Be(expected);
-        }
-
         [TestCase(1819, 1, 1)]
         [TestCase(1819, 2, 2)]
         [TestCase(1819, 3, 3)]

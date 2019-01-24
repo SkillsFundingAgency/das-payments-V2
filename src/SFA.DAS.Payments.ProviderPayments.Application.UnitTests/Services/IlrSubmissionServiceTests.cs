@@ -50,14 +50,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     CollectionPeriod = new CollectionPeriod
                     {
                         AcademicYear = 1819,
-                        Period = 8,
-                        Name = "1819-R08"
+                        Period = 8
                     },
                     IlrSubmissionDateTime = DateTime.UtcNow,
                     ContractType = ContractType.Act1,
                     PriceEpisodeIdentifier = "P-1",
                     LearnerReferenceNumber = "100500",
-                    ExternalId = Guid.NewGuid(),
+                    EventId = Guid.NewGuid(),
                     LearningAimFundingLineType = "16-18",
                     LearningAimPathwayCode = 1,
                     LearningAimReference = "1",
@@ -77,13 +76,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verifiable();
 
             providerPaymentsRepository
-                .Setup(o => o.GetMonthEndPayments(It.IsAny<string>(), It.IsAny<long>(),
+                .Setup(o => o.GetMonthEndPayments(It.IsAny<CollectionPeriod>(), It.IsAny<long>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(payments)
                 .Verifiable();
 
             providerPaymentsRepository
-                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<string>(),
+                .Setup(o => o.DeleteOldMonthEndPayment(It.IsAny<CollectionPeriod>(),
                     It.IsAny<long>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<CancellationToken>()))
@@ -154,7 +153,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verify(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)), Times.Never);
 
             providerPaymentsRepository
-                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<string>(),
+                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<CollectionPeriod>(),
                     It.IsAny<long>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<CancellationToken>()), Times.Never);
@@ -176,7 +175,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Verify(o => o.Add(ukprn.ToString(), It.IsAny<IlrSubmittedEvent>(), default(CancellationToken)), Times.Once);
 
             providerPaymentsRepository
-                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<string>(),
+                .Verify(o => o.DeleteOldMonthEndPayment(It.IsAny<CollectionPeriod>(),
                     It.IsAny<long>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<CancellationToken>()), Times.Once);
