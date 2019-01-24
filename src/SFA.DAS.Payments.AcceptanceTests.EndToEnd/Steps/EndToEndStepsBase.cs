@@ -26,6 +26,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     public abstract class EndToEndStepsBase : StepsBase
     {
+        public bool NewFeature
+        {
+            get => Get<bool>("new_feature");
+            set => Set(value, "new_feature");
+        }
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
         protected DcHelper DcHelper => Get<DcHelper>();
@@ -75,10 +80,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             Console.WriteLine($"Current collection period is: {collectionPeriod}.");
             var period = new CollectionPeriodBuilder().WithSpecDate(collectionPeriod).Build();
-            Console.WriteLine($"Current collection period name is: {period.Name}.");
+            Console.WriteLine($"Current collection period name is: {period.ToJson()}.");
             CurrentCollectionPeriod = period;
             CollectionPeriod = CurrentCollectionPeriod.Period;
-            CollectionYear = CurrentCollectionPeriod.AcademicYear;
+            AcademicYear = CurrentCollectionPeriod.AcademicYear;
         }
 
         protected void AddTestLearners(List<Training> training)
@@ -125,7 +130,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddTestAims(IList<Aim> aims)
         {
-            if (TestSession.AtLeastOneScenarioCompleted)
+            if (TestSession.AtLeastOneScenarioCompleted || !NewFeature)
             {
                 return;
             }
@@ -181,7 +186,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 LearningAimReference = learnerTraining.AimReference,
                 LearningAimStandardCode = learnerTraining.StandardCode,
                 IlrSubmissionDateTime = submissionTime,
-                ExternalId = Guid.NewGuid(),
+                EventId = Guid.NewGuid(),
                 Amount = amount,
                 LearningAimFundingLineType = learnerTraining.FundingLineType,
                 LearnerUln = providerPayment.Uln,
@@ -341,7 +346,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodePeriodisedValues newValues;
 
                     // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
-                    if (episodeStart.AcademicYear == CollectionYear && (episodeStart.Period > 1 || episodeLastPeriod < 12))
+                    if (episodeStart.AcademicYear == AcademicYear && (episodeStart.Period > 1 || episodeLastPeriod < 12))
                     {
                         newValues = new PriceEpisodePeriodisedValues { AttributeName = currentValues.AttributeName };
 
@@ -488,7 +493,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 Learner = learner,
                 CollectionPeriod = CurrentCollectionPeriod.Period,
-                CollectionYear = CollectionYear,
+                CollectionYear = AcademicYear,
                 Ukprn = TestSession.Ukprn,
                 JobId = TestSession.JobId,
                 IlrSubmissionDateTime = TestSession.IlrSubmissionTime,

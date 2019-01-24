@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         [Given(@"the payments are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
         {
-            CollectionYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;;
+            AcademicYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;;
         }
     }
 }

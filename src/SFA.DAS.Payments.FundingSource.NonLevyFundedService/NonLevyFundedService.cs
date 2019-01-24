@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService
 
             return new List<ServiceInstanceListener>
                 {
-                    new ServiceInstanceListener(context =>lifetimeScope.Resolve<IEndpointCommunicationListener>())
+                    new ServiceInstanceListener(context =>lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
                 };
         }
     }

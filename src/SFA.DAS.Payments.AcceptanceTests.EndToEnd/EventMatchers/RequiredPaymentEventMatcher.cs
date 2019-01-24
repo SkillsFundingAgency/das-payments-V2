@@ -31,7 +31,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             return RequiredPaymentEventHandler.ReceivedEvents
                 .Where(e => e.Ukprn == testSession.Ukprn && 
-                            e.CollectionPeriod.Name == collectionPeriod.Name && 
+                            e.CollectionPeriod.Period== collectionPeriod.Period &&
+                            e.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                             e.JobId == testSession.JobId).ToList();
         }
 
@@ -40,7 +41,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var expectedPayments = new List<RequiredPaymentEvent>();
 
             var paymentsToValidate =
-                paymentSpec.Where(e => new CollectionPeriodBuilder().WithSpecDate(e.CollectionPeriod).Build().Name == collectionPeriod.Name);
+                paymentSpec.Where(e => e.ParsedCollectionPeriod.AcademicYear == collectionPeriod.AcademicYear && e.ParsedCollectionPeriod.Period == collectionPeriod.Period)
+                    .ToList();
 
             foreach (var payment in paymentsToValidate)
             {

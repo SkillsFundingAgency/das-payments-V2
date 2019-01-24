@@ -6,10 +6,12 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -70,7 +72,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         [When(@"required payments event is received")]
         public async Task WhenRequiredPaymentsEventIsReceived()
         {
+            var startTime = DateTimeOffset.UtcNow;
             var payments = RequiredPayments.Select(CreateRequiredPaymentEvent).ToList();
+            await CreateTestEarningsJob(startTime, payments.Cast<IPaymentsEvent>().ToList());
             foreach (var paymentDue in payments)
             {
                 await MessageSession.Send(paymentDue).ConfigureAwait(false);
@@ -128,7 +132,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             paymentEvent.AmountDue = requiredPayment.Amount;
             paymentEvent.JobId = TestSession.JobId;
             paymentEvent.EventTime = DateTimeOffset.UtcNow;
-            paymentEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod);
+            paymentEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod);
             paymentEvent.DeliveryPeriod = requiredPayment.DeliveryPeriod;
             paymentEvent.IlrSubmissionDateTime = TestSession.IlrSubmissionTime;
             paymentEvent.LearningAim = TestSession.Learner.Course.ToLearningAim();

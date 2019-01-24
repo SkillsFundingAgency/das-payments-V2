@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             paymentEvent.JobId = TestSession.JobId;
             paymentEvent.EventTime = DateTimeOffset.UtcNow;
             paymentEvent.SfaContributionPercentage = SfaContributionPercentage;
-            paymentEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(CollectionYear, CollectionPeriod);
+            paymentEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod);
             paymentEvent.DeliveryPeriod = fundingSourcePayment.DeliveryPeriod;
             paymentEvent.LearningAim = TestSession.Learner.Course.ToLearningAim();
             paymentEvent.PriceEpisodeIdentifier = "P1";

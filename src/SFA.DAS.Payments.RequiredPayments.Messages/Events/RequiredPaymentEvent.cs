@@ -2,19 +2,14 @@
 using System.Linq;
 using System.Runtime.Serialization;
 using SFA.DAS.Payments.Messages.Core.Events;
-using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
     [KnownType("GetInheritors")]
-    public abstract class RequiredPaymentEvent : PaymentsEvent, IRequiredPayment
+    public abstract class RequiredPaymentEvent : PeriodisedPaymentEvent, IRequiredPaymentEvent
     {
         private static Type[] inheritors;
-
-        public string PriceEpisodeIdentifier { get; set; }
-        public decimal AmountDue { get; set; }
-        public byte DeliveryPeriod { get; set; }
-
+        public Guid EarningEventId { get; set; }
         private static Type[] GetInheritors()
         {
             return inheritors ?? (inheritors = typeof(RequiredPaymentEvent).Assembly.GetTypes()

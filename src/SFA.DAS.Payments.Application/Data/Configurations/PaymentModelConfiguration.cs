@@ -11,14 +11,15 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.ToTable("Payment", "Payments2");
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).HasColumnName(@"PaymentId").IsRequired();
-            builder.Property(x => x.ExternalId).HasColumnName(@"ExternalId").IsRequired();
+            builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
+            builder.Property(x => x.EventId).HasColumnName(@"EventId").IsRequired();
+            builder.Property(x => x.EventTime).HasColumnName(@"EventTime").IsRequired();
+            builder.Property(x => x.FundingSourceEventId).HasColumnName(@"FundingSourceEventId").IsRequired();
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier");
             builder.Property(x => x.Amount).HasColumnName(@"Amount");
             builder.OwnsOne(p => p.CollectionPeriod, cp =>
             {
-                cp.Property(x => x.Name).HasColumnName(@"CollectionPeriodName").IsRequired();
-                cp.Ignore(x => x.Period);
+                cp.Property(x => x.Period).HasColumnName(@"CollectionPeriod").IsRequired();
                 cp.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear").IsRequired();
             });
             builder.Property(x => x.DeliveryPeriod).HasColumnName("DeliveryPeriod").IsRequired();
