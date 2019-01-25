@@ -26,7 +26,6 @@
            This endpoint is configured through a ReplicatorSettings config section in the Settings.xml
            file under the ConfigPackage. -->
       <Endpoint Name="ReplicatorEndpoint" />
-      <Endpoint Name="ProviderPaymentsServiceActorServiceEndpointV2_1" />
     </Endpoints>
   </Resources>
   <!-- The content will be generated during build -->
