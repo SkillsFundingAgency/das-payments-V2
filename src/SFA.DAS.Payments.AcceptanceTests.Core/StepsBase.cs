@@ -142,9 +142,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         protected void SetCurrentCollectionYear() 
         {
-            {
-                AcademicYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;
-            }
+            AcademicYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;
         }
 
         public async Task CreateTestEarningsJob(DateTimeOffset startTime, List<IPaymentsEvent> payments,
