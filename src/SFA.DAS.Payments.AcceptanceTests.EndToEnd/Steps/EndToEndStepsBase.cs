@@ -35,19 +35,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
-        private IPaymentsDataContext dataContext = null;
-        protected IPaymentsDataContext DataContext
-        {
-            get
-            {
-                if (dataContext == null)
-                {
-                    dataContext = Container.Resolve<IPaymentsDataContext>();
-                }
-
-                return dataContext;
-            }
-        }
+        protected IPaymentsDataContext DataContext => Scope.Resolve<IPaymentsDataContext>();
 
         protected DcHelper DcHelper => Get<DcHelper>();
 
