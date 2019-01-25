@@ -295,10 +295,6 @@
       <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.PaymentsDue.Messages\SFA.DAS.Payments.PaymentsDue.Messages.csproj">
-      <Project>{58746d22-1336-4ea0-8651-b107471e4035}</Project>
-      <Name>SFA.DAS.Payments.PaymentsDue.Messages</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25b9dfa3-df0c-4c53-a991-1f3d3bb407a8}</Project>
       <Name>SFA.DAS.Payments.ProviderPayments.Messages.Internal</Name>
