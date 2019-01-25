@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 RequiredPaymentEventId = Guid.NewGuid()
             };
 
-            var payment = Mapper.Map<LevyFundingSourcePaymentEvent, ProviderPaymentEventModel>(levy);
+            var payment = Mapper.Map<ProviderPaymentEventModel>(levy);
             payment.Ukprn.Should().Be(levy.Ukprn);
             payment.CollectionPeriod.Should().Be(levy.CollectionPeriod.Period);
             payment.AcademicYear.Should().Be(levy.CollectionPeriod.AcademicYear);
