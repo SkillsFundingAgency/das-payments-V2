@@ -13,5 +13,6 @@
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
     <Parameter Name="ProviderPaymentsService_EndpointName" Value="__ProviderPaymentsService_EndpointName__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
+    <Parameter Name="BatchIntervalInSeconds" Value="__BatchIntervalInSeconds__" />
   </Parameters>
 </Application>
