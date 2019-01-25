@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .Include<PaymentModel, SfaFullyFundedProviderPaymentEvent>()
                 .Include<PaymentModel, LevyProviderPaymentEvent>()
                 .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.EventId))
-                .ForMember(dest => dest.EventTime, opt => opt.ResolveUsing(src => DateTime.UtcNow))
+                .ForMember(dest => dest.EventTime, opt => opt.ResolveUsing(src => DateTimeOffset.UtcNow))
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(source => source.Amount))
