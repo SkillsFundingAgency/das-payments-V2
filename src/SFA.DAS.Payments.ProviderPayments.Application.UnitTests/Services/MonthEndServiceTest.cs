@@ -123,8 +123,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         [Test]
         public async Task GetMonthEndPaymentsShouldReturnPaymentsFromRepository()
         {
-            const short year = 2018;
-            const byte month = 9;
             var cancellationToken = new CancellationToken();
 
             var results = await monthEndService.GetMonthEndPayments(new CollectionPeriod{Period = 2, AcademicYear = 1819}, ukprn, cancellationToken);

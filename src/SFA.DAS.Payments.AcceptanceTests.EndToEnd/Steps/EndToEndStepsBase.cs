@@ -11,6 +11,8 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -32,6 +34,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "new_feature");
         }
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
+
+        protected IPaymentsDataContext DataContext => Scope.Resolve<IPaymentsDataContext>();
 
         protected DcHelper DcHelper => Get<DcHelper>();
 
@@ -63,6 +67,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             get => Get<CollectionPeriod>("current_collection_period");
             set => Set(value, "current_collection_period");
+        }
+
+        public List<Commitment> Commitments
+        {
+            get
+            {
+                if (!Context.TryGetValue<List<Commitment>>("commitments", out var commitments))
+                {
+                    Set(new List<Commitment>(), "commitments");
+                    commitments = Get<List<Commitment>>("commitments");
+                }
+                return  commitments;
+            }
         }
 
         protected EndToEndStepsBase(FeatureContext context) : base(context)
@@ -149,6 +166,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 learner.Aims.AddRange(learnerAims);
             }
+        }
+
+        protected void AddTestCommitments(IEnumerable<Commitment> commitments)
+        {
+            foreach (var commitment in commitments)
+            {
+                var existingCommitment = Commitments.FirstOrDefault(x => x.Identifier == commitment.Identifier);
+                if (existingCommitment == null)
+                {
+                    Commitments.Add(commitment);
+                }
+                else
+                {
+                    existingCommitment.StartDate = commitment.StartDate;
+                    existingCommitment.AgreedCost = commitment.AgreedCost;
+                }
+            }
+        }
+
+        protected async Task SaveTestCommitments()
+        {
+            DataContext.Commitment.AddRange(Commitments.ToModel());
+            await DataContext.SaveChangesAsync();
         }
 
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, List<Training> learnerTraining, long jobId, DateTime submissionTime, Earning earning)

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -77,16 +77,18 @@
     <Build Include="Security\User_DsciUser.sql" />
     <Build Include="Payments2\Tables\Payment.sql" />
     <Build Include="Security\Schema_Payments2.sql" />
+    <Build Include="Payments2\Tables\Commitment.sql" />
     <Build Include="Payments2\Tables\Payments2.EarningEvent.sql" />
-    <Build Include="Payments2\Tables\Payments2.EarningEventPriceEpisode.sql" />
     <Build Include="Payments2\Tables\Payments2.EarningEventPeriod.sql" />
-    <Build Include="Payments2\Tables\Payments2.RequiredPaymentEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.EarningEventPriceEpisode.sql" />
     <Build Include="Payments2\Tables\Payments2.FundingSourceEvent.sql" />
-    <Build Include="Payments2\Tables\Payments2.JobStatus.sql" />
-    <Build Include="Payments2\Tables\Payments2.JobEventStatus.sql" />
     <Build Include="Payments2\Tables\Payments2.Job.sql" />
     <Build Include="Payments2\Tables\Payments2.JobEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.JobEventStatus.sql" />
+    <Build Include="Payments2\Tables\Payments2.JobProviderEarnings.sql" />
+    <Build Include="Payments2\Tables\Payments2.JobStatus.sql" />
     <Build Include="Payments2\Tables\Payments2.JobType.sql" />
+    <Build Include="Payments2\Tables\Payments2.RequiredPaymentEvent.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
