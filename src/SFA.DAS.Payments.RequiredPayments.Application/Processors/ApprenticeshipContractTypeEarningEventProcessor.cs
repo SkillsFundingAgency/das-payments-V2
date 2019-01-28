@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using SFA.DAS.Payments.DataLocks.Messages;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -14,22 +12,6 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public class ApprenticeshipContractType2EarningEventProcessor : ApprenticeshipContractTypeEarningEventProcessor<ApprenticeshipContractType2RequiredPaymentEvent, ApprenticeshipContractType2EarningEvent>, IApprenticeshipContractType2EarningsEventProcessor
-    {
-        public ApprenticeshipContractType2EarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor) 
-            : base(paymentKeyService, mapper, paymentDueProcessor)
-        {
-        }
-    }
-
-    public class PayableEarningEventProcessor : ApprenticeshipContractTypeEarningEventProcessor<ApprenticeshipContractType1RequiredPaymentEvent, PayableEarningEvent>, IPayableEarningEventProcessor
-    {
-        public PayableEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
-            : base(paymentKeyService, mapper, paymentDueProcessor)
-        {
-        }
-    }
-
     public abstract class ApprenticeshipContractTypeEarningEventProcessor<TRequiredPaymentEvent, TEarningEvent> : EarningEventProcessorBase<TEarningEvent>
         where TRequiredPaymentEvent : ApprenticeshipContractTypeRequiredPaymentEvent
         where TEarningEvent : IContractTypeEarningEvent
