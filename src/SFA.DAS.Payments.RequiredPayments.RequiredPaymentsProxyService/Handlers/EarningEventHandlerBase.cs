@@ -8,21 +8,21 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public class EarningEventHandler : IHandleMessages<EarningEvent>
+    public abstract class EarningEventHandlerBase<T> : IHandleMessages<T> where T : PaymentsEvent
     {
         private readonly IApprenticeshipKeyService apprenticeshipKeyService;
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger paymentLogger;
         private readonly ESFA.DC.Logging.ExecutionContext executionContext;
 
-        public EarningEventHandler(IApprenticeshipKeyService apprenticeshipKeyService,
+        protected EarningEventHandlerBase(IApprenticeshipKeyService apprenticeshipKeyService,
             IActorProxyFactory proxyFactory,
             IPaymentLogger paymentLogger,
             IExecutionContext executionContext)
@@ -30,10 +30,10 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             this.apprenticeshipKeyService = apprenticeshipKeyService;
             this.proxyFactory = proxyFactory ?? new ActorProxyFactory();
             this.paymentLogger = paymentLogger;
-            this.executionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
+            this.executionContext = (ESFA.DC.Logging.ExecutionContext) executionContext;
         }
 
-        public async Task Handle(EarningEvent message, IMessageHandlerContext context)
+        public async Task Handle(T message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
             executionContext.JobId = message.JobId.ToString();
@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 IReadOnlyCollection<RequiredPaymentEvent> requiredPaymentEvent;
                 try
                 {
-                    requiredPaymentEvent = await actor.HandleEarningEvent(message, CancellationToken.None).ConfigureAwait(false);
+                    requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -84,5 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 throw;
             }
         }
+
+        protected abstract Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(T message, IRequiredPaymentsService actor);
     }
 }

@@ -9,6 +9,7 @@ namespace SFA.DAS.Payments.Application.Repositories
     {
         DbSet<LevyAccountModel> LevyAccount { get; }
         DbSet<PaymentModel> Payment { get; }
+        DbSet<CommitmentModel> Commitment { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         int SaveChanges();
     }

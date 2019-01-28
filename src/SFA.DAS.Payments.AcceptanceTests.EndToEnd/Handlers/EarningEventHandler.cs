@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
 {

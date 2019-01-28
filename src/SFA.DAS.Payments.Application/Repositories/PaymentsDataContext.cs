@@ -9,6 +9,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         private readonly string connectionString;
         public DbSet<LevyAccountModel> LevyAccount { get; protected set; }
         public virtual DbSet<PaymentModel> Payment { get; set; }
+        public virtual DbSet<CommitmentModel> Commitment { get; }
 
         public PaymentsDataContext(string connectionString)
         {
@@ -20,6 +21,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasDefaultSchema("Payments2");
             modelBuilder.ApplyConfiguration(new PaymentModelConfiguration());
+            modelBuilder.ApplyConfiguration(new CommitmentModelConfiguration());
             modelBuilder.ApplyConfiguration(new LevyAccountModelConfiguration());
         }
 

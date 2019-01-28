@@ -12,6 +12,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Configuration
             config = FabricRuntime.GetActivationContext().GetConfigurationPackageObject("Config");
         }
 
+        public bool HasSetting(string sectionName, string settingName)
+        {
+            return config.Settings.Sections.Contains(sectionName) && config.Settings.Sections[sectionName].Parameters.Contains(settingName);
+        }
+
         public string GetSetting(string sectionName, string settingName)
         {
             return config.Settings.Sections[sectionName].Parameters[settingName].Value;

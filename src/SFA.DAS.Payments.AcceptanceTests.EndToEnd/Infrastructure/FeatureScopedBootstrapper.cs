@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
                 return new PaymentsDataContext(configHelper.PaymentsConnectionString);
-            }).As<IPaymentsDataContext>().InstancePerDependency();
+            }).As<IPaymentsDataContext>().InstancePerLifetimeScope();
             DcHelper.AddDcConfig(Builder);
 
             Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
