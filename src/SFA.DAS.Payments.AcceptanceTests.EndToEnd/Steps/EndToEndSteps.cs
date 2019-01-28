@@ -102,6 +102,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             GivenPriceDetailsAsFollows(table);
         }
 
+        [Given(@"the following commitments exist")]
+        public void GivenTheFollowingCommitmentsExist(Table table)
+        {
+            var commitments = table.CreateSet<Commitment>();
+            AddTestCommitments(commitments);
+        }
 
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
@@ -250,8 +256,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"no provider payments will be recorded")]
         public async Task ThenNoProviderPaymentsWillBeRecorded()
         {
-            var dataContext = Container.Resolve<IPaymentsDataContext>();
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod);
+            var matcher = new ProviderPaymentModelMatcher(DataContext, TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }
 
