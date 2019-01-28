@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
         }
 
-        public Task<IDataLockPayment> HandlePayment(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
+        public Task<DataLockEvent> HandlePayment(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
         }

@@ -110,8 +110,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, learnerEarning);
             }).ToList();
 
-            var dataContext = Container.Resolve<IPaymentsDataContext>();
-            var currentHistory = await dataContext.Payment.Where(p => p.Ukprn == TestSession.Ukprn).ToListAsync();
+            var currentHistory = await DataContext.Payment.Where(p => p.Ukprn == TestSession.Ukprn).ToListAsync();
 
             previousPayments = previousPayments
                 .Where(p => !currentHistory.Any(historicPayment =>
@@ -120,8 +119,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     historicPayment.DeliveryPeriod == p.DeliveryPeriod))
                 .ToList();
 
-            dataContext.Payment.AddRange(previousPayments);
-            await dataContext.SaveChangesAsync();
+            DataContext.Payment.AddRange(previousPayments);
+            await DataContext.SaveChangesAsync();
         }
 
         [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]
@@ -152,12 +151,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .Where(p => p.ParsedCollectionPeriod.Period == CurrentCollectionPeriod.Period && p.ParsedCollectionPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear)
                 .ToList();
 
-            var dataContext = Container.Resolve<IPaymentsDataContext>();
             var contractType = CurrentIlr == null
                 ? TestSession.Learners.First().Aims.First().PriceEpisodes.First().ContractType
                 : CurrentIlr.First().ContractType;
 
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
+            var matcher = new ProviderPaymentModelMatcher(DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
     }

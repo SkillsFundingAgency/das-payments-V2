@@ -12,7 +12,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            TransportExtensions<AzureServiceBusTransport> transportConfig = null;
             builder.Register((c, p) =>
             {
                 var config = c.Resolve<IApplicationConfiguration>();

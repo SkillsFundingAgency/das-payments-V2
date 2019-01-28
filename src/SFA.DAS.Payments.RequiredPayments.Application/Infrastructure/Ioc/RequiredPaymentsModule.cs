@@ -14,8 +14,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
             builder.RegisterType<PaymentDueProcessor>().AsImplementedInterfaces().SingleInstance();
 
             // app layer event handlers
-            builder.RegisterType<ApprenticeshipContractType2EarningEventProcessor>().Keyed<IEarningEventHandler>(typeof(ApprenticeshipContractType2EarningEvent));
-            builder.RegisterType<FunctionalSkillEarningsEventProcessor>().Keyed<IEarningEventHandler>(typeof(FunctionalSkillEarningsEvent));
+            builder.RegisterType<ApprenticeshipContractType2EarningEventProcessor>().AsImplementedInterfaces();
+            builder.RegisterType<FunctionalSkillEarningsEventProcessor>().AsImplementedInterfaces();
+            builder.RegisterType<PayableEarningEventProcessor>().AsImplementedInterfaces();
         }
     }
 }

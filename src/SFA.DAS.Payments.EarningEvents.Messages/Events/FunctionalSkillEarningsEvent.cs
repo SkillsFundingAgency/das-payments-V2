@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
@@ -6,7 +7,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
     /// <summary>
     /// Earning events for sub aims such as Maths & English
     /// </summary>
-    /// <seealso cref="SFA.DAS.Payments.EarningEvents.Messages.Events.EarningEvent" />
+    /// <seealso cref="EarningEvent" />
     public class FunctionalSkillEarningsEvent : EarningEvent
     {
         /// <summary>

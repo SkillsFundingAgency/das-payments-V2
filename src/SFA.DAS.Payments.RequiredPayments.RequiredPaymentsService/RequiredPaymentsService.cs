@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.ServiceFabric.Actors;
@@ -8,11 +7,10 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.DataLocks.Messages;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Application;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
@@ -29,7 +27,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly ApprenticeshipKey apprenticeshipKey;
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
         private readonly IPaymentKeyService paymentKeyService;
-        private readonly ILifetimeScope lifetimeScope;
+        private readonly IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor;
+        private readonly IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor;
+        private readonly IPayableEarningEventProcessor payableEarningEventProcessor;
+        readonly ITelemetry telemetry;
+
         private const string InitialisedKey = "initialised";
 
         public RequiredPaymentsService(ActorService actorService,
@@ -37,25 +39,56 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             IPaymentLogger paymentLogger,
             IApprenticeshipKeyService apprenticeshipKeyService,
             IPaymentHistoryRepository paymentHistoryRepository,
-            IPaymentKeyService paymentKeyService,
-            ILifetimeScope lifetimeScope) : base(actorService, actorId)
+            IPaymentKeyService paymentKeyService, 
+            IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor, 
+            IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor, 
+            IPayableEarningEventProcessor payableEarningEventProcessor, ITelemetry telemetry) 
+            : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
             this.paymentHistoryRepository = paymentHistoryRepository;
             this.paymentKeyService = paymentKeyService ?? throw new ArgumentNullException(nameof(paymentKeyService));
-            this.lifetimeScope = lifetimeScope;
+            this.contractType2EarningsEventProcessor = contractType2EarningsEventProcessor;
+            this.functionalSkillEarningsEventProcessor = functionalSkillEarningsEventProcessor;
+            this.payableEarningEventProcessor = payableEarningEventProcessor;
+            this.telemetry = telemetry;
             apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(actorId.GetStringId());
         }
 
-        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(EarningEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken)
         {
-            paymentLogger.LogVerbose($"Handling EarningEvent for {apprenticeshipKey}");
-            var telemetry = lifetimeScope.Resolve<ITelemetry>();
+            paymentLogger.LogVerbose($"Handling ApprenticeshipContractType2EarningEvent for {apprenticeshipKey}");
+
             using (var operation = telemetry.StartOperation())
             {
                 await Initialise().ConfigureAwait(false);
-                var handler = lifetimeScope.ResolveKeyed<IEarningEventHandler>(earningEvent.GetType());
-                var requiredPaymentEvents = await handler.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                var requiredPaymentEvents = await contractType2EarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                telemetry.StopOperation(operation);
+                return requiredPaymentEvents;
+            }
+        }
+
+        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
+        {
+            paymentLogger.LogVerbose($"Handling FunctionalSkillEarningsEvent for {apprenticeshipKey}");
+
+            using (var operation = telemetry.StartOperation())
+            {
+                await Initialise().ConfigureAwait(false);
+                var requiredPaymentEvents = await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                telemetry.StopOperation(operation);
+                return requiredPaymentEvents;
+            }
+        }
+
+        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandlePayableEarningEvent(PayableEarningEvent earningEvent, CancellationToken cancellationToken)
+        {
+            paymentLogger.LogVerbose($"Handling PayableEarningEvent for {apprenticeshipKey}");
+
+            using (var operation = telemetry.StartOperation())
+            {
+                await Initialise().ConfigureAwait(false);
+                var requiredPaymentEvents = await payableEarningEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 telemetry.StopOperation(operation);
                 return requiredPaymentEvents;
             }

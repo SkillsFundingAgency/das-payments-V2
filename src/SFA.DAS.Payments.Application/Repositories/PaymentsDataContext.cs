@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.Application.Repositories
     {
         private readonly string connectionString;
         public virtual DbSet<PaymentModel> Payment { get; set; }
+        public virtual DbSet<CommitmentModel> Commitment { get; }
 
         public PaymentsDataContext(string connectionString)
         {
@@ -19,6 +20,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasDefaultSchema("Payments2");
             modelBuilder.ApplyConfiguration(new PaymentModelConfiguration());
+            modelBuilder.ApplyConfiguration(new CommitmentModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
