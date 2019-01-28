@@ -102,6 +102,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             GivenPriceDetailsAsFollows(table);
         }
 
+        [Given(@"the following commitments exist")]
+        public void GivenTheFollowingCommitmentsExist(Table table)
+        {
+            var commitments = table.CreateSet<Commitment>();
+            AddTestCommitments(commitments);
+        }
 
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
@@ -194,7 +200,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var dcHelper = Scope.Resolve<DcHelper>();
             await dcHelper.SendLearnerCommands(learners, TestSession.Ukprn, AcademicYear, CollectionPeriod, TestSession.JobId, TestSession.IlrSubmissionTime);
-            var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
+    
+            var matcher =  new EarningEventMatcher(CurrentPriceEpisodes,CurrentIlr, earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
 
@@ -249,15 +256,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"no provider payments will be recorded")]
         public async Task ThenNoProviderPaymentsWillBeRecorded()
         {
-            var dataContext = Container.Resolve<IPaymentsDataContext>();
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod);
+            var matcher = new ProviderPaymentModelMatcher(DataContext, TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }
 
         [Then(@"no learner earnings should be generated")]
         public async Task ThenNoLearnerEarningsWillBeRecorded()
         {
-            var matcher = new EarningEventMatcher(null, TestSession, CurrentCollectionPeriod, null);
+            var matcher =  new EarningEventMatcher(CurrentPriceEpisodes,CurrentIlr, null, TestSession, CurrentCollectionPeriod, null);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Earning Event check failure");
         }
 
