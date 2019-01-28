@@ -24,6 +24,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache
             await stateManager.AddStateAsync(key, entity, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task AddOrReplace(string key, T entity, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await stateManager.AddOrUpdateStateAsync(key, entity, (oldKey, oldValue) => entity, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<ConditionalValue<T>> TryGet(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
             var result = await stateManager.TryGetStateAsync<T>(key, cancellationToken).ConfigureAwait(false);
