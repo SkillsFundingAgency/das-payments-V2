@@ -202,7 +202,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
             var expectedPayments = CreatePayments(table);
-            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod, expectedPayments);
+            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
             await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
