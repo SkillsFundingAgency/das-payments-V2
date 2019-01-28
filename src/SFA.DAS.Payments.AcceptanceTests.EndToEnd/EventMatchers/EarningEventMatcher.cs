@@ -95,9 +95,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
                     {
-                        var onProgEarning  = CreateContractTypeEarningsEventEarningEvent();
-                        onProgEarning.CollectionPeriod = collectionPeriod;
-                        onProgEarning.Ukprn = testSession.Ukprn;
+                        var onProgEarning  = CreateContractTypeEarningsEventEarningEvent(testSession.Ukprn);
                         onProgEarning.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                         {
                             Type = (OnProgrammeEarningType) (int) tt,
@@ -140,9 +138,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (incentiveEarnings.Any())
                     {
-                        var incentiveEarning = CreateContractTypeEarningsEventEarningEvent();
-                        incentiveEarning.CollectionPeriod = collectionPeriod;
-                        incentiveEarning.Ukprn = testSession.Ukprn;
+                        var incentiveEarning = CreateContractTypeEarningsEventEarningEvent(testSession.Ukprn);
                         incentiveEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
                         {
                             Type = (IncentiveEarningType) (int) tt,
@@ -258,7 +254,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return true;
         }
 
-        private ApprenticeshipContractTypeEarningsEvent CreateContractTypeEarningsEventEarningEvent()
+        private ApprenticeshipContractTypeEarningsEvent CreateContractTypeEarningsEventEarningEvent( long ukprn)
         {
             ContractType contractType;
 
@@ -276,10 +272,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             switch (contractType)
             {
                 case ContractType.Act1:
-                    return new ApprenticeshipContractType1EarningEvent();
+                    return new ApprenticeshipContractType1EarningEvent
+                    {
+                        CollectionPeriod = collectionPeriod,
+                        Ukprn = ukprn
+                    };
 
                 case ContractType.Act2:
-                    return new ApprenticeshipContractType2EarningEvent();
+                    return new ApprenticeshipContractType2EarningEvent
+                    {
+                        CollectionPeriod = collectionPeriod,
+                        Ukprn = ukprn
+                    };
 
                 default:
                     throw new InvalidOperationException("Cannot create the EarningEventMatcher invalid contract type ");
