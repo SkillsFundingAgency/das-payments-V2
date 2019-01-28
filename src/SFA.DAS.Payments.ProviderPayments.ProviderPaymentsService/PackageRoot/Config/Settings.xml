@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <!-- This is used by the StateManager's replicator. -->
+  <Section Name="ReplicatorConfig">
+    <Parameter Name="ReplicatorEndpoint" Value="ReplicatorEndpoint" />
+  </Section>
+  <!-- This is used for securing StateManager's replication traffic. -->
+  <Section Name="ReplicatorSecurityConfig" />
   <Section Name="ConnectionStringsSection">
     <Parameter Name="StorageConnectionString" Value="" />
     <Parameter Name="LoggingConnectionString" Value="" />
@@ -7,17 +13,14 @@
     <Parameter Name="ServiceBusConnectionString" Value="" />
   </Section>
   <Section Name="Settings">
-    <Parameter Name="EndpointName" Value="" />
-    <Parameter Name="FailedMessagesQueue" Value="" />
+    <Parameter Name="EndpointName" Value="sfa-das-payments-providerpayments" />
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-providerpayments-errors" />
+    <Parameter Name="BatchIntervalInSeconds" Value="10" />
+    <Parameter Name="BatchSize" Value="500" />
+    <Parameter Name="BatchFailureTimeoutInSeconds" Value="60" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
-  </Section>
-  <Section Name="ProviderPaymentsServiceActorServiceReplicatorConfig">
-    <Parameter Name="ReplicatorEndpoint" Value="ProviderPaymentsServiceActorServiceReplicatorEndpoint" />
-    <Parameter Name="BatchAcknowledgementInterval" Value="0.005" />
-  </Section>
-  <Section Name="ProviderPaymentsServiceActorServiceReplicatorSecurityConfig">
-    <Parameter Name="CredentialType" Value="None" />
   </Section>
   <!-- The content will be generated during build -->
 </Settings>

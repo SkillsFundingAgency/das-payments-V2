@@ -11,6 +11,7 @@
     <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="" />
     <Parameter Name="LevyFundedService_EndpointName" DefaultValue="" />
     <Parameter Name="NonLevyFundedService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LevyFundedService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="LevyFundedServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" DefaultValue="3" />
@@ -34,6 +35,7 @@
             <Parameter Name="FailedMessagesQueue" Value="[NonLevyFundedService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -54,6 +56,7 @@
             <Parameter Name="FailedMessagesQueue" Value="[LevyFundedService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>

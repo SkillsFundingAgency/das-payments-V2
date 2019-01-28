@@ -13,6 +13,7 @@
     <Parameter Name="FailedMessagesQueue" Value=""/>
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value=""/>
   </Section>
 
 </Settings>

@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
         {
             return new List<ServiceInstanceListener>
             {
-                new ServiceInstanceListener(context =>lifetimeScope.Resolve<IEndpointCommunicationListener>())
+                new ServiceInstanceListener(context =>lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
             };
         }
 
