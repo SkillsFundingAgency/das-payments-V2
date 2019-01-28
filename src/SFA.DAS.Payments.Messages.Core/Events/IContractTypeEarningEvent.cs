@@ -10,9 +10,4 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         ReadOnlyCollection<OnProgrammeEarning> OnProgrammeEarnings { get; }
         ReadOnlyCollection<IncentiveEarning> IncentiveEarnings { get;  }
     }
-
-    public interface IContractType1EarningEvent : IContractTypeEarningEvent
-    {
-        string AgreementId { get; }
-    }
 }

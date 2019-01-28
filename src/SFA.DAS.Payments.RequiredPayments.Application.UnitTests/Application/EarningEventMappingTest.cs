@@ -70,7 +70,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             Assert.AreEqual(requiredPayment.Learner.ReferenceNumber, earning.Learner.ReferenceNumber);
             Assert.AreEqual(requiredPayment.Ukprn, earning.Ukprn);
             Assert.AreNotSame(requiredPayment.CollectionPeriod, earning.CollectionPeriod);
-            Assert.AreEqual(requiredPayment.CollectionPeriod.Name, earning.CollectionPeriod.Name);
+            Assert.AreEqual(requiredPayment.CollectionPeriod.Period, earning.CollectionPeriod.Period);
+            Assert.AreEqual(requiredPayment.CollectionPeriod.AcademicYear, earning.CollectionPeriod.AcademicYear);
             Assert.AreNotSame(requiredPayment.LearningAim, earning.LearningAim);
             Assert.AreEqual(requiredPayment.LearningAim.PathwayCode, earning.LearningAim.PathwayCode);
             Assert.AreEqual(requiredPayment.LearningAim.FrameworkCode, earning.LearningAim.FrameworkCode);
