@@ -5,11 +5,11 @@ using SFA.DAS.Payments.DataLocks.Messages;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
 {
-    public class PayableEarningEventHandler : IHandleMessages<PayableEarning>
+    public class PayableEarningEventHandler : IHandleMessages<PayableEarningEvent>
     {
-        public static ConcurrentBag<PayableEarning> ReceivedEvents { get; } = new ConcurrentBag<PayableEarning>();
+        public static ConcurrentBag<PayableEarningEvent> ReceivedEvents { get; } = new ConcurrentBag<PayableEarningEvent>();
 
-        public Task Handle(PayableEarning message, IMessageHandlerContext context)
+        public Task Handle(PayableEarningEvent message, IMessageHandlerContext context)
         {
             ReceivedEvents.Add(message);
             return Task.CompletedTask;
