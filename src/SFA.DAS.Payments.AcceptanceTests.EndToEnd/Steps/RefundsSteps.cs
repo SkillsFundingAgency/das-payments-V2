@@ -151,12 +151,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .Where(p => p.ParsedCollectionPeriod.Period == CurrentCollectionPeriod.Period && p.ParsedCollectionPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear)
                 .ToList();
 
-            var dataContext = Container.Resolve<IPaymentsDataContext>();
             var contractType = CurrentIlr == null
                 ? TestSession.Learners.First().Aims.First().PriceEpisodes.First().ContractType
                 : CurrentIlr.First().ContractType;
 
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
+            var matcher = new ProviderPaymentModelMatcher(DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
     }

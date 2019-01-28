@@ -255,8 +255,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"no provider payments will be recorded")]
         public async Task ThenNoProviderPaymentsWillBeRecorded()
         {
-            var dataContext = Container.Resolve<IPaymentsDataContext>();
-            var matcher = new ProviderPaymentModelMatcher(dataContext, TestSession, CurrentCollectionPeriod);
+            var matcher = new ProviderPaymentModelMatcher(DataContext, TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }
 
