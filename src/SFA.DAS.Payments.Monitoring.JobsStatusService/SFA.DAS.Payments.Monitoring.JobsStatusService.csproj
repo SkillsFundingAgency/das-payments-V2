@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.187" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
     <PackageReference Include="Polly" Version="6.1.2" />
   </ItemGroup>
 

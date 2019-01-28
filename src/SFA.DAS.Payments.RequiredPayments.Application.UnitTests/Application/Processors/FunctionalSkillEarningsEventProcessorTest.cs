@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
+using AutoMapper;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Repositories;
@@ -13,7 +14,9 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
+using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
@@ -29,6 +32,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private Mock<IDataCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
         private Mock<IApprenticeshipKeyService> apprenticeshipKeyServiceMock;
         private Mock<IPaymentHistoryRepository> paymentHistoryRepositoryMock;
+        private Mapper mapper;
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<RequiredPaymentsProfile>());
+            config.AssertConfigurationIsValid();
+            mapper = new Mapper(config);
+        }
 
         [SetUp]
         public void SetUp()
@@ -39,7 +51,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             apprenticeshipKeyServiceMock = mocker.Mock<IApprenticeshipKeyService>();
             paymentHistoryRepositoryMock = mocker.Mock<IPaymentHistoryRepository>();
 
-            eventProcessor = mocker.Create<FunctionalSkillEarningsEventProcessor>(new NamedParameter("apprenticeshipKey", "key"));
+
+            eventProcessor = mocker.Create<FunctionalSkillEarningsEventProcessor>(new NamedParameter("apprenticeshipKey", "key"), new NamedParameter("mapper", mapper));
         }
 
         [TearDown]
@@ -82,8 +95,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Ukprn = 1,
                 CollectionPeriod = period,
                 CollectionYear = period.AcademicYear,
-                Learner = CreateLearner(),
-                LearningAim = CreateLearningAim(),
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning
@@ -102,7 +115,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 })
             };
 
-            var paymentHistoryEntities = new[] { new PaymentHistoryEntity() }; 
+            var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2), DeliveryPeriod = 2}};
 
             mocker.Mock<IPaymentKeyService>()
                 .Setup(s => s.GeneratePaymentKey("9", (int)FunctionalSkillType.BalancingMathsAndEnglish, It.IsAny<short>(), It.IsAny<byte>()))
@@ -133,8 +146,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Ukprn = 1,
                 CollectionPeriod = period,
                 CollectionYear = period.AcademicYear,
-                Learner = CreateLearner(),
-                LearningAim = CreateLearningAim(),
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning
@@ -167,28 +180,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             // assert
             Assert.AreEqual(0, actualRequiredPayment.Count);
-        }
-
-        private static LearningAim CreateLearningAim()
-        {
-            return new LearningAim
-            {
-                ProgrammeType = 5,
-                PathwayCode = 6,
-                StandardCode = 7,
-                FrameworkCode = 8,
-                Reference = "9",
-                FundingLineType = "11"
-            };
-        }
-
-        private static Learner CreateLearner()
-        {
-            return new Learner
-            {
-                ReferenceNumber = "3",
-                Uln = 4
-            };
         }
     }
 }
