@@ -194,7 +194,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var dcHelper = Scope.Resolve<DcHelper>();
             await dcHelper.SendLearnerCommands(learners, TestSession.Ukprn, AcademicYear, CollectionPeriod, TestSession.JobId, TestSession.IlrSubmissionTime);
-            var matcher = new EarningEventMatcher(earnings, TestSession, CurrentCollectionPeriod, learners);
+    
+            var matcher =  new EarningEventMatcher(CurrentPriceEpisodes,CurrentIlr, earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
 
@@ -257,7 +258,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"no learner earnings should be generated")]
         public async Task ThenNoLearnerEarningsWillBeRecorded()
         {
-            var matcher = new EarningEventMatcher(null, TestSession, CurrentCollectionPeriod, null);
+            var matcher =  new EarningEventMatcher(CurrentPriceEpisodes,CurrentIlr, null, TestSession, CurrentCollectionPeriod, null);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Earning Event check failure");
         }
 
