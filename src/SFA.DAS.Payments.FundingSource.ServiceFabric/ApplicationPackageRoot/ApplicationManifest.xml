@@ -74,6 +74,7 @@
           </Section>
           <Section Name="Settings">
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>

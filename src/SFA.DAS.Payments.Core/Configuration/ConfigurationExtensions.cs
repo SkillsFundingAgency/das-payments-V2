@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.Payments.Core.Configuration
+﻿namespace SFA.DAS.Payments.Core.Configuration
 {
     public static class ConfigurationExtensions
     {
@@ -17,14 +15,7 @@ namespace SFA.DAS.Payments.Core.Configuration
 
         public static string GetSettingOrDefault(this IConfigurationHelper helper, string settingName, string defaultValue)
         {
-            try
-            {
-                return helper.GetSetting(settingName) ?? defaultValue;
-            }
-            catch
-            {
-                return defaultValue;
-            }
+            return helper.HasSetting("Settings", settingName) ? helper.GetSetting("Settings", settingName) : defaultValue;
         }
     }
 }
