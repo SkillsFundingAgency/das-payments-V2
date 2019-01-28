@@ -114,18 +114,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         private RequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue, OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
         {
-            ContractType contractType;
-
-            if (currentIlr == null || !currentIlr.Any())
-            {
-                if (currentPriceEpisodes == null) throw new Exception("No valid current Price Episodes found");
-
-                contractType = currentPriceEpisodes.Last().ContractType;
-            }
-            else
-            {
-                contractType = currentIlr.Last().ContractType;
-            }
+            var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
 
             switch (contractType)
             {
@@ -148,7 +137,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 default:
                     throw new InvalidOperationException("Cannot create the RequiredPaymentMatcher invalid contract type ");
             }
-
         }
     }
 }
