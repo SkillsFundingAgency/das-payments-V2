@@ -1,11 +1,10 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
@@ -141,13 +140,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return (short)(short.Parse(part) + 2000);
         }
 
-        protected void SetCurrentCollectionYear()
+        protected void SetCurrentCollectionYear() 
         {
             AcademicYear = new CollectionPeriodBuilder().WithDate(DateTime.Today).Build().AcademicYear;
         }
 
         public async Task CreateTestEarningsJob(DateTimeOffset startTime, List<IPaymentsEvent> payments,
-            JobType jobType = JobType.ComponentAcceptanceTestEarningsJob)
+               JobType jobType = JobType.ComponentAcceptanceTestEarningsJob)
         {
             await CreateJob(startTime,
                 payments.Select(payment => new GeneratedMessage

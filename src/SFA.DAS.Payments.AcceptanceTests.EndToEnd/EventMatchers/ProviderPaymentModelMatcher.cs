@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
@@ -19,14 +18,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly ContractType contractType;
 
 
-        public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, CollectionPeriod currentCollectionPeriod)
+        public ProviderPaymentModelMatcher(
+            IPaymentsDataContext dataContext, 
+            TestSession testSession, 
+            CollectionPeriod currentCollectionPeriod)
         {
             this.dataContext = dataContext;
             this.testSession = testSession;
             this.currentCollectionPeriod = currentCollectionPeriod;
         }
 
-        public ProviderPaymentModelMatcher(IPaymentsDataContext dataContext, TestSession testSession, CollectionPeriod currentCollectionPeriod, List<ProviderPayment> expectedPaymentInfo, ContractType contractType)
+        public ProviderPaymentModelMatcher(
+            IPaymentsDataContext dataContext, 
+            TestSession testSession, 
+            CollectionPeriod currentCollectionPeriod, 
+            List<ProviderPayment> expectedPaymentInfo, 
+            ContractType contractType)
             : this(dataContext, testSession, currentCollectionPeriod)
         {
             this.expectedPaymentInfo = expectedPaymentInfo;
@@ -37,9 +44,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             return dataContext.Payment
                 .Where(p => p.JobId == testSession.JobId &&
-                                                  p.CollectionPeriod.Period == currentCollectionPeriod.Period &&
-                                                  p.CollectionPeriod.AcademicYear == currentCollectionPeriod.AcademicYear &&
-                                                  p.Ukprn == testSession.Ukprn)
+                            p.CollectionPeriod.Period == currentCollectionPeriod.Period &&
+                            p.CollectionPeriod.AcademicYear == currentCollectionPeriod.AcademicYear &&
+                            p.Ukprn == testSession.Ukprn)
                 .ToList();
         }
 
@@ -51,20 +58,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             {
                 if (paymentInfo.SfaCoFundedPayments != 0)
                 {
-                    var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa, paymentInfo.SfaCoFundedPayments, testSession.JobId);
+                    var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa,
+                        paymentInfo.SfaCoFundedPayments, testSession.JobId);
                     expectedPayments.Add(coFundedSfa);
                 }
 
                 if (paymentInfo.EmployerCoFundedPayments != 0)
                 {
-                    var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId);
+                    var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn,
+                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId);
                     expectedPayments.Add(coFundedEmp);
                 }
 
                 if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
-                    var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId);
+                    var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn,
+                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId);
                     expectedPayments.Add(fullyFundedSfa);
+                }
+
+                if (paymentInfo.LevyPayments != 0)
+                {
+                    var levyPayments = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.Levy,
+                        paymentInfo.LevyPayments, testSession.JobId);
+                    expectedPayments.Add(levyPayments);
                 }
             }
             return expectedPayments;
@@ -85,7 +102,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         }
 
-        private PaymentModel ToPaymentModel(ProviderPayment paymentInfo, long ukprn, FundingSourceType fundingSource, decimal amount, long jobId)
+        private PaymentModel ToPaymentModel(
+            ProviderPayment paymentInfo, 
+            long ukprn, 
+            FundingSourceType fundingSource, 
+            decimal amount, 
+            long jobId)
         {
             return new PaymentModel
             {
