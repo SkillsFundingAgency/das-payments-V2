@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedService
@@ -45,6 +49,18 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             using (var operation = telemetry.StartOperation())
             {
                 await requiredPaymentsCache.Add(message.EventId.ToString(), message).ConfigureAwait(false);
+                telemetry.StopOperation(operation);
+            }
+        }
+
+        public Task<IReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command)
+        {
+            paymentLogger.LogVerbose($"Handling ProcessLevyPaymentsOnMonthEndCommand for {Id}");
+
+            using (var operation = telemetry.StartOperation())
+            {
+               // TODO: actual stuff 
+                throw new NotImplementedException();
                 telemetry.StopOperation(operation);
             }
         }
