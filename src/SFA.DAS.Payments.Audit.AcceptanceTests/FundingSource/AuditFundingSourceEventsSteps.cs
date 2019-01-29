@@ -52,6 +52,9 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.FundingSource
                 case FundingSourceType.FullyFundedSfa:
                     fundingSourceEvent = new SfaFullyFundedFundingSourcePaymentEvent();
                     break;
+                case FundingSourceType.Levy:
+                    fundingSourceEvent = new LevyFundingSourcePaymentEvent();
+                    break;
                 default:
                     throw new InvalidOperationException($"Unhandled funding source type: {testData.FundingSource:G}");
             }

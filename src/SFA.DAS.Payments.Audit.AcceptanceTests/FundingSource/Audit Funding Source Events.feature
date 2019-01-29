@@ -10,5 +10,6 @@ Scenario: CoFunded Funding Source Events Calculated
 	| CoInvestedSfa      | 90     | Learning                     | Act2          |
 	| CoInvestedEmployer | 10     | Learning                     | Act2          |
 	| FullyFundedSfa     | 50     | First16To18EmployerIncentive | Act2          |
+	| Levy               | 100    | Learning                     | Act1          |
 	When the Audit Funding Source Service is notified of the calculated funding source payments
 	Then the calculated funding source payments should be recorded in the funding source tables
