@@ -8,6 +8,6 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Commands
     {
         public CollectionPeriod CollectionPeriod { get; set; }
 
-        public IReadOnlyCollection<long> EmployerIds { get; set; }
+        public IReadOnlyCollection<long> EmployerAccountIds { get; set; }
     }
 }
