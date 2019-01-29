@@ -7,6 +7,7 @@ namespace SFA.DAS.Payments.Application.Repositories
     public class PaymentsDataContext : DbContext, IPaymentsDataContext
     {
         private readonly string connectionString;
+        public DbSet<LevyAccountModel> LevyAccount { get; protected set; }
         public virtual DbSet<PaymentModel> Payment { get; set; }
         public virtual DbSet<CommitmentModel> Commitment { get; }
 
@@ -21,6 +22,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.HasDefaultSchema("Payments2");
             modelBuilder.ApplyConfiguration(new PaymentModelConfiguration());
             modelBuilder.ApplyConfiguration(new CommitmentModelConfiguration());
+            modelBuilder.ApplyConfiguration(new LevyAccountModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
