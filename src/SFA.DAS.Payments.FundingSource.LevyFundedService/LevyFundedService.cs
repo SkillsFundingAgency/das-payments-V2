@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Castle.Components.DictionaryAdapter;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
-using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
@@ -19,42 +16,20 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
     public class LevyFundedService : Actor, ILevyFundedService
     {
         private readonly IPaymentLogger paymentLogger;
-        private readonly IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache;
-        private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ITelemetry telemetry;
+        private readonly IContractType1RequiredPaymentEventFundingSourceService fundingSourceService;
 
         public LevyFundedService(
             ActorService actorService,
             ActorId actorId,
-            IPaymentLogger paymentLogger, 
-            IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
+            IPaymentLogger paymentLogger,
             ITelemetry telemetry, 
-            IDataCache<List<string>> requiredPaymentKeys) 
+            IContractType1RequiredPaymentEventFundingSourceService fundingSourceService) 
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
-            this.requiredPaymentsCache = requiredPaymentsCache;
             this.telemetry = telemetry;
-            this.requiredPaymentKeys = requiredPaymentKeys;
-        }
-
-        public async Task Reset()
-        {
-            paymentLogger.LogInfo($"Resetting actor for apprenticeship {Id}");
-            using (var operation = telemetry.StartOperation())
-            {
-                var keysValue = await requiredPaymentKeys.TryGet("keys", CancellationToken.None).ConfigureAwait(false);
-                if (keysValue.HasValue)
-                {
-                    foreach (var key in keysValue.Value)
-                    {
-                        await requiredPaymentsCache.Clear(key, CancellationToken.None).ConfigureAwait(false);
-                    }
-
-                    await requiredPaymentKeys.Clear("keys").ConfigureAwait(false);
-                }
-                telemetry.StopOperation(operation);
-            }
+            this.fundingSourceService = fundingSourceService;
         }
 
         public async Task HandleRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent message)
@@ -63,13 +38,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
             using (var operation = telemetry.StartOperation())
             {
-                await requiredPaymentsCache.Add(message.EventId.ToString(), message).ConfigureAwait(false);
-
-                var keysValue = await requiredPaymentKeys.TryGet("keys", CancellationToken.None).ConfigureAwait(false);
-                var keys = keysValue.HasValue ? keysValue.Value : new List<string>();
-                keys.Add(message.EventId.ToString());
-                await requiredPaymentKeys.AddOrReplace("keys", keys, CancellationToken.None).ConfigureAwait(false);
-
+                await fundingSourceService.RegisterRequiredPayment(message).ConfigureAwait(false);
                 telemetry.StopOperation(operation);
             }
         }
@@ -80,23 +49,9 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
             using (var operation = telemetry.StartOperation())
             {
-                var keysValue = await requiredPaymentKeys.TryGet("keys", CancellationToken.None).ConfigureAwait(false);
-                if (keysValue.HasValue)
-                {
-                    var result = new List<ApprenticeshipContractType1RequiredPaymentEvent>();
-
-                    foreach (var key in keysValue.Value)
-                    {
-                        var conditionalValue = await requiredPaymentsCache.TryGet(key, CancellationToken.None);
-                        if (!conditionalValue.HasValue)
-                            throw new InvalidOperationException("Corrupt key stored: " + key);
-
-                        result.Add(conditionalValue.Value);
-                    }
-
-                    // TODO: process
-                }
+                var fundingSourceEvents = await fundingSourceService.GetFundedPayments();
                 telemetry.StopOperation(operation);
+                return fundingSourceEvents;
             }
         }
     }

@@ -17,8 +17,6 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces
     /// </summary>
     public interface ILevyFundedService : IActor
     {
-        Task Reset();
-
         Task HandleRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent message);
 
         Task<IReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command);
