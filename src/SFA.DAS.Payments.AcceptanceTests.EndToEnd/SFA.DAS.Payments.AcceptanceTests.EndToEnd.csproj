@@ -354,6 +354,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finished late PV2-274.feature.cs">
+      <DependentUpon>One Levy Learner, levy available, finished late PV2-274.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes on time PV2-261.feature.cs">
       <DependentUpon>One Levy Learner, levy available, finishes on time PV2-261.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -621,6 +626,10 @@
     <None Include="Tests\Disadvantage - Uplift\Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finished late PV2-274.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finished late PV2-274.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes on time PV2-261.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
