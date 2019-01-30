@@ -247,14 +247,18 @@
   <ItemGroup>
     <Compile Include="Data\Commitment.cs" />
     <Compile Include="Data\Earning.cs" />
+    <Compile Include="Data\LevyAccount.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
+    <Compile Include="EventMatchers\PayableEarningEventMatcher.cs" />
     <Compile Include="EventMatchers\EarningEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentModelMatcher.cs" />
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
+    <Compile Include="Handlers\PayableEarningEventHandler.cs" />
     <Compile Include="Extensions\CommitmentExtensions.cs" />
+    <Compile Include="Extensions\LevyAccountExtensions.cs" />
     <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
@@ -770,6 +774,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
       <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj">
+      <Project>{8CCB04EB-09DC-4E49-810F-5313D6A666BA}</Project>
+      <Name>SFA.DAS.Payments.DataLocks.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages.Internal\SFA.DAS.Payments.EarningEvents.Messages.Internal.csproj">
       <Project>{B5FF4D1A-925D-4979-9363-4C8298C483B8}</Project>
