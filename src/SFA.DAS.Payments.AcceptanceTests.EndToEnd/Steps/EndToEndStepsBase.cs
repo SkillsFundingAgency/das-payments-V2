@@ -11,11 +11,14 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
@@ -525,6 +528,42 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             return payments;
+        }
+
+        protected async Task MatchCalculatedPayments(Table table)
+        {
+            var expectedPayments = CreatePayments(table);
+            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod, expectedPayments);
+            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
+        }
+
+        protected async Task StartMonthEnd()
+        {
+            var monthEndJobId = TestSession.GenerateId();
+            Console.WriteLine($"Month end job id: {monthEndJobId}");
+            TestSession.SetJobId(monthEndJobId);
+            var monthEndCommand = new ProcessProviderMonthEndCommand
+            {
+                CollectionPeriod = CurrentCollectionPeriod,
+                Ukprn = TestSession.Ukprn,
+                JobId = monthEndJobId
+            };
+            //TODO: remove when DC have implemented the Month End Task
+            var startedMonthEndJob = new RecordStartedProcessingMonthEndJob
+            {
+                JobId = monthEndJobId,
+                CollectionPeriod = CollectionPeriod,
+                CollectionYear = AcademicYear,
+                GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
+                {
+                    StartTime = DateTimeOffset.UtcNow,
+                    MessageName = monthEndCommand.GetType().FullName,
+                    MessageId = monthEndCommand.CommandId
+                }}
+            };
+            await MessageSession.Send(startedMonthEndJob).ConfigureAwait(false);
+
+            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
         }
 
         protected async Task SendProcessLearnerCommand(FM36Learner learner)
