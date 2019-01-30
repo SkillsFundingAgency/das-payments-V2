@@ -9,7 +9,7 @@ Non-Levy standard learner, payments made then price is changed retrospectively f
 
     Given the provider previously submitted the following learner details
         | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | 1        | start of academic year | 12 months        | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             | 12 months       | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | 1        | start of academic year | 12 months        | 11250                | Aug/Current Academic Year           | 0                      | Aug/Current Academic Year             | 12 months       | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 750          | 0          | 0         |
@@ -32,7 +32,7 @@ Non-Levy standard learner, payments made then price is changed retrospectively f
 
     But the Provider now changes the Learner details as follows
         | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | 1        | start of academic year | 12 months        | 8                    | Aug/Current Academic Year           | 2                      | Aug/Current Academic Year             | 12 months       | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | 1        | start of academic year | 12 months        | 10                   | Aug/Current Academic Year           | 0                      | Aug/Current Academic Year             | 12 months       | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
    
    When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated

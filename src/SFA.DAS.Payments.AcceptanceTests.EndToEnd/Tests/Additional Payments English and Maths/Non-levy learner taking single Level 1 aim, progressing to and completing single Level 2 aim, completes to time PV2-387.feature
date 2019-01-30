@@ -8,8 +8,8 @@ Scenario Outline: Non-levy learner taking single Level 1 aim, progressing to and
 		| abc123                   | 12345678 |
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
-		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
-		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 24 months        |                 | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 24 months        |                 | 2                   | 593            | 1            | 20             | 16-18 Apprenticeship Non-Levy | continuing        |
 	And price details as follows
 		| Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
 		| 1st price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 100%                        |
@@ -56,9 +56,9 @@ Scenario Outline: Non-levy learner taking single Level 1 aim, progressing to and
 		| R12/Last Academic Year | Jul/Last Academic Year | 0                      | 0                           | 39.25                     | OnProgrammeMathsAndEnglish |
 	But aims details are changed as follows
 		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
-		| Maths or English | 12345         | 06/Aug/Last Academic Year    | 12 months        | 12 months       | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | completed         |
-		| Programme        | ZPROG001      | 06/Aug/Last Academic Year    | 24 months        |                 | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
-		| Maths or English | 67890         | 09/Aug/Current Academic Year | 12 months        |                 | 3                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Maths or English | 12345         | 06/Aug/Last Academic Year    | 12 months        | 12 months       | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Non-Levy | completed         |
+		| Programme        | ZPROG001      | 06/Aug/Last Academic Year    | 24 months        |                 | 2                   | 593            | 1            | 20             | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Maths or English | 67890         | 09/Aug/Current Academic Year | 12 months        |                 | 3                   | 593            | 1            | 20             | 16-18 Apprenticeship Non-Levy | continuing        |
 	And price details are changed as follows
 		| Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
 		| 1st price details | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 100%                        |

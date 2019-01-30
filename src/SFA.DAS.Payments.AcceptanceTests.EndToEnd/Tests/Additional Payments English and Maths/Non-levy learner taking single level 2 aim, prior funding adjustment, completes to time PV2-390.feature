@@ -13,8 +13,8 @@ Scenario Outline: Non-levy learner taking single level 2 aim, prior funding adju
         | abc123                   | 12345678 |
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
-		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
-		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        |                 | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 16-18 Apprenticeship Non-Levy | continuing        |
 	And price details as follows		
         | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 1st price details | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 90%                         |
@@ -61,8 +61,8 @@ Scenario Outline: Non-levy learner taking single level 2 aim, prior funding adju
         | R12/Last Academic Year | Jul/Last Academic Year | 0                      | 0                           | 29.44                     | OnProgrammeMathsAndEnglish |
     But aims details are changed as follows
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
-		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
-		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        | 12 months       | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | completed         |
+		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Maths or English | 12345         | 06/Aug/Last Academic Year | 12 months        | 12 months       | 2                   | 593            | 1            | 20             | 16-18 Apprenticeship Non-Levy | completed         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then no learner earnings should be generated
 	And no provider payments will be recorded
