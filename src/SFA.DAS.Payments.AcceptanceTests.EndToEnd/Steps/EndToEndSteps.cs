@@ -221,7 +221,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then(@"and only the following provider payments will be generated")]
-        public async Task ThenOnlyTheFolloingProviderPaymentsWillBeGenerated(Table table)
+        public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
             await MatchOnlyProviderPayments(table);
         }
