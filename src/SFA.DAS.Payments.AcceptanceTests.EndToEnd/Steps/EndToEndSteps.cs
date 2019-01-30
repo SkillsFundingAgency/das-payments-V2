@@ -220,7 +220,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure");
         }
 
-        [Then(@"and only the following provider payments will be generated")]
+        [Then(@"only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
             await MatchOnlyProviderPayments(table);
