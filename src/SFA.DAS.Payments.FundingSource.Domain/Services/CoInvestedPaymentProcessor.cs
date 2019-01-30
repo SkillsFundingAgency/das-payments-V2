@@ -21,11 +21,11 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             if (validationResults.Any()) throw new FundingSourceRequiredPaymentValidationException(JsonConvert.SerializeObject(validationResults));
         }
 
-        public FundingSourcePayment Process(RequiredCoInvestedPayment message)
+        public FundingSourcePayment Process(RequiredPayment message)
         {
-            Validate(message);
+            Validate((RequiredCoInvestedPayment) message);
 
-            return CreatePayment(message);
+            return CreatePayment((RequiredCoInvestedPayment) message);
         }
 
         protected abstract FundingSourcePayment CreatePayment(RequiredCoInvestedPayment message);

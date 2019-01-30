@@ -4,6 +4,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
@@ -11,26 +12,20 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
-    public interface IContractType1RequiredPaymentEventFundingSourceService
-    {
-        Task RegisterRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent);
-        Task<IReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments();
-    }
-
     public class ContractType1RequiredPaymentEventFundingSourceService : IContractType1RequiredPaymentEventFundingSourceService
     {
         private const string KeyListKey = "keys";
 
-        private readonly IEnumerable<ILevyPaymentProcessor> processors;
-        private readonly ILevyFundingSourcePaymentEventMapper mapper;
+        private readonly IEnumerable<IPaymentProcessor> processors;
+        private readonly IMapper mapper;
         private readonly IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache;
         private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILevyAccountRepository levyAccountRepository;
         private readonly long employerAccountId;
 
         public ContractType1RequiredPaymentEventFundingSourceService(
-            IEnumerable<ILevyPaymentProcessor> processors, 
-            ILevyFundingSourcePaymentEventMapper mapper, 
+            IEnumerable<IPaymentProcessor> processors, 
+            IMapper mapper, 
             IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
             IDataCache<List<string>> requiredPaymentKeys, 
             ILevyAccountRepository levyAccountRepository, 
@@ -55,29 +50,39 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         public async Task<IReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments()
         {
             var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
-            var balance = levyAccount.Balance;
             var keys = await GetKeys().ConfigureAwait(false);
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
 
             foreach (var key in keys)
             {
                 var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                var requiredPayment = new RequiredLevyPayment
+                {
+                    SfaContributionPercentage = requiredPaymentEvent.Value.SfaContributionPercentage,
+                    AmountDue = requiredPaymentEvent.Value.AmountDue,
+                    UnfundedAmount = requiredPaymentEvent.Value.AmountDue,
+                    LevyBalance = levyAccount.Balance
+                };
+
                 foreach (var processor in processors)
                 {
-                    var requiredPayment = new RequiredLevyPayment
+                    var fundingSourcePayment = processor.Process(requiredPayment);
+                    if (fundingSourcePayment != null)
                     {
-                        AmountDue = requiredPaymentEvent.Value.AmountDue, 
-                        SfaContributionPercentage = requiredPaymentEvent.Value.SfaContributionPercentage
-                    };
-                    var funding = processor.Process(requiredPayment, ref balance);
-                    if (funding != null)
-                        fundingSourceEvents.Add(mapper.MapToFundingSourcePaymentEvent(funding));
+                        var fundingSourcePaymentEvent = mapper.Map<FundingSourcePaymentEvent>(fundingSourcePayment);
+                        mapper.Map(requiredPaymentEvent.Value, fundingSourcePaymentEvent);
+                        fundingSourceEvents.Add(fundingSourcePaymentEvent);
+                    }
 
                     await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
                 }
+
+                levyAccount.Balance = requiredPayment.LevyBalance;
             }
 
             await requiredPaymentKeys.Clear(KeyListKey).ConfigureAwait(false);
+
+            // TODO: store new account levy balance
 
             return fundingSourceEvents;
         }
