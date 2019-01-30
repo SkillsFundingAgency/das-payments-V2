@@ -4,7 +4,7 @@
 	I want to the Payments V2 service to store all Funding Source Payment events
 
 
-Scenario: CoFunded Funding Source Events Calculated
+Scenario: Funding Source Events Calculated
 	Given the funding source service has calculated the following payments
 	| Funding Source     | Amount | Transaction Type             | Contract Type |
 	| CoInvestedSfa      | 90     | Learning                     | Act2          |

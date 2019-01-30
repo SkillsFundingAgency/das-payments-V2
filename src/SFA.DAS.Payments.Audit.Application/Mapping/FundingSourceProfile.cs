@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, FundingSourceEventModel>();
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, FundingSourceEventModel>();
             CreateMap<SfaFullyFundedFundingSourcePaymentEvent, FundingSourceEventModel>();
+            CreateMap<LevyFundingSourcePaymentEvent, FundingSourceEventModel>();
         }
     }
 }
