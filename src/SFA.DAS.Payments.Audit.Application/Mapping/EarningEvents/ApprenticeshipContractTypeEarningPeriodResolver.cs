@@ -7,9 +7,9 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
 {
-    public class ApprenticeshipContractTypeEarningPeriodResolver : IValueResolver<ApprenticeshipContractType2EarningEvent, EarningEventModel, List<EarningEventPeriodModel>>
+    public class ApprenticeshipContractTypeEarningPeriodResolver : IValueResolver<ApprenticeshipContractTypeEarningsEvent, EarningEventModel, List<EarningEventPeriodModel>>
     {
-        public List<EarningEventPeriodModel> Resolve(ApprenticeshipContractType2EarningEvent source, EarningEventModel destination, List<EarningEventPeriodModel> destMember, ResolutionContext context)
+        public List<EarningEventPeriodModel> Resolve(ApprenticeshipContractTypeEarningsEvent source, EarningEventModel destination, List<EarningEventPeriodModel> destMember, ResolutionContext context)
         {
             var periods = destination.Periods ?? new List<EarningEventPeriodModel>();
             periods.AddRange(source.OnProgrammeEarnings?
