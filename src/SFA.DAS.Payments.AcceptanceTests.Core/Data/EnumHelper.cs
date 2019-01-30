@@ -134,5 +134,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                         $"Cannot get transaction type.  Unhandled FM36 Attribute Name: {attributeName}");
             }
         }
+
+        public static ContractType GetContractType(List<Training> currentIlr, List<Price> priceEpisodes)
+        {
+            ContractType contractType;
+
+            if (currentIlr == null || !currentIlr.Any())
+            {
+                if (priceEpisodes == null) throw new Exception("No valid current Price Episodes found");
+
+                contractType = priceEpisodes.Last().ContractType;
+            }
+            else
+            {
+                contractType = currentIlr.Last().ContractType;
+            }
+
+            return contractType;
+        }
     }
 }

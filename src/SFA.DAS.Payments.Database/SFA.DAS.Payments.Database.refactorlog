@@ -7,4 +7,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="IlrSubmissionDateTime" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="88181a85-ace9-487e-9cc1-dafb387066ee" ChangeDateTime="01/28/2019 11:59:00">
+    <Property Name="ElementName" Value="[Payments2].[LevyAccount].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[Payments2].[LevyAccount]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AccountId" />
+  </Operation>
 </Operations>

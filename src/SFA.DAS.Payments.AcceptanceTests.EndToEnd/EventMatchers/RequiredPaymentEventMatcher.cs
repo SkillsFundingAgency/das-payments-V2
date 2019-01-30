@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -15,6 +18,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly TestSession testSession;
         private readonly CollectionPeriod collectionPeriod;
         private readonly List<Payment> paymentSpec;
+        private readonly List<Training> currentIlr;
+        private readonly List<Price> currentPriceEpisodes;
 
         public RequiredPaymentEventMatcher(TestSession testSession, CollectionPeriod collectionPeriod)
         {
@@ -22,9 +27,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             this.collectionPeriod = collectionPeriod;
         }
 
-        public RequiredPaymentEventMatcher(TestSession testSession, CollectionPeriod collectionPeriod, List<Payment> paymentSpec) : this(testSession, collectionPeriod)
+        public RequiredPaymentEventMatcher(TestSession testSession, CollectionPeriod collectionPeriod,
+            List<Payment> paymentSpec, List<Training> currentIlr, List<Price> currentPriceEpisodes) : this(testSession, collectionPeriod)
         {
             this.paymentSpec = paymentSpec;
+            this.currentIlr = currentIlr;
+            this.currentPriceEpisodes = currentPriceEpisodes;
         }
 
         protected override IList<RequiredPaymentEvent> GetActualEvents()
@@ -68,15 +76,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expectedPayments;
         }
 
-        private static void AddOnProgPayment(Payment paymentSpec, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, OnProgrammeEarningType type)
+        private void AddOnProgPayment(Payment paymentToValidate, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, OnProgrammeEarningType type)
         {
-            var payment = new ApprenticeshipContractType2RequiredPaymentEvent
-            {
-                AmountDue = amountDue,
-                OnProgrammeEarningType = type,
-                DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(paymentSpec.DeliveryPeriod).Build(),
-            };
-
+            var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type,
+                new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build());
+            
             if (payment.AmountDue != 0)
                 expectedPayments.Add(payment);
         }
@@ -106,6 +110,33 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 return true;
 
             return expected.Type == actual.Type;
+        }
+
+        private RequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue, OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
+        {
+            var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
+
+            switch (contractType)
+            {
+                case ContractType.Act1:
+                    return new ApprenticeshipContractType1RequiredPaymentEvent
+                    {
+                        AmountDue = amountDue,
+                        OnProgrammeEarningType = onProgrammeEarningType,
+                        DeliveryPeriod = deliveryPeriod
+                    };
+
+                case ContractType.Act2:
+                    return new ApprenticeshipContractType2RequiredPaymentEvent
+                    {
+                        AmountDue = amountDue,
+                        OnProgrammeEarningType = onProgrammeEarningType,
+                        DeliveryPeriod = deliveryPeriod
+                    };
+
+                default:
+                    throw new InvalidOperationException("Cannot create the RequiredPaymentMatcher invalid contract type ");
+            }
         }
     }
 }
