@@ -247,6 +247,7 @@
   <ItemGroup>
     <Compile Include="Data\Commitment.cs" />
     <Compile Include="Data\Earning.cs" />
+    <Compile Include="Data\LevyAccount.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
@@ -257,6 +258,7 @@
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Handlers\PayableEarningEventHandler.cs" />
     <Compile Include="Extensions\CommitmentExtensions.cs" />
+    <Compile Include="Extensions\LevyAccountExtensions.cs" />
     <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
