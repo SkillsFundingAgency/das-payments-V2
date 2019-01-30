@@ -11,6 +11,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
@@ -527,6 +528,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return payments;
         }
 
+        // TODO: For reviewwes. Can this be removed? 0 references
         protected async Task SendProcessLearnerCommand(FM36Learner learner)
         {
             var command = new ProcessLearnerCommand
@@ -543,6 +545,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
             await MessageSession.Send(command);
+        }
+
+        protected async Task MatchOnlyProviderPayments(Table table)
+        {
+            var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
+            var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
+            await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
 
         private IEnumerable<string> PeriodisedValuesForBalancingAndCompletion()

@@ -220,6 +220,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure");
         }
 
+        [Then(@"and only the following provider payments will be generated")]
+        public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
+        {
+            await MatchOnlyProviderPayments(table);
+        }
+
         [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
@@ -232,6 +238,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 Ukprn = TestSession.Ukprn,
                 JobId = monthEndJobId
             };
+            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
+
             //TODO: remove when DC have implemented the Month End Task
             var startedMonthEndJob = new RecordStartedProcessingMonthEndJob
             {
@@ -247,10 +255,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(startedMonthEndJob).ConfigureAwait(false);
 
-            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
-            var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
-            await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
+            await MatchOnlyProviderPayments(table);
         }
 
         [Then(@"no provider payments will be recorded")]
