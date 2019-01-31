@@ -4,11 +4,11 @@
     {
         public decimal SfaContributionPercentage { get; set; }
         public decimal AmountDue { get; set; }
+        public decimal AmountFunded { get; set; }
     }
 
     public class RequiredLevyPayment : RequiredPayment
     {
-        public decimal UnfundedAmount { get; set; }
         public decimal LevyBalance { get; set; }
     }
 

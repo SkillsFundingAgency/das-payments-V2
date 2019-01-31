@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 {
                     SfaContributionPercentage = requiredPaymentEvent.Value.SfaContributionPercentage,
                     AmountDue = requiredPaymentEvent.Value.AmountDue,
-                    UnfundedAmount = requiredPaymentEvent.Value.AmountDue,
+                    AmountFunded = requiredPaymentEvent.Value.AmountDue,
                     LevyBalance = levyAccount.Balance
                 };
 
