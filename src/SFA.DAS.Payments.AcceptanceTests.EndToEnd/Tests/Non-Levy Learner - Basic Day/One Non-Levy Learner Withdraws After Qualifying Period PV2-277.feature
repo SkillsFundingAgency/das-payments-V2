@@ -5,7 +5,7 @@
 Scenario Outline: A non-levy learner withdraws after qualifying period
 	Given the provider is providing training for the following learners
         | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | 1        | start of academic year | 12 months        | 12000                | Aug/Current Academic Year           | 3000                   | Aug/Current Academic Year             | 4 months        | withdrawn         | 90%                         | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | 1        | start of academic year | 12 months        | 15000                | Aug/Current Academic Year           | 0                      | Aug/Current Academic Year             | 4 months        | withdrawn         | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
     When the ILR file is submitted for the learners for collection period <collection_period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing |

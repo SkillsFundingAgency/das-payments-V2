@@ -6,7 +6,7 @@
 Scenario Outline: Non-levy learner goes on a planned break which is recorded in ILR PV2-216
     Given the provider previously submitted the following learner details
         | Priority | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-        | 1        | 01/Sep/Current Academic Year | 12 months        | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          | 2 months        | planned break     | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+        | 1        | 01/Sep/Current Academic Year | 12 months        | 15000                | 01/Sep/Current Academic Year        | 0                      | 01/Sep/Current Academic Year          | 2 months        | planned break     | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 0            | 0          | 0         |
@@ -27,11 +27,11 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
         | R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         |
     But the Provider now changes the Learner details as follows
 		| Priority | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 1        | 03/Jan/Current Academic Year | 10 months        | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 403            | 1            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| 1        | 03/Jan/Current Academic Year | 10 months        | 15000                | 03/Jan/Current Academic Year        | 0                      | 03/Jan/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 	And price details as follows
         | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage |
-        | 1st price details | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          | 90%                         |
-        | 2nd price details | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          | 90%                         |
+        | 1st price details | 15000                | 01/Sep/Current Academic Year        | 0                      | 01/Sep/Current Academic Year          | 90%                         |
+        | 2nd price details | 15000                | 03/Jan/Current Academic Year        | 0                      | 03/Jan/Current Academic Year          | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing |
