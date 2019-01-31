@@ -3,6 +3,7 @@ using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Repositories;
@@ -39,16 +40,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         public async Task RegisterRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
         {
             var keys = await GetKeys().ConfigureAwait(false);
-            keys.Add(paymentEvent.EventId.ToString());
-            await requiredPaymentsCache.Add(paymentEvent.EventId.ToString(), paymentEvent).ConfigureAwait(false);
+            var key = GenerateSortableKey(paymentEvent.EventId, paymentEvent.Priority, keys.Count);
+            keys.Add(key);
+            await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
         }
 
         public async Task<IReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId)
         {
             var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
-            var keys = await GetKeys().ConfigureAwait(false);
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
+
+            var keys = await GetKeys().ConfigureAwait(false);
+            keys.Sort();
 
             foreach (var key in keys)
             {
@@ -70,10 +74,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                         mapper.Map(requiredPaymentEvent.Value, fundingSourcePaymentEvent);
                         fundingSourceEvents.Add(fundingSourcePaymentEvent);
                     }
-
-                    await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
                 }
 
+                await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
                 levyAccount.Balance = requiredPayment.LevyBalance;
             }
 
@@ -89,6 +92,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var keysValue = await requiredPaymentKeys.TryGet(KeyListKey).ConfigureAwait(false);
             var keys = keysValue.HasValue ? keysValue.Value : new List<string>();
             return keys;
+        }
+
+        private string GenerateSortableKey(Guid eventId, int priority, int order)
+        {
+            return string.Concat(priority.ToString("000000"), "-", order.ToString("000000"), "-", eventId.ToString());
         }
     }
 }
