@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
             // act
-            var fundingSourcePayments = await service.GetFundedPayments();
+            var fundingSourcePayments = await service.GetFundedPayments(666);
 
             // assert
             fundingSourcePayments.Should().HaveCount(2);

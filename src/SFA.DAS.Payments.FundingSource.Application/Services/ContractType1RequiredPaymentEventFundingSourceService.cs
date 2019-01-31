@@ -21,22 +21,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache;
         private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILevyAccountRepository levyAccountRepository;
-        private readonly long employerAccountId;
 
         public ContractType1RequiredPaymentEventFundingSourceService(
             IEnumerable<IPaymentProcessor> processors, 
             IMapper mapper, 
             IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
             IDataCache<List<string>> requiredPaymentKeys, 
-            ILevyAccountRepository levyAccountRepository, 
-            long employerAccountId)
+            ILevyAccountRepository levyAccountRepository)
         {
             this.processors = processors ?? throw new ArgumentNullException(nameof(processors));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentsCache = requiredPaymentsCache ?? throw new ArgumentNullException(nameof(requiredPaymentsCache));
             this.requiredPaymentKeys = requiredPaymentKeys ?? throw new ArgumentNullException(nameof(requiredPaymentKeys));
             this.levyAccountRepository = levyAccountRepository ?? throw new ArgumentNullException(nameof(levyAccountRepository));
-            this.employerAccountId = employerAccountId;
         }
 
         public async Task RegisterRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
@@ -47,7 +44,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
         }
 
-        public async Task<IReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments()
+        public async Task<IReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId)
         {
             var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
             var keys = await GetKeys().ConfigureAwait(false);
@@ -60,7 +57,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 {
                     SfaContributionPercentage = requiredPaymentEvent.Value.SfaContributionPercentage,
                     AmountDue = requiredPaymentEvent.Value.AmountDue,
-                    AmountFunded = requiredPaymentEvent.Value.AmountDue,
+                    AmountFunded = 0,
                     LevyBalance = levyAccount.Balance
                 };
 

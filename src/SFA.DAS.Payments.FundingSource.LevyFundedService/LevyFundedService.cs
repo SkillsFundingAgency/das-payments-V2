@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
             using (var operation = telemetry.StartOperation())
             {
-                var fundingSourceEvents = await fundingSourceService.GetFundedPayments();
+                var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.EmployerAccountId);
                 telemetry.StopOperation(operation);
                 return fundingSourceEvents;
             }
