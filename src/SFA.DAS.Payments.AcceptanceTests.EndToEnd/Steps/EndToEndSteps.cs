@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -105,8 +104,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following commitments exist")]
         public void GivenTheFollowingCommitmentsExist(Table table)
         {
-            var commitments = table.CreateSet<Commitment>();
-            AddTestCommitments(commitments);
+            if (!TestSession.AtLeastOneScenarioCompleted)
+            {
+                var commitments = table.CreateSet<Commitment>();
+                AddTestCommitments(commitments);
+            }
         }
 
         [Given(@"price details as follows")]

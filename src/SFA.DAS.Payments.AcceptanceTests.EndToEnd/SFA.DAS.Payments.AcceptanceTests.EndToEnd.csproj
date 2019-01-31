@@ -264,6 +264,8 @@
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
+    <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
+    <Compile Include="Mapping\CommitmentProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />

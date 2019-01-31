@@ -10,6 +10,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Threading.Tasks;
+using AutoMapper;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
@@ -37,6 +38,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
         protected IPaymentsDataContext DataContext => Scope.Resolve<IPaymentsDataContext>();
+
+        protected IMapper Mapper => Scope.Resolve<IMapper>();
 
         protected DcHelper DcHelper => Get<DcHelper>();
 
@@ -171,24 +174,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddTestCommitments(IEnumerable<Commitment> commitments)
         {
-            foreach (var commitment in commitments)
-            {
-                var existingCommitment = Commitments.FirstOrDefault(x => x.Identifier == commitment.Identifier);
-                if (existingCommitment == null)
-                {
-                    Commitments.Add(commitment);
-                }
-                else
-                {
-                    existingCommitment.StartDate = commitment.StartDate;
-                    existingCommitment.AgreedCost = commitment.AgreedCost;
-                }
-            }
+            Commitments.Clear();
+            Commitments.AddRange(commitments);
         }
 
         protected async Task SaveTestCommitments()
         {
-            DataContext.Commitment.AddRange(Commitments.ToModel());
+            DataContext.Commitment.AddRange(Mapper.ToModel(Commitments));
             await DataContext.SaveChangesAsync();
         }
 
