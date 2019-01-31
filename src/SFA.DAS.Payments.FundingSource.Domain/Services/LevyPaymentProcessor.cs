@@ -25,9 +25,12 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             if (unallocated == 0)
                 return null;
 
-            amountDue = Math.Min(amountDue, unallocated);
+            amountDue = amountDue >= 0 ? Math.Min(amountDue, unallocated) : Math.Max(amountDue, unallocated);
 
-            amountDue = Math.Min(amountDue, requiredLevyPayment.LevyBalance).AsRounded();
+            if (amountDue > 0)
+                amountDue = Math.Min(amountDue, requiredLevyPayment.LevyBalance);
+
+            amountDue = amountDue.AsRounded();
 
             requiredLevyPayment.LevyBalance -= amountDue;
             requiredLevyPayment.AmountFunded += amountDue;

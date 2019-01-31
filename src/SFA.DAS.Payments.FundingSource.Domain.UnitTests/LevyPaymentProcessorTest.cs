@@ -155,5 +155,29 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             requiredPayment.AmountFunded.Should().Be(100);
             requiredPayment.LevyBalance.Should().Be(495);
         }
+
+        [Test]
+        public void TestProcessRefundPayment()
+        {
+            // arrange
+            var requiredPayment = new RequiredLevyPayment
+            {
+                SfaContributionPercentage = .9m,
+                AmountDue = -600,
+                LevyBalance = 500,
+                AmountFunded = 0
+            };
+
+            // act
+            var payment = processor.Process(requiredPayment);
+
+            // assert
+            payment.Should().BeOfType<LevyPayment>();
+            payment.AmountDue.Should().Be(-60);
+            payment.Type.Should().Be(FundingSourceType.Levy);
+
+            requiredPayment.AmountFunded.Should().Be(-60);
+            requiredPayment.LevyBalance.Should().Be(560);
+        }
     }
 }

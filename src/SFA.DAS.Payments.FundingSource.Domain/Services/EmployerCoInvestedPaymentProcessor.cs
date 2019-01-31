@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 
             var unallocated = requiredPayment.AmountDue - requiredPayment.AmountFunded;
 
-            amountToPay = Math.Min(amountToPay, unallocated);
+            amountToPay = amountToPay >= 0 ? Math.Min(amountToPay, unallocated) : Math.Max(amountToPay, unallocated);
 
             return new EmployerCoInvestedPayment
             {
