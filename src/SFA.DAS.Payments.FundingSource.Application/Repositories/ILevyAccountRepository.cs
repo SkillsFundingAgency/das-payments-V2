@@ -23,11 +23,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
         public async Task<LevyAccountModel> GetLevyAccount(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var list = await dataContext.LevyAccount
+            return await dataContext.LevyAccount
                 .Where(levyAccount => levyAccount.AccountId == employerAccountId)
-                .ToListAsync(cancellationToken).ConfigureAwait(false);
-
-            return list.SingleOrDefault();
+                .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }
