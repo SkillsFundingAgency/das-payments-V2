@@ -25,7 +25,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         {
             Validate((RequiredCoInvestedPayment) message);
 
-            return CreatePayment((RequiredCoInvestedPayment) message);
+            var fundingSourcePayment = CreatePayment((RequiredCoInvestedPayment) message);
+            message.AmountFunded += fundingSourcePayment.AmountDue;
+            return fundingSourcePayment;
         }
 
         protected abstract FundingSourcePayment CreatePayment(RequiredCoInvestedPayment message);

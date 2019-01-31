@@ -65,6 +65,28 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         }
 
         [Test]
+        public void TestProcessPaymentNoSfaContribution()
+        {
+            // arrange
+            var requiredPayment = new RequiredLevyPayment
+            {
+                SfaContributionPercentage = 1m,
+                AmountDue = 100,
+                LevyBalance = 10,
+                AmountFunded = 0
+            };
+
+            // act
+            var payment = processor.Process(requiredPayment);
+
+            // assert
+            payment.Should().BeNull();
+
+            requiredPayment.AmountFunded.Should().Be(0);
+            requiredPayment.LevyBalance.Should().Be(10);
+        }
+
+        [Test]
         public void TestProcessPaymentWithNotEnoughLevyBalance()
         {
             // arrange
@@ -86,6 +108,52 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
 
             requiredPayment.AmountFunded.Should().Be(95);
             requiredPayment.LevyBalance.Should().Be(0);
+        }
+
+        [Test]
+        public void TestProcessPaymentThatWasFundedInFull()
+        {
+            // arrange
+            var requiredPayment = new RequiredLevyPayment
+            {
+                SfaContributionPercentage = .9m,
+                AmountDue = 100,
+                LevyBalance = 500,
+                AmountFunded = 100
+            };
+
+            // act
+            var payment = processor.Process(requiredPayment);
+
+            // assert
+            payment.Should().BeNull();
+
+            requiredPayment.AmountFunded.Should().Be(100);
+            requiredPayment.LevyBalance.Should().Be(500);
+        }
+
+        [Test]
+        public void TestProcessPaymentThatWasPartiallyFunded()
+        {
+            // arrange
+            var requiredPayment = new RequiredLevyPayment
+            {
+                SfaContributionPercentage = .9m,
+                AmountDue = 100,
+                LevyBalance = 500,
+                AmountFunded = 95
+            };
+
+            // act
+            var payment = processor.Process(requiredPayment);
+
+            // assert
+            payment.Should().BeOfType<LevyPayment>();
+            payment.AmountDue.Should().Be(5);
+            payment.Type.Should().Be(FundingSourceType.Levy);
+
+            requiredPayment.AmountFunded.Should().Be(100);
+            requiredPayment.LevyBalance.Should().Be(495);
         }
     }
 }

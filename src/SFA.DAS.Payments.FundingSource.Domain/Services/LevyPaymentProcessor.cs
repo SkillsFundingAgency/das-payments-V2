@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -19,14 +20,21 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             if (amountDue == 0)
                 return null;
 
-            var amountToPay = Math.Min(amountDue, requiredLevyPayment.LevyBalance);
+            var unallocated = requiredLevyPayment.AmountDue - requiredPayment.AmountFunded;
 
-            requiredLevyPayment.LevyBalance -= amountToPay;
-            requiredLevyPayment.AmountFunded += amountToPay;
+            if (unallocated == 0)
+                return null;
+
+            amountDue = Math.Min(amountDue, unallocated);
+
+            amountDue = Math.Min(amountDue, requiredLevyPayment.LevyBalance).AsRounded();
+
+            requiredLevyPayment.LevyBalance -= amountDue;
+            requiredLevyPayment.AmountFunded += amountDue;
 
             return new LevyPayment
             {
-                AmountDue = amountToPay,
+                AmountDue = amountDue,
                 Type = FundingSourceType.Levy  
             };
 
