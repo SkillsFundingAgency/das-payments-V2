@@ -27,16 +27,13 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
         {
             paymentLogger.LogInfo($"Processing ProcessLevyPaymentsOnMonthEndCommand. Message Id : {context.MessageId}");
 
-            foreach (var employerAccountId in command.EmployerAccountIds)
-            {
                 using (var operation = telemetry.StartOperation())
                 {
-                    var actorId = new ActorId(employerAccountId);
+                    var actorId = new ActorId(command.EmployerAccountId);
                     var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
                     await actor.HandleMonthEnd(command).ConfigureAwait(false);
                     telemetry.StopOperation(operation);
                 }
-            }
         }
     }
 }
