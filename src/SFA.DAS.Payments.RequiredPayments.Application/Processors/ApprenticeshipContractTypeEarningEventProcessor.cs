@@ -13,7 +13,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
     public abstract class ApprenticeshipContractTypeEarningEventProcessor<TRequiredPaymentEvent, TEarningEvent> : EarningEventProcessorBase<TEarningEvent>
-        where TRequiredPaymentEvent : ApprenticeshipContractTypeRequiredPaymentEvent
+        where TRequiredPaymentEvent : ApprenticeshipContractTypeRequiredPaymentEvent, new()
         where TEarningEvent : IContractTypeEarningEvent
     {
         protected ApprenticeshipContractTypeEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
@@ -29,9 +29,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 var sfaContributionPercentage = periodAndType.period.SfaContributionPercentage.GetValueOrDefault(earningEvent.SfaContributionPercentage);
                 sfaContributionPercentage = paymentDueProcessor.CalculateSfaContributionPercentage(sfaContributionPercentage, periodAndType.period.Amount, payments);
 
-                var requiredPayment = Activator.CreateInstance<TRequiredPaymentEvent>();
-                requiredPayment.OnProgrammeEarningType = (OnProgrammeEarningType) periodAndType.type;
-                requiredPayment.SfaContributionPercentage = sfaContributionPercentage;
+                var requiredPayment = new TRequiredPaymentEvent
+                {
+                    OnProgrammeEarningType = (OnProgrammeEarningType) periodAndType.type, 
+                    SfaContributionPercentage = sfaContributionPercentage
+                };
                 return requiredPayment;
             }
 

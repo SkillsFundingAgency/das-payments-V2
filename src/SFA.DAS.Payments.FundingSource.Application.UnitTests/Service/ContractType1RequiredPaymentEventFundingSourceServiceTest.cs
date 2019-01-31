@@ -73,11 +73,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             // arrange
             var requiredPaymentEvent = new ApprenticeshipContractType1RequiredPaymentEvent
             {
-                EventId = Guid.NewGuid()
+                EventId = Guid.NewGuid(),
+                Priority = 1
             };
-            eventCacheMock.Setup(c => c.Add(requiredPaymentEvent.EventId.ToString(), requiredPaymentEvent, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+
+            var key = string.Concat("000001-000000-", requiredPaymentEvent.EventId.ToString());
+
+            eventCacheMock.Setup(c => c.Add(key, requiredPaymentEvent, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
             keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None)).ReturnsAsync(() => new ConditionalValue<List<string>>(false, null)).Verifiable();
-            keyCacheMock.Setup(c => c.AddOrReplace("keys", It.Is<List<string>>(list => list.Count == 1 && list[0] == requiredPaymentEvent.EventId.ToString()), CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            keyCacheMock.Setup(c => c.AddOrReplace("keys", It.Is<List<string>>(list => list.Count == 1 && list[0] == key), CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
             // act
             await service.RegisterRequiredPayment(requiredPaymentEvent);
@@ -92,11 +96,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var keys = new List<string> {"1", "2"};
             var requiredPaymentEvent = new ApprenticeshipContractType1RequiredPaymentEvent
             {
-                EventId = Guid.NewGuid()
+                EventId = Guid.NewGuid(),
+                Priority = 4
             };
-            eventCacheMock.Setup(c => c.Add(requiredPaymentEvent.EventId.ToString(), requiredPaymentEvent, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+
+            var key = string.Concat("000004-000002-", requiredPaymentEvent.EventId.ToString());
+
+            eventCacheMock.Setup(c => c.Add(key, requiredPaymentEvent, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
             keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None)).ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys)).Verifiable();
-            keyCacheMock.Setup(c => c.AddOrReplace("keys", It.Is<List<string>>(list => list.Count == 3 && list[2] == requiredPaymentEvent.EventId.ToString()), CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            keyCacheMock.Setup(c => c.AddOrReplace("keys", It.Is<List<string>>(list => list.Count == 3 && list[2] == key), CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
             // act
             await service.RegisterRequiredPayment(requiredPaymentEvent);
@@ -118,12 +126,25 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             };
             var balance = 100m;
 
-            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None)).ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys)).Verifiable();
-            eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None)).ReturnsAsync(() => new ConditionalValue<ApprenticeshipContractType1RequiredPaymentEvent>(true, requiredPaymentEvent)).Verifiable();
+            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+                .Verifiable();
 
-            levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None)).ReturnsAsync(() => new LevyAccountModel {Balance = balance}).Verifiable();
-            levyProcessorMock.Setup(p => p.Process(It.IsAny<RequiredLevyPayment>())).Returns(() => new LevyPayment {AmountDue = 45, Type = FundingSourceType.Levy}).Verifiable();
-            coInvestedProcessorMock.Setup(p => p.Process(It.IsAny<RequiredLevyPayment>())).Returns(() => new EmployerCoInvestedPayment {AmountDue = 55, Type = FundingSourceType.CoInvestedEmployer}).Verifiable();
+            eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<ApprenticeshipContractType1RequiredPaymentEvent>(true, requiredPaymentEvent))
+                .Verifiable();
+
+            levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None))
+                .ReturnsAsync(() => new LevyAccountModel {Balance = balance})
+                .Verifiable();
+
+            levyProcessorMock.Setup(p => p.Process(It.Is<RequiredLevyPayment>(payment => payment.AmountFunded == 0 && payment.LevyBalance == balance)))
+                .Returns(() => new LevyPayment {AmountDue = 45, Type = FundingSourceType.Levy})
+                .Verifiable();
+
+            coInvestedProcessorMock.Setup(p => p.Process(It.IsAny<RequiredLevyPayment>()))
+                .Returns(() => new EmployerCoInvestedPayment {AmountDue = 55, Type = FundingSourceType.CoInvestedEmployer})
+                .Verifiable();
 
             eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
             keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
@@ -147,6 +168,67 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             employerPayment.ContractType.Should().Be(1);
             employerPayment.SfaContributionPercentage.Should().Be(11);
             employerPayment.TransactionType.Should().Be(TransactionType.Completion);
+        }
+
+        [Test]
+        public async Task TestRequiredPaymentsSorted()
+        {
+            // arrange
+            var keys = new List<string> {"1", "99", "4", "9"};
+            var expectedKeys = new Queue<string>(new[] {"1", "4", "9", "99"});
+            var expectedKeys2 = new Queue<string>(new[] {"1", "4", "9", "99"});
+            var requiredPaymentEvent = CreateRequiredPayment(4);
+            var value = new ConditionalValue<ApprenticeshipContractType1RequiredPaymentEvent>(true, requiredPaymentEvent);
+            var requiredPayments = new Queue<ConditionalValue<ApprenticeshipContractType1RequiredPaymentEvent>>(new[] {value, value, value, value});
+
+            var balance = 100m;
+
+            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+                .Verifiable();
+
+            eventCacheMock.Setup(c => c.TryGet(It.IsAny<string>(), CancellationToken.None))
+                .ReturnsAsync(requiredPayments.Dequeue())
+                .Callback<string, CancellationToken>((k, c) => Assert.AreEqual(expectedKeys.Dequeue(), k))
+                .Verifiable();
+
+            levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None))
+                .ReturnsAsync(() => new LevyAccountModel {Balance = balance})
+                .Verifiable();
+
+            levyProcessorMock.Setup(p => p.Process(It.Is<RequiredLevyPayment>(payment => payment.AmountFunded == 0 && payment.LevyBalance == balance)))
+                .Returns(() => new LevyPayment {AmountDue = 45, Type = FundingSourceType.Levy})
+                .Verifiable();
+
+            coInvestedProcessorMock.Setup(p => p.Process(It.IsAny<RequiredLevyPayment>()))
+                .Returns(() => new EmployerCoInvestedPayment {AmountDue = 55, Type = FundingSourceType.CoInvestedEmployer})
+                .Verifiable();
+
+            eventCacheMock.Setup(c => c.Clear(It.IsAny<string>(), CancellationToken.None))                
+                .Returns(Task.CompletedTask)
+                .Callback<string, CancellationToken>((k, c) => Assert.AreEqual(expectedKeys2.Dequeue(), k))                
+                .Verifiable();
+
+            keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+
+            // act
+            await service.GetFundedPayments(666);
+
+            // assert
+            Assert.AreEqual(0, expectedKeys.Count);
+            Assert.AreEqual(0, expectedKeys2.Count);
+        }
+
+        private static ApprenticeshipContractType1RequiredPaymentEvent CreateRequiredPayment(int priority)
+        {
+            return new ApprenticeshipContractType1RequiredPaymentEvent
+            {
+                EventId = Guid.NewGuid(), 
+                AmountDue = 100,
+                SfaContributionPercentage = 11,
+                OnProgrammeEarningType = OnProgrammeEarningType.Completion,
+                Priority = priority
+            };
         }
     }
 }
