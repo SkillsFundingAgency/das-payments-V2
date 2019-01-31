@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
@@ -10,6 +11,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
@@ -192,6 +194,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await DataContext.SaveChangesAsync();
         }
 
+        protected async Task SaveTestEmployerHasLevyAccount(Employer employer)
+        {
+            var existingEmployer = await DataContext.LevyAccount.FirstOrDefaultAsync(o => o.AccountId == employer.AccountId);
+
+            if (existingEmployer == null)
+            {
+                DataContext.LevyAccount.Add(employer.ToModel());
+            }
+            else
+            {
+                existingEmployer.Balance = employer.Balance;
+                existingEmployer.IsLevyPayer = employer.IsLevyPayer;
+                existingEmployer.TransferAllowance = employer.TransferAllowance;
+                DataContext.LevyAccount.Update(existingEmployer);
+            }
+
+            await DataContext.SaveChangesAsync();
+        }
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, List<Training> learnerTraining, long jobId, DateTime submissionTime, Earning earning)
         {
             var onProgTraining = learnerTraining.FirstOrDefault(t => t.AimReference == "ZPROG001");
