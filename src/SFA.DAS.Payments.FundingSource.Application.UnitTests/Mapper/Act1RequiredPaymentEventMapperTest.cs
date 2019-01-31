@@ -45,6 +45,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 
                 AgreementId = "11",
                 CommitmentId = 12,
+                Priority = 13,
                 EventId = Guid.NewGuid(),
                 EmployerAccountId = 13,
                 IlrSubmissionDateTime = DateTime.Today,
