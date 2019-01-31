@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
                 SfaContributionPercentage = .9m,
                 AmountDue = 100,
                 LevyBalance = 1000,
-                AmountFunded = 90
+                AmountFunded = 0
             };
 
             // act
@@ -35,11 +35,11 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
 
             // assert
             payment.Should().BeOfType<LevyPayment>();
-            payment.AmountDue.Should().Be(10);
+            payment.AmountDue.Should().Be(100);
             payment.Type.Should().Be(FundingSourceType.Levy);
 
             requiredPayment.AmountFunded.Should().Be(100);
-            requiredPayment.LevyBalance.Should().Be(990);
+            requiredPayment.LevyBalance.Should().Be(900);
         }
 
         [Test]
@@ -72,18 +72,20 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             {
                 SfaContributionPercentage = 1m,
                 AmountDue = 100,
-                LevyBalance = 10,
-                AmountFunded = 0
+                LevyBalance = 1000,
+                AmountFunded = 50
             };
 
             // act
             var payment = processor.Process(requiredPayment);
 
             // assert
-            payment.Should().BeNull();
+            payment.Should().BeOfType<LevyPayment>();
+            payment.AmountDue.Should().Be(50);
+            payment.Type.Should().Be(FundingSourceType.Levy);
 
-            requiredPayment.AmountFunded.Should().Be(0);
-            requiredPayment.LevyBalance.Should().Be(10);
+            requiredPayment.AmountFunded.Should().Be(100);
+            requiredPayment.LevyBalance.Should().Be(950);
         }
 
         [Test]
@@ -95,7 +97,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
                 SfaContributionPercentage = .9m,
                 AmountDue = 100,
                 LevyBalance = 5,
-                AmountFunded = 90
+                AmountFunded = 0
             };
 
             // act
@@ -106,7 +108,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             payment.AmountDue.Should().Be(5);
             payment.Type.Should().Be(FundingSourceType.Levy);
 
-            requiredPayment.AmountFunded.Should().Be(95);
+            requiredPayment.AmountFunded.Should().Be(5);
             requiredPayment.LevyBalance.Should().Be(0);
         }
 
@@ -141,7 +143,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
                 SfaContributionPercentage = .9m,
                 AmountDue = 100,
                 LevyBalance = 500,
-                AmountFunded = 95
+                AmountFunded = 50
             };
 
             // act
@@ -149,11 +151,11 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
 
             // assert
             payment.Should().BeOfType<LevyPayment>();
-            payment.AmountDue.Should().Be(5);
+            payment.AmountDue.Should().Be(50);
             payment.Type.Should().Be(FundingSourceType.Levy);
 
             requiredPayment.AmountFunded.Should().Be(100);
-            requiredPayment.LevyBalance.Should().Be(495);
+            requiredPayment.LevyBalance.Should().Be(450);
         }
 
         [Test]
@@ -173,11 +175,11 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
 
             // assert
             payment.Should().BeOfType<LevyPayment>();
-            payment.AmountDue.Should().Be(-60);
+            payment.AmountDue.Should().Be(-600);
             payment.Type.Should().Be(FundingSourceType.Levy);
 
-            requiredPayment.AmountFunded.Should().Be(-60);
-            requiredPayment.LevyBalance.Should().Be(560);
+            requiredPayment.AmountFunded.Should().Be(-600);
+            requiredPayment.LevyBalance.Should().Be(1100);
         }
     }
 }

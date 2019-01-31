@@ -12,13 +12,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         {
             var requiredLevyPayment = (RequiredLevyPayment)requiredPayment;
 
-            if (requiredLevyPayment.LevyBalance == 0)
+            if (requiredLevyPayment.LevyBalance == 0 && requiredPayment.AmountDue > 0 || requiredPayment.AmountDue == 0)
                 return null;
 
-            var amountDue = (1 - requiredPayment.SfaContributionPercentage) * requiredPayment.AmountDue;
-
-            if (amountDue == 0)
-                return null;
+            var amountDue = requiredPayment.AmountDue;
 
             var unallocated = requiredLevyPayment.AmountDue - requiredPayment.AmountFunded;
 
