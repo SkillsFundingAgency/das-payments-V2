@@ -257,18 +257,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         private ApprenticeshipContractTypeEarningsEvent CreateContractTypeEarningsEventEarningEvent( long ukprn)
         {
-            ContractType contractType;
-
-            if (currentIlr == null || !currentIlr.Any())
-            {
-                if (currentPriceEpisodes == null) throw new Exception("No valid current Price Episodes found");
-
-                contractType = currentPriceEpisodes.Last().ContractType;
-            }
-            else
-            {
-                contractType = currentIlr.Last().ContractType;
-            }
+            var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
 
             switch (contractType)
             {
