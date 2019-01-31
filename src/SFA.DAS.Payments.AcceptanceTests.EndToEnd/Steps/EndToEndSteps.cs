@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             SetCollectionPeriod(collectionPeriod);
             TestSession.Employer.Balance = levyAmount;
-            await SaveTestEmployerHasLevyAccount(TestSession.Employer);
+            await SaveLevyAccount(TestSession.Employer);
         }
 
         [Given(@"the provider is providing training for the following learners")]

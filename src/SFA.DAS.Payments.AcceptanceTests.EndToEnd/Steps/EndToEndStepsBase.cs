@@ -194,7 +194,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await DataContext.SaveChangesAsync();
         }
 
-        protected async Task SaveTestEmployerHasLevyAccount(Employer employer)
+        protected async Task SaveLevyAccount(Employer employer)
         {
             var existingEmployer = await DataContext.LevyAccount.FirstOrDefaultAsync(o => o.AccountId == employer.AccountId);
 
