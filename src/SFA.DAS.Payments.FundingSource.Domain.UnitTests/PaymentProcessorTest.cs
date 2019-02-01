@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         public void TestLevyOnlyCall()
         {
             // arrange
-            var levyPayment = new FundingSourcePayment {AmountDue = 100};
+            var levyPayment = new LevyPayment {AmountDue = 100};
             var requiredPayment = new RequiredPayment {AmountDue = 100};
 
             levyPaymentProcessorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(new[] {levyPayment}).Verifiable();
@@ -51,8 +51,8 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         public void TestLevyAndCoInvestedCall()
         {
             // arrange
-            var levyPayment = new FundingSourcePayment {AmountDue = 50};
-            var coInvestedPayment = new FundingSourcePayment {AmountDue = 50};
+            var levyPayment = new LevyPayment {AmountDue = 50};
+            var coInvestedPayment = new EmployerCoInvestedPayment() {AmountDue = 50};
             var requiredPayment = new RequiredPayment {AmountDue = 100};
 
             levyPaymentProcessorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(new[] {levyPayment}).Verifiable();

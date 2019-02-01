@@ -9,6 +9,7 @@ using AutoMapper;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
+using SFA.DAS.Payments.FundingSource.Domain.Services;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
@@ -17,24 +18,26 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
     {
         private const string KeyListKey = "keys";
 
-        private readonly IEnumerable<IPaymentProcessor> processors;
+        private readonly IPaymentProcessor processor;
         private readonly IMapper mapper;
         private readonly IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache;
         private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILevyAccountRepository levyAccountRepository;
+        private ILevyBalanceService levyBalanceService;
 
         public ContractType1RequiredPaymentEventFundingSourceService(
-            IEnumerable<IPaymentProcessor> processors, 
+            IPaymentProcessor processor, 
             IMapper mapper, 
             IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
             IDataCache<List<string>> requiredPaymentKeys, 
-            ILevyAccountRepository levyAccountRepository)
+            ILevyAccountRepository levyAccountRepository, ILevyBalanceService levyBalanceService)
         {
-            this.processors = processors ?? throw new ArgumentNullException(nameof(processors));
+            this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentsCache = requiredPaymentsCache ?? throw new ArgumentNullException(nameof(requiredPaymentsCache));
             this.requiredPaymentKeys = requiredPaymentKeys ?? throw new ArgumentNullException(nameof(requiredPaymentKeys));
             this.levyAccountRepository = levyAccountRepository ?? throw new ArgumentNullException(nameof(levyAccountRepository));
+            this.levyBalanceService = levyBalanceService;
         }
 
         public async Task RegisterRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
@@ -46,9 +49,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
         }
 
-        public async Task<IReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId)
+        public async Task<IReadOnlyList<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId)
         {
             var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
+            levyBalanceService.Initialise(levyAccount.Balance);
+
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
 
             var keys = await GetKeys().ConfigureAwait(false);
@@ -57,33 +62,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             foreach (var key in keys)
             {
                 var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
-                var requiredPayment = new RequiredLevyPayment
+                var requiredPayment = new RequiredPayment
                 {
                     SfaContributionPercentage = requiredPaymentEvent.Value.SfaContributionPercentage,
-                    AmountDue = requiredPaymentEvent.Value.AmountDue,
-                    AmountFunded = 0,
-                    LevyBalance = levyAccount.Balance
+                    AmountDue = requiredPaymentEvent.Value.AmountDue
                 };
 
-                foreach (var processor in processors)
-                {
-                    var fundingSourcePayment = processor.Process(requiredPayment);
-                    if (fundingSourcePayment != null)
-                    {
-                        var fundingSourcePaymentEvent = mapper.Map<FundingSourcePaymentEvent>(fundingSourcePayment);
-                        mapper.Map(requiredPaymentEvent.Value, fundingSourcePaymentEvent);
-                        fundingSourceEvents.Add(fundingSourcePaymentEvent);
-                    }
-                }
+                var fundingSourcePayments = processor.Process(requiredPayment).Select(p => mapper.Map<FundingSourcePaymentEvent>(p));
+                fundingSourceEvents.AddRange(fundingSourcePayments);
 
                 await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
-                levyAccount.Balance = requiredPayment.LevyBalance;
             }
 
             await requiredPaymentKeys.Clear(KeyListKey).ConfigureAwait(false);
-
-            // TODO: store new account levy balance
-
             return fundingSourceEvents;
         }
 

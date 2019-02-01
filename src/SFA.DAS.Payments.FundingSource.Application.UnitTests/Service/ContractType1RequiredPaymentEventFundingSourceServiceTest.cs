@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -16,6 +15,8 @@ using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
+using SFA.DAS.Payments.FundingSource.Domain.Services;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -31,8 +32,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<IDataCache<ApprenticeshipContractType1RequiredPaymentEvent>> eventCacheMock;
         private Mock<IDataCache<List<string>>> keyCacheMock;
         private Mock<ILevyAccountRepository> levyAccountRepositoryMock;
-        private Mock<ILevyPaymentProcessor> levyProcessorMock;
-        private Mock<ICoInvestedPaymentProcessor> coInvestedProcessorMock;
+        private Mock<IPaymentProcessor> processorMock;
+        private Mock<ILevyBalanceService> levyBalanceServiceMock;
         private IContractType1RequiredPaymentEventFundingSourceService service;
         private MapperConfiguration mapperConfiguration;
 
@@ -50,12 +51,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             eventCacheMock = mocker.Mock<IDataCache<ApprenticeshipContractType1RequiredPaymentEvent>>();
             keyCacheMock = mocker.Mock<IDataCache<List<string>>>();
             levyAccountRepositoryMock = mocker.Mock<ILevyAccountRepository>();
-            levyProcessorMock = mocker.Mock<ILevyPaymentProcessor>();
-            coInvestedProcessorMock = mocker.Mock<ICoInvestedPaymentProcessor>();
-            var processorsParam = new IPaymentProcessor[] {levyProcessorMock.Object, coInvestedProcessorMock.Object};
+            processorMock = mocker.Mock<IPaymentProcessor>();
+            levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
             service = mocker.Create<ContractType1RequiredPaymentEventFundingSourceService>(
-                new NamedParameter("processors", processorsParam),
-                new NamedParameter("employerAccountId", 666),
                 new NamedParameter("mapper", mapper)
             );
         }
@@ -65,6 +63,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         {
             eventCacheMock.Verify();
             keyCacheMock.Verify();
+            processorMock.Verify();
+            levyAccountRepositoryMock.Verify();
         }
 
         [Test]
@@ -125,6 +125,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion
             };
             var balance = 100m;
+            var levyPayment = new LevyPayment {AmountDue = 55, Type = FundingSourceType.Levy};
+            var employerCoInvestedPayment = new EmployerCoInvestedPayment {AmountDue = 44, Type = FundingSourceType.CoInvestedEmployer};
+            var sfaCoInvestedPayment = new SfaCoInvestedPayment() {AmountDue = 33, Type = FundingSourceType.CoInvestedSfa};
+            var allPayments = new FundingSourcePayment[] {levyPayment, employerCoInvestedPayment, sfaCoInvestedPayment};
+
 
             keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
                 .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
@@ -138,13 +143,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .ReturnsAsync(() => new LevyAccountModel {Balance = balance})
                 .Verifiable();
 
-            levyProcessorMock.Setup(p => p.Process(It.Is<RequiredLevyPayment>(payment => payment.AmountFunded == 0 && payment.LevyBalance == balance)))
-                .Returns(() => new LevyPayment {AmountDue = 45, Type = FundingSourceType.Levy})
-                .Verifiable();
+            levyBalanceServiceMock.Setup(s => s.Initialise(balance)).Verifiable();
 
-            coInvestedProcessorMock.Setup(p => p.Process(It.IsAny<RequiredLevyPayment>()))
-                .Returns(() => new EmployerCoInvestedPayment {AmountDue = 55, Type = FundingSourceType.CoInvestedEmployer})
-                .Verifiable();
+            processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments).Verifiable();
 
             eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
             keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
@@ -153,21 +154,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var fundingSourcePayments = await service.GetFundedPayments(666);
 
             // assert
-            fundingSourcePayments.Should().HaveCount(2);
+            fundingSourcePayments.Should().HaveCount(3);
+            fundingSourcePayments[0].Should().BeOfType<LevyFundingSourcePaymentEvent>();
+            fundingSourcePayments[1].Should().BeOfType<EmployerCoInvestedFundingSourcePaymentEvent>();
+            fundingSourcePayments[2].Should().BeOfType<SfaCoInvestedFundingSourcePaymentEvent>();
 
-            var levyPayment = fundingSourcePayments.First();
-            levyPayment.AmountDue.Should().Be(45);
-            levyPayment.FundingSourceType.Should().Be(FundingSourceType.Levy);
-            levyPayment.ContractType.Should().Be(1);
-            levyPayment.SfaContributionPercentage.Should().Be(11);
-            levyPayment.TransactionType.Should().Be(TransactionType.Completion);
-
-            var employerPayment = fundingSourcePayments.Last();
-            employerPayment.AmountDue.Should().Be(55);
-            employerPayment.FundingSourceType.Should().Be(FundingSourceType.CoInvestedEmployer);
-            employerPayment.ContractType.Should().Be(1);
-            employerPayment.SfaContributionPercentage.Should().Be(11);
-            employerPayment.TransactionType.Should().Be(TransactionType.Completion);
+            fundingSourcePayments[0].AmountDue.Should().Be(55);
+            fundingSourcePayments[1].AmountDue.Should().Be(44);
+            fundingSourcePayments[2].AmountDue.Should().Be(33);
         }
 
         [Test]
@@ -177,9 +171,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var keys = new List<string> {"1", "99", "4", "9"};
             var expectedKeys = new Queue<string>(new[] {"1", "4", "9", "99"});
             var expectedKeys2 = new Queue<string>(new[] {"1", "4", "9", "99"});
-            var requiredPaymentEvent = CreateRequiredPayment(4);
+            var requiredPaymentEvent = new ApprenticeshipContractType1RequiredPaymentEvent
+            {
+                EventId = Guid.NewGuid(), 
+                AmountDue = 100,
+                SfaContributionPercentage = 11,
+                OnProgrammeEarningType = OnProgrammeEarningType.Completion,
+                Priority = 4
+            };
             var value = new ConditionalValue<ApprenticeshipContractType1RequiredPaymentEvent>(true, requiredPaymentEvent);
             var requiredPayments = new Queue<ConditionalValue<ApprenticeshipContractType1RequiredPaymentEvent>>(new[] {value, value, value, value});
+            var fundingSourcePayment = new LevyPayment {AmountDue = 55, Type = FundingSourceType.CoInvestedEmployer};
 
             var balance = 100m;
 
@@ -196,13 +198,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .ReturnsAsync(() => new LevyAccountModel {Balance = balance})
                 .Verifiable();
 
-            levyProcessorMock.Setup(p => p.Process(It.Is<RequiredLevyPayment>(payment => payment.AmountFunded == 0 && payment.LevyBalance == balance)))
-                .Returns(() => new LevyPayment {AmountDue = 45, Type = FundingSourceType.Levy})
-                .Verifiable();
+            levyBalanceServiceMock.Setup(s => s.Initialise(balance)).Verifiable();
 
-            coInvestedProcessorMock.Setup(p => p.Process(It.IsAny<RequiredLevyPayment>()))
-                .Returns(() => new EmployerCoInvestedPayment {AmountDue = 55, Type = FundingSourceType.CoInvestedEmployer})
-                .Verifiable();
+            processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => new[] {fundingSourcePayment}).Verifiable();
 
             eventCacheMock.Setup(c => c.Clear(It.IsAny<string>(), CancellationToken.None))                
                 .Returns(Task.CompletedTask)
@@ -217,18 +215,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             // assert
             Assert.AreEqual(0, expectedKeys.Count);
             Assert.AreEqual(0, expectedKeys2.Count);
-        }
-
-        private static ApprenticeshipContractType1RequiredPaymentEvent CreateRequiredPayment(int priority)
-        {
-            return new ApprenticeshipContractType1RequiredPaymentEvent
-            {
-                EventId = Guid.NewGuid(), 
-                AmountDue = 100,
-                SfaContributionPercentage = 11,
-                OnProgrammeEarningType = OnProgrammeEarningType.Completion,
-                Priority = priority
-            };
         }
     }
 }

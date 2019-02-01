@@ -67,12 +67,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa));
 
                 cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, RequiredCoInvestedPayment>();
-
-                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, RequiredPayment>()
-                    .Include<ApprenticeshipContractType2RequiredPaymentEvent, RequiredCoInvestedPayment>()
-                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.AmountFunded, opt => opt.Ignore());
-
-                cfg.CreateMap<ApprenticeshipContractType1RequiredPaymentEvent, RequiredLevyPayment>();
+                cfg.CreateMap<ApprenticeshipContractType1RequiredPaymentEvent, RequiredPayment>();
                 cfg.CreateMap<EmployerCoInvestedPayment, EmployerCoInvestedFundingSourcePaymentEvent>();
                 cfg.CreateMap<SfaCoInvestedPayment, SfaCoInvestedFundingSourcePaymentEvent>();
                 cfg.CreateMap<LevyPayment, LevyFundingSourcePaymentEvent>();

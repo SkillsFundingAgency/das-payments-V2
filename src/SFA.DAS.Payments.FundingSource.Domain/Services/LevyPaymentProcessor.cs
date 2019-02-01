@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 
             return new[]
             {
-                new FundingSourcePayment
+                new LevyPayment
                 {
                     AmountDue = amountDue,
                     Type = FundingSourceType.Levy

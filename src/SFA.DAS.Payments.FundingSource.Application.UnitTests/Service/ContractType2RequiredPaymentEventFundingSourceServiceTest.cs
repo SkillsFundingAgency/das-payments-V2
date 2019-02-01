@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             // Arrange
             var message = new ApprenticeshipContractType2RequiredPaymentEvent();
             var requiredCoInvestedPayment = new RequiredCoInvestedPayment();
-            var fundingSourcePayment = new FundingSourcePayment();
+            var fundingSourcePayment = new EmployerCoInvestedPayment();
 
             var sfaPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
             var employerPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
@@ -31,11 +31,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             mapper.Setup(o => o.MapToCoInvestedPaymentEvent(message, fundingSourcePayment)).Returns(sfaPaymentEvent);
 
             sfaPaymentProcessor
-                .Setup(o => o.Process(requiredCoInvestedPayment)).Returns(fundingSourcePayment)
+                .Setup(o => o.Process(requiredCoInvestedPayment)).Returns(new[]{fundingSourcePayment})
                 .Verifiable();
 
             employerPaymentProcessor
-                .Setup(o => o.Process(requiredCoInvestedPayment)).Returns(fundingSourcePayment)
+                .Setup(o => o.Process(requiredCoInvestedPayment)).Returns(new[]{fundingSourcePayment})
                 .Verifiable();
 
             var paymentProcessors = new List<ICoInvestedPaymentProcessor>

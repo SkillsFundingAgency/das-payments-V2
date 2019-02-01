@@ -3,6 +3,7 @@ using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
@@ -27,12 +28,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
             foreach (var processor in processors)
             {
-                var payment = processor.Process(coInvestedPaymentMessage);
-                if (payment != null && payment.AmountDue != 0)
-                {
-                    var paymentEvent = mapper.MapToCoInvestedPaymentEvent(message, payment);
-                    paymentEvents.Add(paymentEvent);
-                }
+                var payments = processor.Process(coInvestedPaymentMessage);
+                paymentEvents.AddRange(payments.Select(payment => mapper.MapToCoInvestedPaymentEvent(message, payment)));
             }
 
             return paymentEvents;

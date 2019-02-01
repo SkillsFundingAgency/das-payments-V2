@@ -18,8 +18,8 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             var employerCoInvestedPaymentProcessorMock = new Mock<IPaymentProcessor>();
             var sfaCoInvestedPaymentProcessorMock = new Mock<IPaymentProcessor>();
 
-            var payment1 = new FundingSourcePayment();
-            var payment2 = new FundingSourcePayment();
+            var payment1 = new EmployerCoInvestedPayment();
+            var payment2 = new SfaCoInvestedPayment();
 
             employerCoInvestedPaymentProcessorMock.Setup(p => p.Process(requiredPayment)).Returns(new []{payment1}).Verifiable();
             sfaCoInvestedPaymentProcessorMock.Setup(p => p.Process(requiredPayment)).Returns(new[] {payment2}).Verifiable();
