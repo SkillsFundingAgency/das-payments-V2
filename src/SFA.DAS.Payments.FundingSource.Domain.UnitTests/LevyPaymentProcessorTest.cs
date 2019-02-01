@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
@@ -11,175 +12,115 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
     public class LevyPaymentProcessorTest
     {
         private ILevyPaymentProcessor processor;
+        private Mock<ILevyBalanceService> levyBalanceServiceMock;
 
         [SetUp]
         public void SetUp()
         {
-            processor = new LevyPaymentProcessor();
+            levyBalanceServiceMock = new Mock<ILevyBalanceService>(MockBehavior.Strict);
+            processor = new LevyPaymentProcessor(levyBalanceServiceMock.Object);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            levyBalanceServiceMock.Verify();
         }
 
         [Test]
         public void TestProcessPaymentWithEnoughLevyBalance()
         {
             // arrange
-            var requiredPayment = new RequiredLevyPayment
+            var requiredPayment = new RequiredPayment
             {
                 SfaContributionPercentage = .9m,
-                AmountDue = 100,
-                LevyBalance = 1000,
-                AmountFunded = 0
+                AmountDue = 100
             };
+            levyBalanceServiceMock.Setup(s => s.TryFund(100)).Returns(100).Verifiable();
 
             // act
-            var payment = processor.Process(requiredPayment);
+            var payments = processor.Process(requiredPayment);
 
             // assert
-            payment.Should().BeOfType<LevyPayment>();
-            payment.AmountDue.Should().Be(100);
-            payment.Type.Should().Be(FundingSourceType.Levy);
-
-            requiredPayment.AmountFunded.Should().Be(100);
-            requiredPayment.LevyBalance.Should().Be(900);
+            payments.Should().HaveCount(1);
+            payments[0].AmountDue.Should().Be(100);
+            payments[0].Type.Should().Be(FundingSourceType.Levy);
         }
 
         [Test]
         public void TestProcessPaymentWithZeroLevyBalance()
         {
             // arrange
-            var requiredPayment = new RequiredLevyPayment
+            var requiredPayment = new RequiredPayment
             {
                 SfaContributionPercentage = .9m,
-                AmountDue = 100,
-                LevyBalance = 0,
-                AmountFunded = 90
+                AmountDue = 100
             };
+            levyBalanceServiceMock.Setup(s => s.TryFund(100)).Returns(0).Verifiable();
 
             // act
-            var payment = processor.Process(requiredPayment);
+            var payments = processor.Process(requiredPayment);
 
             // assert
-            payment.Should().BeNull();
-
-            requiredPayment.AmountFunded.Should().Be(90);
-            requiredPayment.LevyBalance.Should().Be(0);
+            payments.Should().BeEmpty();
         }
 
         [Test]
         public void TestProcessPaymentNoSfaContribution()
         {
             // arrange
-            var requiredPayment = new RequiredLevyPayment
+            var requiredPayment = new RequiredPayment
             {
                 SfaContributionPercentage = 1m,
-                AmountDue = 100,
-                LevyBalance = 1000,
-                AmountFunded = 50
+                AmountDue = 100
             };
+            levyBalanceServiceMock.Setup(s => s.TryFund(100)).Returns(100).Verifiable();
 
             // act
-            var payment = processor.Process(requiredPayment);
+            var payments = processor.Process(requiredPayment);
 
             // assert
-            payment.Should().BeOfType<LevyPayment>();
-            payment.AmountDue.Should().Be(50);
-            payment.Type.Should().Be(FundingSourceType.Levy);
-
-            requiredPayment.AmountFunded.Should().Be(100);
-            requiredPayment.LevyBalance.Should().Be(950);
+            payments.Should().HaveCount(1);
+            payments[0].AmountDue.Should().Be(100);
+            payments[0].Type.Should().Be(FundingSourceType.Levy);
         }
 
         [Test]
         public void TestProcessPaymentWithNotEnoughLevyBalance()
         {
             // arrange
-            var requiredPayment = new RequiredLevyPayment
+            var requiredPayment = new RequiredPayment
             {
                 SfaContributionPercentage = .9m,
-                AmountDue = 100,
-                LevyBalance = 5,
-                AmountFunded = 0
+                AmountDue = 100
             };
+            levyBalanceServiceMock.Setup(s => s.TryFund(100)).Returns(50).Verifiable();
 
             // act
-            var payment = processor.Process(requiredPayment);
+            var payments = processor.Process(requiredPayment);
 
             // assert
-            payment.Should().BeOfType<LevyPayment>();
-            payment.AmountDue.Should().Be(5);
-            payment.Type.Should().Be(FundingSourceType.Levy);
-
-            requiredPayment.AmountFunded.Should().Be(5);
-            requiredPayment.LevyBalance.Should().Be(0);
-        }
-
-        [Test]
-        public void TestProcessPaymentThatWasFundedInFull()
-        {
-            // arrange
-            var requiredPayment = new RequiredLevyPayment
-            {
-                SfaContributionPercentage = .9m,
-                AmountDue = 100,
-                LevyBalance = 500,
-                AmountFunded = 100
-            };
-
-            // act
-            var payment = processor.Process(requiredPayment);
-
-            // assert
-            payment.Should().BeNull();
-
-            requiredPayment.AmountFunded.Should().Be(100);
-            requiredPayment.LevyBalance.Should().Be(500);
-        }
-
-        [Test]
-        public void TestProcessPaymentThatWasPartiallyFunded()
-        {
-            // arrange
-            var requiredPayment = new RequiredLevyPayment
-            {
-                SfaContributionPercentage = .9m,
-                AmountDue = 100,
-                LevyBalance = 500,
-                AmountFunded = 50
-            };
-
-            // act
-            var payment = processor.Process(requiredPayment);
-
-            // assert
-            payment.Should().BeOfType<LevyPayment>();
-            payment.AmountDue.Should().Be(50);
-            payment.Type.Should().Be(FundingSourceType.Levy);
-
-            requiredPayment.AmountFunded.Should().Be(100);
-            requiredPayment.LevyBalance.Should().Be(450);
+            payments.Should().HaveCount(1);
+            payments[0].AmountDue.Should().Be(50);
         }
 
         [Test]
         public void TestProcessRefundPayment()
         {
             // arrange
-            var requiredPayment = new RequiredLevyPayment
+            var requiredPayment = new RequiredPayment
             {
                 SfaContributionPercentage = .9m,
-                AmountDue = -600,
-                LevyBalance = 500,
-                AmountFunded = 0
+                AmountDue = -600
             };
+            levyBalanceServiceMock.Setup(s => s.TryFund(-600)).Returns(-600).Verifiable();
 
             // act
-            var payment = processor.Process(requiredPayment);
+            var payments = processor.Process(requiredPayment);
 
             // assert
-            payment.Should().BeOfType<LevyPayment>();
-            payment.AmountDue.Should().Be(-600);
-            payment.Type.Should().Be(FundingSourceType.Levy);
-
-            requiredPayment.AmountFunded.Should().Be(-600);
-            requiredPayment.LevyBalance.Should().Be(1100);
+            payments.Should().NotBeEmpty();
+            payments[0].AmountDue.Should().Be(-600);
         }
     }
 }

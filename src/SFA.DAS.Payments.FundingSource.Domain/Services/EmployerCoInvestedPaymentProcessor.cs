@@ -1,12 +1,11 @@
-﻿using System;
-using SFA.DAS.Payments.Core;
+﻿using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
-    public class EmployerCoInvestedPaymentProcessor : CoInvestedPaymentProcessor
+    public class EmployerCoInvestedPaymentProcessor : CoInvestedPaymentProcessorBase
     {
 
         public EmployerCoInvestedPaymentProcessor(IValidateRequiredPaymentEvent validateRequiredPaymentEvent)
@@ -14,13 +13,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         {
         }
 
-        protected override FundingSourcePayment CreatePayment(RequiredCoInvestedPayment requiredPayment)
+        protected override FundingSourcePayment CreatePayment(RequiredPayment requiredPayment)
         {
             var amountToPay = (1 - requiredPayment.SfaContributionPercentage) * requiredPayment.AmountDue;
-
-            var unallocated = requiredPayment.AmountDue - requiredPayment.AmountFunded;
-
-            amountToPay = amountToPay >= 0 ? Math.Min(amountToPay, unallocated) : Math.Max(amountToPay, unallocated);
 
             return new EmployerCoInvestedPayment
             {

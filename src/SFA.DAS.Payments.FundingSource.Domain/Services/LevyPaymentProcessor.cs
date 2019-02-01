@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
@@ -8,36 +8,28 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
     public class LevyPaymentProcessor : ILevyPaymentProcessor
     {
-        public FundingSourcePayment Process(RequiredPayment requiredPayment)
+        private readonly ILevyBalanceService levyBalanceService;
+
+        public LevyPaymentProcessor(ILevyBalanceService levyBalanceService)
         {
-            var requiredLevyPayment = (RequiredLevyPayment)requiredPayment;
+            this.levyBalanceService = levyBalanceService;
+        }
 
-            if (requiredLevyPayment.LevyBalance == 0 && requiredPayment.AmountDue > 0 || requiredPayment.AmountDue == 0)
-                return null;
+        public IReadOnlyList<FundingSourcePayment> Process(RequiredPayment requiredPayment)
+        {
+            var amountDue = levyBalanceService.TryFund(requiredPayment.AmountDue).AsRounded();
 
-            var amountDue = requiredPayment.AmountDue;
+            if (amountDue == 0) 
+                return new FundingSourcePayment[0];
 
-            var unallocated = requiredLevyPayment.AmountDue - requiredPayment.AmountFunded;
-
-            if (unallocated == 0)
-                return null;
-
-            amountDue = amountDue >= 0 ? Math.Min(amountDue, unallocated) : Math.Max(amountDue, unallocated);
-
-            if (amountDue > 0)
-                amountDue = Math.Min(amountDue, requiredLevyPayment.LevyBalance);
-
-            amountDue = amountDue.AsRounded();
-
-            requiredLevyPayment.LevyBalance -= amountDue;
-            requiredLevyPayment.AmountFunded += amountDue;
-
-            return new LevyPayment
+            return new[]
             {
-                AmountDue = amountDue,
-                Type = FundingSourceType.Levy  
+                new FundingSourcePayment
+                {
+                    AmountDue = amountDue,
+                    Type = FundingSourceType.Levy
+                }
             };
-
         }
     }
 }
