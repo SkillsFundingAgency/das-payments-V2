@@ -15,18 +15,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn { get; private set; }
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
-        public Employer Employer => Employers.FirstOrDefault();
+        public Employer Employer => Employers.Single();
         public long JobId { get; private set; }
         public DateTime IlrSubmissionTime { get; set; }
         public bool AtLeastOneScenarioCompleted { get; private set; }
         public List<Employer> Employers { get; }
-
-        //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
         private static readonly ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
        
-
         public TestSession(long? ukprn = null)
         {
             courseFaker = new Faker<Course>();
