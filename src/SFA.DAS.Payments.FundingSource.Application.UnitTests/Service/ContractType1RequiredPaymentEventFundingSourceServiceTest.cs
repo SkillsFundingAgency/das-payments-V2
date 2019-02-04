@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<IDataCache<ApprenticeshipContractType1RequiredPaymentEvent>> eventCacheMock;
         private Mock<IDataCache<List<string>>> keyCacheMock;
         private Mock<ILevyAccountRepository> levyAccountRepositoryMock;
-        private Mock<IPaymentProcessor> processorMock;
+        private Mock<ILevyPaymentProcessor> processorMock;
         private Mock<ILevyBalanceService> levyBalanceServiceMock;
         private IContractType1RequiredPaymentEventFundingSourceService service;
         private MapperConfiguration mapperConfiguration;
@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             eventCacheMock = mocker.Mock<IDataCache<ApprenticeshipContractType1RequiredPaymentEvent>>();
             keyCacheMock = mocker.Mock<IDataCache<List<string>>>();
             levyAccountRepositoryMock = mocker.Mock<ILevyAccountRepository>();
-            processorMock = mocker.Mock<IPaymentProcessor>();
+            processorMock = mocker.Mock<ILevyPaymentProcessor>();
             levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
             service = mocker.Create<ContractType1RequiredPaymentEventFundingSourceService>(
                 new NamedParameter("mapper", mapper)
