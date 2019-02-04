@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
 
             ICoInvestedPaymentProcessor processor = new CoInvestedPaymentProcessor(employerCoInvestedPaymentProcessorMock.Object, sfaCoInvestedPaymentProcessorMock.Object);
             var actualPayments = processor.Process(requiredPayment);
-
+            
             actualPayments.Should().HaveCount(2);
             actualPayments[0].Should().BeSameAs(payment1);
             actualPayments[1].Should().BeSameAs(payment2);

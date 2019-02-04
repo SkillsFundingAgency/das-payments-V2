@@ -51,12 +51,12 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         public void TestLevyAndCoInvestedCall()
         {
             // arrange
-            var levyPayment = new LevyPayment {AmountDue = 50};
-            var coInvestedPayment = new EmployerCoInvestedPayment() {AmountDue = 50};
+            var levyPayment = new LevyPayment {AmountDue = 45};
+            var coInvestedPayment = new EmployerCoInvestedPayment {AmountDue = 55};
             var requiredPayment = new RequiredPayment {AmountDue = 100};
 
-            levyPaymentProcessorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(new[] {levyPayment}).Verifiable();
-            coInvestedPaymentProcessorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(new[] {coInvestedPayment}).Verifiable();
+            levyPaymentProcessorMock.Setup(p => p.Process(requiredPayment)).Returns(new[] {levyPayment}).Verifiable();
+            coInvestedPaymentProcessorMock.Setup(p => p.Process(It.Is<RequiredPayment>(rp => rp.AmountDue == 55))).Returns(new[] {coInvestedPayment}).Verifiable();
 
             // act
             var actualPayments = processor.Process(requiredPayment);

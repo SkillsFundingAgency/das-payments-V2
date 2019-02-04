@@ -20,8 +20,17 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         {
             var fundingSourcePayments = new List<FundingSourcePayment>(levyPaymentProcessor.Process(requiredPayment));
 
-            if (fundingSourcePayments.Select(p => p.AmountDue).Sum() < requiredPayment.AmountDue)
-                fundingSourcePayments.AddRange(coInvestedPaymentProcessor.Process(requiredPayment));
+            var amountDue = requiredPayment.AmountDue - fundingSourcePayments.Select(p => p.AmountDue).Sum();
+            if (amountDue != 0)
+            {
+                var partFundedRequiredPayment = new RequiredPayment
+                {
+                    AmountDue = amountDue, 
+                    SfaContributionPercentage = requiredPayment.SfaContributionPercentage
+                };
+
+                fundingSourcePayments.AddRange(coInvestedPaymentProcessor.Process(partFundedRequiredPayment));
+            }
 
             return fundingSourcePayments;
         }
