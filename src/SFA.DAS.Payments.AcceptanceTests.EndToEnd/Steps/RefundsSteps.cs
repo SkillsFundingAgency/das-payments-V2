@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ? TestSession.Learners.First().Aims.First().PriceEpisodes.First().ContractType
                 : CurrentIlr.First().ContractType;
 
-            var matcher = new ProviderPaymentModelMatcher(DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
+            var matcher = new ProviderPaymentModelMatcher(TestSession.Provider,DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
     }

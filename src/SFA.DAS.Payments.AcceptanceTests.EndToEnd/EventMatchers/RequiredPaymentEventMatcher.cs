@@ -14,21 +14,27 @@ using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public class RequiredPaymentEventMatcher : BaseMatcher<RequiredPaymentEvent>
-    {        
+    {
+        private readonly Provider provider;
         private readonly TestSession testSession;
         private readonly CollectionPeriod collectionPeriod;
         private readonly List<Payment> paymentSpec;
         private readonly List<Training> currentIlr;
         private readonly List<Price> currentPriceEpisodes;
 
-        public RequiredPaymentEventMatcher(TestSession testSession, CollectionPeriod collectionPeriod)
+        public RequiredPaymentEventMatcher(Provider provider , TestSession testSession, CollectionPeriod collectionPeriod)
         {
+            this.provider = provider;
             this.testSession = testSession;
             this.collectionPeriod = collectionPeriod;
         }
 
-        public RequiredPaymentEventMatcher(TestSession testSession, CollectionPeriod collectionPeriod,
-            List<Payment> paymentSpec, List<Training> currentIlr, List<Price> currentPriceEpisodes) : this(testSession, collectionPeriod)
+        public RequiredPaymentEventMatcher(Provider provider,
+            TestSession testSession,
+            CollectionPeriod collectionPeriod,
+            List<Payment> paymentSpec,
+            List<Training> currentIlr, 
+            List<Price> currentPriceEpisodes) : this(provider,testSession, collectionPeriod)
         {
             this.paymentSpec = paymentSpec;
             this.currentIlr = currentIlr;
@@ -38,10 +44,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<RequiredPaymentEvent> GetActualEvents()
         {
             return RequiredPaymentEventHandler.ReceivedEvents
-                .Where(e => e.Ukprn == testSession.Ukprn && 
+                .Where(e => e.Ukprn == provider.Ukprn && 
                             e.CollectionPeriod.Period== collectionPeriod.Period &&
                             e.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
-                            e.JobId == testSession.JobId).ToList();
+                            e.JobId == provider.JobId).ToList();
         }
 
         protected override IList<RequiredPaymentEvent> GetExpectedEvents()
@@ -78,8 +84,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         private void AddOnProgPayment(Payment paymentToValidate, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, OnProgrammeEarningType type)
         {
-            var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type,
-                new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build());
+            var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build();
+            var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type, deliveryPeriod);
             
             if (payment.AmountDue != 0)
                 expectedPayments.Add(payment);

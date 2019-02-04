@@ -324,6 +324,7 @@
     <Compile Include="Data\DataExtensions.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\Price.cs" />
+    <Compile Include="Data\Provider.cs" />
     <Compile Include="Data\Training.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />

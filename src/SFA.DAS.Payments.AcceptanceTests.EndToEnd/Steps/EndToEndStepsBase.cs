@@ -550,7 +550,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task MatchOnlyProviderPayments(Table table)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
+            var matcher = new ProviderPaymentEventMatcher(TestSession.Provider,CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
 

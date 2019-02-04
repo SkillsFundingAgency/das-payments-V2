@@ -17,13 +17,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public class PayableEarningEventMatcher : BaseMatcher<PayableEarningEvent>
     {
+        private readonly Provider provider;
         private readonly IList<Earning> earningSpecs;
         private readonly TestSession testSession;
         private readonly CollectionPeriod collectionPeriod;
         private readonly IList<FM36Learner> learnerSpecs;
 
-        public PayableEarningEventMatcher(IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
+        public PayableEarningEventMatcher(Provider provider,IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
         {
+            this.provider = provider;
             this.earningSpecs = earningSpecs;
             this.testSession = testSession;
             this.collectionPeriod = collectionPeriod;
@@ -32,10 +34,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override IList<PayableEarningEvent> GetActualEvents()
         {
-            return PayableEarningEventHandler.ReceivedEvents.Where(e => e.JobId == testSession.JobId
+            return PayableEarningEventHandler.ReceivedEvents.Where(e => e.JobId == provider.JobId
                                                                         && e.CollectionPeriod.Period == collectionPeriod.Period
                                                                         && e.CollectionYear == collectionPeriod.AcademicYear
-                                                                                 && e.Ukprn == testSession.Ukprn).ToList();
+                                                                                 && e.Ukprn == provider.Ukprn).ToList();
         }
 
         protected override IList<PayableEarningEvent> GetExpectedEvents()
@@ -88,7 +90,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         var onProgEarning = new PayableEarningEvent
                         {
                             CollectionPeriod = collectionPeriod,
-                            Ukprn = testSession.Ukprn,
+                            Ukprn = provider.Ukprn,
                             OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                             {
                                 Type = (OnProgrammeEarningType)(int)tt,
@@ -99,7 +101,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
-                            JobId = testSession.JobId,
+                            JobId = provider.JobId,
                             Learner = learner,
                             LearningAim = learningAim
                         };
@@ -111,7 +113,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         var incentiveEarning = new PayableEarningEvent
                         {
                             CollectionPeriod = collectionPeriod,
-                            Ukprn = testSession.Ukprn,
+                            Ukprn = provider.Ukprn,
                             IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
                             {
                                 Type = (IncentiveEarningType)(int)tt,
@@ -122,7 +124,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
-                            JobId = testSession.JobId,
+                            JobId = provider.JobId,
                             Learner = learner,
                             LearningAim = learningAim
                         };
