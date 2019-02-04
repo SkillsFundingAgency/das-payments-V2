@@ -18,19 +18,20 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
     {
         private const string KeyListKey = "keys";
 
-        private readonly IPaymentProcessor processor;
+        private readonly ILevyPaymentProcessor processor;
         private readonly IMapper mapper;
         private readonly IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache;
         private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILevyAccountRepository levyAccountRepository;
-        private ILevyBalanceService levyBalanceService;
+        private readonly ILevyBalanceService levyBalanceService;
 
         public ContractType1RequiredPaymentEventFundingSourceService(
-            IPaymentProcessor processor, 
+            ILevyPaymentProcessor processor, 
             IMapper mapper, 
             IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
             IDataCache<List<string>> requiredPaymentKeys, 
-            ILevyAccountRepository levyAccountRepository, ILevyBalanceService levyBalanceService)
+            ILevyAccountRepository levyAccountRepository, 
+            ILevyBalanceService levyBalanceService)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
