@@ -28,7 +28,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             foreach (var processor in processors)
             {
                 var payment = processor.Process(coInvestedPaymentMessage);
-                paymentEvents.Add(mapper.MapToCoInvestedPaymentEvent(message, payment));
+                if (payment != null && payment.AmountDue != 0)
+                    paymentEvents.Add(mapper.MapToCoInvestedPaymentEvent(message, payment));
             }
 
             return paymentEvents;
