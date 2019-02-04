@@ -247,7 +247,6 @@
   <ItemGroup>
     <Compile Include="Data\Commitment.cs" />
     <Compile Include="Data\Earning.cs" />
-    <Compile Include="Data\LevyAccount.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
@@ -258,12 +257,14 @@
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Handlers\PayableEarningEventHandler.cs" />
     <Compile Include="Extensions\CommitmentExtensions.cs" />
-    <Compile Include="Extensions\LevyAccountExtensions.cs" />
+    <Compile Include="Extensions\EmployerExtensions.cs" />
     <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
+    <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
+    <Compile Include="Mapping\CommitmentProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />

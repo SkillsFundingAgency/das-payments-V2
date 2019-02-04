@@ -7,9 +7,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions
 {
     public static class CommitmentExtensions
     {
-        public static IEnumerable<CommitmentModel> ToModel(this IEnumerable<Commitment> source)
+        public static IEnumerable<CommitmentModel> ToModel(this IMapper mapper, IEnumerable<Commitment> source)
         {
-            return Mapper.Map<IEnumerable<CommitmentModel>>(source);
+            return mapper.Map<IEnumerable<CommitmentModel>>(source);
         }
     }
 }

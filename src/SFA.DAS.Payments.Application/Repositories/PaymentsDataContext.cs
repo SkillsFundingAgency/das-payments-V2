@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         private readonly string connectionString;
         public DbSet<LevyAccountModel> LevyAccount { get; protected set; }
         public virtual DbSet<PaymentModel> Payment { get; set; }
-        public virtual DbSet<CommitmentModel> Commitment { get; }
+        public virtual DbSet<CommitmentModel> Commitment { get; protected set; }
 
         public PaymentsDataContext(string connectionString)
         {

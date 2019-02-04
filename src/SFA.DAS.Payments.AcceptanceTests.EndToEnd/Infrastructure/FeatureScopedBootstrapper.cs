@@ -2,6 +2,7 @@
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure.IoC;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
@@ -35,6 +36,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
 
             Builder.Register((c, p) => new RequiredPaymentsCacheCleaner(c.Resolve<IApprenticeshipKeyService>(), MessageSession)).AsSelf();
+            Builder.RegisterModule<AutoMapperModule>();
         }
 
         [BeforeFeature(Order = 0)]

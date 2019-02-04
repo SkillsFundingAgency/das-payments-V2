@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -39,6 +38,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void CleanUpScenario()
         {
             NewFeature = false;
+        }
+
+        [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
+        public async Task GivenTheEmployerLevyAccountBalanceInCollectionPeriodRCurrentAcademicYearIs(string collectionPeriod, decimal levyAmount)
+        {
+            SetCollectionPeriod(collectionPeriod);
+            TestSession.Employer.Balance = levyAmount;
+            await SaveLevyAccount(TestSession.Employer);
         }
 
         [Given(@"the provider is providing training for the following learners")]
@@ -105,8 +112,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following commitments exist")]
         public void GivenTheFollowingCommitmentsExist(Table table)
         {
-            var commitments = table.CreateSet<Commitment>();
-            AddTestCommitments(commitments);
+            if (!TestSession.AtLeastOneScenarioCompleted)
+            {
+                var commitments = table.CreateSet<Commitment>();
+                AddTestCommitments(commitments);
+            }
         }
 
         [Given(@"price details as follows")]
