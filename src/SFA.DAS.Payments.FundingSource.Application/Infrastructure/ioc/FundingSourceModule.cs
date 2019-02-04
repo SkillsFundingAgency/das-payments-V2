@@ -24,15 +24,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<LevyAccountRepository>().AsImplementedInterfaces();
             //builder.RegisterType<Coi>().AsImplementedInterfaces();
 
-            //builder.Register(c => new ContractType2RequiredPaymentEventFundingSourceService
-            //    (
-            //      new List<IPaymentProcessor>()
-            //      {
-            //        new SfaCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>()),
-            //        new EmployerCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>())
-            //      },
-            //      c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
-            //    )).As<IContractType2RequiredPaymentEventFundingSourceService>();
+            builder.Register(c => new ContractType2RequiredPaymentEventFundingSourceService
+                (
+                  new List<ICoInvestedPaymentProcessorOld>()
+                  {
+                    new SfaCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>()),
+                    new EmployerCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>())
+                  },
+                  c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
+                )).As<IContractType2RequiredPaymentEventFundingSourceService>();
 
             //builder.Register(c =>
             //{

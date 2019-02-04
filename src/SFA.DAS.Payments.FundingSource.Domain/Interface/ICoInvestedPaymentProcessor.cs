@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Interface
     {
     }
 
+
     public interface ILevyPaymentProcessor : IPaymentProcessor
     {
     }
