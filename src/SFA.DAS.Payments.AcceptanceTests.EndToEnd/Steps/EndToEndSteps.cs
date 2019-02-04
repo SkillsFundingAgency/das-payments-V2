@@ -40,6 +40,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             NewFeature = false;
         }
 
+        [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
+        public async Task GivenTheEmployerLevyAccountBalanceInCollectionPeriodRCurrentAcademicYearIs(string collectionPeriod, decimal levyAmount)
+        {
+            SetCollectionPeriod(collectionPeriod);
+            TestSession.Employer.Balance = levyAmount;
+            await SaveLevyAccount(TestSession.Employer);
+        }
+
         [Given(@"the provider is providing training for the following learners")]
         public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
         {

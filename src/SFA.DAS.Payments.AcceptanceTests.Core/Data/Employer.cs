@@ -1,6 +1,12 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
-    public class LevyAccount
+    public class Employer
     {
         public long AccountId { get; set; }
         public string AccountHashId { get; set; }
