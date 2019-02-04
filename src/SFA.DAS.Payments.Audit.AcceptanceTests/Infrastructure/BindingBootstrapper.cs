@@ -44,6 +44,7 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Infrastructure
             routing.RouteToEndpoint(typeof(SfaCoInvestedFundingSourcePaymentEvent), EndpointNames.AuditServiceEndpoint);
             routing.RouteToEndpoint(typeof(EmployerCoInvestedFundingSourcePaymentEvent), EndpointNames.AuditServiceEndpoint);
             routing.RouteToEndpoint(typeof(SfaFullyFundedFundingSourcePaymentEvent), EndpointNames.AuditServiceEndpoint);
+            routing.RouteToEndpoint(typeof(LevyFundingSourcePaymentEvent), EndpointNames.AuditServiceEndpoint);
         }
     }
 }
