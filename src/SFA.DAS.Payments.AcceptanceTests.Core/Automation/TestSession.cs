@@ -40,14 +40,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
-            Learners = new List<Learner> { GenerateLearner() };
-            LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
-
+           
             Provider = GenerateProvider();
             Ukprn = Provider.Ukprn;
             JobId = Provider.JobId;
             IlrSubmissionTime = Provider.IlrSubmissionTime;
             Providers = new List<Provider> { Provider };
+
+            Learners = new List<Learner> { GenerateLearner(Provider.Ukprn) };
+            LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
 
         }
 
@@ -83,7 +84,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
-        public Learner GenerateLearner(long? uniqueLearnerNumber = null)
+        public Learner GenerateLearner(long ukprn, long? uniqueLearnerNumber = null)
         {
             var uln = uniqueLearnerNumber ?? GenerateId();
             var limit = 10;
@@ -96,7 +97,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             allLearners.Add(uln);
             return new Learner
             {
-                Ukprn = Ukprn,
+                Ukprn = ukprn,
                 Uln = uln,
                 LearnRefNumber = uln.ToString(),
                 Course = courseFaker.Generate(1).FirstOrDefault()

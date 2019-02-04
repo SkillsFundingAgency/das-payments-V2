@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
         {
             CurrentIlr = table.CreateSet<Training>().ToList();
-            AddTestLearners(CurrentIlr);
+            AddTestLearners(CurrentIlr, TestSession.Provider.Ukprn);
         }
 
         [Given(@"the provider previously submitted the following learner details in collection period ""(.*)""")]
@@ -54,13 +54,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             SetCollectionPeriod(previousCollectionPeriod);
             var ilr = table.CreateSet<Training>().ToList();
             PreviousIlr = ilr;
-            AddTestLearners(PreviousIlr);
+            AddTestLearners(PreviousIlr, TestSession.Provider.Ukprn);
         }
 
         [Given(@"the Provider now changes the Learner details as follows")]
         public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
         {
-            AddNewIlr(table);
+            AddNewIlr(table, TestSession.Provider);
         }
 
         [Given("the Learner has now changed to \"(.*)\" as follows")]
@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
                 TestSession.RegenerateUkprn();
-                AddNewIlr(table);
+                AddNewIlr(table, TestSession.Provider);
             }
         }
 
@@ -77,7 +77,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheFollowingLearners(Table table)
         {
             var learners = table.CreateSet<Learner>();
-            AddTestLearners(learners);
+            AddTestLearners(learners, TestSession.Provider.Ukprn);
         }
 
         [Given(@"aims details are changed as follows")]

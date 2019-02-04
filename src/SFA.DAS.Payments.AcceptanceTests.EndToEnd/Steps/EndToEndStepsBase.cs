@@ -86,12 +86,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected EndToEndStepsBase(FeatureContext context) : base(context)
         {
         }
-
-        protected void AddNewIlr(Table table)
+        
+        protected void AddNewIlr(Table table, Provider provider)
         {
-            var ilr = table.CreateSet<Training>().ToList();
-            CurrentIlr = ilr;
-            AddTestLearners(CurrentIlr);
+            CurrentIlr = table.CreateSet<Training>().ToList();
+            AddTestLearners(CurrentIlr, provider.Ukprn);
         }
 
         protected void SetCollectionPeriod(string collectionPeriod)
@@ -104,14 +103,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AcademicYear = CurrentCollectionPeriod.AcademicYear;
         }
 
-        protected void AddTestLearners(List<Training> training)
+        protected void AddTestLearners(List<Training> training, long ukprn)
         {
             training.ForEach(ilrLearner =>
             {
+                ilrLearner.Ukprn = ukprn;
+
                 var learner = TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == ilrLearner.LearnerId);
                 if (learner == null)
                 {
-                    learner = TestSession.GenerateLearner();
+                    learner = TestSession.GenerateLearner(ukprn);
                     learner.LearnerIdentifier = ilrLearner.LearnerId;
                     TestSession.Learners.Add(learner);
                 }
@@ -130,7 +131,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
-        protected void AddTestLearners(IEnumerable<Learner> learners)
+        protected void AddTestLearners(IEnumerable<Learner> learners, long ukprn)
         {
             foreach (var learner in learners)
             {
@@ -138,7 +139,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     .FirstOrDefault(l => l.LearnerIdentifier == learner.LearnerIdentifier);
                 if (testLearner == null)
                 {
-                    testLearner = TestSession.GenerateLearner();
+                    testLearner = TestSession.GenerateLearner(ukprn);
                 }
                 testLearner.LearnerIdentifier = string.IsNullOrEmpty(learner.LearnerIdentifier) ? testLearner.LearnerIdentifier : learner.LearnerIdentifier;
                 testLearner.Uln = learner.Uln == 0 ? testLearner.Uln : learner.Uln;

@@ -32,9 +32,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the provider previously submitted the following learner details")]
         public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetails(Table table)
         {
-            var ilr = table.CreateSet<Training>().ToList();
-            PreviousIlr = ilr;
-            AddTestLearners(PreviousIlr);
+            PreviousIlr = table.CreateSet<Training>().ToList();
+            AddTestLearners(CurrentIlr, TestSession.Provider.Ukprn);
+        }
+
+        [Given(@"the ""(.*)"" previously submitted the following learner details")]
+        public void GivenThePreviouslySubmittedTheFollowingLearnerDetails(string providerIdentifier, Table table)
+        {
+            var secondProvider = TestSession.GenerateProvider();
+            secondProvider.Identifier = providerIdentifier;
+            TestSession.Providers.Add(secondProvider);
+
+            PreviousIlr = table.CreateSet<Training>().ToList();
+            AddTestLearners(CurrentIlr, TestSession.Provider.Ukprn);
         }
 
         [Given(@"the following earnings had been generated for the learner")]
