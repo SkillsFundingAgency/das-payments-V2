@@ -7,7 +7,6 @@ using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.DataLockService.Interfaces;
-using SFA.DAS.Payments.DataLocks.Messages;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
@@ -16,51 +15,36 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
     {
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger paymentLogger;
-        private readonly IExecutionContext executionContext;
 
-        public ApprenticeshipContractType1EarningEventHandler(IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger, IExecutionContext executionContext)
+        public ApprenticeshipContractType1EarningEventHandler(IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger)
         {
             this.proxyFactory = proxyFactory;
             this.paymentLogger = paymentLogger;
-            this.executionContext = executionContext;
         }
+
         public async Task Handle(ApprenticeshipContractType1EarningEvent message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing DataLockProxyProxyService event. Message Id : {context.MessageId}");
 
-            try
-            {
-                var actorId = new ActorId(message.Ukprn);
-                var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
-                DataLockEvent dataLockEvent;
-                try
-                {
-                    dataLockEvent = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    paymentLogger.LogError($"Error invoking levy funded actor. Error: {ex.Message}", ex);
-                    throw;
-                }
+            var ukprn = message.Ukprn;
+            var actorId = new ActorId(ukprn);
 
-                try
-                {
-                    if (dataLockEvent != null)
-                        await context.Publish(dataLockEvent);
-                }
-                catch (Exception ex)
-                {
-                    paymentLogger.LogError($"Error publishing the event: 'RequiredPaymentEvent'.  Error: {ex.Message}.", ex);
-                    throw;
-                }
+            paymentLogger.LogVerbose($"Creating actor proxy for provider with UKPRN {ukprn}");
+            var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
+            paymentLogger.LogDebug($"Actor proxy created for provider with UKPRN {ukprn}");
 
-                paymentLogger.LogInfo($"Successfully processed DataLockProxyProxyService event for Actor Id {actorId}");
-            }
-            catch (Exception ex)
+            paymentLogger.LogVerbose("Calling actor proxy to handle earning");
+            var dataLockEvent = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
+            paymentLogger.LogDebug("Earning handled");
+
+            if (dataLockEvent != null)
             {
-                paymentLogger.LogError("Error while handling DataLockProxyProxyService event", ex);
-                throw;
+                paymentLogger.LogVerbose("Publishing data lock event");
+                await context.Publish(dataLockEvent);
+                paymentLogger.LogDebug("Data lock event published");
             }
+
+            paymentLogger.LogInfo($"Successfully processed DataLockProxyProxyService event for Actor Id {actorId}");
         }
     }
 }
