@@ -11,7 +11,6 @@ using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using TechTalk.SpecFlow;
@@ -79,7 +78,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 onProgrammeEarnings.Add(onProgrammeEarning);
             }
 
-            earningEvent.OnProgrammeEarnings = new ReadOnlyCollection<Payments.Model.Core.OnProgramme.OnProgrammeEarning>(onProgrammeEarnings);
+            earningEvent.OnProgrammeEarnings = onProgrammeEarnings;
             return earningEvent;
         }
 

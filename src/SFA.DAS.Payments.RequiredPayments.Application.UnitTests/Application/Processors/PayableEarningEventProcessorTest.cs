@@ -95,7 +95,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -116,8 +116,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
-                
+                }
             };
 
             var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2), DeliveryPeriod = 2}};

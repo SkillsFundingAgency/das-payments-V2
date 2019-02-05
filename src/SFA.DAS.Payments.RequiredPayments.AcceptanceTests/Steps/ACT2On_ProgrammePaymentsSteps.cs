@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1718, 10),
                 CollectionYear = AcademicYear,
                 SfaContributionPercentage = 0.90m,
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
                     {
@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                             }
                         })
                     }
-                })
+                }
             };
         }
 
