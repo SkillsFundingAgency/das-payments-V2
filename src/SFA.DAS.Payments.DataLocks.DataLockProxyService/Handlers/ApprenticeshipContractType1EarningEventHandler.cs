@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 DataLockEvent payableEarningEvents;
                 try
                 {
-                    payableEarningEvents = await actor.HandlePayment(message, CancellationToken.None).ConfigureAwait(false);
+                    payableEarningEvents = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
