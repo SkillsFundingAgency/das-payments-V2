@@ -19,6 +19,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
@@ -545,7 +546,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task MatchCalculatedPayments(Table table)
         {
             var expectedPayments = CreatePayments(table);
-            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod, expectedPayments);
+            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
             await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
@@ -573,9 +574,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     MessageId = monthEndCommand.CommandId
                 }}
             };
-            await MessageSession.Send(startedMonthEndJob).ConfigureAwait(false);
 
-            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
+            var startMonthEndJob2 = new ProcessLevyPaymentsOnMonthEndCommand
+            {
+                JobId = TestSession.JobId,
+                CollectionPeriod = new CollectionPeriod{AcademicYear = AcademicYear, Period = CollectionPeriod},
+                RequestTime = DateTime.Now,
+                SubmissionDate = TestSession.IlrSubmissionTime,
+                EmployerAccountId = TestSession.Employer.AccountId,
+            };
+
+            var tasks = new List<Task>();
+
+            tasks.Add(MessageSession.Send(startedMonthEndJob));
+            tasks.Add(MessageSession.Send(monthEndCommand));
+            tasks.Add(MessageSession.Send(startMonthEndJob2));
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
         protected async Task SendProcessLearnerCommand(FM36Learner learner)

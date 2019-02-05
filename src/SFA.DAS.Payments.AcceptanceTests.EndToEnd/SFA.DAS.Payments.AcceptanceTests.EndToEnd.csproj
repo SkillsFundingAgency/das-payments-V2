@@ -788,6 +788,10 @@
       <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>
       <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages.Internal\SFA.DAS.Payments.FundingSource.Messages.Internal.csproj">
+      <Project>{95F83345-7AD6-477C-A271-3C7F8CA0529B}</Project>
+      <Name>SFA.DAS.Payments.FundingSource.Messages.Internal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
       <Name>SFA.DAS.Payments.Messages.Core</Name>
