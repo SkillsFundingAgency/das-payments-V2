@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<IncentiveRequiredPaymentProcessor>().AsImplementedInterfaces();
             builder.RegisterType<LevyAccountRepository>().AsImplementedInterfaces();
             builder.RegisterType<LevyPaymentProcessor>().AsImplementedInterfaces();
+            builder.RegisterType<CoInvestedPaymentProcessor>().AsImplementedInterfaces();
             builder.RegisterType<LevyBalanceService>().AsImplementedInterfaces();
             
             builder.Register(c => new ContractType2RequiredPaymentEventFundingSourceService

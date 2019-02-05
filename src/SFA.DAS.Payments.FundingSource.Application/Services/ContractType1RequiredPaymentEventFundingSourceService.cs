@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
     {
         private const string KeyListKey = "keys";
 
-        private readonly ILevyPaymentProcessor processor;
+        private readonly IPaymentProcessor processor;
         private readonly IMapper mapper;
         private readonly IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache;
         private readonly IDataCache<List<string>> requiredPaymentKeys;
@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.levyBalanceService = levyBalanceService;
         }
 
-        public async Task EnrolRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
+        public async Task AddRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
         {
             var keys = await GetKeys().ConfigureAwait(false);
             var key = GenerateSortableKey(paymentEvent.EventId, paymentEvent.Priority, keys.Count);

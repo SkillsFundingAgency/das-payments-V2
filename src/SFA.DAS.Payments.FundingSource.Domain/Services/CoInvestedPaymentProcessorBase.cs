@@ -15,13 +15,13 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             validator = validateRequiredPaymentEvent;
         }
 
-        private void Validate(RequiredCoInvestedPayment message)
+        private void Validate(RequiredPayment message)
         {
             var validationResults = validator.Validate(message);
             if (validationResults.Any()) throw new FundingSourceRequiredPaymentValidationException(JsonConvert.SerializeObject(validationResults));
         }
 
-        public FundingSourcePayment Process(RequiredCoInvestedPayment message)
+        public FundingSourcePayment Process(RequiredPayment message)
         {
             Validate(message);
 

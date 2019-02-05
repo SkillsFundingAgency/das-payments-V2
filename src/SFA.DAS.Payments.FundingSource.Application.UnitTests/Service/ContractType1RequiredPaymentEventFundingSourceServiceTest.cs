@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             keyCacheMock.Setup(c => c.AddOrReplace("keys", It.Is<List<string>>(list => list.Count == 1 && list[0] == key), CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
             // act
-            await service.EnrolRequiredPayment(requiredPaymentEvent);
+            await service.AddRequiredPayment(requiredPaymentEvent);
 
             // assert
         }
@@ -107,7 +107,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             keyCacheMock.Setup(c => c.AddOrReplace("keys", It.Is<List<string>>(list => list.Count == 3 && list[2] == key), CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
             // act
-            await service.EnrolRequiredPayment(requiredPaymentEvent);
+            await service.AddRequiredPayment(requiredPaymentEvent);
 
             // assert
         }

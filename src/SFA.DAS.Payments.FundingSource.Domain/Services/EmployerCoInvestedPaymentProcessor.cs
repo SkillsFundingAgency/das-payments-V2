@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
-    public class EmployerCoInvestedPaymentProcessor : CoInvestedPaymentProcessorBase
+    public class EmployerCoInvestedPaymentProcessor : CoInvestedPaymentProcessorBase, IEmployerCoInvestedPaymentProcessor
     {
 
         public EmployerCoInvestedPaymentProcessor(IValidateRequiredPaymentEvent validateRequiredPaymentEvent)

@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
 {
     public interface IContractType1RequiredPaymentEventFundingSourceService
     {
-        Task EnrolRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent);
+        Task AddRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent);
         Task<IReadOnlyList<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId);
     }
 }

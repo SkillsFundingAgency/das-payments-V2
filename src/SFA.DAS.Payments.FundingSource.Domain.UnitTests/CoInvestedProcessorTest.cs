@@ -15,14 +15,14 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         public void TestBothProcessorsCalled()
         {
             var requiredPayment = new RequiredPayment();
-            var employerCoInvestedPaymentProcessorMock = new Mock<IPaymentProcessor>(MockBehavior.Strict);
-            var sfaCoInvestedPaymentProcessorMock = new Mock<IPaymentProcessor>(MockBehavior.Strict);
+            var employerCoInvestedPaymentProcessorMock = new Mock<IEmployerCoInvestedPaymentProcessor>(MockBehavior.Strict);
+            var sfaCoInvestedPaymentProcessorMock = new Mock<ISfaCoInvestedPaymentProcessor>(MockBehavior.Strict);
 
             var payment1 = new EmployerCoInvestedPayment();
             var payment2 = new SfaCoInvestedPayment();
 
-            employerCoInvestedPaymentProcessorMock.Setup(p => p.Process(requiredPayment)).Returns(new []{payment1}).Verifiable();
-            sfaCoInvestedPaymentProcessorMock.Setup(p => p.Process(requiredPayment)).Returns(new[] {payment2}).Verifiable();
+            employerCoInvestedPaymentProcessorMock.Setup(p => p.Process(requiredPayment)).Returns(payment1).Verifiable();
+            sfaCoInvestedPaymentProcessorMock.Setup(p => p.Process(requiredPayment)).Returns(payment2).Verifiable();
 
             ICoInvestedPaymentProcessor processor = new CoInvestedPaymentProcessor(employerCoInvestedPaymentProcessorMock.Object, sfaCoInvestedPaymentProcessorMock.Object);
             var actualPayments = processor.Process(requiredPayment);

@@ -7,10 +7,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
     public class CoInvestedPaymentProcessor : ICoInvestedPaymentProcessor
     {
-        private readonly IPaymentProcessor employerCoInvestedPaymentProcessor;
-        private readonly IPaymentProcessor sfaCoInvestedPaymentProcessor;
+        private readonly IEmployerCoInvestedPaymentProcessor employerCoInvestedPaymentProcessor;
+        private readonly ISfaCoInvestedPaymentProcessor sfaCoInvestedPaymentProcessor;
 
-        public CoInvestedPaymentProcessor(IPaymentProcessor employerCoInvestedPaymentProcessor, IPaymentProcessor sfaCoInvestedPaymentProcessor)
+        public CoInvestedPaymentProcessor(IEmployerCoInvestedPaymentProcessor employerCoInvestedPaymentProcessor, ISfaCoInvestedPaymentProcessor sfaCoInvestedPaymentProcessor)
         {
             this.employerCoInvestedPaymentProcessor = employerCoInvestedPaymentProcessor;
             this.sfaCoInvestedPaymentProcessor = sfaCoInvestedPaymentProcessor;
@@ -18,8 +18,8 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 
         public IReadOnlyList<FundingSourcePayment> Process(RequiredPayment requiredPayment)
         {
-            return employerCoInvestedPaymentProcessor.Process(requiredPayment)
-                .Concat(sfaCoInvestedPaymentProcessor.Process(requiredPayment)).ToList();
+            return new []{ employerCoInvestedPaymentProcessor.Process(requiredPayment),
+                sfaCoInvestedPaymentProcessor.Process(requiredPayment)};
         }
     }
 }
