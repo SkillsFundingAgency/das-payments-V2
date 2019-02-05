@@ -12,7 +12,6 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using SFA.DAS.Payments.Messages.Core.Events;
 using Earning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Earning;
 using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
@@ -103,10 +102,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             Periods = aimEarningSpecs.Select(e => new EarningPeriod
                             {
                                 Amount = e.Values[tt],
-                                Period = (byte) e.DeliveryCalendarPeriod,
+                                Period = e.DeliveryCalendarPeriod,
                                 PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                             }).ToList().AsReadOnly()
-                        }).ToList().AsReadOnly();
+                        }).ToList();
                         onProgEarning.JobId = testSession.JobId;
                         onProgEarning.Learner = learner;
                         onProgEarning.LearningAim = learningAim;
@@ -126,7 +125,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 Periods = aimEarningSpecs.Select(e => new EarningPeriod
                                 {
                                     Amount = e.Values[tt],
-                                    Period = (byte)e.DeliveryCalendarPeriod,
+                                    Period = e.DeliveryCalendarPeriod,
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
                             }).ToList().AsReadOnly(),
@@ -149,7 +148,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                 Period = e.DeliveryCalendarPeriod,
                                 PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                             }).ToList().AsReadOnly()
-                        }).ToList().AsReadOnly();
+                        }).ToList();
                         incentiveEarning.JobId = testSession.JobId;
                         incentiveEarning.Learner = learner;
                         incentiveEarning.LearningAim = learningAim;
@@ -210,8 +209,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 return true;
 
 
-            var expectedEventOnProgrammeEarnings = expectedEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>().AsReadOnly();
-            var actualEventOnProgrammeEarnings = actualEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>().AsReadOnly();
+            var expectedEventOnProgrammeEarnings = expectedEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
+            var actualEventOnProgrammeEarnings = actualEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
 
             foreach (var expectedEarning in expectedEventOnProgrammeEarnings)
             {
@@ -221,8 +220,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     return false;
             }
 
-            var expectedEventIncentiveEarnings = expectedEvent.IncentiveEarnings ?? new List<IncentiveEarning>().AsReadOnly();
-            var actualEventIncentiveEarnings = actualEvent.IncentiveEarnings ?? new List<IncentiveEarning>().AsReadOnly();
+            var expectedEventIncentiveEarnings = expectedEvent.IncentiveEarnings ?? new List<IncentiveEarning>();
+            var actualEventIncentiveEarnings = actualEvent.IncentiveEarnings ?? new List<IncentiveEarning>();
 
             foreach (var expectedEarning in expectedEventIncentiveEarnings)
             {

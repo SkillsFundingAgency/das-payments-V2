@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.DataLocks.DataLockService.Interfaces;
@@ -11,14 +12,16 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
     [StatePersistence(StatePersistence.Persisted)]
     public class DataLockService : Actor, IDataLockService
     {
-      
-        public DataLockService(ActorService actorService, ActorId actorId): base(actorService, actorId)
+        private readonly IMapper mapper;
+
+        public DataLockService(ActorService actorService, ActorId actorId, IMapper mapper) : base(actorService, actorId)
         {
+            this.mapper = mapper;
         }
 
-        public Task<DataLockEvent> HandlePayment(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
+        public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return mapper.Map<PayableEarningEvent>(message);
         }
     }
 }

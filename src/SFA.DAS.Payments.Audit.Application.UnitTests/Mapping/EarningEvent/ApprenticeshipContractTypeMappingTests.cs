@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                             }
                         }.AsReadOnly()
                     }
-                }.AsReadOnly(),
+                },
                 IncentiveEarnings = new List<IncentiveEarning>
                 {
                     new IncentiveEarning
@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                             }
                         }.AsReadOnly()
                     }
-                }.AsReadOnly()
+                }
             };
         }
 

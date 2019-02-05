@@ -124,7 +124,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                         })
                     }
                 })
-
             };
         }
 
@@ -151,7 +150,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 },
                 JobId = 8,
                 IlrSubmissionDateTime = DateTime.Today,
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
                     {
@@ -171,7 +170,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                             new EarningPeriod {Period = 12, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = 1},
                         })
                     }
-                })
+                }
             };
         }
     }

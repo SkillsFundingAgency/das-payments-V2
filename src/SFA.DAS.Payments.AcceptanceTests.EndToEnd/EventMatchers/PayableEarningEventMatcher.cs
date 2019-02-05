@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                     Period = e.DeliveryCalendarPeriod,
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
-                            }).ToList().AsReadOnly(),
+                            }).ToList(),
                             JobId = testSession.JobId,
                             Learner = learner,
                             LearningAim = learningAim
@@ -121,7 +121,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                     Period = e.DeliveryCalendarPeriod,
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
-                            }).ToList().AsReadOnly(),
+                            }).ToList(),
                             JobId = testSession.JobId,
                             Learner = learner,
                             LearningAim = learningAim
