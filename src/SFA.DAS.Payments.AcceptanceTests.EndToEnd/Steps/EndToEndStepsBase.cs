@@ -450,7 +450,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             string CalculateContractType(Price priceEpisode)
             {
-                return priceEpisode.ContractType == Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
+                var contractType = priceEpisode.ContractType;
+
+                if (contractType == 0)
+                    contractType = CurrentIlr[0].ContractType;
+
+                return contractType == Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
             }
 
             byte LastOnProgPeriod(PriceEpisode currentPriceEpisode)
