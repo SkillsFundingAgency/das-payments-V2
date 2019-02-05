@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
     {
         private readonly IPaymentsDataContext dataContext;
 
-        public LevyAccountRepository(PaymentsDataContext dataContext)
+        public LevyAccountRepository(IPaymentsDataContext dataContext)
         {
             this.dataContext = dataContext;
         }
