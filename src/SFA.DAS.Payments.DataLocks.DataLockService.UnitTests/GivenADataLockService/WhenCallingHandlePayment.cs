@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
 
             var testEarning = new ApprenticeshipContractType1EarningEvent();
             var actual = await (new DataLockService(actorService, new ActorId(Guid.Empty), mapper))
-                .HandlePayment(testEarning, default(CancellationToken));
+                .HandleEarning(testEarning, default(CancellationToken));
             actual.Should().BeOfType<PayableEarningEvent>();
         }
     }

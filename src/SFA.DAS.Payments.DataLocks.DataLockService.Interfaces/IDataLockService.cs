@@ -11,6 +11,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.Interfaces
 {
     public interface IDataLockService : IActor
     {
-        Task<DataLockEvent> HandlePayment(ApprenticeshipContractType1EarningEvent message,  CancellationToken cancellationToken);
+        Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message,  CancellationToken cancellationToken);
     }
 }

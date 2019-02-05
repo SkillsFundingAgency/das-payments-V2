@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             this.mapper = mapper;
         }
 
-        public async Task<DataLockEvent> HandlePayment(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
+        public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
             return mapper.Map<PayableEarningEvent>(message);
         }
