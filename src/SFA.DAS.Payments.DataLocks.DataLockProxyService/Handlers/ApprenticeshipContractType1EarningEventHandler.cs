@@ -32,10 +32,10 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             {
                 var actorId = new ActorId(message.Ukprn);
                 var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
-                DataLockEvent payableEarningEvents;
+                DataLockEvent dataLockEvent;
                 try
                 {
-                    payableEarningEvents = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
+                    dataLockEvent = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -45,8 +45,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 
                 try
                 {
-                    if (payableEarningEvents != null)
-                        await context.Publish(payableEarningEvents);
+                    if (dataLockEvent != null)
+                        await context.Publish(dataLockEvent);
                 }
                 catch (Exception ex)
                 {
