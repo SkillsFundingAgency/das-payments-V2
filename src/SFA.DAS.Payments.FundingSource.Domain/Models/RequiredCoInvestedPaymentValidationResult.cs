@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Models
     {
         public RequiredPaymentEventValidationRules Rule { get; set; }
 
-        public RequiredCoInvestedPayment RequiredCoInvestedPayment { get; set; }
+        public RequiredPayment RequiredCoInvestedPayment { get; set; }
     }
 }

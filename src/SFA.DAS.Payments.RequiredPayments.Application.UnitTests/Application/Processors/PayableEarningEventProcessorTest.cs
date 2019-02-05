@@ -8,13 +8,13 @@ using Autofac.Extras.Moq;
 using AutoMapper;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
-using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private AutoMock mocker;
         private Mapper mapper;
         private IPayableEarningEventProcessor processor;
-        private Mock<IRepositoryCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
+        private Mock<IDataCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
         private Mock<IPaymentDueProcessor> paymentDueProcessorMock;
 
         [OneTimeSetUp]
@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         {
             mocker = AutoMock.GetStrict();
             paymentDueProcessorMock = mocker.Mock<IPaymentDueProcessor>();
-            paymentHistoryCacheMock = mocker.Mock<IRepositoryCache<PaymentHistoryEntity[]>>();
+            paymentHistoryCacheMock = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
             //apprenticeshipKeyServiceMock = mocker.Mock<IApprenticeshipKeyService>();
             //paymentHistoryRepositoryMock = mocker.Mock<IPaymentHistoryRepository>();
 

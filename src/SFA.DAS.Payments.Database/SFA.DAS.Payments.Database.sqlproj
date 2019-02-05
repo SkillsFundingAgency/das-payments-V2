@@ -89,6 +89,7 @@
     <Build Include="Payments2\Tables\Payments2.JobStatus.sql" />
     <Build Include="Payments2\Tables\Payments2.JobType.sql" />
     <Build Include="Payments2\Tables\Payments2.RequiredPaymentEvent.sql" />
+    <Build Include="Payments2\Tables\LevyAccount.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />

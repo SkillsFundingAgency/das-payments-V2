@@ -46,6 +46,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             Assert.AreEqual(payableEarning.EmployerAccountId, act1RequiredPayment.EmployerAccountId);
             Assert.AreEqual(payableEarning.CommitmentId, act1RequiredPayment.CommitmentId);
             Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId);
+            Assert.AreEqual(payableEarning.Priority, act1RequiredPayment.Priority);
 
         }
 
@@ -134,6 +135,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 EmployerAccountId = 101,
                 CommitmentId = 102,
                 AgreementId = "103",
+                Priority = 104,
                 CollectionYear = 1819,
                 Learner = new Learner {ReferenceNumber = "R", Uln = 10},
                 Ukprn = 20,

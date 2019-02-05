@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -14,7 +15,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application
     {
         Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(
             TEarningEvent earningEvent,
-            IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache,
+            IDataCache<PaymentHistoryEntity[]> paymentHistoryCache,
             CancellationToken cancellationToken
         );
     }

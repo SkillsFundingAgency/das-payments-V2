@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -28,7 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.paymentDueProcessor = paymentDueProcessor;
         }
 
-        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IRepositoryCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
         {
             if (earningEvent == null)
                 throw new ArgumentNullException(nameof(earningEvent));
