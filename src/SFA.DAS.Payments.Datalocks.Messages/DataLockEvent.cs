@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -6,6 +9,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Messages
 {
+    [KnownType("GetInheritors")]
     public abstract class DataLockEvent : PaymentsEvent, IContractType1EarningEvent
     {
         public List<PriceEpisode> PriceEpisodes { get; set; }
@@ -14,5 +18,15 @@ namespace SFA.DAS.Payments.DataLocks.Messages
         public decimal SfaContributionPercentage { get; set; }
         public List<OnProgrammeEarning> OnProgrammeEarnings { get; set; }
         public List<IncentiveEarning> IncentiveEarnings { get; set; }
+
+
+        private static Type[] inheritors;
+        private static Type[] GetInheritors()
+        {
+            return inheritors ?? (inheritors = typeof(DataLockEvent).Assembly.GetTypes()
+                       .Where(x => x.IsSubclassOf(typeof(DataLockEvent)))
+                       .ToArray());
+        }
+
     }
 }
