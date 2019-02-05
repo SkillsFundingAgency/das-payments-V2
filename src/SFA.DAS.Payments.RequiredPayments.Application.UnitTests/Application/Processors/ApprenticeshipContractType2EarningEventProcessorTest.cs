@@ -100,7 +100,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new[] { new PaymentHistoryEntity
@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -170,7 +170,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];
@@ -205,7 +205,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -220,7 +220,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new []
@@ -272,7 +272,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
                     {
@@ -288,7 +288,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new List<PaymentHistoryEntity>();
@@ -323,7 +323,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -344,7 +344,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];

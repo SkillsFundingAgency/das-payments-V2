@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Payments.Audit.Application.Mapping;
 using SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
 {
@@ -41,7 +37,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                     PlannedEndDate = DateTime.Today,
                     StartDate = DateTime.Today.AddMonths(-1)
                 }
-            }.AsReadOnly();
+            };
         }
 
 
