@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
-using System.Linq;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {

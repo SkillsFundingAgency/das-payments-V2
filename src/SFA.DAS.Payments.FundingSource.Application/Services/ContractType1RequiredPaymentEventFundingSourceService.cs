@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly ILevyBalanceService levyBalanceService;
 
         public ContractType1RequiredPaymentEventFundingSourceService(
-            ILevyPaymentProcessor processor, 
+            IPaymentProcessor processor, 
             IMapper mapper, 
             IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
             IDataCache<List<string>> requiredPaymentKeys, 

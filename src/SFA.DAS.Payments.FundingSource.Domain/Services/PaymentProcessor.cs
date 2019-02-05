@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             var fundingSourcePayments = new List<FundingSourcePayment>(levyPaymentProcessor.Process(requiredPayment));
 
             var amountDue = requiredPayment.AmountDue - fundingSourcePayments.Select(p => p.AmountDue).Sum();
-            if (amountDue != 0)
+            if (amountDue != 0m)
             {
                 var partFundedRequiredPayment = new RequiredPayment
                 {

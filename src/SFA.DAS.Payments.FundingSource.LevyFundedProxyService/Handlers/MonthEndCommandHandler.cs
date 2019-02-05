@@ -6,7 +6,7 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
-using SFA.DAS.Payments.FundingSource.Messages.Commands;
+using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 {
