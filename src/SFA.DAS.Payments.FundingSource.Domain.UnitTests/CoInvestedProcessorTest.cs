@@ -12,11 +12,11 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
     {
         
         [Test]
-        public void Test()
+        public void TestBothProcessorsCalled()
         {
             var requiredPayment = new RequiredPayment();
-            var employerCoInvestedPaymentProcessorMock = new Mock<IPaymentProcessor>();
-            var sfaCoInvestedPaymentProcessorMock = new Mock<IPaymentProcessor>();
+            var employerCoInvestedPaymentProcessorMock = new Mock<IPaymentProcessor>(MockBehavior.Strict);
+            var sfaCoInvestedPaymentProcessorMock = new Mock<IPaymentProcessor>(MockBehavior.Strict);
 
             var payment1 = new EmployerCoInvestedPayment();
             var payment2 = new SfaCoInvestedPayment();

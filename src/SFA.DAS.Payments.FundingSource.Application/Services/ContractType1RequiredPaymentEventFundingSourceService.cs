@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.levyBalanceService = levyBalanceService;
         }
 
-        public async Task RegisterRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
+        public async Task EnrolRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
         {
             var keys = await GetKeys().ConfigureAwait(false);
             var key = GenerateSortableKey(paymentEvent.EventId, paymentEvent.Priority, keys.Count);

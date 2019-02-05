@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
             using (var operation = telemetry.StartOperation())
             {
-                await fundingSourceService.RegisterRequiredPayment(message).ConfigureAwait(false);
+                await fundingSourceService.EnrolRequiredPayment(message).ConfigureAwait(false);
                 telemetry.StopOperation(operation);
             }
         }
