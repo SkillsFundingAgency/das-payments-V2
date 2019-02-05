@@ -6,5 +6,6 @@
         public static string EarningEvents = "sfa-das-payments-earningevents";
         public static string RequiredPayments = "sfa-das-payments-requiredpayments";
         public static string JobMonitoring = "sfa-das-payments-monitoring-jobs";
+        public static string FundingSource = "sfa-das-payments-fundingsource-levy";
     }
 }
