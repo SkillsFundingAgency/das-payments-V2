@@ -555,14 +555,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var monthEndJobId = TestSession.GenerateId();
             Console.WriteLine($"Month end job id: {monthEndJobId}");
             TestSession.SetJobId(monthEndJobId);
-            var monthEndCommand = new ProcessProviderMonthEndCommand
+            var processProviderPaymentsAtMonthEndCommand = new ProcessProviderMonthEndCommand
             {
                 CollectionPeriod = CurrentCollectionPeriod,
                 Ukprn = TestSession.Ukprn,
                 JobId = monthEndJobId
             };
             //TODO: remove when DC have implemented the Month End Task
-            var startedMonthEndJob = new RecordStartedProcessingMonthEndJob
+            var dcStartedMonthEndJobCommand = new RecordStartedProcessingMonthEndJob
             {
                 JobId = monthEndJobId,
                 CollectionPeriod = CollectionPeriod,
@@ -570,12 +570,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
                 {
                     StartTime = DateTimeOffset.UtcNow,
-                    MessageName = monthEndCommand.GetType().FullName,
-                    MessageId = monthEndCommand.CommandId
+                    MessageName = processProviderPaymentsAtMonthEndCommand.GetType().FullName,
+                    MessageId = processProviderPaymentsAtMonthEndCommand.CommandId
                 }}
             };
 
-            var startMonthEndJob2 = new ProcessLevyPaymentsOnMonthEndCommand
+            var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
             {
                 JobId = TestSession.JobId,
                 CollectionPeriod = new CollectionPeriod{AcademicYear = AcademicYear, Period = CollectionPeriod},
@@ -586,9 +586,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var tasks = new List<Task>();
 
-            tasks.Add(MessageSession.Send(startedMonthEndJob));
-            tasks.Add(MessageSession.Send(monthEndCommand));
-            tasks.Add(MessageSession.Send(startMonthEndJob2));
+            tasks.Add(MessageSession.Send(dcStartedMonthEndJobCommand));
+            tasks.Add(MessageSession.Send(processProviderPaymentsAtMonthEndCommand));
+            tasks.Add(MessageSession.Send(processLevyFundsAtMonthEndCommand));
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
