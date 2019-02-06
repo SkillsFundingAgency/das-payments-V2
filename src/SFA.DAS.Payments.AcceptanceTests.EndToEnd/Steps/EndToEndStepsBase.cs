@@ -176,16 +176,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected void AddTestCommitments(IEnumerable<Commitment> commitments)
+        protected async Task AddTestCommitments(List<Commitment> commitments)
         {
+            commitments.ForEach(x => x.AccountId = TestSession.GetEmployer(x.Employer).AccountId);
             Commitments.Clear();
             Commitments.AddRange(commitments);
+            await SaveTestCommitments();
         }
 
         protected async Task SaveTestCommitments()
         {
             DataContext.Commitment.AddRange(Mapper.ToModel(Commitments));
-            await DataContext.SaveChangesAsync();
+            await DataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         protected async Task SaveLevyAccount(Employer employer)

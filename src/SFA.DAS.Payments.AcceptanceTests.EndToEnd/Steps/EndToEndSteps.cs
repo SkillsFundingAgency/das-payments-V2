@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -123,12 +122,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following commitments exist")]
-        public void GivenTheFollowingCommitmentsExist(Table table)
+        public async Task GivenTheFollowingCommitmentsExist(Table table)
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
-                var commitments = table.CreateSet<Commitment>();
-                AddTestCommitments(commitments);
+                var commitments = table.CreateSet<Commitment>().ToList();
+                await AddTestCommitments(commitments);
             }
         }
 
