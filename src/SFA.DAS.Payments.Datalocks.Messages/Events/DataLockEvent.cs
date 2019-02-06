@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
-namespace SFA.DAS.Payments.DataLocks.Messages
+namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {
     [KnownType("GetInheritors")]
     public abstract class DataLockEvent : PaymentsEvent, IContractType1EarningEvent
@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.DataLocks.Messages
         public short CollectionYear { get; set; }
         public string AgreementId { get; set; }
         public decimal SfaContributionPercentage { get; set; }
-        public List<OnProgrammeEarning> OnProgrammeEarnings { get; set; }
+        public List<OnProgrammeEarning> OnProgrammeEarnings { get; set; } 
         public List<IncentiveEarning> IncentiveEarnings { get; set; }
 
 

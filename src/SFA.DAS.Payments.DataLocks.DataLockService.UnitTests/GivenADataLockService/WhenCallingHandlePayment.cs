@@ -7,7 +7,7 @@ using Microsoft.ServiceFabric.Actors;
 using NUnit.Framework;
 using ServiceFabric.Mocks;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
-using SFA.DAS.Payments.DataLocks.Messages;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockService

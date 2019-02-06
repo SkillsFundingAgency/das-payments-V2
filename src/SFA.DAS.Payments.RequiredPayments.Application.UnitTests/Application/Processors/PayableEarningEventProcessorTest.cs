@@ -9,7 +9,7 @@ using AutoMapper;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.DataLocks.Messages;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
