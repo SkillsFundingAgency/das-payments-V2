@@ -40,12 +40,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             NewFeature = false;
         }
 
-        [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
-        public async Task GivenTheEmployerLevyAccountBalanceInCollectionPeriodRCurrentAcademicYearIs(string collectionPeriod, decimal levyAmount)
+        [Given(@"the ""(.*)"" levy account balance in collection period (.*) is (.*)")]
+        public async Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(
+            string employerIdentifier,
+            string collectionPeriod, 
+            decimal levyAmount)
         {
             SetCollectionPeriod(collectionPeriod);
-            TestSession.Employer.Balance = levyAmount;
-            await SaveLevyAccount(TestSession.Employer);
+            var employer = TestSession.GetEmployer(employerIdentifier);
+            employer.Balance = levyAmount;
+            await SaveLevyAccount(employer);
+        }
+
+        [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
+        public Task GivenTheEmployerLevyAccountBalanceInCollectionPeriodRCurrentAcademicYearIs(string collectionPeriod, decimal levyAmount)
+        {
+            return GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(
+                TestSession.Employer.Identifier,
+                collectionPeriod, 
+                levyAmount);
         }
 
         [Given(@"the provider is providing training for the following learners")]

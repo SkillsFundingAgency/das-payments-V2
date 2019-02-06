@@ -25,7 +25,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Employer GetEmployer(string identifier)
         {
-            return Employers.SingleOrDefault(x => x.Identifier == identifier);
+            var employer = Employers.SingleOrDefault(x => x.Identifier == identifier);
+            if (employer == null)
+            {
+                employer = GenerateEmployer().Generate(1).First();
+                employer.Identifier = identifier;
+                Employers.Add(employer);
+            }
+
+            return employer;
         }
 
         public TestSession(long? ukprn = null)
