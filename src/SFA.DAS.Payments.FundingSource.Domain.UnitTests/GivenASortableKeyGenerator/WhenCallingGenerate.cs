@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
     [TestFixture]
     public class WhenCallingGenerate
     {
-        protected IGenerateSortableKeys sut;
+        protected static IGenerateSortableKeys sut;
 
         [SetUp]
         public void Setup()
@@ -47,8 +47,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         }
 
         [TestFixture]
-        public class AndAllEventsArePayments : WhenCallingGenerate
+        public class AndAllEventsArePayments 
         {
+            [Test]
             public void ThenTheResultsShouldSortByPriority()
             {
                 var highPriorityEvent = new ApprenticeshipContractType1RequiredPaymentEvent
@@ -78,8 +79,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
             }
         }
 
-        public class AndAllEventsAreRefunds : WhenCallingGenerate
+        [TestFixture]
+        public class AndAllEventsAreRefunds 
         {
+            [Test]
             public void ThenTheResultsShouldSortByPriority()
             {
                 var highPriorityEvent = new ApprenticeshipContractType1RequiredPaymentEvent
