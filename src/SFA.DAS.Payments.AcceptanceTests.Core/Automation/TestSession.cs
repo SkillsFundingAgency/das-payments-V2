@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Bogus;
-using NUnit.Framework.Constraints;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
@@ -23,7 +22,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
         private static readonly ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
-       
+
+        public Employer GetEmployer(string identifier)
+        {
+            return Employers.SingleOrDefault(x => x.Identifier == identifier);
+        }
+
         public TestSession(long? ukprn = null)
         {
             courseFaker = new Faker<Course>();
@@ -118,10 +122,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 .RuleFor(employer => employer.Balance, faker => faker.Random.Decimal())
                 .RuleFor(employer => employer.SequenceId, faker => faker.Random.Long(1, long.MaxValue))
                 .RuleFor(employer => employer.IsLevyPayer, true)
-                .RuleFor(employer => employer.TransferAllowance, 0.0m);
+                .RuleFor(employer => employer.TransferAllowance, 0.0m)
+                .RuleFor(employer => employer.Identifier, faker => faker.Random.String(10))
+                ;
 
             return fakeEmployer;
         }
-
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
@@ -575,21 +574,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }}
             };
 
-            var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
-            {
-                JobId = TestSession.JobId,
-                CollectionPeriod = new CollectionPeriod{AcademicYear = AcademicYear, Period = CollectionPeriod},
-                RequestTime = DateTime.Now,
-                SubmissionDate = TestSession.IlrSubmissionTime,
-                EmployerAccountId = TestSession.Employer.AccountId,
-            };
-
             var tasks = new List<Task>();
+
+            foreach (var employer in TestSession.Employers)
+            {
+                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
+                {
+                    JobId = TestSession.JobId,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
+                    RequestTime = DateTime.Now,
+                    SubmissionDate = TestSession.IlrSubmissionTime,
+                    EmployerAccountId = employer.AccountId,
+                };
+
+                tasks.Add(MessageSession.Send(processLevyFundsAtMonthEndCommand));
+            }
 
             tasks.Add(MessageSession.Send(dcStartedMonthEndJobCommand));
             tasks.Add(MessageSession.Send(processProviderPaymentsAtMonthEndCommand));
-            tasks.Add(MessageSession.Send(processLevyFundsAtMonthEndCommand));
-
+            
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
