@@ -115,13 +115,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             training.ForEach(ilrLearner =>
             {
-                var learner = TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == ilrLearner.LearnerId);
-                if (learner == null)
-                {
-                    learner = TestSession.GenerateLearner();
-                    learner.LearnerIdentifier = ilrLearner.LearnerId;
-                    TestSession.Learners.Add(learner);
-                }
+                var learner = TestSession.GetLearner(ilrLearner.LearnerId);
                 learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
@@ -178,7 +172,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task AddTestCommitments(List<Commitment> commitments)
         {
-            commitments.ForEach(x => x.AccountId = TestSession.GetEmployer(x.Employer).AccountId);
+            commitments.ForEach(x =>
+            {
+                x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
+                x.Uln = TestSession.GetLearner(x.LearnerId).Uln;
+            });
             Commitments.Clear();
             Commitments.AddRange(commitments);
             await SaveTestCommitments();
