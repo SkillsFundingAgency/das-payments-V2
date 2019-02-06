@@ -24,6 +24,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILevyAccountRepository levyAccountRepository;
         private readonly ILevyBalanceService levyBalanceService;
+        private readonly IGenerateSortableKeys sortableKeys;
 
         public ContractType1RequiredPaymentEventFundingSourceService(
             IPaymentProcessor processor, 
@@ -31,7 +32,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
             IDataCache<List<string>> requiredPaymentKeys, 
             ILevyAccountRepository levyAccountRepository, 
-            ILevyBalanceService levyBalanceService)
+            ILevyBalanceService levyBalanceService, 
+            IGenerateSortableKeys sortableKeys)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -39,12 +41,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.requiredPaymentKeys = requiredPaymentKeys ?? throw new ArgumentNullException(nameof(requiredPaymentKeys));
             this.levyAccountRepository = levyAccountRepository ?? throw new ArgumentNullException(nameof(levyAccountRepository));
             this.levyBalanceService = levyBalanceService;
+            this.sortableKeys = sortableKeys;
         }
 
         public async Task AddRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
         {
             var keys = await GetKeys().ConfigureAwait(false);
-            var key = GenerateSortableKey(paymentEvent.EventId, paymentEvent.Priority, keys.Count);
+            var key = sortableKeys.Generate(paymentEvent);
             keys.Add(key);
             await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
@@ -84,11 +87,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var keysValue = await requiredPaymentKeys.TryGet(KeyListKey).ConfigureAwait(false);
             var keys = keysValue.HasValue ? keysValue.Value : new List<string>();
             return keys;
-        }
-
-        private string GenerateSortableKey(Guid eventId, int priority, int order)
-        {
-            return string.Concat(priority.ToString("000000"), "-", order.ToString("000000"), "-", eventId.ToString());
         }
     }
 }
