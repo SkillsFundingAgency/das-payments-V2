@@ -65,13 +65,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                 requiredPayment.AmountDue = amountDue;
                 requiredPayment.DeliveryPeriod = periodAndType.period.Period;
-                requiredPayment.Learner = earningEvent.Learner.Clone();
-                requiredPayment.Ukprn = earningEvent.Ukprn;
-                requiredPayment.CollectionPeriod = earningEvent.CollectionPeriod;
-                requiredPayment.LearningAim = earningEvent.LearningAim.Clone();
                 requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
-                requiredPayment.JobId = earningEvent.JobId;
-                requiredPayment.IlrSubmissionDateTime = earningEvent.IlrSubmissionDateTime;
 
                 mapper.Map(earningEvent, requiredPayment);
 

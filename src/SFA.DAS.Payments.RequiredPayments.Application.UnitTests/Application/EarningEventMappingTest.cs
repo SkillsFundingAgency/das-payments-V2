@@ -33,7 +33,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             // arrange
             var payableEarning = CreatePayableEarning();
-            RequiredPaymentEvent requiredPayment = new ApprenticeshipContractType1RequiredPaymentEvent();
+            RequiredPaymentEvent requiredPayment = new ApprenticeshipContractType1RequiredPaymentEvent
+            {
+                SfaContributionPercentage = .9m,
+                OnProgrammeEarningType = OnProgrammeEarningType.Completion
+            };
 
             // act
             mapper.Map(payableEarning, requiredPayment);
@@ -47,7 +51,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             Assert.AreEqual(payableEarning.CommitmentId, act1RequiredPayment.CommitmentId);
             Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId);
             Assert.AreEqual(payableEarning.Priority, act1RequiredPayment.Priority);
-
+            Assert.AreEqual(.9m, act1RequiredPayment.SfaContributionPercentage);
+            Assert.AreEqual(OnProgrammeEarningType.Completion, act1RequiredPayment.OnProgrammeEarningType);
         }
 
         [Test]
@@ -139,6 +144,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 Learner = new Learner {ReferenceNumber = "R", Uln = 10},
                 Ukprn = 20,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 7),
+                SfaContributionPercentage = .5m,
                 LearningAim = new LearningAim
                 {
                     FundingLineType = "flt",
