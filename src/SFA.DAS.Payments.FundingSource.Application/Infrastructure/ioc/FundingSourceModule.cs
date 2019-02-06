@@ -28,16 +28,16 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<EmployerCoInvestedPaymentProcessor>().AsImplementedInterfaces();
             builder.RegisterType<SfaCoInvestedPaymentProcessor>().AsImplementedInterfaces();
             builder.RegisterType<LevyBalanceService>().AsImplementedInterfaces();
-            
+
             builder.Register(c => new ContractType2RequiredPaymentEventFundingSourceService
-                (
-                  new List<ICoInvestedPaymentProcessorOld>()
-                  {
+            (
+                new List<ICoInvestedPaymentProcessorOld>()
+                {
                     new SfaCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>()),
                     new EmployerCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>())
-                  },
-                  c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
-                )).As<IContractType2RequiredPaymentEventFundingSourceService>();
+                },
+                c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
+            )).As<IContractType2RequiredPaymentEventFundingSourceService>();
 
             builder.Register(c =>
             {
@@ -46,8 +46,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 (
                     c.Resolve<IPaymentProcessor>(),
                     c.Resolve<IMapper>(),
-                    new ReliableCollectionCache<ApprenticeshipContractType1RequiredPaymentEvent>(stateManagerProvider.Current),
-                    new ReliableCollectionCache<List<string>>(stateManagerProvider.Current),
+                    new ReliableCollectionCache<ApprenticeshipContractType1RequiredPaymentEvent>(stateManagerProvider),
+                    new ReliableCollectionCache<List<string>>(stateManagerProvider),
                     c.Resolve<ILevyAccountRepository>(),
                     c.Resolve<ILevyBalanceService>()
                 );
