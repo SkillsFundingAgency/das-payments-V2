@@ -579,7 +579,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             // give funding source a chance to send out events to provider payments
             // TODO: to be removed when provider payments can act as a pass-through
-            await Task.Delay(TimeSpan.FromSeconds(3));
+            await Task.Delay(TimeSpan.FromSeconds(6));
 
 
             var processProviderPaymentsAtMonthEndCommand = new ProcessProviderMonthEndCommand
