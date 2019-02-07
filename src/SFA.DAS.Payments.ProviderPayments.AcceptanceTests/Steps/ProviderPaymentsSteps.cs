@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         public void GivenALearnerIsUndertakingATrainingWithATrainingProvider()
         {
             TestSession.Learners.Clear();
-            TestSession.Learners.Add(TestSession.GenerateLearner());
+            TestSession.Learners.Add(TestSession.GenerateLearner(TestSession.Ukprn));
         }
 
         [Given(@"the payments are for the current collection year")]

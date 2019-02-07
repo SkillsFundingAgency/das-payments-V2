@@ -14,9 +14,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
         public List<Provider> Providers { get; }
-        public Provider Provider { get; private set; }
-        public long Ukprn { get; private set; }
-        public long JobId { get; private set; }
+        public Provider Provider => Providers.FirstOrDefault();
+        public long Ukprn  => Provider?.Ukprn ?? 0;
+        public long JobId  => Provider?.JobId??0;
         public DateTime IlrSubmissionTime { get;  set; }
         public bool AtLeastOneScenarioCompleted { get; private set; }
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
@@ -40,12 +40,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
-           
-            Provider = GenerateProvider();
-            Ukprn = Provider.Ukprn;
-            JobId = Provider.JobId;
+
+            Providers = new List<Provider> { GenerateProvider() };
             IlrSubmissionTime = Provider.IlrSubmissionTime;
-            Providers = new List<Provider> { Provider };
+
 
             Learners = new List<Learner> { GenerateLearner(Provider.Ukprn) };
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
@@ -53,7 +51,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public void SetJobId(long newJobId)
         {
-            Providers.First().JobId = newJobId;
+            Provider.JobId = newJobId;
         }
 
         public long GenerateId(int maxValue = 1000000)
@@ -65,7 +63,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public void RegenerateUkprn()
         {
-            Providers.First().Ukprn = GenerateId();
+            Provider.Ukprn = GenerateId();
         }
 
         public Provider GenerateProvider()

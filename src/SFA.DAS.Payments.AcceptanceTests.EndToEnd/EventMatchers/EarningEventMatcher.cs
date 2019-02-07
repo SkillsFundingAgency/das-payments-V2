@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<EarningEvent> GetActualEvents()
         {
             return EarningEventHandler.ReceivedEvents
-                       .Where(e => e.JobId == testSession.JobId
+                       .Where(e => e.JobId == provider.JobId
                                    && e.CollectionPeriod.Period == collectionPeriod.Period
                                    && e.CollectionYear == collectionPeriod.AcademicYear
                                    && e.Ukprn == provider.Ukprn)
@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<EarningEvent> GetExpectedEvents()
         {
             var result = new List<EarningEvent>();
-            var learnerIds = earningSpecs.Select(e => e.LearnerId).Distinct().ToList();
+            var learnerIds = earningSpecs.Where(e => e.Ukprn == provider.Ukprn)?.Select(e => e.LearnerId).Distinct().ToList();
 
             foreach (var learnerId in learnerIds)
             {
