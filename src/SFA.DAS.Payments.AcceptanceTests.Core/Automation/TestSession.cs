@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn { get; private set; }
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
-        public Employer Employer => Employers.Single();
+        public Employer Employer => Employers.First();
         public long JobId { get; private set; }
         public DateTime IlrSubmissionTime { get; set; }
         public bool MonthEndCommandSent { get; set; }
