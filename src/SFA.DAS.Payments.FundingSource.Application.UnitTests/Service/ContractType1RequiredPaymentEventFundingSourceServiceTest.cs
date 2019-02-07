@@ -151,7 +151,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
             // act
-            var fundingSourcePayments = await service.GetFundedPayments(666);
+            var fundingSourcePayments = await service.GetFundedPayments(666, 1);
 
             // assert
             fundingSourcePayments.Should().HaveCount(3);
@@ -210,7 +210,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
             // act
-            await service.GetFundedPayments(666);
+            await service.GetFundedPayments(666, 1);
 
             // assert
             Assert.AreEqual(0, expectedKeys.Count);
