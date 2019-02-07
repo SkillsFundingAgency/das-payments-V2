@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
@@ -116,13 +115,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             training.ForEach(ilrLearner =>
             {
-                var learner = TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == ilrLearner.LearnerId);
-                if (learner == null)
-                {
-                    learner = TestSession.GenerateLearner();
-                    learner.LearnerIdentifier = ilrLearner.LearnerId;
-                    TestSession.Learners.Add(learner);
-                }
+                var learner = TestSession.GetLearner(ilrLearner.LearnerId);
                 learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
@@ -177,16 +170,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected void AddTestCommitments(IEnumerable<Commitment> commitments)
+        protected async Task AddTestCommitments(List<Commitment> commitments)
         {
+            commitments.ForEach(x =>
+            {
+                x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
+                x.Uln = TestSession.GetLearner(x.LearnerId).Uln;
+            });
             Commitments.Clear();
             Commitments.AddRange(commitments);
+            await SaveTestCommitments();
         }
 
         protected async Task SaveTestCommitments()
         {
             DataContext.Commitment.AddRange(Mapper.ToModel(Commitments));
-            await DataContext.SaveChangesAsync();
+            await DataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         protected async Task SaveLevyAccount(Employer employer)
@@ -560,14 +559,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var monthEndJobId = TestSession.GenerateId();
             Console.WriteLine($"Month end job id: {monthEndJobId}");
             TestSession.SetJobId(monthEndJobId);
-            var monthEndCommand = new ProcessProviderMonthEndCommand
+            var processProviderPaymentsAtMonthEndCommand = new ProcessProviderMonthEndCommand
             {
                 CollectionPeriod = CurrentCollectionPeriod,
                 Ukprn = TestSession.Ukprn,
                 JobId = monthEndJobId
             };
             //TODO: remove when DC have implemented the Month End Task
-            var startedMonthEndJob = new RecordStartedProcessingMonthEndJob
+            var dcStartedMonthEndJobCommand = new RecordStartedProcessingMonthEndJob
             {
                 JobId = monthEndJobId,
                 CollectionPeriod = CollectionPeriod,
@@ -575,26 +574,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
                 {
                     StartTime = DateTimeOffset.UtcNow,
-                    MessageName = monthEndCommand.GetType().FullName,
-                    MessageId = monthEndCommand.CommandId
+                    MessageName = processProviderPaymentsAtMonthEndCommand.GetType().FullName,
+                    MessageId = processProviderPaymentsAtMonthEndCommand.CommandId
                 }}
-            };
-
-            var startMonthEndJob2 = new ProcessLevyPaymentsOnMonthEndCommand
-            {
-                JobId = TestSession.JobId,
-                CollectionPeriod = new CollectionPeriod{AcademicYear = AcademicYear, Period = CollectionPeriod},
-                RequestTime = DateTime.Now,
-                SubmissionDate = TestSession.IlrSubmissionTime,
-                EmployerAccountId = TestSession.Employer.AccountId,
             };
 
             var tasks = new List<Task>();
 
-            tasks.Add(MessageSession.Send(startedMonthEndJob));
-            tasks.Add(MessageSession.Send(monthEndCommand));
-            tasks.Add(MessageSession.Send(startMonthEndJob2));
+            foreach (var employer in TestSession.Employers)
+            {
+                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
+                {
+                    JobId = TestSession.JobId,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
+                    RequestTime = DateTime.Now,
+                    SubmissionDate = TestSession.IlrSubmissionTime,
+                    EmployerAccountId = employer.AccountId,
+                };
 
+                tasks.Add(MessageSession.Send(processLevyFundsAtMonthEndCommand));
+            }
+
+            tasks.Add(MessageSession.Send(dcStartedMonthEndJobCommand));
+            tasks.Add(MessageSession.Send(processProviderPaymentsAtMonthEndCommand));
+            
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
+﻿namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
     public class Employer
     {
+        public string Identifier { get; set; }
         public long AccountId { get; set; }
         public string AccountHashId { get; set; }
         public string AccountName { get; set; }
