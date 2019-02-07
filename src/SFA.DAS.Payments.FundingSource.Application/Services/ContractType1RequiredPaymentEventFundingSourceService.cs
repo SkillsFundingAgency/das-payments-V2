@@ -70,8 +70,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                     AmountDue = requiredPaymentEvent.Value.AmountDue
                 };
 
-                var fundingSourcePayments = processor.Process(requiredPayment).Select(p => mapper.Map<FundingSourcePaymentEvent>(p));
-                fundingSourceEvents.AddRange(fundingSourcePayments);
+                var fundingSourcePayments = processor.Process(requiredPayment);
+                foreach (var fundingSourcePayment in fundingSourcePayments)
+                {
+                    var fundingSourceEvent = mapper.Map<FundingSourcePaymentEvent>(fundingSourcePayment);
+                    mapper.Map(requiredPaymentEvent.Value, fundingSourceEvent);
+                    fundingSourceEvents.Add(fundingSourceEvent);
+                }
 
                 await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
             }
