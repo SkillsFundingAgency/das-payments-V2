@@ -47,7 +47,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             string collectionPeriod, 
             decimal levyAmount)
         {
-            SetCollectionPeriod(collectionPeriod);
             var employer = TestSession.GetEmployer(employerIdentifier);
             employer.Balance = levyAmount;
             await SaveLevyAccount(employer);
