@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Provider Provider { get; private set; }
         public long Ukprn { get; private set; }
         public long JobId { get; private set; }
-        public DateTime IlrSubmissionTime { get; private set; }
+        public DateTime IlrSubmissionTime { get;  set; }
         public bool AtLeastOneScenarioCompleted { get; private set; }
         //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
         private readonly Random random;
@@ -49,7 +49,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             Learners = new List<Learner> { GenerateLearner(Provider.Ukprn) };
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
-
         }
 
         public void SetJobId(long newJobId)
@@ -77,6 +76,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 JobId = GenerateId(),
                 IlrSubmissionTime = DateTime.UtcNow
             };
+        }
+
+        public Provider GetProviderByIdentifier(string identifier)
+        {
+            return Providers.Single(p => p.Identifier == identifier);
         }
 
         public string GenerateLearnerReference(string learnerId)
