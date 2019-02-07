@@ -364,6 +364,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy learner - learning support OPP and completion payments - PV2-429.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-Levy learner continuing 12 months earnings PV2-615.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy learner continuing 12 months earnings PV2-615.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature.cs">
       <DependentUpon>One Non-Levy Learner finishes on time completion payment made PV2-334.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -625,6 +630,10 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\Non-Levy learner continuing 12 months earnings PV2-615.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy learner continuing 12 months earnings PV2-615.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
