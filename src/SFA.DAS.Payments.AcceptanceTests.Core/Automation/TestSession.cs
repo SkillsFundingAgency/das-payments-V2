@@ -27,6 +27,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Employer GetEmployer(string identifier)
         {
+            if (identifier == null) return Employer;
+
             var employer = Employers.SingleOrDefault(x => x.Identifier == identifier);
             if (employer == null)
             {
@@ -135,7 +137,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             fakeEmployer
                 // TODO: uncomment this when DataLock populates EmployerAccountId on PayableEarningEvent
-                //.RuleFor(employer => employer.AccountId, faker => faker.Random.Long(1,long.MaxValue))
+                .RuleFor(employer => employer.AccountId, faker => faker.Random.Long(1, long.MaxValue))
                 .RuleFor(employer => employer.AccountHashId, faker => faker.Random.Long(1, long.MaxValue).ToString())
                 .RuleFor(employer => employer.AccountName, faker => faker.Company.CompanyName())
                 .RuleFor(employer => employer.Balance, faker => faker.Random.Decimal())
