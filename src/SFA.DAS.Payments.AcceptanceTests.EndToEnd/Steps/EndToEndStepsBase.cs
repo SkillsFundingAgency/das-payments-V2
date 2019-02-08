@@ -220,6 +220,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (providerPayment.SfaCoFundedPayments > 0)
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa));
 
+            if (providerPayment.LevyPayments > 0)
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.Levy));
+
             return list;
         }
 
@@ -643,8 +646,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             yield return TransactionType.BalancingMathsAndEnglish.ToAttributeName();
             yield return TransactionType.Balancing16To18FrameworkUplift.ToAttributeName();
             yield return TransactionType.Completion16To18FrameworkUplift.ToAttributeName();
-            yield return "PriceEpisodeCompletionPayment";
-            yield return "PriceEpisodeBalancePayment";
+            yield return TransactionType.Completion.ToAttributeName();
+            yield return TransactionType.Balancing.ToAttributeName();
 
         }
     }
