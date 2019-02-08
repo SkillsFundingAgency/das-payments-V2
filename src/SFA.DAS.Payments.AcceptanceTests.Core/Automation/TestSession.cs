@@ -22,8 +22,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long JobId  => Provider?.JobId??0;
         public DateTime IlrSubmissionTime { get;  set; }
         public Employer Employer => Employers.Single();
-    
-
         public bool AtLeastOneScenarioCompleted { get; private set; }
         public List<Employer> Employers { get; }
         private readonly Random random;
