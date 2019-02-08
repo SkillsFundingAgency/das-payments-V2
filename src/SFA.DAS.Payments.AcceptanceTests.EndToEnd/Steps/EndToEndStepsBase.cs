@@ -221,7 +221,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa));
 
             if (providerPayment.LevyPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.Levy));
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.LevyPayments, FundingSourceType.Levy));
 
             return list;
         }
