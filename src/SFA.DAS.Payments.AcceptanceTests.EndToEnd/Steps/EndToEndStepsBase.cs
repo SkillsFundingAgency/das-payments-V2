@@ -643,6 +643,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             yield return TransactionType.BalancingMathsAndEnglish.ToAttributeName();
             yield return TransactionType.Balancing16To18FrameworkUplift.ToAttributeName();
             yield return TransactionType.Completion16To18FrameworkUplift.ToAttributeName();
+            yield return "PriceEpisodeCompletionPayment";
+            yield return "PriceEpisodeBalancePayment";
+
         }
     }
 }
