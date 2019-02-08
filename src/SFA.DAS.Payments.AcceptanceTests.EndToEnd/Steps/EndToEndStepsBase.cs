@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
@@ -11,6 +12,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
@@ -40,6 +42,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
         protected IPaymentsDataContext DataContext => Scope.Resolve<IPaymentsDataContext>();
+
+        protected IMapper Mapper => Scope.Resolve<IMapper>();
 
         protected DcHelper DcHelper => Get<DcHelper>();
 
@@ -174,24 +178,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddTestCommitments(IEnumerable<Commitment> commitments)
         {
-            foreach (var commitment in commitments)
-            {
-                var existingCommitment = Commitments.FirstOrDefault(x => x.Identifier == commitment.Identifier);
-                if (existingCommitment == null)
-                {
-                    Commitments.Add(commitment);
-                }
-                else
-                {
-                    existingCommitment.StartDate = commitment.StartDate;
-                    existingCommitment.AgreedCost = commitment.AgreedCost;
-                }
-            }
+            Commitments.Clear();
+            Commitments.AddRange(commitments);
         }
 
         protected async Task SaveTestCommitments()
         {
-            DataContext.Commitment.AddRange(Commitments.ToModel());
+            DataContext.Commitment.AddRange(Mapper.ToModel(Commitments));
+            await DataContext.SaveChangesAsync();
+        }
+
+        protected async Task SaveLevyAccount(Employer employer)
+        {
+            var existingEmployer = await DataContext.LevyAccount.FirstOrDefaultAsync(o => o.AccountId == employer.AccountId);
+
+            if (existingEmployer == null)
+            {
+                DataContext.LevyAccount.Add(employer.ToModel());
+            }
+            else
+            {
+                existingEmployer.Balance = employer.Balance;
+                existingEmployer.IsLevyPayer = employer.IsLevyPayer;
+                existingEmployer.TransferAllowance = employer.TransferAllowance;
+                DataContext.LevyAccount.Update(existingEmployer);
+            }
+
             await DataContext.SaveChangesAsync();
         }
 

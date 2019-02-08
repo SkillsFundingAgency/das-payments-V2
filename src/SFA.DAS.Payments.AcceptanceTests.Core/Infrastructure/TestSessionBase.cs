@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         protected TestSessionBase(SpecFlowContext context) : base(context)
         {
         }
+
         protected static void SetUpTestSession(SpecFlowContext context)
         {
             var scope = Container.BeginLifetimeScope(builder => builder.RegisterInstance<IMessageSession>(MessageSession));

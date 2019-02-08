@@ -4,6 +4,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Bogus;
+using NUnit.Framework.Constraints;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -14,15 +17,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
         public List<Provider> Providers { get; }
-        public Provider Provider => Providers.FirstOrDefault();
+        public Provider Provider => Providers.Single();
         public long Ukprn  => Provider?.Ukprn ?? 0;
         public long JobId  => Provider?.JobId??0;
         public DateTime IlrSubmissionTime { get;  set; }
+        public Employer Employer => Employers.Single();
+    
+
         public bool AtLeastOneScenarioCompleted { get; private set; }
-        //private static ConcurrentDictionary<string, ConcurrentBag<TestSession>> Sessions { get;  } = new ConcurrentDictionary<string, ConcurrentBag<TestSession>>();  //TODO: will need to be refactored at some point
+        public List<Employer> Employers { get; }
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
         private static readonly ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
+       
         public TestSession(long? ukprn = null)
         {
             courseFaker = new Faker<Course>();
@@ -47,6 +54,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             Learners = new List<Learner> { GenerateLearner(Provider.Ukprn) };
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
+           
+            Employers = new List<Employer>(GenerateEmployer().Generate(1));
         }
 
         public void SetJobId(long newJobId)
@@ -121,5 +130,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             AtLeastOneScenarioCompleted = true;
         }
+
+        private Faker<Employer> GenerateEmployer()
+        {
+            var fakeEmployer = new Faker<Employer>();
+
+            fakeEmployer
+                .RuleFor(employer => employer.AccountId, faker => faker.Random.Long(1,long.MaxValue))
+                .RuleFor(employer => employer.AccountHashId, faker => faker.Random.Long(1, long.MaxValue).ToString())
+                .RuleFor(employer => employer.AccountName, faker => faker.Company.CompanyName())
+                .RuleFor(employer => employer.Balance, faker => faker.Random.Decimal())
+                .RuleFor(employer => employer.SequenceId, faker => faker.Random.Long(1, long.MaxValue))
+                .RuleFor(employer => employer.IsLevyPayer, true)
+                .RuleFor(employer => employer.TransferAllowance, 0.0m);
+
+            return fakeEmployer;
+        }
+
     }
 }
