@@ -556,15 +556,39 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task StartMonthEnd()
         {
+            if (TestSession.MonthEndCommandSent)
+                return;
+
             var monthEndJobId = TestSession.GenerateId();
             Console.WriteLine($"Month end job id: {monthEndJobId}");
             TestSession.SetJobId(monthEndJobId);
+
+            foreach (var employer in TestSession.Employers)
+            {
+                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
+                {
+                    JobId = TestSession.JobId,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
+                    RequestTime = DateTime.Now,
+                    SubmissionDate = TestSession.IlrSubmissionTime,
+                    EmployerAccountId = employer.AccountId,
+                };
+
+                await MessageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);
+            }
+
+            // give funding source a chance to send out events to provider payments
+            // TODO: to be removed when provider payments can act as a pass-through
+            await Task.Delay(TimeSpan.FromSeconds(6));
+
+
             var processProviderPaymentsAtMonthEndCommand = new ProcessProviderMonthEndCommand
             {
                 CollectionPeriod = CurrentCollectionPeriod,
                 Ukprn = TestSession.Ukprn,
                 JobId = monthEndJobId
             };
+
             //TODO: remove when DC have implemented the Month End Task
             var dcStartedMonthEndJobCommand = new RecordStartedProcessingMonthEndJob
             {
@@ -581,24 +605,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var tasks = new List<Task>();
 
-            foreach (var employer in TestSession.Employers)
-            {
-                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
-                {
-                    JobId = TestSession.JobId,
-                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
-                    RequestTime = DateTime.Now,
-                    SubmissionDate = TestSession.IlrSubmissionTime,
-                    EmployerAccountId = employer.AccountId,
-                };
-
-                tasks.Add(MessageSession.Send(processLevyFundsAtMonthEndCommand));
-            }
-
             tasks.Add(MessageSession.Send(dcStartedMonthEndJobCommand));
             tasks.Add(MessageSession.Send(processProviderPaymentsAtMonthEndCommand));
             
             await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            TestSession.MonthEndCommandSent = true;
         }
 
         protected async Task SendProcessLearnerCommand(FM36Learner learner)

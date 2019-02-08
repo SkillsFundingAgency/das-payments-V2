@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -45,7 +47,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             string collectionPeriod, 
             decimal levyAmount)
         {
-            SetCollectionPeriod(collectionPeriod);
             var employer = TestSession.GetEmployer(employerIdentifier);
             employer.Balance = levyAmount;
             await SaveLevyAccount(employer);
@@ -236,8 +237,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"at month end only the following payments will be calculated")]
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculated(Table table)
         {
-            await StartMonthEnd();
             await MatchCalculatedPayments(table);
+            await StartMonthEnd();
         }
 
         [Then(@"no payments will be calculated")]

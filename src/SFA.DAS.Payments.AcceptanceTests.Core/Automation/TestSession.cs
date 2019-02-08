@@ -17,7 +17,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Employer Employer => GetEmployer("test employer");
         public long JobId { get; private set; }
         public DateTime IlrSubmissionTime { get; set; }
+        public bool MonthEndCommandSent { get; set; }
         public bool AtLeastOneScenarioCompleted { get; private set; }
+        
         public List<Employer> Employers { get; }
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
@@ -124,6 +126,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public void CompleteScenario()
         {
             AtLeastOneScenarioCompleted = true;
+            MonthEndCommandSent = false;
         }
 
         private Faker<Employer> GenerateEmployer()
@@ -131,7 +134,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var fakeEmployer = new Faker<Employer>();
 
             fakeEmployer
-                .RuleFor(employer => employer.AccountId, faker => faker.Random.Long(1,long.MaxValue))
+                // TODO: uncomment this when DataLock populates EmployerAccountId on PayableEarningEvent
+                //.RuleFor(employer => employer.AccountId, faker => faker.Random.Long(1,long.MaxValue))
                 .RuleFor(employer => employer.AccountHashId, faker => faker.Random.Long(1, long.MaxValue).ToString())
                 .RuleFor(employer => employer.AccountName, faker => faker.Company.CompanyName())
                 .RuleFor(employer => employer.Balance, faker => faker.Random.Decimal())
