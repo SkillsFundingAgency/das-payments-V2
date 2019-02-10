@@ -24,5 +24,6 @@
 	[WithdrawnOnDate] [datetime2](7) NULL,
 	[AccountLegalEntityPublicHashedId] [char](6) NULL, 
     [AccountSequenceId] BIGINT NOT NULL, 
+    [VersionId] BIGINT NOT NULL, 
     CONSTRAINT [PK_Commitment] PRIMARY KEY ([CommitmentId], [SequenceId]),
 )

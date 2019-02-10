@@ -33,5 +33,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public DateTime? PausedOnDate { get; set; }
         public DateTime? WithdrawnOnDate { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
+        public long VersionId { get; set; } = 1L;
     }
 }
