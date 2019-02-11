@@ -29,9 +29,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (!Context.ContainsKey("new_feature"))
                 NewFeature = true;
-            var newJobId = TestSession.GenerateId();
-            Console.WriteLine($"Using new job. Previous job id: {TestSession.JobId}, new job id: {newJobId}");
-           TestSession.Providers.ForEach(p => p.JobId = newJobId);
+         
+           TestSession.Providers.ForEach(p =>
+           {
+               var newJobId = TestSession.GenerateId();
+               p.JobId = newJobId;
+               Console.WriteLine($"Using new job. Previous job id: {TestSession.JobId}, new job id: {newJobId}");
+           });
         }
 
         [AfterScenario()]
@@ -194,14 +198,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"no payments will be calculated")]
         public async Task ThenNoPaymentsWillBeCalculated()
         {
-            var matcher = new RequiredPaymentEventMatcher(TestSession.Provider, TestSession, CurrentCollectionPeriod);
+            var matcher = new RequiredPaymentEventMatcher(TestSession.Provider, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure");
         }
 
         [Then(@"and only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            await MatchOnlyProviderPayments(table);
+            await MatchOnlyProviderPayments(table, TestSession.Provider);
         }
 
         [Then(@"at month end only the following provider payments will be generated")]

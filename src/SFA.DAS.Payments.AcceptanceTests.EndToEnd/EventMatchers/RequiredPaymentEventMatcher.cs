@@ -16,16 +16,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
     public class RequiredPaymentEventMatcher : BaseMatcher<RequiredPaymentEvent>
     {
         private readonly Provider provider;
-        private readonly TestSession testSession;
         private readonly CollectionPeriod collectionPeriod;
         private readonly List<Payment> paymentSpec;
         private readonly List<Training> currentIlr;
         private readonly List<Price> currentPriceEpisodes;
 
-        public RequiredPaymentEventMatcher(Provider provider , TestSession testSession, CollectionPeriod collectionPeriod)
+        public RequiredPaymentEventMatcher(Provider provider , CollectionPeriod collectionPeriod)
         {
             this.provider = provider;
-            this.testSession = testSession;
             this.collectionPeriod = collectionPeriod;
         }
 
@@ -34,7 +32,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             CollectionPeriod collectionPeriod,
             List<Payment> paymentSpec,
             List<Training> currentIlr, 
-            List<Price> currentPriceEpisodes) : this(provider,testSession, collectionPeriod)
+            List<Price> currentPriceEpisodes) : this(provider, collectionPeriod)
         {
             this.paymentSpec = paymentSpec;
             this.currentIlr = currentIlr;

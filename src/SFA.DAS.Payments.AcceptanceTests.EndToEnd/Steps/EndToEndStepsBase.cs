@@ -1,34 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using Autofac;
+﻿using Autofac;
+using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using Microsoft.EntityFrameworkCore;
+using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
-using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
+using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -86,14 +85,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     Set(new List<Commitment>(), "commitments");
                     commitments = Get<List<Commitment>>("commitments");
                 }
-                return  commitments;
+                return commitments;
             }
         }
 
         protected EndToEndStepsBase(FeatureContext context) : base(context)
         {
         }
-        
+
         protected void AddNewIlr(Table table, Provider provider)
         {
             CurrentIlr = table.CreateSet<Training>().ToList();
@@ -207,24 +206,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await DataContext.SaveChangesAsync();
         }
 
-        protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, List<Training> learnerTraining, long jobId, DateTime submissionTime, Earning earning, long ukprn)
+        protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, List<Training> learnerTraining, long jobId, DateTime submissionTime, decimal? sfaContributionPercentage, long ukprn)
         {
             var onProgTraining = learnerTraining.FirstOrDefault(t => t.AimReference == "ZPROG001");
             var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001");
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, otherTraining?? onProgTraining, jobId, submissionTime, earning, providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn));
+                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn));
 
             if (providerPayment.EmployerCoFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer, ukprn));
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer, ukprn));
 
             if (providerPayment.SfaCoFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa, ukprn));
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa, ukprn));
 
             return list;
         }
 
-        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, Earning earning, decimal amount, FundingSourceType fundingSourceType, long ukprn)
+        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount, FundingSourceType fundingSourceType, long ukprn)
         {
             return new PaymentModel
             {
@@ -232,7 +231,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(),
                 Ukprn = ukprn,
                 JobId = jobId,
-                SfaContributionPercentage = (earning.SfaContributionPercentage ?? learnerTraining.SfaContributionPercentage).ToPercent(),
+                SfaContributionPercentage = sfaContributionPercentage ?? (learnerTraining.SfaContributionPercentage).ToPercent(),
                 TransactionType = providerPayment.TransactionType,
                 ContractType = learnerTraining.ContractType,
                 PriceEpisodeIdentifier = "pe-1",
@@ -294,7 +293,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 sfaContributionPeriodisedValue = new PriceEpisodePeriodisedValues { AttributeName = "PriceEpisodeSFAContribPct", };
                 aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
             }
-            
+
             foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
                                                         e.AimSequenceNumber == aim.AimSequenceNumber))
             {
@@ -316,7 +315,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     SetPeriodValue(period, sfaContributionPeriodisedValue, earning.SfaContributionPercentage.ToPercent());
                 }
             }
-            
+
             var priceEpisodePrefix = (aim.StandardCode != 0)
                 ? $"{aim.ProgrammeType}-{aim.StandardCode}"
                 : $"{aim.ProgrammeType}-{aim.FrameworkCode}-{aim.PathwayCode}";
@@ -396,7 +395,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var episodeLastPeriod = LastOnProgPeriod(currentPriceEpisode);
                 var episodeStart = new CollectionPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value).Build();
-                
+
                 foreach (var currentValues in aimPeriodisedValues)
                 {
                     PriceEpisodePeriodisedValues newValues;
@@ -408,9 +407,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                         for (var p = 1; p < 13; p++)
                         {
-                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod || 
+                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod ||
                                          (PeriodisedValuesForBalancingAndCompletion().Contains(currentValues.AttributeName) && p > episodeLastPeriod)
-                                ? currentValues.GetValue(p) 
+                                ? currentValues.GetValue(p)
                                 : 0;
                             newValues.SetValue(p, amount);
                         }
@@ -566,10 +565,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await MessageSession.Send(command);
         }
 
-        protected async Task MatchOnlyProviderPayments(Table table)
+        protected async Task MatchOnlyProviderPayments(Table table, Provider provider)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            var matcher = new ProviderPaymentEventMatcher(TestSession.Provider,CurrentCollectionPeriod, TestSession, expectedPayments);
+            var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
 
@@ -632,9 +631,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             Console.WriteLine($"Previous job id: {previousJobId}");
             var previousPayments = payments.SelectMany(p =>
             {
-                var learnerTraining = previousIlr; //.First(t => t.LearnerId == p.LearnerId);
+                var learnerTraining = previousIlr; 
                 var learnerEarning = previousEarnings.First(e => e.LearnerId == p.LearnerId && e.DeliveryPeriod == p.DeliveryPeriod);
-                return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, learnerEarning, ukprn);
+                decimal? sfaContributionPercentage = string.IsNullOrWhiteSpace(learnerEarning.SfaContributionPercentage) ? default(decimal?): learnerEarning.SfaContributionPercentage.ToPercent();
+                
+                return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, sfaContributionPercentage, ukprn);
             }).ToList();
 
             var currentHistory = await DataContext.Payment.Where(p => p.Ukprn == ukprn).ToListAsync();
@@ -654,8 +655,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var earnings = CreateEarnings(table, provider.Ukprn);
             var learners = new List<FM36Learner>();
-            var providerCurrentIlrs= CurrentIlr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
-            
+            var providerCurrentIlrs = CurrentIlr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
+
             if (providerCurrentIlrs != null)
             {
                 foreach (var training in providerCurrentIlrs)
@@ -738,7 +739,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             await MessageSession.Send(startedMonthEndJob).ConfigureAwait(false);
 
-            await MatchOnlyProviderPayments(table);
+            await MatchOnlyProviderPayments(table, provider);
         }
 
         protected async Task ValidateRecordedProviderPayments(Table table, Provider provider)

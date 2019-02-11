@@ -4,9 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Bogus;
 using NUnit.Framework.Constraints;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -18,8 +16,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Learner Learner => Learners.FirstOrDefault();
         public List<Provider> Providers { get; }
         public Provider Provider => Providers.Single();
-        public long Ukprn  => Provider?.Ukprn ?? 0;
-        public long JobId  => Provider?.JobId??0;
+        public long Ukprn => Provider.Ukprn;
+        public long JobId => Provider.JobId;
         public DateTime IlrSubmissionTime { get;  set; }
         public Employer Employer => Employers.Single();
         public bool AtLeastOneScenarioCompleted { get; private set; }
@@ -45,22 +43,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
-
             Providers = new List<Provider> { GenerateProvider() };
             IlrSubmissionTime = Provider.IlrSubmissionTime;
-
-
             Learners = new List<Learner> { GenerateLearner(Provider.Ukprn) };
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
-           
             Employers = new List<Employer>(GenerateEmployer().Generate(1));
         }
-
-        public void SetJobId(long newJobId)
-        {
-            Provider.JobId = newJobId;
-        }
-
+        
         public long GenerateId(int maxValue = 1000000)
         {
             var id = random.Next(maxValue);
