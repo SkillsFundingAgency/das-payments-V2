@@ -35,6 +35,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.PausedOnDate).HasColumnName(@"PausedOnDate").IsRequired();
             builder.Property(x => x.WithdrawnOnDate).HasColumnName(@"WithdrawnOnDate").IsRequired();
             builder.Property(x => x.AccountLegalEntityPublicHashedId).HasColumnName(@"AccountLegalEntityPublicHashedId").IsRequired();
+            builder.Property(x => x.VersionId).HasColumnName("VersionId").IsRequired();
         }
     }
 }

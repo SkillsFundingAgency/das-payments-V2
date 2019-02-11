@@ -28,6 +28,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public DateTime? PausedOnDate { get; set; }
         public DateTime? WithdrawnOnDate { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
+        public long VersionId { get; set; }
     }
 
     public enum CommitmentPaymentStatus
