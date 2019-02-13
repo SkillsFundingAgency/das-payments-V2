@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
             var actorService = MockActorServiceFactory.CreateActorServiceForActor<DataLockService>();
             var paymentLoggerMock = Mock.Of<IPaymentLogger>();
             var commitmentRepositoryMock = Mock.Of<ICommitmentRepository>();
-            var datacacheList = Mock.Of<IDataCache<List<CommitmentModel>>>();
+            var dataCacheMock = Mock.Of<IDataCache<List<CommitmentModel>>>();
 
             var commitments = new List<CommitmentModel>
             {
@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
                 }
             };
 
-            Mock.Get(datacacheList).Setup(x => x.TryGet(It.IsAny<string>(), CancellationToken.None))
+            Mock.Get(dataCacheMock).Setup(x => x.TryGet(It.IsAny<string>(), CancellationToken.None))
                 .ReturnsAsync(() => new ConditionalValue<List<CommitmentModel>>(true, commitments));
 
             var testEarning = new ApprenticeshipContractType1EarningEvent
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
             };
 
             var actual = await (new DataLockService(actorService, new ActorId(Guid.Empty), mapper, paymentLoggerMock,
-                    commitmentRepositoryMock, datacacheList))
+                    commitmentRepositoryMock, dataCacheMock))
                 .HandleEarning(testEarning, default(CancellationToken));
 
             actual.Should().BeOfType<PayableEarningEvent>();
