@@ -45,9 +45,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
         [TestCase(1, 552580.20, 0)]
         [TestCase(0.9, 0.66667, 0.06667)]
         [TestCase(0.9, 0.666667, 0.06667)]
-        public void GivenValidSfaContributionAndAmountDueShouldReturnValidPayment(decimal sfaContribution,
-                                                                                   decimal amountDue,
-                                                                                   decimal expectedAmount)
+        public void GivenValidSfaContributionAndAmountDueShouldReturnValidPayment(
+            decimal sfaContribution,
+            decimal amountDue,
+            decimal expectedAmount)
         {
             var message = new RequiredCoInvestedPayment
             {

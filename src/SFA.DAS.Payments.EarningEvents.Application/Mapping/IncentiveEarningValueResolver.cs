@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public class IncentiveEarningValueResolver : IValueResolver<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent, ReadOnlyCollection<IncentiveEarning>>
+    public class IncentiveEarningValueResolver : IValueResolver<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent, List<IncentiveEarning>>
     {
 
         // ReSharper disable once InconsistentNaming
@@ -76,14 +75,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             IncentiveEarningType.LearningSupport
         };
 
-        public ReadOnlyCollection<IncentiveEarning> Resolve(IntermediateLearningAim source, ApprenticeshipContractTypeEarningsEvent destination, ReadOnlyCollection<IncentiveEarning> destMember, ResolutionContext context)
+        public List<IncentiveEarning> Resolve(IntermediateLearningAim source, ApprenticeshipContractTypeEarningsEvent destination, List<IncentiveEarning> destMember, ResolutionContext context)
         {
 
             return IncentiveTypes
                 .Select(type => CreateIncentiveEarning(source.Learner, type))
                 .Where(earning => earning.Periods.Any())
-                .ToList()
-                .AsReadOnly();
+                .ToList();
         }
     }
 }

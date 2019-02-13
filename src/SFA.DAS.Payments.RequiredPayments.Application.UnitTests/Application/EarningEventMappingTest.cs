@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using AutoMapper;
 using NUnit.Framework;
-using SFA.DAS.Payments.DataLocks.Messages;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -33,7 +33,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             // arrange
             var payableEarning = CreatePayableEarning();
-            RequiredPaymentEvent requiredPayment = new ApprenticeshipContractType1RequiredPaymentEvent();
+            RequiredPaymentEvent requiredPayment = new ApprenticeshipContractType1RequiredPaymentEvent
+            {
+                SfaContributionPercentage = .9m,
+                OnProgrammeEarningType = OnProgrammeEarningType.Completion
+            };
 
             // act
             mapper.Map(payableEarning, requiredPayment);
@@ -46,7 +50,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             Assert.AreEqual(payableEarning.EmployerAccountId, act1RequiredPayment.EmployerAccountId);
             Assert.AreEqual(payableEarning.CommitmentId, act1RequiredPayment.CommitmentId);
             Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId);
-
+            Assert.AreEqual(payableEarning.Priority, act1RequiredPayment.Priority);
+            Assert.AreEqual(.9m, act1RequiredPayment.SfaContributionPercentage);
+            Assert.AreEqual(OnProgrammeEarningType.Completion, act1RequiredPayment.OnProgrammeEarningType);
         }
 
         [Test]
@@ -123,7 +129,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                         })
                     }
                 })
-
             };
         }
 
@@ -134,10 +139,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 EmployerAccountId = 101,
                 CommitmentId = 102,
                 AgreementId = "103",
+                Priority = 104,
                 CollectionYear = 1819,
                 Learner = new Learner {ReferenceNumber = "R", Uln = 10},
                 Ukprn = 20,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 7),
+                SfaContributionPercentage = .5m,
                 LearningAim = new LearningAim
                 {
                     FundingLineType = "flt",
@@ -149,7 +156,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 },
                 JobId = 8,
                 IlrSubmissionDateTime = DateTime.Today,
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
                     {
@@ -169,7 +176,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                             new EarningPeriod {Period = 12, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = 1},
                         })
                     }
-                })
+                }
             };
         }
     }

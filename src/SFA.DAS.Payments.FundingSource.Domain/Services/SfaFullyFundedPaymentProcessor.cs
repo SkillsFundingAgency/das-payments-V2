@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
     {
         public FundingSourcePayment CalculatePaymentAmount(decimal amount)
         {
-            return new FundingSourcePayment
+            return new SfaCoInvestedPayment()
             {
                 Type = FundingSourceType.FullyFundedSfa,
                 AmountDue = amount.AsRounded()

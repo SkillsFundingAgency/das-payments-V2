@@ -1,14 +1,14 @@
-﻿using Moq;
+﻿using System.Collections.Generic;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
-using System.Collections.Generic;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
-namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
+namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 {
     [TestFixture]
     public class ContractType2RequiredPaymentEventFundingSourceServiceTest
@@ -19,10 +19,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
             // Arrange
             var message = new ApprenticeshipContractType2RequiredPaymentEvent();
             var requiredCoInvestedPayment = new RequiredCoInvestedPayment();
-            var fundingSourcePayment = new FundingSourcePayment();
+            var fundingSourcePayment = new EmployerCoInvestedPayment();
 
-            var sfaPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
-            var employerPaymentProcessor = new Mock<ICoInvestedPaymentProcessor>(MockBehavior.Strict);
+            var sfaPaymentProcessor = new Mock<ICoInvestedPaymentProcessorOld>(MockBehavior.Strict);
+            var employerPaymentProcessor = new Mock<ICoInvestedPaymentProcessorOld>(MockBehavior.Strict);
 
             var sfaPaymentEvent = new SfaCoInvestedFundingSourcePaymentEvent();
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests
                 .Setup(o => o.Process(requiredCoInvestedPayment)).Returns(fundingSourcePayment)
                 .Verifiable();
 
-            var paymentProcessors = new List<ICoInvestedPaymentProcessor>
+            var paymentProcessors = new List<ICoInvestedPaymentProcessorOld>
             {
                sfaPaymentProcessor.Object,
                employerPaymentProcessor.Object

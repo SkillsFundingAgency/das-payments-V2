@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -40,12 +41,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             NewFeature = false;
         }
 
-        [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
-        public async Task GivenTheEmployerLevyAccountBalanceInCollectionPeriodRCurrentAcademicYearIs(string collectionPeriod, decimal levyAmount)
+        [Given(@"the ""(.*)"" levy account balance in collection period (.*) is (.*)")]
+        public async Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(
+            string employerIdentifier,
+            string collectionPeriod, 
+            decimal levyAmount)
         {
-            SetCollectionPeriod(collectionPeriod);
-            TestSession.Employer.Balance = levyAmount;
-            await SaveLevyAccount(TestSession.Employer);
+            var employer = TestSession.GetEmployer(employerIdentifier);
+            employer.Balance = levyAmount;
+            await SaveLevyAccount(employer);
+        }
+
+        [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
+        public Task GivenTheEmployerLevyAccountBalanceInCollectionPeriodRCurrentAcademicYearIs(string collectionPeriod, decimal levyAmount)
+        {
+            return GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(
+                TestSession.Employer.Identifier,
+                collectionPeriod, 
+                levyAmount);
         }
 
         [Given(@"the provider is providing training for the following learners")]
@@ -110,12 +123,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following commitments exist")]
-        public void GivenTheFollowingCommitmentsExist(Table table)
+        public async Task GivenTheFollowingCommitmentsExist(Table table)
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
-                var commitments = table.CreateSet<Commitment>();
-                AddTestCommitments(commitments);
+                var commitments = table.CreateSet<Commitment>().ToList();
+                await AddTestCommitments(commitments);
             }
         }
 
@@ -218,9 +231,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"only the following payments will be calculated")]
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
-            var expectedPayments = CreatePayments(table);
-            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
-            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
+            await MatchCalculatedPayments(table);
+        }
+
+        [Then(@"at month end only the following payments will be calculated")]
+        public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculated(Table table)
+        {
+            await MatchCalculatedPayments(table);
+            await StartMonthEnd();
         }
 
         [Then(@"no payments will be calculated")]
@@ -230,7 +248,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure");
         }
 
-        [Then(@"and only the following provider payments will be generated")]
+        [Then(@"only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
             await MatchOnlyProviderPayments(table);
@@ -239,33 +257,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            var monthEndJobId = TestSession.GenerateId();
-            Console.WriteLine($"Month end job id: {monthEndJobId}");
-            TestSession.SetJobId(monthEndJobId);
-            var monthEndCommand = new ProcessProviderMonthEndCommand
-            {
-                CollectionPeriod = CurrentCollectionPeriod,
-                Ukprn = TestSession.Ukprn,
-                JobId = monthEndJobId
-            };
-            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
-
-            //TODO: remove when DC have implemented the Month End Task
-            var startedMonthEndJob = new RecordStartedProcessingMonthEndJob
-            {
-                JobId = monthEndJobId,
-                CollectionPeriod = CollectionPeriod,
-                CollectionYear = AcademicYear,
-                GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
-                {
-                    StartTime = DateTimeOffset.UtcNow,
-                    MessageName = monthEndCommand.GetType().FullName,
-                    MessageId = monthEndCommand.CommandId
-                }}
-            };
-            await MessageSession.Send(startedMonthEndJob).ConfigureAwait(false);
-
-            await MatchOnlyProviderPayments(table);
+            await StartMonthEnd();
+            var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
+            var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
+            await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
 
         [Then(@"no provider payments will be recorded")]

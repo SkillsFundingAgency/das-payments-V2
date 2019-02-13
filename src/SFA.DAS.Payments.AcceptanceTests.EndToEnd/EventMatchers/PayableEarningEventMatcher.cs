@@ -6,7 +6,7 @@ using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.DataLocks.Messages;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                     Period = e.DeliveryCalendarPeriod,
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
-                            }).ToList().AsReadOnly(),
+                            }).ToList(),
                             JobId = testSession.JobId,
                             Learner = learner,
                             LearningAim = learningAim
@@ -121,7 +121,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                                     Period = e.DeliveryCalendarPeriod,
                                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                                 }).ToList().AsReadOnly()
-                            }).ToList().AsReadOnly(),
+                            }).ToList(),
                             JobId = testSession.JobId,
                             Learner = learner,
                             LearningAim = learningAim

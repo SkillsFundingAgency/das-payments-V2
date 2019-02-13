@@ -9,6 +9,7 @@ using Autofac.Extras.Moq;
 using AutoMapper;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Factories;
@@ -16,7 +17,6 @@ using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
-using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private AutoMock mocker;
         private ApprenticeshipContractType2EarningEventProcessor act2EarningEventProcessor;
         private Mock<IPaymentDueProcessor> paymentDueProcessorMock;
-        private Mock<IRepositoryCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
+        private Mock<IDataCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
         private Mock<IApprenticeshipKeyService> apprenticeshipKeyServiceMock;
         private Mock<IPaymentHistoryRepository> paymentHistoryRepositoryMock;
         private Mapper mapper;
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         {
             mocker = AutoMock.GetStrict();
             paymentDueProcessorMock = mocker.Mock<IPaymentDueProcessor>();
-            paymentHistoryCacheMock = mocker.Mock<IRepositoryCache<PaymentHistoryEntity[]>>();
+            paymentHistoryCacheMock = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
             apprenticeshipKeyServiceMock = mocker.Mock<IApprenticeshipKeyService>();
             paymentHistoryRepositoryMock = mocker.Mock<IPaymentHistoryRepository>();
 
@@ -100,7 +100,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new[] { new PaymentHistoryEntity
@@ -127,7 +127,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             mocker.Mock<IPaymentKeyService>().Setup(s => s.GeneratePaymentKey("9", 1, It.IsAny<short>(), It.IsAny<byte>()))
                 .Returns("payment key")
                 .Verifiable();
-            paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
+            paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).Returns(Task.FromResult(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities))).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateRequiredPaymentAmount(100, It.IsAny<Payment[]>())).Returns(1).Verifiable();
             paymentDueProcessorMock.Setup(p => p.CalculateSfaContributionPercentage(0, 100, It.IsAny<Payment[]>())).Returns(100).Verifiable();
 
@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -170,7 +170,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];
@@ -205,7 +205,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -220,7 +220,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new []
@@ -272,7 +272,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
                     {
@@ -288,7 +288,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new List<PaymentHistoryEntity>();
@@ -323,7 +323,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -344,7 +344,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }
             };
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];
