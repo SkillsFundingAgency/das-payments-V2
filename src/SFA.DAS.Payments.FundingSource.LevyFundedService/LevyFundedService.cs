@@ -78,7 +78,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 requiredPaymentsCache,
                 requiredPaymentKeys,
                 lifetimeScope.Resolve<ILevyAccountRepository>(),
-                lifetimeScope.Resolve<ILevyBalanceService>()
+                lifetimeScope.Resolve<ILevyBalanceService>(),
+                lifetimeScope.Resolve<IPaymentLogger>()
             );
             await base.OnActivateAsync().ConfigureAwait(false);
         }
