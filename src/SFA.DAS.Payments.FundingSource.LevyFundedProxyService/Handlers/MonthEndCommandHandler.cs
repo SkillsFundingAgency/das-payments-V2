@@ -26,16 +26,16 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
         public async Task Handle(ProcessLevyPaymentsOnMonthEndCommand command, IMessageHandlerContext context)
         {
-            paymentLogger.LogInfo($"Processing ProcessLevyPaymentsOnMonthEndCommand. Message Id : {context.MessageId}");
+            paymentLogger.LogInfo($"Processing ProcessLevyPaymentsOnMonthEndCommand. Message Id : {context.MessageId}, Job: {command.JobId}");
 
-                using (var operation = telemetry.StartOperation())
-                {
-                    var actorId = new ActorId(command.EmployerAccountId);
-                    var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                    var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
-                    await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
-                    telemetry.StopOperation(operation);
-                }
+            using (var operation = telemetry.StartOperation())
+            {
+                var actorId = new ActorId(command.EmployerAccountId);
+                var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
+                var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
+                await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
+                telemetry.StopOperation(operation);
+            }
         }
     }
 }

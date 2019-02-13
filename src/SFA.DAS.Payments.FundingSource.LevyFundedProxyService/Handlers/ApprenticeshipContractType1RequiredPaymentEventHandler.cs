@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
         public async Task Handle(ApprenticeshipContractType1RequiredPaymentEvent message, IMessageHandlerContext context)
         {
-            paymentLogger.LogInfo($"Processing LevyFundedProxyService event. Message Id : {context.MessageId}");
+            paymentLogger.LogInfo($"Processing ApprenticeshipContractType1RequiredPaymentEvent event. Message Id: {context.MessageId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
             executionContext.JobId = message.JobId.ToString();
 
             try
@@ -40,15 +40,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                 }
                 catch (Exception ex)
                 {
-                    paymentLogger.LogError($"Error invoking levy funded actor. Error: {ex.Message}", ex);
+                    paymentLogger.LogError($"Error invoking levy funded actor. Job: {message.JobId}, UKPRN: {message.Ukprn}. Error: {ex.Message}", ex);
                     throw;
                 }
 
-                paymentLogger.LogInfo($"Successfully processed LevyFundedProxyService event for Actor Id {actorId}");
+                paymentLogger.LogInfo($"Successfully processed LevyFundedProxyService event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError("Error while handling LevyFundedProxyService event", ex);
+                paymentLogger.LogError($"Error while handling LevyFundedProxyService event, Job: {message.JobId}, UKPRN: {message.Ukprn}", ex);
                 throw;
             }
         }
