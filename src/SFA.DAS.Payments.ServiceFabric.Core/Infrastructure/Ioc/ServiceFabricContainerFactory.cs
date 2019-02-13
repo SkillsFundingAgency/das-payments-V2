@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using Autofac;
+﻿using Autofac;
 using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Runtime;
-using Microsoft.ServiceFabric.Data;
 using Microsoft.ServiceFabric.Services.Runtime;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
@@ -11,10 +9,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 {
     public static class ServiceFabricContainerFactory
     {
-        public static IContainer CreateContainerForActor<TActor>() where TActor : ActorBase
+        public static IContainer CreateContainerForActor<TActor>() where TActor : Actor
         {
             var builder = ContainerFactory.CreateBuilder();
-            builder.RegisterActor<TActor>();
+            builder.RegisterActor<TActor>()
+                .OnActivating(e => ((ActorStateManagerProvider) e.Context.Resolve<IActorStateManagerProvider>()).Current = e.Instance.StateManager);            
             var container = ContainerFactory.CreateContainer(builder);
             return container;
         }

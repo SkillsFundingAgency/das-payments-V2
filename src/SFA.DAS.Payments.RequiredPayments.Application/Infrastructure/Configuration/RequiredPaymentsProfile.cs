@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SFA.DAS.Payments.DataLocks.Messages;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -19,8 +19,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod.Clone()));
 
             CreateMap<IEarningEvent, RequiredPaymentEvent>()
-                .Include<IEarningEvent, ApprenticeshipContractTypeRequiredPaymentEvent>()
                 .Include<PayableEarningEvent, ApprenticeshipContractType1RequiredPaymentEvent>()
+                .Include<IEarningEvent, ApprenticeshipContractTypeRequiredPaymentEvent>()
                 .Include<FunctionalSkillEarningsEvent, IncentiveRequiredPaymentEvent>()
                 .ForMember(requiredPayment => requiredPayment.EarningEventId, opt => opt.MapFrom(earning => earning.EventId))
                 .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.Ignore())
@@ -28,24 +28,19 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(requiredPayment => requiredPayment.PriceEpisodeIdentifier, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.CollectionPeriod, opt => opt.MapFrom(earning => earning.CollectionPeriod.Clone()))
                 .ForMember(requiredPayment => requiredPayment.Learner, opt => opt.MapFrom(earning => earning.Learner.Clone()))
-                .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
-                ;
+                .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()));
 
             CreateMap<IEarningEvent, ApprenticeshipContractTypeRequiredPaymentEvent>()
+                .Include<PayableEarningEvent, ApprenticeshipContractType1RequiredPaymentEvent>()
                 .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore())
-                .ForMember(requiredPayment => requiredPayment.SfaContributionPercentage, opt => opt.Ignore())
-                ;
+                .ForMember(requiredPayment => requiredPayment.SfaContributionPercentage, opt => opt.Ignore());
 
             CreateMap<FunctionalSkillEarningsEvent, IncentiveRequiredPaymentEvent>()
                 .ForMember(requiredPayment => requiredPayment.Type, opt => opt.Ignore())
-                .ForMember(requiredPayment => requiredPayment.ContractType, opt => opt.Ignore())
-                ;
+                .ForMember(requiredPayment => requiredPayment.ContractType, opt => opt.Ignore());
 
             CreateMap<PayableEarningEvent, ApprenticeshipContractType1RequiredPaymentEvent>()
-                .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore())
-                //.ForMember(requiredPayment => requiredPayment.Learner, opt => opt.MapFrom(earning => earning.Learner.Clone()))
-                //.ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
-                ;
+                .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore());
 
             CreateMap<EarningPeriod, RequiredPaymentEvent>()
                 .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.MapFrom(period => period.Amount))

@@ -32,10 +32,15 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
             await state.AddAsync(transactionProvider.Current, key, entity, TimeSpan.FromSeconds(4), cancellationToken);
         }
 
-        public async Task<Payments.Application.Repositories.ConditionalValue<IlrSubmittedEvent>> TryGet(string key, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task AddOrReplace(string key, IlrSubmittedEvent entity, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await state.AddOrUpdateAsync(transactionProvider.Current, key, entity, (newKey, ilr) => ilr, TimeSpan.FromSeconds(4), cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<ConditionalValue<IlrSubmittedEvent>> TryGet(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
             var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(4), cancellationToken);
-            return new Payments.Application.Repositories.ConditionalValue<IlrSubmittedEvent>(value.HasValue, value.Value);
+            return new ConditionalValue<IlrSubmittedEvent>(value.HasValue, value.Value);
         }
 
         public async Task Clear(string key, CancellationToken cancellationToken = default(CancellationToken))

@@ -16,5 +16,6 @@
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
+    <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />
   </Parameters>
 </Application>

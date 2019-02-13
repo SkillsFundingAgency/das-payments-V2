@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace SFA.DAS.Payments.DataLocks.Messages
+namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {
     public class NonPayableEarningEvent : DataLockEvent
     {

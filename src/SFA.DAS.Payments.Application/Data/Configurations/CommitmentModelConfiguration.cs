@@ -20,21 +20,21 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.StartDate).HasColumnName(@"StartDate").IsRequired();
             builder.Property(x => x.EndDate).HasColumnName(@"EndDate").IsRequired();
             builder.Property(x => x.AgreedCost).HasColumnName(@"AgreedCost").IsRequired();
-            builder.Property(x => x.StandardCode).HasColumnName(@"StandardCode").IsRequired();
-            builder.Property(x => x.ProgrammeType).HasColumnName(@"ProgrammeType").IsRequired();
-            builder.Property(x => x.FrameworkCode).HasColumnName(@"FrameworkCode").IsRequired();
-            builder.Property(x => x.PathwayCode).HasColumnName(@"PathwayCode").IsRequired();
+            builder.Property(x => x.StandardCode).HasColumnName(@"StandardCode");
+            builder.Property(x => x.ProgrammeType).HasColumnName(@"ProgrammeType");
+            builder.Property(x => x.FrameworkCode).HasColumnName(@"FrameworkCode");
+            builder.Property(x => x.PathwayCode).HasColumnName(@"PathwayCode");
             builder.Property(x => x.PaymentStatus).HasColumnName(@"PaymentStatus").IsRequired();
             builder.Property(x => x.PaymentStatusDescription).HasColumnName(@"PaymentStatusDescription").IsRequired();
             builder.Property(x => x.Priority).HasColumnName(@"Priority").IsRequired();
             builder.Property(x => x.EffectiveFromDate).HasColumnName(@"EffectiveFromDate").IsRequired();
-            builder.Property(x => x.EffectiveToDate).HasColumnName(@"EffectiveToDate").IsRequired();
-            builder.Property(x => x.LegalEntityName).HasColumnName(@"LegalEntityName").IsRequired();
-            builder.Property(x => x.TransferSendingEmployerAccountId).HasColumnName(@"TransferSendingEmployerAccountId").IsRequired();
-            builder.Property(x => x.TransferApprovalDate).HasColumnName(@"TransferApprovalDate").IsRequired();
-            builder.Property(x => x.PausedOnDate).HasColumnName(@"PausedOnDate").IsRequired();
-            builder.Property(x => x.WithdrawnOnDate).HasColumnName(@"WithdrawnOnDate").IsRequired();
-            builder.Property(x => x.AccountLegalEntityPublicHashedId).HasColumnName(@"AccountLegalEntityPublicHashedId").IsRequired();
+            builder.Property(x => x.EffectiveToDate).HasColumnName(@"EffectiveToDate");
+            builder.Property(x => x.LegalEntityName).HasColumnName(@"LegalEntityName");
+            builder.Property(x => x.TransferSendingEmployerAccountId).HasColumnName(@"TransferSendingEmployerAccountId");
+            builder.Property(x => x.TransferApprovalDate).HasColumnName(@"TransferApprovalDate");
+            builder.Property(x => x.PausedOnDate).HasColumnName(@"PausedOnDate");
+            builder.Property(x => x.WithdrawnOnDate).HasColumnName(@"WithdrawnOnDate");
+            builder.Property(x => x.AccountLegalEntityPublicHashedId).HasColumnName(@"AccountLegalEntityPublicHashedId");
         }
     }
 }

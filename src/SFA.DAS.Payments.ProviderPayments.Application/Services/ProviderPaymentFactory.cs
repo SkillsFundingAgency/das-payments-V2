@@ -21,6 +21,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
                     return new SfaCoInvestedProviderPaymentEvent();
                 case FundingSourceType.FullyFundedSfa:
                     return new SfaFullyFundedProviderPaymentEvent();
+                case FundingSourceType.Levy:
+                    return new LevyProviderPaymentEvent();
                 default:
                     throw new InvalidOperationException($"Cannot create the ProviderPayment, unexpected funding source: {fundingSource:G}");
             }
