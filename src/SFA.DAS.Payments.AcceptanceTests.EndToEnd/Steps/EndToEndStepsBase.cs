@@ -18,7 +18,6 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
@@ -195,6 +194,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (existingEmployer == null)
             {
                 DataContext.LevyAccount.Add(employer.ToModel());
+                Console.WriteLine($"Employer account created. Id:{employer.AccountId}, Balance:{employer.Balance}, {DateTime.Now}");
             }
             else
             {
@@ -202,6 +202,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 existingEmployer.IsLevyPayer = employer.IsLevyPayer;
                 existingEmployer.TransferAllowance = employer.TransferAllowance;
                 DataContext.LevyAccount.Update(existingEmployer);
+                Console.WriteLine($"Employer account updated. Id:{employer.AccountId}, Balance:{employer.Balance}, {DateTime.Now}");
             }
 
             await DataContext.SaveChangesAsync();
@@ -559,43 +560,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task StartMonthEnd()
         {
-            if (TestSession.MonthEndCommandSent)
-                return;
-
-            var monthEndJobId = TestSession.GenerateId();
-            Console.WriteLine($"Month end job id: {monthEndJobId}");
-            TestSession.SetJobId(monthEndJobId);
-
-            foreach (var employer in TestSession.Employers)
+            if (!TestSession.MonthEndJobIdGenerated) // for ACT1 it could have been generated on Required Payments check step
             {
-                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
-                {
-                    JobId = TestSession.JobId,
-                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
-                    RequestTime = DateTime.Now,
-                    SubmissionDate = TestSession.IlrSubmissionTime,
-                    EmployerAccountId = employer.AccountId,
-                };
-
-                await MessageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);
+                var monthEndJobId = TestSession.GenerateId();
+                Console.WriteLine($"Month end job id: {monthEndJobId}");
+                TestSession.SetJobId(monthEndJobId);
             }
-
-            // give funding source a chance to send out events to provider payments
-            // TODO: to be removed when provider payments can act as a pass-through
-            await Task.Delay(TimeSpan.FromSeconds(6));
-
 
             var processProviderPaymentsAtMonthEndCommand = new ProcessProviderMonthEndCommand
             {
                 CollectionPeriod = CurrentCollectionPeriod,
                 Ukprn = TestSession.Ukprn,
-                JobId = monthEndJobId
+                JobId = TestSession.JobId
             };
 
             //TODO: remove when DC have implemented the Month End Task
             var dcStartedMonthEndJobCommand = new RecordStartedProcessingMonthEndJob
             {
-                JobId = monthEndJobId,
+                JobId = TestSession.JobId,
                 CollectionPeriod = CollectionPeriod,
                 CollectionYear = AcademicYear,
                 GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
@@ -613,7 +595,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
-            TestSession.MonthEndCommandSent = true;
+            TestSession.MonthEndJobIdGenerated = true;
         }
 
         protected async Task SendProcessLearnerCommand(FM36Learner learner)

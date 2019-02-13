@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Employer Employer => Employers.First();
         public long JobId { get; private set; }
         public DateTime IlrSubmissionTime { get; set; }
-        public bool MonthEndCommandSent { get; set; }
+        public bool MonthEndJobIdGenerated { get; set; }
         public bool AtLeastOneScenarioCompleted { get; private set; }
         
         public List<Employer> Employers { get; }
@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public void CompleteScenario()
         {
             AtLeastOneScenarioCompleted = true;
-            MonthEndCommandSent = false;
+            MonthEndJobIdGenerated = false;
         }
 
         private Faker<Employer> GenerateEmployer()

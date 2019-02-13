@@ -252,9 +252,11 @@
     <Compile Include="EventMatchers\BaseMatcher.cs" />
     <Compile Include="EventMatchers\PayableEarningEventMatcher.cs" />
     <Compile Include="EventMatchers\EarningEventMatcher.cs" />
+    <Compile Include="EventMatchers\FundingSourcePaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentModelMatcher.cs" />
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
+    <Compile Include="Handlers\FundingSourcePaymentEventHandler.cs" />
     <Compile Include="Handlers\PayableEarningEventHandler.cs" />
     <Compile Include="Extensions\CommitmentExtensions.cs" />
     <Compile Include="Extensions\EmployerExtensions.cs" />
@@ -853,6 +855,10 @@
       <Project>{23551cd8-7554-4f2c-9b42-a67b9e0c261d}</Project>
       <Name>SFA.DAS.Payments.Application</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Audit.AcceptanceTests\SFA.DAS.Payments.Audit.AcceptanceTests.csproj">
+      <Project>{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}</Project>
+      <Name>SFA.DAS.Payments.Audit.AcceptanceTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
       <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
@@ -872,6 +878,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages.Internal\SFA.DAS.Payments.FundingSource.Messages.Internal.csproj">
       <Project>{95F83345-7AD6-477C-A271-3C7F8CA0529B}</Project>
       <Name>SFA.DAS.Payments.FundingSource.Messages.Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj">
+      <Project>{43861469-71A2-4128-B35A-FB680F1E8BCA}</Project>
+      <Name>SFA.DAS.Payments.FundingSource.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
