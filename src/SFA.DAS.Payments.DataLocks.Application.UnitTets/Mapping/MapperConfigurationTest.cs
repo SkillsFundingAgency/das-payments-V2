@@ -121,7 +121,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
         }
 
 
-
         [Test]
         public void CanMapUkprn()
         {
