@@ -174,19 +174,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             commitments.ForEach(x =>
             {
+                var firstCommitment = Commitments.FirstOrDefault(c =>
+                    c.Identifier == x.Identifier && c.Ukprn == x.Ukprn || x.Ukprn == default(long));
+
                 if (x.CommitmentId == default(long))
                 {
-                    x.CommitmentId = TestSession.GenerateId();
+                    if (firstCommitment != null)
+                    {
+                        x.CommitmentId = firstCommitment.CommitmentId;
+                        x.Ukprn = x.Ukprn == default(long) ? firstCommitment.Ukprn : x.Ukprn;
+                    }
+                    else
+                    {
+                        x.CommitmentId = TestSession.GenerateId();
+                        x.Ukprn = TestSession.Ukprn;
+                    }
                 }
 
                 x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
                 x.Uln = TestSession.GetLearner(x.LearnerId).Uln;
 
-                var existingCommitment = Commitments.SingleOrDefault(c => c.CommitmentId == x.CommitmentId);
-
-                if (existingCommitment != null)
+                if (firstCommitment != null)
                 {
-                    Commitments.Remove(existingCommitment);
+                    Commitments.Remove(firstCommitment);
                 }
             });
 
@@ -200,14 +210,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var mappedCommitment in mappedCommitments)
             {
-                if (DataContext.Commitment.Any(e => e.CommitmentId == mappedCommitment.CommitmentId))
+                var matchedCommitment =
+                    await DataContext.Commitment.FirstOrDefaultAsync(e =>
+                        e.CommitmentId == mappedCommitment.CommitmentId);
+
+
+                if (matchedCommitment != null)
                 {
-                    DataContext.Commitment.Update(mappedCommitment);
+                    DataContext.Commitment.Remove(matchedCommitment);
                 }
-                else
-                {
-                    await DataContext.Commitment.AddAsync(mappedCommitment);
-                }
+
+                await DataContext.Commitment.AddAsync(mappedCommitment);
             }
 
             await DataContext.SaveChangesAsync().ConfigureAwait(false);
