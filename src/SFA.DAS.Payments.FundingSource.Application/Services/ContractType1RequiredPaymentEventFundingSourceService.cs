@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILevyAccountRepository levyAccountRepository;
         private readonly ILevyBalanceService levyBalanceService;
-        private IPaymentLogger paymentLogger;
+        private readonly IPaymentLogger paymentLogger;
 
         public ContractType1RequiredPaymentEventFundingSourceService(
             IPaymentProcessor processor, 
@@ -34,7 +34,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
             IDataCache<List<string>> requiredPaymentKeys, 
             ILevyAccountRepository levyAccountRepository, 
-            ILevyBalanceService levyBalanceService, IPaymentLogger paymentLogger)
+            ILevyBalanceService levyBalanceService, 
+            IPaymentLogger paymentLogger)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

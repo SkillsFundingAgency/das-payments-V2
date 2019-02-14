@@ -8,6 +8,7 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
@@ -36,6 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<ILevyBalanceService> levyBalanceServiceMock;
         private IContractType1RequiredPaymentEventFundingSourceService service;
         private MapperConfiguration mapperConfiguration;
+        private Mock<IPaymentLogger> paymentLoggerMock;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -53,8 +55,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             levyAccountRepositoryMock = mocker.Mock<ILevyAccountRepository>();
             processorMock = mocker.Mock<IPaymentProcessor>();
             levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
+            paymentLoggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
             service = mocker.Create<ContractType1RequiredPaymentEventFundingSourceService>(
-                new NamedParameter("mapper", mapper)
+                new NamedParameter("mapper", mapper),
+                new NamedParameter("paymentLogger", paymentLoggerMock.Object)
             );
         }
 
