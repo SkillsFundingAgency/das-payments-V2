@@ -20,10 +20,10 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.StartDate).HasColumnName(@"StartDate").IsRequired();
             builder.Property(x => x.EndDate).HasColumnName(@"EndDate").IsRequired();
             builder.Property(x => x.AgreedCost).HasColumnName(@"AgreedCost").IsRequired();
-            builder.Property(x => x.StandardCode).HasColumnName(@"StandardCode").IsRequired();
-            builder.Property(x => x.ProgrammeType).HasColumnName(@"ProgrammeType").IsRequired();
-            builder.Property(x => x.FrameworkCode).HasColumnName(@"FrameworkCode").IsRequired();
-            builder.Property(x => x.PathwayCode).HasColumnName(@"PathwayCode").IsRequired();
+            builder.Property(x => x.StandardCode).HasColumnName(@"StandardCode");
+            builder.Property(x => x.ProgrammeType).HasColumnName(@"ProgrammeType");
+            builder.Property(x => x.FrameworkCode).HasColumnName(@"FrameworkCode");
+            builder.Property(x => x.PathwayCode).HasColumnName(@"PathwayCode");
             builder.Property(x => x.PaymentStatus).HasColumnName(@"PaymentStatus").IsRequired();
             builder.Property(x => x.PaymentStatusDescription).HasColumnName(@"PaymentStatusDescription").IsRequired();
             builder.Property(x => x.Priority).HasColumnName(@"Priority").IsRequired();

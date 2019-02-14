@@ -8,13 +8,14 @@ using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.DataLocks.Messages;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Application;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 {

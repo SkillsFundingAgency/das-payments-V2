@@ -10,10 +10,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
     public class ContractType2RequiredPaymentEventFundingSourceService : IContractType2RequiredPaymentEventFundingSourceService
     {
-        private readonly IEnumerable<ICoInvestedPaymentProcessor> processors;
+        private readonly IEnumerable<ICoInvestedPaymentProcessorOld> processors;
         private readonly ICoInvestedFundingSourcePaymentEventMapper mapper;
 
-        public ContractType2RequiredPaymentEventFundingSourceService(IEnumerable<ICoInvestedPaymentProcessor> processors, ICoInvestedFundingSourcePaymentEventMapper mapper)
+        public ContractType2RequiredPaymentEventFundingSourceService(IEnumerable<ICoInvestedPaymentProcessorOld> processors, ICoInvestedFundingSourcePaymentEventMapper mapper)
         {
             this.processors = processors ?? throw new ArgumentNullException(nameof(processors));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -29,10 +29,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             {
                 var payment = processor.Process(coInvestedPaymentMessage);
                 if (payment != null && payment.AmountDue != 0)
-                {
-                    var paymentEvent = mapper.MapToCoInvestedPaymentEvent(message, payment);
-                    paymentEvents.Add(paymentEvent);
-                }
+                    paymentEvents.Add(mapper.MapToCoInvestedPaymentEvent(message, payment));
             }
 
             return paymentEvents;

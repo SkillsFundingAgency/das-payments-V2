@@ -5,7 +5,7 @@ using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
-using SFA.DAS.Payments.DataLocks.Messages;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                 IlrSubmissionDateTime = DateTime.MaxValue,
                 EventTime = DateTimeOffset.MaxValue,
                 AgreementId = "12120002",
-                IncentiveEarnings = incentiveEarnings.AsReadOnly(),
+                IncentiveEarnings = incentiveEarnings,
                 OnProgrammeEarnings = (new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                         Periods = earnings.AsReadOnly()
                     }
 
-                }).AsReadOnly(),
+                }),
                 PriceEpisodes = (new List<PriceEpisode>
                 {
                     new PriceEpisode
@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                         TotalNegotiatedPrice4 = 25.0m
                     }
 
-                }).AsReadOnly()
+                })
             };
 
         }

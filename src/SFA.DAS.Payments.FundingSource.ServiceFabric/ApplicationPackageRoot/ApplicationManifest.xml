@@ -6,6 +6,7 @@
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
+    <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="" />
@@ -71,6 +72,7 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="LogLevel" Value="[LogLevel]" />

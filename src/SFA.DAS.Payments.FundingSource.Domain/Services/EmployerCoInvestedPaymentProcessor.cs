@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
-    public class EmployerCoInvestedPaymentProcessor : CoInvestedPaymentProcessor
+    public class EmployerCoInvestedPaymentProcessor : CoInvestedPaymentProcessorBase, IEmployerCoInvestedPaymentProcessor
     {
 
         public EmployerCoInvestedPaymentProcessor(IValidateRequiredPaymentEvent validateRequiredPaymentEvent)
@@ -13,9 +13,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         {
         }
 
-        protected override FundingSourcePayment CreatePayment(RequiredCoInvestedPayment message)
+        protected override FundingSourcePayment CreatePayment(RequiredPayment requiredPayment)
         {
-            var amountToPay = (1 - message.SfaContributionPercentage) * message.AmountDue;
+            var amountToPay = (1 - requiredPayment.SfaContributionPercentage) * requiredPayment.AmountDue;
+
             return new EmployerCoInvestedPayment
             {
                 AmountDue = amountToPay.AsRounded(),

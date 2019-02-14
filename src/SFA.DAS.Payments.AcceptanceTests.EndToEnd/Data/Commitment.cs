@@ -6,6 +6,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
     public class Commitment
     {
         public string Identifier { get; set; } = "Commitment 1";
+        
         public string LearnerId { get; set; }
         public string Employer { get; set; }
         public string Provider { get; set; }

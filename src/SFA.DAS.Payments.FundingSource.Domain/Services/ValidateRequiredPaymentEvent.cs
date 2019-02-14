@@ -6,7 +6,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
     public class ValidateRequiredPaymentEvent : IValidateRequiredPaymentEvent
     {
-        public IEnumerable<RequiredCoInvestedPaymentValidationResult> Validate(RequiredCoInvestedPayment requiredPayment)
+        public IEnumerable<RequiredCoInvestedPaymentValidationResult> Validate(RequiredPayment requiredPayment)
         {
             var results = new List<RequiredCoInvestedPaymentValidationResult>();
 
