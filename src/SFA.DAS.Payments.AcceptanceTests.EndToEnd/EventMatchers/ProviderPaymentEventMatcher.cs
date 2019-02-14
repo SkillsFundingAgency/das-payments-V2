@@ -97,6 +97,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     expectedPayments.Add(fullyFundedSfa);
                 }
 
+                if (providerPayment.LevyPayments != 0)
+                {
+                    var levyFunded = new LevyProviderPaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.LevyPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner
+                    };
+                    expectedPayments.Add(levyFunded);
+                }
             }
 
             return expectedPayments;

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.DataLocks.Messages;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;

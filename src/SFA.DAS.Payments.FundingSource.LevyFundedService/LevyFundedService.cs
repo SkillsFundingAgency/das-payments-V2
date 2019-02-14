@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
@@ -43,13 +44,13 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
         }
 
-        public async Task<IReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command)
+        public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command)
         {
             paymentLogger.LogVerbose($"Handling ProcessLevyPaymentsOnMonthEndCommand for {Id}");
 
             using (var operation = telemetry.StartOperation())
             {
-                var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.EmployerAccountId);
+                var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.EmployerAccountId, command.JobId);
                 telemetry.StopOperation(operation);
                 return fundingSourceEvents;
             }

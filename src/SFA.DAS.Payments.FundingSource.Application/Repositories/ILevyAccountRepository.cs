@@ -16,14 +16,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
     {
         private readonly IPaymentsDataContext dataContext;
 
-        public LevyAccountRepository(PaymentsDataContext dataContext)
+        public LevyAccountRepository(IPaymentsDataContext dataContext)
         {
             this.dataContext = dataContext;
         }
 
         public async Task<LevyAccountModel> GetLevyAccount(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await dataContext.LevyAccount
+            return await dataContext.LevyAccount.AsNoTracking()
                 .Where(levyAccount => levyAccount.AccountId == employerAccountId)
                 .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }

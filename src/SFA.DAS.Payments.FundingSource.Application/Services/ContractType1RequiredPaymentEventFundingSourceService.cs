@@ -3,6 +3,7 @@ using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -53,7 +54,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
         }
 
-        public async Task<IReadOnlyList<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId)
+        public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId, long jobId)
         {
             var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance);
@@ -72,14 +73,20 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                     AmountDue = requiredPaymentEvent.Value.AmountDue
                 };
 
-                var fundingSourcePayments = processor.Process(requiredPayment).Select(p => mapper.Map<FundingSourcePaymentEvent>(p));
-                fundingSourceEvents.AddRange(fundingSourcePayments);
+                var fundingSourcePayments = processor.Process(requiredPayment);
+                foreach (var fundingSourcePayment in fundingSourcePayments)
+                {
+                    var fundingSourceEvent = mapper.Map<FundingSourcePaymentEvent>(fundingSourcePayment);
+                    mapper.Map(requiredPaymentEvent.Value, fundingSourceEvent);
+                    fundingSourceEvent.JobId = jobId;
+                    fundingSourceEvents.Add(fundingSourceEvent);
+                }
 
                 await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
             }
 
             await requiredPaymentKeys.Clear(KeyListKey).ConfigureAwait(false);
-            return fundingSourceEvents;
+            return fundingSourceEvents.AsReadOnly();
         }
 
         private async Task<List<string>> GetKeys()

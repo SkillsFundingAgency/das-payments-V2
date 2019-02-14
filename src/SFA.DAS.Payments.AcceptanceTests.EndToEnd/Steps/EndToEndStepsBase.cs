@@ -115,13 +115,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             training.ForEach(ilrLearner =>
             {
-                var learner = TestSession.Learners.FirstOrDefault(l => l.LearnerIdentifier == ilrLearner.LearnerId);
-                if (learner == null)
-                {
-                    learner = TestSession.GenerateLearner();
-                    learner.LearnerIdentifier = ilrLearner.LearnerId;
-                    TestSession.Learners.Add(learner);
-                }
+                var learner = TestSession.GetLearner(ilrLearner.LearnerId);
                 learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
@@ -176,16 +170,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected void AddTestCommitments(IEnumerable<Commitment> commitments)
+        protected async Task AddTestCommitments(List<Commitment> commitments)
         {
+            commitments.ForEach(x =>
+            {
+                x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
+                x.Uln = TestSession.GetLearner(x.LearnerId).Uln;
+            });
             Commitments.Clear();
             Commitments.AddRange(commitments);
+            await SaveTestCommitments();
         }
 
         protected async Task SaveTestCommitments()
         {
             DataContext.Commitment.AddRange(Mapper.ToModel(Commitments));
-            await DataContext.SaveChangesAsync();
+            await DataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         protected async Task SaveLevyAccount(Employer employer)
@@ -219,6 +219,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (providerPayment.SfaCoFundedPayments > 0)
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa));
+
+            if (providerPayment.LevyPayments > 0)
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.LevyPayments, FundingSourceType.Levy));
 
             return list;
         }
@@ -449,7 +452,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             string CalculateContractType(Price priceEpisode)
             {
-                return priceEpisode.ContractType == Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
+                var contractType = priceEpisode.ContractType;
+
+                if (contractType == 0)
+                    contractType = CurrentIlr[0].ContractType;
+
+                return contractType == Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
             }
 
             byte LastOnProgPeriod(PriceEpisode currentPriceEpisode)
@@ -551,15 +559,39 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task StartMonthEnd()
         {
+            if (TestSession.MonthEndCommandSent)
+                return;
+
             var monthEndJobId = TestSession.GenerateId();
             Console.WriteLine($"Month end job id: {monthEndJobId}");
             TestSession.SetJobId(monthEndJobId);
+
+            foreach (var employer in TestSession.Employers)
+            {
+                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
+                {
+                    JobId = TestSession.JobId,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
+                    RequestTime = DateTime.Now,
+                    SubmissionDate = TestSession.IlrSubmissionTime,
+                    EmployerAccountId = employer.AccountId,
+                };
+
+                await MessageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);
+            }
+
+            // give funding source a chance to send out events to provider payments
+            // TODO: to be removed when provider payments can act as a pass-through
+            await Task.Delay(TimeSpan.FromSeconds(6));
+
+
             var processProviderPaymentsAtMonthEndCommand = new ProcessProviderMonthEndCommand
             {
                 CollectionPeriod = CurrentCollectionPeriod,
                 Ukprn = TestSession.Ukprn,
                 JobId = monthEndJobId
             };
+
             //TODO: remove when DC have implemented the Month End Task
             var dcStartedMonthEndJobCommand = new RecordStartedProcessingMonthEndJob
             {
@@ -576,24 +608,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var tasks = new List<Task>();
 
-            foreach (var employer in TestSession.Employers)
-            {
-                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
-                {
-                    JobId = TestSession.JobId,
-                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
-                    RequestTime = DateTime.Now,
-                    SubmissionDate = TestSession.IlrSubmissionTime,
-                    EmployerAccountId = employer.AccountId,
-                };
-
-                tasks.Add(MessageSession.Send(processLevyFundsAtMonthEndCommand));
-            }
-
             tasks.Add(MessageSession.Send(dcStartedMonthEndJobCommand));
             tasks.Add(MessageSession.Send(processProviderPaymentsAtMonthEndCommand));
             
             await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            TestSession.MonthEndCommandSent = true;
         }
 
         protected async Task SendProcessLearnerCommand(FM36Learner learner)
@@ -626,6 +646,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             yield return TransactionType.BalancingMathsAndEnglish.ToAttributeName();
             yield return TransactionType.Balancing16To18FrameworkUplift.ToAttributeName();
             yield return TransactionType.Completion16To18FrameworkUplift.ToAttributeName();
+            yield return TransactionType.Completion.ToAttributeName();
+            yield return TransactionType.Balancing.ToAttributeName();
+
         }
     }
 }

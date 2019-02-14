@@ -76,8 +76,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<EmployerCoInvestedPayment, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .Include<SfaCoInvestedPayment, SfaCoInvestedFundingSourcePaymentEvent>()
                     .Include<LevyPayment, LevyFundingSourcePaymentEvent>()
-                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.FundingSourceType, opt => opt.MapFrom(payment => payment.Type))
-                    ;
+                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.FundingSourceType, opt => opt.MapFrom(payment => payment.Type));
             });
         }
     }

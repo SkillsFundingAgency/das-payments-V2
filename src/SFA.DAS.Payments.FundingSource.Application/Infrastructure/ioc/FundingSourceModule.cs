@@ -23,17 +23,23 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<IncentiveRequiredPaymentProcessor>().AsImplementedInterfaces();
             builder.RegisterType<LevyAccountRepository>().AsImplementedInterfaces();
             builder.RegisterType<PaymentProcessor>().AsImplementedInterfaces();
-            builder.RegisterType<LevyPaymentProcessor>().AsImplementedInterfaces();
-            builder.RegisterType<CoInvestedPaymentProcessor>().AsImplementedInterfaces();
-            builder.RegisterType<EmployerCoInvestedPaymentProcessor>().AsImplementedInterfaces();
-            builder.RegisterType<SfaCoInvestedPaymentProcessor>().AsImplementedInterfaces();
-            builder.RegisterType<LevyBalanceService>().AsImplementedInterfaces();
+            builder.RegisterType<LevyPaymentProcessor>().As<ILevyPaymentProcessor>();
+            builder.RegisterType<CoInvestedPaymentProcessor>().As<ICoInvestedPaymentProcessor>();
+            builder.RegisterType<EmployerCoInvestedPaymentProcessor>().As<IEmployerCoInvestedPaymentProcessor>();
+            builder.RegisterType<SfaCoInvestedPaymentProcessor>().As<ISfaCoInvestedPaymentProcessor>();
+            builder.RegisterType<LevyBalanceService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<ReliableCollectionCache<ApprenticeshipContractType1RequiredPaymentEvent>>()
+                .AsImplementedInterfaces();
+            builder.RegisterType<ReliableCollectionCache<List<string>>>()
+                .AsImplementedInterfaces();
+            builder.RegisterType<ContractType1RequiredPaymentEventFundingSourceService>().AsImplementedInterfaces();
             builder.RegisterType<SortableKeyGenerator>().AsImplementedInterfaces();
-            
+
+
             builder.Register(c => new ContractType2RequiredPaymentEventFundingSourceService
-                (
-                  new List<ICoInvestedPaymentProcessorOld>()
-                  {
+            (
+                new List<ICoInvestedPaymentProcessorOld>()
+                {
                     new SfaCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>()),
                     new EmployerCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>())
                   },

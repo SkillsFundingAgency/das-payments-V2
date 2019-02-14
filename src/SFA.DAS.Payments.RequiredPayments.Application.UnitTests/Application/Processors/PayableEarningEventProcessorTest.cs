@@ -9,7 +9,7 @@ using AutoMapper;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.DataLocks.Messages;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -95,7 +95,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
                 LearningAim = EarningEventDataHelper.CreateLearningAim(),
-                OnProgrammeEarnings = new ReadOnlyCollection<OnProgrammeEarning>(new List<OnProgrammeEarning>()
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     new OnProgrammeEarning
                     {
@@ -116,8 +116,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
-                
+                }
             };
 
             var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2), DeliveryPeriod = 2}};

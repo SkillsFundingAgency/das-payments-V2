@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Mapping
             CreateMap<Commitment, CommitmentModel>()
                 .ForMember(x => x.StartDate, opt => opt.MapFrom(x => x.StartDate.ToDate()))
                 .ForMember(x => x.EndDate, opt => opt.MapFrom(x => x.EndDate.ToDate()))
+                .ForMember(x => x.AgreedCost, opt => opt.MapFrom(x => x.AgreedPrice))
                 ;
         }
     }

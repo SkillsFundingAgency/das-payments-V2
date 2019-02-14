@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
@@ -31,7 +32,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                 {
                     var actorId = new ActorId(command.EmployerAccountId);
                     var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                    await actor.HandleMonthEnd(command).ConfigureAwait(false);
+                    var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
+                    await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
                     telemetry.StopOperation(operation);
                 }
         }

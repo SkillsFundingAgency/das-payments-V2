@@ -14,10 +14,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn { get; private set; }
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
-        public Employer Employer => Employers.Single();
+        public Employer Employer => Employers.First();
         public long JobId { get; private set; }
         public DateTime IlrSubmissionTime { get; set; }
+        public bool MonthEndCommandSent { get; set; }
         public bool AtLeastOneScenarioCompleted { get; private set; }
+        
         public List<Employer> Employers { get; }
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
@@ -25,7 +27,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Employer GetEmployer(string identifier)
         {
-            return Employers.SingleOrDefault(x => x.Identifier == identifier);
+            if (identifier == null) return Employer;
+
+            var employer = Employers.SingleOrDefault(x => x.Identifier == identifier);
+            if (employer == null)
+            {
+                employer = GenerateEmployer().Generate(1).First();
+                employer.Identifier = identifier;
+                Employers.Add(employer);
+            }
+
+            return employer;
         }
 
         public TestSession(long? ukprn = null)
@@ -97,8 +109,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Learner GetLearner(string learnerIdentifier)
         {
-            return Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier) ??
-                   throw new ArgumentException($"Learner with identifier: '{learnerIdentifier}' not found.");
+            var learner = Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier);
+            if (learner == null)
+            {
+                learner = GenerateLearner();
+                learner.LearnerIdentifier = learnerIdentifier;
+                Learners.Add(learner);
+            }
+
+            return learner;
         }
 
         public void SessionEnd()
@@ -109,6 +128,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public void CompleteScenario()
         {
             AtLeastOneScenarioCompleted = true;
+            MonthEndCommandSent = false;
         }
 
         private Faker<Employer> GenerateEmployer()
@@ -116,7 +136,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var fakeEmployer = new Faker<Employer>();
 
             fakeEmployer
-                .RuleFor(employer => employer.AccountId, faker => faker.Random.Long(1,long.MaxValue))
+                // TODO: uncomment this when DataLock populates EmployerAccountId on PayableEarningEvent
+                .RuleFor(employer => employer.AccountId, faker => faker.Random.Long(1, long.MaxValue))
                 .RuleFor(employer => employer.AccountHashId, faker => faker.Random.Long(1, long.MaxValue).ToString())
                 .RuleFor(employer => employer.AccountName, faker => faker.Company.CompanyName())
                 .RuleFor(employer => employer.Balance, faker => faker.Random.Decimal())
