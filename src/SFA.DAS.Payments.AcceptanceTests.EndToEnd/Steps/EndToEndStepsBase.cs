@@ -174,17 +174,42 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             commitments.ForEach(x =>
             {
+                if (x.CommitmentId == default(long))
+                {
+                    x.CommitmentId = TestSession.GenerateId();
+                }
+
                 x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
                 x.Uln = TestSession.GetLearner(x.LearnerId).Uln;
+
+                var existingCommitment = Commitments.SingleOrDefault(c => c.CommitmentId == x.CommitmentId);
+
+                if (existingCommitment != null)
+                {
+                    Commitments.Remove(existingCommitment);
+                }
             });
-            Commitments.Clear();
+
             Commitments.AddRange(commitments);
             await SaveTestCommitments();
         }
 
         protected async Task SaveTestCommitments()
         {
-            DataContext.Commitment.AddRange(Mapper.ToModel(Commitments));
+            var mappedCommitments = Mapper.ToModel(Commitments);
+
+            foreach (var mappedCommitment in mappedCommitments)
+            {
+                if (DataContext.Commitment.Any(e => e.CommitmentId == mappedCommitment.CommitmentId))
+                {
+                    DataContext.Commitment.Update(mappedCommitment);
+                }
+                else
+                {
+                    await DataContext.Commitment.AddAsync(mappedCommitment);
+                }
+            }
+
             await DataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 

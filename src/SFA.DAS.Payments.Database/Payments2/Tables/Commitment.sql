@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [Payments2].[Commitment]
 (
-	[CommitmentId] [bigint] NOT NULL IDENTITY,
+	[CommitmentId] [bigint] NOT NULL,
 	[SequenceId] [varchar](25) NOT NULL,
 	[Uln] [bigint] NOT NULL,
 	[Ukprn] [bigint] NOT NULL,
