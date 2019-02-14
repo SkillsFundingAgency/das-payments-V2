@@ -34,6 +34,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             
             var returnMessage = mapper.Map<PayableEarningEvent>(message);
             returnMessage.EmployerAccountId = commitment.AccountId;
+            returnMessage.Priority = commitment.Priority;
             return returnMessage;
         }
     }
