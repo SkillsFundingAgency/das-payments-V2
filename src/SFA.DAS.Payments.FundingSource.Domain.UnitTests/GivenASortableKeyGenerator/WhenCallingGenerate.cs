@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
     [TestFixture]
     public class WhenCallingGenerate
     {
-        protected static IGenerateSortableKeys sut;
+        protected static ISortableKeyGenerator sut;
 
         [SetUp]
         public void Setup()
@@ -22,9 +22,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public void ThenTheResultsShouldSortRefundsBeforePayments()
         {
             var keys = new List<string>();
-            var paymentKey = sut.Generate(1, 0, DateTime.MaxValue, 0, Guid.Empty);
+            var paymentKey = sut.Generate(1, 0, 0, Guid.Empty);
             keys.Add(paymentKey);
-            var refundKey = sut.Generate(-100, 0, DateTime.MaxValue, 0, Guid.Empty);
+            var refundKey = sut.Generate(-100, 0, 0, Guid.Empty);
             keys.Add(refundKey);
 
             keys.Sort();
@@ -37,9 +37,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public void ThenTheResultsShouldSortByPriority()
         {
             var keys = new List<string>();
-            var expectedFirst = sut.Generate(1, 1, DateTime.MaxValue, 0, Guid.Empty);
+            var expectedFirst = sut.Generate(1, 1, 0, Guid.Empty);
             keys.Add(expectedFirst);
-            var expectedSecond = sut.Generate(1, 2, DateTime.MaxValue, 0, Guid.Empty);
+            var expectedSecond = sut.Generate(1, 2, 0, Guid.Empty);
             keys.Add(expectedSecond);
 
             keys.Sort();
@@ -52,9 +52,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public void ThenTheResultsShouldSortByDateAgreed()
         {
             var keys = new List<string>();
-            var expectedFirst = sut.Generate(1, 1, DateTime.MinValue, 0, Guid.Empty);
+            var expectedFirst = sut.Generate(1, 1, 0, Guid.Empty);
             keys.Add(expectedFirst);
-            var expectedSecond = sut.Generate(1, 1, DateTime.MaxValue, 0, Guid.Empty);
+            var expectedSecond = sut.Generate(1, 1, 0, Guid.Empty);
             keys.Add(expectedSecond);
 
             keys.Sort();
@@ -67,9 +67,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public void ThenTheResultsShouldSortByUln()
         {
             var keys = new List<string>();
-            var expectedFirst = sut.Generate(1, 1, DateTime.MaxValue, 10, Guid.Empty);
+            var expectedFirst = sut.Generate(1, 1, 10, Guid.Empty);
             keys.Add(expectedFirst);
-            var expectedSecond = sut.Generate(1, 1, DateTime.MaxValue, 100, Guid.Empty);
+            var expectedSecond = sut.Generate(1, 1, 100, Guid.Empty);
             keys.Add(expectedSecond);
 
             keys.Sort();
@@ -85,9 +85,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
             public void ThenTheResultsShouldSortByPriority()
             {
                 var keys = new List<string>();
-                var lowPriorityKey = sut.Generate(100, 2, DateTime.MaxValue, 0, Guid.Empty);
+                var lowPriorityKey = sut.Generate(100, 2, 0, Guid.Empty);
                 keys.Add(lowPriorityKey);
-                var highPriorityKey = sut.Generate(1, 1, DateTime.MaxValue, 0, Guid.Empty);
+                var highPriorityKey = sut.Generate(1, 1, 0, Guid.Empty);
                 keys.Add(highPriorityKey);
 
                 keys.Sort();
@@ -104,9 +104,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
             public void ThenTheResultsShouldSortByPriority()
             {
                 var keys = new List<string>();
-                var lowPriorityKey = sut.Generate(-1, 2, DateTime.MaxValue, 0, Guid.Empty);
+                var lowPriorityKey = sut.Generate(-1, 2, 0, Guid.Empty);
                 keys.Add(lowPriorityKey);
-                var highPriorityKey = sut.Generate(-100, 1, DateTime.MaxValue, 0, Guid.Empty);
+                var highPriorityKey = sut.Generate(-100, 1, 0, Guid.Empty);
                 keys.Add(highPriorityKey);
 
                 keys.Sort();

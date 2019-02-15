@@ -3,13 +3,12 @@ using SFA.DAS.Payments.FundingSource.Domain.Interface;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
-    public class SortableKeyGenerator : IGenerateSortableKeys
+    public class SortableKeyGenerator : ISortableKeyGenerator
     {
-        public string Generate(decimal amountDue, int priority, DateTime dateAgreed, long uln, Guid uniqueId)
+        public string Generate(decimal amountDue, int priority, long uln, Guid uniqueId)
         {
             return string.Concat(amountDue < 0 ? "1" : "9", "-",
                 priority.ToString("000000"), "-",
-                dateAgreed.ToString("yyyyMMddhhmm"), "-",
                 uln, "-",
                 uniqueId.ToString("N"));
         }

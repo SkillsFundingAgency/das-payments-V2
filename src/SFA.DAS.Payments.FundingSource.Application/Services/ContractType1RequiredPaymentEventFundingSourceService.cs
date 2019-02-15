@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILevyAccountRepository levyAccountRepository;
         private readonly ILevyBalanceService levyBalanceService;
-        private readonly IGenerateSortableKeys sortableKeys;
+        private readonly ISortableKeyGenerator sortableKeys;
 
         public ContractType1RequiredPaymentEventFundingSourceService(
             IPaymentProcessor processor, 
@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             IDataCache<List<string>> requiredPaymentKeys, 
             ILevyAccountRepository levyAccountRepository, 
             ILevyBalanceService levyBalanceService, 
-            IGenerateSortableKeys sortableKeys)
+            ISortableKeyGenerator sortableKeys)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         public async Task AddRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
         {
             var keys = await GetKeys().ConfigureAwait(false);
-            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, DateTime.MaxValue, paymentEvent.Learner.Uln, paymentEvent.EventId);
+            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, paymentEvent.Learner.Uln, paymentEvent.EventId);
             keys.Add(key);
             await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
