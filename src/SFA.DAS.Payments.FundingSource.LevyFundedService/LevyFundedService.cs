@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Autofac;
@@ -79,7 +80,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 requiredPaymentKeys,
                 lifetimeScope.Resolve<ILevyAccountRepository>(),
                 lifetimeScope.Resolve<ILevyBalanceService>(),
-                lifetimeScope.Resolve<IPaymentLogger>()
+                lifetimeScope.Resolve<IPaymentLogger>(),
+                lifetimeScope.Resolve<ISortableKeyGenerator>()
             );
             await base.OnActivateAsync().ConfigureAwait(false);
         }

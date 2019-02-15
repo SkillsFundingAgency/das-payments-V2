@@ -175,6 +175,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
                 x.Uln = TestSession.GetLearner(x.LearnerId).Uln;
+                if (x.Ukprn == default(long))
+                {
+                    x.Ukprn = TestSession.Ukprn;
+                }
             });
             Commitments.Clear();
             Commitments.AddRange(commitments);

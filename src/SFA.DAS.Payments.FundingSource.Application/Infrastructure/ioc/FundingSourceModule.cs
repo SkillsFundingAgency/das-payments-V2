@@ -32,6 +32,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<ReliableCollectionCache<List<string>>>()
                 .AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ContractType1RequiredPaymentEventFundingSourceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<SortableKeyGenerator>().AsImplementedInterfaces();
+
 
             builder.Register(c => new ContractType2RequiredPaymentEventFundingSourceService
             (
@@ -42,6 +44,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 },
                 c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
             )).As<IContractType2RequiredPaymentEventFundingSourceService>().InstancePerLifetimeScope();
+
+            builder.RegisterServiceFabricSupport();
 
             builder.RegisterServiceFabricSupport();
         }

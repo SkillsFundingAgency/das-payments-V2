@@ -52,9 +52,16 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache
             return new ConditionalValue<T>(result.HasValue, result.Value);
         }
 
-        public async Task Clear(string key, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task Clear(string key = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await StateManager.TryRemoveStateAsync(key, cancellationToken).ConfigureAwait(false);            
+            if (key == null)
+            {
+                await StateManager.ClearCacheAsync(cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                await StateManager.TryRemoveStateAsync(key, cancellationToken).ConfigureAwait(false);
+            }
         }
     }
 }
