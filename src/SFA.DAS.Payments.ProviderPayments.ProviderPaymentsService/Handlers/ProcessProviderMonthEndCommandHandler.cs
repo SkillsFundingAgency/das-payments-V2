@@ -48,6 +48,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             currentExecutionContext.JobId = message.JobId.ToString();
             try
             {
+                await monthEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear,
+                    message.CollectionPeriod.Period);
                 var payments = await monthEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn);
                 foreach (var paymentEvent in payments.Select(payment => MapToProviderPaymentEvent(payment, message.JobId)))
                 {
@@ -59,7 +61,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError("Error while processing Process Provider Month End Command", ex);
+                paymentLogger.LogError($"Error while processing Process Provider Month End Command. Error: {ex}", ex);
                 throw;
             }
         }
