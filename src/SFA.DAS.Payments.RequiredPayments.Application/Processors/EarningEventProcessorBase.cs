@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -68,7 +67,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
 
                 mapper.Map(earningEvent, requiredPayment);
-
+                
                 result.Add(requiredPayment);
             }
 

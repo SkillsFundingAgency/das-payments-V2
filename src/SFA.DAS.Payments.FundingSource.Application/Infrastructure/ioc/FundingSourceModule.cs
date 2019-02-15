@@ -4,10 +4,10 @@ using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
 using System.Collections.Generic;
-using AutoMapper;
+using Autofac.Integration.ServiceFabric;
+using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
-using SFA.DAS.Payments.ServiceFabric.Core;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
@@ -27,12 +27,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<CoInvestedPaymentProcessor>().As<ICoInvestedPaymentProcessor>();
             builder.RegisterType<EmployerCoInvestedPaymentProcessor>().As<IEmployerCoInvestedPaymentProcessor>();
             builder.RegisterType<SfaCoInvestedPaymentProcessor>().As<ISfaCoInvestedPaymentProcessor>();
-            builder.RegisterType<LevyBalanceService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<LevyBalanceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ReliableCollectionCache<ApprenticeshipContractType1RequiredPaymentEvent>>()
                 .AsImplementedInterfaces();
             builder.RegisterType<ReliableCollectionCache<List<string>>>()
                 .AsImplementedInterfaces();
             builder.RegisterType<ContractType1RequiredPaymentEventFundingSourceService>().AsImplementedInterfaces();
+            builder.RegisterType<SortableKeyGenerator>().AsImplementedInterfaces();
+
 
             builder.Register(c => new ContractType2RequiredPaymentEventFundingSourceService
             (
@@ -43,6 +45,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 },
                 c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
             )).As<IContractType2RequiredPaymentEventFundingSourceService>();
+
+            builder.RegisterServiceFabricSupport();
         }
     }
 }
