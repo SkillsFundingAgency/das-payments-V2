@@ -55,7 +55,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             paymentLogger.LogInfo($"Resetting actor for provider {Id}");
             await StateManager.TryRemoveStateAsync(InitialisedKey, CancellationToken.None).ConfigureAwait(false);
-            await commitments.Clear().ConfigureAwait(false);
+            // TODO: When we can clear the list
+            //await commitments.Clear().ConfigureAwait(false);
         }
 
         protected override async Task OnActivateAsync()

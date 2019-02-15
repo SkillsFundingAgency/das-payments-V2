@@ -13,6 +13,6 @@ namespace SFA.DAS.Payments.Application.Repositories
 
         Task<ConditionalValue<T>> TryGet(string key, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task Clear(string key = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task Clear(string key, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
