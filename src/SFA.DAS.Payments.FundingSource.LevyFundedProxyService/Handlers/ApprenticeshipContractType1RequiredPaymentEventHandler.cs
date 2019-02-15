@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
         {
             this.proxyFactory = proxyFactory ?? new ActorProxyFactory();
             this.paymentLogger = paymentLogger;
-            this.executionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
+            this.executionContext = (ESFA.DC.Logging.ExecutionContext) executionContext;
         }
 
         public async Task Handle(ApprenticeshipContractType1RequiredPaymentEvent message, IMessageHandlerContext context)
@@ -34,16 +34,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             {
                 var actorId = new ActorId(message.EmployerAccountId);
                 var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                try
-                {
-                    await actor.HandleRequiredPayment(message).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    paymentLogger.LogError($"Error invoking levy funded actor. Job: {message.JobId}, UKPRN: {message.Ukprn}. Error: {ex.Message}", ex);
-                    throw;
-                }
-
+                await actor.HandleRequiredPayment(message).ConfigureAwait(false);
                 paymentLogger.LogInfo($"Successfully processed LevyFundedProxyService event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
             }
             catch (Exception ex)
