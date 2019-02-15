@@ -31,6 +31,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<ReliableCollectionCache<List<string>>>()
                 .AsImplementedInterfaces();
             builder.RegisterType<ContractType1RequiredPaymentEventFundingSourceService>().AsImplementedInterfaces();
+            builder.RegisterType<SortableKeyGenerator>().AsImplementedInterfaces();
+
 
             builder.Register(c => new ContractType2RequiredPaymentEventFundingSourceService
             (
@@ -38,9 +40,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 {
                     new SfaCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>()),
                     new EmployerCoInvestedPaymentProcessor(c.Resolve<IValidateRequiredPaymentEvent>())
-                },
-                c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
-            )).As<IContractType2RequiredPaymentEventFundingSourceService>();
+                  },
+                  c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
+                )).As<IContractType2RequiredPaymentEventFundingSourceService>();
         }
     }
 }
