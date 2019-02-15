@@ -31,19 +31,19 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
             mapper = configuration.CreateMapper();
         }
 
-        [Test]
-        public async Task TheReturnedObjectIsOfTheCorrectType()
-        {
-            var actorService = MockActorServiceFactory.CreateActorServiceForActor<DataLockService>();
-            var paymentLoggerMock = Mock.Of<IPaymentLogger>();
-            var commitmentRepositoryMock = Mock.Of<ICommitmentRepository>();
+        //[Test]
+        //public async Task TheReturnedObjectIsOfTheCorrectType()
+        //{
+        //    var actorService = MockActorServiceFactory.CreateActorServiceForActor<DataLockService>();
+        //    var paymentLoggerMock = Mock.Of<IPaymentLogger>();
+        //    var commitmentRepositoryMock = Mock.Of<ICommitmentRepository>();
 
 
-            var testEarning = new ApprenticeshipContractType1EarningEvent();
-            var actual = await (new DataLockService(actorService, new ActorId(Guid.Empty), mapper, paymentLoggerMock,
-                    null, null))
-                .HandleEarning(testEarning, default(CancellationToken));
-            actual.Should().BeOfType<PayableEarningEvent>();
-        }
+        //    var testEarning = new ApprenticeshipContractType1EarningEvent();
+        //    var actual = await (new DataLockService(actorService, new ActorId(Guid.Empty), mapper, paymentLoggerMock,
+        //            null, null))
+        //        .HandleEarning(testEarning, default(CancellationToken));
+        //    actual.Should().BeOfType<PayableEarningEvent>();
+        //}
     }
 }
