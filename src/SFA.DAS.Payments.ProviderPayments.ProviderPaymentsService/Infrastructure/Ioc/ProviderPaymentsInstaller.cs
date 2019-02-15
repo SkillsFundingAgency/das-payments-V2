@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
                 .As<IDataCache<IlrSubmittedEvent>>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<MonthEndCache>()
-                .As<IDataCache<IMonthEndCache>>()
+                .As<IMonthEndCache>()
                 .InstancePerLifetimeScope();
             builder.RegisterBuildCallback(c =>
             {
