@@ -4,10 +4,8 @@ using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
 using System.Collections.Generic;
-using AutoMapper;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
-using SFA.DAS.Payments.ServiceFabric.Core;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
