@@ -23,23 +23,29 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndPayments(CollectionPeriod collectionPeriod,
-            long ukprn,
-            CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentModel>> GetMonthEndPayments(CollectionPeriod collectionPeriod, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await providerPaymentsRepository.GetMonthEndPayments(collectionPeriod, ukprn, cancellationToken);
         }
 
-        public async Task StartMonthEnd(long ukprn, short academicYear, byte collectionPeriod)
+        public async Task StartMonthEnd(long ukprn, short academicYear, byte collectionPeriod, long monthEndJobId)
         {
-            logger.LogVerbose($"Recoding month end in the cache. Ukprn: {ukprn}, academic year: {academicYear}, collection period: {collectionPeriod}");
-            await monthEndCache.AddOrReplace(ukprn, academicYear, collectionPeriod);
-            logger.LogDebug($"Recoded month end in the cache. Ukprn: {ukprn}, academic year: {academicYear}, collection period: {collectionPeriod}");
+            logger.LogVerbose($"Recoding month end in the cache. Ukprn: {ukprn}, academic year: {academicYear}, collection period: {collectionPeriod}, Month End Job Id {monthEndJobId}");
+            await monthEndCache.AddOrReplace(ukprn, academicYear, collectionPeriod, monthEndJobId);
+            logger.LogDebug($"Recoded month end in the cache. Ukprn: {ukprn}, academic year: {academicYear}, collection period: {collectionPeriod} , Month End Job Id {monthEndJobId}");
         }
 
-        public Task<bool> MonthEndStarted(long ukprn, short academicYear, byte collectionPeriod)
+        public async Task<bool> MonthEndStarted(long ukprn, short academicYear, byte collectionPeriod)
         {
-            throw new NotImplementedException();
+            return await monthEndCache.Exists( ukprn,  academicYear,  collectionPeriod);
         }
+
+        public async Task<long> GetMonthEndJobId(long ukprn, short academicYear, byte collectionPeriod)
+        {
+            var monthEndData =  await monthEndCache.GetMonthEndDetails(ukprn, academicYear, collectionPeriod);
+            return monthEndData.JobId;
+        }
+
+       
     }
 }

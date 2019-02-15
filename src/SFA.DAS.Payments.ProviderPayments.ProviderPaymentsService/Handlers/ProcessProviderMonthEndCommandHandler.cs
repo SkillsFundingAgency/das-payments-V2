@@ -48,8 +48,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             currentExecutionContext.JobId = message.JobId.ToString();
             try
             {
-                await monthEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear,
-                    message.CollectionPeriod.Period);
+                await monthEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.JobId);
+
                 var payments = await monthEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn);
                 foreach (var paymentEvent in payments.Select(payment => MapToProviderPaymentEvent(payment, message.JobId)))
                 {

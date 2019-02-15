@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Model;
@@ -27,7 +28,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
             return $"{ukprn}-{academicYear}-{collectionPeriod}";
         }
 
-        public async Task AddOrReplace(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task AddOrReplace(long ukprn, short academicYear, byte collectionPeriod, long monthEndJobId,CancellationToken cancellationToken = default(CancellationToken))
         {
             var key = CreateKey(ukprn, academicYear, collectionPeriod);
             var entity = new MonthEndDetails {Ukprn = ukprn, AcademicYear = academicYear, CollectionPeriod = collectionPeriod};
@@ -38,6 +39,13 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
         {
             var key = CreateKey(ukprn, academicYear, collectionPeriod);
             return await state.ContainsKeyAsync(transactionProvider.Current, key);
+        }
+
+        public async Task<MonthEndDetails> GetMonthEndDetails(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var key = CreateKey(ukprn, academicYear, collectionPeriod);
+            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(4), cancellationToken);
+            return value.Value;
         }
     }
 }
