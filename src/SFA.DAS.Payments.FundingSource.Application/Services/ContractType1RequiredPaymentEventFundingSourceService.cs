@@ -91,11 +91,22 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
             }
 
-            var funds = string.Join(", ", fundingSourceEvents.GroupBy(f => f.FundingSourceType).Select(f => f.Key.ToString() + ": " + string.Join("+", f.Select(ff => ff.AmountDue.ToString("#,##0.##")))));
-            paymentLogger.LogDebug($"Created {fundingSourceEvents.Count} payments - {funds}, account {employerAccountId}, job id {jobId}, first key {keys.FirstOrDefault()}");
+            paymentLogger.LogDebug($"Created {fundingSourceEvents.Count} payments - {GetFundsDebugString(fundingSourceEvents)}, account {employerAccountId}, job id {jobId}");
 
             await requiredPaymentKeys.Clear(KeyListKey).ConfigureAwait(false);
             return fundingSourceEvents.AsReadOnly();
+        }
+
+        private static string GetFundsDebugString(List<FundingSourcePaymentEvent> fundingSourceEvents)
+        {
+            var fundsGroupedBySource = fundingSourceEvents.GroupBy(f => f.FundingSourceType);
+            var debugStrings = fundsGroupedBySource.Select(group => string.Concat(group.Key, ": ", ConcatAmounts(group)));
+            return string.Join(", ", debugStrings);
+
+            string ConcatAmounts(IEnumerable<FundingSourcePaymentEvent> funds)
+            {
+                return string.Join("+", funds.Select(f => f.AmountDue.ToString("#,##0.##")));
+            }
         }
 
         private async Task<List<string>> GetKeys()
