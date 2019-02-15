@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
         public List<Provider> Providers { get; }
-        public Provider Provider => Providers.Single();
+        public Provider Provider => Providers.First();
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
 
@@ -121,12 +121,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             };
         }
 
-        public Learner GetLearner(string learnerIdentifier)
+        public Learner GetLearner(long ukprn,string learnerIdentifier)
         {
-            var learner = Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier);
+            var learner = Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier && l.Ukprn == ukprn);
             if (learner == null)
             {
-                learner = GenerateLearner();
+                learner = GenerateLearner(ukprn);
                 learner.LearnerIdentifier = learnerIdentifier;
                 Learners.Add(learner);
             }

@@ -18,19 +18,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             this.messageSession = messageSession;
         }
 
-        public async Task ClearCaches(TestSession testSession)
+        public async Task ClearCaches(long ukprn,TestSession testSession)
         {
             var keys = new List<string>();
+            var providerLearners = testSession.Learners.Where(x => x.Ukprn == ukprn).ToList();
 
-            if (testSession.Learners.Any(x => x.Aims.Count > 0))
+            if (providerLearners.Any(x => x.Aims.Count > 0))
             {
-                foreach (var learner in testSession.Learners)
+                foreach (var learner in providerLearners)
                 {
                     foreach (var aim in learner.Aims)
                     {
                         keys.Add(apprenticeshipKeyService.GenerateApprenticeshipKey(
-                            testSession.Ukprn,
-                            testSession.GetLearner(learner.LearnerIdentifier).LearnRefNumber,
+                            ukprn,
+                            testSession.GetLearner(ukprn,learner.LearnerIdentifier).LearnRefNumber,
                             aim.FrameworkCode,
                             aim.PathwayCode,
                             aim.ProgrammeType,
@@ -41,10 +42,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             }
             else
             {
-                keys.AddRange(testSession.Learners.Select(learner =>
+                keys.AddRange(providerLearners.Select(learner =>
                     apprenticeshipKeyService.GenerateApprenticeshipKey(
-                        testSession.Ukprn,
-                        testSession.GetLearner(learner.LearnerIdentifier).LearnRefNumber,
+                        ukprn,
+                        testSession.GetLearner(ukprn,learner.LearnerIdentifier).LearnRefNumber,
                         learner.Course.FrameworkCode,
                         learner.Course.PathwayCode,
                         learner.Course.ProgrammeType,

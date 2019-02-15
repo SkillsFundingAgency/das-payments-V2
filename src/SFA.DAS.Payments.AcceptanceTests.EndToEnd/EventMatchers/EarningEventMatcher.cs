@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var learnerId in learnerIds)
             {
-                var learnerSpec = testSession.GetLearner(learnerId);
+                var learnerSpec = testSession.GetLearner(provider.Ukprn,learnerId);
                 var fm36Learner = learnerSpecs.Single(l => l.LearnRefNumber == learnerSpec.LearnRefNumber);
                 var learner = new Learner
                 {

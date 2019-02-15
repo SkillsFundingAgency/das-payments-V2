@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             {
                 var eventCollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build();
                 var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(); 
-                var testLearner = testSession.GetLearner(providerPayment.LearnerId);
+                var testLearner = testSession.GetLearner(provider.Ukprn,providerPayment.LearnerId);
                 var learner = new Learner
                 {
                     ReferenceNumber = testLearner.LearnRefNumber,

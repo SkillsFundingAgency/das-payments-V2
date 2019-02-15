@@ -389,6 +389,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy Learner, no levy available, finishes on time PV2-262.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -680,6 +685,10 @@
     <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, no levy available, finishes on time PV2-262.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, no levy available, finishes on time PV2-262.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

@@ -1,10 +1,9 @@
-﻿using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -40,6 +39,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var newIlrSubmission = table.CreateSet<Training>().ToList();
             AddTestLearners(newIlrSubmission, provider.Ukprn);
 
+            if (PreviousIlr == null) PreviousIlr = new List<Training>();
+
             PreviousIlr.AddRange(newIlrSubmission);
         }
 
@@ -59,6 +60,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             var previousProviderEarnings = CreateEarnings(table, provider.Ukprn);
+
+            if(PreviousEarnings == null) PreviousEarnings = new List<Earning>();
+
             PreviousEarnings.AddRange(previousProviderEarnings);
 
             // for new style specs where no ILR specified
@@ -102,13 +106,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
             if (Context.ContainsKey("current_collection_period") && (CurrentCollectionPeriod.Period != collectionPeriod.Period || CurrentCollectionPeriod.AcademicYear != collectionPeriod.AcademicYear))
             {
-                await RequiredPaymentsCacheCleaner.ClearCaches(TestSession);
+                await RequiredPaymentsCacheCleaner.ClearCaches(TestSession.Ukprn, TestSession);
                 await Task.Delay(Config.TimeToPause);
             }
 
             SetCollectionPeriod(collectionPeriodText);
         }
 
+        [When(@"the amended ILR file is re-submitted for the learners in collection period (.*) by ""(.*)""")]
+        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYearBy(string collectionPeriodText, string providerIdentifier)
+        {
+            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
+
+            if (Context.ContainsKey("current_collection_period") && (CurrentCollectionPeriod.Period != collectionPeriod.Period || CurrentCollectionPeriod.AcademicYear != collectionPeriod.AcademicYear))
+            {
+                await RequiredPaymentsCacheCleaner.ClearCaches(provider.Ukprn, TestSession);
+                await Task.Delay(Config.TimeToPause);
+            }
+
+            SetCollectionPeriod(collectionPeriodText);
+        }
+
+      
         [Then(@"only the following provider payments will be recorded")]
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
@@ -116,11 +136,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then(@"only the following ""(.*)"" payments will be recorded")]
-        public async Task  ThenOnlyTheFollowingPaymentsWillBeRecorded(string providerIdentifier, Table table)
+        public async Task ThenOnlyTheFollowingPaymentsWillBeRecorded(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await ValidateRecordedProviderPayments(table, provider);
         }
-        
+
     }
 }

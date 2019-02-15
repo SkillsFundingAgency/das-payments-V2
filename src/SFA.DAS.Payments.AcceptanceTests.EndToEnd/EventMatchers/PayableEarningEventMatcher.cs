@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return PayableEarningEventHandler.ReceivedEvents.Where(e => e.JobId == provider.JobId
                                                                         && e.CollectionPeriod.Period == collectionPeriod.Period
                                                                         && e.CollectionYear == collectionPeriod.AcademicYear
-                                                                                 && e.Ukprn == provider.Ukprn).ToList();
+                                                                        && e.Ukprn == provider.Ukprn).ToList();
         }
 
         protected override IList<PayableEarningEvent> GetExpectedEvents()
@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var learnerId in learnerIds)
             {
-                var learnerSpec = testSession.GetLearner(learnerId);
+                var learnerSpec = testSession.GetLearner(provider.Ukprn, learnerId);
                 var fm36Learner = learnerSpecs.Single(l => l.LearnRefNumber == learnerSpec.LearnRefNumber);
                 var learner = new Learner
                 {

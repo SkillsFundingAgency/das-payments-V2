@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac;
+﻿using Autofac;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +13,8 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
@@ -68,7 +67,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected List<Earning> PreviousEarnings
         {
-            get => Get<List<Earning>>("previous_earnings");
+            get => !Context.TryGetValue<List<Earning>>("previous_earnings", out var previousEarnings) ? null : previousEarnings;
             set => Set(value, "previous_earnings");
         }
 
@@ -115,7 +114,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             training.ForEach(ilrLearner =>
             {
-                var learner = TestSession.GetLearner(ilrLearner.LearnerId);
+                ilrLearner.Ukprn = ukprn;
+
+                var learner = TestSession.GetLearner(ukprn, ilrLearner.LearnerId);
                 learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
@@ -124,10 +125,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.ProgrammeType = ilrLearner.ProgrammeType;
                 learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
                 learner.Course.PathwayCode = ilrLearner.PathwayCode;
-                if (ilrLearner.Uln != default(long))
-                {
-                    learner.Uln = ilrLearner.Uln;
-                }
+                if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln;
+               
             });
         }
 
@@ -174,8 +173,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             commitments.ForEach(x =>
             {
+                var provider = TestSession.GetProviderByIdentifier(x.Provider);
+                x.Ukprn = provider.Ukprn;
                 x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
-                x.Uln = TestSession.GetLearner(x.LearnerId).Uln;
+                x.Uln = TestSession.GetLearner(provider.Ukprn, x.LearnerId).Uln;
             });
             Commitments.Clear();
             Commitments.AddRange(commitments);
@@ -222,7 +223,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa, ukprn));
 
             if (providerPayment.LevyPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, earning, providerPayment.LevyPayments, FundingSourceType.Levy));
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn));
 
             return list;
         }
@@ -241,7 +242,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 PriceEpisodeIdentifier = "pe-1",
                 FundingSource = fundingSourceType,
                 LearningAimPathwayCode = learnerTraining.PathwayCode,
-                LearnerReferenceNumber = TestSession.GetLearner(learnerTraining.LearnerId).LearnRefNumber,
+                LearnerReferenceNumber = TestSession.GetLearner(ukprn, learnerTraining.LearnerId).LearnRefNumber,
                 LearningAimReference = learnerTraining.AimReference,
                 LearningAimStandardCode = learnerTraining.StandardCode,
                 IlrSubmissionDateTime = submissionTime,
@@ -555,30 +556,35 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return payments;
         }
 
-        protected async Task MatchCalculatedPayments(Table table)
+        protected async Task MatchCalculatedPayments(Table table, Provider provider)
         {
-            var expectedPayments = CreatePayments(table);
-            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
+            var expectedPayments = CreatePayments(table, provider.Ukprn);
+            var matcher = new RequiredPaymentEventMatcher(provider, TestSession, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
             await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
-        protected async Task StartMonthEnd()
+        public async Task ValidateCalculatedPaymentsAtMonthEnd(Table table, Provider provider)
         {
-            if (TestSession.MonthEndCommandSent)
-                return;
+            await MatchCalculatedPayments(table, TestSession.Provider);
+            await StartMonthEnd(TestSession.Provider);
+        }
+
+        protected async Task StartMonthEnd(Provider provider)
+        {
+            if (TestSession.MonthEndCommandSent) return;
 
             var monthEndJobId = TestSession.GenerateId();
-            Console.WriteLine($"Month end job id: {monthEndJobId}");
-            TestSession.SetJobId(monthEndJobId);
+            Console.WriteLine($"Month end job id: {monthEndJobId} for Provider {provider.Ukprn}");
+            provider.JobId = monthEndJobId;
 
             foreach (var employer in TestSession.Employers)
             {
                 var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
                 {
-                    JobId = TestSession.JobId,
+                    JobId = provider.JobId,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
                     RequestTime = DateTime.Now,
-                    SubmissionDate = TestSession.IlrSubmissionTime,
+                    SubmissionDate = provider.IlrSubmissionTime,
                     EmployerAccountId = employer.AccountId,
                 };
 
@@ -593,14 +599,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var processProviderPaymentsAtMonthEndCommand = new ProcessProviderMonthEndCommand
             {
                 CollectionPeriod = CurrentCollectionPeriod,
-                Ukprn = TestSession.Ukprn,
-                JobId = monthEndJobId
+                Ukprn = provider.Ukprn,
+                JobId = provider.JobId
             };
 
             //TODO: remove when DC have implemented the Month End Task
             var dcStartedMonthEndJobCommand = new RecordStartedProcessingMonthEndJob
             {
-                JobId = monthEndJobId,
+                JobId = provider.JobId,
                 CollectionPeriod = CollectionPeriod,
                 CollectionYear = AcademicYear,
                 GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
@@ -611,11 +617,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }}
             };
 
-            var tasks = new List<Task>();
+            var tasks = new List<Task>
+            {
+                MessageSession.Send(dcStartedMonthEndJobCommand),
+                MessageSession.Send(processProviderPaymentsAtMonthEndCommand)
+            };
 
-            tasks.Add(MessageSession.Send(dcStartedMonthEndJobCommand));
-            tasks.Add(MessageSession.Send(processProviderPaymentsAtMonthEndCommand));
-            
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
             TestSession.MonthEndCommandSent = true;
@@ -673,7 +680,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     StartDate = aim.StartDate,
                     TotalAssessmentPrice = firstPriceEpisode.TotalAssessmentPrice,
                     TotalTrainingPrice = firstPriceEpisode.TotalTrainingPrice,
-                    Uln = TestSession.GetLearner(aim.LearnerId).Uln,
+                    Uln = TestSession.GetLearner(ukprn, aim.LearnerId).Uln,
                     Ukprn = ukprn
                 };
 
@@ -685,10 +692,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task GeneratePreviousPayment(Table table, long ukprn)
         {
-            if (TestSession.AtLeastOneScenarioCompleted)
-            {
-                return;
-            }
+            if (TestSession.AtLeastOneScenarioCompleted) return;
 
             var previousEarnings = PreviousEarnings.Where(s => s.Ukprn == ukprn).ToList();
             var previousIlr = PreviousIlr.Where(s => s.Ukprn == ukprn).ToList();
@@ -696,7 +700,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var payments = table.CreateSet<ProviderPayment>().ToList();
             foreach (var payment in payments)
             {
-                payment.Uln = TestSession.GetLearner(payment.LearnerId).Uln;
+                payment.Uln = TestSession.GetLearner(ukprn, payment.LearnerId).Uln;
             }
 
             var previousJobId = TestSession.GenerateId();
@@ -705,10 +709,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             Console.WriteLine($"Previous job id: {previousJobId}");
             var previousPayments = payments.SelectMany(p =>
             {
-                var learnerTraining = previousIlr; 
+                var learnerTraining = previousIlr;
                 var learnerEarning = previousEarnings.First(e => e.LearnerId == p.LearnerId && e.DeliveryPeriod == p.DeliveryPeriod);
-                decimal? sfaContributionPercentage = string.IsNullOrWhiteSpace(learnerEarning.SfaContributionPercentage) ? default(decimal?): learnerEarning.SfaContributionPercentage.ToPercent();
-                
+                decimal? sfaContributionPercentage = string.IsNullOrWhiteSpace(learnerEarning.SfaContributionPercentage) ? default(decimal?) : learnerEarning.SfaContributionPercentage.ToPercent();
+
                 return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, sfaContributionPercentage, ukprn);
             }).ToList();
 

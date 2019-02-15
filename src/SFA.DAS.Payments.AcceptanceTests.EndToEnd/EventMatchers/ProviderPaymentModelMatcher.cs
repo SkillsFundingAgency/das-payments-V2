@@ -123,7 +123,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 ContractType = contractType,
                 Amount = amount,
                 FundingSource = fundingSource,
-                LearnerReferenceNumber = testSession.GetLearner(paymentInfo.LearnerId).LearnRefNumber,
+                LearnerReferenceNumber = testSession.GetLearner(ukprn,paymentInfo.LearnerId).LearnRefNumber,
                 JobId = jobId
             };
         }
