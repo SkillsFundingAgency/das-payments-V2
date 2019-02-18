@@ -23,11 +23,12 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public DateTime EffectiveFromDate { get; set; }
         public DateTime? EffectiveToDate { get; set; }
         public string LegalEntityName { get; set; }
-        public long TransferSendingEmployerAccountId { get; set; }
+        public long? TransferSendingEmployerAccountId { get; set; }
         public DateTime? TransferApprovalDate { get; set; }
         public DateTime? PausedOnDate { get; set; }
         public DateTime? WithdrawnOnDate { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
+        public long VersionId { get; set; }
     }
 
     public enum CommitmentPaymentStatus

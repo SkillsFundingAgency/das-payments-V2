@@ -14,10 +14,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn { get; private set; }
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
-        public Employer Employer => Employers.First();
+        public Employer Employer => GetEmployer("test employer");
         public long JobId { get; private set; }
         public DateTime IlrSubmissionTime { get; set; }
-        public bool MonthEndCommandSent { get; set; }
+        public bool MonthEndJobIdGenerated { get; set; }
         public bool AtLeastOneScenarioCompleted { get; private set; }
         
         public List<Employer> Employers { get; }
@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             JobId = GenerateId();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             IlrSubmissionTime = DateTime.UtcNow;
-            Employers = new List<Employer>(GenerateEmployer().Generate(1));
+            Employers = new List<Employer>();
         }
 
         public void SetJobId(long newJobId)
@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public void CompleteScenario()
         {
             AtLeastOneScenarioCompleted = true;
-            MonthEndCommandSent = false;
+            MonthEndJobIdGenerated = false;
         }
 
         private Faker<Employer> GenerateEmployer()

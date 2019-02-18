@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
@@ -25,6 +26,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILevyAccountRepository levyAccountRepository;
         private readonly ILevyBalanceService levyBalanceService;
+        private readonly IPaymentLogger paymentLogger;
+        private readonly ISortableKeyGenerator sortableKeys;
 
         public ContractType1RequiredPaymentEventFundingSourceService(
             IPaymentProcessor processor, 
@@ -32,7 +35,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
             IDataCache<List<string>> requiredPaymentKeys, 
             ILevyAccountRepository levyAccountRepository, 
-            ILevyBalanceService levyBalanceService)
+            ILevyBalanceService levyBalanceService, 
+            IPaymentLogger paymentLogger,
+            ISortableKeyGenerator sortableKeys)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -40,12 +45,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.requiredPaymentKeys = requiredPaymentKeys ?? throw new ArgumentNullException(nameof(requiredPaymentKeys));
             this.levyAccountRepository = levyAccountRepository ?? throw new ArgumentNullException(nameof(levyAccountRepository));
             this.levyBalanceService = levyBalanceService;
+            this.paymentLogger = paymentLogger;
+            this.sortableKeys = sortableKeys;
         }
 
         public async Task AddRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
         {
             var keys = await GetKeys().ConfigureAwait(false);
-            var key = GenerateSortableKey(paymentEvent.EventId, paymentEvent.Priority, keys.Count);
+            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, paymentEvent.Learner.Uln, paymentEvent.EventId);
             keys.Add(key);
             await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
@@ -53,13 +60,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId, long jobId)
         {
-            var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
-            levyBalanceService.Initialise(levyAccount.Balance);
-
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
 
             var keys = await GetKeys().ConfigureAwait(false);
-            keys.Sort();
+            if (keys.Count == 0)
+                return fundingSourceEvents.AsReadOnly();
+
+            keys.Sort();            
+
+            var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
+            levyBalanceService.Initialise(levyAccount.Balance);
+
+            paymentLogger.LogDebug($"Processing {keys.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
 
             foreach (var key in keys)
             {
@@ -82,8 +94,22 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
             }
 
+            paymentLogger.LogDebug($"Created {fundingSourceEvents.Count} payments - {GetFundsDebugString(fundingSourceEvents)}, account {employerAccountId}, job id {jobId}");
+
             await requiredPaymentKeys.Clear(KeyListKey).ConfigureAwait(false);
             return fundingSourceEvents.AsReadOnly();
+        }
+
+        private static string GetFundsDebugString(List<FundingSourcePaymentEvent> fundingSourceEvents)
+        {
+            var fundsGroupedBySource = fundingSourceEvents.GroupBy(f => f.FundingSourceType);
+            var debugStrings = fundsGroupedBySource.Select(group => string.Concat(group.Key, ": ", ConcatAmounts(group)));
+            return string.Join(", ", debugStrings);
+
+            string ConcatAmounts(IEnumerable<FundingSourcePaymentEvent> funds)
+            {
+                return string.Join("+", funds.Select(f => f.AmountDue.ToString("#,##0.##")));
+            }
         }
 
         private async Task<List<string>> GetKeys()
@@ -92,10 +118,5 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var keys = keysValue.HasValue ? keysValue.Value : new List<string>();
             return keys;
         }
-
-        private string GenerateSortableKey(Guid eventId, int priority, int order)
-        {
-            return string.Concat(priority.ToString("000000"), "-", order.ToString("000000"), "-", eventId.ToString());
         }
-    }
 }

@@ -28,7 +28,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(requiredPayment => requiredPayment.PriceEpisodeIdentifier, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.CollectionPeriod, opt => opt.MapFrom(earning => earning.CollectionPeriod.Clone()))
                 .ForMember(requiredPayment => requiredPayment.Learner, opt => opt.MapFrom(earning => earning.Learner.Clone()))
-                .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()));
+                .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
+                .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
+                ;
 
             CreateMap<IEarningEvent, ApprenticeshipContractTypeRequiredPaymentEvent>()
                 .Include<PayableEarningEvent, ApprenticeshipContractType1RequiredPaymentEvent>()
