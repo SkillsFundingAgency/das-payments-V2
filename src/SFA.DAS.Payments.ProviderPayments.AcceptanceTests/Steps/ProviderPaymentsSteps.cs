@@ -2,10 +2,13 @@
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -64,6 +67,34 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             }
         }
 
+        [When(@"the period closes and month end processing begins")]
+        public async Task WhenThePeriodClosesAndMonthEndProcessingBegins()
+        {
+            await SendMonthEndEvent();
+        }
+        
+        [Then(@"the provider payments service will publish the following payments")]
+        public async Task ThenTheProviderPaymentsServiceWillPublishTheFollowingPayments(Table expectedProviderPayments)
+        {
+            var expectedProviderPaymentEvents = expectedProviderPayments.CreateSet<FundingSourcePayment>();
+
+            await WaitForIt(() =>
+            {
+                return expectedProviderPaymentEvents.All(expectedEvent =>
+                    ProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
+                            ContractType == receivedEvent.ContractType
+                            && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
+                            && TestSession.Ukprn == receivedEvent.Ukprn
+                            && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod
+                            && expectedEvent.Type == receivedEvent.TransactionType
+                            && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
+                            && expectedEvent.Amount == receivedEvent.AmountDue
+                        //&& TestSession.JobId == receivedEvent.JobId
+                    ));
+            }, $"Failed to find all the provider payment events. Found '{ProviderPaymentEventHandler.ReceivedEvents.Count}' events ");
+        }
+
+
         [Then(@"the provider payments service will store the following payments:")]
         public async Task ThenTheProviderPaymentsServiceWillStoreTheFollowingPaymentsAsync(Table expectedPaymentsTable)
         {
@@ -107,19 +138,32 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                         && expectedEvent.Type == receivedEvent.TransactionType
                         && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
                         && expectedEvent.Amount == receivedEvent.AmountDue
-                        && TestSession.JobId == receivedEvent.JobId
+                        //&& TestSession.JobId == receivedEvent.JobId
                     ));
             }, "Failed to find all the provider payment events");
         }
         
         private async Task SendMonthEndEvent()
         {
-            await MessageSession.Send(new ProcessProviderMonthEndCommand()
+            MonthEndJobId = TestSession.GenerateId();
+            Console.WriteLine($"Month end job id: {MonthEndJobId}");
+            var monthEndCommand = new ProcessProviderMonthEndCommand
             {
                 Ukprn = TestSession.Ukprn,
-                JobId = TestSession.JobId,
+                JobId = MonthEndJobId,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
-            }).ConfigureAwait(false);
+            };
+            await CreateJob(DateTimeOffset.UtcNow, new List<GeneratedMessage>
+                {
+                    new GeneratedMessage
+                    {
+                        StartTime = monthEndCommand.RequestTime,
+                        MessageName = monthEndCommand.GetType().FullName,
+                        MessageId = monthEndCommand.CommandId
+                    }
+                }, 
+                JobType.ComponentAcceptanceTestMonthEndJob);
+            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public async Task Handle(ProcessProviderMonthEndCommand message, IMessageHandlerContext context)
         {
-            paymentLogger.LogDebug($"Processing Provider Month End Command for Message Id: {context.MessageId}");
+            paymentLogger.LogDebug($"Processing Provider Month End Command. Ukprn: {message.Ukprn}, Academic Year:{message.CollectionPeriod.AcademicYear}, Collection Period: {message.CollectionPeriod.Period}.");
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
             try

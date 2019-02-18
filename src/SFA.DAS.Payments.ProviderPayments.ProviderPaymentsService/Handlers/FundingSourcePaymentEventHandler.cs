@@ -38,24 +38,26 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public async Task Handle(FundingSourcePaymentEvent message, IMessageHandlerContext context)
         {
-
-            paymentLogger.LogDebug($"Processing Funding Source Payment Event for Message Id : {context.MessageId}");
-            var paymentModel = mapper.Map<ProviderPaymentEventModel>(message);
-            await paymentsService.ProcessPayment(paymentModel, default(CancellationToken));
-
-            var isMonthEnd = await monthEndService
-                .MonthEndStarted(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period)
-                .ConfigureAwait(false);
-
-            if (isMonthEnd)
+            try
             {
+                paymentLogger.LogDebug($"Processing Funding Source Payment Event for Message Id : {context.MessageId}");
+                var paymentModel = mapper.Map<ProviderPaymentEventModel>(message);
+                await paymentsService.ProcessPayment(paymentModel, default(CancellationToken));
+
+                var isMonthEnd = await monthEndService
+                    .MonthEndStarted(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period)
+                    .ConfigureAwait(false);
+
+                if (!isMonthEnd)
+                    return;
+
                 paymentLogger.LogVerbose($"Processing Month End for {paymentModel.GetType().Name} Ukprn {message.Ukprn} - AcademicYear {message.CollectionPeriod.AcademicYear} - Period {message.CollectionPeriod.Period}");
 
                 var monthEndJobId = await monthEndService.GetMonthEndJobId(message.Ukprn,
-                    message.CollectionPeriod.AcademicYear, 
+                    message.CollectionPeriod.AcademicYear,
                     message.CollectionPeriod.Period).ConfigureAwait(false);
 
-                var paymentEvent = MapToProviderPaymentEvent(paymentModel, monthEndJobId, paymentModel.EventId);
+                var paymentEvent = MapToProviderPaymentEvent(message, monthEndJobId, paymentModel.EventId);
 
                 await context.Publish(paymentEvent);
 
@@ -64,22 +66,24 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                     paymentEvent.GetType().FullName,
                     new List<GeneratedMessage>());
             }
+            catch (Exception ex)
+            {
+                paymentLogger.LogError($"Error handling payment. Ukprn: {message.Ukprn}, JobId: {message.JobId}, Learner: {message.Learner.ReferenceNumber}, ContractType: {message.ContractType:G}, Transaction Type: {message.TransactionType:G}.  Error: {ex}", ex);
+                throw;
+            }
 
 
             paymentLogger.LogDebug($"finished processing Funding Source Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
         }
 
-        private ProviderPaymentEvent MapToProviderPaymentEvent(ProviderPaymentEventModel payment, long monthEndJobId,Guid eventId)
+        private ProviderPaymentEvent MapToProviderPaymentEvent(FundingSourcePaymentEvent fundingSourcePaymentEvent, long monthEndJobId, Guid eventId)
         {
-            paymentLogger.LogVerbose($"Mapping payment id: {payment.Id}, funding source: {payment.FundingSource}");
-            var providerPayment = mapper.Map<ProviderPaymentEvent>(payment);
+            paymentLogger.LogVerbose($"Mapping funding source payment: {fundingSourcePaymentEvent.ToDebug()}, funding source: {fundingSourcePaymentEvent.FundingSourceType:G}");
+            var providerPayment = mapper.Map<ProviderPaymentEvent>(fundingSourcePaymentEvent);
             providerPayment.JobId = monthEndJobId;
             providerPayment.EventId = eventId;
-            paymentLogger.LogVerbose($"Finished mapping payment. Id: {providerPayment.EventId}");
-
+            paymentLogger.LogDebug($"Finished mapping payment. Id: {providerPayment.EventId}");
             return providerPayment;
         }
-
-
     }
 }

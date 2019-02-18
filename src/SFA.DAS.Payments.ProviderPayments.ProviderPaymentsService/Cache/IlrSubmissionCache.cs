@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
             if (stateManagerProvider == null) throw new ArgumentNullException(nameof(stateManagerProvider));
             this.transactionProvider = transactionProvider ?? throw new ArgumentNullException(nameof(transactionProvider));
 
-            state = stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary<string, IlrSubmittedEvent>>("SubmissionCache").Result;
+            state = stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary<string, IlrSubmittedEvent>>(transactionProvider.Current, "SubmissionCache").Result;
         }
 
         public async Task<bool> Contains(string key, CancellationToken cancellationToken = default(CancellationToken))
@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 
         public async Task<ConditionalValue<IlrSubmittedEvent>> TryGet(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(4), cancellationToken);
+            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(2), cancellationToken);
             return new ConditionalValue<IlrSubmittedEvent>(value.HasValue, value.Value);
         }
 

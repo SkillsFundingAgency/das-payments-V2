@@ -32,15 +32,22 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure
 
         public async Task End(Exception ex = null)
         {
-            if (ex != null)
+            try
             {
-                logger.LogWarning($"Rolling back the state manager transaction due to exception during message handling. Transaction Id: {reliableStateManagerTransactionProvider.Current.TransactionId}, Exception: {ex.Message}");
-                reliableStateManagerTransactionProvider.Current.Abort();
-                return;
+                if (ex != null)
+                {
+                    logger.LogWarning($"Rolling back the state manager transaction due to exception during message handling. Transaction Id: {reliableStateManagerTransactionProvider.Current.TransactionId}, Exception: {ex.Message}");
+                    reliableStateManagerTransactionProvider.Current.Abort();
+                    return;
+                }
+                logger.LogVerbose($"Completing state manager transaction. Transaction Id: {reliableStateManagerTransactionProvider.Current.TransactionId}");
+                await reliableStateManagerTransactionProvider.Current.CommitAsync();
+                logger.LogDebug($"Completed state manager transaction. TransactionId: {reliableStateManagerTransactionProvider.Current.TransactionId}");
             }
-            logger.LogVerbose($"Completing state manager transaction. Transaction Id: {reliableStateManagerTransactionProvider.Current.TransactionId}");
-            await reliableStateManagerTransactionProvider.Current.CommitAsync();
-            logger.LogDebug($"Completed state manager transaction. TransactionId: {reliableStateManagerTransactionProvider.Current.TransactionId}");
+            finally
+            {
+                reliableStateManagerTransactionProvider.Current.Dispose();
+            }
         }
     }
 }
