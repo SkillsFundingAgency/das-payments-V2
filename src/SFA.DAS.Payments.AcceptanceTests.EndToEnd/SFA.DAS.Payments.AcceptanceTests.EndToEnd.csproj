@@ -316,6 +316,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner over funding band cap - PV2-528.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Disadvantage - Uplift\Framework-and-disadvantaged-uplift-on-time-PV2-487.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -637,6 +642,10 @@
     <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner over funding band cap - PV2-528.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantage - Uplift\Framework-and-disadvantaged-uplift-on-time-PV2-487.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

@@ -169,6 +169,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        [Given("the following capping will apply to the price episodes")]
+        public void GivenTheFollowingCappingWillApply(Table table)
+        {
+
+        }
+
         [Then(@"the following learner earnings should be generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
