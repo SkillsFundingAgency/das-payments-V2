@@ -596,6 +596,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy-learner changes start date backwards in month - PV2-281.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Refunds\Levy-learner retrospective withdrawl - PV2-250.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy-learner retrospective withdrawl - PV2-250.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -871,6 +876,10 @@
     <None Include="Tests\Refunds\Levy-learner changes start date backwards in month - PV2-281.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy-learner changes start date backwards in month - PV2-281.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy-learner retrospective withdrawl - PV2-250.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy-learner retrospective withdrawl - PV2-250.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
