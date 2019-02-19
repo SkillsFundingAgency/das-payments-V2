@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                             && expectedEvent.Type == receivedEvent.TransactionType
                             && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
                             && expectedEvent.Amount == receivedEvent.AmountDue
-                        //&& TestSession.JobId == receivedEvent.JobId
+                    
                     ));
             }, $"Failed to find all the provider payment events. Found '{ProviderPaymentEventHandler.ReceivedEvents.Count}' events ");
         }

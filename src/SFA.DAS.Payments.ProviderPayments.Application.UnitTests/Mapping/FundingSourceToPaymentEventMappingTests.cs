@@ -149,7 +149,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.CollectionPeriod.Period.Should().Be(employerCoInvested.CollectionPeriod.Period);
             payment.CollectionPeriod.AcademicYear.Should().Be(employerCoInvested.CollectionPeriod.AcademicYear);
             payment.DeliveryPeriod.Should().Be(employerCoInvested.DeliveryPeriod);
-            //payment.FundingSourceId.Should().Be(employerCoInvested.EventId);
             payment.ContractType.Should().Be((byte)employerCoInvested.ContractType);
             payment.SfaContributionPercentage.Should().Be(employerCoInvested.SfaContributionPercentage);
             payment.AmountDue.Should().Be(employerCoInvested.AmountDue);

@@ -15,13 +15,16 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
         private readonly IReliableDictionary2<string, MonthEndDetails> state;
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
 
-        public MonthEndCache(IReliableStateManagerProvider stateManagerProvider,
-            IReliableStateManagerTransactionProvider transactionProvider)
+        public MonthEndCache(IReliableStateManagerProvider stateManagerProvider,IReliableStateManagerTransactionProvider transactionProvider)
         {
             if (stateManagerProvider == null) throw new ArgumentNullException(nameof(stateManagerProvider));
             this.transactionProvider = transactionProvider ?? throw new ArgumentNullException(nameof(transactionProvider));
             state = stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<string, MonthEndDetails>>(transactionProvider.Current, "MonthEndCache").Result;
         }
+
+        private Task InitialiseStateManager { get; set; }
+
+
 
         private static string CreateKey(long ukprn, short academicYear, byte collectionPeriod)
         {
@@ -38,13 +41,15 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
         public async Task<bool> Exists(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             var key = CreateKey(ukprn, academicYear, collectionPeriod);
-            return await state.ContainsKeyAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(2), cancellationToken);
+            return await state
+                .ContainsKeyAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(2), cancellationToken)
+                .ConfigureAwait(false);
         }
 
         public async Task<MonthEndDetails> GetMonthEndDetails(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             var key = CreateKey(ukprn, academicYear, collectionPeriod);
-            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(2), cancellationToken);
+            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(2), cancellationToken).ConfigureAwait(false);
             return value.Value;
         }
     }
