@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var isCurrentProviderIlr = await IsCurrentProviderIlr(payment.JobId, payment.Ukprn, payment.IlrSubmissionDateTime, cancellationToken);
+            var isCurrentProviderIlr = await IsCurrentProviderIlr(payment.JobId, payment.Ukprn, payment.IlrSubmissionDateTime, cancellationToken).ConfigureAwait(false);
 
             if (!isCurrentProviderIlr)
             {

@@ -25,24 +25,24 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
         public async Task<List<PaymentModel>> GetMonthEndPayments(CollectionPeriod collectionPeriod, long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await providerPaymentsRepository.GetMonthEndPayments(collectionPeriod, ukprn, cancellationToken);
+            return await providerPaymentsRepository.GetMonthEndPayments(collectionPeriod, ukprn, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task StartMonthEnd(long ukprn, short academicYear, byte collectionPeriod, long monthEndJobId)
         {
             logger.LogVerbose($"Recoding month end in the cache. Ukprn: {ukprn}, academic year: {academicYear}, collection period: {collectionPeriod}, Month End Job Id {monthEndJobId}");
-            await monthEndCache.AddOrReplace(ukprn, academicYear, collectionPeriod, monthEndJobId);
+            await monthEndCache.AddOrReplace(ukprn, academicYear, collectionPeriod, monthEndJobId).ConfigureAwait(false);
             logger.LogDebug($"Recoded month end in the cache. Ukprn: {ukprn}, academic year: {academicYear}, collection period: {collectionPeriod} , Month End Job Id {monthEndJobId}");
         }
 
         public async Task<bool> MonthEndStarted(long ukprn, short academicYear, byte collectionPeriod)
         {
-            return await monthEndCache.Exists( ukprn,  academicYear,  collectionPeriod);
+            return await monthEndCache.Exists( ukprn,  academicYear,  collectionPeriod).ConfigureAwait(false);
         }
 
         public async Task<long> GetMonthEndJobId(long ukprn, short academicYear, byte collectionPeriod)
         {
-            var monthEndData =  await monthEndCache.GetMonthEndDetails(ukprn, academicYear, collectionPeriod);
+            var monthEndData =  await monthEndCache.GetMonthEndDetails(ukprn, academicYear, collectionPeriod).ConfigureAwait(false);
             return monthEndData.JobId;
         }
 
