@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [When(@"the period closes and month end processing begins")]
         public async Task WhenThePeriodClosesAndMonthEndProcessingBegins()
         {
-            await SendMonthEndEvent();
+            await SendMonthEndEvent().ConfigureAwait(false);
         }
         
         [Then(@"the provider payments service will publish the following payments")]

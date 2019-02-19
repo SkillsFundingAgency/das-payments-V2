@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure
                     return;
                 }
                 logger.LogVerbose($"Completing state manager transaction. Transaction Id: {reliableStateManagerTransactionProvider.Current.TransactionId}");
-                await reliableStateManagerTransactionProvider.Current.CommitAsync();
+                await reliableStateManagerTransactionProvider.Current.CommitAsync().ConfigureAwait(false);
                 logger.LogDebug($"Completed state manager transaction. TransactionId: {reliableStateManagerTransactionProvider.Current.TransactionId}");
             }
             finally

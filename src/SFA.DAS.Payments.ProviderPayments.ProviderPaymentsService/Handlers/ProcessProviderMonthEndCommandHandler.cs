@@ -48,14 +48,13 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             currentExecutionContext.JobId = message.JobId.ToString();
             try
             {
-                await monthEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.JobId);
+                await monthEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.JobId).ConfigureAwait(false);
+                var payments = await monthEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn).ConfigureAwait(false);
 
-                var payments = await monthEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn);
                 foreach (var paymentEvent in payments.Select(payment => MapToProviderPaymentEvent(payment, message.JobId)))
                 {
                     await context.Publish(paymentEvent);
-                    await jobClient.ProcessedJobMessage(message.JobId, paymentEvent.EventId,
-                        paymentEvent.GetType().FullName, new List<GeneratedMessage>());
+                    await jobClient.ProcessedJobMessage(message.JobId, paymentEvent.EventId,paymentEvent.GetType().FullName, new List<GeneratedMessage>()).ConfigureAwait(false);
                 }
                 paymentLogger.LogInfo($"Successfully processed Month End Command for Job Id {message.JobId} and Message Type {message.GetType().Name}");
             }
