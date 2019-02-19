@@ -321,6 +321,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner over funding band cap - PV2-528.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Capping\Non-levy Learner over funding band cap - PV2-529.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-levy Learner over funding band cap - PV2-529.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Disadvantage - Uplift\Framework-and-disadvantaged-uplift-on-time-PV2-487.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -646,6 +651,10 @@
     <None Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner over funding band cap - PV2-528.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Capping\Non-levy Learner over funding band cap - PV2-529.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy Learner over funding band cap - PV2-529.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantage - Uplift\Framework-and-disadvantaged-uplift-on-time-PV2-487.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
