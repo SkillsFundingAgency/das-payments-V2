@@ -16,7 +16,6 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.Uln).HasColumnName(@"Uln").IsRequired();
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();
             builder.Property(x => x.AccountId).HasColumnName(@"AccountId").IsRequired();
-            builder.Property(x => x.AccountSequenceId).HasColumnName(@"AccountSequenceId").IsRequired();
             builder.Property(x => x.StartDate).HasColumnName(@"StartDate").IsRequired();
             builder.Property(x => x.EndDate).HasColumnName(@"EndDate").IsRequired();
             builder.Property(x => x.AgreedCost).HasColumnName(@"AgreedCost").IsRequired();
@@ -35,6 +34,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.PausedOnDate).HasColumnName(@"PausedOnDate");
             builder.Property(x => x.WithdrawnOnDate).HasColumnName(@"WithdrawnOnDate");
             builder.Property(x => x.AccountLegalEntityPublicHashedId).HasColumnName(@"AccountLegalEntityPublicHashedId");
+            builder.Property(x => x.AccountSequenceId).HasColumnName(@"AccountSequenceId").IsRequired();
+            builder.Property(x => x.VersionId).HasColumnName("VersionId").IsRequired();
         }
     }
 }

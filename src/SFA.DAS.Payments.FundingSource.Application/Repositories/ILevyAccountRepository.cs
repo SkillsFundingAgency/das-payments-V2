@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
         {
             return await dataContext.LevyAccount.AsNoTracking()
                 .Where(levyAccount => levyAccount.AccountId == employerAccountId)
-                .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+                .SingleAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

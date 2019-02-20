@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -123,6 +123,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following commitments exist")]
+        [Given(@"the Commitment details are changed as follows")]
         public async Task GivenTheFollowingCommitmentsExist(Table table)
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
@@ -238,7 +239,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculated(Table table)
         {
             await MatchCalculatedPayments(table);
-            await StartMonthEnd();
+
+            var monthEndJobId = TestSession.GenerateId();
+            Console.WriteLine($"Month end job id: {monthEndJobId}");
+            TestSession.SetJobId(monthEndJobId);
+            TestSession.MonthEndJobIdGenerated = true;
+
+            foreach (var employer in TestSession.Employers)
+            {
+                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
+                {
+                    JobId = TestSession.JobId,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
+                    RequestTime = DateTime.Now,
+                    SubmissionDate = TestSession.IlrSubmissionTime,
+                    EmployerAccountId = employer.AccountId,
+                };
+
+                await MessageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);
+            }
         }
 
         [Then(@"no payments will be calculated")]
@@ -251,6 +270,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
+            // this is only called for ACT1
+            var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
+            var fundingSourceEventMatcher = new FundingSourcePaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
+            await WaitForIt(() => fundingSourceEventMatcher.MatchPayments(), "funding source events check failure");
+
+            await StartMonthEnd();
             await MatchOnlyProviderPayments(table);
         }
 
@@ -258,9 +283,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
             await StartMonthEnd();
-            var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
-            await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
+            await MatchOnlyProviderPayments(table);
         }
 
         [Then(@"no provider payments will be recorded")]

@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache
     {
         private readonly IActorStateManagerProvider actorStateManagerProvider;
         private IActorStateManager stateManager;
-
+        
         public IActorStateManager StateManager {
             get
             {
@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache
 
         public async Task Clear(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await StateManager.TryRemoveStateAsync(key, cancellationToken).ConfigureAwait(false);            
+            await StateManager.TryRemoveStateAsync(key, cancellationToken).ConfigureAwait(false);
         }
     }
 }

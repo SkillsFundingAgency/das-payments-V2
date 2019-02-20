@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [Payments2].[Commitment]
 (
-	[CommitmentId] [bigint] NOT NULL IDENTITY,
+	[CommitmentId] [bigint] NOT NULL,
 	[SequenceId] [varchar](25) NOT NULL,
 	[Uln] [bigint] NOT NULL,
 	[Ukprn] [bigint] NOT NULL,
@@ -24,5 +24,6 @@
 	[WithdrawnOnDate] [datetime2](7) NULL,
 	[AccountLegalEntityPublicHashedId] [char](6) NULL, 
     [AccountSequenceId] BIGINT NOT NULL, 
+    [VersionId] BIGINT NOT NULL, 
     CONSTRAINT [PK_Commitment] PRIMARY KEY ([CommitmentId], [SequenceId]),
 )
