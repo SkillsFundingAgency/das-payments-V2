@@ -596,6 +596,21 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes start date forwards in month - PV2-280.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Refunds\Levy-learner changes start date backwards in month - PV2-281.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy-learner changes start date backwards in month - PV2-281.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Refunds\Levy-learner retrospective withdrawl - PV2-250.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy-learner retrospective withdrawl - PV2-250.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -871,6 +886,18 @@
     <None Include="Tests\Non-Levy Learner\Small Employer\Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes start date forwards in month - PV2-280.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy-learner changes start date backwards in month - PV2-281.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy-learner changes start date backwards in month - PV2-281.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy-learner retrospective withdrawl - PV2-250.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy-learner retrospective withdrawl - PV2-250.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
