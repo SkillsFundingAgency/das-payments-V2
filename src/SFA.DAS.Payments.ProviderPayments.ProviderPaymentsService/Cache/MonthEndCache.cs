@@ -1,26 +1,25 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Data.Collections;
-using SFA.DAS.Payments.Application.Repositories;
+﻿using Microsoft.ServiceFabric.Data.Collections;
 using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Model;
 using SFA.DAS.Payments.ServiceFabric.Core;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 {
     public class MonthEndCache : IMonthEndCache
     {
-        private readonly IReliableDictionary2<string, MonthEndDetails> state;
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
         private readonly IReliableStateManagerProvider stateManagerProvider;
+        private IReliableDictionary2<string, MonthEndDetails> reliableDictionary;
+        private static readonly object lockObject = new object();
 
-        public MonthEndCache(IReliableStateManagerProvider stateManagerProvider,IReliableStateManagerTransactionProvider transactionProvider)
+        public MonthEndCache(IReliableStateManagerProvider stateManagerProvider, IReliableStateManagerTransactionProvider transactionProvider)
         {
-            if (stateManagerProvider == null) throw new ArgumentNullException(nameof(stateManagerProvider));
             this.transactionProvider = transactionProvider ?? throw new ArgumentNullException(nameof(transactionProvider));
-            this.stateManagerProvider = stateManagerProvider;
+            this.stateManagerProvider = stateManagerProvider ?? throw new ArgumentNullException(nameof(stateManagerProvider));
         }
 
         public async Task AddOrReplace(long ukprn, short academicYear, byte collectionPeriod, long monthEndJobId, CancellationToken cancellationToken = default(CancellationToken))
@@ -50,9 +49,30 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
             return value.Value;
         }
 
-        private  Task<IReliableDictionary2<string, MonthEndDetails>> GetState()
+        private async Task<IReliableDictionary2<string, MonthEndDetails>> GetState()
         {
-            return stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<string, MonthEndDetails>>(transactionProvider.Current, "MonthEndCache");
+            if (reliableDictionary != null) return reliableDictionary;
+
+            if (Monitor.TryEnter(lockObject, TimeSpan.FromSeconds(2)))
+            {
+                try
+                {
+                        reliableDictionary = await stateManagerProvider
+                            .Current
+                            .GetOrAddAsync<IReliableDictionary2<string, MonthEndDetails>>(transactionProvider.Current, "MonthEndCache")
+                            .ConfigureAwait(false);
+                }
+                finally
+                {
+                    Monitor.Exit(lockObject);
+                }
+            }
+            else
+            {
+                throw new Exception("Unable obtain State Manager Provider ReliableDictionary");
+            }
+
+            return reliableDictionary;
         }
 
         private static string CreateKey(long ukprn, short academicYear, byte collectionPeriod)
