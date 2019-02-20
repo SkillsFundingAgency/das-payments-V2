@@ -19,17 +19,17 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
             if (stateManagerProvider == null) throw new ArgumentNullException(nameof(stateManagerProvider));
             this.transactionProvider = transactionProvider ?? throw new ArgumentNullException(nameof(transactionProvider));
 
-            state = stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary<string, IlrSubmittedEvent>>("SubmissionCache").Result;
+            state = stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary<string, IlrSubmittedEvent>>(transactionProvider.Current, "SubmissionCache").Result;
         }
 
         public async Task<bool> Contains(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await state.ContainsKeyAsync(transactionProvider.Current, key);
+            return await state.ContainsKeyAsync(transactionProvider.Current, key).ConfigureAwait(false);
         }
 
         public async Task Add(string key, IlrSubmittedEvent entity, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await state.AddAsync(transactionProvider.Current, key, entity, TimeSpan.FromSeconds(4), cancellationToken);
+            await state.AddAsync(transactionProvider.Current, key, entity, TimeSpan.FromSeconds(4), cancellationToken).ConfigureAwait(false);
         }
 
         public async Task AddOrReplace(string key, IlrSubmittedEvent entity, CancellationToken cancellationToken = default(CancellationToken))
@@ -39,14 +39,14 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 
         public async Task<ConditionalValue<IlrSubmittedEvent>> TryGet(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(4), cancellationToken);
+            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(2), cancellationToken).ConfigureAwait(false);
             return new ConditionalValue<IlrSubmittedEvent>(value.HasValue, value.Value);
         }
 
         public async Task Clear(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (await Contains(key, cancellationToken))
-                await state.TryRemoveAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(5), cancellationToken);
+            if (await Contains(key, cancellationToken).ConfigureAwait(false))
+                await state.TryRemoveAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(5), cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -18,8 +18,7 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
         public decimal SfaContributionPercentage { get; set; }
         public List<OnProgrammeEarning> OnProgrammeEarnings { get; set; } 
         public List<IncentiveEarning> IncentiveEarnings { get; set; }
-
-
+        
         private static Type[] inheritors;
         private static Type[] GetInheritors()
         {
@@ -27,6 +26,5 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
                        .Where(x => x.IsSubclassOf(typeof(DataLockEvent)))
                        .ToArray());
         }
-
     }
 }

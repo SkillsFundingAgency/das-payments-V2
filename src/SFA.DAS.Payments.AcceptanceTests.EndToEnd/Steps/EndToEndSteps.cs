@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -30,13 +30,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (!Context.ContainsKey("new_feature"))
                 NewFeature = true;
-         
-           TestSession.Providers.ForEach(p =>
-           {
-               var newJobId = TestSession.GenerateId();
-               Console.WriteLine($"Using new job. Previous job id: { p.JobId }, new job id: {newJobId}");
-               p.JobId = newJobId;
-           });
+            var newJobId = TestSession.GenerateId();
+            Console.WriteLine($"Using new job. Previous job id: {TestSession.JobId}, new job id: {newJobId}");
+            TestSession.SetJobId(newJobId);
         }
 
         [AfterScenario()]
@@ -69,7 +65,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
         {
             CurrentIlr = table.CreateSet<Training>().ToList();
-            AddTestLearners(CurrentIlr, TestSession.Provider.Ukprn);
+            AddTestLearners(CurrentIlr);
         }
 
         [Given(@"the provider previously submitted the following learner details in collection period ""(.*)""")]
@@ -78,27 +74,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             SetCollectionPeriod(previousCollectionPeriod);
             var ilr = table.CreateSet<Training>().ToList();
             PreviousIlr = ilr;
-            AddTestLearners(PreviousIlr, TestSession.Provider.Ukprn);
+            AddTestLearners(PreviousIlr);
         }
 
         [Given(@"the Provider now changes the Learner details as follows")]
         public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
         {
-            AddNewIlr(table, TestSession.Provider);
-        }
-
-        [Given(@"the ""(.*)"" now changes the Learner details as follows")]
-        public void GivenTheNowChangesTheLearnerDetailsAsFollows(string providerIdentifier, Table table)
-        {
-            if (!TestSession.AtLeastOneScenarioCompleted)
-            {
-                var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-                var currentIlr = table.CreateSet<Training>().ToList();
-                AddTestLearners(currentIlr, provider.Ukprn);
-
-                if(CurrentIlr ==null ) CurrentIlr= new List<Training>();
-                CurrentIlr.AddRange(currentIlr);
-            }
+            AddNewIlr(table);
         }
 
         [Given("the Learner has now changed to \"(.*)\" as follows")]
@@ -106,32 +88,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
-                AddNewIlr(table, TestSession.Provider);
-                //Update all Session Learners and Training to use new provider Ukprn
                 TestSession.RegenerateUkprn();
-                CurrentIlr.ForEach(l => l.Ukprn = TestSession.Provider.Ukprn);
-                TestSession.Learners.ForEach(l => l.Ukprn = TestSession.Provider.Ukprn);
-              }
+                AddNewIlr(table);
+            }
         }
 
         [Given(@"the following learners")]
         public void GivenTheFollowingLearners(Table table)
         {
             var learners = table.CreateSet<Learner>();
-            AddTestLearners(learners, TestSession.Provider.Ukprn);
+            AddTestLearners(learners);
         }
 
         [Given(@"aims details are changed as follows")]
         public void GivenAimsDetailsAreChangedAsFollows(Table table)
         {
-            AddTestAims(table.CreateSet<Aim>().ToList(), TestSession.Provider.Ukprn);
+            AddTestAims(table.CreateSet<Aim>().ToList());
         }
 
         [Given(@"the following aims")]
         public void GivenTheFollowingAims(Table table)
         {
             var aims = table.CreateSet<Aim>().ToList();
-            AddTestAims(aims, TestSession.Provider.Ukprn);
+            AddTestAims(aims);
         }
 
         private static readonly HashSet<long> PriceEpisodesProcessedForJob = new HashSet<long>();
@@ -144,6 +123,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following commitments exist")]
+        [Given(@"the Commitment details are changed as follows")]
         public async Task GivenTheFollowingCommitmentsExist(Table table)
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
@@ -192,72 +172,126 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"the following learner earnings should be generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
-            await GeneratedAndValidateEarnings(table, TestSession.Provider);
+            var earnings = CreateEarnings(table);
+            var learners = new List<FM36Learner>();
+
+            if (CurrentIlr != null)
+            {
+                foreach (var training in CurrentIlr)
+                {
+                    var aim = new Aim(training);
+                    var aims = new List<Aim> { aim };
+                    AddTestAims(aims);
+
+                    if (CurrentPriceEpisodes == null)
+                    {
+                        aim.PriceEpisodes.Add(new Price
+                        {
+                            AimSequenceNumber = training.AimSequenceNumber,
+                            TotalAssessmentPrice = training.TotalAssessmentPrice,
+                            TotalTrainingPrice = training.TotalTrainingPrice,
+                            TotalTrainingPriceEffectiveDate = training.StartDate,
+                            TotalAssessmentPriceEffectiveDate = training.StartDate,
+                            SfaContributionPercentage = training.SfaContributionPercentage,
+                        });
+                    }
+                    else
+                    {
+                        foreach (var currentPriceEpisode in CurrentPriceEpisodes)
+                        {
+                            if (currentPriceEpisode.AimSequenceNumber == 0)
+                            {
+                                aims.Single().PriceEpisodes.Add(currentPriceEpisode);
+                            }
+                            else
+                            {
+                                var matchingAim = aims.First(x => x.AimSequenceNumber == currentPriceEpisode.AimSequenceNumber);
+                                matchingAim.PriceEpisodes.Add(currentPriceEpisode);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Learner -> Aims -> Price Episodes
+            foreach (var testSessionLearner in TestSession.Learners)
+            {
+                var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
+                var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
+                PopulateLearner(learner, testSessionLearner, learnerEarnings);
+                learners.Add(learner);
+            }
+
+            var dcHelper = Scope.Resolve<DcHelper>();
+            await dcHelper.SendLearnerCommands(learners, TestSession.Ukprn, AcademicYear, CollectionPeriod, TestSession.JobId, TestSession.IlrSubmissionTime);
+    
+            var matcher =  new EarningEventMatcher(CurrentPriceEpisodes,CurrentIlr, earnings, TestSession, CurrentCollectionPeriod, learners);
+            await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
-        
-        [Then(@"the following learner earnings should be generated for ""(.*)""")]
-        public async Task ThenTheFollowingLearnerEarningsShouldBeGeneratedFor(string providerIdentifier, Table table)
-        {
-            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-           await GeneratedAndValidateEarnings(table, provider);
-        }
-        
+
         [Then(@"only the following payments will be calculated")]
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
-            await MatchCalculatedPayments(table, TestSession.Provider);
+            await MatchCalculatedPayments(table);
         }
 
         [Then(@"at month end only the following payments will be calculated")]
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculated(Table table)
         {
-            await ValidateCalculatedPaymentsAtMonthEnd(table, TestSession.Provider);
-        }
+            await MatchCalculatedPayments(table);
 
-        [Then(@"at month end only the following payments will be calculated for ""(.*)""")]
-        public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculatedFor(string providerIdentifier, Table table)
-        {
-            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            await ValidateCalculatedPaymentsAtMonthEnd(table, provider);
+            var monthEndJobId = TestSession.GenerateId();
+            Console.WriteLine($"Month end job id: {monthEndJobId}");
+            TestSession.SetJobId(monthEndJobId);
+            TestSession.MonthEndJobIdGenerated = true;
+
+            foreach (var employer in TestSession.Employers)
+            {
+                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
+                {
+                    JobId = TestSession.JobId,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
+                    RequestTime = DateTime.Now,
+                    SubmissionDate = TestSession.IlrSubmissionTime,
+                    EmployerAccountId = employer.AccountId,
+                };
+
+                await MessageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);
+            }
         }
 
         [Then(@"no payments will be calculated")]
         public async Task ThenNoPaymentsWillBeCalculated()
         {
-            var matcher = new RequiredPaymentEventMatcher(TestSession.Provider, CurrentCollectionPeriod);
+            var matcher = new RequiredPaymentEventMatcher(TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure");
         }
 
         [Then(@"only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            await MatchOnlyProviderPayments(table, TestSession.Provider);
-        }
-
-        [Then(@"only the following ""(.*)"" payments will be generated")]
-        public async Task ThenOnlyTheFollowingPaymentsWillBeGenerated(string providerIdentifier, Table table)
-        {
-            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            await MatchOnlyProviderPayments(table, provider);
+            await StartMonthEnd();
+            await MatchOnlyProviderPayments(table);
         }
 
         [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            await ValidateGeneratedProviderPayments( table, TestSession.Provider);
+            await StartMonthEnd();
+            await MatchOnlyProviderPayments(table);
         }
- 
+
         [Then(@"no provider payments will be recorded")]
         public async Task ThenNoProviderPaymentsWillBeRecorded()
         {
-            var matcher = new ProviderPaymentModelMatcher(TestSession.Provider, DataContext, TestSession, CurrentCollectionPeriod);
+            var matcher = new ProviderPaymentModelMatcher(DataContext, TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }
 
         [Then(@"no learner earnings should be generated")]
         public async Task ThenNoLearnerEarningsWillBeRecorded()
         {
-            var matcher =  new EarningEventMatcher(TestSession.Provider, CurrentPriceEpisodes,CurrentIlr, null, TestSession, CurrentCollectionPeriod, null);
+            var matcher =  new EarningEventMatcher(CurrentPriceEpisodes,CurrentIlr, null, TestSession, CurrentCollectionPeriod, null);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Earning Event check failure");
         }
 
@@ -271,7 +305,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 JobId = TestSession.JobId
             };
             await MessageSession.Send(monthEndCommand);
-            var matcher = new ProviderPaymentEventMatcher(TestSession.Provider, CurrentCollectionPeriod, TestSession);
+            var matcher = new ProviderPaymentEventMatcher(CurrentCollectionPeriod, TestSession);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
         }
     }

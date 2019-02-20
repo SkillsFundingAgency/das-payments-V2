@@ -38,14 +38,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            //var isCurrentProviderIlr = await IsCurrentProviderIlr(payment.JobId, payment.Ukprn, payment.IlrSubmissionDateTime, cancellationToken);
+            var isCurrentProviderIlr = await IsCurrentProviderIlr(payment.JobId, payment.Ukprn, payment.IlrSubmissionDateTime, cancellationToken).ConfigureAwait(false);
 
-            //if (!isCurrentProviderIlr)
-            //{
-            //    paymentLogger.LogWarning($"Received out of sequence payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
-            //    telemetry.TrackEvent("Provider payments service received out of sequence payment");
-            //    return;
-            //}
+            if (!isCurrentProviderIlr)
+            {
+                paymentLogger.LogWarning($"Received out of sequence payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
+                telemetry.TrackEvent("Provider payments service received out of sequence payment");
+                return;
+            }
 
             paymentLogger.LogVerbose($"Received valid payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
             await paymentCache.AddPayment(payment);
