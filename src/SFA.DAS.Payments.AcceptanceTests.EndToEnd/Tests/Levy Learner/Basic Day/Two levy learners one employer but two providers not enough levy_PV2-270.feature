@@ -111,6 +111,9 @@ Scenario Outline: Two levy learners, one employer but two providers and nnot eno
         | ULN       | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | learner b | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
         | learner b | R02/Current Academic Year | Sep/Current Academic Year | 0            | 3000       | 0         |
+
+	When Month end is triggered
+
 	And only the following "provider a" payments will be recorded
         | ULN       | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
         | learner a | R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500           | Learning         |

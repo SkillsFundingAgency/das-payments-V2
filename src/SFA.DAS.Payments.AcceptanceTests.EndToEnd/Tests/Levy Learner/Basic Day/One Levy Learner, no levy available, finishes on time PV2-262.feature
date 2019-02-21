@@ -1,40 +1,4 @@
-﻿#1 Levy learner, no Levy available, finishes on time
-#
-#Notes: 
-#This scenario is to accomodate when no Levy is available in the account - although the learner is regarded as ACT1 - Levy learner.
-#
-#The Commitment line includes an attribute called priority.  The employer can select which learner they want 
-#to spend their Levy on in a priority order.  Where ULN is mentioned in the ILR line, learner a is used.  I understand 
-#that this is for simplicity reasons- though this is open to change as required by the new implementation.
-#
-#
-#Given levy balance = 0 for all months
-#		
-#And the following commitments exist:
-#            | ULN       | priority | start date | end date   | agreed price |
-#            | learner a | 1        | 01/09/2018 | 08/09/2019 | 15000        |
-#        
-#		When an ILR file is submitted with the following data:
-#            | ULN       | learner type       | agreed price | start date | planned end date | actual end date | completion status |
-#            | learner a | programme only DAS | 15000        | 01/09/2018 | 08/09/2019       | 08/09/2019      | completed         |
-#        
-#		Then the provider earnings and payments break down as follows:
-#            | Type                          | 09/18 | 10/18 | 11/18 | ... | 08/19 | 09/19 | 10/19 |
-#            | Provider Earned Total         | 1000  | 1000  | 1000  | ... | 1000  | 3000  | 0     |
-#            | Provider Earned from SFA      | 900   | 900   | 900   | ... | 900   | 2700  | 0     |
-#            | Provider Earned from Employer | 100   | 100   | 100   | ... | 100   | 300   | 0     |
-#            | Provider Paid by SFA          | 0     | 900   | 900   | ... | 900   | 900   | 2700  |
-#            | Payment due from Employer     | 0     | 100   | 100   | ... | 100   | 100   | 300   |
-#            | Levy account debited          | 0     | 0     | 0     | ... | 0     | 0     | 0     |
-#            | SFA Levy employer budget      | 0     | 0     | 0     | ... | 0     | 0     | 0     |
-#            | SFA Levy co-funding budget    | 900   | 900   | 900   | ... | 900   | 2700  | 0     |
-#            | SFA non-Levy co-funding budget| 0     | 0     | 0     | ... | 0     | 0     | 0     |
-#
-#
-# New Given for levy balance
-# New Commitments line
-# New column - Levy Payments
-Feature: One Levy learner - no levy available, finished on time PV2-262
+﻿Feature: One Levy learner - no levy available, finished on time PV2-262
 	As a provider,
 	I want a levy learner where no levy is available that finishes on time to be paid the balancing and completion payments,
 	So that I am accurately paid my apprenticeship provision.
