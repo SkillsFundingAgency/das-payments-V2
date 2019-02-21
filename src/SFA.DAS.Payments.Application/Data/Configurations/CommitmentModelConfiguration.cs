@@ -9,10 +9,11 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
         public void Configure(EntityTypeBuilder<CommitmentModel> builder)
         {
             builder.ToTable("Commitment", "Payments2");
-            builder.HasKey(x => x.CommitmentId);
+            builder.HasKey(x => new {x.CommitmentId, x.VersionId});
 
             builder.Property(x => x.CommitmentId).HasColumnName(@"CommitmentId").IsRequired();
-            builder.Property(x => x.SequenceId).HasColumnName(@"SequenceId").IsRequired();
+            builder.Property(x => x.VersionId).HasColumnName("VersionId").IsRequired();
+
             builder.Property(x => x.Uln).HasColumnName(@"Uln").IsRequired();
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();
             builder.Property(x => x.AccountId).HasColumnName(@"AccountId").IsRequired();
@@ -35,7 +36,6 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.WithdrawnOnDate).HasColumnName(@"WithdrawnOnDate");
             builder.Property(x => x.AccountLegalEntityPublicHashedId).HasColumnName(@"AccountLegalEntityPublicHashedId");
             builder.Property(x => x.AccountSequenceId).HasColumnName(@"AccountSequenceId").IsRequired();
-            builder.Property(x => x.VersionId).HasColumnName("VersionId").IsRequired();
         }
     }
 }
