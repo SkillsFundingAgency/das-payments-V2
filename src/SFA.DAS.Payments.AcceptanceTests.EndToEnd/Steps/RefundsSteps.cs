@@ -103,44 +103,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriodText)
         {
-            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
-            if (Context.ContainsKey("current_collection_period") && (CurrentCollectionPeriod.Period != collectionPeriod.Period || CurrentCollectionPeriod.AcademicYear != collectionPeriod.AcademicYear))
-            {
-                await RequiredPaymentsCacheCleaner.ClearCaches(TestSession.Ukprn, TestSession);
-                await Task.Delay(Config.TimeToPause);
-            }
-
-            SetCollectionPeriod(collectionPeriodText);
+            await HandleIlrReSubmissionForTheLearners(collectionPeriodText,TestSession.Provider);
         }
-
-        [When(@"the amended ILR file is re-submitted for the learners in collection period (.*) by ""(.*)""")]
-        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYearBy(string collectionPeriodText, string providerIdentifier)
+        
+        [When(@"the amended ILR file is re-submitted for the learners in the collection period (.*) by ""(.*)""")]
+        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInTheCollectionPeriodRCurrentAcademicYearBy(string collectionPeriodText, string providerIdentifier)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
-
-            if (Context.ContainsKey("current_collection_period") && (CurrentCollectionPeriod.Period != collectionPeriod.Period || CurrentCollectionPeriod.AcademicYear != collectionPeriod.AcademicYear))
-            {
-                await RequiredPaymentsCacheCleaner.ClearCaches(provider.Ukprn, TestSession);
-                await Task.Delay(Config.TimeToPause);
-            }
-
-            SetCollectionPeriod(collectionPeriodText);
+            await HandleIlrReSubmissionForTheLearners(collectionPeriodText, provider);
         }
-
-      
+        
         [Then(@"only the following provider payments will be recorded")]
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
             await ValidateRecordedProviderPayments(table, TestSession.Provider);
         }
 
-        [Then(@"only the following ""(.*)"" payments will be recorded")]
-        public async Task ThenOnlyTheFollowingPaymentsWillBeRecorded(string providerIdentifier, Table table)
+        [When(@"only the following ""(.*)"" payments will be recorded")]
+        public async Task WhenOnlyTheFollowingPaymentsWillBeRecorded(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await ValidateRecordedProviderPayments(table, provider);
         }
-
+        
     }
 }

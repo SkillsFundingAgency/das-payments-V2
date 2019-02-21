@@ -18,6 +18,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
@@ -63,10 +64,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             get => !Context.TryGetValue<List<Training>>("previous_training", out var previousIlr) ? null : previousIlr;
             set => Set(value, "previous_training");
         }
-
+        
         protected List<Earning> PreviousEarnings
         {
-            get => Get<List<Earning>>("previous_earnings");
+            get => !Context.TryGetValue<List<Earning>>("previous_earnings", out var previousEarnings) ? null : previousEarnings;
             set => Set(value, "previous_earnings");
         }
 
@@ -96,8 +97,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected void AddNewIlr(Table table, long ukprn)
         {
             var ilr = table.CreateSet<Training>().ToList();
-            CurrentIlr = ilr;
-            AddTestLearners(CurrentIlr,ukprn);
+            AddTestLearners(ilr, ukprn);
+            if (CurrentIlr == null) CurrentIlr = new List<Training>();
+            CurrentIlr.AddRange(ilr);
         }
 
         protected void SetCollectionPeriod(string collectionPeriod)
@@ -115,7 +117,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             training.ForEach(ilrLearner =>
             {
                 ilrLearner.Ukprn = ukprn;
-
                 var learner = TestSession.GetLearner(ukprn,ilrLearner.LearnerId);
                 learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
@@ -215,9 +216,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var mappedCommitment in mappedCommitments)
             {
                 var matchedCommitment =
-                    await DataContext.Commitment.FirstOrDefaultAsync(e =>
-                        e.CommitmentId == mappedCommitment.CommitmentId);
-
+                    await DataContext.Commitment
+                        .FirstOrDefaultAsync(e => e.CommitmentId == mappedCommitment.CommitmentId);
 
                 if (matchedCommitment != null)
                 {
@@ -607,7 +607,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task StartMonthEnd(Provider provider)
         {
-            if (!TestSession.MonthEndJobIdGenerated) // for ACT1 it could have been generated on Required Payments check step
+            if (!provider.MonthEndJobIdGenerated) // for ACT1 it could have been generated on Required Payments check step
             {
                 var monthEndJobId = TestSession.GenerateId();
                 Console.WriteLine($"Month end job id: {monthEndJobId}");
@@ -643,7 +643,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
-            TestSession.MonthEndJobIdGenerated = true;
+            provider.MonthEndJobIdGenerated = true;
         }
 
         protected async Task SendProcessLearnerCommand(FM36Learner learner)
@@ -685,7 +685,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var trainings = new List<Training>();
 
-            foreach (var aim in TestSession.Learners.SelectMany(l => l.Aims).ToList())
+            foreach (var aim in TestSession.Learners.Where(o => o.Ukprn == ukprn).SelectMany(l => l.Aims).ToList())
             {
                 var firstPriceEpisode = aim.PriceEpisodes.First();
 
@@ -759,7 +759,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task ValidateRecordedProviderPayments(Table table, Provider provider)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>()
-                .Where(p => p.ParsedCollectionPeriod.Period == CurrentCollectionPeriod.Period && p.ParsedCollectionPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear)
+                .Where(p => p.ParsedCollectionPeriod.Period == CurrentCollectionPeriod.Period 
+                            && p.ParsedCollectionPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear)
                 .ToList();
 
             var providerCurrentIlr = CurrentIlr?.Where(c => c.Ukprn == provider.Ukprn).ToList();
@@ -831,6 +832,46 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var matcher = new EarningEventMatcher(TestSession.Provider, CurrentPriceEpisodes, CurrentIlr, earnings, TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
+        }
+        
+        protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
+        {
+            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
+            if (Context.ContainsKey("current_collection_period") && (CurrentCollectionPeriod.Period != collectionPeriod.Period || CurrentCollectionPeriod.AcademicYear != collectionPeriod.AcademicYear))
+            {
+                await RequiredPaymentsCacheCleaner.ClearCaches(provider.Ukprn, TestSession);
+                await Task.Delay(Config.TimeToPause);
+            }
+
+            SetCollectionPeriod(collectionPeriodText);
+        }
+
+        protected async Task ValidateCalculatedPaymentsAtMonthEnd(Table table, Provider provider)
+        {
+            await MatchCalculatedPayments(table, provider);
+            await SendLevyMonthEnd( provider);
+        }
+
+        protected async Task SendLevyMonthEnd( Provider provider)
+        {
+            var monthEndJobId = TestSession.GenerateId();
+            Console.WriteLine($"Month end job id: {monthEndJobId}");
+            provider.JobId = monthEndJobId;
+            provider.MonthEndJobIdGenerated = true;
+
+            foreach (var employer in TestSession.Employers)
+            {
+                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
+                {
+                    JobId = provider.JobId,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
+                    RequestTime = DateTime.Now,
+                    SubmissionDate = provider.IlrSubmissionTime,
+                    EmployerAccountId = employer.AccountId,
+                };
+
+                await MessageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);
+            }
         }
 
 
