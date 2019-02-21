@@ -187,6 +187,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     x.Ukprn = TestSession.Ukprn;
                 }
 
+                if (x.VersionId == null)
+                {
+                    x.VersionId = new Random().Next().ToString();
+                }
+
                 x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
                 x.Uln = TestSession.GetLearner(x.LearnerId).Uln;
             });
