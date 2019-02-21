@@ -11,12 +11,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Model.Core.Factories;
+using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 {
     public abstract class ProviderPaymentsStepsBase : StepsBase
     {
+        protected long MonthEndJobId { get => Get<long>("month_end_job_id"); set => Set(value, "month_end_job_id"); }
         public List<FundingSourcePayment> FundingSourcePayments { get => Get<List<FundingSourcePayment>>(); set => Set(value); }
 
         protected ProviderPaymentsStepsBase(ScenarioContext scenarioContext) : base(scenarioContext)
@@ -67,5 +69,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             paymentEvent.PriceEpisodeIdentifier = "P1";
             return paymentEvent;
         }
+
     }
 }
