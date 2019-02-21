@@ -366,6 +366,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes price at end of month - PV2-294.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price during month - PV2-295.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes price during month - PV2-295.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -682,6 +687,10 @@
     <None Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes price at end of month - PV2-294.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner changes price during month - PV2-295.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes price during month - PV2-295.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
