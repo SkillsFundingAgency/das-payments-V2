@@ -54,8 +54,8 @@ And the following commitments exist
 	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 11250        | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year |
 																																																	   
 And the provider previously submitted the following learner details
-    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
-    | 01/Aug/Current Academic Year | 12 months        | 9000                 | 01/Aug/Current Academic Year        | 2250                  | 01/Aug/Current Academic Year         | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
+    | 01/Aug/Current Academic Year | 12 months        | 9000                 | 01/Aug/Current Academic Year        | 2250                  | 01/Aug/Current Academic Year         |                 | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
 
 And the following earnings had been generated for the learner
     | Delivery Period           | On-Programme | Completion | Balancing |
@@ -83,8 +83,8 @@ But  the Commitment details are changed as follows
 	| 2          | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 1400         | 04/Oct/Current Academic Year |                              | 
 
 And the Provider now changes the Learner details as follows
-    | Aim Reference | Start Date                   | Planned Duration | Programme Type | Completion Status | Aim Sequence Number | Standard Code | Programme Type |Funding Line Type                                  | Contract Type |
-    | ZPROG001      | 01/Aug/Current Academic Year | 12 months        | 25             | continuing        | 1                   | 17            | 25             |16-18 Apprenticeship (From May 2017) Levy Contract | Act1          |
+    | Aim Reference | Start Date                   | Planned Duration | Programme Type | Completion Status | Actual Duration | Aim Sequence Number | Standard Code | Programme Type | Funding Line Type                                  | Contract Type |
+    | ZPROG001      | 01/Aug/Current Academic Year | 12 months        | 25             | continuing        |                 | 1                   | 17            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | Act1          |
 	  
 And price details as follows
     | Price details     | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
