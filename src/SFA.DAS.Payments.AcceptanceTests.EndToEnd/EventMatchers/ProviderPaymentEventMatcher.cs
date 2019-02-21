@@ -47,9 +47,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<ProviderPaymentEvent> GetExpectedEvents()
         {
             var expectedPayments = new List<ProviderPaymentEvent>();
+            var payments = paymentSpec.Where(p => p.ParsedCollectionPeriod.Period == collectionPeriod.Period
+                                                  && p.ParsedCollectionPeriod.AcademicYear ==
+                                                  collectionPeriod.AcademicYear
+                                                  && p.Ukprn == provider.Ukprn);
 
-            foreach (var providerPayment in paymentSpec.Where(p => p.ParsedCollectionPeriod.Period == collectionPeriod.Period 
-                                                                   && p.ParsedCollectionPeriod.AcademicYear == collectionPeriod.AcademicYear))
+            foreach (var providerPayment in payments)
             {
                 var eventCollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build();
                 var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(); 

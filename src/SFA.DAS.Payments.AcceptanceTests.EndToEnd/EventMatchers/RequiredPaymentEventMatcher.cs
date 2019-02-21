@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
@@ -28,7 +27,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         }
 
         public RequiredPaymentEventMatcher(Provider provider,
-            TestSession testSession,
             CollectionPeriod collectionPeriod,
             List<Payment> paymentSpec,
             List<Training> currentIlr, 
