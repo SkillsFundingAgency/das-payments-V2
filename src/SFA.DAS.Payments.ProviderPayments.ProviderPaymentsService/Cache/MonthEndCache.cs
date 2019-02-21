@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
         private readonly IReliableStateManagerProvider stateManagerProvider;
         private IReliableDictionary2<string, MonthEndDetails> reliableDictionary;
-        private static readonly object lockObject = new object();
+        private readonly object lockObject = new object();
 
         public MonthEndCache(IReliableStateManagerProvider stateManagerProvider, IReliableStateManagerTransactionProvider transactionProvider)
         {
@@ -53,23 +53,15 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
         {
             if (reliableDictionary != null) return reliableDictionary;
 
-            if (Monitor.TryEnter(lockObject, TimeSpan.FromSeconds(2)))
+            var state = reliableDictionary = await stateManagerProvider
+                .Current
+                .GetOrAddAsync<IReliableDictionary2<string, MonthEndDetails>>(transactionProvider.Current, "MonthEndCache")
+                .ConfigureAwait(false);
+
+            lock (lockObject)
             {
-                try
-                {
-                        reliableDictionary = await stateManagerProvider
-                            .Current
-                            .GetOrAddAsync<IReliableDictionary2<string, MonthEndDetails>>(transactionProvider.Current, "MonthEndCache")
-                            .ConfigureAwait(false);
-                }
-                finally
-                {
-                    Monitor.Exit(lockObject);
-                }
-            }
-            else
-            {
-                throw new Exception("Unable obtain State Manager Provider ReliableDictionary");
+                if (reliableDictionary == null)
+                    reliableDictionary = state;
             }
 
             return reliableDictionary;
