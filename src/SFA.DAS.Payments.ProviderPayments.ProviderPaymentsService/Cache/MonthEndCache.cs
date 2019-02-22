@@ -6,6 +6,7 @@ using SFA.DAS.Payments.ServiceFabric.Core;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.ServiceFabric.Data;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 {
@@ -51,12 +52,30 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 
         private async Task<IReliableDictionary2<string, MonthEndDetails>> GetState()
         {
-            if (reliableDictionary != null) return reliableDictionary;
+            if (reliableDictionary != null) 
+                return reliableDictionary;
 
-            var state = reliableDictionary = await stateManagerProvider
-                .Current
-                .GetOrAddAsync<IReliableDictionary2<string, MonthEndDetails>>(transactionProvider.Current, "MonthEndCache")
+            IReliableDictionary2<string, MonthEndDetails> state = null;
+
+            var stateValue = await stateManagerProvider.Current
+                .TryGetAsync<IReliableDictionary2<string, MonthEndDetails>>("MonthEndCache")
                 .ConfigureAwait(false);
+
+            if (!stateValue.HasValue)
+            {
+                // this has to be done in a separate transaction. https://github.com/Azure/service-fabric-issues/issues/24
+                using (var transaction = stateManagerProvider.Current.CreateTransaction())
+                {
+                    state = await stateManagerProvider
+                        .Current
+                        .GetOrAddAsync<IReliableDictionary2<string, MonthEndDetails>>(transaction, "MonthEndCache")
+                        .ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                state = stateValue.Value;
+            }
 
             lock (lockObject)
             {
