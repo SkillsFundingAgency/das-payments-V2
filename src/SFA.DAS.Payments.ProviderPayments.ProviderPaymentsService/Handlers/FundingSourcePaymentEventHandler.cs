@@ -45,11 +45,13 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 await paymentsService.ProcessPayment(paymentModel, default(CancellationToken)).ConfigureAwait(false);
 
                 var afterMonthEndPayment = await afterMonthEndPaymentService.GetPaymentEvent(message);
-                if (afterMonthEndPayment == null) return;
-                await context.Publish(afterMonthEndPayment);
-                await earningsJobClient.ProcessedJobMessage(afterMonthEndPayment.JobId, afterMonthEndPayment.EventId, afterMonthEndPayment.GetType().FullName, new List<GeneratedMessage>())
-                    .ConfigureAwait(false);
-
+                if (afterMonthEndPayment != null)
+                {
+                    paymentLogger.LogDebug($"Sending Provider Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
+                    await context.Publish(afterMonthEndPayment);
+                    await earningsJobClient.ProcessedJobMessage(afterMonthEndPayment.JobId, afterMonthEndPayment.EventId, afterMonthEndPayment.GetType().FullName, new List<GeneratedMessage>())
+                        .ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
@@ -58,7 +60,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             }
 
 
-            paymentLogger.LogDebug($"finished processing Funding Source Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
+            paymentLogger.LogDebug($"Finished processing Funding Source Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
         }
 
 
