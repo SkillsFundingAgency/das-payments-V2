@@ -3,8 +3,6 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
 using System.Collections.Generic;
@@ -31,7 +29,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             TestSession.Providers.ForEach(p =>
             {
                 var newJobId = TestSession.GenerateId();
-                Console.WriteLine($"Using new job. Previous job id: { p.JobId }, new job id: {newJobId}");
+                Console.WriteLine($"Using new job. Previous job id: { p.JobId }, new job id: {newJobId} for ukprn: {p.Ukprn}");
                 p.JobId = newJobId;
             });
         }
@@ -205,7 +203,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"at month end only the following payments will be calculated")]
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculated(Table table)
         {
-            await ValidateCalculatedPaymentsAtMonthEnd(table, TestSession.Provider);
+            await ValidateRequiredPaymentsAtMonthEnd(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"at month end only the following payments will be calculated for ""(.*)""")]
@@ -249,7 +247,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            await StartMonthEnd(TestSession.Provider);
+            await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
             await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 

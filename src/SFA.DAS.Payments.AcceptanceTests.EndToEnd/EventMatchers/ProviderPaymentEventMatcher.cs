@@ -19,18 +19,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly Provider provider;
         private readonly CollectionPeriod collectionPeriod;
 
-
-        public ProviderPaymentEventMatcher(Provider provider, CollectionPeriod collectionPeriod, TestSession testSession)
+        public ProviderPaymentEventMatcher(Provider provider, CollectionPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec = null)
         {
+            this.paymentSpec = paymentSpec;
             this.provider = provider;
             this.collectionPeriod = collectionPeriod;
             this.testSession = testSession;
-        }
-
-        public ProviderPaymentEventMatcher(Provider provider,CollectionPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec)
-            : this(provider,collectionPeriod, testSession)
-        {
-            this.paymentSpec = paymentSpec;
         }
 
         protected override IList<ProviderPaymentEvent> GetActualEvents()
@@ -48,8 +42,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var expectedPayments = new List<ProviderPaymentEvent>();
             var payments = paymentSpec.Where(p => p.ParsedCollectionPeriod.Period == collectionPeriod.Period
-                                                  && p.ParsedCollectionPeriod.AcademicYear ==
-                                                  collectionPeriod.AcademicYear);
+                                                  && p.ParsedCollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
 
             foreach (var providerPayment in payments)
             {
