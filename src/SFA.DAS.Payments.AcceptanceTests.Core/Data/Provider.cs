@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
@@ -12,5 +8,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public long Ukprn { get; set; }
         public long JobId { get; set; }
         public DateTime IlrSubmissionTime { get; set; }
+        public bool MonthEndJobIdGenerated { get; set; }
     }
 }

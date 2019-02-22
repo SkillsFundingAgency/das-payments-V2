@@ -49,8 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var expectedPayments = new List<ProviderPaymentEvent>();
             var payments = paymentSpec.Where(p => p.ParsedCollectionPeriod.Period == collectionPeriod.Period
                                                   && p.ParsedCollectionPeriod.AcademicYear ==
-                                                  collectionPeriod.AcademicYear
-                                                  && p.Ukprn == provider.Ukprn);
+                                                  collectionPeriod.AcademicYear);
 
             foreach (var providerPayment in payments)
             {
