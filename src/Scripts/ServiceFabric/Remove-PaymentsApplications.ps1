@@ -18,6 +18,7 @@ $endpoint = 'localhost:19000'
 
 #Data Lock
 .\Remove-ServiceFabricApplicationAndType.ps1 -applicationName SFA.DAS.Payments.DataLocks.ServiceFabric -Verbose
+
 #Audit
 .\Remove-ServiceFabricApplicationAndType.ps1 -applicationName SFA.DAS.Payments.Audit.ServiceFabric -Verbose
 
