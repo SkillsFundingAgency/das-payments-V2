@@ -32,10 +32,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the ""(.*)"" previously submitted the following learner details")]
         public void GivenThePreviouslySubmittedTheFollowingLearnerDetails(string providerIdentifier, Table table)
         {
-            var provider = TestSession.GenerateProvider();
-            provider.Identifier = providerIdentifier;
-            TestSession.Providers.Add(provider);
-
+            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+        
             var newIlrSubmission = table.CreateSet<Training>().ToList();
             AddTestLearners(newIlrSubmission, provider.Ukprn);
 
@@ -68,7 +66,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             // for new style specs where no ILR specified
             if (PreviousIlr == null || PreviousIlr.All(u => u.Ukprn != provider.Ukprn))
             {
-                var providerPreviousIlr = CreateTrainingFromLearners(TestSession.Provider.Ukprn);
+                var providerPreviousIlr = CreateTrainingFromLearners(provider.Ukprn);
                 PreviousIlr.AddRange(providerPreviousIlr);
             }
         }

@@ -19,28 +19,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly List<ProviderPayment> expectedPaymentInfo;
         private readonly ContractType contractType;
 
-
-        public ProviderPaymentModelMatcher(
-            Provider provider,
-            IPaymentsDataContext dataContext, 
+        public ProviderPaymentModelMatcher( Provider provider, 
+            IPaymentsDataContext dataContext,  
             TestSession testSession, 
-            CollectionPeriod currentCollectionPeriod)
-        {
+            CollectionPeriod currentCollectionPeriod, 
+            List<ProviderPayment> expectedPaymentInfo = null, 
+            ContractType contractType = default(ContractType))
+       {
             this.provider = provider;
             this.dataContext = dataContext;
             this.testSession = testSession;
             this.currentCollectionPeriod = currentCollectionPeriod;
-        }
-
-        public ProviderPaymentModelMatcher(
-            Provider provider,
-            IPaymentsDataContext dataContext, 
-            TestSession testSession, 
-            CollectionPeriod currentCollectionPeriod, 
-            List<ProviderPayment> expectedPaymentInfo, 
-            ContractType contractType)
-            : this(provider,dataContext, testSession, currentCollectionPeriod)
-        {
             this.expectedPaymentInfo = expectedPaymentInfo;
             this.contractType = contractType;
         }
@@ -123,7 +112,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 ContractType = contractType,
                 Amount = amount,
                 FundingSource = fundingSource,
-                LearnerReferenceNumber = testSession.GetLearner(ukprn,paymentInfo.LearnerId).LearnRefNumber,
+                LearnerReferenceNumber = testSession.GetLearner(ukprn, paymentInfo.LearnerId).LearnRefNumber,
                 JobId = jobId
             };
         }

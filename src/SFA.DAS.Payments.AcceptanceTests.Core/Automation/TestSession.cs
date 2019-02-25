@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         private static readonly ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
 
         public List<Provider> Providers { get; }
-        public Provider Provider => Providers.First();
+        public Provider Provider => GetProviderByIdentifier("Test Provider");
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
 
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
 
-            Providers = new List<Provider> { GenerateProvider() };
+            Providers = new List<Provider> {};
             IlrSubmissionTime = Provider.IlrSubmissionTime;
             Learners = new List<Learner> { GenerateLearner(Provider.Ukprn) };
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             Provider.Ukprn = GenerateId();
         }
 
-        public Provider GenerateProvider()
+        private Provider GenerateProvider()
         {
             return new Provider
             {
@@ -95,7 +95,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Provider GetProviderByIdentifier(string identifier)
         {
-            return Providers.Single(p => p.Identifier == identifier);
+            if (identifier == null) return Provider;
+
+            var provider = Providers.SingleOrDefault(x => x.Identifier == identifier);
+            if (provider == null)
+            {
+                provider = GenerateProvider();
+                provider.Identifier = identifier;
+                Providers.Add(provider);
+            }
+
+            return provider;
         }
 
         public string GenerateLearnerReference(string learnerId)

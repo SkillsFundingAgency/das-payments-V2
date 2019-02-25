@@ -591,8 +591,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     payment.IncentiveValues.Add(transactionType, amount);
                 }
-
-                payment.Ukprn = ukprn;
             }
 
             return payments;
@@ -846,7 +844,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             SetCollectionPeriod(collectionPeriodText);
         }
 
-        protected async Task ValidateCalculatedPaymentsAtMonthEnd(Table table, Provider provider)
+        protected async Task ValidateRequiredPaymentsAtMonthEnd(Table table, Provider provider)
         {
             await MatchCalculatedPayments(table, provider);
             await SendLevyMonthEnd( provider);
