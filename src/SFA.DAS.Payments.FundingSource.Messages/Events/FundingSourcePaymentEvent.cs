@@ -18,7 +18,6 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
         public TransactionType TransactionType { get; set; }
 
         public FundingSourceType FundingSourceType { get; set; }
-        public int StandardCode { get; set; }
 
 
         private static Type[] inheritors;

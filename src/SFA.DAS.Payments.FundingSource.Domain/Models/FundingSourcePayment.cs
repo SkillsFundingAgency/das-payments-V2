@@ -6,7 +6,6 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Models
     {
         public decimal AmountDue { get; set; }
         public FundingSourceType Type { get; set; }
-        public int StandardCode { get; set; }
     }
 
     public class LevyPayment : FundingSourcePayment

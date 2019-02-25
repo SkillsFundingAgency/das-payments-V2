@@ -59,28 +59,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 if (paymentInfo.SfaCoFundedPayments != 0)
                 {
                     var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa,
-                        paymentInfo.SfaCoFundedPayments, testSession.JobId);
+                        paymentInfo.SfaCoFundedPayments, testSession.JobId, paymentInfo.StandardCode);
                     expectedPayments.Add(coFundedSfa);
                 }
 
                 if (paymentInfo.EmployerCoFundedPayments != 0)
                 {
                     var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn,
-                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId);
+                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId, paymentInfo.StandardCode);
                     expectedPayments.Add(coFundedEmp);
                 }
 
                 if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
                     var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn,
-                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId);
+                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId, paymentInfo.StandardCode);
                     expectedPayments.Add(fullyFundedSfa);
                 }
 
                 if (paymentInfo.LevyPayments != 0)
                 {
                     var levyPayments = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.Levy,
-                        paymentInfo.LevyPayments, testSession.JobId);
+                        paymentInfo.LevyPayments, testSession.JobId, paymentInfo.StandardCode);
                     expectedPayments.Add(levyPayments);
                 }
             }
@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override bool Match(PaymentModel expected, PaymentModel actual)
         {
             return expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
-                   expected.CollectionPeriod.AcademicYear== actual.CollectionPeriod.AcademicYear &&
+                   expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
                    expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.TransactionType == actual.TransactionType &&
                    expected.ContractType == actual.ContractType &&
@@ -98,7 +98,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.Amount == actual.Amount &&
                    expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
                    expected.Ukprn == actual.Ukprn &&
-                   expected.JobId == actual.JobId;
+                   expected.JobId == actual.JobId &&
+                   expected.LearningAimStandardCode == actual.LearningAimStandardCode;
 
         }
 
@@ -107,7 +108,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             long ukprn, 
             FundingSourceType fundingSource, 
             decimal amount, 
-            long jobId)
+            long jobId,
+            int standardCode)
         {
             return new PaymentModel
             {
@@ -119,7 +121,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 Amount = amount,
                 FundingSource = fundingSource,
                 LearnerReferenceNumber = testSession.GetLearner(paymentInfo.LearnerId).LearnRefNumber,
-                JobId = jobId
+                JobId = jobId,
+                LearningAimStandardCode = standardCode
             };
         }
     }

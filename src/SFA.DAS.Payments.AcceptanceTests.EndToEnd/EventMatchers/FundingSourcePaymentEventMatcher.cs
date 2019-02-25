@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
                         FundingSourceType = FundingSourceType.CoInvestedSfa,
-                        StandardCode = providerPayment.StandardCode
+                        LearningAim = new LearningAim { StandardCode = providerPayment.StandardCode},
                     };
                     expectedPayments.Add(coFundedSfa);
                 }
@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
                         FundingSourceType = FundingSourceType.CoInvestedEmployer,
-                        StandardCode = providerPayment.StandardCode
+                        LearningAim = new LearningAim { StandardCode = providerPayment.StandardCode },
                     };
                     expectedPayments.Add(coFundedEmp);
                 }
@@ -94,7 +94,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
-                        StandardCode = providerPayment.StandardCode
+                        LearningAim = new LearningAim { StandardCode = providerPayment.StandardCode },
                     };
                     expectedPayments.Add(fullyFundedSfa);
                 }
@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
-                        StandardCode = providerPayment.StandardCode
+                        LearningAim = new LearningAim { StandardCode = providerPayment.StandardCode },
                     };
                     expectedPayments.Add(levyFunded);
                 }
@@ -127,7 +127,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
                    expected.Learner.Uln == actual.Learner.Uln &&
-                   expected.StandardCode == actual.StandardCode;
+                   expected.LearningAim.StandardCode == actual.LearningAim.StandardCode;
         }
     }
 }

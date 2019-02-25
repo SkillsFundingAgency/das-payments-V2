@@ -54,9 +54,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var payment in paymentsToValidate)
             {
-                AddOnProgPayment(payment, expectedPayments, payment.OnProgramme, OnProgrammeEarningType.Learning);
-                AddOnProgPayment(payment, expectedPayments, payment.Balancing, OnProgrammeEarningType.Balancing);
-                AddOnProgPayment(payment, expectedPayments, payment.Completion, OnProgrammeEarningType.Completion);
+                AddOnProgPayment(payment, expectedPayments, payment.OnProgramme, OnProgrammeEarningType.Learning, payment.StandardCode);
+                AddOnProgPayment(payment, expectedPayments, payment.Balancing, OnProgrammeEarningType.Balancing, payment.StandardCode);
+                AddOnProgPayment(payment, expectedPayments, payment.Completion, OnProgrammeEarningType.Completion, payment.StandardCode);
 
                 foreach (var incentiveTypeKey in payment.IncentiveValues.Keys)
                 {
@@ -76,10 +76,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expectedPayments;
         }
 
-        private void AddOnProgPayment(Payment paymentToValidate, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, OnProgrammeEarningType type)
+        private void AddOnProgPayment(Payment paymentToValidate, List<RequiredPaymentEvent> expectedPayments,
+            decimal amountDue, OnProgrammeEarningType type, int standardCode)
         {
             var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type,
-                new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build());
+                new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build(), standardCode);
             
             if (payment.AmountDue != 0)
                 expectedPayments.Add(payment);
@@ -92,6 +93,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue &&
+                   expected.LearningAim.StandardCode == actual.LearningAim.StandardCode &&
                    MatchAct(expected as ApprenticeshipContractTypeRequiredPaymentEvent, actual as ApprenticeshipContractTypeRequiredPaymentEvent) &&
                    MatchIncentive(expected as IncentiveRequiredPaymentEvent, actual as IncentiveRequiredPaymentEvent);
         }
@@ -112,7 +114,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.Type == actual.Type;
         }
 
-        private RequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue, OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
+        private RequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue,
+            OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod, int standardCode)
         {
             var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
 
@@ -123,7 +126,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     {
                         AmountDue = amountDue,
                         OnProgrammeEarningType = onProgrammeEarningType,
-                        DeliveryPeriod = deliveryPeriod
+                        DeliveryPeriod = deliveryPeriod,
+                        LearningAim = new LearningAim { StandardCode = standardCode}
                     };
 
                 case ContractType.Act2:
@@ -131,7 +135,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     {
                         AmountDue = amountDue,
                         OnProgrammeEarningType = onProgrammeEarningType,
-                        DeliveryPeriod = deliveryPeriod
+                        DeliveryPeriod = deliveryPeriod,
+                        LearningAim = new LearningAim { StandardCode = standardCode }
                     };
 
                 default:
