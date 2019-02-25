@@ -22,5 +22,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 
         public IDictionary<TransactionType, decimal> Values { get; set; } = new Dictionary<TransactionType, decimal>();
         public long Uln { get; set; }
+
+        public long Ukprn { get; set; }
     }
 }
