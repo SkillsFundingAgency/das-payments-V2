@@ -43,23 +43,24 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public async Task Handle(ProcessProviderMonthEndCommand message, IMessageHandlerContext context)
         {
-            paymentLogger.LogDebug($"Processing Provider Month End Command for Message Id: {context.MessageId}");
+            paymentLogger.LogDebug($"Processing Provider Month End Command. Ukprn: {message.Ukprn}, Academic Year:{message.CollectionPeriod.AcademicYear}, Collection Period: {message.CollectionPeriod.Period}.");
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
             try
             {
-                var payments = await monthEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn);
+                await monthEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.JobId).ConfigureAwait(false);
+                var payments = await monthEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn).ConfigureAwait(false);
+
                 foreach (var paymentEvent in payments.Select(payment => MapToProviderPaymentEvent(payment, message.JobId)))
                 {
                     await context.Publish(paymentEvent);
-                    await jobClient.ProcessedJobMessage(message.JobId, paymentEvent.EventId,
-                        paymentEvent.GetType().FullName, new List<GeneratedMessage>());
+                    await jobClient.ProcessedJobMessage(message.JobId, paymentEvent.EventId,paymentEvent.GetType().FullName, new List<GeneratedMessage>()).ConfigureAwait(false);
                 }
                 paymentLogger.LogInfo($"Successfully processed Month End Command for Job Id {message.JobId} and Message Type {message.GetType().Name}");
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError("Error while processing Process Provider Month End Command", ex);
+                paymentLogger.LogError($"Error while processing Process Provider Month End Command. Error: {ex}", ex);
                 throw;
             }
         }

@@ -10,5 +10,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
     {
         Task<List<PaymentModel>> GetMonthEndPayments(CollectionPeriod collectionPeriod, long ukprn,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        Task StartMonthEnd(long ukprn, short academicYear, byte collectionPeriod, long monthEndJobId);
+        Task<bool> MonthEndStarted(long ukprn, short academicYear, byte collectionPeriod);
+        Task<long> GetMonthEndJobId(long ukprn, short academicYear, byte collectionPeriod);
     }
 }
