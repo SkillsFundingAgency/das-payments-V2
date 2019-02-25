@@ -70,6 +70,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
                         .Current
                         .GetOrAddAsync<IReliableDictionary2<string, MonthEndDetails>>(transaction, "MonthEndCache")
                         .ConfigureAwait(false);
+
+                    await transaction.CommitAsync();
                 }
             }
             else
