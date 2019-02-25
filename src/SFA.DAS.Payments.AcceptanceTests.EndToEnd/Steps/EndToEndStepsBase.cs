@@ -199,11 +199,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 if (x.VersionId == null)
                 {
-                    x.VersionId = new Random().Next().ToString();
+                    x.VersionId = TestSession.GenerateId().ToString();
                 }
 
                 x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
-                x.Uln = TestSession.GetLearner(x.LearnerId).Uln;
+
+                x.Uln = TestSession.GetLearner(x.Ukprn, x.LearnerId).Uln;
             });
 
             Commitments.AddRange(commitments);
