@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
         private readonly IPaymentLogger paymentLogger;
         private readonly ApprenticeshipKey apprenticeshipKey;
+        private readonly string apprenticeshipKeyString;
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
         private readonly IPaymentKeyService paymentKeyService;
         private readonly IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor;
@@ -53,12 +54,13 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             this.functionalSkillEarningsEventProcessor = functionalSkillEarningsEventProcessor;
             this.payableEarningEventProcessor = payableEarningEventProcessor;
             this.telemetry = telemetry;
-            apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(actorId.GetStringId());
+            apprenticeshipKeyString = actorId.GetStringId();
+            apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(apprenticeshipKeyString);
         }
 
         public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken)
         {
-            paymentLogger.LogVerbose($"Handling ApprenticeshipContractType2EarningEvent for {apprenticeshipKey}");
+            paymentLogger.LogVerbose($"Handling ApprenticeshipContractType2EarningEvent for {apprenticeshipKeyString}");
 
             using (var operation = telemetry.StartOperation())
             {
@@ -71,7 +73,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
         public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
         {
-            paymentLogger.LogVerbose($"Handling FunctionalSkillEarningsEvent for {apprenticeshipKey}");
+            paymentLogger.LogVerbose($"Handling FunctionalSkillEarningsEvent for {apprenticeshipKeyString}");
 
             using (var operation = telemetry.StartOperation())
             {
@@ -84,7 +86,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
         public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandlePayableEarningEvent(PayableEarningEvent earningEvent, CancellationToken cancellationToken)
         {
-            paymentLogger.LogVerbose($"Handling PayableEarningEvent for {apprenticeshipKey}");
+            paymentLogger.LogVerbose($"Handling PayableEarningEvent for {apprenticeshipKeyString}");
 
             using (var operation = telemetry.StartOperation())
             {
@@ -108,7 +110,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             if (await StateManager.ContainsStateAsync(InitialisedKey).ConfigureAwait(false)) return;
             
-            paymentLogger.LogInfo($"Initialising actor for apprenticeship {apprenticeshipKey}");
+            paymentLogger.LogInfo($"Initialising actor for apprenticeship {apprenticeshipKeyString}");
 
             var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, CancellationToken.None).ConfigureAwait(false);
 
@@ -120,14 +122,14 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 await paymentHistoryCache.AddOrReplace(group.Key, group.Value, CancellationToken.None).ConfigureAwait(false);
             }
 
-            paymentLogger.LogInfo($"Initialised actor for apprenticeship {apprenticeshipKey}");
+            paymentLogger.LogInfo($"Initialised actor for apprenticeship {apprenticeshipKeyString}");
 
             await StateManager.TryAddStateAsync(InitialisedKey, true).ConfigureAwait(false);
         }
 
         public async Task Reset()
         {
-            paymentLogger.LogInfo($"Resetting actor for apprenticeship {apprenticeshipKey}");
+            paymentLogger.LogInfo($"Resetting actor for apprenticeship {apprenticeshipKeyString}");
             await StateManager.TryRemoveStateAsync(InitialisedKey, CancellationToken.None).ConfigureAwait(false);
         }
     }

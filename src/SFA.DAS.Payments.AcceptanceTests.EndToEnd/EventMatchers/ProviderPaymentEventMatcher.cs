@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using Learner = SFA.DAS.Payments.Model.Core.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -14,27 +16,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
     {
         private readonly List<ProviderPayment> paymentSpec;
         private readonly TestSession testSession;
+        private readonly Provider provider;
         private readonly CollectionPeriod collectionPeriod;
 
-
-        public ProviderPaymentEventMatcher(CollectionPeriod collectionPeriod, TestSession testSession)
-        {
-            this.collectionPeriod = collectionPeriod;
-            this.testSession = testSession;
-        }
-
-        public ProviderPaymentEventMatcher(CollectionPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec)
-            : this(collectionPeriod, testSession)
+        public ProviderPaymentEventMatcher(Provider provider, CollectionPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec = null)
         {
             this.paymentSpec = paymentSpec;
+            this.provider = provider;
+            this.collectionPeriod = collectionPeriod;
+            this.testSession = testSession;
         }
 
         protected override IList<ProviderPaymentEvent> GetActualEvents()
         {
             return ProviderPaymentEventHandler.ReceivedEvents
                 .Where(ev =>
-                    ev.Ukprn == testSession.Ukprn &&
-                    ev.JobId == testSession.JobId &&
+                    ev.Ukprn == provider.Ukprn &&
+                    ev.JobId == provider.JobId &&
                     ev.CollectionPeriod.Period == collectionPeriod.Period && 
                     ev.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
                 .ToList();
@@ -43,13 +41,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<ProviderPaymentEvent> GetExpectedEvents()
         {
             var expectedPayments = new List<ProviderPaymentEvent>();
+            var payments = paymentSpec.Where(p => p.ParsedCollectionPeriod.Period == collectionPeriod.Period
+                                                  && p.ParsedCollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
 
-            foreach (var providerPayment in paymentSpec.Where(p => p.ParsedCollectionPeriod.Period == collectionPeriod.Period 
-                                                                   && p.ParsedCollectionPeriod.AcademicYear == collectionPeriod.AcademicYear))
+            foreach (var providerPayment in payments)
             {
                 var eventCollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build();
                 var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(); 
-                var testLearner = testSession.GetLearner(providerPayment.LearnerId);
+                var testLearner = testSession.GetLearner(provider.Ukprn,providerPayment.LearnerId);
                 var learner = new Learner
                 {
                     ReferenceNumber = testLearner.LearnRefNumber,

@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         public void GivenALearnerIsUndertakingATrainingWithATrainingProvider()
         {
             TestSession.Learners.Clear();
-            TestSession.Learners.Add(TestSession.GenerateLearner());
+            TestSession.Learners.Add(TestSession.GenerateLearner(TestSession.Ukprn));
         }
 
         [Given(@"the SFA contribution percentage is (.*)%")]
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             TestSession.Learners.Clear();
             foreach (var row in table.Rows)
             {
-                var learner = TestSession.GenerateLearner();
+                var learner = TestSession.GenerateLearner(TestSession.Ukprn);
                 learner.LearnRefNumber = TestSession.LearnRefNumberGenerator.Generate(learner.Ukprn, row["LearnerId"]);
                 TestSession.Learners.Add(learner);
             }
