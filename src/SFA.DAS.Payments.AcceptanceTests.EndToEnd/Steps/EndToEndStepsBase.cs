@@ -591,8 +591,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     payment.IncentiveValues.Add(transactionType, amount);
                 }
-
-                payment.Ukprn = ukprn;
             }
 
             return payments;
