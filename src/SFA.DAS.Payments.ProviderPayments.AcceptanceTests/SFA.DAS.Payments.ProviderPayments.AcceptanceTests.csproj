@@ -292,6 +292,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ILR Resubmission.feature</DependentUpon>
     </Compile>
+    <Compile Include="Month End\Month End.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Month End.feature</DependentUpon>
+    </Compile>
     <Compile Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -320,6 +325,10 @@
     <None Include="ILR Resubmission\ILR Resubmission.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ILR Resubmission.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Month End\Month End.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Month End.feature.cs</LastGenOutput>
     </None>
     <None Include="Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Early PV2-195.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

@@ -169,6 +169,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        [Given("the following capping will apply to the price episodes")]
+        public void GivenTheFollowingCappingWillApply(Table table)
+        {
+
+        }
+
         [Then(@"the following learner earnings should be generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
@@ -270,11 +276,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            // this is only called for ACT1
-            var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            var fundingSourceEventMatcher = new FundingSourcePaymentEventMatcher(CurrentCollectionPeriod, TestSession, expectedPayments);
-            await WaitForIt(() => fundingSourceEventMatcher.MatchPayments(), "funding source events check failure");
-
             await StartMonthEnd();
             await MatchOnlyProviderPayments(table);
         }

@@ -31,6 +31,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
 
             builder.RegisterType<MonthEndService>()
                 .As<IMonthEndService>();
+
+            builder.RegisterType<ProcessAfterMonthEndPaymentService>()
+                .As<IProcessAfterMonthEndPaymentService>();
+
         }
 
     }
