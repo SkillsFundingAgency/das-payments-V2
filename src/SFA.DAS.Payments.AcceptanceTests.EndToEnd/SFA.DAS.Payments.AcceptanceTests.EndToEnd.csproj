@@ -370,6 +370,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes price at end of month - PV2-294.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price during month - PV2-295.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes price during month - PV2-295.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner goes on a planned break - PV2-296.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner goes on a planned break - PV2-296.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner Ilr is submitted late - PV2-4281.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -712,6 +728,19 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes price at end of month - PV2-294.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner changes price during month - PV2-295.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes price during month - PV2-295.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner goes on a planned break - PV2-296.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner goes on a planned break - PV2-296.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
     <None Include="Tests\Learner Change of Circumstances\Levy learner Ilr is submitted late - PV2-428.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner Ilr is submitted late - PV2-4281.feature.cs</LastGenOutput>
