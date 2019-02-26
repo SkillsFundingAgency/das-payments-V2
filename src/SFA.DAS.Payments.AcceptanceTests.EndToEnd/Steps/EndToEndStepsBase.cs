@@ -175,34 +175,36 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             commitments.ForEach(commitment =>
             {
-                var provider = TestSession.GetProviderByIdentifier(commitment.Provider);
+                var existingCommitment = Commitments
+                    .FirstOrDefault(c => c.CommitmentId == x.CommitmentId && c.VersionId == x.VersionId);
+                Commitments.Remove(existingCommitment);
 
-
-                var firstCommitment = Commitments.FirstOrDefault(c =>
-                    c.Identifier == commitment.Identifier &&
-                    c.Ukprn == provider.Ukprn || commitment.Ukprn == default(long));
-
-                if (commitment.CommitmentId == default(long))
+                if (x.CommitmentId == default(long))
                 {
-                    if (firstCommitment != null)
+                    x.CommitmentId = TestSession.GenerateId();
+                }
+
+                if (x.Ukprn == default(long))
+                {
+                    if (string.IsNullOrEmpty(x.Provider))
                     {
-                        commitment.CommitmentId = firstCommitment.CommitmentId;
-                        commitment.Ukprn = commitment.Ukprn == default(long) ? firstCommitment.Ukprn : commitment.Ukprn;
+                        x.Ukprn = TestSession.Ukprn;
                     }
                     else
                     {
-                        commitment.CommitmentId = TestSession.GenerateId();
-                        commitment.Ukprn = provider.Ukprn;
+                        x.Ukprn = TestSession.GetProviderByIdentifier(x.Provider).Ukprn;
                     }
+                    
                 }
 
-                commitment.AccountId = TestSession.GetEmployer(commitment.Employer).AccountId;
-                commitment.Uln = TestSession.GetLearner(commitment.Ukprn, commitment.LearnerId).Uln;
-
-                if (firstCommitment != null)
+                if (x.VersionId == null)
                 {
-                    Commitments.Remove(firstCommitment);
+                    x.VersionId = TestSession.GenerateId().ToString();
                 }
+
+                x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
+
+                x.Uln = TestSession.GetLearner(x.Ukprn, x.LearnerId).Uln;
             });
 
             Commitments.AddRange(commitments);
@@ -216,12 +218,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var mappedCommitment in mappedCommitments)
             {
                 var matchedCommitment =
-                    await DataContext.Commitment
-                        .FirstOrDefaultAsync(e => e.CommitmentId == mappedCommitment.CommitmentId);
+                    await DataContext.Commitment.FirstOrDefaultAsync(e =>
+                        e.CommitmentId == mappedCommitment.CommitmentId &&
+                        e.VersionId == mappedCommitment.VersionId);
 
                 if (matchedCommitment != null)
                 {
                     DataContext.Commitment.Remove(matchedCommitment);
+                    await DataContext.SaveChangesAsync().ConfigureAwait(false);
                 }
 
                 await DataContext.Commitment.AddAsync(mappedCommitment);

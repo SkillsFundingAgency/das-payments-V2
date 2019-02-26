@@ -12,7 +12,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public string Provider { get; set; }
 
         public long CommitmentId { get; set; }
-        public long SequenceId { get; set; }
+        public string VersionId { get; set; }
+
         public long Uln { get; set; }
         public long Ukprn { get; set; }
         public long AccountId { get; set; }
@@ -34,6 +35,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public DateTime? PausedOnDate { get; set; }
         public DateTime? WithdrawnOnDate { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
-        public long VersionId { get; set; } = 1L;
     }
 }
