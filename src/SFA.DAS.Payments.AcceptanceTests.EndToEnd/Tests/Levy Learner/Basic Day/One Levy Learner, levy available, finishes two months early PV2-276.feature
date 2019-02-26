@@ -1,29 +1,4 @@
-﻿  #  Scenario: A DAS learner, levy available, learner finishes two months early
-  #      Given levy balance > agreed price for all months
-		#And the following commitments exist:
-  #          | ULN       | priority | start date | end date   | agreed price |
-  #          | learner a | 1        | 01/09/2017 | 08/09/2018 | 15000        |
-  #      When an ILR file is submitted with the following data:
-  #          | ULN       | learner type       | agreed price | start date | planned end date | actual end date | completion status |
-  #          | learner a | programme only DAS | 15000        | 01/09/2017 | 08/09/2018       | 08/07/2018      | completed         |
-  #      Then the provider earnings and payments break down as follows:
-  #          | Type                       | 09/17 | 10/17 | 11/17 | ... | 07/18 | 08/18 |
-  #          | Provider Earned Total      | 1000  | 1000  | 1000  | ... | 5000  | 0     |
-  #          | Provider Earned from SFA   | 1000  | 1000  | 1000  | ... | 5000  | 0     |
-  #          | Provider Paid by SFA       | 0     | 1000  | 1000  | ... | 1000  | 5000  |
-  #          | Levy account debited       | 0     | 1000  | 1000  | ... | 1000  | 5000  |
-  #          | SFA Levy employer budget   | 1000  | 1000  | 1000  | ... | 5000  | 0     |
-  #          | SFA Levy co-funding budget | 0     | 0     | 0     | ... | 0     | 0     |
-  #      And the transaction types for the payments are:
-  #          | Transaction type | 10/17 | 11/17 | ... | 07/18 | 08/18 |
-  #          | On-program       | 1000  | 1000  | ... | 1000  | 0     |
-  #          | Completion       | 0     | 0     | ... | 0     | 3000  |
-  #          | Balancing        | 0     | 0     | ... | 0     | 2000  |
-			
-# levy balance > agreed price for all months
-# Commitments line
-# Levy Payments
-Feature: One Levy learner - levy available, finishes two months early PV2-276
+﻿Feature: One Levy learner - levy available, finishes two months early PV2-276
 	As a provider,
 	I want a levy learner, where levy is available and the learner finishes two months early to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

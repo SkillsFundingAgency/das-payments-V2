@@ -1,30 +1,4 @@
-﻿#Scenario: 1 Levy learner, Levy available, finishes on time
-#
-#
-#        Given levy balance > agreed price for all months
-#		
-#		And the following commitments exist:
-#            | ULN       | priority | start date | end date   | agreed price |
-#            | learner a | 1        | 01/09/2018 | 08/09/2019 | 15000        |
-#        
-#		When an ILR file is submitted with the following data:
-#            | ULN       | learner type       | agreed price | start date | planned end date | actual end date | completion status |
-#            | learner a | programme only DAS | 15000        | 01/09/2018 | 08/09/2019       | 08/09/2019      | completed         |
-#        
-#		Then the provider earnings and payments break down as follows:
-#            | Type                       | 09/18 | 10/18 | 11/18 | ... | 08/19 | 09/19 | 10/19 |
-#            | Provider Earned Total      | 1000  | 1000  | 1000  | ... | 1000  | 3000  | 0     |
-#            | Provider Earned from SFA   | 1000  | 1000  | 1000  | ... | 1000  | 3000  | 0     |
-#            | Provider Paid by SFA       | 0     | 1000  | 1000  | ... | 1000  | 1000  | 3000  |
-#            | Levy account debited       | 0     | 1000  | 1000  | ... | 1000  | 1000  | 3000  |
-#            | SFA Levy employer budget   | 1000  | 1000  | 1000  | ... | 1000  | 3000  | 0     |
-#            | SFA Levy co-funding budget | 0     | 0     | 0     | ... | 0     | 0     | 0     |
-
-
-# New Given for levy balance
-# New Commitments line
-# New column - Levy Payments
-Feature: One Levy learner - levy available, finishes on time PV2-261
+﻿Feature: One Levy learner - levy available, finishes on time PV2-261
 	As a provider,
 	I want a levy learner where levy is available that finishes on time to be paid the balancing and completion payments,
 	So that I am accurately paid my apprenticeship provision.

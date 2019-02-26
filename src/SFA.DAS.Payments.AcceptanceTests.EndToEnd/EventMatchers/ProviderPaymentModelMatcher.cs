@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
@@ -11,31 +12,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public class ProviderPaymentModelMatcher : BaseMatcher<PaymentModel>
     {
+        private readonly Provider provider;
         private readonly IPaymentsDataContext dataContext;
         private readonly TestSession testSession;
         private readonly CollectionPeriod currentCollectionPeriod;
         private readonly List<ProviderPayment> expectedPaymentInfo;
         private readonly ContractType contractType;
 
-
-        public ProviderPaymentModelMatcher(
-            IPaymentsDataContext dataContext, 
+        public ProviderPaymentModelMatcher( Provider provider, 
+            IPaymentsDataContext dataContext,  
             TestSession testSession, 
-            CollectionPeriod currentCollectionPeriod)
-        {
+            CollectionPeriod currentCollectionPeriod, 
+            List<ProviderPayment> expectedPaymentInfo = null, 
+            ContractType contractType = default(ContractType))
+       {
+            this.provider = provider;
             this.dataContext = dataContext;
             this.testSession = testSession;
             this.currentCollectionPeriod = currentCollectionPeriod;
-        }
-
-        public ProviderPaymentModelMatcher(
-            IPaymentsDataContext dataContext, 
-            TestSession testSession, 
-            CollectionPeriod currentCollectionPeriod, 
-            List<ProviderPayment> expectedPaymentInfo, 
-            ContractType contractType)
-            : this(dataContext, testSession, currentCollectionPeriod)
-        {
             this.expectedPaymentInfo = expectedPaymentInfo;
             this.contractType = contractType;
         }
@@ -43,10 +37,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<PaymentModel> GetActualEvents()
         {
             return dataContext.Payment
-                .Where(p => p.JobId == testSession.JobId &&
+                .Where(p => p.JobId == provider.JobId &&
                             p.CollectionPeriod.Period == currentCollectionPeriod.Period &&
                             p.CollectionPeriod.AcademicYear == currentCollectionPeriod.AcademicYear &&
-                            p.Ukprn == testSession.Ukprn)
+                            p.Ukprn == provider.Ukprn)
                 .ToList();
         }
 

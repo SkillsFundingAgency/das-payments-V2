@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
+using SFA.DAS.Payments.ProviderPayments.Model;
 using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
@@ -116,7 +118,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             validateIlrSubmission
                 .Setup(o => o.IsLatestIlrPayment(It.IsAny<IlrSubmissionValidationRequest>()))
                 .Returns(true);
-            
+
+            mocker.Mock<IMonthEndCache>()
+                .Setup(cache => cache.AddOrReplace(It.IsAny<long>(),
+                    It.IsAny<short>(), 
+                    It.IsAny<byte>(),
+                    It.IsAny<long>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
             monthEndService = mocker.Create<MonthEndService>();
         }
 
@@ -132,5 +142,57 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                                                     It.Is<long>(x => x == ukprn),
                                                     It.IsAny<CancellationToken>()), Times.Once);
         }
+
+        [Test]
+        public async Task RecordMonthEndStoresMonthEndInfoInCache()
+        {
+            await monthEndService.StartMonthEnd(ukprn, 1819, 2,jobId);
+            mocker.Mock<IMonthEndCache>()
+                .Verify(cache => cache.AddOrReplace(It.Is<long>(expectedUkprn => expectedUkprn == ukprn),
+                    It.Is<short>(academicYear => academicYear == 1819),
+                    It.Is<byte>(collectionPeriod => collectionPeriod == 2),
+                    It.Is<long>(monthEndJobId => monthEndJobId == jobId),
+                    It.IsAny<CancellationToken>()));
+        }
+
+        [Test]
+        public async Task MonthEndStartedReturnsTrueIfMonthEndRecorded()
+        {
+            mocker.Mock<IMonthEndCache>()
+                .Setup(cache => cache.Exists(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(true));
+            var started = await monthEndService.MonthEndStarted(ukprn, 1819, 2);
+            started.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task MonthEndStartedReturnsFalseIfMonthEndNotRecorded()
+        {
+            mocker.Mock<IMonthEndCache>()
+                .Setup(cache => cache.Exists(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(false));
+            var started = await monthEndService.MonthEndStarted(ukprn, 1819, 2);
+            started.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task  ReturnValidMonthEndJobIdFromCache()
+        {
+            mocker.Mock<IMonthEndCache>()
+                .Setup(cache => cache.GetMonthEndDetails(It.Is<long>(expectedUkprn => expectedUkprn == ukprn),
+                    It.IsAny<short>(),
+                    It.IsAny<byte>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(new MonthEndDetails
+                {
+                    JobId = jobId
+                }));
+                
+          var actual =  await monthEndService.GetMonthEndJobId(ukprn,1819, 2);
+            actual.Should().Be(jobId);
+        }
+
     }
 }

@@ -4,6 +4,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
     public class Training
     {
+        public long Ukprn { get; set; }
         public string LearnerId { get; set; }
         public long Uln { get; set; }
         public string StartDate { get; set; }

@@ -1,25 +1,4 @@
-﻿  # Scenario: A levy learner, levy available, learner finishes late
-  #      Given levy balance > agreed price for all months
-		#And the following commitments exist:
-  #          | ULN       | priority | start date | end date   | agreed price |
-  #          | learner a | 1        | 01/09/2017 | 08/09/2018 | 15000        |
-  #      When an ILR file is submitted with the following data:
-  #          | ULN       | learner type       | agreed price | start date | planned end date | actual end date | completion status |
-  #          | learner a | programme only DAS | 15000        | 01/09/2017 | 08/09/2018       | 08/10/2018      | completed         |
-  #      Then the provider earnings and payments break down as follows:
-  #          | Type                       | 09/17 | 10/17 | 11/17 | ... | 08/18 | 09/18 | 10/18 | 11/18 |
-  #          | Provider Earned Total      | 1000  | 1000  | 1000  | ... | 1000  | 0     | 3000  | 0     |
-  #          | Provider Earned from SFA   | 1000  | 1000  | 1000  | ... | 1000  | 0     | 3000  | 0     |
-  #          | Provider Paid by SFA       | 0     | 1000  | 1000  | ... | 1000  | 1000  | 0     | 3000  |
-  #          | Levy account debited       | 0     | 1000  | 1000  | ... | 1000  | 1000  | 0     | 3000  |
-  #          | SFA Levy employer budget   | 1000  | 1000  | 1000  | ... | 1000  | 0     | 3000  | 0     |
-  #          | SFA Levy co-funding budget | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     |
-
-
-# levy balance > agreed price for all months
-# Commitments line
-# Levy Payments
-Feature: One Levy learner - levy available, finished late PV2-274
+﻿Feature: One Levy learner - levy available, finished late PV2-274
 	As a provider,
 	I want a levy learner that finishes late to be paid the correct payments,
 	So that I am accurately paid my apprenticeship provision.
