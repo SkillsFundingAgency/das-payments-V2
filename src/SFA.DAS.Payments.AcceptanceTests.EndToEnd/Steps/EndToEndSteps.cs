@@ -41,10 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the ""(.*)"" levy account balance in collection period (.*) is (.*)")]
-        public async Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(
-            string employerIdentifier,
-            string collectionPeriod,
-            decimal levyAmount)
+        public async Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(string employerIdentifier, string collectionPeriod,decimal levyAmount)
         {
             var employer = TestSession.GetEmployer(employerIdentifier);
             employer.Balance = levyAmount;
@@ -237,9 +234,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When(@"Month end is triggered")]
         public async Task WhenMonthEndIsTriggered()
         {
+            await SendLevyMonthEnd().ConfigureAwait(false);
+            
             foreach (var provider in TestSession.Providers)
             {
-                await SendLevyMonthEnd(provider).ConfigureAwait(false);
                 await StartMonthEnd(provider).ConfigureAwait(false);
             }
         }
