@@ -1,6 +1,6 @@
 Feature: Two levy learners one employer but two providers and not enough levy PV2-270
 
-Scenario Outline: Two levy learners, one employer but two providers and nnot enough levy available both finished on time PV2-270
+Scenario Outline: Two levy learners, one employer but two providers and not enough levy available both finished on time PV2-270
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the "provider a" previously submitted the following learner details
 		| Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
@@ -13,19 +13,19 @@ Scenario Outline: Two levy learners, one employer but two providers and nnot eno
       | provider a | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
       | provider b | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
    And the following earnings had been generated for the learner for "provider a"
-        | Learner ID       | Delivery Period        | On-Programme | Completion | Balancing |
-        | learner a | Aug/Last Academic Year | 0            | 0          | 0         |
-        | learner a | Sep/Last Academic Year | 500          | 0          | 0         |
-        | learner a | Oct/Last Academic Year | 500          | 0          | 0         |
-        | learner a | Nov/Last Academic Year | 500          | 0          | 0         |
-        | learner a | Dec/Last Academic Year | 500          | 0          | 0         |
-        | learner a | Jan/Last Academic Year | 500          | 0          | 0         |
-        | learner a | Feb/Last Academic Year | 500          | 0          | 0         |
-        | learner a | Mar/Last Academic Year | 500          | 0          | 0         |
-        | learner a | Apr/Last Academic Year | 500          | 0          | 0         |
-        | learner a | May/Last Academic Year | 500          | 0          | 0         |
-        | learner a | Jun/Last Academic Year | 500          | 0          | 0         |
-        | learner a | Jul/Last Academic Year | 500          | 0          | 0         |
+        | Learner ID | Delivery Period        | On-Programme | Completion | Balancing |
+        | learner a  | Aug/Last Academic Year | 0            | 0          | 0         |
+        | learner a  | Sep/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | Oct/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | Nov/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | Dec/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | Jan/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | Feb/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | Mar/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | Apr/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | May/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | Jun/Last Academic Year | 500          | 0          | 0         |
+        | learner a  | Jul/Last Academic Year | 500          | 0          | 0         |
 	And the following earnings had been generated for the learner for "provider b"
 		| Learner ID | Delivery Period        | On-Programme | Completion | Balancing |
 		| learner b  | Aug/Last Academic Year | 0            | 0          | 0         |
