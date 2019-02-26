@@ -11,19 +11,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
     {
         public LearnRefNumberGenerator LearnRefNumberGenerator { get; }
         public string SessionId { get; }
-        public long Ukprn { get; private set; }
         public List<Learner> Learners { get; }
         public Learner Learner => Learners.FirstOrDefault();
         public Employer Employer => GetEmployer("test employer");
-        public long JobId { get; private set; }
+       
         public DateTime IlrSubmissionTime { get; set; }
-        public bool MonthEndJobIdGenerated { get; set; }
+       
         public bool AtLeastOneScenarioCompleted { get; private set; }
         
         public List<Employer> Employers { get; }
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
         private static readonly ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
+
+        public List<Provider> Providers { get; }
+        public Provider Provider => GetProviderByIdentifier("Test Provider");
+        public long Ukprn => Provider.Ukprn;
+        public long JobId => Provider.JobId;
+
 
         public Employer GetEmployer(string identifier)
         {
@@ -57,19 +62,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
-            Ukprn = ukprn ?? GenerateId();
-            Learners = new List<Learner> { GenerateLearner() };
-            JobId = GenerateId();
+
+            Providers = new List<Provider> {};
+            IlrSubmissionTime = Provider.IlrSubmissionTime;
+            Learners = new List<Learner> { GenerateLearner(Provider.Ukprn) };
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
-            IlrSubmissionTime = DateTime.UtcNow;
             Employers = new List<Employer>();
+
         }
 
-        public void SetJobId(long newJobId)
-        {
-            JobId = newJobId;
-        }
-        
         public long GenerateId(int maxValue = 1000000)
         {
             var id = random.Next(maxValue);
@@ -79,7 +80,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public void RegenerateUkprn()
         {
-            Ukprn = GenerateId();
+            Provider.Ukprn = GenerateId();
+        }
+
+        private Provider GenerateProvider()
+        {
+            return new Provider
+            {
+                Ukprn = GenerateId(),
+                JobId = GenerateId(),
+                IlrSubmissionTime = DateTime.UtcNow
+            };
+        }
+
+        public Provider GetProviderByIdentifier(string identifier)
+        {
+            if (identifier == null) return Provider;
+
+            var provider = Providers.SingleOrDefault(x => x.Identifier == identifier);
+            if (provider == null)
+            {
+                provider = GenerateProvider();
+                provider.Identifier = identifier;
+                Providers.Add(provider);
+            }
+
+            return provider;
         }
 
         public string GenerateLearnerReference(string learnerId)
@@ -87,7 +113,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
-        public Learner GenerateLearner(long? uniqueLearnerNumber = null)
+        public Learner GenerateLearner(long ukprn, long? uniqueLearnerNumber = null)
         {
             var uln = uniqueLearnerNumber ?? GenerateId();
             var limit = 10;
@@ -100,19 +126,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             allLearners.Add(uln);
             return new Learner
             {
-                Ukprn = Ukprn,
+                Ukprn = ukprn,
                 Uln = uln,
                 LearnRefNumber = uln.ToString(),
                 Course = courseFaker.Generate(1).FirstOrDefault()
             };
         }
 
-        public Learner GetLearner(string learnerIdentifier)
+        public Learner GetLearner(long ukprn, string learnerIdentifier)
         {
-            var learner = Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier);
+            var learner = Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier && l.Ukprn == ukprn);
             if (learner == null)
             {
-                learner = GenerateLearner();
+                learner = GenerateLearner(ukprn);
                 learner.LearnerIdentifier = learnerIdentifier;
                 Learners.Add(learner);
             }
@@ -120,15 +146,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return learner;
         }
 
-        public void SessionEnd()
-        {
-            //TODO: clean up Ids
-        }
 
         public void CompleteScenario()
         {
             AtLeastOneScenarioCompleted = true;
-            MonthEndJobIdGenerated = false;
+           Providers.ForEach( x=> x.MonthEndJobIdGenerated = false);
         }
 
         private Faker<Employer> GenerateEmployer()

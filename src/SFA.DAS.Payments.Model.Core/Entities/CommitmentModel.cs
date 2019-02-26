@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
     public class CommitmentModel
     {
         public long CommitmentId { get; set; }
-        public string SequenceId { get; set; }
+        public string VersionId { get; set; }
         public long Uln { get; set; }
         public long Ukprn { get; set; }
         public long AccountId { get; set; }
@@ -28,7 +28,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public DateTime? PausedOnDate { get; set; }
         public DateTime? WithdrawnOnDate { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
-        public long VersionId { get; set; }
     }
 
     public enum CommitmentPaymentStatus
