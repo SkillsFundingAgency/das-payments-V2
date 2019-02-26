@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
@@ -19,13 +20,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly List<ProviderPayment> expectedPaymentInfo;
         private readonly ContractType contractType;
 
-        public ProviderPaymentModelMatcher( Provider provider, 
-            IPaymentsDataContext dataContext,  
-            TestSession testSession, 
-            CollectionPeriod currentCollectionPeriod, 
-            List<ProviderPayment> expectedPaymentInfo = null, 
+        public ProviderPaymentModelMatcher(Provider provider,
+            IPaymentsDataContext dataContext,
+            TestSession testSession,
+            CollectionPeriod currentCollectionPeriod,
+            List<ProviderPayment> expectedPaymentInfo = null,
             ContractType contractType = default(ContractType))
-       {
+        {
             this.provider = provider;
             this.dataContext = dataContext;
             this.testSession = testSession;
@@ -50,31 +51,50 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var paymentInfo in expectedPaymentInfo)
             {
+                var standardCode = paymentInfo.StandardCode.GetValueOrDefault();
+
+                if (standardCode == default(int))
+                {
+                    var learner =
+                        testSession.Learners.SingleOrDefault(x => x.LearnerIdentifier == paymentInfo.LearnerId);
+
+                    if (learner != null)
+                    {
+                        foreach (var aim in learner.Aims.Where(a =>
+                          AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, currentCollectionPeriod,
+                              a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus,
+                              a.AimReference)))
+                        {
+                            standardCode = aim.StandardCode;
+                        }
+                    }
+                }
+
                 if (paymentInfo.SfaCoFundedPayments != 0)
                 {
                     var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa,
-                        paymentInfo.SfaCoFundedPayments, testSession.JobId, paymentInfo.StandardCode);
+                        paymentInfo.SfaCoFundedPayments, testSession.JobId, standardCode);
                     expectedPayments.Add(coFundedSfa);
                 }
 
                 if (paymentInfo.EmployerCoFundedPayments != 0)
                 {
                     var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn,
-                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId, paymentInfo.StandardCode);
+                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId, standardCode);
                     expectedPayments.Add(coFundedEmp);
                 }
 
                 if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
                     var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn,
-                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId, paymentInfo.StandardCode);
+                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId, standardCode);
                     expectedPayments.Add(fullyFundedSfa);
                 }
 
                 if (paymentInfo.LevyPayments != 0)
                 {
                     var levyPayments = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.Levy,
-                        paymentInfo.LevyPayments, testSession.JobId, paymentInfo.StandardCode);
+                        paymentInfo.LevyPayments, testSession.JobId, standardCode);
                     expectedPayments.Add(levyPayments);
                 }
             }
@@ -98,10 +118,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         }
 
         private PaymentModel ToPaymentModel(
-            ProviderPayment paymentInfo, 
-            long ukprn, 
-            FundingSourceType fundingSource, 
-            decimal amount, 
+            ProviderPayment paymentInfo,
+            long ukprn,
+            FundingSourceType fundingSource,
+            decimal amount,
             long jobId,
             int standardCode)
         {
@@ -114,7 +134,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 ContractType = contractType,
                 Amount = amount,
                 FundingSource = fundingSource,
-                LearnerReferenceNumber = testSession.GetLearner(paymentInfo.LearnerId).LearnRefNumber,
+                LearnerReferenceNumber = testSession.GetLearner(ukprn, paymentInfo.LearnerId).LearnRefNumber,
                 JobId = jobId,
                 LearningAimStandardCode = standardCode
             };
