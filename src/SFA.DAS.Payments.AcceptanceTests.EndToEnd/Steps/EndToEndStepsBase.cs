@@ -77,6 +77,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "current_collection_period");
         }
 
+        protected Dictionary<(byte period, int academicYear, long ukprn), long> ProvidersWithCacheCleared
+        {
+            get => !Context.TryGetValue<Dictionary<(byte period, int academicYear, long ukprn), long>>("ProvidersWithCacheCleared", out var providersWithCacheCleared) ? null : providersWithCacheCleared;
+            set => Set(value, "ProvidersWithCacheCleared");
+        }
+
         public List<Commitment> Commitments
         {
             get
@@ -173,7 +179,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task AddTestCommitments(List<Commitment> commitments)
         {
-            commitments.ForEach(commitment =>
+            commitments.ForEach(x =>
             {
                 var existingCommitment = Commitments
                     .FirstOrDefault(c => c.CommitmentId == x.CommitmentId && c.VersionId == x.VersionId);
@@ -194,7 +200,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     {
                         x.Ukprn = TestSession.GetProviderByIdentifier(x.Provider).Ukprn;
                     }
-                    
+
                 }
 
                 if (x.VersionId == null)
@@ -843,10 +849,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
         {
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
-            if (Context.ContainsKey("current_collection_period") && (CurrentCollectionPeriod.Period != collectionPeriod.Period || CurrentCollectionPeriod.AcademicYear != collectionPeriod.AcademicYear))
+
+            if (ProvidersWithCacheCleared == null)
+            {
+                if (ProvidersWithCacheCleared == null)
+                    ProvidersWithCacheCleared = new Dictionary<(byte period, int academicYear, long ukprn), long>
+                    {
+                        {(collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn), provider.Ukprn }
+                    };
+
+                SetCollectionPeriod(collectionPeriodText);
+                return;
+            }
+
+            if (!ProvidersWithCacheCleared.ContainsKey((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
             {
                 await RequiredPaymentsCacheCleaner.ClearCaches(provider.Ukprn, TestSession);
                 await Task.Delay(Config.TimeToPause);
+
+                ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn), provider.Ukprn);
             }
 
             SetCollectionPeriod(collectionPeriodText);
