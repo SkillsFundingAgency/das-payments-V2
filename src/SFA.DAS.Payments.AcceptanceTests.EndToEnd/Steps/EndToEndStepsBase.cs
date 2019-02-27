@@ -851,7 +851,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task ValidateRequiredPaymentsAtMonthEnd(Table table, Provider provider)
         {
             await MatchRequiredPayments(table, provider);
-            await SendLevyMonthEnd( provider);
+            await SendLevyMonthEnd(provider);
         }
 
         protected async Task SendLevyMonthEnd( Provider provider)

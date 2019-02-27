@@ -205,7 +205,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculatedFor(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            await MatchRequiredPayments(table, provider).ConfigureAwait(false);
+            await ValidateRequiredPaymentsAtMonthEnd(table, provider).ConfigureAwait(false);
         }
 
         [Then(@"no payments will be calculated")]
@@ -213,6 +213,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var matcher = new RequiredPaymentEventMatcher(TestSession.Provider, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure").ConfigureAwait(false);
+        }
+
+        [Then(@"at month end no payments will be calculated for ""(.*)""")]
+        public async Task ThenAtMonthEndNoPaymentsWillBeCalculatedForProvider(string providerIdentifier)
+        {
+            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+            var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod);
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure").ConfigureAwait(false);
+            await SendLevyMonthEnd(provider).ConfigureAwait(false);
         }
 
         [Then(@"only the following provider payments will be generated")]
