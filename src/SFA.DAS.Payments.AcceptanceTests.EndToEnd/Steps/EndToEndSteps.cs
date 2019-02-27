@@ -227,11 +227,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 
-        [When(@"only the following ""(.*)"" payments will be generated")]
-        public async Task WhenOnlyTheFollowingPaymentsWillBeGenerated(string providerIdentifier, Table table)
+        [Then(@"only the following ""(.*)"" payments will be generated")]
+        public async Task ThenOnlyTheFollowingPaymentsWillBeGenerated(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await MatchOnlyProviderPayments(table, provider).ConfigureAwait(false);
+        }
+
+        [Then(@"no ""(.*)"" payments will be generated")]
+        public async Task ThenNoProviderPaymentsWillBeGenerated(string providerIdentifier)
+        {
+            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+            var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession);
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
         }
 
         [When(@"Month end is triggered")]
