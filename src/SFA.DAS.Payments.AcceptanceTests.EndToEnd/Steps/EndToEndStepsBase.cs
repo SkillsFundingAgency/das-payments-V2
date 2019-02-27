@@ -852,14 +852,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (ProvidersWithCacheCleared == null)
             {
-                if (ProvidersWithCacheCleared == null)
-                    ProvidersWithCacheCleared = new Dictionary<(byte period, int academicYear, long ukprn), long>
-                    {
-                        {(collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn), provider.Ukprn }
-                    };
+                ProvidersWithCacheCleared = new Dictionary<(byte period, int academicYear, long ukprn), long>();
 
-                SetCollectionPeriod(collectionPeriodText);
-                return;
+                TestSession.Providers.ForEach(p =>
+                {
+                    ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, p.Ukprn), p.Ukprn);
+                });
             }
 
             if (!ProvidersWithCacheCleared.ContainsKey((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
