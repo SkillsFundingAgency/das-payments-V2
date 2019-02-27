@@ -1,11 +1,9 @@
 ﻿using NServiceBus;
-using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
@@ -119,12 +117,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestAims(aims, TestSession.Provider.Ukprn);
         }
 
-        private static readonly HashSet<long> PriceEpisodesProcessedForJob = new HashSet<long>();
-
         [Given(@"price details are changed as follows")]
         public void GivenPriceDetailsAreChangedAsFollows(Table table)
         {
-            PriceEpisodesProcessedForJob.Remove(TestSession.JobId);
             GivenPriceDetailsAsFollows(table);
         }
 
