@@ -130,5 +130,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var matcher = new ProviderPaymentModelMatcher(TestSession.Provider, DataContext, TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }        
+
+        [Then(@"no ""(.*)"" payments will be recorded")]
+        public async Task ThenNoProviderPaymentsForProviderWillBeRecorded(string providerIdentifier)
+        {
+            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+            var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod);
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
+        }        
     }
 }
