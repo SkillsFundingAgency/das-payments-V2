@@ -1,5 +1,4 @@
 ﻿using NServiceBus;
-using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
@@ -249,13 +248,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
             await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
-        }
-
-        [Then(@"no provider payments will be recorded")]
-        public async Task ThenNoProviderPaymentsWillBeRecorded()
-        {
-            var matcher = new ProviderPaymentModelMatcher(TestSession.Provider, DataContext, TestSession, CurrentCollectionPeriod);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
         }
 
         [Then(@"no learner earnings should be generated")]
