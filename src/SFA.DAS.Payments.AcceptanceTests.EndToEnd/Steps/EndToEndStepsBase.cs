@@ -77,9 +77,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "current_collection_period");
         }
 
-        protected Dictionary<(byte period, int academicYear, long ukprn), long> ProvidersWithCacheCleared
+        protected HashSet<(byte period, int academicYear, long ukprn)> ProvidersWithCacheCleared
         {
-            get => !Context.TryGetValue<Dictionary<(byte period, int academicYear, long ukprn), long>>("ProvidersWithCacheCleared", out var providersWithCacheCleared) ? null : providersWithCacheCleared;
+            get => !Context.TryGetValue<HashSet<(byte period, int academicYear, long ukprn)>>("ProvidersWithCacheCleared", out var providersWithCacheCleared) ? null : providersWithCacheCleared;
             set => Set(value, "ProvidersWithCacheCleared");
         }
 
@@ -852,20 +852,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (ProvidersWithCacheCleared == null)
             {
-                ProvidersWithCacheCleared = new Dictionary<(byte period, int academicYear, long ukprn), long>();
+                ProvidersWithCacheCleared = new HashSet<(byte period, int academicYear, long)>();
 
                 TestSession.Providers.ForEach(p =>
                 {
-                    ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, p.Ukprn), p.Ukprn);
+                    ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, p.Ukprn));
                 });
             }
 
-            if (!ProvidersWithCacheCleared.ContainsKey((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
+            if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
             {
                 await RequiredPaymentsCacheCleaner.ClearCaches(provider.Ukprn, TestSession);
                 await Task.Delay(Config.TimeToPause);
 
-                ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn), provider.Ukprn);
+                ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn));
             }
 
             SetCollectionPeriod(collectionPeriodText);
