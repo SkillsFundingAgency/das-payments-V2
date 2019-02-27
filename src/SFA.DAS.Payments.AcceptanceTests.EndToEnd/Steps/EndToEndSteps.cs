@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var employer = TestSession.GetEmployer(employerIdentifier);
             employer.Balance = levyAmount;
-            await SaveLevyAccount(employer);
+            await SaveLevyAccount(employer).ConfigureAwait(false);
         }
 
         [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
@@ -135,7 +135,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
                 var commitments = table.CreateSet<Commitment>().ToList();
-                await AddTestCommitments(commitments);
+                await AddTestCommitments(commitments).ConfigureAwait(false);
             }
         }
 
@@ -184,20 +184,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"the following learner earnings should be generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
-            await GeneratedAndValidateEarnings(table, TestSession.Provider);
+            await GeneratedAndValidateEarnings(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"the following learner earnings should be generated for ""(.*)""")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGeneratedFor(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            await GeneratedAndValidateEarnings(table, provider);
+            await GeneratedAndValidateEarnings(table, provider).ConfigureAwait(false);
         }
 
         [Then(@"only the following payments will be calculated")]
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
-            await MatchCalculatedPayments(table, TestSession.Provider);
+            await MatchRequiredPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"at month end only the following payments will be calculated")]
@@ -210,20 +210,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculatedFor(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            await MatchCalculatedPayments(table, provider);
+            await MatchRequiredPayments(table, provider).ConfigureAwait(false);
         }
 
         [Then(@"no payments will be calculated")]
         public async Task ThenNoPaymentsWillBeCalculated()
         {
             var matcher = new RequiredPaymentEventMatcher(TestSession.Provider, CurrentCollectionPeriod);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure");
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure").ConfigureAwait(false);
         }
 
         [Then(@"only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            await StartMonthEnd(TestSession.Provider);
+            await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
             await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 
@@ -255,14 +255,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenNoProviderPaymentsWillBeRecorded()
         {
             var matcher = new ProviderPaymentModelMatcher(TestSession.Provider, DataContext, TestSession, CurrentCollectionPeriod);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure").ConfigureAwait(false);
         }
 
         [Then(@"no learner earnings should be generated")]
         public async Task ThenNoLearnerEarningsWillBeRecorded()
         {
             var matcher = new EarningEventMatcher(TestSession.Provider, CurrentPriceEpisodes, CurrentIlr, null, TestSession, CurrentCollectionPeriod, null);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Earning Event check failure");
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Earning Event check failure").ConfigureAwait(false);
         }
 
         [Then(@"at month end no provider payments will be generated")]
@@ -274,9 +274,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 Ukprn = TestSession.Ukprn,
                 JobId = TestSession.JobId
             };
-            await MessageSession.Send(monthEndCommand);
+            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
             var matcher = new ProviderPaymentEventMatcher(TestSession.Provider, CurrentCollectionPeriod, TestSession);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure").ConfigureAwait(false);
         }
     }
 }
