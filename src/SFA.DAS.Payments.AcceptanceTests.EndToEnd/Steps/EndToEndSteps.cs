@@ -63,8 +63,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the provider is providing training for the following learners")]
         public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
         {
+            GivenTheProviderIsProvidingTrainingForTheFollowingLearners(TestSession.Provider.Identifier, table);
+        }
+
+        [Given(@"the provider ""(.*)"" is providing training for the following learners")]
+        public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(string providerIdentifier, Table table)
+        {
+            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             CurrentIlr = table.CreateSet<Training>().ToList();
-            AddTestLearners(CurrentIlr, TestSession.Ukprn);
+            AddTestLearners(CurrentIlr, provider.Ukprn);
         }
 
         [Given(@"the provider previously submitted the following learner details in collection period ""(.*)""")]
