@@ -127,16 +127,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"no provider payments will be recorded")]
         public async Task ThenNoProviderPaymentsWillBeRecorded()
         {
-            var matcher = new ProviderPaymentModelMatcher(TestSession.Provider, DataContext, TestSession, CurrentCollectionPeriod);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
+            await ThenNoProviderPaymentsWillBeRecorded(TestSession.Provider.Identifier).ConfigureAwait(false);
         }        
 
         [Then(@"no ""(.*)"" payments will be recorded")]
-        public async Task ThenNoProviderPaymentsForProviderWillBeRecorded(string providerIdentifier)
+        public async Task ThenNoProviderPaymentsWillBeRecorded(string providerIdentifier)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure");
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure").ConfigureAwait(false);
         }        
     }
 }
