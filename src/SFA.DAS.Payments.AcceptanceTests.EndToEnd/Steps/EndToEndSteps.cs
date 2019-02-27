@@ -202,7 +202,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculatedFor(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            await ValidateRequiredPaymentsAtMonthEnd(table, provider).ConfigureAwait(false);
+            await MatchRequiredPayments(table, provider).ConfigureAwait(false);
         }
 
         [Then(@"no payments will be calculated")]
