@@ -606,7 +606,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return payments;
         }
 
-        protected async Task MatchCalculatedPayments(Table table, Provider provider)
+        protected async Task MatchRequiredPayments(Table table, Provider provider)
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
@@ -873,7 +873,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task ValidateRequiredPaymentsAtMonthEnd(Table table, Provider provider)
         {
-            await MatchCalculatedPayments(table, provider);
+            await MatchRequiredPayments(table, provider);
             await SendLevyMonthEnd();
         }
 
