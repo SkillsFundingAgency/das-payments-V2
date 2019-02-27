@@ -221,16 +221,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then(@"only the following provider payments will be generated")]
+        [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            await StartMonthEnd(TestSession.Provider);
-            await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
+            await ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(TestSession.Provider.Identifier, table).ConfigureAwait(false);
         }
 
-        [When(@"only the following ""(.*)"" payments will be generated")]
-        public async Task WhenOnlyTheFollowingPaymentsWillBeGenerated(string providerIdentifier, Table table)
+        [Then(@"only the following ""(.*)"" payments will be generated")]
+        public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+            await StartMonthEnd(provider).ConfigureAwait(false);
             await MatchOnlyProviderPayments(table, provider).ConfigureAwait(false);
         }
 
@@ -242,13 +243,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 await SendLevyMonthEnd(provider).ConfigureAwait(false);
                 await StartMonthEnd(provider).ConfigureAwait(false);
             }
-        }
-
-        [Then(@"at month end only the following provider payments will be generated")]
-        public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
-        {
-            await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
-            await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"no provider payments will be recorded")]
