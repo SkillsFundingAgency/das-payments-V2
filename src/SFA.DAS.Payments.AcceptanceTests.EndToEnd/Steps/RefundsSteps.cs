@@ -1,9 +1,9 @@
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.Tests.Core.Builders;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -118,11 +118,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"only the following ""(.*)"" payments will be recorded")]
-        public async Task WhenOnlyTheFollowingPaymentsWillBeRecorded(string providerIdentifier, Table table)
+        public async Task ThenOnlyTheFollowingPaymentsWillBeRecorded(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await ValidateRecordedProviderPayments(table, provider);
         }
+
+        [Then(@"no provider payments will be recorded")]
+        public async Task ThenNoProviderPaymentsWillBeRecorded()
+        {
+            await ThenNoProviderPaymentsWillBeRecorded(TestSession.Provider.Identifier).ConfigureAwait(false);
+        }
         
+        [Then(@"no ""(.*)"" payments will be recorded")]
+        public async Task ThenNoProviderPaymentsWillBeRecorded(string providerIdentifier)
+        {
+            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+            var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod);
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure").ConfigureAwait(false);
+        }        
     }
 }
