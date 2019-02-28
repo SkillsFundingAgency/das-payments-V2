@@ -286,7 +286,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build(),
                 DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(),
-                Ukprn = TestSession.Ukprn,
+                Ukprn = ukprn,
                 JobId = jobId,
                 SfaContributionPercentage = sfaContributionPercentage ?? (learnerTraining.SfaContributionPercentage).ToPercent(),
                 TransactionType = providerPayment.TransactionType,
