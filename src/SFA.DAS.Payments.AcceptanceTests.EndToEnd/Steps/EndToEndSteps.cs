@@ -235,12 +235,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 
-        [Then(@"only the following ""(.*)"" payments will be generated")]
+        [When(@"only the following ""(.*)"" payments will be generated")]
         public async Task ThenOnlyTheFollowingPaymentsWillBeGenerated(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await MatchOnlyProviderPayments(table, provider).ConfigureAwait(false);
         }
+
 
         [Then(@"no ""(.*)"" payments will be generated")]
         public async Task ThenNoProviderPaymentsWillBeGenerated(string providerIdentifier)
@@ -267,14 +268,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
             await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
-
-        [Then(@"no provider payments will be recorded")]
-        public async Task ThenNoProviderPaymentsWillBeRecorded()
-        {
-            var matcher = new ProviderPaymentModelMatcher(TestSession.Provider, DataContext, TestSession, CurrentCollectionPeriod);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Payment history check failure").ConfigureAwait(false);
-        }
-
+        
         [Then(@"no learner earnings should be generated")]
         public async Task ThenNoLearnerEarningsWillBeRecorded()
         {
