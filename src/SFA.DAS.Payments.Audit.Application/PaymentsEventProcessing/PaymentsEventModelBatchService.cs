@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
     public interface IPaymentsEventModelBatchService<T> where T : IPaymentsEventModel
     {
         Task RunAsync(CancellationToken cancellationToken);
+        Task StorePayments(CancellationToken cancellationToken);
     }
 
     public class PaymentsEventModelBatchService<T> : IPaymentsEventModelBatchService<T> where T : IPaymentsEventModel
@@ -49,7 +50,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             }
         }
 
-        private async Task StorePayments(CancellationToken cancellationToken)
+        public async Task StorePayments(CancellationToken cancellationToken)
         {
             var processedCount = 0;
             do

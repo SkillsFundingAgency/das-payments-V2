@@ -56,7 +56,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                     await context.Publish(paymentEvent);
                     await jobClient.ProcessedJobMessage(message.JobId, paymentEvent.EventId,paymentEvent.GetType().FullName, new List<GeneratedMessage>()).ConfigureAwait(false);
                 }
-                paymentLogger.LogInfo($"Successfully processed Month End Command for Job Id {message.JobId} and Message Type {message.GetType().Name}");
+
+                paymentLogger.LogInfo($"Successfully processed Month End Command for Job Id {message.JobId} and Message Type {message.GetType().Name}, {payments.Count} provider payment events created.");
             }
             catch (Exception ex)
             {
