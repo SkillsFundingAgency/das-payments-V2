@@ -22,16 +22,17 @@ namespace SFA.DAS.Payments.Tests.Core.Builders
                 academicYear = (short)((Year - 2000) * 100 + (Year - 2000 + 1));
             }
 
-            if (Month < 8)
+            if (Period == byte.MaxValue)
             {
-                Period = (byte)(Month + 5);
+                if (Month < 8)
+                {
+                    Period = (byte)(Month + 5);
+                }
+                else
+                {
+                    Period = (byte)(Month - 7);
+                }
             }
-            else
-            {
-                Period = (byte)(Month - 7);
-            }
-
-            var name = $"{academicYear}-R{Period:D2}";
 
             var instance = new CollectionPeriod
             {
