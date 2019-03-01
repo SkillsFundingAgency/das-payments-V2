@@ -51,9 +51,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var paymentInfo in expectedPaymentInfo)
             {
-                var standardCode = paymentInfo.StandardCode.GetValueOrDefault();
+                var standardCode = paymentInfo.StandardCode;
 
-                if (standardCode == default(int))
+                if (!standardCode.HasValue)
                 {
                     var learner =
                         testSession.Learners.SingleOrDefault(x => x.LearnerIdentifier == paymentInfo.LearnerId);
@@ -67,34 +67,39 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         {
                             standardCode = aim.StandardCode;
                         }
+
+                        if (!standardCode.HasValue)
+                        {
+                            standardCode = 0;
+                        }
                     }
                 }
 
                 if (paymentInfo.SfaCoFundedPayments != 0)
                 {
                     var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa,
-                        paymentInfo.SfaCoFundedPayments, testSession.JobId, standardCode);
+                        paymentInfo.SfaCoFundedPayments, testSession.JobId, standardCode.Value);
                     expectedPayments.Add(coFundedSfa);
                 }
 
                 if (paymentInfo.EmployerCoFundedPayments != 0)
                 {
                     var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn,
-                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId, standardCode);
+                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId, standardCode.Value);
                     expectedPayments.Add(coFundedEmp);
                 }
 
                 if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
                     var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn,
-                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId, standardCode);
+                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId, standardCode.Value);
                     expectedPayments.Add(fullyFundedSfa);
                 }
 
                 if (paymentInfo.LevyPayments != 0)
                 {
                     var levyPayments = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.Levy,
-                        paymentInfo.LevyPayments, testSession.JobId, standardCode);
+                        paymentInfo.LevyPayments, testSession.JobId, standardCode.Value);
                     expectedPayments.Add(levyPayments);
                 }
             }
