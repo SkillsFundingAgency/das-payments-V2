@@ -51,55 +51,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var paymentInfo in expectedPaymentInfo)
             {
-                var standardCode = paymentInfo.StandardCode;
-
-                if (!standardCode.HasValue)
-                {
-                    var learner =
-                        testSession.Learners.SingleOrDefault(x => x.LearnerIdentifier == paymentInfo.LearnerId);
-
-                    if (learner != null)
-                    {
-                        foreach (var aim in learner.Aims.Where(a =>
-                          AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, currentCollectionPeriod,
-                              a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus,
-                              a.AimReference)))
-                        {
-                            standardCode = aim.StandardCode;
-                        }
-
-                        if (!standardCode.HasValue)
-                        {
-                            standardCode = 0;
-                        }
-                    }
-                }
-
                 if (paymentInfo.SfaCoFundedPayments != 0)
                 {
                     var coFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.CoInvestedSfa,
-                        paymentInfo.SfaCoFundedPayments, testSession.JobId, standardCode.Value);
+                        paymentInfo.SfaCoFundedPayments, testSession.JobId);
                     expectedPayments.Add(coFundedSfa);
                 }
 
                 if (paymentInfo.EmployerCoFundedPayments != 0)
                 {
                     var coFundedEmp = ToPaymentModel(paymentInfo, testSession.Ukprn,
-                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId, standardCode.Value);
+                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId);
                     expectedPayments.Add(coFundedEmp);
                 }
 
                 if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
                     var fullyFundedSfa = ToPaymentModel(paymentInfo, testSession.Ukprn,
-                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId, standardCode.Value);
+                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId);
                     expectedPayments.Add(fullyFundedSfa);
                 }
 
                 if (paymentInfo.LevyPayments != 0)
                 {
                     var levyPayments = ToPaymentModel(paymentInfo, testSession.Ukprn, FundingSourceType.Levy,
-                        paymentInfo.LevyPayments, testSession.JobId, standardCode.Value);
+                        paymentInfo.LevyPayments, testSession.JobId);
                     expectedPayments.Add(levyPayments);
                 }
             }
@@ -127,9 +103,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             long ukprn,
             FundingSourceType fundingSource,
             decimal amount,
-            long jobId,
-            int standardCode)
+            long jobId)
         {
+            var learner = testSession.GetLearner(ukprn, paymentInfo.LearnerId);
+
+            var standardCode = paymentInfo.StandardCode;
+
+            if (!standardCode.HasValue)
+            {
+                foreach (var aim in learner.Aims.Where(a =>
+                    AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, currentCollectionPeriod,
+                        a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus,
+                        a.AimReference)))
+                {
+                    standardCode = aim.StandardCode;
+                }
+
+                if (!standardCode.HasValue)
+                {
+                    standardCode = 0;
+                }
+            }
+
             return new PaymentModel
             {
                 CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(paymentInfo.CollectionPeriod).Build(),
@@ -139,9 +134,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 ContractType = contractType,
                 Amount = amount,
                 FundingSource = fundingSource,
-                LearnerReferenceNumber = testSession.GetLearner(ukprn, paymentInfo.LearnerId).LearnRefNumber,
+                LearnerReferenceNumber = learner.LearnRefNumber,
                 JobId = jobId,
-                LearningAimStandardCode = standardCode
+                LearningAimStandardCode = standardCode.Value
             };
         }
     }
