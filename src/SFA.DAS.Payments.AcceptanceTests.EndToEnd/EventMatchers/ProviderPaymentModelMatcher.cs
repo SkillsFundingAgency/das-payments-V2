@@ -111,18 +111,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             if (!standardCode.HasValue)
             {
-                foreach (var aim in learner.Aims.Where(a =>
+                var aim = learner.Aims.SingleOrDefault(a =>
                     AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, currentCollectionPeriod,
                         a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus,
-                        a.AimReference)))
-                {
-                    standardCode = aim.StandardCode;
-                }
+                        a.AimReference));
 
-                if (!standardCode.HasValue)
-                {
-                    standardCode = 0;
-                }
+                standardCode = aim?.StandardCode ?? 0;
             }
 
             return new PaymentModel

@@ -61,18 +61,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                 if (!standardCode.HasValue)
                 {
-                    foreach (var aim in testLearner.Aims.Where(a =>
+                    var aim = testLearner.Aims.SingleOrDefault(a =>
                         AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, collectionPeriod,
                             a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus,
-                            a.AimReference)))
-                    {
-                        standardCode = aim.StandardCode;
-                    }
+                            a.AimReference));
 
-                    if (!standardCode.HasValue)
-                    {
-                        standardCode = 0;
-                    }
+                    standardCode = aim?.StandardCode ?? 0;
                 }
 
                 if (providerPayment.SfaCoFundedPayments != 0)
