@@ -38,13 +38,13 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
     But the "provider a" now changes the Learner details as follows
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 06/Aug/Current Academic Year | 12 months        | 6000                 | 06/Aug/Current Academic Year        | 1500                   | 06/Aug/Current Academic Year          | 7 months        | withdrawn         | Act1          | 1                   | ZPROG001      | 51            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
-	# New
+
 	And the "provider b" is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 05/Mar/Current Academic Year | 5 months         | 3000                 | 05/Mar/Current Academic Year        | 1500                   | 05/Mar/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
-	# one resubmit and another first submission
+
 	When the amended ILR file is re-submitted for the learners in the collection period <Collection_Period> by "provider a"
-	When the ILR file is submitted for the learners for collection period <Collection_Period> by "provider b"
+	When the ILR file is submitted for the learners for the collection period <Collection_Period> by "provider b"
 
 	Then the following learner earnings should be generated for "provider a"
 		| Delivery Period           | On-Programme | Completion | Balancing |
@@ -55,7 +55,6 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
 		| Dec/Current Academic Year | 500          | 0          | 0         |
 		| Jan/Current Academic Year | 500          | 0          | 0         |
 		| Feb/Current Academic Year | 500          | 0          | 0         |
-		# changed provider
 		| Mar/Current Academic Year | 0            | 0          | 0         |
 		| Apr/Current Academic Year | 0            | 0          | 0         |
 		| May/Current Academic Year | 0            | 0          | 0         |
@@ -70,13 +69,12 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
         | Dec/Current Academic Year | 0            | 0          | 0         |
         | Jan/Current Academic Year | 0            | 0          | 0         |
         | Feb/Current Academic Year | 0            | 0          | 0         |
-		# "provider b"
         | Mar/Current Academic Year | 720          | 0          | 0         |
         | Apr/Current Academic Year | 720          | 0          | 0         |
         | May/Current Academic Year | 720          | 0          | 0         |
         | Jun/Current Academic Year | 720          | 0          | 0         |
         | Jul/Current Academic Year | 720          | 0          | 0         |
-	# New
+
     And at month end no payments will be calculated for "provider a"
     And at month end only the following payments will be calculated for "provider b"
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
@@ -86,7 +84,7 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
         | R11/Current Academic Year | Jun/Current Academic Year | 720          | 0          | 0         |
         | R12/Current Academic Year | Jul/Current Academic Year | 720          | 0          | 0         |
 
-	When Month end is triggered
+	And Month end is triggered
 
 	And no "provider a" payments will be recorded        
 	And only the following "provider b" payments will be recorded
@@ -96,7 +94,7 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
 		| R10/Current Academic Year | May/Current Academic Year | 720           | Learning         |
 		| R11/Current Academic Year | Jun/Current Academic Year | 720           | Learning         |
 		| R12/Current Academic Year | Jul/Current Academic Year | 720           | Learning         |        
-	# New
+
 	And no "provider a" payments will be generated
 	And only the following "provider b" payments will be generated
         | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
@@ -107,13 +105,13 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
 		| R12/Current Academic Year | Jul/Current Academic Year | 720           | Learning         |        
 Examples: 
         | Collection_Period         | Levy Balance |
-        | R01/Current Academic Year | 12500        |
-        | R02/Current Academic Year | 12000        |
-        | R03/Current Academic Year | 11500        |
-        | R04/Current Academic Year | 10000        |
-        | R05/Current Academic Year | 9500         |
-        | R06/Current Academic Year | 9000         |
-        | R07/Current Academic Year | 8500         |
+        #| R01/Current Academic Year | 12500        |
+        #| R02/Current Academic Year | 12000        |
+        #| R03/Current Academic Year | 11500        |
+        #| R04/Current Academic Year | 10000        |
+        #| R05/Current Academic Year | 9500         |
+        #| R06/Current Academic Year | 9000         |
+        #| R07/Current Academic Year | 8500         |
         | R08/Current Academic Year | 8000         |
         | R09/Current Academic Year | 7280         |
         | R10/Current Academic Year | 6560         |
