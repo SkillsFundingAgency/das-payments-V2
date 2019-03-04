@@ -99,16 +99,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInCollectionPeriodRCurrentAcademicYear(string collectionPeriodText)
+        public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
-            await HandleIlrReSubmissionForTheLearners(collectionPeriodText,TestSession.Provider);
+            await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
         }
         
+        [When(@"the ILR file is submitted for the learners for collection period (.*) by ""(.*)""")]
         [When(@"the amended ILR file is re-submitted for the learners in the collection period (.*) by ""(.*)""")]
-        public async Task WhenTheAmendedILRFileIsRe_SubmittedForTheLearnersInTheCollectionPeriodRCurrentAcademicYearBy(string collectionPeriodText, string providerIdentifier)
+        public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText, string providerIdentifier)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            await HandleIlrReSubmissionForTheLearners(collectionPeriodText, provider);
+            await HandleIlrReSubmissionForTheLearners(collectionPeriodText, provider).ConfigureAwait(false);
         }
         
         [Then(@"only the following provider payments will be recorded")]
