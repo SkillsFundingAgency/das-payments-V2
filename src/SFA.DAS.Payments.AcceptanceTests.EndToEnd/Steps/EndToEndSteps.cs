@@ -232,7 +232,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
             await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
-            await ThenOnlyTheFollowingPaymentsWillBeGenerated(TestSession.Provider.Identifier, table).ConfigureAwait(false);
+            await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"only the following ""(.*)"" payments will be generated")]
