@@ -54,21 +54,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 collectionPeriod,
                 levyAmount);
         }
-
-        [Given(@"the provider is providing training for the following learners")]
-        public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
-        {
-            GivenTheProviderIsProvidingTrainingForTheFollowingLearners(TestSession.Provider.Identifier, table);
-        }
-
-        [Given(@"the provider ""(.*)"" is providing training for the following learners")]
-        public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(string providerIdentifier, Table table)
-        {
-            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            CurrentIlr = table.CreateSet<Training>().ToList();
-            AddTestLearners(CurrentIlr, provider.Ukprn);
-        }
-
+        
         [Given(@"the provider previously submitted the following learner details in collection period ""(.*)""")]
         public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetailsInCollectionPeriod(string previousCollectionPeriod, Table table)
         {
@@ -78,12 +64,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(PreviousIlr, TestSession.Ukprn);
         }
 
+        [Given(@"the provider is providing training for the following learners")]
         [Given(@"the Provider now changes the Learner details as follows")]
         public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
         {
             AddNewIlr(table, TestSession.Ukprn);
         }
 
+        [Given(@"the ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" now changes the Learner details as follows")]
         public void GivenTheNowChangesTheLearnerDetailsAsFollows(string providerIdentifier, Table table)
         {

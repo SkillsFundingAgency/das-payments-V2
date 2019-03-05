@@ -96,13 +96,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             TestSession.Learner.Uln = newUln;
             CurrentIlr = PreviousIlr;
         }
-
-        [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
-        [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
-        {
-            await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
-        }
         
         [When(@"the ILR file is submitted for the learners for collection period (.*) by ""(.*)""")]
         [When(@"the amended ILR file is re-submitted for the learners in the collection period (.*) by ""(.*)""")]
