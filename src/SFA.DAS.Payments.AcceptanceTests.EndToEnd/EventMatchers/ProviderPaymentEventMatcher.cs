@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                 if (!standardCode.HasValue)
                 {
-                    var aim = testLearner.Aims.SingleOrDefault(a =>
+                    var aim = testLearner.Aims.FirstOrDefault(a =>
                         AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, collectionPeriod,
                             a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus,
                             a.AimReference));

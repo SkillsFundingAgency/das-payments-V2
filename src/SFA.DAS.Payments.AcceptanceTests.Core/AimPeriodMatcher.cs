@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Tests.Core;
@@ -21,9 +23,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             var aimDuration = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
             var collectionPeriodReferenceDate = DateFromCollectionPeriod(collectionPeriod);
 
-            return aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear ||
-                   (aimStartDate + aimDuration >= collectionPeriodReferenceDate && completionStatus != CompletionStatus.Completed) ||
-                   (aimStartDate + aimDuration >= collectionPeriodReferenceDate && aimReference == "ZPROG001" && completionStatus == CompletionStatus.Completed);
+            return (aimStartDate + aimDuration >= collectionPeriodReferenceDate && 
+                   (aimReference == "ZPROG001" && completionStatus == CompletionStatus.Completed || !GetInactiveStatuses().Contains(completionStatus))) ||
+                    aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear;
         }
 
         private static DateTime DateFromCollectionPeriod(CollectionPeriod collectionPeriod)
@@ -33,6 +35,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return collectionPeriod.Period < 6 
                 ? new DateTime(year, collectionPeriod.Period + 7, 1) 
                 : new DateTime(year + 1, collectionPeriod.Period - 5, 1);
+        }
+
+        private static IEnumerable<CompletionStatus> GetInactiveStatuses()
+        {
+            yield return CompletionStatus.BreakInLearning;
+            yield return CompletionStatus.Completed;
+            yield return CompletionStatus.Withdrawn;
         }
     }
 }
