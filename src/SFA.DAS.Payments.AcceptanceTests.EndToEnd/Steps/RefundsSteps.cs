@@ -118,7 +118,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await ValidateRecordedProviderPayments(table, TestSession.Provider);
         }
 
-        [When(@"only the following ""(.*)"" payments will be recorded")]
+        [Then(@"only the following ""(.*)"" payments will be recorded")]
         public async Task ThenOnlyTheFollowingPaymentsWillBeRecorded(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);

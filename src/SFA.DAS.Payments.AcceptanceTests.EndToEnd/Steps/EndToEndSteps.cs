@@ -225,7 +225,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure").ConfigureAwait(false);
-            await SendLevyMonthEnd().ConfigureAwait(false);
         }
 
         [Then(@"only the following provider payments will be generated")]
@@ -250,7 +249,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
         }
 
-        [When(@"Month end is triggered")]
+        [Then(@"Month end is triggered")]
         public async Task WhenMonthEndIsTriggered()
         {
             await SendLevyMonthEnd().ConfigureAwait(false);
