@@ -232,16 +232,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
             await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
-            await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
+            await ThenOnlyTheFollowingPaymentsWillBeGenerated(TestSession.Provider.Identifier, table).ConfigureAwait(false);
         }
 
-        [When(@"only the following ""(.*)"" payments will be generated")]
+        [Then(@"only the following ""(.*)"" payments will be generated")]
         public async Task ThenOnlyTheFollowingPaymentsWillBeGenerated(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await MatchOnlyProviderPayments(table, provider).ConfigureAwait(false);
         }
-
 
         [Then(@"no ""(.*)"" payments will be generated")]
         public async Task ThenNoProviderPaymentsWillBeGenerated(string providerIdentifier)
@@ -265,10 +264,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"at month end only the following provider payments will be generated")]
         public async Task ThenTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
-            await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
+            await WhenMonthEndIsTriggered().ConfigureAwait(false);
+            await ThenOnlyTheFollowingPaymentsWillBeGenerated(TestSession.Provider.Identifier, table).ConfigureAwait(false);
         }
-        
+
         [Then(@"no learner earnings should be generated")]
         public async Task ThenNoLearnerEarningsWillBeRecorded()
         {
@@ -279,15 +278,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"at month end no provider payments will be generated")]
         public async Task ThenAtMonthEndNoProviderPaymentsWillBeGenerated()
         {
-            var monthEndCommand = new ProcessProviderMonthEndCommand
-            {
-                CollectionPeriod = CurrentCollectionPeriod,
-                Ukprn = TestSession.Ukprn,
-                JobId = TestSession.JobId
-            };
-            await MessageSession.Send(monthEndCommand).ConfigureAwait(false);
-            var matcher = new ProviderPaymentEventMatcher(TestSession.Provider, CurrentCollectionPeriod, TestSession);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure").ConfigureAwait(false);
+            await WhenMonthEndIsTriggered().ConfigureAwait(false);
+            await ThenNoProviderPaymentsWillBeGenerated(TestSession.Provider.Identifier).ConfigureAwait(false);
         }
     }
 }
