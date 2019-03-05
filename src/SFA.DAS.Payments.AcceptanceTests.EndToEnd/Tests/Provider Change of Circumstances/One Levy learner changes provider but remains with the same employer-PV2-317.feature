@@ -44,7 +44,7 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
 		| 05/Mar/Current Academic Year | 5 months         | 3000                 | 05/Mar/Current Academic Year        | 1500                   | 05/Mar/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 	When the amended ILR file is re-submitted for the learners in the collection period <Collection_Period> by "provider a"
-	When the ILR file is submitted for the learners for the collection period <Collection_Period> by "provider b"
+	When the ILR file is submitted for the learners for collection period <Collection_Period> by "provider b"
 
 	Then the following learner earnings should be generated for "provider a"
 		| Delivery Period           | On-Programme | Completion | Balancing |

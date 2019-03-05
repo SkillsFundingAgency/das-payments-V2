@@ -400,6 +400,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>2 learners 2 employers 1 provider enough levy - PV2-267.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes standard with change to price - PV2-290.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes standard with change to price - PV2-290.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\One levy learner finishes on time not enough levy to cover full payment-PV2-266.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -779,6 +784,10 @@
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner changes standard with change to price - PV2-290.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes standard with change to price - PV2-290.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\One levy learner finishes on time not enough levy to cover full payment-PV2-266.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
