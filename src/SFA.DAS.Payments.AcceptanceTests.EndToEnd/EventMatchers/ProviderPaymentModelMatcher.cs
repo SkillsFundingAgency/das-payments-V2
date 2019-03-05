@@ -54,28 +54,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 if (paymentInfo.SfaCoFundedPayments != 0)
                 {
                     var coFundedSfa = ToPaymentModel(paymentInfo, provider.Ukprn, FundingSourceType.CoInvestedSfa,
-                        paymentInfo.SfaCoFundedPayments, testSession.JobId);
+                        paymentInfo.SfaCoFundedPayments, provider.JobId);
                     expectedPayments.Add(coFundedSfa);
                 }
 
                 if (paymentInfo.EmployerCoFundedPayments != 0)
                 {
                     var coFundedEmp = ToPaymentModel(paymentInfo, provider.Ukprn,
-                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, testSession.JobId);
+                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, provider.JobId);
                     expectedPayments.Add(coFundedEmp);
                 }
 
                 if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
                     var fullyFundedSfa = ToPaymentModel(paymentInfo, provider.Ukprn,
-                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, testSession.JobId);
+                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, provider.JobId);
                     expectedPayments.Add(fullyFundedSfa);
                 }
 
                 if (paymentInfo.LevyPayments != 0)
                 {
                     var levyPayments = ToPaymentModel(paymentInfo, provider.Ukprn, FundingSourceType.Levy,
-                        paymentInfo.LevyPayments, testSession.JobId);
+                        paymentInfo.LevyPayments, provider.JobId);
                     expectedPayments.Add(levyPayments);
                 }
             }
