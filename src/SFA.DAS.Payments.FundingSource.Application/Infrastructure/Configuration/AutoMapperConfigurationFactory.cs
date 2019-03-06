@@ -14,60 +14,60 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
             {
                 cfg.CreateMap<RequiredPaymentEvent, FundingSourcePaymentEvent>()
                     .Include<ApprenticeshipContractTypeRequiredPaymentEvent, FundingSourcePaymentEvent>()
-                    .Include<IncentiveRequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredIncentiveAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.EventId, opt => opt.Ignore())
                     .ForMember(dest => dest.EventTime, opt => opt.Ignore())
                     .ForMember(dest => dest.RequiredPaymentEventId, opt => opt.MapFrom(source => source.EventId));
 
-                cfg.CreateMap<ApprenticeshipContractType1RequiredPaymentEvent, EmployerCoInvestedFundingSourcePaymentEvent>();
-                cfg.CreateMap<ApprenticeshipContractType1RequiredPaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>();
-                cfg.CreateMap<ApprenticeshipContractType1RequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>();
+                cfg.CreateMap<CalculatedRequiredLevyAmount, EmployerCoInvestedFundingSourcePaymentEvent>();
+                cfg.CreateMap<CalculatedRequiredLevyAmount, SfaCoInvestedFundingSourcePaymentEvent>();
+                cfg.CreateMap<CalculatedRequiredLevyAmount, SfaFullyFundedFundingSourcePaymentEvent>();
 
-                cfg.CreateMap<ApprenticeshipContractType1RequiredPaymentEvent, LevyFundingSourcePaymentEvent>()
+                cfg.CreateMap<CalculatedRequiredLevyAmount, LevyFundingSourcePaymentEvent>()
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.AgreementId, opt => opt.MapFrom(requiredPayment => requiredPayment.AgreementId));
 
-                cfg.CreateMap<ApprenticeshipContractType1RequiredPaymentEvent, FundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType1RequiredPaymentEvent, LevyFundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType1RequiredPaymentEvent, EmployerCoInvestedFundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType1RequiredPaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType1RequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>()
+                cfg.CreateMap<CalculatedRequiredLevyAmount, FundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredLevyAmount, LevyFundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredLevyAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredLevyAmount, SfaCoInvestedFundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredLevyAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.ContractType, opt => opt.UseValue(ContractType.Act1))
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.AmountDue, opt => opt.Ignore())
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType));
 
-                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, EmployerCoInvestedFundingSourcePaymentEvent>();
-                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>();
-                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>();
+                cfg.CreateMap<CalculatedRequiredCoInvestedAmount, EmployerCoInvestedFundingSourcePaymentEvent>();
+                cfg.CreateMap<CalculatedRequiredCoInvestedAmount, SfaCoInvestedFundingSourcePaymentEvent>();
+                cfg.CreateMap<CalculatedRequiredCoInvestedAmount, SfaFullyFundedFundingSourcePaymentEvent>();
 
                 cfg.CreateMap<ApprenticeshipContractTypeRequiredPaymentEvent, EmployerCoInvestedFundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType2RequiredPaymentEvent, EmployerCoInvestedFundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredCoInvestedAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedEmployer));
 
                 cfg.CreateMap<ApprenticeshipContractTypeRequiredPaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType2RequiredPaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredCoInvestedAmount, SfaCoInvestedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedSfa));
 
                 cfg.CreateMap<ApprenticeshipContractTypeRequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa));
 
-                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, FundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType2RequiredPaymentEvent, EmployerCoInvestedFundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType2RequiredPaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType2RequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>()
+                cfg.CreateMap<CalculatedRequiredCoInvestedAmount, FundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredCoInvestedAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredCoInvestedAmount, SfaCoInvestedFundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredCoInvestedAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2));
 
                 cfg.CreateMap<ApprenticeshipContractTypeRequiredPaymentEvent, FundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType1RequiredPaymentEvent, FundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractType2RequiredPaymentEvent, FundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredLevyAmount, FundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredCoInvestedAmount, FundingSourcePaymentEvent>()
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType));
 
-                cfg.CreateMap<IncentiveRequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>()
+                cfg.CreateMap<CalculatedRequiredIncentiveAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.Type))
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa));
 
-                cfg.CreateMap<ApprenticeshipContractType2RequiredPaymentEvent, RequiredCoInvestedPayment>();
-                cfg.CreateMap<ApprenticeshipContractType1RequiredPaymentEvent, RequiredPayment>();
+                cfg.CreateMap<CalculatedRequiredCoInvestedAmount, RequiredCoInvestedPayment>();
+                cfg.CreateMap<CalculatedRequiredLevyAmount, RequiredPayment>();
                 cfg.CreateMap<EmployerCoInvestedPayment, EmployerCoInvestedFundingSourcePaymentEvent>();
                 cfg.CreateMap<SfaCoInvestedPayment, SfaCoInvestedFundingSourcePaymentEvent>();
                 cfg.CreateMap<LevyPayment, LevyFundingSourcePaymentEvent>();

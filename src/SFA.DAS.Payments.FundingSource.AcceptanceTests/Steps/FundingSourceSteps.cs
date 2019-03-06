@@ -107,8 +107,8 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         private ApprenticeshipContractTypeRequiredPaymentEvent BuildApprenticeshipContractTypeRequiredPaymentEvent(RequiredPayment requiredPayment)
         {
             var paymentEvent = ContractType == 1
-                ? (ApprenticeshipContractTypeRequiredPaymentEvent)new ApprenticeshipContractType1RequiredPaymentEvent()
-                : new ApprenticeshipContractType2RequiredPaymentEvent();
+                ? (ApprenticeshipContractTypeRequiredPaymentEvent)new CalculatedRequiredLevyAmount()
+                : new CalculatedRequiredCoInvestedAmount();
 
             MapCommon(requiredPayment, paymentEvent);
             paymentEvent.OnProgrammeEarningType = (OnProgrammeEarningType)requiredPayment.Type;
@@ -116,9 +116,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             return paymentEvent;
         }
 
-        private IncentiveRequiredPaymentEvent BuildIncentiveRequiredPaymentEvent(RequiredPayment requiredPayment)
+        private CalculatedRequiredIncentiveAmount BuildIncentiveRequiredPaymentEvent(RequiredPayment requiredPayment)
         {
-            var paymentEvent = new IncentiveRequiredPaymentEvent();
+            var paymentEvent = new CalculatedRequiredIncentiveAmount();
             MapCommon(requiredPayment, paymentEvent);
             paymentEvent.Type = (IncentivePaymentType)requiredPayment.Type;
             paymentEvent.ContractType = (ContractType)ContractType;

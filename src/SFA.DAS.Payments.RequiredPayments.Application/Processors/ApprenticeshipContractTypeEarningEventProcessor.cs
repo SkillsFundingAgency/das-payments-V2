@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 return requiredPayment;
             }
 
-            return new IncentiveRequiredPaymentEvent
+            return new CalculatedRequiredIncentiveAmount
             {
                 Type = (IncentivePaymentType)periodAndType.type,
                 ContractType = ContractType.Act2

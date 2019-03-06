@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private readonly IPaymentLogger paymentLogger;
         private readonly ITelemetry telemetry;
         private IContractType1RequiredPaymentEventFundingSourceService fundingSourceService;
-        private IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache;
+        private IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILifetimeScope lifetimeScope;
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             this.lifetimeScope = lifetimeScope;
         }
 
-        public async Task HandleRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent message)
+        public async Task HandleRequiredPayment(CalculatedRequiredLevyAmount message)
         {
             paymentLogger.LogVerbose($"Handling RequiredPayment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.EmployerAccountId}");
 
@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         protected override async Task OnActivateAsync()
         {   
-            requiredPaymentsCache = new ReliableCollectionCache<ApprenticeshipContractType1RequiredPaymentEvent>(StateManager);
+            requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
             requiredPaymentKeys = new ReliableCollectionCache<List<string>>(StateManager);
             fundingSourceService = new ContractType1RequiredPaymentEventFundingSourceService(
                 lifetimeScope.Resolve<IPaymentProcessor>(),

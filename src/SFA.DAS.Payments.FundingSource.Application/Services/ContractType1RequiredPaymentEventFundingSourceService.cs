@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         private readonly IPaymentProcessor processor;
         private readonly IMapper mapper;
-        private readonly IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache;
+        private readonly IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private readonly IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILevyAccountRepository levyAccountRepository;
         private readonly ILevyBalanceService levyBalanceService;
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         public ContractType1RequiredPaymentEventFundingSourceService(
             IPaymentProcessor processor, 
             IMapper mapper, 
-            IDataCache<ApprenticeshipContractType1RequiredPaymentEvent> requiredPaymentsCache, 
+            IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache, 
             IDataCache<List<string>> requiredPaymentKeys, 
             ILevyAccountRepository levyAccountRepository, 
             ILevyBalanceService levyBalanceService, 
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.sortableKeys = sortableKeys;
         }
 
-        public async Task AddRequiredPayment(ApprenticeshipContractType1RequiredPaymentEvent paymentEvent)
+        public async Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent)
         {
             var keys = await GetKeys().ConfigureAwait(false);
             var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, paymentEvent.Learner.Uln, paymentEvent.EventId);

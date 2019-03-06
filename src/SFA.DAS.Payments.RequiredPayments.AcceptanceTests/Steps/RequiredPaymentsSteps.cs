@@ -194,7 +194,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return (allFound && nothingExtra, string.Join(" and ", reason));
         }
 
-        private static void TraceUnexpected(ApprenticeshipContractType2RequiredPaymentEvent[] sessionEvents, List<ApprenticeshipContractType2RequiredPaymentEvent> matchedExpectations)
+        private static void TraceUnexpected(CalculatedRequiredCoInvestedAmount[] sessionEvents, List<CalculatedRequiredCoInvestedAmount> matchedExpectations)
         {
             var unexpected = sessionEvents.Where(e => !matchedExpectations.Contains(e)).ToList();
             for (var i = 0; i < unexpected.Count; i++)
@@ -206,7 +206,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             }
         }
 
-        private void TraceMismatch(OnProgrammeEarning[] expectedPaymentsEvents, ApprenticeshipContractType2RequiredPaymentEvent[] receivedEvents)
+        private void TraceMismatch(OnProgrammeEarning[] expectedPaymentsEvents, CalculatedRequiredCoInvestedAmount[] receivedEvents)
         {
             for (var i = 0; i < expectedPaymentsEvents.Length; i++)
             {

@@ -19,9 +19,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod.Clone()));
 
             CreateMap<IEarningEvent, RequiredPaymentEvent>()
-                .Include<PayableEarningEvent, ApprenticeshipContractType1RequiredPaymentEvent>()
+                .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
                 .Include<IEarningEvent, ApprenticeshipContractTypeRequiredPaymentEvent>()
-                .Include<FunctionalSkillEarningsEvent, IncentiveRequiredPaymentEvent>()
+                .Include<FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(requiredPayment => requiredPayment.EarningEventId, opt => opt.MapFrom(earning => earning.EventId))
                 .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.DeliveryPeriod, opt => opt.Ignore())
@@ -33,15 +33,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 ;
 
             CreateMap<IEarningEvent, ApprenticeshipContractTypeRequiredPaymentEvent>()
-                .Include<PayableEarningEvent, ApprenticeshipContractType1RequiredPaymentEvent>()
+                .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
                 .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.SfaContributionPercentage, opt => opt.Ignore());
 
-            CreateMap<FunctionalSkillEarningsEvent, IncentiveRequiredPaymentEvent>()
+            CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(requiredPayment => requiredPayment.Type, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.ContractType, opt => opt.Ignore());
 
-            CreateMap<PayableEarningEvent, ApprenticeshipContractType1RequiredPaymentEvent>()
+            CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
                 .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore());
 
             CreateMap<EarningPeriod, RequiredPaymentEvent>()
