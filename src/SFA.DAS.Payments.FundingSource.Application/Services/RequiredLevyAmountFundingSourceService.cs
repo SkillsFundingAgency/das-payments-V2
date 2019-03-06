@@ -16,7 +16,7 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
-    public class ContractType1RequiredPaymentEventFundingSourceService : IContractType1RequiredPaymentEventFundingSourceService
+    public class RequiredLevyAmountFundingSourceService : IRequiredLevyAmountFundingSourceService
     {
         private const string KeyListKey = "keys";
 
@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IPaymentLogger paymentLogger;
         private readonly ISortableKeyGenerator sortableKeys;
 
-        public ContractType1RequiredPaymentEventFundingSourceService(
+        public RequiredLevyAmountFundingSourceService(
             IPaymentProcessor processor, 
             IMapper mapper, 
             IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache, 
@@ -118,5 +118,5 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var keys = keysValue.HasValue ? keysValue.Value : new List<string>();
             return keys;
         }
-        }
+    }
 }

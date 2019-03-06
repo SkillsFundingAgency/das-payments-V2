@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 .AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ReliableCollectionCache<List<string>>>()
                 .AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<ContractType1RequiredPaymentEventFundingSourceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<RequiredLevyAmountFundingSourceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<SortableKeyGenerator>().AsImplementedInterfaces();
 
 

@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly ITelemetry telemetry;
-        private IContractType1RequiredPaymentEventFundingSourceService fundingSourceService;
+        private IRequiredLevyAmountFundingSourceService fundingSourceService;
         private IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private IDataCache<List<string>> requiredPaymentKeys;
         private readonly ILifetimeScope lifetimeScope;
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             ActorId actorId,
             IPaymentLogger paymentLogger,
             ITelemetry telemetry, 
-            IContractType1RequiredPaymentEventFundingSourceService fundingSourceService, ILifetimeScope lifetimeScope) 
+            IRequiredLevyAmountFundingSourceService fundingSourceService, ILifetimeScope lifetimeScope) 
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         {   
             requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
             requiredPaymentKeys = new ReliableCollectionCache<List<string>>(StateManager);
-            fundingSourceService = new ContractType1RequiredPaymentEventFundingSourceService(
+            fundingSourceService = new RequiredLevyAmountFundingSourceService(
                 lifetimeScope.Resolve<IPaymentProcessor>(),
                 lifetimeScope.Resolve<IMapper>(),
                 requiredPaymentsCache,
