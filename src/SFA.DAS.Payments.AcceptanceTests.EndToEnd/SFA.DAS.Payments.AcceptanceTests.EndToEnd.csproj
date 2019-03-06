@@ -635,6 +635,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer-PV2-317.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -967,6 +972,10 @@
     <None Include="Tests\Non-Levy Learner\Small Employer\Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer-PV2-317.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
