@@ -13,7 +13,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
     public abstract class ApprenticeshipContractTypeEarningEventProcessor<TRequiredPaymentEvent, TEarningEvent> : EarningEventProcessorBase<TEarningEvent>
-        where TRequiredPaymentEvent : ApprenticeshipContractTypeRequiredPaymentEvent, new()
+        where TRequiredPaymentEvent : CalculatedRequiredOnProgrammeAmount, new()
         where TEarningEvent : IContractTypeEarningEvent
     {
         protected ApprenticeshipContractTypeEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)

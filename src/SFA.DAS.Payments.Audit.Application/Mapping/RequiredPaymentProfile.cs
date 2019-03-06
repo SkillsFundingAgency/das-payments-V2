@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.UseValue(1M))
                 ;
 
-            CreateMap<ApprenticeshipContractTypeRequiredPaymentEvent, RequiredPaymentEventModel>()
+            CreateMap<CalculatedRequiredOnProgrammeAmount, RequiredPaymentEventModel>()
                 .Include<CalculatedRequiredCoInvestedAmount, RequiredPaymentEventModel>()
                 .Include<CalculatedRequiredLevyAmount, RequiredPaymentEventModel>()
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType) source.OnProgrammeEarningType))

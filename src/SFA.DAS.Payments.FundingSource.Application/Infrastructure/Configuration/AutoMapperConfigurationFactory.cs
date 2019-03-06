@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
             return new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<RequiredPaymentEvent, FundingSourcePaymentEvent>()
-                    .Include<ApprenticeshipContractTypeRequiredPaymentEvent, FundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredOnProgrammeAmount, FundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredIncentiveAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.EventId, opt => opt.Ignore())
                     .ForMember(dest => dest.EventTime, opt => opt.Ignore())
@@ -39,15 +39,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                 cfg.CreateMap<CalculatedRequiredCoInvestedAmount, SfaCoInvestedFundingSourcePaymentEvent>();
                 cfg.CreateMap<CalculatedRequiredCoInvestedAmount, SfaFullyFundedFundingSourcePaymentEvent>();
 
-                cfg.CreateMap<ApprenticeshipContractTypeRequiredPaymentEvent, EmployerCoInvestedFundingSourcePaymentEvent>()
+                cfg.CreateMap<CalculatedRequiredOnProgrammeAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredCoInvestedAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedEmployer));
 
-                cfg.CreateMap<ApprenticeshipContractTypeRequiredPaymentEvent, SfaCoInvestedFundingSourcePaymentEvent>()
+                cfg.CreateMap<CalculatedRequiredOnProgrammeAmount, SfaCoInvestedFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredCoInvestedAmount, SfaCoInvestedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedSfa));
 
-                cfg.CreateMap<ApprenticeshipContractTypeRequiredPaymentEvent, SfaFullyFundedFundingSourcePaymentEvent>()
+                cfg.CreateMap<CalculatedRequiredOnProgrammeAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa));
 
                 cfg.CreateMap<CalculatedRequiredCoInvestedAmount, FundingSourcePaymentEvent>()
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<CalculatedRequiredCoInvestedAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2));
 
-                cfg.CreateMap<ApprenticeshipContractTypeRequiredPaymentEvent, FundingSourcePaymentEvent>()
+                cfg.CreateMap<CalculatedRequiredOnProgrammeAmount, FundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredLevyAmount, FundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredCoInvestedAmount, FundingSourcePaymentEvent>()
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType));

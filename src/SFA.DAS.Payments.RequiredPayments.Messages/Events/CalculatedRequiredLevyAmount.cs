@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
-    public class CalculatedRequiredLevyAmount : ApprenticeshipContractTypeRequiredPaymentEvent
+    public class CalculatedRequiredLevyAmount : CalculatedRequiredOnProgrammeAmount
     {
         public int Priority { get; set; }
         public long CommitmentId { get; set; }

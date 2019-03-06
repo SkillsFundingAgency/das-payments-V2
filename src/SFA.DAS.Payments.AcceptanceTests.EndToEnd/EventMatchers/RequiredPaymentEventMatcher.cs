@@ -96,11 +96,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue &&
-                   MatchAct(expected as ApprenticeshipContractTypeRequiredPaymentEvent, actual as ApprenticeshipContractTypeRequiredPaymentEvent) &&
+                   MatchAct(expected as CalculatedRequiredOnProgrammeAmount, actual as CalculatedRequiredOnProgrammeAmount) &&
                    MatchIncentive(expected as CalculatedRequiredIncentiveAmount, actual as CalculatedRequiredIncentiveAmount);
         }
 
-        private bool MatchAct(ApprenticeshipContractTypeRequiredPaymentEvent expected, ApprenticeshipContractTypeRequiredPaymentEvent actual)
+        private bool MatchAct(CalculatedRequiredOnProgrammeAmount expected, CalculatedRequiredOnProgrammeAmount actual)
         {
             if (expected == null)
                 return true;

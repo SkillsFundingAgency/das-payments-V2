@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
 
             CreateMap<IEarningEvent, RequiredPaymentEvent>()
                 .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
-                .Include<IEarningEvent, ApprenticeshipContractTypeRequiredPaymentEvent>()
+                .Include<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(requiredPayment => requiredPayment.EarningEventId, opt => opt.MapFrom(earning => earning.EventId))
                 .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.Ignore())
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
                 ;
 
-            CreateMap<IEarningEvent, ApprenticeshipContractTypeRequiredPaymentEvent>()
+            CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
                 .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.SfaContributionPercentage, opt => opt.Ignore());
