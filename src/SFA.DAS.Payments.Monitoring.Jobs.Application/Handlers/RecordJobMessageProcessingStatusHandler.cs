@@ -12,12 +12,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
     {
         private readonly IPaymentLogger logger;
         private readonly IJobStepService jobStepService;
+        private readonly ISqlExceptionService sqlExceptionService;
         private readonly int delayInSeconds;
-        public RecordJobMessageProcessingStatusHandler(IPaymentLogger logger, IJobStepService jobStepService, IConfigurationHelper configurationHelper)
+        public RecordJobMessageProcessingStatusHandler(IPaymentLogger logger, IJobStepService jobStepService, IConfigurationHelper configurationHelper, ISqlExceptionService sqlExceptionService)
         {
             if (configurationHelper == null) throw new ArgumentNullException(nameof(configurationHelper));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.jobStepService = jobStepService ?? throw new ArgumentNullException(nameof(jobStepService));
+            this.sqlExceptionService = sqlExceptionService ?? throw new ArgumentNullException(nameof(sqlExceptionService));
             delayInSeconds = int.Parse(configurationHelper.GetSettingOrDefault("DelayedRetryTimeInSeconds", "5"));
         }
 
@@ -33,6 +35,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
             }
             catch (DbUpdateException updateEx)
             {
+                if (!sqlExceptionService.IsConstraintViolation(updateEx))
+                    throw;
                 logger.LogWarning($"Failed to store/update job details probably due to KEY violation for job: {message.JobId}, message id: {message.Id}, message name: {message.MessageName}. Error: {updateEx.Message}");
                 var options = new SendOptions();
                 options.DelayDeliveryWith(TimeSpan.FromSeconds(delayInSeconds));

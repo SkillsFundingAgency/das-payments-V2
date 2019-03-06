@@ -37,6 +37,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()
                 .SingleInstance();
+            builder.RegisterType<SqlExceptionService>()
+                .As<ISqlExceptionService>()
+                .SingleInstance();
             builder.RegisterBuildCallback(c =>
             {
                 var config = c.Resolve<IApplicationConfiguration>();
