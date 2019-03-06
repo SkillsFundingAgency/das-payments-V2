@@ -10,13 +10,13 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 {
-    public class ApprenticeshipContractType1RequiredPaymentEventHandler : IHandleMessages<CalculatedRequiredLevyAmount>
+    public class CalculatedRequiredLevyAmountHandler : IHandleMessages<CalculatedRequiredLevyAmount>
     {
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger paymentLogger;
         private readonly ESFA.DC.Logging.ExecutionContext executionContext;
 
-        public ApprenticeshipContractType1RequiredPaymentEventHandler(IActorProxyFactory proxyFactory,
+        public CalculatedRequiredLevyAmountHandler(IActorProxyFactory proxyFactory,
             IPaymentLogger paymentLogger,
             IExecutionContext executionContext)
         {

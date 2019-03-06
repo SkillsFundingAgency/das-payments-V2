@@ -26,7 +26,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 {
     [TestFixture]
-    public class ContractType1RequiredPaymentEventFundingSourceServiceTest
+    public class RequiredLevyAmountFundingSourceServiceTest
     {
         private static IMapper mapper;
 
