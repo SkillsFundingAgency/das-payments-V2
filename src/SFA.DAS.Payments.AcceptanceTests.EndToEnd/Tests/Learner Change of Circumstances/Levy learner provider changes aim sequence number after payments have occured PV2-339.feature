@@ -45,11 +45,15 @@ Scenario Outline: Levy apprentice, provider changes aim sequence numbers in ILR 
 	# Commitment lines
 	And the following commitments exist
 		| start date                   | end date                     | framework code | programme type | pathway code | agreed price | status | effective from               | effective to |
-		| 01/Aug/Current Academic Year | 31/Aug/Current Academic Year | 593            | 20             | 1            | 9000         | Active | 01/Aug/Current Academic Year |              |
+		| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 593            | 20             | 1            | 9000         | Active | 01/Aug/Current Academic Year |              |
+
+	#And the provider is providing training for the following learners
+	#	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type         | SFA Contribution Percentage |
+	#	| 01/Aug/Current Academic Year | 12 months        | 9000                 | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship Levy | 90%                         |
 
 	And the following aims
-		| Aim Type  | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
-		| Programme | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Levy | continuing        |      
+		| Aim Type  | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Contract Type | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
+		| Programme | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | Act1          | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Levy | continuing        |      
 	And price details as follows	
 	# Price details
         | Price Details     | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
@@ -76,14 +80,14 @@ Scenario Outline: Levy apprentice, provider changes aim sequence numbers in ILR 
         | R02/Current Academic Year | Sep/Current Academic Year | 600           | Learning         |
 
     But aims details are changed as follows
-		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
-		| Maths or English | 12345         | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Levy | continuing        |
-		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 16-18 Apprenticeship Levy | continuing        |
-
+		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Contract Type | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
+		| Maths or English | 12345         | 06/Aug/Current Academic Year | 12 months        |                 | Act1          | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Levy | continuing        |
+		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | Act1          | 2                   | 593            | 1            | 20             | 16-18 Apprenticeship Levy | continuing        |
+	
 	And price details are changed as follows		
         | Price Details     | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 1st price details | 9000                 | 06/Aug/Current Academic Year        | Act1          | 2                   | 90%                         |
-        | 2nd price details | 0                    | 06/Aug/Current Academic Year        | Act1          | 1                   | 100%                        |
+        | 2nd price details | 0                    | 06/Aug/Current Academic Year        | Act1          | 1                   | 90%                         |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	
