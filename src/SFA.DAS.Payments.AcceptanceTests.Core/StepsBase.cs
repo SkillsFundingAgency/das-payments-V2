@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             Assert.Fail($"{failText}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
-        protected async Task WaitForIt(Func<(bool pass, string reason)> lookForIt, string failText)
+        protected async Task WaitForIt(Func<(bool pass, string reason, bool final)> lookForIt, string failText)
         {
             var endTime = DateTime.Now.Add(Config.TimeToWait);
             var reason = string.Empty;
@@ -96,8 +96,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
             while (DateTime.Now < endTime || lastRun)
             {
-                bool pass;
-                (pass, reason) = lookForIt();
+                bool pass, final;
+                (pass, reason, final) = lookForIt();
                 if (pass)
                 {
                     if (lastRun) return;
@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 }
                 else
                 {
-                    if (lastRun) break;
+                    if (lastRun || final) break;
                 }
 
                 await Task.Delay(Config.TimeToPause);
