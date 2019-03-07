@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             };
 
             // Act
-            var handler = new ContractType2RequiredPaymentEventFundingSourceService(paymentProcessors, mapper.Object);
+            var handler = new CoInvestedFundingSourceService(paymentProcessors, mapper.Object);
             handler.GetFundedPayments(message);
 
             //Assert

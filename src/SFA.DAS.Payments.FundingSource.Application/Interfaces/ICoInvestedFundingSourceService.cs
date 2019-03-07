@@ -4,7 +4,7 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
 {
-    public interface IContractType2RequiredPaymentEventFundingSourceService
+    public interface ICoInvestedFundingSourceService
     {
         IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(CalculatedRequiredCoInvestedAmount message);
     }
