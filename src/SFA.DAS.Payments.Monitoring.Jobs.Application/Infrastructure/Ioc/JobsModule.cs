@@ -1,8 +1,10 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Caching.Memory;
 using NServiceBus;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
 {
@@ -35,11 +37,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()
                 .SingleInstance();
+            builder.RegisterType<SqlExceptionService>()
+                .As<ISqlExceptionService>()
+                .SingleInstance();
             builder.RegisterBuildCallback(c =>
             {
-                var recoverability = c.Resolve<EndpointConfiguration>()
-                    .Recoverability();
-                recoverability.Immediate(immediate => immediate.NumberOfRetries(3));
+                var config = c.Resolve<IApplicationConfiguration>();
+                EndpointConfigurationEvents.ConfiguringTransport += (object sender, TransportExtensions<AzureServiceBusTransport> e) =>
+                {
+                    e.Routing().RouteToEndpoint(typeof(RecordStartedProcessingEarningsJob).Assembly, config.EndpointName);
+                };
             });
         }
     }
