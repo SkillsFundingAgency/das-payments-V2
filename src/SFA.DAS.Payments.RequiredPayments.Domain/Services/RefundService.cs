@@ -7,11 +7,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class RefundService
     {
-        public List<RequiredPayment> GetRefund(Earning earning, List<Payment> paymentHistory)
+        public List<RequiredPayment> GetRefund(decimal amount, List<Payment> paymentHistory)
         {
             var result = new List<RequiredPayment>();
 
-            if (earning.Amount >= 0)
+            if (amount >= 0)
             {
                 return result;
             }
@@ -22,40 +22,46 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 return result;
             }
 
-            var paymentsBySource = paymentHistory.ToLookup(x => x.FundingSource);
+            var totalRefundPercent = (-1 * amount) / totalPaidInHistory; // Earning amount is a negative
 
-            var totalPaidForLevy = paymentHistory.Where(x => x.FundingSource == FundingSourceType.Levy).Sum(x => x.Amount);
-            var totalPaidForEmployer = paymentHistory.Where(x => x.FundingSource == FundingSourceType.CoInvestedEmployer).Sum(x => x.Amount);
-            var totalPaidForProvider = paymentHistory.Where(x => x.FundingSource == FundingSourceType.CoInvestedSfa).Sum(x => x.Amount);
-            var totalPaidForIncentives = paymentHistory.Where(x => x.FundingSource == FundingSourceType.FullyFundedSfa).Sum(x => x.Amount);
+            result.AddRange(RefundsBySfaContributionPercentage(
+                paymentHistory.Where(x => x.FundingSource == FundingSourceType.Levy), totalRefundPercent, EarningType.Levy));
 
-            var totalRefundPercent = (-1 * earning.Amount) / totalPaidInHistory; // Earning amount is a negative
+            var coInvestedHistory = paymentHistory
+                .Where(x => x.FundingSource == FundingSourceType.CoInvestedEmployer ||
+                            x.FundingSource == FundingSourceType.CoInvestedSfa);
+            result.AddRange(RefundsBySfaContributionPercentage(
+                coInvestedHistory, totalRefundPercent, EarningType.CoInvested));
 
-            var levyRefund = totalPaidForLevy * totalRefundPercent;
-            if (levyRefund > 0)
-            {
-                result.Add(new RequiredPayment
-                {
-                    EarningType = EarningType.Levy,
-                    Amount = -1 * levyRefund,
-                    SfaContributionPercentage = earning.SfaContributionPercentage,
-                });
-            }
-
-            var incentiveRefund = totalPaidForIncentives * totalRefundPercent;
-            if (incentiveRefund > 0)
-            {
-                result.Add(new RequiredPayment
-                {
-                    EarningType = EarningType.Incentive,
-                    Amount = -1 * incentiveRefund,
-                    SfaContributionPercentage = earning.SfaContributionPercentage,
-                });
-            }
-
-            //var coInvestedRefund = 
+            result.AddRange(RefundsBySfaContributionPercentage(
+                paymentHistory.Where(x => x.FundingSource == FundingSourceType.FullyFundedSfa), totalRefundPercent, EarningType.Incentive));
 
             return result;
+        }
+
+        List<RequiredPayment> RefundsBySfaContributionPercentage(IEnumerable<Payment> historyForType, decimal refundPercent, EarningType refundType)
+        {
+            var requiredPaymentsForType = new List<RequiredPayment>();
+            var historyAsAList = historyForType.ToList();
+
+            var totalPaidForType = historyAsAList.Sum(x => x.Amount);
+            var refundForType = totalPaidForType * refundPercent;
+            if (refundForType > 0)
+            {
+                var byContribution = historyAsAList.GroupBy(x => x.SfaContributionPercentage);
+                foreach (var contribution in byContribution)
+                {
+                    var amount = -1 * contribution.Sum(x => x.Amount) * refundPercent; // Change amount back to a negative
+                    requiredPaymentsForType.Add(new RequiredPayment
+                    {
+                        Amount = amount,
+                        SfaContributionPercentage = contribution.Key,
+                        EarningType = refundType,
+                    });
+                }
+            }
+
+            return requiredPaymentsForType;
         }
     }
 }
