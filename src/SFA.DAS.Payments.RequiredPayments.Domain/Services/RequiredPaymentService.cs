@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
-using Earning = SFA.DAS.Payments.Model.Core.OnProgramme.Earning;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
@@ -17,6 +16,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
+            var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, paymentHistory);
+            return new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = amount,
+                    EarningType = earning.EarningType,
+                    SfaContributionPercentage = earning.SfaContributionPercentage,
+                },
+            };
             return new List<RequiredPayment>();
         }
     }

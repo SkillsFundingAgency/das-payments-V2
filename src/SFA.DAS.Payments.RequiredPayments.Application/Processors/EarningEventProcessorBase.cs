@@ -45,8 +45,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 var paymentHistoryValue = await paymentHistoryCache.TryGet(key, cancellationToken);
 
                 var payments = paymentHistoryValue.HasValue
-                    ? paymentHistoryValue.Value.Select(p => mapper.Map<PaymentHistoryEntity, Payment>(p)).ToArray()
-                    : new Payment[0];
+                    ? paymentHistoryValue.Value.Select(p => mapper.Map<PaymentHistoryEntity, Payment>(p)).ToList()
+                    : new List<Payment>();
 
                 var amountDue = paymentDueProcessor.CalculateRequiredPaymentAmount(periodAndType.period.Amount, payments);
 
@@ -55,12 +55,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                 string priceEpisodeIdentifier;
 
-                if (amountDue < 0 && payments.Length > 0) // refunds need to use price episode ID that they are refunding
+                if (amountDue < 0 && payments.Count > 0) // refunds need to use price episode ID that they are refunding
                     priceEpisodeIdentifier = payments[0].PriceEpisodeIdentifier;
                 else
                     priceEpisodeIdentifier = periodAndType.period.PriceEpisodeIdentifier;
 
-                var requiredPayment = CreateRequiredPayment(earningEvent, periodAndType, payments);
+                var requiredPayment = CreateRequiredPayment(earningEvent, periodAndType, payments.ToArray());
 
                 requiredPayment.AmountDue = amountDue;
                 requiredPayment.DeliveryPeriod = periodAndType.period.Period;

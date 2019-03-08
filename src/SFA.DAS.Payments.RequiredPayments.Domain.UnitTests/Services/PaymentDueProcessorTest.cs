@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestNoPaymentFound()
         {
             // arrange
-            var history = new Payment[0];
+            var history = new List<Payment>();
 
             // act
             var amount = paymentDueProcessor.CalculateRequiredPaymentAmount(1, history);
@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             // arrange
             paymentDueProcessor = new PaymentDueProcessor();
 
-            var history = new []
+            var history = new List<Payment>
             {
                 new Payment
                 {
@@ -85,7 +85,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestOnePaymentFound()
         {
             // arrange
-            var history = new []
+            var history = new List<Payment>
             {
                 new Payment
                 {
@@ -106,7 +106,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestMultiplePaymentsFoundWithMorePaidThanDue()
         {
             // arrange
-            var history = new []
+            var history = new List<Payment>
             {
                 new Payment
                 {
@@ -133,7 +133,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public void TestMultiplePaymentsFoundWithSamePaidAsDue()
         {
             // arrange
-            var history = new []
+            var history = new List<Payment>
             {
                 new Payment
                 {
