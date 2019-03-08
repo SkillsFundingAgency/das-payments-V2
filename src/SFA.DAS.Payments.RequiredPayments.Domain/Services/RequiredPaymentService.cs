@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
-            throw new System.NotImplementedException();
+            return new List<RequiredPayment>();
         }
     }
 }

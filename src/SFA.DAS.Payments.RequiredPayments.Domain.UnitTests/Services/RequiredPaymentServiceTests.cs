@@ -25,14 +25,40 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             sut = new RequiredPaymentService(paymentsDueService.Object, refundService.Object);
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            paymentsDueService.Verify();
+            refundService.Verify();
+        }
+
+        [TestFixture]
+        public class WhenAmountIsLessThanTotalAmountForHistory : RequiredPaymentServiceTests
+        {
+            public void RequiredPaymentHasCorrectAmount()
+            {
+
+            }
+        }
+
+        [TestFixture]
+        public class WhenAmountIsMoreThanTotalAmountForHistory : RequiredPaymentServiceTests
+        {
+            //public void 
+        }
+
+
         [Test]
         public void CallsPaymentsDueProcessor()
         {
             var testEarning = new Earning();
             var testHistory = new List<Payment>();
 
+            paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, testHistory.ToArray())).Verifiable();
             var actual = sut.GetRequiredPayments(testEarning, testHistory);
         }
+
+
 
         [Test]
         public void DoesNotCallRefundServiceForGreaterThanZeroAmount()
