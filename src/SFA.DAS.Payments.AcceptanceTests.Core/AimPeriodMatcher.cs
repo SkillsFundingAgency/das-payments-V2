@@ -22,9 +22,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
             var aimDuration = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
             var collectionPeriodReferenceDate = DateFromCollectionPeriod(collectionPeriod);
-            const string zProgAim = "ZPROG001";
-
-            var isZProg = aimReference == zProgAim;
 
             if (GetInactiveStatuses().Contains(completionStatus))
             {
@@ -66,17 +63,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                    aimStartDate <= collectionPeriodReferenceDate &&
                    DurationGreaterThanCollectionPeriod(aimStartDate, aimDuration, collectionPeriodReferenceDate);
-
-            //var aimCouldBeActive = //(isZProg && aimStartDate <= collectionPeriodReferenceDate) || 
-            //                        (isZProg && aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear && aimStartDate + aimDuration >= collectionPeriodReferenceDate) ||
-            //                        (isZProg && aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear && aimStartDate <= collectionPeriodReferenceDate) ||
-            //                       (!isZProg && aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear);
-
-            // var isZProg = aimReference == zProgAim;// && GetInactiveStatuses().Contains(completionStatus);// completionStatus == CompletionStatus.Completed;
-
-            //var isNotContinuing = aimReference != zProgAim && !GetInactiveStatuses().Contains(completionStatus);
-
-            //return aimCouldBeActive && (isZProg || isNotContinuing);
         }
 
         private static DateTime DateFromCollectionPeriod(CollectionPeriod collectionPeriod)
