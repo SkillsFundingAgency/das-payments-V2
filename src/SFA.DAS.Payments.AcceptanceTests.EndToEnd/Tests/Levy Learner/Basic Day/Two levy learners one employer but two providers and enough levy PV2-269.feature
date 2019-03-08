@@ -114,7 +114,7 @@ Scenario Outline: Two levy learners, one employer but two providers and enough l
         | learner b  | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
         | learner b  | R02/Current Academic Year | Sep/Current Academic Year | 0            | 3000       | 0         |
 
-	When Month end is triggered
+	And Month end is triggered
 
 	And only the following "provider a" payments will be recorded
         | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
