@@ -17,16 +17,19 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
             var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, paymentHistory);
-            return new List<RequiredPayment>
+            if (amount > 0)
             {
-                new RequiredPayment
+                return new List<RequiredPayment>
                 {
-                    Amount = amount,
-                    EarningType = earning.EarningType,
-                    SfaContributionPercentage = earning.SfaContributionPercentage,
-                },
-            };
-            return new List<RequiredPayment>();
+                    new RequiredPayment
+                    {
+                        Amount = amount,
+                        EarningType = earning.EarningType,
+                        SfaContributionPercentage = earning.SfaContributionPercentage,
+                    },
+                };
+            }
+            return refunds.GetRefund(amount, paymentHistory);
         }
     }
 }
