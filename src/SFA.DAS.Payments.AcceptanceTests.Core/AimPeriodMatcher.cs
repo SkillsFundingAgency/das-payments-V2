@@ -22,14 +22,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
             var aimDuration = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
             var collectionPeriodReferenceDate = DateFromCollectionPeriod(collectionPeriod);
+            var aimEndDate = aimStartDate + aimDuration??aimStartDate;
+            var lastPeriodForAim = new CollectionPeriodBuilder().WithDate(aimEndDate).Build();
 
             if (GetInactiveStatuses().Contains(completionStatus))
             {
                 if (
                     (aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear &&
-                     DurationGreaterThanCollectionPeriod(aimStartDate, aimDuration, collectionPeriodReferenceDate)) ||
+                     DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate)) ||
                     (aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
-                     aimStartDate <= collectionPeriodReferenceDate && aimStartDate + aimDuration >= collectionPeriodReferenceDate))
+                     aimStartDate <= collectionPeriodReferenceDate && 
+                     aimStartDate + aimDuration >= collectionPeriodReferenceDate ||
+                     collectionPeriod.IsLaterThan(lastPeriodForAim)))
                 {
                     return true;
                 }
@@ -39,9 +43,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
             if (GetActiveStatuses().Contains(completionStatus) &&
                 (aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear &&
-                 DurationGreaterThanCollectionPeriod(aimStartDate, aimDuration, collectionPeriodReferenceDate)))
+                 DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate)))
             {
-                return true;
+                return !collectionPeriod.IsEqualTo(lastPeriodForAim) || completionStatus != CompletionStatus.Completed || actualDurationAsTimeSpan != plannedDurationAsTimeSpan;
             }
 
             if (completionStatus == CompletionStatus.Completed &&
@@ -55,14 +59,34 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             if (GetActiveStatuses().Contains(completionStatus) &&
                 (aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear &&
                  aimStartDate <= collectionPeriodReferenceDate &&
-                 DurationGreaterThanCollectionPeriod(aimStartDate, aimDuration, collectionPeriodReferenceDate)))
+                 DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate)))
             {
                 return true;
             }
 
             return aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                    aimStartDate <= collectionPeriodReferenceDate &&
-                   DurationGreaterThanCollectionPeriod(aimStartDate, aimDuration, collectionPeriodReferenceDate);
+                   DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate);
+        }
+
+        private static bool IsLaterThan(this CollectionPeriod currentPeriod, CollectionPeriod otherPeriod)
+        {
+            if (otherPeriod.AcademicYear < currentPeriod.AcademicYear)
+            {
+                return true;
+            }
+
+            if (otherPeriod.AcademicYear > currentPeriod.AcademicYear)
+            {
+                return false;
+            }
+
+            return otherPeriod.Period < currentPeriod.Period;
+        }
+
+        private static bool IsEqualTo(this CollectionPeriod currentPeriod, CollectionPeriod otherPeriod)
+        {
+            return currentPeriod.AcademicYear == otherPeriod.AcademicYear && currentPeriod.Period == otherPeriod.Period;
         }
 
         private static DateTime DateFromCollectionPeriod(CollectionPeriod collectionPeriod)
@@ -74,12 +98,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 : new DateTime(year + 1, collectionPeriod.Period - 5, 1).AddMonths(1).AddDays(-1);
         }
 
-        private static bool DurationGreaterThanCollectionPeriod(DateTime startDate, TimeSpan? duration,
+        private static bool DurationGreaterThanCollectionPeriodStart(DateTime endDate,
             DateTime collectionPeriod)
         {
-            var aimEndDate = startDate + duration;
-
-            return collectionPeriod.FirstDayOfMonth() <= aimEndDate;
+            return collectionPeriod.FirstDayOfMonth() <= endDate;
         }
 
         private static IEnumerable<CompletionStatus> GetInactiveStatuses()

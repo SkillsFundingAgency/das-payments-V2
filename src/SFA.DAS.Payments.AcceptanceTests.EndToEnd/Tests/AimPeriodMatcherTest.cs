@@ -122,5 +122,39 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
 
             isStartDateValid.Should().Be(true);
         }
+
+        [Test]
+        public void WithdrawnRetrospectivelyZProgAimReturnsTrueWhenNotifiedLater()
+        {
+            var completionStatus = CompletionStatus.Withdrawn;
+
+            var isStartDateValid =
+                AimPeriodMatcher.IsStartDateValidForCollectionPeriod(
+                    StartOfCurrentAcademicYear,
+                    sixthPeriod,
+                    annualDuration,
+                    threeMonthDuration,
+                    completionStatus,
+                    ZProgAim);
+
+            isStartDateValid.Should().Be(true);
+        }
+
+        [Test]
+        public void CompletedAimFromPreviousAcademicYearReturnsFalse()
+        {
+            var completionStatus = CompletionStatus.Completed;
+
+            var isStartDateValid =
+                AimPeriodMatcher.IsStartDateValidForCollectionPeriod(
+                    StartOfPreviousAcademicYear,
+                    firstPeriod,
+                    annualDuration,
+                    annualDuration,
+                    completionStatus,
+                    ZProgAim);
+
+            isStartDateValid.Should().Be(false);
+        }
     }
 }
