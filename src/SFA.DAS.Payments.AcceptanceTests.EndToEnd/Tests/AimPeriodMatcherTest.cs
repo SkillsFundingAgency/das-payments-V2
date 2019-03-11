@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
         }
 
         [Test]
-        public void WithdrawnZProgAimReturnsTrueWhenWithdrawnBeforeR04()
+        public void WithdrawnZProgAimReturnsFalseWhenWithdrawnBeforeR04()
         {
             var completionStatus = CompletionStatus.Withdrawn;
 
@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
                     completionStatus,
                     ZProgAim);
 
-            isStartDateValid.Should().Be(true);
+            isStartDateValid.Should().Be(false);
         }
 
         [Test]

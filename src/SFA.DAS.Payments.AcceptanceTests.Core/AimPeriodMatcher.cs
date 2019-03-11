@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     (aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear &&
                      DurationGreaterThanCollectionPeriod(aimStartDate, aimDuration, collectionPeriodReferenceDate)) ||
                     (aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
-                     aimStartDate <= collectionPeriodReferenceDate && DurationGreaterThanCollectionPeriod(aimStartDate, aimDuration, collectionPeriodReferenceDate)))
+                     aimStartDate <= collectionPeriodReferenceDate && aimStartDate + aimDuration >= collectionPeriodReferenceDate))
                 {
                     return true;
                 }
