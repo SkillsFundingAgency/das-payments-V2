@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Core;
 
@@ -13,8 +12,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected abstract bool Match(T expected, T actual);
 
-        public (bool pass, string reason) MatchPayments()
-        {
+        public (bool pass, string reason, bool final) MatchPayments()
+        {            
             var actualPayments = GetActualEvents();
 
             var expectedPayments = GetExpectedEvents();
@@ -25,13 +24,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             var errors = new List<string>();
 
+            var final = false;
+
             if (matchedPayments.Count < expectedPayments.Count)
                 errors.Add($"{expectedPayments.Count - matchedPayments.Count} out of {expectedPayments.Count} events were not found");
 
             if (actualPayments.Count > expectedPayments.Count)
+            {
                 errors.Add($"found {actualPayments.Count - expectedPayments.Count} unexpected events");
+                final = true;
+            }
 
-            return (errors.Count == 0, string.Join(", ", errors));
+            return (errors.Count == 0, string.Join(", ", errors), final);
         }
 
         public (bool pass, string reason) MatchNoPayments()

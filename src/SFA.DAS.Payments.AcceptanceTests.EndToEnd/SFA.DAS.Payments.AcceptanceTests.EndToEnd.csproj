@@ -449,6 +449,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two levy learners but only enough levy to fund one learner- PV2-264.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers and enough levy PV2-269.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two levy learners one employer but two providers and enough levy PV2-269.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -634,6 +639,21 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer there is a gap PV2-319.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer there is a gap PV2-319.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer-PV2-317.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -815,6 +835,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two levy learners but only enough levy to fund one learner- PV2-264.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers and enough levy PV2-269.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two levy learners one employer but two providers and enough levy PV2-269.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs</LastGenOutput>
@@ -962,6 +986,18 @@
     <None Include="Tests\Non-Levy Learner\Small Employer\Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer there is a gap PV2-319.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer there is a gap PV2-319.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer-PV2-317.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
