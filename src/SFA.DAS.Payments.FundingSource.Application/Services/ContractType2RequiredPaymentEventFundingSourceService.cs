@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(ApprenticeshipContractType2RequiredPaymentEvent message)
+        public IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(CalculatedRequiredCoInvestedAmount message)
         {
             var coInvestedPaymentMessage = mapper.MapToRequiredCoInvestedPayment(message);
 

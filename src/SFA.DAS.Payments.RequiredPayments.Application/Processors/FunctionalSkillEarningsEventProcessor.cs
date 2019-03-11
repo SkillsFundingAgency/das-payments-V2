@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         protected override RequiredPaymentEvent CreateRequiredPayment(FunctionalSkillEarningsEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments)
         {
-            return new IncentiveRequiredPaymentEvent
+            return new CalculatedRequiredIncentiveAmount
             {
                 Type = (IncentivePaymentType)periodAndType.type,
                 ContractType = ContractType.Act2

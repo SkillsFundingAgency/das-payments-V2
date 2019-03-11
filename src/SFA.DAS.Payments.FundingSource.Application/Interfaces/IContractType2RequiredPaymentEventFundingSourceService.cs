@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
 {
     public interface IContractType2RequiredPaymentEventFundingSourceService
     {
-        IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(ApprenticeshipContractType2RequiredPaymentEvent message);
+        IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(CalculatedRequiredCoInvestedAmount message);
     }
 }

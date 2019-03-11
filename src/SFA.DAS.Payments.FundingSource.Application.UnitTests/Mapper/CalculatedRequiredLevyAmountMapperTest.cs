@@ -13,16 +13,16 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 {
     [TestFixture]
-    public class Act1RequiredPaymentEventMapperTest
+    public class CalculatedRequiredLevyAmountMapperTest
     {
         private IMapper autoMapper;
         private MapperConfiguration mapperConfiguration;
-        private ApprenticeshipContractType1RequiredPaymentEvent requiredPaymentEvent;
+        private CalculatedRequiredLevyAmount requiredPaymentEvent;
 
         [SetUp]
         public void Setup()
         {
-            requiredPaymentEvent = new ApprenticeshipContractType1RequiredPaymentEvent
+            requiredPaymentEvent = new CalculatedRequiredLevyAmount
             {
                 AmountDue = 1000.00m,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1),
