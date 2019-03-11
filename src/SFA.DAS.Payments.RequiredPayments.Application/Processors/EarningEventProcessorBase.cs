@@ -18,15 +18,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
     public abstract class EarningEventProcessorBase<TEarningEvent> : IEarningEventProcessor<TEarningEvent>
         where TEarningEvent : IEarningEvent
     {
-        protected readonly IPaymentDueProcessor paymentDueProcessor;
+        protected readonly IRequiredPaymentService requiredPaymentService;
         private readonly IPaymentKeyService paymentKeyService;
         private readonly IMapper mapper;
 
-        protected EarningEventProcessorBase(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
+        protected EarningEventProcessorBase(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentService requiredPaymentService)
         {
             this.paymentKeyService = paymentKeyService ?? throw new ArgumentNullException(nameof(paymentKeyService));
             this.mapper = mapper;
-            this.paymentDueProcessor = paymentDueProcessor;
+            this.requiredPaymentService = requiredPaymentService;
         }
 
         public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
@@ -48,35 +48,66 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     ? paymentHistoryValue.Value.Select(p => mapper.Map<PaymentHistoryEntity, Payment>(p)).ToList()
                     : new List<Payment>();
 
-                var amountDue = paymentDueProcessor.CalculateRequiredPaymentAmount(periodAndType.period.Amount, payments);
+                if (periodAndType.period.Amount != 0 && !periodAndType.period.SfaContributionPercentage.HasValue)
+                {
+                    throw new ArgumentException();
+                }
 
-                if (amountDue == 0)
+                var earning = new Earning
+                {
+                    Amount = periodAndType.period.Amount,
+                    SfaContributionPercentage = periodAndType.period.SfaContributionPercentage,
+                    EarningType = GetEarningType(periodAndType.type),
+                };
+                var requiredPayments = requiredPaymentService.GetRequiredPayments(earning, payments);
+
+                if (requiredPayments.Sum(x => x.Amount) == 0)
+                {
                     continue;
+                }
 
-                string priceEpisodeIdentifier;
+                foreach (var requiredPayment in requiredPayments)
+                {
+                    var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType);
 
-                if (amountDue < 0 && payments.Count > 0) // refunds need to use price episode ID that they are refunding
-                    priceEpisodeIdentifier = payments[0].PriceEpisodeIdentifier;
-                else
-                    priceEpisodeIdentifier = periodAndType.period.PriceEpisodeIdentifier;
+                    string priceEpisodeIdentifier;
 
-                var requiredPayment = CreateRequiredPayment(earningEvent, periodAndType, payments.ToArray());
+                    if (requiredPayment.Amount < 0 && payments.Count > 0) // refunds need to use price episode ID that they are refunding
+                        priceEpisodeIdentifier = payments[0].PriceEpisodeIdentifier;
+                    else
+                        priceEpisodeIdentifier = periodAndType.period.PriceEpisodeIdentifier;
 
-                requiredPayment.AmountDue = amountDue;
-                requiredPayment.DeliveryPeriod = periodAndType.period.Period;
-                requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
+                    requiredPaymentEvent.AmountDue = requiredPayment.Amount;
+                    
+                    requiredPaymentEvent.DeliveryPeriod = periodAndType.period.Period;
+                    requiredPaymentEvent.PriceEpisodeIdentifier = priceEpisodeIdentifier;
 
-                mapper.Map(earningEvent, requiredPayment);
-                
-                result.Add(requiredPayment);
+                    mapper.Map(earningEvent, requiredPaymentEvent);
+
+                    result.Add(requiredPaymentEvent);
+                }
             }
 
             return result.AsReadOnly();
-
         }
 
-        protected abstract RequiredPaymentEvent CreateRequiredPayment(TEarningEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments);
+        protected abstract EarningType GetEarningType(int type);
 
+        protected RequiredPaymentEvent CreateRequiredPaymentEvent(EarningType earningType)
+        {
+            switch (earningType)
+            {
+                case EarningType.CoInvested:
+                    return new CalculatedRequiredCoInvestedAmount();
+                case EarningType.Incentive: 
+                    return new CalculatedRequiredIncentiveAmount();
+                case EarningType.Levy:
+                    return new CalculatedRequiredLevyAmount();
+            }
+
+            throw new NotImplementedException($"Could not create required payment for earning type: {earningType}");
+        }
+        
         protected abstract IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(TEarningEvent earningEvent);
     }
 }

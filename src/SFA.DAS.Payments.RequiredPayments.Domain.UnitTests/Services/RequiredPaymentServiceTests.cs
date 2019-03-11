@@ -41,7 +41,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             [Test]
             public void RequiredPaymentHasCorrectAmount()
             {
-                var testEarning = new Earning();
+                var testEarning = new Earning
+                {
+                    SfaContributionPercentage = 0,
+                };
                 var expectedAmount = 50;
                 
                 PaymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, PaymentHistory)).Returns(expectedAmount);
@@ -76,6 +79,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 var testEarning = new Earning
                 {
                     EarningType = EarningType.Levy,
+                    SfaContributionPercentage = 0,
                 };
 
                 PaymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, PaymentHistory)).Returns(50);

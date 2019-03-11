@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
@@ -21,7 +22,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 return new List<RequiredPayment>();
             }
 
-            var totalRefundPercent = amount / totalPaidInHistory;
+            var totalRefundPercent = amount / totalPaidInHistory; // will be negative
+            totalRefundPercent = Math.Max(totalRefundPercent, -1);
 
             return paymentHistory.GroupBy(x => new
                 {

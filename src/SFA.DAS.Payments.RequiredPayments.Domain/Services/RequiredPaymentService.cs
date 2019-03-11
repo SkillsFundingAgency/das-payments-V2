@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
-    public class RequiredPaymentService
+    public class RequiredPaymentService : IRequiredPaymentService
     {
         private IPaymentDueProcessor paymentsDue;
         private IRefundService refunds;
@@ -17,19 +18,26 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
             var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, paymentHistory);
-            if (amount > 0)
+
+            if (amount < 0)
             {
-                return new List<RequiredPayment>
-                {
-                    new RequiredPayment
-                    {
-                        Amount = amount,
-                        EarningType = earning.EarningType,
-                        SfaContributionPercentage = earning.SfaContributionPercentage,
-                    },
-                };
+                return refunds.GetRefund(amount, paymentHistory);
             }
-            return refunds.GetRefund(amount, paymentHistory);
+
+            if (!earning.SfaContributionPercentage.HasValue)
+            {
+                throw new ArgumentException("Trying to use a null SFA Contribution % for a positive earning");
+            }
+
+            return new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = amount,
+                    EarningType = earning.EarningType,
+                    SfaContributionPercentage = earning.SfaContributionPercentage.Value,
+                },
+            };
         }
     }
 }

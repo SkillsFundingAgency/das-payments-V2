@@ -202,5 +202,23 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             actual[0].Amount.Should().Be(-50);
             actual[0].SfaContributionPercentage.Should().Be(0.9m);
         }
+
+        [Test]
+        public void Refund_More_Than_Is_Available()
+        {
+            var sut = new RefundService();
+
+            var testHistory = new List<Payment>
+            {
+                new Payment {Amount = 100, FundingSource = FundingSourceType.Levy, SfaContributionPercentage = 0.9m},
+            };
+
+            var actual = sut.GetRefund(-125, testHistory);
+
+            actual.Should().HaveCount(1);
+            actual[0].EarningType.Should().Be(EarningType.Levy);
+            actual[0].Amount.Should().Be(-100);
+            actual[0].SfaContributionPercentage.Should().Be(0.9m);
+        }
     }
 }

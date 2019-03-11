@@ -156,66 +156,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             Assert.AreEqual(0, amount);
         }
 
-        [Test]
-        [TestCase(.89, 100, 0, .89)]
-        [TestCase(.89, 0, 1, .89)]
-        [TestCase(.89, 0, 0, .89)]
-        [TestCase(0, 100, 0, 0)]
-        [TestCase(0, 100, 2, 0)]
-        [TestCase(0, 0, 2, .5)]
-        [TestCase(0, 0, 1, 1)]
-        public void TestCalculateSfaContributionPercentageDefaultsToEarning(decimal earningPercentage, decimal amountDue, int numberOfHistoricalPayments, decimal expectedResult)
-        {
-            // arrange
-            var history = new Payment[numberOfHistoricalPayments];
-            for (int i = 0; i < numberOfHistoricalPayments; i++)
-            {
-                history[i] = new Payment
-                {
-                    Amount = 100,
-                    DeliveryPeriod = 2,
-                    CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819,2),
-                    PriceEpisodeIdentifier = "1",
-                    FundingSource = i % 2 == 0 ? FundingSourceType.CoInvestedSfa : FundingSourceType.CoInvestedEmployer
-                };
-            }
-
-            // act
-            var actualResult = paymentDueProcessor.CalculateSfaContributionPercentage(earningPercentage, amountDue, history);
-
-            // assert
-            Assert.AreEqual(expectedResult, actualResult);
-        }
-
-        [Test]
-        [TestCase(0, 0, null, null, null, 0)] // calc skipped if no history
-        [TestCase(.9, 0, 900, null, null, .9)] // calc skipped if earning has %
-        [TestCase(0, 100, 900, null, null, 0)] // calc skipped if earning has amount
-        [TestCase(0, 0, 900, null, null, 1)]
-        [TestCase(0, 0, 900, 100, null, .9)]
-        [TestCase(0, 0, 900, 50, 50, .9)]
-        public void TestCalculateSfaContributionPercentage(decimal earningSfaContribPercent, decimal amountDue, decimal? sfaContribution, decimal? employerContribution1, decimal? employerContribution2, decimal expectedResult )
-        {
-            // arrange
-            var paymentHistoryEntities = new List<Payment>();
-
-            if (sfaContribution.HasValue)
-                paymentHistoryEntities.Add(CreatePaymentEntity(sfaContribution.Value, FundingSourceType.CoInvestedSfa));
-
-            if (employerContribution1.HasValue)
-                paymentHistoryEntities.Add(CreatePaymentEntity(employerContribution1.Value, FundingSourceType.CoInvestedEmployer));
-
-            if (employerContribution2.HasValue)
-                paymentHistoryEntities.Add(CreatePaymentEntity(employerContribution2.Value, FundingSourceType.CoInvestedEmployer));
-
-            // act
-            var actualResult = paymentDueProcessor.CalculateSfaContributionPercentage(earningSfaContribPercent, amountDue, paymentHistoryEntities.ToArray());
-
-            // assert
-            Assert.AreEqual(expectedResult, actualResult);
-
-        }
-
         private static Payment CreatePaymentEntity(decimal amount, FundingSourceType fundingSourceType)
         {
             return new Payment

@@ -1,33 +1,23 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
-using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
     public class FunctionalSkillEarningsEventProcessor : EarningEventProcessorBase<FunctionalSkillEarningsEvent>, IFunctionalSkillEarningsEventProcessor
     {
-        public FunctionalSkillEarningsEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
-            : base(paymentKeyService, mapper, paymentDueProcessor)
+        public FunctionalSkillEarningsEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentService requiredPaymentService)
+            : base(paymentKeyService, mapper, requiredPaymentService)
         {
         }
 
-        protected override RequiredPaymentEvent CreateRequiredPayment(FunctionalSkillEarningsEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments)
+        protected override EarningType GetEarningType(int type)
         {
-            return new CalculatedRequiredIncentiveAmount
-            {
-                Type = (IncentivePaymentType)periodAndType.type,
-                ContractType = ContractType.Act2
-            };
+            return EarningType.Incentive;
         }
 
         protected override IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(FunctionalSkillEarningsEvent earningEvent)

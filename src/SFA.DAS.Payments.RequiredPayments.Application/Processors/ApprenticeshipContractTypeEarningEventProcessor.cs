@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using AutoMapper;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -16,32 +15,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         where TRequiredPaymentEvent : CalculatedRequiredOnProgrammeAmount, new()
         where TEarningEvent : IContractTypeEarningEvent
     {
-        protected ApprenticeshipContractTypeEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IPaymentDueProcessor paymentDueProcessor)
-            : base(paymentKeyService, mapper, paymentDueProcessor)
+        protected ApprenticeshipContractTypeEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentService requiredPaymentsService)
+            : base(paymentKeyService, mapper, requiredPaymentsService)
         {
-        }
-
-        protected override RequiredPaymentEvent CreateRequiredPayment(TEarningEvent earningEvent, (EarningPeriod period, int type) periodAndType, Payment[] payments)
-        {
-            if (Enum.IsDefined(typeof(OnProgrammeEarningType), periodAndType.type))
-            {
-                // TODO: work out the better way of doing it
-                var sfaContributionPercentage = periodAndType.period.SfaContributionPercentage.GetValueOrDefault(earningEvent.SfaContributionPercentage);
-                sfaContributionPercentage = paymentDueProcessor.CalculateSfaContributionPercentage(sfaContributionPercentage, periodAndType.period.Amount, payments);
-
-                var requiredPayment = new TRequiredPaymentEvent
-                {
-                    OnProgrammeEarningType = (OnProgrammeEarningType) periodAndType.type, 
-                    SfaContributionPercentage = sfaContributionPercentage
-                };
-                return requiredPayment;
-            }
-
-            return new CalculatedRequiredIncentiveAmount
-            {
-                Type = (IncentivePaymentType)periodAndType.type,
-                ContractType = ContractType.Act2
-            };
         }
 
         protected override IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(TEarningEvent earningEvent)
