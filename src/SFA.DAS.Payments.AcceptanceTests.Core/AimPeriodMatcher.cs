@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 return true;
             }
 
-            if (completionStatus == CompletionStatus.Completed &&
+            if (GetActiveStatuses().Contains(completionStatus) &&
                 (aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear &&
                  aimStartDate <= collectionPeriodReferenceDate &&
                  DurationGreaterThanCollectionPeriod(aimStartDate, aimDuration, collectionPeriodReferenceDate)))
@@ -77,7 +77,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         private static bool DurationGreaterThanCollectionPeriod(DateTime startDate, TimeSpan? duration,
             DateTime collectionPeriod)
         {
-            return startDate + duration >= collectionPeriod;
+            var aimEndDate = startDate + duration;
+
+            return collectionPeriod.FirstDayOfMonth() <= aimEndDate;
         }
 
         private static IEnumerable<CompletionStatus> GetInactiveStatuses()
@@ -90,6 +92,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         {
             yield return CompletionStatus.Continuing;
             yield return CompletionStatus.Completed;
+        }
+
+        public static DateTime FirstDayOfMonth(this DateTime date)
+        {
+            return new DateTime(date.Year, date.Month, 1);
+        }
+
+        public static DateTime LastDayOnMonth(this DateTime date)
+        {
+            return date.FirstDayOfMonth().AddMonths(1).AddDays(-1);
         }
     }
 }
