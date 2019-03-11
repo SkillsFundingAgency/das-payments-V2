@@ -141,7 +141,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
         }
 
         [Test]
-        public void CompletedAimFromPreviousAcademicYearReturnsFalse()
+        public void CompletedZProgAimFromPreviousAcademicYearReturnsTrue()
         {
             var completionStatus = CompletionStatus.Completed;
 
@@ -153,6 +153,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
                     annualDuration,
                     completionStatus,
                     ZProgAim);
+
+            isStartDateValid.Should().Be(true);
+        }
+
+        [Test]
+        public void CompletedOtherAimFromPreviousAcademicYearReturnsFalse()
+        {
+            var completionStatus = CompletionStatus.Completed;
+
+            var isStartDateValid =
+                AimPeriodMatcher.IsStartDateValidForCollectionPeriod(
+                    StartOfPreviousAcademicYear,
+                    firstPeriod,
+                    annualDuration,
+                    annualDuration,
+                    completionStatus,
+                    "12345");
 
             isStartDateValid.Should().Be(false);
         }

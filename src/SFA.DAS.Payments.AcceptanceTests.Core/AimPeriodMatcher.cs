@@ -45,7 +45,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 (aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear &&
                  DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate)))
             {
-                return !collectionPeriod.IsEqualTo(lastPeriodForAim) || completionStatus != CompletionStatus.Completed || actualDurationAsTimeSpan != plannedDurationAsTimeSpan;
+                if (collectionPeriod.IsEqualTo(lastPeriodForAim))
+                {
+                    if (completionStatus == CompletionStatus.Completed)
+                    {
+                        if (actualDurationAsTimeSpan == plannedDurationAsTimeSpan || actualDurationAsTimeSpan is null)
+                        {
+                            if (aimReference == "ZPROG001")
+                            {
+                                return true;
+                            }
+
+                            return false;
+                        }
+                    }
+
+                    return false;
+
+                }
+
+                return true;
             }
 
             if (completionStatus == CompletionStatus.Completed &&
