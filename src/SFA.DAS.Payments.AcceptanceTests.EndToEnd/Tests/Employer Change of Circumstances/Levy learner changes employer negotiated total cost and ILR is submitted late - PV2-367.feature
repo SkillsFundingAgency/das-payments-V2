@@ -1,48 +1,10 @@
-    #Scenario: Earnings and payments for a levy learner, levy available, where total cost changes during the programme, and there is change in employer, and ILR is submitted late
-    #    Given The learner is programme only DAS 
-    #    And the employer 1 has a levy balance > agreed price for all months
-    #    And the employer 2 has a levy balance > agreed price for all months
-    #    And the learner changes employers
-    #        | Employer   | Type | ILR employment start date |
-    #        | employer 1 | DAS  | 03/08/2018                |
-    #        | employer 2 | DAS  | 03/11/2018                |
-    #    
-    #    And the following commitments exist on 03/12/2018:
-    #        | Employer   | commitment Id | version Id | ULN       | start date | end date   | agreed price | status    | effective from | effective to | stop effective from |
-    #        | employer 1 | 1             | 1          | learner a | 01/08/2018 | 31/08/2019 | 15000        | cancelled | 01/08/2018     | 31/10/2018   | 01/11/2018   |
-    #        | employer 2 | 2             | 1          | learner a | 01/11/2018 | 31/08/2019 | 5625         | active    | 01/11/2018     |              |              |
-    #    
-    #    When an ILR file is submitted for the first time on 28/11/18 with the following data (including residual price TNP 3 and TNP 4):
-    #        | ULN       | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | Residual training price | Residual training price effective date | Residual assessment price | Residual assessment price effective date |
-    #        | learner a | 03/08/2018 | 04/08/2019       |                 | continuing        | 12000                | 03/08/2018                          | 3000                   | 03/08/2018                            | 5000                    | 03/11/2018                             | 625                       | 03/11/2018                               |
-    #    
-    #    Then the provider earnings and payments break down as follows:
-    #        | Type                            | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 |
-    #        | Provider Earned Total           | 1000  | 1000  | 1000  | 500   | 500   |
-    #        | Provider Earned from SFA        | 1000  | 1000  | 1000  | 500   | 500   |
-    #        | Provider Earned from Employer 1 | 0     | 0     | 0     | 0     | 0     |
-    #        | Provider Earned from Employer 2 | 0     | 0     | 0     | 0     | 0     |
-    #        | Provider Paid by SFA            | 0     | 0     | 0     | 0     | 3500  |
-    #        | Payment due from employer 1     | 0     | 0     | 0     | 0     | 0     |
-    #        | Payment due from employer 2     | 0     | 0     | 0     | 0     | 0     |
-    #        | Employer 1 Levy account debited | 0     | 0     | 0     | 0     | 3000  |
-    #        | Employer 2 Levy account debited | 0     | 0     | 0     | 0     | 500   |
-    #        | SFA Levy employer budget        | 1000  | 1000  | 1000  | 500   | 500   |
-    #        | SFA Levy co-funding budget      | 0     | 0     | 0     | 0     | 0     |
-
-## For DC integration
-        #And the learner changes employers
-        #    | Employer   | Type | ILR employment start date |
-        #    | employer 1 | DAS  | 03/08/2018                |
-        #    | employer 2 | DAS  | 03/11/2018                |
-
-
-Feature: Earnings and payments for a levy learner, levy available, where a total cost changes during the programme and ILR is submitted late
+@ignore
+Feature: Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367
 		As a provider,
 		I want earnings and payments for a levy learner, levy available, where a total cost changes during the programme and ILR is submitted late, to be paid the correct amount
 		So that I am accurately paid my apprenticeship provision
 
-Scenario Outline: Levy learner changes employer, negotiated total cost and ILR is submitted late PV2-367
+Scenario Outline: Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367
 	Given the "employer 1" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 1>
 	And  the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 	And the following commitments exist
@@ -127,3 +89,43 @@ Examples:
 		| R10/Current Academic Year | 12500                       | 3125                        |
 		| R11/Current Academic Year | 12500                       | 2625                        |
 		| R12/Current Academic Year | 12500                       | 2125                        |
+
+
+    #Scenario: Earnings and payments for a levy learner, levy available, where total cost changes during the programme, and there is change in employer, and ILR is submitted late
+    #    Given The learner is programme only DAS 
+    #    And the employer 1 has a levy balance > agreed price for all months
+    #    And the employer 2 has a levy balance > agreed price for all months
+    #    And the learner changes employers
+    #        | Employer   | Type | ILR employment start date |
+    #        | employer 1 | DAS  | 03/08/2018                |
+    #        | employer 2 | DAS  | 03/11/2018                |
+    #    
+    #    And the following commitments exist on 03/12/2018:
+    #        | Employer   | commitment Id | version Id | ULN       | start date | end date   | agreed price | status    | effective from | effective to | stop effective from |
+    #        | employer 1 | 1             | 1          | learner a | 01/08/2018 | 31/08/2019 | 15000        | cancelled | 01/08/2018     | 31/10/2018   | 01/11/2018   |
+    #        | employer 2 | 2             | 1          | learner a | 01/11/2018 | 31/08/2019 | 5625         | active    | 01/11/2018     |              |              |
+    #    
+    #    When an ILR file is submitted for the first time on 28/11/18 with the following data (including residual price TNP 3 and TNP 4):
+    #        | ULN       | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | Residual training price | Residual training price effective date | Residual assessment price | Residual assessment price effective date |
+    #        | learner a | 03/08/2018 | 04/08/2019       |                 | continuing        | 12000                | 03/08/2018                          | 3000                   | 03/08/2018                            | 5000                    | 03/11/2018                             | 625                       | 03/11/2018                               |
+    #    
+    #    Then the provider earnings and payments break down as follows:
+    #        | Type                            | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 |
+    #        | Provider Earned Total           | 1000  | 1000  | 1000  | 500   | 500   |
+    #        | Provider Earned from SFA        | 1000  | 1000  | 1000  | 500   | 500   |
+    #        | Provider Earned from Employer 1 | 0     | 0     | 0     | 0     | 0     |
+    #        | Provider Earned from Employer 2 | 0     | 0     | 0     | 0     | 0     |
+    #        | Provider Paid by SFA            | 0     | 0     | 0     | 0     | 3500  |
+    #        | Payment due from employer 1     | 0     | 0     | 0     | 0     | 0     |
+    #        | Payment due from employer 2     | 0     | 0     | 0     | 0     | 0     |
+    #        | Employer 1 Levy account debited | 0     | 0     | 0     | 0     | 3000  |
+    #        | Employer 2 Levy account debited | 0     | 0     | 0     | 0     | 500   |
+    #        | SFA Levy employer budget        | 1000  | 1000  | 1000  | 500   | 500   |
+    #        | SFA Levy co-funding budget      | 0     | 0     | 0     | 0     | 0     |
+
+## For DC integration
+        #And the learner changes employers
+        #    | Employer   | Type | ILR employment start date |
+        #    | employer 1 | DAS  | 03/08/2018                |
+        #    | employer 2 | DAS  | 03/11/2018                |
+

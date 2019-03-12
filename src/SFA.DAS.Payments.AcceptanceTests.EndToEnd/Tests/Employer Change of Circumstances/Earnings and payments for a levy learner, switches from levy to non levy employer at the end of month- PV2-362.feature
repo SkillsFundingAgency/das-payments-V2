@@ -1,4 +1,3 @@
-
 @ignore
 Feature: Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362
 As a provider,

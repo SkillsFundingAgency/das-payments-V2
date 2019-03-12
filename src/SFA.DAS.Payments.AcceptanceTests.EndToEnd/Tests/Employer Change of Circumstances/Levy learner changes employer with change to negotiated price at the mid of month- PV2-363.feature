@@ -1,47 +1,5 @@
-    #Scenario:  Earnings and payments for a levy learner, levy available, commitment entered for a new employer in the middle of the month, and there is a change to the employer and negotiated cost in the middle of a month in the ILR
-    #    Given The learner is programme only DAS
-    #    And the employer 1 has a levy balance > agreed price for all months
-    #    And the employer 2 has a levy balance > agreed price for all months
-    #    
-    #    And the learner changes employers
-    #        | Employer   | Type | ILR employment start date |
-    #        | employer 1 | DAS  | 01/08/2018                |
-    #        | employer 2 | DAS  | 15/11/2018                |
-    #    
-    #    And the following commitments exist on 03/12/2018:
-    #        | Employer   | commitment Id | version Id | ULN       | start date | end date   | agreed price | status    | effective from | effective to | stop effective from |
-    #        | employer 1 | 1             | 1-001      | learner a | 01/08/2018 | 28/08/2019 | 15000        | cancelled | 01/08/2018     | 14/11/2018   | 15/11/2018   |
-    #        | employer 2 | 2             | 1-001      | learner a | 15/11/2018 | 28/08/2019 | 5625         | active    | 15/11/2018     |              |              |
-    #    
-    #    When an ILR file is submitted on 03/12/2018 with the following data:
-    #        | ULN       | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | Residual training price | Residual training price effective date | Residual assessment price | Residual assessment price effective date |
-    #        | learner a | 01/08/2018 | 28/08/2019       |                 | continuing        | 12000                | 01/08/2018                          | 3000                   | 01/08/2018                            | 5000                    | 15/11/2018                             | 625                       | 15/11/2018                               |
-    #    
-    #    #Then the data lock status of the ILR in 03/12/2018 is:
-    #    #    | Payment type | 08/18               | 09/18               | 10/18               | 11/18               | 12/18               |
-    #    #    | On-program   | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-001 | commitment 2 v1-001 | commitment 2 v1-001 |
-    #    
-    #    Then the provider earnings and payments break down as follows:
-    #        | Type                            | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 |
-    #        | Provider Earned Total           | 1000  | 1000  | 1000  | 500   | 500   |
-    #        | Provider Earned from SFA        | 1000  | 1000  | 1000  | 500   | 500   |
-    #        | Provider Earned from Employer 1 | 0     | 0     | 0     | 0     | 0     |
-    #        | Provider Earned from Employer 2 | 0     | 0     | 0     | 0     | 0     |
-    #        | Provider Paid by SFA            | 0     | 1000  | 1000  | 1000  | 500   |
-    #        | Payment due from employer 1     | 0     | 0     | 0     | 0     | 0     |
-    #        | Payment due from employer 2     | 0     | 0     | 0     | 0     | 0     |
-    #        | Employer 1 Levy account debited | 0     | 1000  | 1000  | 1000  | 0     |
-    #        | Employer 2 Levy account debited | 0     | 0     | 0     | 0     | 500   |
-    #        | SFA Levy employer budget        | 1000  | 1000  | 1000  | 500   | 500   |
-    #        | SFA Levy co-funding budget      | 0     | 0     | 0     | 0     | 0     |
-
-# For DC integration
-    #    And the learner changes employers
-    #        | Employer   | Type | ILR employment start date |
-    #        | employer 1 | DAS  | 01/08/2018                |
-    #        | employer 2 | DAS  | 15/11/2018                |
-
-Feature: Levy learner changes employer with change to negotiated price in mid month
+@ignore
+Feature: Levy learner changes employer with change to negotiated price in mid month PV2-363
 		As a provider,
 		I want earnings and payments for a levy learner, levy available, commitment entered for a new employer in the middle of the month, and there is a change to the employer and negotiated cost in the middle of a month in the ILR, to be paid the correct amount
 		So that I am accurately paid my apprenticeship provision.
@@ -145,3 +103,46 @@ Examples:
 		| R10/Current Academic Year | 13500                       | 2625                        |
 		| R11/Current Academic Year | 13500                       | 2125                        |
 		| R12/Current Academic Year | 13500                       | 1625                        |
+
+    #Scenario:  Earnings and payments for a levy learner, levy available, commitment entered for a new employer in the middle of the month, and there is a change to the employer and negotiated cost in the middle of a month in the ILR
+    #    Given The learner is programme only DAS
+    #    And the employer 1 has a levy balance > agreed price for all months
+    #    And the employer 2 has a levy balance > agreed price for all months
+    #    
+    #    And the learner changes employers
+    #        | Employer   | Type | ILR employment start date |
+    #        | employer 1 | DAS  | 01/08/2018                |
+    #        | employer 2 | DAS  | 15/11/2018                |
+    #    
+    #    And the following commitments exist on 03/12/2018:
+    #        | Employer   | commitment Id | version Id | ULN       | start date | end date   | agreed price | status    | effective from | effective to | stop effective from |
+    #        | employer 1 | 1             | 1-001      | learner a | 01/08/2018 | 28/08/2019 | 15000        | cancelled | 01/08/2018     | 14/11/2018   | 15/11/2018   |
+    #        | employer 2 | 2             | 1-001      | learner a | 15/11/2018 | 28/08/2019 | 5625         | active    | 15/11/2018     |              |              |
+    #    
+    #    When an ILR file is submitted on 03/12/2018 with the following data:
+    #        | ULN       | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | Residual training price | Residual training price effective date | Residual assessment price | Residual assessment price effective date |
+    #        | learner a | 01/08/2018 | 28/08/2019       |                 | continuing        | 12000                | 01/08/2018                          | 3000                   | 01/08/2018                            | 5000                    | 15/11/2018                             | 625                       | 15/11/2018                               |
+    #    
+    #    #Then the data lock status of the ILR in 03/12/2018 is:
+    #    #    | Payment type | 08/18               | 09/18               | 10/18               | 11/18               | 12/18               |
+    #    #    | On-program   | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-001 | commitment 2 v1-001 | commitment 2 v1-001 |
+    #    
+    #    Then the provider earnings and payments break down as follows:
+    #        | Type                            | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 |
+    #        | Provider Earned Total           | 1000  | 1000  | 1000  | 500   | 500   |
+    #        | Provider Earned from SFA        | 1000  | 1000  | 1000  | 500   | 500   |
+    #        | Provider Earned from Employer 1 | 0     | 0     | 0     | 0     | 0     |
+    #        | Provider Earned from Employer 2 | 0     | 0     | 0     | 0     | 0     |
+    #        | Provider Paid by SFA            | 0     | 1000  | 1000  | 1000  | 500   |
+    #        | Payment due from employer 1     | 0     | 0     | 0     | 0     | 0     |
+    #        | Payment due from employer 2     | 0     | 0     | 0     | 0     | 0     |
+    #        | Employer 1 Levy account debited | 0     | 1000  | 1000  | 1000  | 0     |
+    #        | Employer 2 Levy account debited | 0     | 0     | 0     | 0     | 500   |
+    #        | SFA Levy employer budget        | 1000  | 1000  | 1000  | 500   | 500   |
+    #        | SFA Levy co-funding budget      | 0     | 0     | 0     | 0     | 0     |
+
+# For DC integration
+    #    And the learner changes employers
+    #        | Employer   | Type | ILR employment start date |
+    #        | employer 1 | DAS  | 01/08/2018                |
+    #        | employer 2 | DAS  | 15/11/2018                |

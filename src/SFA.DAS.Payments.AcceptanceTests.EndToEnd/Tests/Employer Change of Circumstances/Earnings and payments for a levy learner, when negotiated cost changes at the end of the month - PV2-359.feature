@@ -1,4 +1,3 @@
-
 @ignore
 Feature: Employer change of circumstances - Change in Negotiated Price
 As a provider,
