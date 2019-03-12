@@ -36,6 +36,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     Amount = amount,
                     EarningType = earning.EarningType,
                     SfaContributionPercentage = earning.SfaContributionPercentage.Value,
+                    PriceEpisodeIdentifier = earning.PriceEpisodeIdentifier,
                 },
             };
         }

@@ -119,6 +119,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     Amount = 100,
                     EarningType = EarningType.Incentive,
                     SfaContributionPercentage = 0.9m,
+                    PriceEpisodeIdentifier = "2",
                 },
             };
 
@@ -131,7 +132,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities))
                 .Verifiable();
-            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>()))
+            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.Is<Earning>(x => x.Amount == 100), It.IsAny<List<Payment>>()))
                 .Returns(requiredPayments)
                 .Verifiable();
 
@@ -185,7 +186,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 .Returns("payment key")
                 .Verifiable();
             paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
-            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>()))
+            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.Is<Earning>(x => x.Amount == 100), It.IsAny<List<Payment>>()))
                 .Returns(new List<RequiredPayment>())
                 .Verifiable();
 

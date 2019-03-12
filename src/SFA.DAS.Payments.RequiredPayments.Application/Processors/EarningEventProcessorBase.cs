@@ -58,6 +58,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     Amount = periodAndType.period.Amount,
                     SfaContributionPercentage = periodAndType.period.SfaContributionPercentage,
                     EarningType = GetEarningType(periodAndType.type),
+                    PriceEpisodeIdentifier = periodAndType.period.PriceEpisodeIdentifier,
                 };
                 var requiredPayments = requiredPaymentService.GetRequiredPayments(earning, payments);
 
@@ -70,19 +71,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 {
                     var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType);
 
-                    string priceEpisodeIdentifier;
-
-                    if (requiredPayment.Amount < 0 && payments.Count > 0) // refunds need to use price episode ID that they are refunding
-                        priceEpisodeIdentifier = payments[0].PriceEpisodeIdentifier;
-                    else
-                        priceEpisodeIdentifier = periodAndType.period.PriceEpisodeIdentifier;
-
                     requiredPaymentEvent.AmountDue = requiredPayment.Amount;
-                    
                     requiredPaymentEvent.DeliveryPeriod = periodAndType.period.Period;
-                    requiredPaymentEvent.PriceEpisodeIdentifier = priceEpisodeIdentifier;
-
+                    
                     mapper.Map(earningEvent, requiredPaymentEvent);
+
                     if (requiredPaymentEvent is CalculatedRequiredCoInvestedAmount coInvestedEvent)
                     {
                         coInvestedEvent.SfaContributionPercentage = requiredPayment.SfaContributionPercentage;
@@ -91,6 +84,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     {
                         levyEvent.SfaContributionPercentage = requiredPayment.SfaContributionPercentage;
                     }
+
+                    requiredPaymentEvent.PriceEpisodeIdentifier = requiredPayment.PriceEpisodeIdentifier;
 
                     result.Add(requiredPaymentEvent);
                 }
