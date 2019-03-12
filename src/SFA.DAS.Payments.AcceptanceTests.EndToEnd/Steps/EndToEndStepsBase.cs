@@ -812,6 +812,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     {
                         foreach (var currentPriceEpisode in CurrentPriceEpisodes)
                         {
+                            if (currentPriceEpisode.SfaContributionPercentage == null)
+                            {
+                                currentPriceEpisode.SfaContributionPercentage = training.SfaContributionPercentage;
+                            }
+
                             if (currentPriceEpisode.AimSequenceNumber == 0)
                             {
                                 aims.Single().PriceEpisodes.Add(currentPriceEpisode);
