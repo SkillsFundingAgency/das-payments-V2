@@ -83,6 +83,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     requiredPaymentEvent.PriceEpisodeIdentifier = priceEpisodeIdentifier;
 
                     mapper.Map(earningEvent, requiredPaymentEvent);
+                    if (requiredPaymentEvent is CalculatedRequiredCoInvestedAmount coInvestedEvent)
+                    {
+                        coInvestedEvent.SfaContributionPercentage = requiredPayment.SfaContributionPercentage;
+                    }
+                    else if (requiredPaymentEvent is CalculatedRequiredLevyAmount levyEvent)
+                    {
+                        levyEvent.SfaContributionPercentage = requiredPayment.SfaContributionPercentage;
+                    }
 
                     result.Add(requiredPaymentEvent);
                 }
