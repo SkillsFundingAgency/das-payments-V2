@@ -47,12 +47,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 var periodValues = allPeriods.Select(p => p.GetPeriodValue(i)).ToArray();
                 var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
                 var priceEpisodeIdentifier = periodValue == 0 ? null : source.PriceEpisodes[periodValues.IndexOf(periodValue)].PriceEpisodeIdentifier;
+                var sfaContributionPercentage = 1;
 
                 periods[i - 1] = new EarningPeriod
                 {
                     Period = i,
                     Amount = periodValue,
-                    PriceEpisodeIdentifier = priceEpisodeIdentifier
+                    PriceEpisodeIdentifier = priceEpisodeIdentifier,
+                    SfaContributionPercentage = sfaContributionPercentage,
                 };
             }
 

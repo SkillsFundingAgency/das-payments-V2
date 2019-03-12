@@ -91,6 +91,22 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [TestFixture]
+        public class WhenAmountIsEqualToTotalAmountInHistory : RequiredPaymentServiceTests
+        {
+            [Test]
+            public void ThenNothingIsReturned()
+            {
+                var testEarning = new Earning();
+                
+                PaymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, PaymentHistory)).Returns(0);
+                
+                var actual = Sut.GetRequiredPayments(testEarning, PaymentHistory);
+
+                actual.Should().BeEmpty();
+            }
+        }
+
+        [TestFixture]
         public class WhenAmountIsLessThanTotalAmountInHistory : RequiredPaymentServiceTests
         {
             [Test]

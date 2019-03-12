@@ -24,6 +24,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 return refunds.GetRefund(amount, paymentHistory);
             }
 
+            if (amount == 0)
+            {
+                return new List<RequiredPayment>();
+            }
+
             if (!earning.SfaContributionPercentage.HasValue)
             {
                 throw new ArgumentException("Trying to use a null SFA Contribution % for a positive earning");
