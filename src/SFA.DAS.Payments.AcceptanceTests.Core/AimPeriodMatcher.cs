@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
             var aimDuration = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
             var collectionPeriodReferenceDate = DateFromCollectionPeriod(collectionPeriod);
-            var aimEndDate = aimStartDate + aimDuration??aimStartDate;
+            var aimEndDate = aimStartDate + aimDuration ?? aimStartDate;
             var lastPeriodForAim = new CollectionPeriodBuilder().WithDate(aimEndDate).Build();
 
             if (GetInactiveStatuses().Contains(completionStatus))
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     (aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear &&
                      DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate)) ||
                     (aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
-                     aimStartDate <= collectionPeriodReferenceDate && 
+                     aimStartDate <= collectionPeriodReferenceDate &&
                      aimStartDate + aimDuration >= collectionPeriodReferenceDate ||
                      collectionPeriod.IsLaterThan(lastPeriodForAim)))
                 {
@@ -47,21 +47,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             {
                 if (collectionPeriod.IsEqualTo(lastPeriodForAim))
                 {
-                    if (completionStatus == CompletionStatus.Completed)
+                    if (actualDurationAsTimeSpan <= plannedDurationAsTimeSpan || actualDurationAsTimeSpan is null)
                     {
-                        if (actualDurationAsTimeSpan == plannedDurationAsTimeSpan || actualDurationAsTimeSpan is null)
+                        if (aimReference == "ZPROG001")
                         {
-                            if (aimReference == "ZPROG001")
-                            {
-                                return true;
-                            }
-
-                            return false;
+                            return true;
                         }
+
+                        return false;
                     }
 
-                    return false;
-
+                    return true;
                 }
 
                 return true;
