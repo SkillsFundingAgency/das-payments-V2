@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
@@ -29,6 +28,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 {
                     SfaContributionPercentage = x.SfaContributionPercentage,
                     EarningType = ToEarningType(x.FundingSource),
+                    PriceEpisodeIdentifier = x.PriceEpisodeIdentifier,
                 })
                 .Select(group =>
                 {
@@ -38,6 +38,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                         Amount = amountForGroup * totalRefundPercent,
                         EarningType = group.Key.EarningType,
                         SfaContributionPercentage = group.Key.SfaContributionPercentage,
+                        PriceEpisodeIdentifier = group.Key.PriceEpisodeIdentifier,
                     };
                 })
                 .Where(x => x.Amount < 0)

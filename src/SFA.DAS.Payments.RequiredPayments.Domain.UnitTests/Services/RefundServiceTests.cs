@@ -204,6 +204,27 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [Test]
+        public void PriceEpisodeComesFromHistory()
+        {
+            var sut = new RefundService();
+
+            var testHistory = new List<Payment>
+            {
+                new Payment {Amount = 100, FundingSource = FundingSourceType.FullyFundedSfa, SfaContributionPercentage = 0.9m, PriceEpisodeIdentifier = "1"},
+                new Payment {Amount = 100, FundingSource = FundingSourceType.FullyFundedSfa, SfaContributionPercentage = 0.9m, PriceEpisodeIdentifier = "2"},
+            };
+
+            var actual = sut.GetRefund(-50, testHistory);
+
+            actual.Should().HaveCount(2);
+            actual[0].EarningType.Should().Be(EarningType.Incentive);
+            actual[0].Amount.Should().Be(-25);
+            actual[0].PriceEpisodeIdentifier.Should().Be("1");
+            actual[1].Amount.Should().Be(-25);
+            actual[1].PriceEpisodeIdentifier.Should().Be("2");
+        }
+
+        [Test]
         public void Refund_More_Than_Is_Available()
         {
             var sut = new RefundService();
