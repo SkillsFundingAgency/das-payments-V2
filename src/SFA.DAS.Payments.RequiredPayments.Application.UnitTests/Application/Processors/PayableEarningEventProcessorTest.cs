@@ -119,12 +119,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 }
             };
 
-            var earning = new Earning
-            {
-                Amount = 100,
-                SfaContributionPercentage = 0,
-            };
-
             var requiredPayments = new List<RequiredPayment>
             {
                 new RequiredPayment
