@@ -655,6 +655,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes start date forwards in month - PV2-280.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Refunds\Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Refunds\Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Refunds\Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Refunds\Levy-learner changes start date backwards in month - PV2-281.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -998,6 +1013,18 @@
     <None Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes start date forwards in month - PV2-280.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Refunds\Levy-learner changes start date backwards in month - PV2-281.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
