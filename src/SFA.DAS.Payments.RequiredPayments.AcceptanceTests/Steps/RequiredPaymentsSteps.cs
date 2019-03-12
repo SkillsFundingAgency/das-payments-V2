@@ -87,7 +87,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             var expectedPaymentsEvents = table
                 .CreateSet<OnProgrammeEarning>().ToArray();//TODO: fix to use a required payments model
-            await WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events or unexpected events found");
+            await WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents).pass, "Failed to find all the required payment events or unexpected events found");
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) payable earnings")]

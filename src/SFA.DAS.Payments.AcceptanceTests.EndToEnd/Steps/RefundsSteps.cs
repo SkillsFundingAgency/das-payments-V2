@@ -103,8 +103,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
         }
-        
-        [When(@"the ILR file is submitted for the learners for collection period (.*) by ""(.*)""")]
+
+        [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]
         [When(@"the amended ILR file is re-submitted for the learners in the collection period (.*) by ""(.*)""")]
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText, string providerIdentifier)
         {
@@ -118,7 +118,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await ValidateRecordedProviderPayments(table, TestSession.Provider);
         }
 
-        [When(@"only the following ""(.*)"" payments will be recorded")]
+        [Then(@"only the following ""(.*)"" payments will be recorded")]
         public async Task ThenOnlyTheFollowingPaymentsWillBeRecorded(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
