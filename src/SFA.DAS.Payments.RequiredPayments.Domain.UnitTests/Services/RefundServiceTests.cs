@@ -168,6 +168,25 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [Test]
+        public void MixedRefundRoundsToFiveDecimalPlaces()
+        {
+            var sut = new RefundService();
+
+            var testHistory = new List<Payment>
+            {
+                new Payment {Amount = 50, FundingSource = FundingSourceType.Levy, SfaContributionPercentage = 0.9m},
+                new Payment {Amount = 90, FundingSource = FundingSourceType.CoInvestedSfa, SfaContributionPercentage = 0.9m},
+                new Payment {Amount = 10, FundingSource = FundingSourceType.CoInvestedEmployer, SfaContributionPercentage = 0.9m},
+            };
+
+            var actual = sut.GetRefund(-100, testHistory);
+
+            actual.Should().HaveCount(2);
+            actual.Single(x => x.EarningType == EarningType.CoInvested).Amount.Should().Be(-66.66667m);
+            actual.Single(x => x.EarningType == EarningType.Levy).Amount.Should().Be(-33.33333m);
+        }
+
+        [Test]
         public void LevyRefund()
         {
             var sut = new RefundService();

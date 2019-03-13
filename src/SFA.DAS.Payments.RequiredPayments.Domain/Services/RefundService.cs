@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     var amountForGroup = group.Sum(x => x.Amount);
                     return new RequiredPayment
                     {
-                        Amount = amountForGroup * totalRefundPercent,
+                        Amount = Math.Round(amountForGroup * totalRefundPercent, 5),
                         EarningType = group.Key.EarningType,
                         SfaContributionPercentage = group.Key.SfaContributionPercentage,
                         PriceEpisodeIdentifier = group.Key.PriceEpisodeIdentifier,
