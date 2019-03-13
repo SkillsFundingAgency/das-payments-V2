@@ -9,8 +9,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
     public class FunctionalSkillEarningsEventProcessor : EarningEventProcessorBase<FunctionalSkillEarningsEvent>, IFunctionalSkillEarningsEventProcessor
     {
-        public FunctionalSkillEarningsEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentService requiredPaymentService)
-            : base(paymentKeyService, mapper, requiredPaymentService)
+        public FunctionalSkillEarningsEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentProcessor requiredPaymentProcessor)
+            : base(paymentKeyService, mapper, requiredPaymentProcessor)
         {
         }
 

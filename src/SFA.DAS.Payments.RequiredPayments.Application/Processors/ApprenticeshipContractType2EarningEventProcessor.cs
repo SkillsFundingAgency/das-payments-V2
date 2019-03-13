@@ -11,8 +11,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
     public class ApprenticeshipContractType2EarningEventProcessor : ApprenticeshipContractTypeEarningEventProcessor<CalculatedRequiredCoInvestedAmount, ApprenticeshipContractType2EarningEvent>, IApprenticeshipContractType2EarningsEventProcessor
     {
         public ApprenticeshipContractType2EarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper,
-            IRequiredPaymentService requiredPaymentService)
-            : base(paymentKeyService, mapper, requiredPaymentService)
+            IRequiredPaymentProcessor requiredPaymentProcessor)
+            : base(paymentKeyService, mapper, requiredPaymentProcessor)
         {
         }
 

@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private AutoMock mocker;
         private FunctionalSkillEarningsEventProcessor eventProcessor;
         private Mock<IDataCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
-        private Mock<IRequiredPaymentService> requiredPaymentsService;
+        private Mock<IRequiredPaymentProcessor> requiredPaymentsService;
         private Mapper mapper;
 
         [OneTimeSetUp]
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         {
             mocker = AutoMock.GetLoose();
             paymentHistoryCacheMock = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
-            requiredPaymentsService = mocker.Mock<IRequiredPaymentService>();
+            requiredPaymentsService = mocker.Mock<IRequiredPaymentProcessor>();
             
             eventProcessor = mocker.Create<FunctionalSkillEarningsEventProcessor>(
                 new NamedParameter("apprenticeshipKey", "key"), 

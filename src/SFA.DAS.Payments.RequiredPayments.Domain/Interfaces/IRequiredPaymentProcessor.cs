@@ -3,7 +3,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain
 {
-    public interface IRequiredPaymentService
+    public interface IRequiredPaymentProcessor
     {
         List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory);
     }

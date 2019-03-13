@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoMapper;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Incentives;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain;
-using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
@@ -15,8 +11,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         where TRequiredPaymentEvent : CalculatedRequiredOnProgrammeAmount, new()
         where TEarningEvent : IContractTypeEarningEvent
     {
-        protected ApprenticeshipContractTypeEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentService requiredPaymentsService)
-            : base(paymentKeyService, mapper, requiredPaymentsService)
+        protected ApprenticeshipContractTypeEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentProcessor requiredPaymentsProcessor)
+            : base(paymentKeyService, mapper, requiredPaymentsProcessor)
         {
         }
 

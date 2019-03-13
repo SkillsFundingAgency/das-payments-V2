@@ -4,12 +4,12 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
-    public class RequiredPaymentService : IRequiredPaymentService
+    public class RequiredPaymentProcessor : IRequiredPaymentProcessor
     {
         private IPaymentDueProcessor paymentsDue;
         private IRefundService refunds;
 
-        public RequiredPaymentService(IPaymentDueProcessor paymentsDue, IRefundService refunds)
+        public RequiredPaymentProcessor(IPaymentDueProcessor paymentsDue, IRefundService refunds)
         {
             this.paymentsDue = paymentsDue;
             this.refunds = refunds;

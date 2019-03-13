@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private Mapper mapper;
         private IPayableEarningEventProcessor processor;
         private Mock<IDataCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
-        private Mock<IRequiredPaymentService> requiredPaymentsService;
+        private Mock<IRequiredPaymentProcessor> requiredPaymentsService;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         public void SetUp()
         {
             mocker = AutoMock.GetStrict();
-            requiredPaymentsService = mocker.Mock<IRequiredPaymentService>();
+            requiredPaymentsService = mocker.Mock<IRequiredPaymentProcessor>();
             paymentHistoryCacheMock = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
  
             processor = mocker.Create<PayableEarningEventProcessor>(

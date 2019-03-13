@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private AutoMock mocker;
         private ApprenticeshipContractType2EarningEventProcessor act2EarningEventProcessor;
         private Mock<IDataCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
-        private Mock<IRequiredPaymentService> requiredPaymentService;
+        private Mock<IRequiredPaymentProcessor> requiredPaymentService;
 
         private Mapper mapper;
 
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         {
             mocker = AutoMock.GetStrict();
             paymentHistoryCacheMock = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
-            requiredPaymentService = mocker.Mock<IRequiredPaymentService>();
+            requiredPaymentService = mocker.Mock<IRequiredPaymentProcessor>();
 
             act2EarningEventProcessor = mocker.Create<ApprenticeshipContractType2EarningEventProcessor>(
                 new NamedParameter("apprenticeshipKey", "key"), 

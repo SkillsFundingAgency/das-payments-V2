@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
             builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<PaymentKeyService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<PaymentDueProcessor>().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<RequiredPaymentService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<RequiredPaymentProcessor>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<RefundService>().AsImplementedInterfaces().SingleInstance();
 
             // app layer event handlers

@@ -10,9 +10,10 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 {
     [TestFixture]
-    public class RequiredPaymentServiceTests
+    public class RequiredPaymentProcessorTests
     {
-        protected RequiredPaymentService Sut;
+        protected AutoMock Automocker;
+        protected RequiredPaymentProcessor Sut;
         protected Mock<IRefundService> RefundService;
         protected Mock<IPaymentDueProcessor> PaymentsDueService;
         protected List<Payment> PaymentHistory;
@@ -21,22 +22,21 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         [SetUp]
         public void Setup()
         {
-            var automocker = AutoMock.GetStrict();
+            Automocker = AutoMock.GetStrict();
             PaymentHistory = new List<Payment>();
-            PaymentsDueService = automocker.Mock<IPaymentDueProcessor>();
-            RefundService = automocker.Mock<IRefundService>();
-            Sut = new RequiredPaymentService(PaymentsDueService.Object, RefundService.Object);
+            PaymentsDueService = Automocker.Mock<IPaymentDueProcessor>();
+            RefundService = Automocker.Mock<IRefundService>();
+            Sut = new RequiredPaymentProcessor(PaymentsDueService.Object, RefundService.Object);
         }
 
         [TearDown]
         public void TearDown()
         {
-            PaymentsDueService.Verify();
-            RefundService.Verify();
+            Automocker.Dispose();
         }
 
         [TestFixture]
-        public class WhenAmountIsMoreThanTotalAmountInHistory : RequiredPaymentServiceTests
+        public class WhenAmountIsMoreThanTotalAmountInHistory : RequiredPaymentProcessorTests
         {
             [Test]
             public void RequiredPaymentHasCorrectAmount()
@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [TestFixture]
-        public class WhenAmountIsEqualToTotalAmountInHistory : RequiredPaymentServiceTests
+        public class WhenAmountIsEqualToTotalAmountInHistory : RequiredPaymentProcessorTests
         {
             [Test]
             public void ThenNothingIsReturned()
@@ -107,7 +107,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [TestFixture]
-        public class WhenAmountIsLessThanTotalAmountInHistory : RequiredPaymentServiceTests
+        public class WhenAmountIsLessThanTotalAmountInHistory : RequiredPaymentProcessorTests
         {
             [Test]
             public void RefundIsCreated()
