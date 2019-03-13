@@ -28,12 +28,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             if (GetInactiveStatuses().Contains(completionStatus))
             {
                 if (
-                    (aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear &&
-                     DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate)) ||
-                    (aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
-                     aimStartDate <= collectionPeriodReferenceDate &&
-                     aimStartDate + aimDuration >= collectionPeriodReferenceDate ||
-                     collectionPeriod.IsLaterThan(lastPeriodForAim)))
+                    aimStartPeriod.AcademicYear < collectionPeriod.AcademicYear &&
+                    DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate))
+                {
+                    return true;
+                } 
+
+                if (
+                    aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
+                    aimStartDate <= collectionPeriodReferenceDate &&
+                    aimStartDate + aimDuration >= collectionPeriodReferenceDate )
+                {
+                    return true;
+                }
+
+                if (lastPeriodForAim.FinishesBefore(collectionPeriod))
                 {
                     return true;
                 }
@@ -84,7 +93,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                    DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate);
         }
 
-        private static bool IsLaterThan(this CollectionPeriod currentPeriod, CollectionPeriod otherPeriod)
+        private static bool FinishesBefore(this CollectionPeriod currentPeriod, CollectionPeriod otherPeriod)
         {
             if (otherPeriod.AcademicYear < currentPeriod.AcademicYear)
             {
@@ -96,7 +105,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 return false;
             }
 
-            return otherPeriod.Period < currentPeriod.Period;
+            return otherPeriod.Period > currentPeriod.Period;
         }
 
         private static bool IsEqualTo(this CollectionPeriod currentPeriod, CollectionPeriod otherPeriod)
