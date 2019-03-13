@@ -12,5 +12,6 @@
     <Parameter Name="EndpointName" Value="sfa-das-payments-monitoring-jobs"/>
     <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-monitoring-jobs-errors"/>
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value=""/>
+    <Parameter Name="DelayedRetryTimeInSeconds" Value="5" />
   </Section>
 </Settings>
