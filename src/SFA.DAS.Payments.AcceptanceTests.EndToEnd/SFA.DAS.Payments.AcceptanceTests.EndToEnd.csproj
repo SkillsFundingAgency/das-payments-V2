@@ -370,6 +370,66 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, when negotiated cost changes at the end of the month - PV2-359.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Earnings and payments for a levy learner, when negotiated cost changes at the end of the month - PV2-359.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning in the mid of a month and return in the mid of a later month-PV2-369.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer break in learning in the mid of a month and return in the mid of a later month-PV2-369.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available- PV2-366.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy learner changes to Levy employer Levy available- PV2-366.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -444,6 +504,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Two levy learners but only enough levy to fund one learner- PV2-264.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers and enough levy PV2-269.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two levy learners one employer but two providers and enough levy PV2-269.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs">
       <AutoGen>True</AutoGen>
@@ -630,10 +695,40 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer there is a gap PV2-319.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer there is a gap PV2-319.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer-PV2-317.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes start date forwards in month - PV2-280.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Refunds\Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Refunds\Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Refunds\Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Refunds\Levy-learner changes start date backwards in month - PV2-281.feature.cs">
       <AutoGen>True</AutoGen>
@@ -751,6 +846,54 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Employer Change of Circumstances\16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, when negotiated cost changes at the end of the month - PV2-359.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Earnings and payments for a levy learner, when negotiated cost changes at the end of the month - PV2-359.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning in the mid of a month and return in the mid of a later month-PV2-369.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer break in learning in the mid of a month and return in the mid of a later month-PV2-369.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available- PV2-366.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy learner changes to Levy employer Levy available- PV2-366.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes price at end of month - PV2-294.feature.cs</LastGenOutput>
@@ -810,6 +953,10 @@
     <None Include="Tests\Levy Learner\Basic Day\Two levy learners but only enough levy to fund one learner- PV2-264.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two levy learners but only enough levy to fund one learner- PV2-264.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers and enough levy PV2-269.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two levy learners one employer but two providers and enough levy PV2-269.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -959,9 +1106,33 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer there is a gap PV2-319.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer there is a gap PV2-319.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer-PV2-317.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes start date forwards in month - PV2-280.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Refunds\Levy-learner changes start date backwards in month - PV2-281.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

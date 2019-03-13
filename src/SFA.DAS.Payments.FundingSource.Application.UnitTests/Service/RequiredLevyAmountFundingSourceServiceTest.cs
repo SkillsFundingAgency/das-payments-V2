@@ -26,7 +26,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 {
     [TestFixture]
-    public class ContractType1RequiredPaymentEventFundingSourceServiceTest
+    public class RequiredLevyAmountFundingSourceServiceTest
     {
         private static IMapper mapper;
 
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<IPaymentProcessor> processorMock;
         private Mock<ILevyBalanceService> levyBalanceServiceMock;
         private Mock<ISortableKeyGenerator> sortableKeysMock;
-        private IContractType1RequiredPaymentEventFundingSourceService service;
+        private IRequiredLevyAmountFundingSourceService service;
         private MapperConfiguration mapperConfiguration;
         private Mock<IPaymentLogger> paymentLoggerMock;
 
@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
             paymentLoggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
             sortableKeysMock = mocker.Mock<ISortableKeyGenerator>();
-            service = mocker.Create<ContractType1RequiredPaymentEventFundingSourceService>(
+            service = mocker.Create<RequiredLevyAmountFundingSourceService>(
                 new NamedParameter("mapper", mapper),
                 new NamedParameter("paymentLogger", paymentLoggerMock.Object)
             );
