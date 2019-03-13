@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         public void GetFundedPaymentsShouldCallAllPaymentProcessors()
         {
             // Arrange
-            var message = new ApprenticeshipContractType2RequiredPaymentEvent();
+            var message = new CalculatedRequiredCoInvestedAmount();
             var requiredCoInvestedPayment = new RequiredCoInvestedPayment();
             var fundingSourcePayment = new EmployerCoInvestedPayment();
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 {
-    public class ApprenticeshipContractType2RequiredPaymentEventHandler : IHandleMessages<ApprenticeshipContractType2RequiredPaymentEvent>
+    public class ApprenticeshipContractType2RequiredPaymentEventHandler : IHandleMessages<CalculatedRequiredCoInvestedAmount>
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService;
@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
         }
 
-        public async Task Handle(ApprenticeshipContractType2RequiredPaymentEvent message, IMessageHandlerContext context)
+        public async Task Handle(CalculatedRequiredCoInvestedAmount message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing Required Payment Service event for Message Id : {context.MessageId}");
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;

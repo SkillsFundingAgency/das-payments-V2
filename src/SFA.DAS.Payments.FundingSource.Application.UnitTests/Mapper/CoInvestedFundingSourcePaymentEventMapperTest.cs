@@ -20,12 +20,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         private IMapper autoMapper;
         private MapperConfiguration mapperConfiguration;
         private CoInvestedFundingSourcePaymentEventMapper coInvestedFundingMapper;
-        private ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentEvent;
+        private CalculatedRequiredCoInvestedAmount requiredCoInvestedAmount;
 
         [SetUp]
         public void Setup()
         {
-            requiredPaymentEvent = new ApprenticeshipContractType2RequiredPaymentEvent
+            requiredCoInvestedAmount = new CalculatedRequiredCoInvestedAmount
             {
                 AmountDue = 1000.00m,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1),
@@ -63,23 +63,23 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 
             var expectedPayment = new SfaCoInvestedFundingSourcePaymentEvent
             {
-                RequiredPaymentEventId = requiredPaymentEvent.EventId,
+                RequiredPaymentEventId = requiredCoInvestedAmount.EventId,
                 AmountDue = 900.00m,
                 ContractType = ContractType.Act2,
-                SfaContributionPercentage = requiredPaymentEvent.SfaContributionPercentage,
-                CollectionPeriod = requiredPaymentEvent.CollectionPeriod,
-                DeliveryPeriod = requiredPaymentEvent.DeliveryPeriod,
-                EventTime = requiredPaymentEvent.EventTime,
-                JobId = requiredPaymentEvent.JobId,
-                Learner = requiredPaymentEvent.Learner,
-                TransactionType = (TransactionType)requiredPaymentEvent.OnProgrammeEarningType,
-                LearningAim = requiredPaymentEvent.LearningAim,
-                PriceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier,
-                Ukprn = requiredPaymentEvent.Ukprn,
+                SfaContributionPercentage = requiredCoInvestedAmount.SfaContributionPercentage,
+                CollectionPeriod = requiredCoInvestedAmount.CollectionPeriod,
+                DeliveryPeriod = requiredCoInvestedAmount.DeliveryPeriod,
+                EventTime = requiredCoInvestedAmount.EventTime,
+                JobId = requiredCoInvestedAmount.JobId,
+                Learner = requiredCoInvestedAmount.Learner,
+                TransactionType = (TransactionType)requiredCoInvestedAmount.OnProgrammeEarningType,
+                LearningAim = requiredCoInvestedAmount.LearningAim,
+                PriceEpisodeIdentifier = requiredCoInvestedAmount.PriceEpisodeIdentifier,
+                Ukprn = requiredCoInvestedAmount.Ukprn,
                 FundingSourceType = FundingSourceType.CoInvestedSfa
             };
 
-            var actualSfaCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredPaymentEvent, coInvestedPayment);
+            var actualSfaCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredCoInvestedAmount, coInvestedPayment);
             expectedPayment.EventId = actualSfaCoInvestedPayment.EventId;
             expectedPayment.EventTime = actualSfaCoInvestedPayment.EventTime;
 
@@ -100,25 +100,25 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             var expectedPayment = new EmployerCoInvestedFundingSourcePaymentEvent
             {
                 EventId = Guid.NewGuid(),
-                RequiredPaymentEventId = requiredPaymentEvent.EventId,
+                RequiredPaymentEventId = requiredCoInvestedAmount.EventId,
                 AmountDue = 100.00m,
                 ContractType = ContractType.Act2,
-                SfaContributionPercentage = requiredPaymentEvent.SfaContributionPercentage,
-                CollectionPeriod = requiredPaymentEvent.CollectionPeriod,
-                DeliveryPeriod = requiredPaymentEvent.DeliveryPeriod,
-                EventTime = requiredPaymentEvent.EventTime,
-                JobId = requiredPaymentEvent.JobId,
-                Learner = requiredPaymentEvent.Learner,
-                TransactionType = (TransactionType)requiredPaymentEvent.OnProgrammeEarningType,
-                LearningAim = requiredPaymentEvent.LearningAim,
-                PriceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier,
-                Ukprn = requiredPaymentEvent.Ukprn,
+                SfaContributionPercentage = requiredCoInvestedAmount.SfaContributionPercentage,
+                CollectionPeriod = requiredCoInvestedAmount.CollectionPeriod,
+                DeliveryPeriod = requiredCoInvestedAmount.DeliveryPeriod,
+                EventTime = requiredCoInvestedAmount.EventTime,
+                JobId = requiredCoInvestedAmount.JobId,
+                Learner = requiredCoInvestedAmount.Learner,
+                TransactionType = (TransactionType)requiredCoInvestedAmount.OnProgrammeEarningType,
+                LearningAim = requiredCoInvestedAmount.LearningAim,
+                PriceEpisodeIdentifier = requiredCoInvestedAmount.PriceEpisodeIdentifier,
+                Ukprn = requiredCoInvestedAmount.Ukprn,
                 FundingSourceType = FundingSourceType.CoInvestedEmployer
             };
 
 
 
-            var actualEmployerCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredPaymentEvent, coInvestedPayment);
+            var actualEmployerCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredCoInvestedAmount, coInvestedPayment);
             expectedPayment.EventId = actualEmployerCoInvestedPayment.EventId;
             expectedPayment.EventTime = actualEmployerCoInvestedPayment.EventTime;
             actualEmployerCoInvestedPayment.Should().BeEquivalentTo(expectedPayment);
@@ -129,11 +129,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         {
             var expectedRequiredCoInvestedPayment = new RequiredCoInvestedPayment
             {
-                AmountDue = requiredPaymentEvent.AmountDue,
-                SfaContributionPercentage = requiredPaymentEvent.SfaContributionPercentage
+                AmountDue = requiredCoInvestedAmount.AmountDue,
+                SfaContributionPercentage = requiredCoInvestedAmount.SfaContributionPercentage
             };
 
-            var actual = coInvestedFundingMapper.MapToRequiredCoInvestedPayment(requiredPaymentEvent);
+            var actual = coInvestedFundingMapper.MapToRequiredCoInvestedPayment(requiredCoInvestedAmount);
 
             actual.Should().BeEquivalentTo(expectedRequiredCoInvestedPayment);
 
