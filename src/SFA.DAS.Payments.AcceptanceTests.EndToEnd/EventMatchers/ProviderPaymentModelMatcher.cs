@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
@@ -19,13 +20,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly List<ProviderPayment> expectedPaymentInfo;
         private readonly ContractType contractType;
 
-        public ProviderPaymentModelMatcher( Provider provider, 
-            IPaymentsDataContext dataContext,  
-            TestSession testSession, 
-            CollectionPeriod currentCollectionPeriod, 
-            List<ProviderPayment> expectedPaymentInfo = null, 
+        public ProviderPaymentModelMatcher(Provider provider,
+            IPaymentsDataContext dataContext,
+            TestSession testSession,
+            CollectionPeriod currentCollectionPeriod,
+            List<ProviderPayment> expectedPaymentInfo = null,
             ContractType contractType = default(ContractType))
-       {
+        {
             this.provider = provider;
             this.dataContext = dataContext;
             this.testSession = testSession;
@@ -84,7 +85,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override bool Match(PaymentModel expected, PaymentModel actual)
         {
             return expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
-                   expected.CollectionPeriod.AcademicYear== actual.CollectionPeriod.AcademicYear &&
+                   expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
                    expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.TransactionType == actual.TransactionType &&
                    expected.ContractType == actual.ContractType &&
@@ -92,17 +93,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.Amount == actual.Amount &&
                    expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
                    expected.Ukprn == actual.Ukprn &&
-                   expected.JobId == actual.JobId;
+                   expected.JobId == actual.JobId &&
+                   expected.LearningAimStandardCode == actual.LearningAimStandardCode;
 
         }
 
         private PaymentModel ToPaymentModel(
-            ProviderPayment paymentInfo, 
-            long ukprn, 
-            FundingSourceType fundingSource, 
-            decimal amount, 
+            ProviderPayment paymentInfo,
+            long ukprn,
+            FundingSourceType fundingSource,
+            decimal amount,
             long jobId)
         {
+            var learner = testSession.GetLearner(ukprn, paymentInfo.LearnerId);
+
+            var standardCode = paymentInfo.StandardCode;
+
+            if (!standardCode.HasValue)
+            {
+                var aim = learner.Aims.FirstOrDefault(a =>
+                    AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, currentCollectionPeriod,
+                        a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus,
+                        a.AimReference));
+
+                standardCode = aim?.StandardCode ?? 0;
+            }
+
             return new PaymentModel
             {
                 CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(paymentInfo.CollectionPeriod).Build(),
@@ -112,8 +128,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 ContractType = contractType,
                 Amount = amount,
                 FundingSource = fundingSource,
-                LearnerReferenceNumber = testSession.GetLearner(ukprn, paymentInfo.LearnerId).LearnRefNumber,
-                JobId = jobId
+                LearnerReferenceNumber = learner.LearnRefNumber,
+                JobId = jobId,
+                LearningAimStandardCode = standardCode.Value
             };
         }
     }

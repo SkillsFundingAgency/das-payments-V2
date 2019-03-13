@@ -80,10 +80,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expectedPayments;
         }
 
-        private void AddOnProgPayment(Payment paymentToValidate, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, OnProgrammeEarningType type)
+        private void AddOnProgPayment(Payment paymentToValidate, List<RequiredPaymentEvent> expectedPayments,
+            decimal amountDue, OnProgrammeEarningType type)
         {
-            var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build();
-            var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type, deliveryPeriod);
+            var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type,
+                new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build());
             
             if (payment.AmountDue != 0)
                 expectedPayments.Add(payment);
@@ -116,7 +117,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.Type == actual.Type;
         }
 
-        private RequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue, OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
+        private RequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue,
+            OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
         {
             var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
 
@@ -127,7 +129,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     {
                         AmountDue = amountDue,
                         OnProgrammeEarningType = onProgrammeEarningType,
-                        DeliveryPeriod = deliveryPeriod
+                        DeliveryPeriod = deliveryPeriod,
                     };
 
                 case ContractType.Act2:
@@ -135,7 +137,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     {
                         AmountDue = amountDue,
                         OnProgrammeEarningType = onProgrammeEarningType,
-                        DeliveryPeriod = deliveryPeriod
+                        DeliveryPeriod = deliveryPeriod,
                     };
 
                 default:
