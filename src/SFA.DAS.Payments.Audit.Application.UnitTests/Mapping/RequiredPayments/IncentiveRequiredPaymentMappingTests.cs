@@ -9,11 +9,11 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
 {
     [TestFixture]
-    public class IncentiveRequiredPaymentMappingTests: RequiredPaymentsMappingTests<IncentiveRequiredPaymentEvent>
+    public class IncentiveRequiredPaymentMappingTests: RequiredPaymentsMappingTests<CalculatedRequiredIncentiveAmount>
     {
-        protected override IncentiveRequiredPaymentEvent CreatePaymentEvent()
+        protected override CalculatedRequiredIncentiveAmount CreatePaymentEvent()
         {
-            return new IncentiveRequiredPaymentEvent
+            return new CalculatedRequiredIncentiveAmount
             {
                 ContractType = ContractType.Act2,
                 

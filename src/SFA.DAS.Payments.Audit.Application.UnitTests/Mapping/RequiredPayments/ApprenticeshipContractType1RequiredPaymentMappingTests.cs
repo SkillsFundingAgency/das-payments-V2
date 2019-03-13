@@ -9,13 +9,13 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
 {
     [TestFixture]
-    public class ApprenticeshipContractType1RequiredPaymentMappingTests : RequiredPaymentsMappingTests<ApprenticeshipContractType1RequiredPaymentEvent>
+    public class ApprenticeshipContractType1RequiredPaymentMappingTests : RequiredPaymentsMappingTests<CalculatedRequiredLevyAmount>
     {
         private const string ExpectedAgreementId = "OXFORD00001";
 
-        protected override ApprenticeshipContractType1RequiredPaymentEvent CreatePaymentEvent()
+        protected override CalculatedRequiredLevyAmount CreatePaymentEvent()
         {
-            return new ApprenticeshipContractType1RequiredPaymentEvent
+            return new CalculatedRequiredLevyAmount
             {
                 AgreementId = ExpectedAgreementId
             };

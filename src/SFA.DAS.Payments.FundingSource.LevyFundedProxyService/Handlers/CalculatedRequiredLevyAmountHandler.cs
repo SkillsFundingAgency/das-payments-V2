@@ -10,13 +10,13 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 {
-    public class ApprenticeshipContractType1RequiredPaymentEventHandler : IHandleMessages<ApprenticeshipContractType1RequiredPaymentEvent>
+    public class CalculatedRequiredLevyAmountHandler : IHandleMessages<CalculatedRequiredLevyAmount>
     {
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger paymentLogger;
         private readonly ESFA.DC.Logging.ExecutionContext executionContext;
 
-        public ApprenticeshipContractType1RequiredPaymentEventHandler(IActorProxyFactory proxyFactory,
+        public CalculatedRequiredLevyAmountHandler(IActorProxyFactory proxyFactory,
             IPaymentLogger paymentLogger,
             IExecutionContext executionContext)
         {
@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             this.executionContext = (ESFA.DC.Logging.ExecutionContext) executionContext;
         }
 
-        public async Task Handle(ApprenticeshipContractType1RequiredPaymentEvent message, IMessageHandlerContext context)
+        public async Task Handle(CalculatedRequiredLevyAmount message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing ApprenticeshipContractType1RequiredPaymentEvent event. Message Id: {context.MessageId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
             executionContext.JobId = message.JobId.ToString();

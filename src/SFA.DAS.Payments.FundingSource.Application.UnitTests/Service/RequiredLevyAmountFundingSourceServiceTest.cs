@@ -26,18 +26,18 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 {
     [TestFixture]
-    public class ContractType1RequiredPaymentEventFundingSourceServiceTest
+    public class RequiredLevyAmountFundingSourceServiceTest
     {
         private static IMapper mapper;
 
         private AutoMock mocker;
-        private Mock<IDataCache<ApprenticeshipContractType1RequiredPaymentEvent>> eventCacheMock;
+        private Mock<IDataCache<CalculatedRequiredLevyAmount>> eventCacheMock;
         private Mock<IDataCache<List<string>>> keyCacheMock;
         private Mock<ILevyAccountRepository> levyAccountRepositoryMock;
         private Mock<IPaymentProcessor> processorMock;
         private Mock<ILevyBalanceService> levyBalanceServiceMock;
         private Mock<ISortableKeyGenerator> sortableKeysMock;
-        private IContractType1RequiredPaymentEventFundingSourceService service;
+        private IRequiredLevyAmountFundingSourceService service;
         private MapperConfiguration mapperConfiguration;
         private Mock<IPaymentLogger> paymentLoggerMock;
 
@@ -52,14 +52,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         public void SetUp()
         {
             mocker = AutoMock.GetStrict();
-            eventCacheMock = mocker.Mock<IDataCache<ApprenticeshipContractType1RequiredPaymentEvent>>();
+            eventCacheMock = mocker.Mock<IDataCache<CalculatedRequiredLevyAmount>>();
             keyCacheMock = mocker.Mock<IDataCache<List<string>>>();
             levyAccountRepositoryMock = mocker.Mock<ILevyAccountRepository>();
             processorMock = mocker.Mock<IPaymentProcessor>();
             levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
             paymentLoggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
             sortableKeysMock = mocker.Mock<ISortableKeyGenerator>();
-            service = mocker.Create<ContractType1RequiredPaymentEventFundingSourceService>(
+            service = mocker.Create<RequiredLevyAmountFundingSourceService>(
                 new NamedParameter("mapper", mapper),
                 new NamedParameter("paymentLogger", paymentLoggerMock.Object)
             );
@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         public async Task TestRegisterFirstRequiredPayment()
         {
             // arrange
-            var requiredPaymentEvent = new ApprenticeshipContractType1RequiredPaymentEvent
+            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
             {
                 EventId = Guid.NewGuid(),
                 Priority = 1,
@@ -107,7 +107,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var expectedUln = new Random().Next();
             var expectedAmount = (decimal) new Random().NextDouble();
             var expectedPriority = new Random().Next();
-            var requiredPaymentEvent = new ApprenticeshipContractType1RequiredPaymentEvent
+            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
             {
                 EventId = Guid.NewGuid(),
                 Priority = expectedPriority,
@@ -139,7 +139,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         {
             // arrange
             var keys = new List<string> {"1", "2"};
-            var requiredPaymentEvent = new ApprenticeshipContractType1RequiredPaymentEvent
+            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
             {
                 EventId = Guid.NewGuid(),
                 Priority = 4,
@@ -165,7 +165,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         {
             // arrange
             var keys = new List<string> {"1"};
-            var requiredPaymentEvent = new ApprenticeshipContractType1RequiredPaymentEvent
+            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
             {
                 EventId = Guid.NewGuid(), 
                 AmountDue = 100,
@@ -185,7 +185,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verifiable();
 
             eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<ApprenticeshipContractType1RequiredPaymentEvent>(true, requiredPaymentEvent))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, requiredPaymentEvent))
                 .Verifiable();
 
             levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None))
@@ -222,7 +222,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var keys = new List<string> {"1", "99", "4", "9"};
             var expectedKeys = new Queue<string>(new[] {"1", "4", "9", "99"});
             var expectedKeys2 = new Queue<string>(new[] {"1", "4", "9", "99"});
-            var requiredPaymentEvent = new ApprenticeshipContractType1RequiredPaymentEvent
+            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
             {
                 EventId = Guid.NewGuid(), 
                 AmountDue = 100,
@@ -232,8 +232,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 Learner = new Learner()
             };
 
-            var value = new ConditionalValue<ApprenticeshipContractType1RequiredPaymentEvent>(true, requiredPaymentEvent);
-            var requiredPayments = new Queue<ConditionalValue<ApprenticeshipContractType1RequiredPaymentEvent>>(new[] {value, value, value, value});
+            var value = new ConditionalValue<CalculatedRequiredLevyAmount>(true, requiredPaymentEvent);
+            var requiredPayments = new Queue<ConditionalValue<CalculatedRequiredLevyAmount>>(new[] {value, value, value, value});
             var fundingSourcePayment = new LevyPayment {AmountDue = 55, Type = FundingSourceType.CoInvestedEmployer};
 
             var balance = 100m;
@@ -274,7 +274,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             Assert.AreEqual(0, expectedKeys2.Count);
         }
 
-        private string GenerateSortableKey(ApprenticeshipContractType1RequiredPaymentEvent requiredPayment)
+        private string GenerateSortableKey(CalculatedRequiredLevyAmount requiredPayment)
         {
             return string.Concat(requiredPayment.AmountDue < 0 ? "1" : "9", "-",
                 requiredPayment.Priority.ToString("000000"), "-",

@@ -8,18 +8,18 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
 
-    public class ContractType2RequiredPaymentEventFundingSourceService : IContractType2RequiredPaymentEventFundingSourceService
+    public class CoInvestedFundingSourceService : ICoInvestedFundingSourceService
     {
         private readonly IEnumerable<ICoInvestedPaymentProcessorOld> processors;
         private readonly ICoInvestedFundingSourcePaymentEventMapper mapper;
 
-        public ContractType2RequiredPaymentEventFundingSourceService(IEnumerable<ICoInvestedPaymentProcessorOld> processors, ICoInvestedFundingSourcePaymentEventMapper mapper)
+        public CoInvestedFundingSourceService(IEnumerable<ICoInvestedPaymentProcessorOld> processors, ICoInvestedFundingSourcePaymentEventMapper mapper)
         {
             this.processors = processors ?? throw new ArgumentNullException(nameof(processors));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(ApprenticeshipContractType2RequiredPaymentEvent message)
+        public IEnumerable<CoInvestedFundingSourcePaymentEvent> GetFundedPayments(CalculatedRequiredCoInvestedAmount message)
         {
             var coInvestedPaymentMessage = mapper.MapToRequiredCoInvestedPayment(message);
 

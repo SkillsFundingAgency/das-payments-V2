@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         public void MapperDoesNotChangeEventId()
         {
             var payment = new ApprenticeshipContractType1EarningEvent();
-            var requiredPayment = new ApprenticeshipContractType1RequiredPaymentEvent();
+            var requiredPayment = new CalculatedRequiredLevyAmount();
 
             var expected = requiredPayment.EventId;
 

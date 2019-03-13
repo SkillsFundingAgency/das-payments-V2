@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 {
-    public class ApprenticeshipContractType2RequiredPaymentEventHandler : IHandleMessages<ApprenticeshipContractType2RequiredPaymentEvent>
+    public class CalculatedRequiredCoInvestedAmountEventHandler : IHandleMessages<CalculatedRequiredCoInvestedAmount>
     {
         private readonly IPaymentLogger paymentLogger;
-        private readonly IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService;
+        private readonly ICoInvestedFundingSourceService contractType2RequiredPaymentService;
         private readonly IExecutionContext executionContext;
 
-        public ApprenticeshipContractType2RequiredPaymentEventHandler(IPaymentLogger paymentLogger,
-                                                                      IContractType2RequiredPaymentEventFundingSourceService contractType2RequiredPaymentService,
+        public CalculatedRequiredCoInvestedAmountEventHandler(IPaymentLogger paymentLogger,
+                                                                      ICoInvestedFundingSourceService contractType2RequiredPaymentService,
                                                                       IExecutionContext executionContext)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
         }
 
-        public async Task Handle(ApprenticeshipContractType2RequiredPaymentEvent message, IMessageHandlerContext context)
+        public async Task Handle(CalculatedRequiredCoInvestedAmount message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing Required Payment Service event for Message Id : {context.MessageId}");
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
