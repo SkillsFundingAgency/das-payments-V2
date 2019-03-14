@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             var aimDuration = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
             var collectionPeriodReferenceDate = DateFromCollectionPeriod(collectionPeriod);
             var aimEndDate = aimStartDate + aimDuration ?? aimStartDate;
+
             var lastPeriodForAim = new CollectionPeriodBuilder().WithDate(aimEndDate).Build();
 
             if (GetInactiveStatuses().Contains(completionStatus))
@@ -44,7 +45,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
                 if (lastPeriodForAim.FinishesBefore(collectionPeriod))
                 {
-                    return true;
+                    return AimActiveOnLastDay(aimEndDate);
                 }
 
                 return false;
@@ -91,6 +92,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                    aimStartDate <= collectionPeriodReferenceDate &&
                    DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate);
+        }
+
+        private static bool AimActiveOnLastDay(DateTime aimEndDate)
+        {
+            return aimEndDate == aimEndDate.LastDayOnMonth();
         }
 
         private static bool FinishesBefore(this CollectionPeriod currentPeriod, CollectionPeriod otherPeriod)
