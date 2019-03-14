@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         public void GetFundedPaymentsShouldCallAllPaymentProcessors()
         {
             // Arrange
-            var message = new ApprenticeshipContractType2RequiredPaymentEvent();
+            var message = new CalculatedRequiredCoInvestedAmount();
             var requiredCoInvestedPayment = new RequiredCoInvestedPayment();
             var fundingSourcePayment = new EmployerCoInvestedPayment();
 
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             };
 
             // Act
-            var handler = new ContractType2RequiredPaymentEventFundingSourceService(paymentProcessors, mapper.Object);
+            var handler = new CoInvestedFundingSourceService(paymentProcessors, mapper.Object);
             handler.GetFundedPayments(message);
 
             //Assert

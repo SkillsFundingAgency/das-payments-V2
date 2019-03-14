@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var amount = payment.IncentiveValues[incentiveTypeKey];
 
                     if (amount != 0)
-                        expectedPayments.Add(new IncentiveRequiredPaymentEvent
+                        expectedPayments.Add(new CalculatedRequiredIncentiveAmount
                         {
                             AmountDue = amount,
                             Type = incentiveTypeKey,
@@ -97,11 +97,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue &&
-                   MatchAct(expected as ApprenticeshipContractTypeRequiredPaymentEvent, actual as ApprenticeshipContractTypeRequiredPaymentEvent) &&
-                   MatchIncentive(expected as IncentiveRequiredPaymentEvent, actual as IncentiveRequiredPaymentEvent);
+                   MatchAct(expected as CalculatedRequiredOnProgrammeAmount, actual as CalculatedRequiredOnProgrammeAmount) &&
+                   MatchIncentive(expected as CalculatedRequiredIncentiveAmount, actual as CalculatedRequiredIncentiveAmount);
         }
 
-        private bool MatchAct(ApprenticeshipContractTypeRequiredPaymentEvent expected, ApprenticeshipContractTypeRequiredPaymentEvent actual)
+        private bool MatchAct(CalculatedRequiredOnProgrammeAmount expected, CalculatedRequiredOnProgrammeAmount actual)
         {
             if (expected == null)
                 return true;
@@ -109,7 +109,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.OnProgrammeEarningType == actual.OnProgrammeEarningType;
         }
 
-        private bool MatchIncentive(IncentiveRequiredPaymentEvent expected, IncentiveRequiredPaymentEvent actual)
+        private bool MatchIncentive(CalculatedRequiredIncentiveAmount expected, CalculatedRequiredIncentiveAmount actual)
         {
             if (expected == null)
                 return true;
@@ -125,7 +125,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             switch (contractType)
             {
                 case ContractType.Act1:
-                    return new ApprenticeshipContractType1RequiredPaymentEvent
+                    return new CalculatedRequiredLevyAmount
                     {
                         AmountDue = amountDue,
                         OnProgrammeEarningType = onProgrammeEarningType,
@@ -133,7 +133,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     };
 
                 case ContractType.Act2:
-                    return new ApprenticeshipContractType2RequiredPaymentEvent
+                    return new CalculatedRequiredCoInvestedAmount
                     {
                         AmountDue = amountDue,
                         OnProgrammeEarningType = onProgrammeEarningType,

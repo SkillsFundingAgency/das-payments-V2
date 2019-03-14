@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.mapper = mapper;
         }
 
-        public CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent, FundingSourcePayment payment)
+        public CoInvestedFundingSourcePaymentEvent MapToCoInvestedPaymentEvent(CalculatedRequiredCoInvestedAmount requiredPaymentsEvent, FundingSourcePayment payment)
         {
 
             switch (payment.Type)
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             }
         }
 
-        public RequiredCoInvestedPayment MapToRequiredCoInvestedPayment(ApprenticeshipContractType2RequiredPaymentEvent requiredPaymentsEvent)
+        public RequiredCoInvestedPayment MapToRequiredCoInvestedPayment(CalculatedRequiredCoInvestedAmount requiredPaymentsEvent)
         {
             return mapper.Map<RequiredCoInvestedPayment>(requiredPaymentsEvent);
         }

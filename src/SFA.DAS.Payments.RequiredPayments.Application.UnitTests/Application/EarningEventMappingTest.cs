@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             // arrange
             var payableEarning = CreatePayableEarning();
-            RequiredPaymentEvent requiredPayment = new ApprenticeshipContractType1RequiredPaymentEvent
+            RequiredPaymentEvent requiredPayment = new CalculatedRequiredLevyAmount
             {
                 SfaContributionPercentage = .9m,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             // assert
             AssertCommonProperties(requiredPayment, payableEarning);
 
-            var act1RequiredPayment = (ApprenticeshipContractType1RequiredPaymentEvent)requiredPayment;
+            var act1RequiredPayment = (CalculatedRequiredLevyAmount)requiredPayment;
 
             Assert.AreEqual(payableEarning.EmployerAccountId, act1RequiredPayment.EmployerAccountId);
             Assert.AreEqual(payableEarning.CommitmentId, act1RequiredPayment.CommitmentId);
@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             // arrange
             var functionalSkillEarningsEvent = CreateFunctionalSkillEarningsEvent();
-            RequiredPaymentEvent requiredPayment = new IncentiveRequiredPaymentEvent();
+            RequiredPaymentEvent requiredPayment = new CalculatedRequiredIncentiveAmount();
 
             // act
             mapper.Map(functionalSkillEarningsEvent, requiredPayment);
