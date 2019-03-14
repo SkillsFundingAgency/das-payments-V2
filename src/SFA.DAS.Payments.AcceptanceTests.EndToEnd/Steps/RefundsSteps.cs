@@ -1,9 +1,14 @@
+using System;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using AutoMapper;
+using ESFA.DC.ILR.TestDataGenerator.Models;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
+using SFA.DAS.Payments.Tests.Core;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -101,7 +106,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
+            var collectionYear = collectionPeriodText.ToDate().Year;
+
             await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
+
+            if (CurrentIlr != null && CurrentIlr.Any())
+            {
+                var mapper = Scope.Resolve<IMapper>();
+                var mappedrecord = mapper.Map<NonLevyLearnerRequest>(CurrentIlr.First());
+                var ilrFile = await GenerateTestIlrFile(mappedrecord);
+                
+                // currently only support a single ILR file being generated.
+                if (ilrFile.Any())
+                {
+                    await StoreAndPublishIlrFile(mappedrecord, ilrFile.First().Key, ilrFile.First().Value, collectionYear);
+                }
+            }
         }
         
         [When(@"the ILR file is submitted for the learners for collection period (.*) by ""(.*)""")]

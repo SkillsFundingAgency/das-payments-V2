@@ -22,13 +22,27 @@ using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using ESFA.DC.ILR.TestDataGenerator.Interfaces;
+using ESFA.DC.ILR.TestDataGenerator.Models;
+using ESFA.DC.IO.AzureStorage.Config.Interfaces;
+using ESFA.DC.IO.Interfaces;
+using ESFA.DC.Jobs.Model.Enums;
+using ESFA.DC.JobStatus.Interface;
+using Microsoft.ApplicationInsights;
+using Polly;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
+using SFA.DAS.Payments.AcceptanceTests.Services;
+using SFA.DAS.Payments.AcceptanceTests.Services.Exceptions;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -39,6 +53,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             get => Get<bool>("new_feature");
             set => Set(value, "new_feature");
         }
+
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
         protected IPaymentsDataContext DataContext => Scope.Resolve<IPaymentsDataContext>();
@@ -46,6 +61,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected IMapper Mapper => Scope.Resolve<IMapper>();
 
         protected DcHelper DcHelper => Get<DcHelper>();
+
+        public ITdgService TdgService;
 
         protected List<Price> CurrentPriceEpisodes
         {
@@ -905,6 +922,80 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         }
 
+        protected async Task<Dictionary<string, string>> GenerateTestIlrFile(LearnerRequestBase learnerRequest)
+        {
+            TdgService = Scope.Resolve<ITdgService>();
+            return await TdgService.GenerateIlrTestData((NonLevyLearnerRequest) learnerRequest);
+        }
 
+        protected async Task StoreAndPublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear)
+        {
+            await StoreIlrFile(learnerRequest.Ukprn, ilrFileName, ilrFile);
+
+            await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear);
+
+        }
+
+        private async Task StoreIlrFile(int ukPrn, string ilrFileName, string ilrFile)
+        {
+            var storageServiceConfig = Scope.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
+            var storageService = Scope.Resolve<IStreamableKeyValuePersistenceService>(new NamedParameter("keyValuePersistenceServiceConfig", storageServiceConfig));
+
+            var byteArray = Encoding.UTF8.GetBytes(ilrFile);
+            var stream = new MemoryStream(byteArray);
+
+            var ilrStoragePathAndFileName = $"{ukPrn}/{ilrFileName}";
+
+            await storageService.SaveAsync(ilrStoragePathAndFileName, stream);
+        }
+
+        private async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile,
+            int collectionYear)
+        {
+            var jobService = Scope.Resolve<IJobService>();
+
+            var nonLevyLearnerRequest = (NonLevyLearnerRequest) learnerRequest;
+
+            var collectionService = Scope.Resolve<ICollectionManagementService>();
+
+            var period =
+                await collectionService.GetCurrentPeriodAsync(
+                    ConvertCollectionYearToIlrCollectionName(collectionYear));
+
+            var storageServiceConfig = Scope.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
+
+            var jobId = await jobService.SubmitJob(
+                new SubmissionModel(JobType.IlrSubmission, nonLevyLearnerRequest.Ukprn)
+                {
+                    FileName = $"{learnerRequest.Ukprn}/{ilrFileName}",
+                    FileSizeBytes = ilrFile.Length,
+                    SubmittedBy = "System", // who should this be?
+                    CollectionName = ConvertCollectionYearToIlrCollectionName(collectionYear),
+                    Period = period.PeriodNumber,
+                    NotifyEmail = "", // who should this be
+                    StorageReference = storageServiceConfig.ContainerName,
+                    CollectionYear = collectionYear
+                });
+
+            var retryPolicy = Policy
+                .Handle<JobStatusNotWaitingException>()
+                .WaitAndRetryAsync(10, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+
+            await retryPolicy.ExecuteAsync(async () =>
+                {
+                    var jobStatus = await jobService.GetJobStatus(jobId);
+                    if (jobStatus != JobStatusType.Waiting)
+                        throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status");
+                }
+            );
+
+            var result = await jobService.UpdateJobStatus(jobId, JobStatusType.Ready);
+
+        }
+
+        private string ConvertCollectionYearToIlrCollectionName(int collectionYear)
+        {
+            return $"ILR{collectionYear.ToString().Substring(2, 2)}{(collectionYear + 1).ToString().Substring(2, 2)}";
+        }
     }
 }

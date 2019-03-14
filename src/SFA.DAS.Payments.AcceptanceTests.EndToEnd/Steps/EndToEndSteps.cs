@@ -6,6 +6,8 @@ using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -58,7 +60,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the provider is providing training for the following learners")]
         public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
         {
-            GivenTheProviderIsProvidingTrainingForTheFollowingLearners(TestSession.Provider.Identifier, table);
+            var service = Scope.Resolve<IUkprnService>();
+            GivenTheProviderIsProvidingTrainingForTheFollowingLearners(service.GenerateUkprn().ToString(), table);
         }
 
         [Given(@"the provider ""(.*)"" is providing training for the following learners")]

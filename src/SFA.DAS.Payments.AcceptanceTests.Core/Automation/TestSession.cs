@@ -2,8 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core.Lifetime;
 using Bogus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.Services;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -29,6 +32,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
 
+        private readonly IUkprnService _ukprnService;
 
         public Employer GetEmployer(string identifier)
         {
@@ -60,6 +64,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 .RuleFor(course => course.StandardCode, faker => faker.Random.Int(1))
                 .RuleFor(course => course.AgreedPrice, 15000);
 
+            _ukprnService = new UkprnService();
+
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
 
@@ -73,9 +79,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public long GenerateId(int maxValue = 1000000)
         {
-            var id = random.Next(maxValue);
-            //TODO: make sure that the id isn't already in use.
-            return id;
+            return _ukprnService.GenerateUkprn();
+
+            //var id = random.Next(maxValue);
+            ////TODO: make sure that the id isn't already in use.
+            //return id;
         }
 
         public void RegenerateUkprn()
