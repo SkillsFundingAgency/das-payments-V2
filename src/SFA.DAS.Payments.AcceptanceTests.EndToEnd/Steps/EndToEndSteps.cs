@@ -81,12 +81,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(PreviousIlr, TestSession.Ukprn);
         }
 
+        [Given(@"the provider is providing training for the following learners")]
         [Given(@"the Provider now changes the Learner details as follows")]
         public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
         {
             AddNewIlr(table, TestSession.Ukprn);
         }
 
+        [Given(@"the ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" now changes the Learner details as follows")]
         public void GivenTheNowChangesTheLearnerDetailsAsFollows(string providerIdentifier, Table table)
         {
@@ -228,14 +230,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure").ConfigureAwait(false);
-            await SendLevyMonthEnd().ConfigureAwait(false);
         }
 
         [Then(@"only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
             await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
-            await ThenOnlyTheFollowingPaymentsWillBeGenerated(TestSession.Provider.Identifier, table).ConfigureAwait(false);
+            await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"only the following ""(.*)"" payments will be generated")]
@@ -253,7 +254,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
         }
 
-        [When(@"Month end is triggered")]
+        [Then(@"Month end is triggered")]
         public async Task WhenMonthEndIsTriggered()
         {
             await SendLevyMonthEnd().ConfigureAwait(false);

@@ -13,6 +13,7 @@
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" DefaultValue="10" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="DelayedRetryTimeInSeconds" DefaultValue="5" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -54,6 +55,7 @@
             <Parameter Name="EndpointName" Value="[Monitoring_JobsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[Monitoring_JobsService_FailedMessagesQueue]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="DelayedRetryTimeInSeconds" Value="[DelayedRetryTimeInSeconds]" />
           </Section>
         </Settings>
       </ConfigOverride>

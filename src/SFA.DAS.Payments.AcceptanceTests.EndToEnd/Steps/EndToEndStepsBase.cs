@@ -879,8 +879,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
             {
-                await RequiredPaymentsCacheCleaner.ClearCaches(provider.Ukprn, TestSession);
-                await Task.Delay(Config.TimeToPause);
+                await RequiredPaymentsCacheCleaner.ClearCaches(provider.Ukprn, TestSession).ConfigureAwait(false);
+                await Task.Delay(Config.TimeToWaitForCacheClearance).ConfigureAwait(false);
 
                 ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn));
             }

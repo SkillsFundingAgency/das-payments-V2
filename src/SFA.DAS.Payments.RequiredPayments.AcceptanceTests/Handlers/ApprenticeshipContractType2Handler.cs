@@ -7,12 +7,12 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers
 {
-    public class ApprenticeshipContractType2Handler:IHandleMessages<ApprenticeshipContractType2RequiredPaymentEvent>
+    public class ApprenticeshipContractType2Handler:IHandleMessages<CalculatedRequiredCoInvestedAmount>
     {
         //public static List<ApprenticeshipContractType2RequiredPaymentEvent>  ReceivedEvents { get; } = new List<ApprenticeshipContractType2RequiredPaymentEvent>();
-        public static ConcurrentBag<ApprenticeshipContractType2RequiredPaymentEvent> ReceivedEvents { get; } = new ConcurrentBag<ApprenticeshipContractType2RequiredPaymentEvent>();
+        public static ConcurrentBag<CalculatedRequiredCoInvestedAmount> ReceivedEvents { get; } = new ConcurrentBag<CalculatedRequiredCoInvestedAmount>();
 
-        public Task Handle(ApprenticeshipContractType2RequiredPaymentEvent message, IMessageHandlerContext context)
+        public Task Handle(CalculatedRequiredCoInvestedAmount message, IMessageHandlerContext context)
         {
             Console.WriteLine(message.ToJson());
             ReceivedEvents.Add(message);

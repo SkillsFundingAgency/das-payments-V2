@@ -11,7 +11,6 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -104,11 +103,11 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             }, "Failed to find all the funding source payment events");
         }
 
-        private ApprenticeshipContractTypeRequiredPaymentEvent BuildApprenticeshipContractTypeRequiredPaymentEvent(RequiredPayment requiredPayment)
+        private CalculatedRequiredOnProgrammeAmount BuildApprenticeshipContractTypeRequiredPaymentEvent(RequiredPayment requiredPayment)
         {
             var paymentEvent = ContractType == 1
-                ? (ApprenticeshipContractTypeRequiredPaymentEvent)new ApprenticeshipContractType1RequiredPaymentEvent()
-                : new ApprenticeshipContractType2RequiredPaymentEvent();
+                ? (CalculatedRequiredOnProgrammeAmount)new CalculatedRequiredLevyAmount()
+                : new CalculatedRequiredCoInvestedAmount();
 
             MapCommon(requiredPayment, paymentEvent);
             paymentEvent.OnProgrammeEarningType = (OnProgrammeEarningType)requiredPayment.Type;
@@ -116,9 +115,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             return paymentEvent;
         }
 
-        private IncentiveRequiredPaymentEvent BuildIncentiveRequiredPaymentEvent(RequiredPayment requiredPayment)
+        private CalculatedRequiredIncentiveAmount BuildIncentiveRequiredPaymentEvent(RequiredPayment requiredPayment)
         {
-            var paymentEvent = new IncentiveRequiredPaymentEvent();
+            var paymentEvent = new CalculatedRequiredIncentiveAmount();
             MapCommon(requiredPayment, paymentEvent);
             paymentEvent.Type = (IncentivePaymentType)requiredPayment.Type;
             paymentEvent.ContractType = (ContractType)ContractType;

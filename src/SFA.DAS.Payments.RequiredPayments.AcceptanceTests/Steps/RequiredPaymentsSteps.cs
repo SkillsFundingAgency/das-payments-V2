@@ -87,7 +87,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         {
             var expectedPaymentsEvents = table
                 .CreateSet<OnProgrammeEarning>().ToArray();//TODO: fix to use a required payments model
-            await WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events or unexpected events found");
+            await WaitForIt(() => MatchRequiredPayment(expectedPaymentsEvents), "Failed to find all the required payment events or unexpected events found").ConfigureAwait(false);
         }
 
         [Then(@"the required payments component will not generate any contract type (.*) payable earnings")]
@@ -136,7 +136,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             return result;
         }
 
-        private (bool pass, string reason)MatchRequiredPayment(OnProgrammeEarning[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
+        private bool MatchRequiredPayment(OnProgrammeEarning[] expectedPaymentsEvents, OnProgrammeEarningType? type = null)
         {
             OnProgrammeEarning[] events;
 
@@ -191,10 +191,10 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 }
             }
 #endif
-            return (allFound && nothingExtra, string.Join(" and ", reason));
+            return allFound && nothingExtra;
         }
 
-        private static void TraceUnexpected(ApprenticeshipContractType2RequiredPaymentEvent[] sessionEvents, List<ApprenticeshipContractType2RequiredPaymentEvent> matchedExpectations)
+        private static void TraceUnexpected(CalculatedRequiredCoInvestedAmount[] sessionEvents, List<CalculatedRequiredCoInvestedAmount> matchedExpectations)
         {
             var unexpected = sessionEvents.Where(e => !matchedExpectations.Contains(e)).ToList();
             for (var i = 0; i < unexpected.Count; i++)
@@ -206,7 +206,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             }
         }
 
-        private void TraceMismatch(OnProgrammeEarning[] expectedPaymentsEvents, ApprenticeshipContractType2RequiredPaymentEvent[] receivedEvents)
+        private void TraceMismatch(OnProgrammeEarning[] expectedPaymentsEvents, CalculatedRequiredCoInvestedAmount[] receivedEvents)
         {
             for (var i = 0; i < expectedPaymentsEvents.Length; i++)
             {

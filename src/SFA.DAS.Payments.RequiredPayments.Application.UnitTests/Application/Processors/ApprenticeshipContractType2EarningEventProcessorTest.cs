@@ -307,7 +307,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             // assert
             Assert.IsNotEmpty(actualRequiredPayment);
-            Assert.AreEqual(.77m, ((ApprenticeshipContractType2RequiredPaymentEvent)actualRequiredPayment[0]).SfaContributionPercentage);
+            Assert.AreEqual(.77m, ((CalculatedRequiredCoInvestedAmount)actualRequiredPayment[0]).SfaContributionPercentage);
         }
 
         [Test]

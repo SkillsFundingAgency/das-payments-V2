@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public SfaFullyFundedFundingSourcePaymentEvent Map(IncentiveRequiredPaymentEvent requiredPaymentsEvent,
+        public SfaFullyFundedFundingSourcePaymentEvent Map(CalculatedRequiredIncentiveAmount requiredPaymentsEvent,
             FundingSourcePayment payment)
         {
             var sfaFullyFundedPayment = mapper.Map<SfaFullyFundedFundingSourcePaymentEvent>(requiredPaymentsEvent);
