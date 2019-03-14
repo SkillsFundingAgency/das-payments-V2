@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(PreviousIlr, TestSession.Ukprn);
         }
 
-        [Given(@"the provider is providing training for the following learners")]
+        //[Given(@"the provider is providing training for the following learners")]
         [Given(@"the Provider now changes the Learner details as follows")]
         public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
         {
