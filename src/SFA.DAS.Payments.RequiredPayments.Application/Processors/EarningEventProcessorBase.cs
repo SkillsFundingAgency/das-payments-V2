@@ -6,10 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -55,7 +53,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                 if (period.Amount != 0 && !period.SfaContributionPercentage.HasValue)
                 {
-                    throw new ArgumentException();
+                    throw new InvalidOperationException("Non-zero amount with no Sfa Contribution");
                 }
 
                 var earning = new Earning
@@ -74,37 +72,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                 foreach (var requiredPayment in requiredPayments)
                 {
-                    var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType);
+                    var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType, type);
 
-                    requiredPaymentEvent.AmountDue = requiredPayment.Amount;
-                    requiredPaymentEvent.DeliveryPeriod = period.Period;
-                    
                     mapper.Map(earningEvent, requiredPaymentEvent);
+                    mapper.Map(requiredPayment, requiredPaymentEvent);
 
-                    if (requiredPaymentEvent is CalculatedRequiredCoInvestedAmount coInvestedEvent)
-                    {
-                        coInvestedEvent.SfaContributionPercentage = requiredPayment.SfaContributionPercentage;
-                        coInvestedEvent.OnProgrammeEarningType = (OnProgrammeEarningType) type;
-                    }
-                    else if (requiredPaymentEvent is CalculatedRequiredLevyAmount levyEvent)
-                    {
-                        levyEvent.SfaContributionPercentage = requiredPayment.SfaContributionPercentage;
-                        levyEvent.OnProgrammeEarningType = (OnProgrammeEarningType) type;
-                    }
-                    else if (requiredPaymentEvent is CalculatedRequiredIncentiveAmount incentiveEvent)
-                    {
-                        incentiveEvent.Type = (IncentivePaymentType) type;
-                        if (earningEvent.GetType() == typeof(PayableEarningEvent))
-                        {
-                            incentiveEvent.ContractType = ContractType.Act1;
-                        }
-                        else
-                        {
-                            incentiveEvent.ContractType = ContractType.Act2;
-                        }
-                    }
-
-                    requiredPaymentEvent.PriceEpisodeIdentifier = requiredPayment.PriceEpisodeIdentifier;
+                    requiredPaymentEvent.DeliveryPeriod = period.Period;
                     
                     result.Add(requiredPaymentEvent);
                 }
@@ -115,16 +88,25 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         protected abstract EarningType GetEarningType(int type);
 
-        protected RequiredPaymentEvent CreateRequiredPaymentEvent(EarningType earningType)
+        protected RequiredPaymentEvent CreateRequiredPaymentEvent(EarningType earningType, int transactionType)
         {
             switch (earningType)
             {
                 case EarningType.CoInvested:
-                    return new CalculatedRequiredCoInvestedAmount();
-                case EarningType.Incentive: 
-                    return new CalculatedRequiredIncentiveAmount();
+                    return new CalculatedRequiredCoInvestedAmount
+                    {
+                        OnProgrammeEarningType = (OnProgrammeEarningType) transactionType,
+                    };
+                case EarningType.Incentive:
+                    return new CalculatedRequiredIncentiveAmount
+                    {
+                        Type = (IncentivePaymentType) transactionType,
+                    };
                 case EarningType.Levy:
-                    return new CalculatedRequiredLevyAmount();
+                    return new CalculatedRequiredLevyAmount
+                    {
+                        OnProgrammeEarningType = (OnProgrammeEarningType) transactionType,
+                    };
             }
 
             throw new NotImplementedException($"Could not create required payment for earning type: {earningType}");
