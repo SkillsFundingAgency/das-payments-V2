@@ -101,25 +101,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [Test]
-        public void CoInvestmentRefundFromLevyEarning()
-        {
-            var sut = new RefundService();
-
-            var testHistory = new List<Payment>
-            {
-                new Payment {Amount = 90, FundingSource = FundingSourceType.CoInvestedSfa, SfaContributionPercentage = 0.9m},
-                new Payment {Amount = 10, FundingSource = FundingSourceType.CoInvestedEmployer, SfaContributionPercentage = 0.9m},
-            };
-
-            var actual = sut.GetRefund(-50, testHistory);
-
-            actual.Should().HaveCount(1);
-            actual[0].EarningType.Should().Be(EarningType.CoInvested);
-            actual[0].Amount.Should().Be(-50);
-            actual[0].SfaContributionPercentage.Should().Be(0.9m);
-        }
-
-        [Test]
         public void MixedRefundOneSfaContribution()
         {
             var sut = new RefundService();
@@ -142,7 +123,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [Test]
-        public void MixedRefundTwoSfaContribution()
+        public void MixedRefundMultipleSfaContributions()
         {
             var sut = new RefundService();
 

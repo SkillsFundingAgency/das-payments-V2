@@ -155,17 +155,5 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             // assert
             Assert.AreEqual(0, amount);
         }
-
-        private static Payment CreatePaymentEntity(decimal amount, FundingSourceType fundingSourceType)
-        {
-            return new Payment
-            {
-                Amount = amount,
-                FundingSource = fundingSourceType,
-                PriceEpisodeIdentifier = "2",
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
-                DeliveryPeriod = 2
-            };
-        }
     }
 }
