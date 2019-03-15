@@ -19,6 +19,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
         private readonly CollectionPeriod sixthPeriod = new CollectionPeriod { AcademicYear = 1819, Period = 6 };
         private readonly TimeSpan annualDuration = new TimeSpan(365, 0, 0, 0);
         private readonly TimeSpan threeMonthDuration = new TimeSpan(92, 0, 0, 0);
+        private readonly string threeMonths = "3 months";
+        private readonly string annualMonths = "12 months";
 
         [Test]
         public void ContinuingZProgAimStartingInPreviousYearReturnsTrueWhenActiveInR01InCurrentYear()
@@ -33,7 +35,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
                     plannedDuration,
                     null,
                     completionStatus,
-                    ZProgAim);
+                    ZProgAim,
+                    annualMonths,
+                    null);
 
             isStartDateValid.Should().Be(true);
         }
@@ -51,7 +55,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
                     plannedDuration,
                     null,
                     completionStatus,
-                    ZProgAim);
+                    ZProgAim,
+                    annualMonths,
+                    null);
 
             isStartDateValid.Should().Be(false);
         }
@@ -68,7 +74,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
                     annualDuration,
                     null,
                     completionStatus,
-                    ZProgAim);
+                    ZProgAim,
+                    annualMonths,
+                    null);
 
             isStartDateValid.Should().Be(true);
         }
@@ -85,43 +93,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
                     annualDuration,
                     threeMonthDuration,
                     completionStatus,
-                    ZProgAim);
+                    ZProgAim,
+                    annualMonths,
+                    threeMonths);
 
             isStartDateValid.Should().Be(true);
-        }
-
-        [Test]
-        public void WithdrawnZProgAimReturnsFalseWhenWithdrawnBeforeR04()
-        {
-            var completionStatus = CompletionStatus.Withdrawn;
-
-            var isStartDateValid =
-                AimPeriodMatcher.IsStartDateValidForCollectionPeriod(
-                    StartOfCurrentAcademicYear,
-                    fourthPeriod,
-                    annualDuration,
-                    threeMonthDuration,
-                    completionStatus,
-                    ZProgAim);
-
-            isStartDateValid.Should().Be(false);
-        }
-
-        [Test]
-        public void WithdrawnZProgAimReturnsFalseWhenWithdrawnBeforeR04WithStartOfYar()
-        {
-            var completionStatus = CompletionStatus.Withdrawn;
-
-            var isStartDateValid =
-                AimPeriodMatcher.IsStartDateValidForCollectionPeriod(
-                    "01/Aug/Current Academic Year",
-                    fourthPeriod,
-                    annualDuration,
-                    threeMonthDuration,
-                    completionStatus,
-                    ZProgAim);
-
-            isStartDateValid.Should().Be(false);
         }
 
         [Test]
@@ -136,26 +112,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
                     annualDuration,
                     null,
                     completionStatus,
-                    ZProgAim);
+                    ZProgAim,
+                    annualMonths,
+                    null);
 
             isStartDateValid.Should().Be(true);
-        }
-
-        [Test]
-        public void WithdrawnRetrospectivelyZProgAimReturnsFalseWhenNotifiedLater()
-        {
-            var completionStatus = CompletionStatus.Withdrawn;
-
-            var isStartDateValid =
-                AimPeriodMatcher.IsStartDateValidForCollectionPeriod(
-                    StartOfCurrentAcademicYear,
-                    sixthPeriod,
-                    annualDuration,
-                    threeMonthDuration,
-                    completionStatus,
-                    ZProgAim);
-
-            isStartDateValid.Should().Be(false);
         }
 
         [Test]
@@ -170,7 +131,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
                     annualDuration,
                     annualDuration,
                     completionStatus,
-                    ZProgAim);
+                    ZProgAim,
+                    annualMonths,
+                    annualMonths);
 
             isStartDateValid.Should().Be(true);
         }
@@ -187,24 +150,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
                     annualDuration,
                     annualDuration,
                     completionStatus,
-                    "12345");
-
-            isStartDateValid.Should().Be(false);
-        }
-
-        [Test]
-        public void WithdrawnOnProgAimWhichEndedInPreviousPeriodReturnsFalse()
-        {
-            var completionStatus = CompletionStatus.Withdrawn;
-
-            var isStartDateValid =
-                AimPeriodMatcher.IsStartDateValidForCollectionPeriod(
-                    StartOfCurrentAcademicYear,
-                    fifthPeriod,
-                    annualDuration,
-                    threeMonthDuration,
-                    completionStatus,
-                    ZProgAim);
+                    "12345",
+                    annualMonths,
+                    annualMonths);
 
             isStartDateValid.Should().Be(false);
         }

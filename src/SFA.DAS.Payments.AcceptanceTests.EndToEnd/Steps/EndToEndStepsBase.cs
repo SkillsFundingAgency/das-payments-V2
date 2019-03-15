@@ -315,7 +315,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             learner.LearningDeliveries = new List<LearningDelivery>();
 
             foreach (var aim in testLearner.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, CurrentCollectionPeriod,
-                a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference)))
+                a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration)))
             {
                 learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
 

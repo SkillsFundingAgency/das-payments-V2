@@ -7,6 +7,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
@@ -112,9 +113,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (!standardCode.HasValue)
             {
                 var aim = learner.Aims.FirstOrDefault(a =>
-                    AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, currentCollectionPeriod,
-                        a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus,
-                        a.AimReference));
+                {
+                    var aimStartDate = a.StartDate.ToDate();
+                    var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
+                    var aimDuration = string.IsNullOrEmpty(a.ActualDuration) ? a.PlannedDuration : a.ActualDuration;
+
+                    var aimEndPeriod = AimPeriodMatcher.GetEndPeriodForAim(aimStartPeriod, aimDuration);
+                    var aimFinishedInPreviousPeriod = aimEndPeriod.FinishesBefore(currentCollectionPeriod);
+                    if (!aimFinishedInPreviousPeriod)
+                    {
+                        return true;
+                    }
+
+                    if (a.CompletionStatus == CompletionStatus.Withdrawn && amount >= 0M)
+                    {
+                        return false;
+                    }
+
+                    return a.AimReference == "ZPROG001" && (a.CompletionStatus == CompletionStatus.Completed || a.CompletionStatus == CompletionStatus.Withdrawn);
+                });
 
                 standardCode = aim?.StandardCode ?? 0;
             }

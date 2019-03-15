@@ -16,13 +16,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             TimeSpan? plannedDurationAsTimeSpan,
             TimeSpan? actualDurationAsTimeSpan,
             CompletionStatus completionStatus,
-            string aimReference)
+            string aimReference,
+            string plannedDuration,
+            string actualDuration)
         {
             var aimStartDate = startDate.ToDate();
             var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
-            var aimDuration = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
+            var aimDurationTimespan = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
             var collectionPeriodReferenceDate = DateFromCollectionPeriod(collectionPeriod);
-            var aimEndDate = aimStartDate + aimDuration ?? aimStartDate;
+            var aimEndDate = aimStartDate + aimDurationTimespan ?? aimStartDate;
+
+            var aimDuration = string.IsNullOrEmpty(actualDuration) ? plannedDuration : actualDuration;
+
+            var aimEndPeriod = GetEndPeriodForAim(aimStartPeriod, aimDuration);
 
             var lastPeriodForAim = new CollectionPeriodBuilder().WithDate(aimEndDate).Build();
 
@@ -33,19 +39,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                     DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate))
                 {
                     return true;
-                } 
+                }
 
                 if (
                     aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                     aimStartDate <= collectionPeriodReferenceDate &&
-                    aimStartDate + aimDuration >= collectionPeriodReferenceDate )
+                    !aimEndPeriod.FinishesBefore(collectionPeriod))
                 {
                     return true;
                 }
 
-                if (lastPeriodForAim.FinishesBefore(collectionPeriod))
+                if (aimEndPeriod.FinishesBefore(collectionPeriod) && completionStatus == CompletionStatus.Withdrawn)
                 {
-                    return AimActiveOnLastDay(aimEndDate);
+                    return true;
                 }
 
                 return false;
@@ -76,7 +82,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             if (completionStatus == CompletionStatus.Completed &&
                 (aimStartPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                  aimStartDate <= collectionPeriodReferenceDate &&
-                 aimStartDate + aimDuration < collectionPeriodReferenceDate))
+                 aimStartDate + aimDurationTimespan < collectionPeriodReferenceDate))
             {
                 return true;
             }
@@ -94,12 +100,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                    DurationGreaterThanCollectionPeriodStart(aimEndDate, collectionPeriodReferenceDate);
         }
 
+        public static CollectionPeriod GetEndPeriodForAim(CollectionPeriod aimStartDate, string duration)
+        {
+            var startPeriod = aimStartDate.Period;
+
+            if (duration.Contains("months"))
+            {
+                var months = int.Parse(duration.Replace("months", string.Empty));
+
+                return new CollectionPeriod
+                { AcademicYear = aimStartDate.AcademicYear, Period = (byte)(startPeriod + months - 1) };
+            }
+
+            return aimStartDate;
+        }
+
         private static bool AimActiveOnLastDay(DateTime aimEndDate)
         {
             return aimEndDate == aimEndDate.LastDayOnMonth();
         }
 
-        private static bool FinishesBefore(this CollectionPeriod currentPeriod, CollectionPeriod otherPeriod)
+        public static bool FinishesBefore(this CollectionPeriod currentPeriod, CollectionPeriod otherPeriod)
         {
             if (otherPeriod.AcademicYear < currentPeriod.AcademicYear)
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -8,6 +9,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
+using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
 
@@ -62,9 +64,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 if (!standardCode.HasValue)
                 {
                     var aim = testLearner.Aims.FirstOrDefault(a =>
-                        AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, collectionPeriod,
-                            a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus,
-                            a.AimReference));
+                    {
+                        var aimStartDate = a.StartDate.ToDate();
+                        var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
+                        var aimDuration = string.IsNullOrEmpty(a.ActualDuration) ? a.PlannedDuration : a.ActualDuration;
+
+                        var aimEndPeriod = AimPeriodMatcher.GetEndPeriodForAim(aimStartPeriod, aimDuration);
+                        var aimFinishedInPreviousPeriod = aimEndPeriod.FinishesBefore(collectionPeriod);
+                        if (!aimFinishedInPreviousPeriod)
+                        {
+                            return true;
+                        }
+
+                        // withdrawal but payments made during period active
+                        if (a.CompletionStatus == CompletionStatus.Withdrawn && providerPayment.LevyPayments >= 0M && providerPayment.SfaCoFundedPayments >= 0M && providerPayment.EmployerCoFundedPayments >= 0M && providerPayment.SfaFullyFundedPayments >= 0M)
+                        {
+                            return false;
+                        }
+
+                        // retrospective withdrawal
+                        return a.AimReference == "ZPROG001" && (a.CompletionStatus == CompletionStatus.Completed || a.CompletionStatus == CompletionStatus.Withdrawn);
+                    });
 
                     standardCode = aim?.StandardCode ?? 0;
                 }
