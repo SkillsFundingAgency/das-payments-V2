@@ -34,87 +34,83 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestFixture]
         public class TestsForMixedRefundChange : EarningEventMappingTest
         {
-            [TestFixture]
-            public class CoIvestedPropertyMapperTests : TestsForMixedRefundChange
+            [Test]
+            [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+            [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
+            [TestCase(typeof(CalculatedRequiredLevyAmount))]
+            public void AmountIsCorrect(Type requiredPaymentEventType)
             {
-                [Test]
-                [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
-                [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
-                [TestCase(typeof(CalculatedRequiredLevyAmount))]
-                public void AmountIsCorrect(Type requiredPaymentEventType)
+                var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+                var expectedAmount = 100;
+
+                var requiredPayment = new RequiredPayment
                 {
-                    var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
-                    var expectedAmount = 100;
+                    Amount = expectedAmount,
+                };
 
-                    var requiredPayment = new RequiredPayment
-                    {
-                        Amount = expectedAmount,
-                    };
+                var actual = mapper.Map(requiredPayment, requiredPaymentEvent);
+                actual.AmountDue.Should().Be(expectedAmount);
+            }
 
-                    var actual = mapper.Map(requiredPayment, requiredPaymentEvent);
-                    actual.AmountDue.Should().Be(expectedAmount);
-                }
+            [Test]
+            [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+            [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
+            [TestCase(typeof(CalculatedRequiredLevyAmount))]
+            public void PriceEpisodeIdentifierIsCorrect(Type requiredPaymentEventType)
+            {
+                var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+                var expectedPriceEpisodeIdentifier = "peid";
 
-                [Test]
-                [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
-                [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
-                [TestCase(typeof(CalculatedRequiredLevyAmount))]
-                public void PriceEpisodeIdentifierIsCorrect(Type requiredPaymentEventType)
+                var requiredPayment = new RequiredPayment
                 {
-                    var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
-                    var expectedPriceEpisodeIdentifier = "peid";
+                    PriceEpisodeIdentifier = expectedPriceEpisodeIdentifier,
+                };
 
-                    var requiredPayment = new RequiredPayment
-                    {
-                        PriceEpisodeIdentifier = expectedPriceEpisodeIdentifier,
-                    };
+                var actual = mapper.Map(requiredPayment, requiredPaymentEvent);
+                actual.PriceEpisodeIdentifier.Should().Be(expectedPriceEpisodeIdentifier);
+            }
 
-                    var actual = mapper.Map(requiredPayment, requiredPaymentEvent);
-                    actual.PriceEpisodeIdentifier.Should().Be(expectedPriceEpisodeIdentifier);
-                }
+            [Test]
+            [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+            [TestCase(typeof(CalculatedRequiredLevyAmount))]
+            public void SfaPercentageIsCorrect(Type requiredPaymentEventType)
+            {
+                var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as CalculatedRequiredOnProgrammeAmount;
+                var expectedSfaPercentage = 100;
 
-                [Test]
-                [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
-                [TestCase(typeof(CalculatedRequiredLevyAmount))]
-                public void SfaPercentageIsCorrect(Type requiredPaymentEventType)
+                var requiredPayment = new RequiredPayment
                 {
-                    var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as CalculatedRequiredOnProgrammeAmount;
-                    var expectedSfaPercentage = 100;
+                    SfaContributionPercentage = expectedSfaPercentage,
+                };
 
-                    var requiredPayment = new RequiredPayment
-                    {
-                        SfaContributionPercentage = expectedSfaPercentage,
-                    };
+                var actual = mapper.Map(requiredPayment, requiredPaymentEvent);
+                actual.SfaContributionPercentage.Should().Be(expectedSfaPercentage);
+            }
 
-                    var actual = mapper.Map(requiredPayment, requiredPaymentEvent);
-                    actual.SfaContributionPercentage.Should().Be(expectedSfaPercentage);
-                }
+            [Test]
+            [TestCase(typeof(PayableEarningEvent))]
+            public void ContractTypeIsCorrectForPayableEarningEvent(Type earningEventType)
+            {
+                var requiredPaymentEvent = new CalculatedRequiredIncentiveAmount();
+                var earningEvent = Activator.CreateInstance(earningEventType);
 
-                [Test]
-                [TestCase(typeof(PayableEarningEvent))]
-                public void ContractTypeIsCorrectForPayableEarningEvent(Type earningEventType)
-                {
-                    var requiredPaymentEvent = new CalculatedRequiredIncentiveAmount();
-                    var earningEvent = Activator.CreateInstance(earningEventType);
+                var actual = mapper.Map(earningEvent, requiredPaymentEvent);
+                actual.ContractType.Should().Be(ContractType.Act1);
+            }
 
-                    var actual = mapper.Map(earningEvent, requiredPaymentEvent);
-                    actual.ContractType.Should().Be(ContractType.Act1);
-                }
+            [Test]
+            [TestCase(typeof(ApprenticeshipContractType2EarningEvent))]
+            [TestCase(typeof(FunctionalSkillEarningsEvent))]
+            public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType)
+            {
+                var requiredPaymentEvent = new CalculatedRequiredIncentiveAmount();
+                var earningEvent = Activator.CreateInstance(earningEventType);
 
-                [Test]
-                [TestCase(typeof(ApprenticeshipContractType2EarningEvent))]
-                [TestCase(typeof(FunctionalSkillEarningsEvent))]
-                public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType)
-                {
-                    var requiredPaymentEvent = new CalculatedRequiredIncentiveAmount();
-                    var earningEvent = Activator.CreateInstance(earningEventType);
-
-                    var actual = mapper.Map(earningEvent, requiredPaymentEvent);
-                    actual.ContractType.Should().Be(ContractType.Act2);
-                }
+                var actual = mapper.Map(earningEvent, requiredPaymentEvent);
+                actual.ContractType.Should().Be(ContractType.Act2);
             }
         }
-        
+
 
         [Test]
         public void TestPayableEarningEventMap()
@@ -182,7 +178,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             return new FunctionalSkillEarningsEvent
             {
                 CollectionYear = 1819,
-                Learner = new Learner {ReferenceNumber = "R", Uln = 10},
+                Learner = new Learner { ReferenceNumber = "R", Uln = 10 },
                 Ukprn = 20,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 7),
                 LearningAim = new LearningAim
@@ -195,7 +191,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                     Reference = "7"
                 },
                 JobId = 8,
-                IlrSubmissionDateTime = DateTime.Today,                
+                IlrSubmissionDateTime = DateTime.Today,
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning
@@ -229,7 +225,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 AgreementId = "103",
                 Priority = 104,
                 CollectionYear = 1819,
-                Learner = new Learner {ReferenceNumber = "R", Uln = 10},
+                Learner = new Learner { ReferenceNumber = "R", Uln = 10 },
                 Ukprn = 20,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 7),
                 SfaContributionPercentage = .5m,

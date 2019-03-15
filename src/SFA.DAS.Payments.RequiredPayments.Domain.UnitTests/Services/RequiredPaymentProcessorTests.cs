@@ -12,27 +12,27 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
     [TestFixture]
     public class RequiredPaymentProcessorTests
     {
-        protected AutoMock Automocker;
-        protected RequiredPaymentProcessor Sut;
-        protected Mock<IRefundService> RefundService;
-        protected Mock<IPaymentDueProcessor> PaymentsDueService;
-        protected List<Payment> PaymentHistory;
+        protected AutoMock automocker;
+        protected RequiredPaymentProcessor sut;
+        protected Mock<IRefundService> refundService;
+        protected Mock<IPaymentDueProcessor> paymentsDueService;
+        protected List<Payment> paymentHistory;
 
 
         [SetUp]
         public void Setup()
         {
-            Automocker = AutoMock.GetStrict();
-            PaymentHistory = new List<Payment>();
-            PaymentsDueService = Automocker.Mock<IPaymentDueProcessor>();
-            RefundService = Automocker.Mock<IRefundService>();
-            Sut = new RequiredPaymentProcessor(PaymentsDueService.Object, RefundService.Object);
+            automocker = AutoMock.GetStrict();
+            paymentHistory = new List<Payment>();
+            paymentsDueService = automocker.Mock<IPaymentDueProcessor>();
+            refundService = automocker.Mock<IRefundService>();
+            sut = automocker.Create<RequiredPaymentProcessor>();
         }
 
         [TearDown]
         public void TearDown()
         {
-            Automocker.Dispose();
+            automocker.Dispose();
         }
 
         [TestFixture]
@@ -47,9 +47,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 };
                 var expectedAmount = 50;
                 
-                PaymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, PaymentHistory)).Returns(expectedAmount);
+                paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(expectedAmount);
 
-                var actual = Sut.GetRequiredPayments(testEarning, PaymentHistory);
+                var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
                 actual.Single().Amount.Should().Be(expectedAmount);
             }
@@ -64,9 +64,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                     SfaContributionPercentage = expectedSfaContribution,
                 };
                 
-                PaymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, PaymentHistory)).Returns(50);
+                paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
 
-                var actual = Sut.GetRequiredPayments(testEarning, PaymentHistory);
+                var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
                 actual.Single().SfaContributionPercentage.Should().Be(expectedSfaContribution);
             }
@@ -74,17 +74,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             [Test]
             public void RequiredPaymentHasEarningTypeOfInput()
             {
-                var expectedEarningType = EarningType.Levy;
+                var expectedEarningType = EarningType.CoInvested;
 
                 var testEarning = new Earning
                 {
-                    EarningType = EarningType.Levy,
+                    EarningType = expectedEarningType,
                     SfaContributionPercentage = 0,
                 };
 
-                PaymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, PaymentHistory)).Returns(50);
+                paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
 
-                var actual = Sut.GetRequiredPayments(testEarning, PaymentHistory);
+                var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
                 actual.Single().EarningType.Should().Be(expectedEarningType);
             }
@@ -98,9 +98,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 var testEarning = new Earning();
                 
-                PaymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, PaymentHistory)).Returns(0);
+                paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(0);
                 
-                var actual = Sut.GetRequiredPayments(testEarning, PaymentHistory);
+                var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
                 actual.Should().BeEmpty();
             }
@@ -115,10 +115,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 var testEarning = new Earning();
                 var expectedRefundPayments = new List<RequiredPayment>();
 
-                PaymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, PaymentHistory)).Returns(-50);
-                RefundService.Setup(x => x.GetRefund(-50, PaymentHistory)).Returns(expectedRefundPayments);
+                paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(-50);
+                refundService.Setup(x => x.GetRefund(-50, paymentHistory)).Returns(expectedRefundPayments);
 
-                var actual = Sut.GetRequiredPayments(testEarning, PaymentHistory);
+                var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
                 actual.Should().BeSameAs(expectedRefundPayments);
             }
