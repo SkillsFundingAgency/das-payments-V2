@@ -15,9 +15,9 @@
                 .ForMember(x => x.StartDate, opt => opt.MapFrom(src => src.StartDate.ToDate()))
                 .ForMember(x => x.PlannedDurationInMonths, opt => opt.MapFrom(src => (src.PlannedDuration !=null) ? int.Parse(src.PlannedDuration.Split(' ')[0]) : (int?)null))
                 .ForMember(x => x.TotalTrainingPrice, opt => opt.MapFrom(src => (int)src.TotalTrainingPrice))
-                .ForMember(x => x.TotalTrainingPriceEffectiveDate, opt => opt.Ignore())
+                .ForMember(x => x.TotalTrainingPriceEffectiveDate, opt => opt.MapFrom(src=> (!string.IsNullOrWhiteSpace(src.TotalTrainingPriceEffectiveDate)) ? src.TotalTrainingPriceEffectiveDate.ToDate() : (DateTime?)null))
                 .ForMember(x => x.TotalAssessmentPrice, opt => opt.MapFrom(src => (int)src.TotalAssessmentPrice))
-                .ForMember(x => x.TotalAssessmentPriceEffectiveDate, opt => opt.Ignore())
+                .ForMember(x => x.TotalAssessmentPriceEffectiveDate, opt => opt.MapFrom(src=> (!string.IsNullOrWhiteSpace(src.TotalAssessmentPriceEffectiveDate)) ? src.TotalAssessmentPriceEffectiveDate.ToDate() : (DateTime?)null))
                 .ForMember(x => x.ActualDurationInMonths,
                     opt => opt.MapFrom(
                         src => (!string.IsNullOrWhiteSpace(src.ActualDuration)) ? int.Parse(src.ActualDuration.Split(' ')[0]) : (int?) null))

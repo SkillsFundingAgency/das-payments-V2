@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Model.Core.Entities;
+﻿using System;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
@@ -28,5 +29,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string FundingLineType { get; set; }
         public int FrameworkCode { get; set; }
         public int PathwayCode { get; set; }
+        public string TotalTrainingPriceEffectiveDate { get; set; }
+        public string TotalAssessmentPriceEffectiveDate { get; set; }
+
     }
 }
