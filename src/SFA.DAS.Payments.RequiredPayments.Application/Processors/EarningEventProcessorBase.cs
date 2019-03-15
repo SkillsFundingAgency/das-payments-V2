@@ -21,15 +21,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
     public abstract class EarningEventProcessorBase<TEarningEvent> : IEarningEventProcessor<TEarningEvent>
         where TEarningEvent : IEarningEvent
     {
-        protected readonly IRequiredPaymentProcessor RequiredPaymentProcessor;
+        private readonly IRequiredPaymentProcessor requiredPaymentProcessor;
         private readonly IPaymentKeyService paymentKeyService;
         private readonly IMapper mapper;
 
         protected EarningEventProcessorBase(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentProcessor requiredPaymentProcessor)
         {
             this.paymentKeyService = paymentKeyService ?? throw new ArgumentNullException(nameof(paymentKeyService));
-            this.mapper = mapper;
-            this.RequiredPaymentProcessor = requiredPaymentProcessor;
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.requiredPaymentProcessor = requiredPaymentProcessor ?? throw new ArgumentNullException(nameof(requiredPaymentProcessor));
         }
 
         public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     EarningType = GetEarningType(type),
                     PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
                 };
-                var requiredPayments = RequiredPaymentProcessor.GetRequiredPayments(earning, payments);
+                var requiredPayments = requiredPaymentProcessor.GetRequiredPayments(earning, payments);
 
                 if (requiredPayments.Sum(x => x.Amount) == 0)
                 {
