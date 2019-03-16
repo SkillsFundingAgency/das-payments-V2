@@ -25,6 +25,7 @@
 	IlrSubmissionDateTime DATETIME2 NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	AgreementId NVARCHAR(255) NULL, 
+	[AccountId] BIGINT NULL , 
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 );
 GO

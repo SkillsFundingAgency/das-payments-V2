@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 if (paymentInfo.SfaCoFundedPayments != 0)
                 {
                     var coFundedSfa = ToPaymentModel(paymentInfo, provider.Ukprn, FundingSourceType.CoInvestedSfa,
-                        paymentInfo.SfaCoFundedPayments, provider.JobId);
+                                   paymentInfo.SfaCoFundedPayments, provider.JobId);
                     expectedPayments.Add(coFundedSfa);
                 }
 
@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 if (paymentInfo.LevyPayments != 0)
                 {
                     var levyPayments = ToPaymentModel(paymentInfo, provider.Ukprn, FundingSourceType.Levy,
-                        paymentInfo.LevyPayments, provider.JobId);
+                        paymentInfo.LevyPayments, provider.JobId, paymentInfo.AccountId);
                     expectedPayments.Add(levyPayments);
                 }
             }
@@ -101,7 +101,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             long ukprn, 
             FundingSourceType fundingSource, 
             decimal amount, 
-            long jobId)
+            long jobId,
+            long? employerAccountId = null)
         {
             return new PaymentModel
             {
@@ -113,7 +114,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 Amount = amount,
                 FundingSource = fundingSource,
                 LearnerReferenceNumber = testSession.GetLearner(ukprn, paymentInfo.LearnerId).LearnRefNumber,
-                JobId = jobId
+                JobId = jobId,
+                AccountId = employerAccountId
             };
         }
     }

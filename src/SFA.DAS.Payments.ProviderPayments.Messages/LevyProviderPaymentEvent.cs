@@ -2,6 +2,6 @@
 {
     public class LevyProviderPaymentEvent : ProviderPaymentEvent
     {
-
+        public long EmployerAccountId { get; set; }
     }
 }

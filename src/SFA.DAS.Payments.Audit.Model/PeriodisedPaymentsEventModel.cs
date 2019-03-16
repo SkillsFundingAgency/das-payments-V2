@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.Audit.Model
          byte DeliveryPeriod { get; set; }
          decimal SfaContributionPercentage { get; set; }
          string AgreementId { get; set; }
+         long? EmployerAccountId { get; set; }
     }
 
     public abstract class PeriodisedPaymentsEventModel: PaymentsEventModel, IPeriodisedPaymentsEventModel
@@ -23,5 +24,6 @@ namespace SFA.DAS.Payments.Audit.Model
         public byte DeliveryPeriod { get; set; }
         public decimal SfaContributionPercentage { get; set; }
         public string AgreementId { get; set; }
+        public long? EmployerAccountId { get; set; }
     }
 }

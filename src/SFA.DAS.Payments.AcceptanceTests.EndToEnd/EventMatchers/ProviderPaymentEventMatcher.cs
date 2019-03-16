@@ -104,7 +104,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         AmountDue = providerPayment.LevyPayments,
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
-                        Learner = learner
+                        Learner = learner,
+                        EmployerAccountId = providerPayment.AccountId ?? 0
                     };
                     expectedPayments.Add(levyFunded);
                 }

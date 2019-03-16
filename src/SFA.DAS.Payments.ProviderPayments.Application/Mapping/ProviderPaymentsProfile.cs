@@ -40,7 +40,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => source.TransactionType))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
-                .ForMember(dest => dest.AgreementId, opt => opt.Ignore());
+                .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
+                .ForMember(dest => dest.EmployerAccountId, opt => opt.Ignore());
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();

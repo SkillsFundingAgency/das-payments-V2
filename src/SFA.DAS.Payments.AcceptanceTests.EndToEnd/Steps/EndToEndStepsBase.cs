@@ -675,6 +675,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task MatchOnlyProviderPayments(Table table, Provider provider)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
+            expectedPayments = SetProviderPaymentAccountIds(expectedPayments);
             var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
@@ -767,19 +768,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task ValidateRecordedProviderPayments(Table table, Provider provider)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>()
-                .Where(p => p.ParsedCollectionPeriod.Period == CurrentCollectionPeriod.Period
-                            && p.ParsedCollectionPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear)
+                .Where(p => p.ParsedCollectionPeriod.Period == CurrentCollectionPeriod.Period &&
+                            p.ParsedCollectionPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear)
                 .ToList();
+
+            expectedPayments = SetProviderPaymentAccountIds(expectedPayments);
 
             var providerCurrentIlr = CurrentIlr?.Where(c => c.Ukprn == provider.Ukprn).ToList();
             var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
-
             var contractType = providerCurrentIlr == null
                 ? providerLearners.First().Aims.First().PriceEpisodes.First().ContractType
                 : providerCurrentIlr.First().ContractType;
 
             var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
+        }
+
+        private List<ProviderPayment> SetProviderPaymentAccountIds(List<ProviderPayment> expectedPayments)
+        {
+            expectedPayments?.ForEach( p =>
+            {
+                if (string.IsNullOrWhiteSpace(p.Employer))p.AccountId = TestSession.GetEmployer(p.Employer).AccountId;
+            });
+            
+            return expectedPayments;
         }
 
         protected async Task GeneratedAndValidateEarnings(Table table, Provider provider)
@@ -905,6 +917,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         }
 
+       
 
     }
 }

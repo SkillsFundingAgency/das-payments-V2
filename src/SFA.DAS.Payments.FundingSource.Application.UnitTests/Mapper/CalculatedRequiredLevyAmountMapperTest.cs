@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuration;
@@ -9,6 +8,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using System;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 {
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 EventId = Guid.NewGuid(),
                 EmployerAccountId = 13,
                 IlrSubmissionDateTime = DateTime.Today,
-                EarningEventId = Guid.NewGuid()                
+                EarningEventId = Guid.NewGuid()
             };
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
             autoMapper = mapperConfiguration.CreateMapper();
@@ -58,7 +58,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         [Test]
         public void TestMapToLevyFundingSourcePaymentEvent()
         {
-            var expectedEvent = new LevyFundingSourcePaymentEvent {AgreementId = "11"};
+            var expectedEvent = new LevyFundingSourcePaymentEvent
+            {
+                AgreementId = "11",
+                EmployerAccountId = 13
+            };
+
             PopulateCommonProperties(expectedEvent);
 
             var actualEvent = new LevyFundingSourcePaymentEvent
