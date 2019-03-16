@@ -46,7 +46,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
             CreateMap<SfaFullyFundedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
-            CreateMap<LevyFundingSourcePaymentEvent, ProviderPaymentEventModel>();
+
+            CreateMap<LevyFundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .ForMember(dest => dest.EmployerAccountId, opt => opt.MapFrom(source => source.EmployerAccountId));
 
             CreateMap<PaymentModel, ProviderPaymentEvent>()
                 .Include<PaymentModel, EmployerCoInvestedProviderPaymentEvent>()

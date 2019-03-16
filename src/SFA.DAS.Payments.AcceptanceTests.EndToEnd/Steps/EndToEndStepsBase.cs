@@ -275,8 +275,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa, ukprn));
 
             if (providerPayment.LevyPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn));
-
+            {
+                var payment = CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn);
+                payment.AccountId = providerPayment.AccountId;
+                list.Add(payment);
+            }
             return list;
         }
 
@@ -737,6 +740,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var payment in payments)
             {
                 payment.Uln = TestSession.GetLearner(ukprn, payment.LearnerId).Uln;
+                SetProviderPaymentAccountId(payment);
             }
 
             var previousJobId = TestSession.GenerateId();
@@ -747,7 +751,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 var learnerTraining = previousIlr;
                 var learnerEarning = previousEarnings.First(e => e.LearnerId == p.LearnerId && e.DeliveryPeriod == p.DeliveryPeriod);
-                decimal? sfaContributionPercentage = string.IsNullOrWhiteSpace(learnerEarning.SfaContributionPercentage) ? default(decimal?) : learnerEarning.SfaContributionPercentage.ToPercent();
+                decimal? sfaContributionPercentage = string.IsNullOrWhiteSpace(learnerEarning.SfaContributionPercentage) ?
+                                                        default(decimal?) :
+                                                        learnerEarning.SfaContributionPercentage.ToPercent();
 
                 return CreatePayments(p, learnerTraining, previousJobId, previousSubmissionTime, sfaContributionPercentage, ukprn);
             }).ToList();
@@ -786,12 +792,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private List<ProviderPayment> SetProviderPaymentAccountIds(List<ProviderPayment> expectedPayments)
         {
-            expectedPayments?.ForEach( p =>
-            {
-                if (string.IsNullOrWhiteSpace(p.Employer))p.AccountId = TestSession.GetEmployer(p.Employer).AccountId;
-            });
-            
+            expectedPayments?.ForEach(SetProviderPaymentAccountId);
             return expectedPayments;
+        }
+
+        private void SetProviderPaymentAccountId(ProviderPayment expectedPayment)
+        {
+            if (string.IsNullOrWhiteSpace(expectedPayment.Employer))
+            {
+                expectedPayment.AccountId = TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+            }
         }
 
         protected async Task GeneratedAndValidateEarnings(Table table, Provider provider)
@@ -917,7 +927,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         }
 
-       
+
 
     }
 }
