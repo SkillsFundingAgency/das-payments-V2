@@ -97,7 +97,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 EventTime = DateTimeOffset.UtcNow,
                 AgreementId = agreementId,
-                RequiredPaymentEventId = Guid.NewGuid()
+                RequiredPaymentEventId = Guid.NewGuid(),
+                EmployerAccountId = 123456789
             };
 
             var payment = Mapper.Map<ProviderPaymentEventModel>(levy);
@@ -112,6 +113,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.FundingSource.Should().Be(levy.FundingSourceType);
             payment.JobId.Should().Be(levy.JobId);
             payment.IlrSubmissionDateTime.Should().Be(levy.IlrSubmissionDateTime);
+            payment.EmployerAccountId.Should().Be(levy.EmployerAccountId);
         }
 
         [Test]
