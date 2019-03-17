@@ -779,7 +779,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 : providerCurrentIlr.First().ContractType;
 
             var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
-            await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
+            await WaitForIt(() => matcher.MatchPayments(), "Recorded payments check failed");
         }
 
         protected async Task GeneratedAndValidateEarnings(Table table, Provider provider)
