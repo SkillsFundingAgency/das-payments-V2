@@ -39,11 +39,73 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override IList<RequiredPaymentEvent> GetActualEvents()
         {
-            return RequiredPaymentEventHandler.ReceivedEvents
+            var events = RequiredPaymentEventHandler.ReceivedEvents
                 .Where(e => e.Ukprn == provider.Ukprn && 
                             e.CollectionPeriod.Period== collectionPeriod.Period &&
                             e.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                             e.JobId == provider.JobId).ToList();
+
+            var results = new List<RequiredPaymentEvent>();
+
+            var aggregatedCoinvestmentEvents = events
+                .Select(x => x as CalculatedRequiredCoInvestedAmount)
+                .Where(x => x != null)
+                .GroupBy(x => new
+                {
+                    x.CollectionPeriod,
+                    x.DeliveryPeriod,
+                    x.OnProgrammeEarningType,
+                });
+            foreach (var aggregatedEvent in aggregatedCoinvestmentEvents)
+            {
+                results.Add(new CalculatedRequiredCoInvestedAmount
+                {
+                    AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
+                    CollectionPeriod = aggregatedEvent.Key.CollectionPeriod,
+                    DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
+                    OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
+                });
+            }
+
+            var aggregatedLevyEvents = events
+                .Select(x => x as CalculatedRequiredLevyAmount)
+                .Where(x => x != null)
+                .GroupBy(x => new
+                {
+                    x.CollectionPeriod,
+                    x.DeliveryPeriod,
+                    x.OnProgrammeEarningType,
+                });
+            foreach (var aggregatedEvent in aggregatedLevyEvents)
+            {
+                results.Add(new CalculatedRequiredLevyAmount
+                {
+                    AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
+                    CollectionPeriod = aggregatedEvent.Key.CollectionPeriod,
+                    DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
+                    OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
+                });
+            }
+
+            var aggregatedIncentiveEvents = events
+                .Select(x => x as CalculatedRequiredIncentiveAmount)
+                .Where(x => x != null)
+                .GroupBy(x => new
+                {
+                    x.CollectionPeriod,
+                    x.DeliveryPeriod,
+                    x.Type,
+                });
+            foreach (var aggregatedEvent in aggregatedIncentiveEvents)
+            {
+                results.Add(new CalculatedRequiredIncentiveAmount
+                {
+                    AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
+                    CollectionPeriod = aggregatedEvent.Key.CollectionPeriod,
+                    DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
+                    Type = aggregatedEvent.Key.Type,
+                });
+            }
         }
 
         protected override IList<RequiredPaymentEvent> GetExpectedEvents()
