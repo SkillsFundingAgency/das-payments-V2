@@ -793,8 +793,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in providerCurrentIlrs)
                 {
                     var aim = new Aim(training);
-                    var aims = new List<Aim> { aim };
-                    AddTestAims(aims, provider.Ukprn);
+                    AddTestAims(new List<Aim> { aim }, provider.Ukprn);
 
                     if (CurrentPriceEpisodes == null)
                     {
@@ -812,24 +811,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     {
                         foreach (var currentPriceEpisode in CurrentPriceEpisodes)
                         {
-                            if (currentPriceEpisode.SfaContributionPercentage == null)
+                            if (currentPriceEpisode.AimSequenceNumber == 0 || currentPriceEpisode.AimSequenceNumber == aim.AimSequenceNumber)
                             {
-                                currentPriceEpisode.SfaContributionPercentage = training.SfaContributionPercentage;
-                            }
-
-                            if (currentPriceEpisode.AimSequenceNumber == 0)
-                            {
-                                aims.Single().PriceEpisodes.Add(currentPriceEpisode);
-                            }
-                            else
-                            {
-                                var matchingAim = aims.First(x => x.AimSequenceNumber == currentPriceEpisode.AimSequenceNumber);
-                                matchingAim.PriceEpisodes.Add(currentPriceEpisode);
+                                aim.PriceEpisodes.Add(currentPriceEpisode);
                             }
                         }
                     }
                 }
-            }
 
             // Learner -> Aims -> Price Episodes
             foreach (var testSessionLearner in TestSession.Learners.Where(l => l.Ukprn == provider.Ukprn))
