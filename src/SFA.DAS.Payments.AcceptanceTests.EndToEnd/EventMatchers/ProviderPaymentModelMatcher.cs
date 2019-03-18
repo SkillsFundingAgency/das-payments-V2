@@ -53,21 +53,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 if (paymentInfo.SfaCoFundedPayments != 0)
                 {
                     var coFundedSfa = ToPaymentModel(paymentInfo, provider.Ukprn, FundingSourceType.CoInvestedSfa,
-                                   paymentInfo.SfaCoFundedPayments, provider.JobId);
+                                   paymentInfo.SfaCoFundedPayments, provider.JobId, paymentInfo.AccountId);
                     expectedPayments.Add(coFundedSfa);
                 }
 
                 if (paymentInfo.EmployerCoFundedPayments != 0)
                 {
                     var coFundedEmp = ToPaymentModel(paymentInfo, provider.Ukprn,
-                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, provider.JobId);
+                        FundingSourceType.CoInvestedEmployer, paymentInfo.EmployerCoFundedPayments, provider.JobId, paymentInfo.AccountId);
                     expectedPayments.Add(coFundedEmp);
                 }
 
                 if (paymentInfo.SfaFullyFundedPayments != 0)
                 {
                     var fullyFundedSfa = ToPaymentModel(paymentInfo, provider.Ukprn,
-                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, provider.JobId);
+                        FundingSourceType.FullyFundedSfa, paymentInfo.SfaFullyFundedPayments, provider.JobId, paymentInfo.AccountId);
                     expectedPayments.Add(fullyFundedSfa);
                 }
 
@@ -92,7 +92,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.Amount == actual.Amount &&
                    expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
                    expected.Ukprn == actual.Ukprn &&
-                   expected.JobId == actual.JobId;
+                   expected.JobId == actual.JobId &&
+                   expected.AccountId == actual.AccountId;
 
         }
 
@@ -102,7 +103,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             FundingSourceType fundingSource, 
             decimal amount, 
             long jobId,
-            long? employerAccountId = null)
+            long? employerAccountId )
         {
             return new PaymentModel
             {

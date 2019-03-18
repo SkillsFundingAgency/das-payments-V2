@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 CommitmentId = 12,
                 Priority = 13,
                 EventId = Guid.NewGuid(),
-                EmployerAccountId = 13,
+                EmployerAccountId = 1000000,
                 IlrSubmissionDateTime = DateTime.Today,
                 EarningEventId = Guid.NewGuid()
             };
@@ -60,8 +60,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         {
             var expectedEvent = new LevyFundingSourcePaymentEvent
             {
-                AgreementId = "11",
-                EmployerAccountId = 13
+                AgreementId = "11"
             };
 
             PopulateCommonProperties(expectedEvent);
@@ -175,6 +174,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             expectedEvent.PriceEpisodeIdentifier = "1819-P01";
             expectedEvent.SfaContributionPercentage = .9m;
             expectedEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1);
+            expectedEvent.EmployerAccountId = 1000000;
         }
     }
 }

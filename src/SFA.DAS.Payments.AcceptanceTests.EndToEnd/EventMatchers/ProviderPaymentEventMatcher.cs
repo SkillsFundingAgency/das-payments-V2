@@ -64,7 +64,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
-                        FundingSourceType = FundingSourceType.CoInvestedSfa
+                        FundingSourceType = FundingSourceType.CoInvestedSfa,
+                        EmployerAccountId = providerPayment.AccountId
                     };
                     expectedPayments.Add(coFundedSfa);
                 }
@@ -78,7 +79,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
-                        FundingSourceType = FundingSourceType.CoInvestedEmployer
+                        FundingSourceType = FundingSourceType.CoInvestedEmployer,
+                        EmployerAccountId = providerPayment.AccountId
                     };
                     expectedPayments.Add(coFundedEmp);
                 }
@@ -91,7 +93,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         AmountDue = providerPayment.SfaFullyFundedPayments,
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
-                        Learner = learner
+                        Learner = learner,
+                        EmployerAccountId = providerPayment.AccountId
                     };
                     expectedPayments.Add(fullyFundedSfa);
                 }
@@ -105,7 +108,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
-                        EmployerAccountId = providerPayment.AccountId ?? 0
+                        EmployerAccountId = providerPayment.AccountId
                     };
                     expectedPayments.Add(levyFunded);
                 }
@@ -123,7 +126,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
                    expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
-                   expected.Learner.Uln == actual.Learner.Uln;
+                   expected.Learner.Uln == actual.Learner.Uln &&
+                   expected.EmployerAccountId == actual.EmployerAccountId;
         }
+        
     }
 }
