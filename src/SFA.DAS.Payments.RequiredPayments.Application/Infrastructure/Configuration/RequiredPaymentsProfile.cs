@@ -32,10 +32,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(requiredPayment => requiredPayment.Learner, opt => opt.MapFrom(earning => earning.Learner.Clone()))
                 .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
+                .Ignore(x => x.ContractType)
                 ;
 
             CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
-                .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
+                .Include<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
+                .Include<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
+                .Include<ApprenticeshipContractType2EarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.SfaContributionPercentage, opt => opt.Ignore())
                 ;
@@ -51,8 +54,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.ContractType)
                 ;
 
-            CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
+            CreateMap<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
+                .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
+                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
                 ;
+            CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
+                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
+                ;
+            CreateMap<ApprenticeshipContractType2EarningEvent, CalculatedRequiredOnProgrammeAmount>()
+                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
+                ;
+
             CreateMap<PayableEarningEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
                 ;
@@ -62,6 +74,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
             CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
                 ;
+
+            CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
+                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
+                ;
+
             // End Earning Event --> Required Payment Event
 
             CreateMap<EarningPeriod, RequiredPaymentEvent>()
@@ -86,6 +103,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.CollectionPeriod)
+                .Ignore(x => x.ContractType)
                 ;
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
