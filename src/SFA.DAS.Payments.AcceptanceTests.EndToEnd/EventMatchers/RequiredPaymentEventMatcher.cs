@@ -55,6 +55,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     x.CollectionPeriod,
                     x.DeliveryPeriod,
                     x.OnProgrammeEarningType,
+                    x.ContractType,
                 });
             foreach (var aggregatedEvent in aggregatedCoinvestmentEvents)
             {
@@ -64,6 +65,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     CollectionPeriod = aggregatedEvent.Key.CollectionPeriod,
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
                     OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
+                    ContractType = aggregatedEvent.Key.ContractType,
                 });
             }
 
@@ -75,6 +77,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     x.CollectionPeriod,
                     x.DeliveryPeriod,
                     x.OnProgrammeEarningType,
+                    x.ContractType,
                 });
             foreach (var aggregatedEvent in aggregatedLevyEvents)
             {
@@ -84,6 +87,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     CollectionPeriod = aggregatedEvent.Key.CollectionPeriod,
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
                     OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
+                    ContractType = aggregatedEvent.Key.ContractType,
                 });
             }
 
@@ -95,6 +99,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     x.CollectionPeriod,
                     x.DeliveryPeriod,
                     x.Type,
+                    x.ContractType,
                 });
             foreach (var aggregatedEvent in aggregatedIncentiveEvents)
             {
@@ -104,8 +109,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     CollectionPeriod = aggregatedEvent.Key.CollectionPeriod,
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
                     Type = aggregatedEvent.Key.Type,
+                    ContractType = aggregatedEvent.Key.ContractType,
                 });
             }
+
+            return results;
         }
 
         protected override IList<RequiredPaymentEvent> GetExpectedEvents()
