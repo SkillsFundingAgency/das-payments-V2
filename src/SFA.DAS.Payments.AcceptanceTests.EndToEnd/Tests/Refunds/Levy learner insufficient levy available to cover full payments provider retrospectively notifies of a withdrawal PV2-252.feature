@@ -1,4 +1,3 @@
-@ignore
 Feature: Levy learner, insufficient levy available to cover full payments, provider retrospectively notifies a withdrawal and previously paid monthly instalments need to be refunded PV2-252
 	As a provider,
 	I want a Levy learner, where there is insufficient levy available to cover full payments the provider retrospectively notifies a withdrawal and previously paid monthly instalments are refunded
