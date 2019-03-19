@@ -115,11 +115,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             return aimStartDate;
         }
 
-        private static bool AimActiveOnLastDay(DateTime aimEndDate)
-        {
-            return aimEndDate == aimEndDate.LastDayOnMonth();
-        }
-
         public static bool FinishesBefore(this CollectionPeriod currentPeriod, CollectionPeriod otherPeriod)
         {
             if (otherPeriod.AcademicYear < currentPeriod.AcademicYear)
@@ -170,11 +165,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         public static DateTime FirstDayOfMonth(this DateTime date)
         {
             return new DateTime(date.Year, date.Month, 1);
-        }
-
-        public static DateTime LastDayOnMonth(this DateTime date)
-        {
-            return date.FirstDayOfMonth().AddMonths(1).AddDays(-1);
         }
     }
 }
