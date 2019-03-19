@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autofac.Extras.Moq;
 using FluentAssertions;
@@ -39,7 +40,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public class WhenAmountIsMoreThanTotalAmountInHistory : RequiredPaymentProcessorTests
         {
             [Test]
-            public void RequiredPaymentHasCorrectAmount()
+            public void ThenRequiredPaymentHasCorrectAmount()
             {
                 var testEarning = new Earning
                 {
@@ -55,7 +56,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             }
 
             [Test]
-            public void RequiredPaymentHasSfaContributionPercentageOfInput()
+            public void ThenRequiredPaymentHasSfaContributionPercentageOfInput()
             {
                 var expectedSfaContribution = 0.7m;
 
@@ -72,7 +73,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             }
 
             [Test]
-            public void RequiredPaymentHasEarningTypeOfInput()
+            public void ThenRequiredPaymentHasEarningTypeOfInput()
             {
                 var expectedEarningType = EarningType.CoInvested;
 
@@ -88,13 +89,24 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 
                 actual.Single().EarningType.Should().Be(expectedEarningType);
             }
+
+            [Test]
+            public void AndThereIsNoSfaContributionPercentage_ThenAnExceptionIsThrown()
+            {
+                var testEarning = new Earning();
+
+                paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
+
+                sut.Invoking(x => x.GetRequiredPayments(testEarning, paymentHistory))
+                    .Should().Throw<ArgumentException>();
+            }
         }
 
         [TestFixture]
         public class WhenAmountIsEqualToTotalAmountInHistory : RequiredPaymentProcessorTests
         {
             [Test]
-            public void ThenNothingIsReturned()
+            public void ThenThenNothingIsReturned()
             {
                 var testEarning = new Earning();
                 
@@ -110,7 +122,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         public class WhenAmountIsLessThanTotalAmountInHistory : RequiredPaymentProcessorTests
         {
             [Test]
-            public void RefundIsCreated()
+            public void ThenRefundIsCreated()
             {
                 var testEarning = new Earning();
                 var expectedRefundPayments = new List<RequiredPayment>();

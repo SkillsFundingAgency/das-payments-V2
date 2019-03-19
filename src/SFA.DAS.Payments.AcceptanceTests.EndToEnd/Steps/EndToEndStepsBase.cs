@@ -686,7 +686,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             yield return TransactionType.Completion16To18FrameworkUplift.ToAttributeName();
             yield return TransactionType.Completion.ToAttributeName();
             yield return TransactionType.Balancing.ToAttributeName();
-
         }
 
         protected List<Training> CreateTrainingFromLearners(long ukprn)
@@ -793,7 +792,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in providerCurrentIlrs)
                 {
                     var aim = new Aim(training);
-                    AddTestAims(new List<Aim> { aim }, provider.Ukprn);
+                    AddTestAims(new List<Aim> {aim}, provider.Ukprn);
 
                     if (CurrentPriceEpisodes == null)
                     {
@@ -811,7 +810,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     {
                         foreach (var currentPriceEpisode in CurrentPriceEpisodes)
                         {
-                            if (currentPriceEpisode.AimSequenceNumber == 0 || currentPriceEpisode.AimSequenceNumber == aim.AimSequenceNumber)
+                            if (currentPriceEpisode.AimSequenceNumber == 0 ||
+                                currentPriceEpisode.AimSequenceNumber == aim.AimSequenceNumber)
                             {
                                 aim.PriceEpisodes.Add(currentPriceEpisode);
                             }
@@ -819,24 +819,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     }
                 }
 
-            // Learner -> Aims -> Price Episodes
-            foreach (var testSessionLearner in TestSession.Learners.Where(l => l.Ukprn == provider.Ukprn))
-            {
-                var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
-                var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
-
-                if (learnerEarnings.Any())
+                // Learner -> Aims -> Price Episodes
+                foreach (var testSessionLearner in TestSession.Learners.Where(l => l.Ukprn == provider.Ukprn))
                 {
-                    PopulateLearner(learner, testSessionLearner, learnerEarnings);
-                    learners.Add(learner);
+                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
+                    var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier)
+                        .ToList();
+
+                    if (learnerEarnings.Any())
+                    {
+                        PopulateLearner(learner, testSessionLearner, learnerEarnings);
+                        learners.Add(learner);
+                    }
                 }
+
+                var dcHelper = Scope.Resolve<DcHelper>();
+                await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
+                    provider.JobId, provider.IlrSubmissionTime);
+
+                var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
+                    TestSession, CurrentCollectionPeriod, learners);
+                await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
             }
-
-            var dcHelper = Scope.Resolve<DcHelper>();
-            await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId, provider.IlrSubmissionTime);
-
-            var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings, TestSession, CurrentCollectionPeriod, learners);
-            await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
 
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
@@ -895,9 +899,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 p.JobId = monthEndJobId;
                 p.MonthEndJobIdGenerated = true;
             });
-
         }
-
-
     }
 }
