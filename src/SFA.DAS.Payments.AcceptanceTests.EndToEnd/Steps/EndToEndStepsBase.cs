@@ -962,7 +962,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 FileName = $"{learnerRequest.Ukprn}/{ilrFileName}",
                 FileSizeBytes = ilrFile.Length,
                 SubmittedBy = "System", // who should this be?
-                CollectionName = ConvertCollectionYearToIlrCollectionName(collectionYear),
+                CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
                 Period = collectionMonth,
                 NotifyEmail = "", // who should this be
                 StorageReference = storageServiceConfig.ContainerName,
@@ -987,9 +987,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         }
 
-        private string ConvertCollectionYearToIlrCollectionName(int collectionYear)
-        {
-            return $"ILR{collectionYear.ToString().Substring(2, 2)}{(collectionYear + 1).ToString().Substring(2, 2)}";
-        }
     }
 }
