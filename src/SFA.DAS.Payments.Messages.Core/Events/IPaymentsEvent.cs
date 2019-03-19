@@ -12,6 +12,5 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         LearningAim LearningAim { get; }
         DateTime IlrSubmissionDateTime { get; }
         CollectionPeriod CollectionPeriod { get; }
-
     }
 }

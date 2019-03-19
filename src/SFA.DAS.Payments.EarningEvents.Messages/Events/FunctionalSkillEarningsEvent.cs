@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
