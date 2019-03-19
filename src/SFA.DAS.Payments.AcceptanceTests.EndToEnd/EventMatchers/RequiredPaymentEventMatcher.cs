@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using Learner = SFA.DAS.Payments.Model.Core.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
@@ -47,47 +48,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             var results = new List<RequiredPaymentEvent>();
 
-            var aggregatedCoinvestmentEvents = events
-                .Select(x => x as CalculatedRequiredCoInvestedAmount)
+            var aggregatedOnProgEvents = events
+                .Select(x => x as CalculatedRequiredOnProgrammeAmount)
                 .Where(x => x != null)
                 .GroupBy(x => new
                 {
-                    x.CollectionPeriod,
                     x.DeliveryPeriod,
                     x.OnProgrammeEarningType,
-                    x.ContractType,
+                    x.Learner.ReferenceNumber,
+                    x.LearningAim.Reference,
                 });
-            foreach (var aggregatedEvent in aggregatedCoinvestmentEvents)
-            {
-                results.Add(new CalculatedRequiredCoInvestedAmount
-                {
-                    AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
-                    CollectionPeriod = aggregatedEvent.Key.CollectionPeriod,
-                    DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
-                    OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
-                    ContractType = aggregatedEvent.Key.ContractType,
-                });
-            }
-
-            var aggregatedLevyEvents = events
-                .Select(x => x as CalculatedRequiredLevyAmount)
-                .Where(x => x != null)
-                .GroupBy(x => new
-                {
-                    x.CollectionPeriod,
-                    x.DeliveryPeriod,
-                    x.OnProgrammeEarningType,
-                    x.ContractType,
-                });
-            foreach (var aggregatedEvent in aggregatedLevyEvents)
+            foreach (var aggregatedEvent in aggregatedOnProgEvents)
             {
                 results.Add(new CalculatedRequiredLevyAmount
                 {
                     AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
-                    CollectionPeriod = aggregatedEvent.Key.CollectionPeriod,
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
                     OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
-                    ContractType = aggregatedEvent.Key.ContractType,
+                    LearningAim = new LearningAim {Reference = aggregatedEvent.Key.Reference},
+                    Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber},
                 });
             }
 
@@ -96,20 +75,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 .Where(x => x != null)
                 .GroupBy(x => new
                 {
-                    x.CollectionPeriod,
                     x.DeliveryPeriod,
                     x.Type,
-                    x.ContractType,
+                    x.Learner.ReferenceNumber,
+                    x.LearningAim.Reference,
                 });
             foreach (var aggregatedEvent in aggregatedIncentiveEvents)
             {
                 results.Add(new CalculatedRequiredIncentiveAmount
                 {
                     AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
-                    CollectionPeriod = aggregatedEvent.Key.CollectionPeriod,
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
                     Type = aggregatedEvent.Key.Type,
-                    ContractType = aggregatedEvent.Key.ContractType,
+                    LearningAim = new LearningAim { Reference = aggregatedEvent.Key.Reference},
+                    Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber },
                 });
             }
 
@@ -161,9 +140,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(RequiredPaymentEvent expected, RequiredPaymentEvent actual)
         {
-            if (expected.GetType() != actual.GetType())
-                return false;
-
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue &&
                    MatchAct(expected as CalculatedRequiredOnProgrammeAmount, actual as CalculatedRequiredOnProgrammeAmount) &&
