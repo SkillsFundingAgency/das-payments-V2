@@ -67,12 +67,16 @@ And the following "provider b" payments had been generated
     | learner b  | R04/Current Academic Year | Nov/Current Academic Year | 750           | Learning         |
     | learner b  | R05/Current Academic Year | Dec/Current Academic Year | 750           | Learning         |
           
-    But the "provider b" now changes the Learner details as follows
+But the "provider b" now changes the Learner details as follows
 	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
 	| learner b  | 01/Aug/Current Academic Year | 12 months        | 11250                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          | 3 months        | withdrawn         | 90%                         | Act1          | 1                   | ZPROG001      | 25            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+
+And the "provider a" now changes the Learner details as follows
+	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
+	| learner a  | 01/Aug/Current Academic Year | 12 months        | 5625                 | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 25            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
 	
 When the amended ILR file is re-submitted for the learners in the collection period R06/Current Academic Year by "provider b"
-And the amended ILR file is re-submitted for the learners in the collection period R06/Current Academic Year by "provider a"
+And the ILR file is submitted for the learners for the collection period R06/Current Academic Year by "provider a"
 	
 Then the following learner earnings should be generated for "provider a"
     | Learner ID | Delivery Period           | On-Programme | Completion | Balancing |

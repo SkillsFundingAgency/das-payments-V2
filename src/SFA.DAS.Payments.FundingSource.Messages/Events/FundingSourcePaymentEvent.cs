@@ -11,8 +11,6 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
     {
         public Guid RequiredPaymentEventId { get; set; }
 
-        public ContractType ContractType { get; set; }
-
         public decimal SfaContributionPercentage { get; set; }
 
         public TransactionType TransactionType { get; set; }
