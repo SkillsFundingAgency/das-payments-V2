@@ -842,8 +842,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
-
-
+        
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
         {
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
