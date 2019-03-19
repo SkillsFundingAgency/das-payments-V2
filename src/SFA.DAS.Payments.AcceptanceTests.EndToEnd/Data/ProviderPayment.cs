@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
 

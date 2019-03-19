@@ -266,24 +266,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001");
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn));
+                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, sfaContributionPercentage,
+                    providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId));
 
             if (providerPayment.EmployerCoFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer, ukprn));
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
+                    sfaContributionPercentage, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer, ukprn, providerPayment.AccountId));
 
             if (providerPayment.SfaCoFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa, ukprn));
+                list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
+                    sfaContributionPercentage, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa, ukprn, providerPayment.AccountId));
 
             if (providerPayment.LevyPayments > 0)
             {
-                var payment = CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn);
-                payment.AccountId = providerPayment.AccountId;
+                var payment = CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
+                    sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn, providerPayment.AccountId);
                 list.Add(payment);
             }
             return list;
         }
 
-        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount, FundingSourceType fundingSourceType, long ukprn)
+        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount, FundingSourceType fundingSourceType, long ukprn, long? accountId)
         {
             return new PaymentModel
             {
@@ -306,7 +309,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 LearningAimFundingLineType = learnerTraining.FundingLineType,
                 LearnerUln = providerPayment.Uln,
                 LearningAimFrameworkCode = learnerTraining.FrameworkCode,
-                LearningAimProgrammeType = learnerTraining.ProgrammeType
+                LearningAimProgrammeType = learnerTraining.ProgrammeType,
+                AccountId = accountId
             };
         }
 
@@ -678,7 +682,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task MatchOnlyProviderPayments(Table table, Provider provider)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            expectedPayments = SetProviderPaymentAccountIds(expectedPayments);
+            var ilr = CurrentIlr ?? PreviousIlr;
+            ilr = ilr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
+
+            expectedPayments = SetProviderPaymentAccountIds(ilr,expectedPayments);
             var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
@@ -740,7 +747,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var payment in payments)
             {
                 payment.Uln = TestSession.GetLearner(ukprn, payment.LearnerId).Uln;
-                SetProviderPaymentAccountId(payment);
+                SetProviderPaymentAccountId(previousIlr,payment);
             }
 
             var previousJobId = TestSession.GenerateId();
@@ -778,9 +785,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             p.ParsedCollectionPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear)
                 .ToList();
 
-            expectedPayments = SetProviderPaymentAccountIds(expectedPayments);
-
             var providerCurrentIlr = CurrentIlr?.Where(c => c.Ukprn == provider.Ukprn).ToList();
+
+            expectedPayments = SetProviderPaymentAccountIds(providerCurrentIlr,expectedPayments);
+            
             var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
             var contractType = providerCurrentIlr == null
                 ? providerLearners.First().Aims.First().PriceEpisodes.First().ContractType
@@ -790,17 +798,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(() => matcher.MatchPayments(), "Payment history check failure");
         }
 
-        private List<ProviderPayment> SetProviderPaymentAccountIds(List<ProviderPayment> expectedPayments)
+        private List<ProviderPayment> SetProviderPaymentAccountIds(List<Training> ilr, List<ProviderPayment> expectedPayments)
         {
-            expectedPayments?.ForEach(SetProviderPaymentAccountId);
+            expectedPayments?.ForEach(p => { SetProviderPaymentAccountId(ilr, p); });
             return expectedPayments;
         }
 
-        private void SetProviderPaymentAccountId(ProviderPayment expectedPayment)
+        private void SetProviderPaymentAccountId(List<Training> ilr, ProviderPayment expectedPayment)
         {
-            if (string.IsNullOrWhiteSpace(expectedPayment.Employer))
+            var contractType = EnumHelper.GetContractType(ilr, CurrentPriceEpisodes);
+            if (contractType == Model.Core.Entities.ContractType.Act1)
             {
-                expectedPayment.AccountId = TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+                expectedPayment.AccountId = string.IsNullOrWhiteSpace(expectedPayment.Employer)
+                               ? TestSession.Employer.AccountId
+                               : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
             }
         }
 

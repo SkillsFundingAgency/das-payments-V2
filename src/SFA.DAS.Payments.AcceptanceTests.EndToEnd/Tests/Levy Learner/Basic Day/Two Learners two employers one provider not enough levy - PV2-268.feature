@@ -146,17 +146,17 @@ Scenario Outline: 2 levy learners 2 employers 1 provider not enough levy PV2-268
 		| learner b  | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
 		| learner b  | R02/Current Academic Year | Sep/Current Academic Year | 0            | 3000       | 0         |
 	And only the following provider payments will be recorded
-		| Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
-		| learner a  | R01/Current Academic Year | Aug/Current Academic Year | 225                    | 25                          | 250           | Learning         |
-		| learner a  | R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | 500           | Completion       |
-		| learner b  | R01/Current Academic Year | Aug/Current Academic Year | 450                    | 50                          | 500           | Learning         |
-		| learner b  | R02/Current Academic Year | Sep/Current Academic Year | 1350                   | 150                         | 1500          | Completion       |
+		| Employer   | Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
+		| employer 1 | learner a  | R01/Current Academic Year | Aug/Current Academic Year | 225                    | 25                          | 250           | Learning         |
+		| employer 1 | learner a  | R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | 500           | Completion       |
+		| employer 2 | learner b  | R01/Current Academic Year | Aug/Current Academic Year | 450                    | 50                          | 500           | Learning         |
+		| employer 2 | learner b  | R02/Current Academic Year | Sep/Current Academic Year | 1350                   | 150                         | 1500          | Completion       |
 	And only the following provider payments will be generated
-		| Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
-		| learner a  | R01/Current Academic Year | Aug/Current Academic Year | 225                    | 25                          | 250           | Learning         |
-		| learner a  | R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | 500           | Completion       |
-		| learner b  | R01/Current Academic Year | Aug/Current Academic Year | 450                    | 50                          | 500           | Learning         |
-		| learner b  | R02/Current Academic Year | Sep/Current Academic Year | 1350                   | 150                         | 1500          | Completion       |
+		| Employer   | Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
+		| employer 1 | learner a  | R01/Current Academic Year | Aug/Current Academic Year | 225                    | 25                          | 250           | Learning         |
+		| employer 1 | learner a  | R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | 500           | Completion       |
+		| employer 2 | learner b  | R01/Current Academic Year | Aug/Current Academic Year | 450                    | 50                          | 500           | Learning         |
+		| employer 2 | learner b  | R02/Current Academic Year | Sep/Current Academic Year | 1350                   | 150                         | 1500          | Completion       |
 	Examples: 
 		| Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 |
 		| R01/Current Academic Year | 250                         | 500                         |
