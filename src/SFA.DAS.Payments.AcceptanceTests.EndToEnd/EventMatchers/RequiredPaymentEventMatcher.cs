@@ -60,6 +60,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 });
             foreach (var aggregatedEvent in aggregatedOnProgEvents)
             {
+                // This is creating levy events. They aren't used outside of matching
+                //  BUT it is slightly dishonest! CalculatedRequiredOnProgrammeAmount
+                //  is abstract and would be a better choice
                 results.Add(new CalculatedRequiredLevyAmount
                 {
                     AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
@@ -122,7 +125,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             Type = incentiveTypeKey,
                             DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(payment.DeliveryPeriod).Build(),
                         });
-
                 }    
             }
 
