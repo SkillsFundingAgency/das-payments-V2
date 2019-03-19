@@ -32,19 +32,17 @@ And the following earnings had been generated for the learner
     | Jul/Current Academic Year | 750          | 0          | 0         |
 
 And the following provider payments had been generated 
-
     | Collection Period         | Delivery Period           | Levy Payments | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
     | R01/Current Academic Year | Aug/Current Academic Year | 750               | 0                      | 0                           | Learning         |
     | R02/Current Academic Year | Sep/Current Academic Year | 375               | 337.5                  | 37.5                        | Learning         |
 
 But  the Commitment details are changed as follows
-
-	| commitment Id | version Id | Learner ID | priority | start date                   | end date                     | agreed price | standard code | programme type |
-	| 1             | 2          | learner a  | 1        | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 1400         | 25            | 25             |
+	| commitment Id | version Id | priority | start date                   | end date                     | agreed price | standard code | programme type |
+	| 1             | 2          | 1        | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 1400         | 25            | 25             |
 
 And the Provider now changes the Learner details as follows
-	| Start Date                   | Planned Duration | Actual Duration | Programme Type | Completion Status | SFA Contribution Percentage |
-	| 01/Aug/Current Academic Year | 12 months        | 12 months       | 25             | continuing        | 90%                         |
+	| Start Date                   | Planned Duration | Actual Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
+	| 01/Aug/Current Academic Year | 12 months        | 12 months       | 11250                | 01/Aug/Current Academic Year        | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 25            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
 
 And price details as follows
     | Price details     | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date |
@@ -83,8 +81,8 @@ And only the following provider payments will be generated
 
 Examples: 
     | Collection_Period         | Levy Balance |
-    | R01/Current Academic Year | 750          |
-    | R02/Current Academic Year | 375          |
+    #| R01/Current Academic Year | 750          |
+    #| R02/Current Academic Year | 375          |
     | R03/Current Academic Year | 0            |
 
 
