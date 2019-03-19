@@ -107,6 +107,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
             var collectionYear = collectionPeriodText.ToDate().Year;
+            var collectionMonth = collectionPeriodText.ToDate().Month;
 
             await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
 
@@ -119,7 +120,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 // currently only support a single ILR file being generated.
                 if (ilrFile.Any())
                 {
-                    await StoreAndPublishIlrFile(mappedrecord, ilrFile.First().Key, ilrFile.First().Value, collectionYear);
+                    await StoreAndPublishIlrFile(learnerRequest: mappedrecord, ilrFileName: ilrFile.First().Key, ilrFile: ilrFile.First().Value, collectionYear: collectionYear, collectionMonth: collectionMonth);
                 }
             }
         }

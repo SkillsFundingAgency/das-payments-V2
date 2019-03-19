@@ -928,11 +928,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return await TdgService.GenerateIlrTestData((NonLevyLearnerRequest) learnerRequest);
         }
 
-        protected async Task StoreAndPublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear)
+        protected async Task StoreAndPublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionMonth)
         {
             await StoreIlrFile(learnerRequest.Ukprn, ilrFileName, ilrFile);
 
-            await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear);
+            await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear, collectionMonth);
 
         }
 
@@ -949,33 +949,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await storageService.SaveAsync(ilrStoragePathAndFileName, stream);
         }
 
-        private async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile,
-            int collectionYear)
+        private async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionMonth)
         {
             var jobService = Scope.Resolve<IJobService>();
 
             var nonLevyLearnerRequest = (NonLevyLearnerRequest) learnerRequest;
 
-            var collectionService = Scope.Resolve<ICollectionManagementService>();
-
-            var period =
-                await collectionService.GetCurrentPeriodAsync(
-                    ConvertCollectionYearToIlrCollectionName(collectionYear));
-
             var storageServiceConfig = Scope.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
 
-            var jobId = await jobService.SubmitJob(
-                new SubmissionModel(JobType.IlrSubmission, nonLevyLearnerRequest.Ukprn)
-                {
-                    FileName = $"{learnerRequest.Ukprn}/{ilrFileName}",
-                    FileSizeBytes = ilrFile.Length,
-                    SubmittedBy = "System", // who should this be?
-                    CollectionName = ConvertCollectionYearToIlrCollectionName(collectionYear),
-                    Period = period.PeriodNumber,
-                    NotifyEmail = "", // who should this be
-                    StorageReference = storageServiceConfig.ContainerName,
-                    CollectionYear = collectionYear
-                });
+            var submission = new SubmissionModel(JobType.IlrSubmission, nonLevyLearnerRequest.Ukprn)
+            {
+                FileName = $"{learnerRequest.Ukprn}/{ilrFileName}",
+                FileSizeBytes = ilrFile.Length,
+                SubmittedBy = "System", // who should this be?
+                CollectionName = ConvertCollectionYearToIlrCollectionName(collectionYear),
+                Period = collectionMonth,
+                NotifyEmail = "", // who should this be
+                StorageReference = storageServiceConfig.ContainerName,
+                CollectionYear = collectionYear
+            };
+
+            var jobId = await jobService.SubmitJob(submission);
 
             var retryPolicy = Policy
                 .Handle<JobStatusNotWaitingException>()
