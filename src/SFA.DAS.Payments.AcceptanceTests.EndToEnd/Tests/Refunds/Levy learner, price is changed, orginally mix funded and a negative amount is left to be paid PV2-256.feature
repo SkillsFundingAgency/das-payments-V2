@@ -1,4 +1,3 @@
-@ignore
 Feature:Levy standard learner, price is changed, originally mix funded and a negative amount is left to be paid - results in a refund PV2-256
 	As a provider,
 	I want a levy learner, where price is changed, originally mix funded and a negative amount is left to be paid - results in a refund
