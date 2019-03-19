@@ -1,4 +1,5 @@
-﻿Feature: Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255
+﻿@ignore
+Feature: Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255
 	As a Provider
 	I would like TODO
 	So that TODO

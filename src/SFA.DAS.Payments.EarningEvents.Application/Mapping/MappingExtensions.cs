@@ -21,26 +21,32 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return learningDelivery.LearningDeliveryValues.LearnAimRef == "ZPROG001";
         }
 
-        public static void AddPeriodValue(this List<EarningPeriod> earningPeriods, decimal? periodValue, byte period, string priceEpisodeIdentifier)
+        public static void AddPeriodValue(this List<EarningPeriod> earningPeriods, decimal? periodValue, byte period, string priceEpisodeIdentifier, decimal? sfaContributionPercentage = null)
         {
-            earningPeriods.Add(new EarningPeriod { Period = period, PriceEpisodeIdentifier = priceEpisodeIdentifier, Amount = periodValue ?? 0 });
+            earningPeriods.Add(new EarningPeriod
+            {
+                Period = period,
+                PriceEpisodeIdentifier = priceEpisodeIdentifier,
+                Amount = periodValue ?? 0,
+                SfaContributionPercentage = sfaContributionPercentage,
+            });
         }
 
-        public static List<EarningPeriod> CreateEarningPeriods(this PriceEpisodePeriodisedValues values, string priceEpisodeIdentifier)
+        public static List<EarningPeriod> CreateIncentiveEarningPeriods(this PriceEpisodePeriodisedValues values, string priceEpisodeIdentifier)
         {
             var result = new List<EarningPeriod>();
-            result.AddPeriodValue(values.Period1, 1, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period2, 2, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period3, 3, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period4, 4, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period5, 5, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period6, 6, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period7, 7, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period8, 8, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period9, 9, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period10, 10, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period11, 11, priceEpisodeIdentifier);
-            result.AddPeriodValue(values.Period12, 12, priceEpisodeIdentifier);
+            result.AddPeriodValue(values.Period1, 1, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period2, 2, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period3, 3, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period4, 4, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period5, 5, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period6, 6, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period7, 7, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period8, 8, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period9, 9, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period10, 10, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period11, 11, priceEpisodeIdentifier, 1);
+            result.AddPeriodValue(values.Period12, 12, priceEpisodeIdentifier, 1);
             return result;
         }
 

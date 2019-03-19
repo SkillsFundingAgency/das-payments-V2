@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 
@@ -12,6 +11,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
             builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<PaymentKeyService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<PaymentDueProcessor>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<RequiredPaymentProcessor>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<RefundService>().AsImplementedInterfaces().SingleInstance();
 
             // app layer event handlers
             builder.RegisterType<ApprenticeshipContractType2EarningEventProcessor>().AsImplementedInterfaces();

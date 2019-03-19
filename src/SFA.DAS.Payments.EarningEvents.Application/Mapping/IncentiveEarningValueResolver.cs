@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                         (priceEpisode, periodisedValues) => new { priceEpisode, periodisedValues })
                     .Where(priceEpisodeValues =>
                         priceEpisodeValues.periodisedValues.AttributeName == IncentiveEarningTypeToFM36AttributeName(incentiveType))
-                    .SelectMany(priceEpisodeValues => priceEpisodeValues.periodisedValues.CreateEarningPeriods(priceEpisodeValues.priceEpisode.PriceEpisodeIdentifier))
+                    .SelectMany(priceEpisodeValues => priceEpisodeValues.periodisedValues.CreateIncentiveEarningPeriods(priceEpisodeValues.priceEpisode.PriceEpisodeIdentifier))
                     .ToList()
                     .AsReadOnly()
             };
