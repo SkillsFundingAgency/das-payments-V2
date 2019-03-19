@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<PaymentModel> GetActualEvents()
         {
             return dataContext.Payment
-                .Where(p => p.JobId == provider.JobId &&
+                .Where(p => 
                             p.CollectionPeriod.Period == currentCollectionPeriod.Period &&
                             p.CollectionPeriod.AcademicYear == currentCollectionPeriod.AcademicYear &&
                             p.Ukprn == provider.Ukprn)
@@ -84,15 +84,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override bool Match(PaymentModel expected, PaymentModel actual)
         {
             return expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
-                   expected.CollectionPeriod.AcademicYear== actual.CollectionPeriod.AcademicYear &&
+                   expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
                    expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.TransactionType == actual.TransactionType &&
                    expected.ContractType == actual.ContractType &&
                    expected.FundingSource == actual.FundingSource &&
                    expected.Amount == actual.Amount &&
                    expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
-                   expected.Ukprn == actual.Ukprn &&
-                   expected.JobId == actual.JobId;
+                   expected.Ukprn == actual.Ukprn;
 
         }
 
