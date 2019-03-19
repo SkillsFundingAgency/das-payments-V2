@@ -134,18 +134,19 @@ Scenario Outline: 2 levy learners 2 employers 1 provider and enough levy PV2-267
         | learner a  | R02/Current Academic Year | Sep/Current Academic Year | 0            | 1500       | 0         |
         | learner b  | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
         | learner b  | R02/Current Academic Year | Sep/Current Academic Year | 0            | 3000       | 0         |
+   And only the following provider payments will be recorded
+        | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer   |
+        | learner a  | R01/Current Academic Year | Aug/Current Academic Year | 500           | Learning         | employer 1 |
+        | learner a  | R02/Current Academic Year | Sep/Current Academic Year | 1500          | Completion       | employer 1 |
+        | learner b  | R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         | employer 2 |
+        | learner b  | R02/Current Academic Year | Sep/Current Academic Year | 3000          | Completion       | employer 2 |
 	And only the following provider payments will be generated
         | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer   |
         | learner a  | R01/Current Academic Year | Aug/Current Academic Year | 500           | Learning         | employer 1 |
         | learner a  | R02/Current Academic Year | Sep/Current Academic Year | 1500          | Completion       | employer 1 |
         | learner b  | R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         | employer 2 |
         | learner b  | R02/Current Academic Year | Sep/Current Academic Year | 3000          | Completion       | employer 2 |
-	And only the following provider payments will be recorded
-        | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer   |
-        | learner a  | R01/Current Academic Year | Aug/Current Academic Year | 500           | Learning         | employer 1 |
-        | learner a  | R02/Current Academic Year | Sep/Current Academic Year | 1500          | Completion       | employer 1 |
-        | learner b  | R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         | employer 2 |
-        | learner b  | R02/Current Academic Year | Sep/Current Academic Year | 3000          | Completion       | employer 2 |
+	
 Examples: 
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 |
         | R01/Current Academic Year | 2500                        | 4500                        |
