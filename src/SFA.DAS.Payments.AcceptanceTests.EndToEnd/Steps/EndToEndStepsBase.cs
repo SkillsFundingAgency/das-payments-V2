@@ -961,10 +961,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 FileName = $"{learnerRequest.Ukprn}/{ilrFileName}",
                 FileSizeBytes = ilrFile.Length,
-                SubmittedBy = "System", // who should this be?
+                SubmittedBy = "System", 
                 CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
                 Period = collectionMonth,
-                NotifyEmail = "", // who should this be
+                NotifyEmail = "SpecFlow@e2e.com",
                 StorageReference = storageServiceConfig.ContainerName,
                 CollectionYear = collectionYear
             };
