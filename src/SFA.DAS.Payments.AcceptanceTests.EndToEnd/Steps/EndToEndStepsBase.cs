@@ -792,7 +792,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in providerCurrentIlrs)
                 {
                     var aim = new Aim(training);
-                    AddTestAims(new List<Aim> {aim}, provider.Ukprn);
+                    AddTestAims(new List<Aim> { aim }, provider.Ukprn);
 
                     if (CurrentPriceEpisodes == null)
                     {
@@ -818,30 +818,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         }
                     }
                 }
-
-                // Learner -> Aims -> Price Episodes
-                foreach (var testSessionLearner in TestSession.Learners.Where(l => l.Ukprn == provider.Ukprn))
-                {
-                    var learner = new FM36Learner {LearnRefNumber = testSessionLearner.LearnRefNumber};
-                    var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier)
-                        .ToList();
-
-                    if (learnerEarnings.Any())
-                    {
-                        PopulateLearner(learner, testSessionLearner, learnerEarnings);
-                        learners.Add(learner);
-                    }
-                }
-
-                var dcHelper = Scope.Resolve<DcHelper>();
-                await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
-                    provider.JobId, provider.IlrSubmissionTime);
-
-                var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
-                    TestSession, CurrentCollectionPeriod, learners);
-                await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
             }
+
+            // Learner -> Aims -> Price Episodes
+            foreach (var testSessionLearner in TestSession.Learners.Where(l => l.Ukprn == provider.Ukprn))
+            {
+                var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
+                var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier)
+                    .ToList();
+
+                if (learnerEarnings.Any())
+                {
+                    PopulateLearner(learner, testSessionLearner, learnerEarnings);
+                    learners.Add(learner);
+                }
+            }
+
+            var dcHelper = Scope.Resolve<DcHelper>();
+            await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
+                provider.JobId, provider.IlrSubmissionTime);
+
+            var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
+                TestSession, CurrentCollectionPeriod, learners);
+            await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
+
 
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
         {
