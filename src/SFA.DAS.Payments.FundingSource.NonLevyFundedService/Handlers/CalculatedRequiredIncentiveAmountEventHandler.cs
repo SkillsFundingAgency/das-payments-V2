@@ -8,13 +8,13 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 {
-    public class IncentiveRequiredPaymentEventHandler : IHandleMessages<CalculatedRequiredIncentiveAmount>
+    public class CalculatedRequiredIncentiveAmountEventHandler : IHandleMessages<CalculatedRequiredIncentiveAmount>
     {
         private readonly IPaymentLogger logger;
         private readonly IExecutionContext executionContext;
         private readonly IIncentiveRequiredPaymentProcessor incentiveProcessor;
 
-        public IncentiveRequiredPaymentEventHandler(IPaymentLogger logger,
+        public CalculatedRequiredIncentiveAmountEventHandler(IPaymentLogger logger,
             IExecutionContext executionContext, 
             IIncentiveRequiredPaymentProcessor incentiveProcessor)
         {
