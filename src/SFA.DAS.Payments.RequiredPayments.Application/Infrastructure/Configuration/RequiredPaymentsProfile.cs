@@ -30,7 +30,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(requiredPayment => requiredPayment.Learner, opt => opt.MapFrom(earning => earning.Learner.Clone()))
                 .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
-                ;
+                .ForMember(requiredPayment => requiredPayment.EmployerAccountId, opt => opt.Ignore());
+
 
             CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
@@ -39,10 +40,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
 
             CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(requiredPayment => requiredPayment.Type, opt => opt.Ignore())
-                .ForMember(requiredPayment => requiredPayment.ContractType, opt => opt.Ignore());
+                .ForMember(requiredPayment => requiredPayment.ContractType, opt => opt.Ignore())
+                .ForMember(requiredPayment => requiredPayment.EmployerAccountId, opt => opt.Ignore())
+                .ForMember(requiredPayment => requiredPayment.EarningEventId, opt => opt.MapFrom(earning => earning.EventId));
 
             CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
-                .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore());
+                .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore())
+                .ForMember(requiredPayment => requiredPayment.EmployerAccountId, opt => opt.MapFrom(p => p.EmployerAccountId));
 
             CreateMap<EarningPeriod, RequiredPaymentEvent>()
                 .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.MapFrom(period => period.Amount))
