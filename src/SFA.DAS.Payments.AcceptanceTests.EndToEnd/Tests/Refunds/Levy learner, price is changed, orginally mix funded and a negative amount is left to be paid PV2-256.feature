@@ -38,17 +38,17 @@ And the following provider payments had been generated
     | R02/Current Academic Year | Sep/Current Academic Year | 375               | 337.5                  | 37.5                        | Learning         |
 
 But  the Commitment details are changed as follows
-	| commitment Id | version Id | priority | start date                   | end date                     | agreed price | standard code | programme type |
-	| 1             | 2          | 1        | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 1400         | 25            | 25             |
+	| priority | start date                   | end date                     | agreed price | standard code | programme type |
+	| 1        | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 1400         | 25            | 25             |
 
 And the Provider now changes the Learner details as follows
 	| Start Date                   | Planned Duration | Actual Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
 	| 01/Aug/Current Academic Year | 12 months        | 12 months       | 11250                | 01/Aug/Current Academic Year        | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 25            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
 
 And price details as follows
-    | Price details     | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date |
-    | 1st price details | 9000                 | Aug/Current Academic Year           | 2250                  | Aug/Current Academic Year            |
-    | 2nd price details | 1200                 | Oct/Current Academic Year           | 200                   | Oct/Current Academic Year            |
+    | Price details     | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | SFA Contribution Percentage |
+    | 1st price details | 9000                 | Aug/Current Academic Year           | 2250                  | Aug/Current Academic Year            | 90%                         |
+    | 2nd price details | 1200                 | Oct/Current Academic Year           | 200                   | Oct/Current Academic Year            | 90%                         |
 
 When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
