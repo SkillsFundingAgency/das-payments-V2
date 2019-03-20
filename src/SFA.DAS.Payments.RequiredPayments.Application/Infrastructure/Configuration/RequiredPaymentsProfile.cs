@@ -53,10 +53,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 ;
 
             CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
+                .ForMember(requiredPayment => requiredPayment.EmployerAccountId, opt => opt.MapFrom(p => p.EmployerAccountId))
                 ;
+
             CreateMap<PayableEarningEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
+                .ForMember(requiredPayment => requiredPayment.EmployerAccountId, opt => opt.MapFrom(p => p.EmployerAccountId))
                 ;
+
             CreateMap<ApprenticeshipContractType2EarningEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
                 ;
@@ -87,6 +91,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.CollectionPeriod)
+                .Ignore(x => x.EmployerAccountId)
                 ;
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
@@ -101,7 +106,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.Priority)
                 .Ignore(x => x.CommitmentId)
                 .Ignore(x => x.AgreementId)
-                .Ignore(x => x.EmployerAccountId)
                 ;
             // End Required Payment --> RequiredPaymentEvent
         }
