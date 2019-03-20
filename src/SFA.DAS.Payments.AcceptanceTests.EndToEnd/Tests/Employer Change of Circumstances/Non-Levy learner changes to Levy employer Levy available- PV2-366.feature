@@ -71,11 +71,11 @@ Scenario Outline: Learner changes from a non-levy to levy employer, levy is avai
         | R11/Current Academic Year | Jun/Current Academic Year | 700           | Learning         | employer 2 |
         | R12/Current Academic Year | Jul/Current Academic Year | 700           | Learning         | employer 2 |
 	And only the following provider payments will be generated
-        | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-        | R09/Current Academic Year | Apr/Current Academic Year | 700           | Learning         |
-        | R10/Current Academic Year | May/Current Academic Year | 700           | Learning         |
-        | R11/Current Academic Year | Jun/Current Academic Year | 700           | Learning         |
-        | R12/Current Academic Year | Jul/Current Academic Year | 700           | Learning         |
+        | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer   |
+        | R09/Current Academic Year | Apr/Current Academic Year | 700           | Learning         | employer 2 |
+        | R10/Current Academic Year | May/Current Academic Year | 700           | Learning         | employer 2 |
+        | R11/Current Academic Year | Jun/Current Academic Year | 700           | Learning         | employer 2 |
+        | R12/Current Academic Year | Jul/Current Academic Year | 700           | Learning         | employer 2 |
 Examples: 
         | Collection_Period         | Levy Balance for employer 2 |
 		| R09/Current Academic Year | 3300                        |
