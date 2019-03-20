@@ -40,7 +40,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     payment.DeliveryPeriod,
                     payment.CollectionPeriod,
                     payment.Amount,
-                    payment.FundingSource
+                    payment.FundingSource,
+                    payment.SfaContributionPercentage,
                 })
                 .ToListAsync(cancellationToken);
 
@@ -55,7 +56,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 DeliveryPeriod = payment.DeliveryPeriod,
                 CollectionPeriod = payment.CollectionPeriod,
                 Amount = payment.Amount,
-                FundingSource = payment.FundingSource
+                FundingSource = payment.FundingSource,
+                SfaContributionPercentage = payment.SfaContributionPercentage,
             })
             .ToList();
         }
