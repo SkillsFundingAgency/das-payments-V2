@@ -27,5 +27,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public long Uln { get; set; }
         public string Employer { get; set; }
         public long? AccountId { get; set; }
+        public int? StandardCode { get; set; }
     }
 }

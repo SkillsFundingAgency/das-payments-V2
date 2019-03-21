@@ -49,7 +49,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 EventId = Guid.NewGuid(),
                 EmployerAccountId = 1000000,
                 IlrSubmissionDateTime = DateTime.Today,
-                EarningEventId = Guid.NewGuid()
+                EarningEventId = Guid.NewGuid(),
+                ContractType = ContractType.Act1,
             };
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
             autoMapper = mapperConfiguration.CreateMapper();
