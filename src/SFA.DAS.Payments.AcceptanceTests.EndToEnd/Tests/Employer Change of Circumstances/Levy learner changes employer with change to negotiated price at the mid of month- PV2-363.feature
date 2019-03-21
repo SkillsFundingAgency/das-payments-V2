@@ -38,9 +38,9 @@ Scenario Outline: Levy learner changes employer with change to negotiated price 
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 01/Aug/Current Academic Year | 12 months        | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	And price details as follows
-        | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date |
-        | 1st price details | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          |
-        | 2nd price details | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          | 5000                    | 15/Nov/Current Academic Year           | 625                       | 15/Nov/Current Academic Year             |
+        | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
+        | 1st price details | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
+        | 2nd price details | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          | 5000                    | 15/Nov/Current Academic Year           | 625                       | 15/Nov/Current Academic Year             | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing |
@@ -79,21 +79,18 @@ Scenario Outline: Levy learner changes employer with change to negotiated price 
         | R11/Current Academic Year | Jun/Current Academic Year | 500           | Learning         | employer 2 |
         | R12/Current Academic Year | Jul/Current Academic Year | 500           | Learning         | employer 2 |
 	And only the following provider payments will be generated
-        | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-        | R04/Current Academic Year | Nov/Current Academic Year | 500           | Learning         |
-        | R05/Current Academic Year | Dec/Current Academic Year | 500           | Learning         |
-        | R06/Current Academic Year | Jan/Current Academic Year | 500           | Learning         |
-        | R07/Current Academic Year | Feb/Current Academic Year | 500           | Learning         |
-        | R08/Current Academic Year | Mar/Current Academic Year | 500           | Learning         |
-        | R09/Current Academic Year | Apr/Current Academic Year | 500           | Learning         |
-        | R10/Current Academic Year | May/Current Academic Year | 500           | Learning         |
-        | R11/Current Academic Year | Jun/Current Academic Year | 500           | Learning         |
-        | R12/Current Academic Year | Jul/Current Academic Year | 500           | Learning         |
+        | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer   |
+        | R04/Current Academic Year | Nov/Current Academic Year | 500           | Learning         | employer 2 |
+        | R05/Current Academic Year | Dec/Current Academic Year | 500           | Learning         | employer 2 |
+        | R06/Current Academic Year | Jan/Current Academic Year | 500           | Learning         | employer 2 |
+        | R07/Current Academic Year | Feb/Current Academic Year | 500           | Learning         | employer 2 |
+        | R08/Current Academic Year | Mar/Current Academic Year | 500           | Learning         | employer 2 |
+        | R09/Current Academic Year | Apr/Current Academic Year | 500           | Learning         | employer 2 |
+        | R10/Current Academic Year | May/Current Academic Year | 500           | Learning         | employer 2 |
+        | R11/Current Academic Year | Jun/Current Academic Year | 500           | Learning         | employer 2 |
+        | R12/Current Academic Year | Jul/Current Academic Year | 500           | Learning         | employer 2 |
 Examples: 
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 |
-        | R01/Current Academic Year | 15500                       | 7125                        |
-        | R02/Current Academic Year | 14500                       | 7125                        |
-        | R03/Current Academic Year | 13500                       | 7125                        |
         | R04/Current Academic Year | 13500                       | 5625                        |
         | R05/Current Academic Year | 13500                       | 5125                        |
 		| R06/Current Academic Year | 13500                       | 4625                        |

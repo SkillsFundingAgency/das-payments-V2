@@ -42,9 +42,10 @@ But the Provider now changes the Learner details as follows
 	| Employer2   | 15/Nov/Current Academic Year | 12 months        | 9 months        | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 And price details as follows
-    | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date |
-    | 1st price details | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          |
-    | 2nd price details | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 5000                    | 05/Nov/Current Academic Year           | 625                       | 05/Nov/Current Academic Year             |
+    | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
+    | 1st price details | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
+    | 2nd price details | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 5000                    | 05/Nov/Current Academic Year           | 625                       | 05/Nov/Current Academic Year             | 90%                         |
+
 When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 Then the following learner earnings should be generated
 	| Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive |
@@ -62,17 +63,17 @@ Then the following learner earnings should be generated
 	| Jul/Current Academic Year | 500          | 1125       | 0         | 0                            | 500                           | 0                            | 500                           |
 
 And at month end only the following payments will be calculated
-    | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive | Employer   |
-    | R04/Current Academic Year | Nov/Current Academic Year | 0            | 0          | 0         | 500                          | 0                             | 500                          | 0                             | employer 1 |
-    | R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | employer 2 |
-    | R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | employer 2 |
-    | R06/Current Academic Year | Jan/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | employer 2 |
-    | R07/Current Academic Year | Feb/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | employer 2 |
-    | R08/Current Academic Year | Mar/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | employer 2 |
-    | R09/Current Academic Year | Apr/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | employer 2 |
-    | R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | employer 2 |
-    | R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | employer 2 |
-    | R12/Current Academic Year | Jul/Current Academic Year | 500          | 1125       | 0         | 0                            | 500                           | 0                            | 500                           | employer 2 |
+    | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive |
+    | R04/Current Academic Year | Nov/Current Academic Year | 0            | 0          | 0         | 500                          | 0                             | 500                          | 0                             |
+    | R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
+    | R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
+    | R06/Current Academic Year | Jan/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
+    | R07/Current Academic Year | Feb/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
+    | R08/Current Academic Year | Mar/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
+    | R09/Current Academic Year | Apr/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
+    | R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
+    | R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
+    | R12/Current Academic Year | Jul/Current Academic Year | 500          | 1125       | 0         | 0                            | 500                           | 0                            | 500                           |
 
 And only the following provider payments will be recorded
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type              | Employer   |
@@ -110,9 +111,6 @@ And only the following provider payments will be generated
 
 Examples: 
     | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 |
-    | R01/Current Academic Year | 15500                       | 7125                        |
-    | R02/Current Academic Year | 14500                       | 7125                        |
-    | R03/Current Academic Year | 13500                       | 7125                        |
     | R04/Current Academic Year | 13500                       | 7125                        |
     | R05/Current Academic Year | 13500                       | 7125                        |
 	| R06/Current Academic Year | 13500                       | 7125                        |
