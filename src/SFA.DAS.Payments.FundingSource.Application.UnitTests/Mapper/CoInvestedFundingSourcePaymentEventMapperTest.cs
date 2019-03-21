@@ -45,7 +45,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 PriceEpisodeIdentifier = "1819-P01",
                 SfaContributionPercentage = 0.9m,
                 Ukprn = 10000,
-                EmployerAccountId = 1000000
+                EmployerAccountId = 1000000,
+                ContractType = ContractType.Act2,
             };
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
             autoMapper = mapperConfiguration.CreateMapper();

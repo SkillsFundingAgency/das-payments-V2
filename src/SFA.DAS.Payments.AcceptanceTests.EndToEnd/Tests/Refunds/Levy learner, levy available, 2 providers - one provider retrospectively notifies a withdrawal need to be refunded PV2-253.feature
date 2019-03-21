@@ -1,4 +1,3 @@
-@ignore
 Feature: Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253
 	As a provider,
 	I want a levy learner, where levy is available the provider retrospectively notifies a withdrawal and previously paid monthly instalments are refunded
@@ -9,9 +8,9 @@ Scenario: Levy learner, levy available, 2 providers - one provider retrospective
 Given the employer levy account balance in collection period R06/Current Academic Year is 0
 
 And the following commitments exist 
-    | employer Id | commitment Id | Provider   | start date                   | end date                     | status | agreed price |
-    | 1           | 1             | provider a | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 5625         |
-    | 1           | 2             | provider b | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 11250        |
+    | Learner ID | Provider   | start date                   | end date                     | status | agreed price |
+    | learner a  | provider a | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 5625         |
+    | learner b  | provider b | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 11250        |
 
 And the "provider a" previously submitted the following learner details
 	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
@@ -112,12 +111,13 @@ And at month end only the following payments will be calculated for "provider a"
     | Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
     | learner a  | R06/Current Academic Year | Jan/Current Academic Year | 375          | 0          | 0         |
  
-
 And at month end only the following payments will be calculated for "provider b"
     | Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
     | learner b  | R06/Current Academic Year | Nov/Current Academic Year | -750         | 0          | 0         |
     | learner b  | R06/Current Academic Year | Dec/Current Academic Year | -750         | 0          | 0         |
     | learner b  | R06/Current Academic Year | Jan/Current Academic Year | 0            | 0          | 0         |
+
+And Month end is triggered
 
 And only the following "provider a" payments will be recorded
     | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |

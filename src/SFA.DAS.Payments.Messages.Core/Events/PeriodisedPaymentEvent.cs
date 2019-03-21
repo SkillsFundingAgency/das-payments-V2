@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Messages.Core.Events
 {
@@ -8,5 +8,6 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         public decimal AmountDue { get; set; }
         public byte DeliveryPeriod { get; set; }
         public long? EmployerAccountId { get; set; }
+        public ContractType ContractType { get; set; }
     }
 }

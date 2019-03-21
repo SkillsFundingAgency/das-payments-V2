@@ -1,9 +1,11 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<PaymentModel> GetActualEvents()
         {
             return dataContext.Payment
-                .Where(p => p.JobId == provider.JobId &&
+                .Where(p => 
                             p.CollectionPeriod.Period == currentCollectionPeriod.Period &&
                             p.CollectionPeriod.AcademicYear == currentCollectionPeriod.AcademicYear &&
                             p.Ukprn == provider.Ukprn)
@@ -89,7 +91,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
                    expected.Ukprn == actual.Ukprn &&
                    expected.JobId == actual.JobId &&
-                   expected.AccountId == actual.AccountId;
+                   expected.AccountId == actual.AccountId &&
+                   expected.LearningAimStandardCode == actual.LearningAimStandardCode;
 
         }
 
@@ -101,6 +104,36 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             long jobId,
             long? employerAccountId)
         {
+            var learner = testSession.GetLearner(ukprn, paymentInfo.LearnerId);
+
+            var standardCode = paymentInfo.StandardCode;
+
+            if (!standardCode.HasValue)
+            {
+                var aim = learner.Aims.FirstOrDefault(a =>
+                {
+                    var aimStartDate = a.StartDate.ToDate();
+                    var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
+                    var aimDuration = string.IsNullOrEmpty(a.ActualDuration) ? a.PlannedDuration : a.ActualDuration;
+
+                    var aimEndPeriod = AimPeriodMatcher.GetEndPeriodForAim(aimStartPeriod, aimDuration);
+                    var aimFinishedInPreviousPeriod = aimEndPeriod.FinishesBefore(currentCollectionPeriod);
+                    if (!aimFinishedInPreviousPeriod)
+                    {
+                        return true;
+                    }
+
+                    if (a.CompletionStatus == CompletionStatus.Withdrawn && amount >= 0M)
+                    {
+                        return false;
+                    }
+
+                    return a.AimReference == "ZPROG001" && (a.CompletionStatus == CompletionStatus.Completed || a.CompletionStatus == CompletionStatus.Withdrawn);
+                });
+
+                standardCode = aim?.StandardCode ?? 0;
+            }
+
             return new PaymentModel
             {
                 CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(paymentInfo.CollectionPeriod).Build(),
@@ -110,9 +143,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 ContractType = contractType,
                 Amount = amount,
                 FundingSource = fundingSource,
-                LearnerReferenceNumber = testSession.GetLearner(ukprn, paymentInfo.LearnerId).LearnRefNumber,
+                LearnerReferenceNumber = learner.LearnRefNumber,
                 JobId = jobId,
-                AccountId = employerAccountId
+                AccountId = employerAccountId,
+                LearningAimStandardCode = standardCode.Value
             };
         }
     }

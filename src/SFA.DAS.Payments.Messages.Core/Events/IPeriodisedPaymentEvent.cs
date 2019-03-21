@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.Messages.Core.Events
+﻿using SFA.DAS.Payments.Model.Core.Entities;
+
+namespace SFA.DAS.Payments.Messages.Core.Events
 {
     public interface IPeriodisedPaymentEvent : IPaymentsEvent
     {
@@ -6,5 +8,6 @@
         decimal AmountDue { get; }
         byte DeliveryPeriod { get; }
         long? EmployerAccountId { get; }
+        ContractType ContractType { get; }
     }
 }
