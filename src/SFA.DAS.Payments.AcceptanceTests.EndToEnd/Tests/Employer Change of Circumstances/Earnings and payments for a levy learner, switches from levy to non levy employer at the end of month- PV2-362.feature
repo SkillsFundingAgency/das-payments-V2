@@ -5,10 +5,10 @@ I want earnings and payments for a levy learner, levy available, where a learner
 So that I am accurately paid my apprenticeship provision.
 
 Scenario Outline: Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362
-Given the "employer 1" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 1>
+Given the "employer 1" levy account balance in collection period R01/Current Academic Year is 15000
 And the following commitments exist 
-	| Employer   | commitment Id | version Id | start date | end date   | agreed price | status | effective from | effective to |
-	| employer 1 | 1             | 1          | 01/08/2019 | 04/08/2019 | 15000        | active | 01/08/2018     |              |
+	| Employer   | start date | end date   | agreed price | status | effective from | effective to |
+	| employer 1 | 01/08/2019 | 04/08/2019 | 15000        | active | 01/08/2018     |              |
 
 And the provider previously submitted the following learner details
 	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
@@ -40,9 +40,9 @@ But the Provider now changes the Learner details as follows
 	| 03/Aug/Current Academic Year | 12 months        | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |
 
 And price details as follows
-	| Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date |
-	| 1st price details | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          |
-	| 2nd price details | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 4500                    | 03/Nov/Current Academic Year           | 1125                      | 03/Nov/Current Academic Year             |
+	| Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
+	| 1st price details | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
+	| 2nd price details | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 4500                    | 03/Nov/Current Academic Year           | 1125                      | 03/Nov/Current Academic Year             | 90%                         |
 
 When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
@@ -62,16 +62,16 @@ Then the following learner earnings should be generated
 	| Jul/Current Academic Year | 500          | 0          | 0         |
 
 And at month end only the following payments will be calculated
-	| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Employer   |
-	| R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         | employer 2 |
-	| R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         | employer 2 |
-	| R06/Current Academic Year | Jan/Current Academic Year | 500          | 0          | 0         | employer 2 |
-	| R07/Current Academic Year | Feb/Current Academic Year | 500          | 0          | 0         | employer 2 |
-	| R08/Current Academic Year | Mar/Current Academic Year | 500          | 0          | 0         | employer 2 |
-	| R09/Current Academic Year | Apr/Current Academic Year | 500          | 0          | 0         | employer 2 |
-	| R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         | employer 2 |
-	| R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         | employer 2 |
-	| R12/Current Academic Year | Jul/Current Academic Year | 500          | 0          | 0         | employer 2 |
+	| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
+	| R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         |
+	| R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         |
+	| R06/Current Academic Year | Jan/Current Academic Year | 500          | 0          | 0         |
+	| R07/Current Academic Year | Feb/Current Academic Year | 500          | 0          | 0         |
+	| R08/Current Academic Year | Mar/Current Academic Year | 500          | 0          | 0         |
+	| R09/Current Academic Year | Apr/Current Academic Year | 500          | 0          | 0         |
+	| R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         |
+	| R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         |
+	| R12/Current Academic Year | Jul/Current Academic Year | 500          | 0          | 0         |
 
 And only the following provider payments will be recorded
 	| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Employer   |
@@ -97,19 +97,16 @@ And only the following provider payments will be generated
 	| R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         | employer 2 |
 	| R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | Learning         | employer 2 |
 Examples: 
-	| Collection_Period         | Levy Balance for employer 1 |
-	| R01/Current Academic Year | 15000                       |
-	| R02/Current Academic Year | 14000                       |
-	| R03/Current Academic Year | 13000                       |
-	| R04/Current Academic Year |                             |
-	| R05/Current Academic Year |                             |
-	| R06/Current Academic Year |                             |
-	| R07/Current Academic Year |                             |
-	| R08/Current Academic Year |                             |
-	| R09/Current Academic Year |                             |
-	| R10/Current Academic Year |                             |
-	| R11/Current Academic Year |                             |
-	| R12/Current Academic Year |                             |
+	| Collection_Period         |
+	| R04/Current Academic Year |
+	| R05/Current Academic Year |
+	| R06/Current Academic Year |
+	| R07/Current Academic Year |
+	| R08/Current Academic Year |
+	| R09/Current Academic Year |
+	| R10/Current Academic Year |
+	| R11/Current Academic Year |
+	| R12/Current Academic Year |
 
 		#Scenario: Earnings and payments for a levy learner, levy available, where a learner switches from DAS to Non Das employer at the end of month
 #        Given The learner is programme only DAS

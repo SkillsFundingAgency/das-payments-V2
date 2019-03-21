@@ -16,6 +16,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             CompletionStatus completionStatus, 
             string aimReference)
         {
+            if (startDate == null) return true;
             var aimStartDate = startDate.ToDate();
             var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
             var aimDuration = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
