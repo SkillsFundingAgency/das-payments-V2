@@ -151,3 +151,4 @@ Examples:
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 |
         | R01/Current Academic Year | 2500                        | 4500                        |
         | R02/Current Academic Year | 2000                        | 3500                        |
+        | R03/Current Academic Year | 500                         | 500                         |
