@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -60,12 +61,19 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command)
         {
             paymentLogger.LogVerbose($"Handling ProcessLevyPaymentsOnMonthEndCommand for {Id}, Job: {command.JobId}, Account: {command.EmployerAccountId}");
-
-            using (var operation = telemetry.StartOperation())
+            try
             {
-                var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.EmployerAccountId, command.JobId);
-                telemetry.StopOperation(operation);
-                return fundingSourceEvents;
+                using (var operation = telemetry.StartOperation())
+                {
+                    var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.EmployerAccountId, command.JobId);
+                    telemetry.StopOperation(operation);
+                    return fundingSourceEvents;
+                }
+            }
+            catch (Exception ex)
+            {
+                paymentLogger.LogError($"Failed to get levy or co-invested month end payments. Error: {ex.Message}",ex);
+                throw;
             }
         }
 
