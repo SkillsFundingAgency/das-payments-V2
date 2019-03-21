@@ -3,8 +3,8 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain
 {
-    public interface IPaymentDueProcessor
+    public interface IRefundService
     {
-        decimal CalculateRequiredPaymentAmount(decimal amountDue, IEnumerable<Payment> paymentHistory);
+        List<RequiredPayment> GetRefund(decimal amount, List<Payment> paymentHistory);
     }
 }

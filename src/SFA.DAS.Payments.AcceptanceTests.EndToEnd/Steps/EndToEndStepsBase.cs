@@ -703,7 +703,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             yield return TransactionType.Completion16To18FrameworkUplift.ToAttributeName();
             yield return TransactionType.Completion.ToAttributeName();
             yield return TransactionType.Balancing.ToAttributeName();
-
         }
 
         protected List<Training> CreateTrainingFromLearners(long ukprn)
@@ -810,8 +809,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var training in providerCurrentIlrs)
                 {
                     var aim = new Aim(training);
-                    var aims = new List<Aim> { aim };
-                    AddTestAims(aims, provider.Ukprn);
+                    AddTestAims(new List<Aim> { aim }, provider.Ukprn);
 
                     if (CurrentPriceEpisodes == null)
                     {
@@ -829,14 +827,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     {
                         foreach (var currentPriceEpisode in CurrentPriceEpisodes)
                         {
-                            if (currentPriceEpisode.AimSequenceNumber == 0)
+                            if (currentPriceEpisode.AimSequenceNumber == 0 ||
+                                currentPriceEpisode.AimSequenceNumber == aim.AimSequenceNumber)
                             {
-                                aims.Single().PriceEpisodes.Add(currentPriceEpisode);
-                            }
-                            else
-                            {
-                                var matchingAim = aims.First(x => x.AimSequenceNumber == currentPriceEpisode.AimSequenceNumber);
-                                matchingAim.PriceEpisodes.Add(currentPriceEpisode);
+                                aim.PriceEpisodes.Add(currentPriceEpisode);
                             }
                         }
                     }
@@ -847,7 +841,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var testSessionLearner in TestSession.Learners.Where(l => l.Ukprn == provider.Ukprn))
             {
                 var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
-                var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier).ToList();
+                var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier)
+                    .ToList();
 
                 if (learnerEarnings.Any())
                 {
@@ -861,10 +856,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
 
 
-            var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings, TestSession, CurrentCollectionPeriod, learners);
+            var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
+                TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
-
+        
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
         {
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
@@ -921,7 +917,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 p.JobId = monthEndJobId;
                 p.MonthEndJobIdGenerated = true;
             });
-
         }
 
         protected async Task<Dictionary<string, string>> GenerateTestIlrFile(LearnerRequestBase learnerRequest)
