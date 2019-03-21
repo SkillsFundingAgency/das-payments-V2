@@ -81,6 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
 
             CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
+                .ForMember(requiredPayment => requiredPayment.EmployerAccountId, opt => opt.MapFrom(p => p.EmployerAccountId))
                 ;
 
             // End Earning Event --> Required Payment Event
