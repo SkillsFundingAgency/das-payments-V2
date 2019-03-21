@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.ProviderPayments.Messages
 {
+    [KnownType("GetInheritors")]
     public abstract class ProviderPaymentEvent : PeriodisedPaymentEvent, IProviderPaymentEvent
     {
         private static Type[] inheritors;
