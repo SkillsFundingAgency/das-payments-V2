@@ -99,7 +99,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
                         FundingSourceType = FundingSourceType.CoInvestedSfa,
-                        LearningAim = new LearningAim { StandardCode = standardCode.Value}
+                        LearningAim = new LearningAim { StandardCode = standardCode.Value},
                         EmployerAccountId = providerPayment.AccountId
                     };
                     expectedPayments.Add(coFundedSfa);

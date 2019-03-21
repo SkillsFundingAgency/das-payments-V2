@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
 
@@ -27,5 +26,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public long Uln { get; set; }
         public string Employer { get; set; }
         public long? AccountId { get; set; }
+        public int? StandardCode { get; set; }
     }
 }
