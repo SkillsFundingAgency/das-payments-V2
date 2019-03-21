@@ -928,11 +928,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return await TdgService.GenerateIlrTestData((NonLevyLearnerRequest) learnerRequest);
         }
 
-        protected async Task StoreAndPublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionMonth)
+        protected async Task StoreAndPublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
             await StoreIlrFile(learnerRequest.Ukprn, ilrFileName, ilrFile);
 
-            await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear, collectionMonth);
+            await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear, collectionPeriod);
 
         }
 
@@ -949,7 +949,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await storageService.SaveAsync(ilrStoragePathAndFileName, stream);
         }
 
-        private async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionMonth)
+        private async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
             var jobService = Scope.Resolve<IJobService>();
 
@@ -963,7 +963,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 FileSizeBytes = ilrFile.Length,
                 SubmittedBy = "System", 
                 CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
-                Period = collectionMonth,
+                Period = collectionPeriod,
                 NotifyEmail = "SpecFlow@e2e.com",
                 StorageReference = storageServiceConfig.ContainerName,
                 CollectionYear = collectionYear

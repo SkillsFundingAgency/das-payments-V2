@@ -9,6 +9,7 @@ using ESFA.DC.ILR.TestDataGenerator.Models;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.Tests.Core;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -107,7 +108,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
             var collectionYear = collectionPeriodText.ToDate().Year;
-            var collectionMonth = collectionPeriodText.ToDate().Month;
+            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
 
             await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
 
@@ -120,7 +121,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 // currently only support a single ILR file being generated.
                 if (ilrFile.Any())
                 {
-                    await StoreAndPublishIlrFile(learnerRequest: mappedrecord, ilrFileName: ilrFile.First().Key, ilrFile: ilrFile.First().Value, collectionYear: collectionYear, collectionMonth: collectionMonth);
+                    await StoreAndPublishIlrFile(learnerRequest: mappedrecord, ilrFileName: ilrFile.First().Key, ilrFile: ilrFile.First().Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
                 }
             }
         }
