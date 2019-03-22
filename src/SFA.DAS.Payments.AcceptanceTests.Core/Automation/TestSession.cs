@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public LearnRefNumberGenerator LearnRefNumberGenerator { get; }
         public string SessionId { get; }
         public List<Learner> Learners { get; }
-        public Learner Learner => Learners.FirstOrDefault();
+        public Learner Learner => GetLearner(Provider.Ukprn, "learner a");
         public Employer Employer => GetEmployer("test employer");
        
         public DateTime IlrSubmissionTime { get; set; }
