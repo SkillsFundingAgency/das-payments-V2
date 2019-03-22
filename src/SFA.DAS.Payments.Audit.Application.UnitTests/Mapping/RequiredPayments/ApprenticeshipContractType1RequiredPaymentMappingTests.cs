@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
             CalculatedRequiredLevyAmount>
     {
         private const string ExpectedAgreementId = "OXFORD00001";
-        private long ExpectedEmployerAccountId = 5000000;
+        private long ExpectedAccountId = 5000000;
 
 
         protected override CalculatedRequiredLevyAmount CreatePaymentEvent()
@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
             return new CalculatedRequiredLevyAmount
             {
                 AgreementId = ExpectedAgreementId,
-                EmployerAccountId = ExpectedEmployerAccountId
+                AccountId = ExpectedAccountId
             };
         }
 
@@ -30,9 +30,9 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
         }
 
         [Test]
-        public void Maps_EmployerAccountId()
+        public void Maps_AccountId()
         {
-            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).EmployerAccountId.Should().Be(ExpectedEmployerAccountId);
+            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).AccountId.Should().Be(ExpectedAccountId);
         }
     }
 }

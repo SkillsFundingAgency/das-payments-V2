@@ -132,7 +132,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             var act1RequiredPayment = (CalculatedRequiredLevyAmount)requiredPayment;
 
-            Assert.AreEqual(payableEarning.EmployerAccountId, act1RequiredPayment.EmployerAccountId);
+            Assert.AreEqual(payableEarning.AccountId, act1RequiredPayment.AccountId);
             Assert.AreEqual(payableEarning.CommitmentId, act1RequiredPayment.CommitmentId);
             Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId);
             Assert.AreEqual(payableEarning.Priority, act1RequiredPayment.Priority);
@@ -221,7 +221,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             return new PayableEarningEvent
             {
-                EmployerAccountId = 101,
+                AccountId = 101,
                 CommitmentId = 102,
                 AgreementId = "103",
                 Priority = 104,

@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["DeliveryPeriod"] = eventModel.DeliveryPeriod;
             dataRow["AgreementId"] = eventModel.AgreementId;
             dataRow["SfaContributionPercentage"] = eventModel.SfaContributionPercentage;
-            dataRow["AccountId"] = eventModel.EmployerAccountId;
+            dataRow["AccountId"] = eventModel.AccountId;
             return dataRow;
         }
     }

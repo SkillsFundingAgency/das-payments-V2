@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Internal.Commands
     {
         public CollectionPeriod CollectionPeriod { get; set; }
 
-        public long EmployerAccountId { get; set; }
+        public long AccountId { get; set; }
     }
 }

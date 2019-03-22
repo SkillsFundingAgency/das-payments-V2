@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 PriceEpisodeIdentifier = "1819-P01",
                 SfaContributionPercentage = 0.9m,
                 Ukprn = 10000,
-                EmployerAccountId = 1000000,
+                AccountId = 1000000,
                 ContractType = ContractType.Act2,
             };
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 PriceEpisodeIdentifier = requiredCoInvestedAmount.PriceEpisodeIdentifier,
                 Ukprn = requiredCoInvestedAmount.Ukprn,
                 FundingSourceType = FundingSourceType.CoInvestedSfa,
-                EmployerAccountId = 1000000
+                AccountId = 1000000
             };
 
             var actualSfaCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredCoInvestedAmount, coInvestedPayment);
@@ -117,7 +117,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 PriceEpisodeIdentifier = requiredCoInvestedAmount.PriceEpisodeIdentifier,
                 Ukprn = requiredCoInvestedAmount.Ukprn,
                 FundingSourceType = FundingSourceType.CoInvestedEmployer,
-                EmployerAccountId = 1000000
+                AccountId = 1000000
             };
 
 

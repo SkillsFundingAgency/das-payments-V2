@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 CommitmentId = 12,
                 Priority = 13,
                 EventId = Guid.NewGuid(),
-                EmployerAccountId = 1000000,
+                AccountId = 1000000,
                 IlrSubmissionDateTime = DateTime.Today,
                 EarningEventId = Guid.NewGuid(),
                 ContractType = ContractType.Act1,
@@ -175,7 +175,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             expectedEvent.PriceEpisodeIdentifier = "1819-P01";
             expectedEvent.SfaContributionPercentage = .9m;
             expectedEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1);
-            expectedEvent.EmployerAccountId = 1000000;
+            expectedEvent.AccountId = 1000000;
         }
     }
 }

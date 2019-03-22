@@ -921,7 +921,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
                     RequestTime = DateTime.Now,
                     SubmissionDate = submissionDate,
-                    EmployerAccountId = employer.AccountId,
+                    AccountId = employer.AccountId,
                 };
 
                 await MessageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);

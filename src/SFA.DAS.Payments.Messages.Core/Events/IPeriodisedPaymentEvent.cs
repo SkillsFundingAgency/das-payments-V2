@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         string PriceEpisodeIdentifier { get; }
         decimal AmountDue { get; }
         byte DeliveryPeriod { get; }
-        long? EmployerAccountId { get; }
+        long? AccountId { get; }
         ContractType ContractType { get; }
     }
 }

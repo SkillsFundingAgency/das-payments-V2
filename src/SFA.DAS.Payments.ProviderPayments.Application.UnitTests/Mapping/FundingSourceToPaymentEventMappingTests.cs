@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 EventTime = DateTimeOffset.UtcNow,
                 RequiredPaymentEventId = Guid.NewGuid(),
-                EmployerAccountId = 123456789
+                AccountId = 123456789
             };
             var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.FundingSource.Should().Be(employerCoInvested.FundingSourceType);
             payment.JobId.Should().Be(employerCoInvested.JobId);
             payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime);
-            payment.EmployerAccountId.Should().Be(employerCoInvested.EmployerAccountId);
+            payment.AccountId.Should().Be(employerCoInvested.AccountId);
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 EventTime = DateTimeOffset.UtcNow,
                 AgreementId = agreementId,
                 RequiredPaymentEventId = Guid.NewGuid(),
-                EmployerAccountId = 123456789
+                AccountId = 123456789
             };
 
             var payment = Mapper.Map<ProviderPaymentEventModel>(levy);
@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.FundingSource.Should().Be(levy.FundingSourceType);
             payment.JobId.Should().Be(levy.JobId);
             payment.IlrSubmissionDateTime.Should().Be(levy.IlrSubmissionDateTime);
-            payment.EmployerAccountId.Should().Be(levy.EmployerAccountId);
+            payment.AccountId.Should().Be(levy.AccountId);
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 EventTime = DateTimeOffset.UtcNow,
                 RequiredPaymentEventId = Guid.NewGuid(),
-                EmployerAccountId = 123456789
+                AccountId = 123456789
         };
             var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, EmployerCoInvestedProviderPaymentEvent>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
@@ -193,7 +193,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             fundingSourceEvent.IlrSubmissionDateTime = DateTime.UtcNow;
             fundingSourceEvent.EventTime = DateTimeOffset.UtcNow;
             fundingSourceEvent.RequiredPaymentEventId = Guid.NewGuid();
-            fundingSourceEvent.EmployerAccountId = 123456789;
+            fundingSourceEvent.AccountId = 123456789;
 
             var payment = Mapper.Map<ProviderPaymentEvent>(fundingSourceEvent);
             payment.Should().NotBeNull();
