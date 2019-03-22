@@ -90,10 +90,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.Amount == actual.Amount &&
                    expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
                    expected.Ukprn == actual.Ukprn &&
-                   expected.JobId == actual.JobId &&
                    expected.AccountId == actual.AccountId &&
                    expected.LearningAimStandardCode == actual.LearningAimStandardCode;
-
         }
 
         private PaymentModel ToPaymentModel(
