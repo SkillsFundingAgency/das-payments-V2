@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 .Where(ev =>
                     ev.Ukprn == provider.Ukprn &&
                     ev.JobId == provider.JobId &&
-                    ev.CollectionPeriod.Period == collectionPeriod.Period &&
+                    ev.CollectionPeriod.Period == collectionPeriod.Period && 
                     ev.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
                 .ToList();
         }
@@ -50,8 +50,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             foreach (var providerPayment in payments)
             {
                 var eventCollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build();
-                var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build();
-                var testLearner = testSession.GetLearner(provider.Ukprn, providerPayment.LearnerId);
+                var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(); 
+                var testLearner = testSession.GetLearner(provider.Ukprn,providerPayment.LearnerId);
 
                 var learner = new Learner
                 {
@@ -99,7 +99,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
                         FundingSourceType = FundingSourceType.CoInvestedSfa,
-                        LearningAim = new LearningAim { StandardCode = standardCode.Value}
+                        LearningAim = new LearningAim { StandardCode = standardCode.Value},
+                        AccountId = providerPayment.AccountId
                     };
                     expectedPayments.Add(coFundedSfa);
                 }
@@ -114,6 +115,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
                         FundingSourceType = FundingSourceType.CoInvestedEmployer,
+                        AccountId = providerPayment.AccountId,
                         LearningAim = new LearningAim { StandardCode = standardCode.Value }
                     };
                     expectedPayments.Add(coFundedEmp);
@@ -128,6 +130,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
+                        AccountId = providerPayment.AccountId,
                         LearningAim = new LearningAim { StandardCode = standardCode.Value }
                     };
                     expectedPayments.Add(fullyFundedSfa);
@@ -142,6 +145,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         CollectionPeriod = eventCollectionPeriod,
                         DeliveryPeriod = deliveryPeriod,
                         Learner = learner,
+                        AccountId = providerPayment.AccountId,
                         LearningAim = new LearningAim { StandardCode = standardCode.Value }
                     };
                     expectedPayments.Add(levyFunded);
@@ -161,7 +165,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
                    expected.Learner.Uln == actual.Learner.Uln &&
+                   expected.AccountId == actual.AccountId &&
                    expected.LearningAim.StandardCode == actual.LearningAim.StandardCode;
         }
+        
     }
 }

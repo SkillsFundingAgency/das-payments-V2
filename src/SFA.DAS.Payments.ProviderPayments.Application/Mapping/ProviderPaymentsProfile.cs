@@ -1,9 +1,9 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using SFA.DAS.Payments.ProviderPayments.Model;
+using System;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
 {
@@ -72,13 +72,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier))
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => source.TransactionType))
-                .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn));
+                .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
+                .ForMember(dest => dest.AccountId, opt => opt.MapFrom(source => source.AccountId));
 
             CreateMap<PaymentModel, EmployerCoInvestedProviderPaymentEvent>();
             CreateMap<PaymentModel, SfaCoInvestedProviderPaymentEvent>();
             CreateMap<PaymentModel, SfaFullyFundedProviderPaymentEvent>();
             CreateMap<PaymentModel, LevyProviderPaymentEvent>();
-
+                
             CreateMap<FundingSourcePaymentEvent, ProviderPaymentEvent>()
                 .Include<EmployerCoInvestedFundingSourcePaymentEvent, EmployerCoInvestedProviderPaymentEvent>()
                 .Include<SfaCoInvestedFundingSourcePaymentEvent, SfaCoInvestedProviderPaymentEvent>()

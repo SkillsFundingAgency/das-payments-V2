@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
                 .HandleEarning(testEarning, default(CancellationToken));
 
             actual.Should().BeOfType<PayableEarningEvent>();
-            (actual as PayableEarningEvent).EmployerAccountId.Should().Be(456);
+            (actual as PayableEarningEvent).AccountId.Should().Be(456);
         }
     }
 }

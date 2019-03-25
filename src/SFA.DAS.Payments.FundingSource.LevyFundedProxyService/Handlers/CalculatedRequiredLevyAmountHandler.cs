@@ -30,9 +30,12 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             paymentLogger.LogInfo($"Processing ApprenticeshipContractType1RequiredPaymentEvent event. Message Id: {context.MessageId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
             executionContext.JobId = message.JobId.ToString();
 
+            if(!message.AccountId.HasValue)
+               throw new ArgumentException($"Employer AccountId cannot be null {message.AccountId}");
+
             try
             {
-                var actorId = new ActorId(message.EmployerAccountId);
+                var actorId = new ActorId(message.AccountId.Value);
                 var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
                 await actor.HandleRequiredPayment(message).ConfigureAwait(false);
                 paymentLogger.LogInfo($"Successfully processed LevyFundedProxyService event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");

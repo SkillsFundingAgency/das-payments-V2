@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuration;
@@ -9,6 +8,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using System;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 {
@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 CommitmentId = 12,
                 Priority = 13,
                 EventId = Guid.NewGuid(),
-                EmployerAccountId = 13,
+                AccountId = 1000000,
                 IlrSubmissionDateTime = DateTime.Today,
                 EarningEventId = Guid.NewGuid(),
                 ContractType = ContractType.Act1,
@@ -59,7 +59,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         [Test]
         public void TestMapToLevyFundingSourcePaymentEvent()
         {
-            var expectedEvent = new LevyFundingSourcePaymentEvent { AgreementId = "11" };
+            var expectedEvent = new LevyFundingSourcePaymentEvent
+            {
+                AgreementId = "11"
+            };
+
             PopulateCommonProperties(expectedEvent);
 
             var actualEvent = new LevyFundingSourcePaymentEvent
@@ -171,6 +175,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             expectedEvent.PriceEpisodeIdentifier = "1819-P01";
             expectedEvent.SfaContributionPercentage = .9m;
             expectedEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1);
+            expectedEvent.AccountId = 1000000;
         }
     }
 }
