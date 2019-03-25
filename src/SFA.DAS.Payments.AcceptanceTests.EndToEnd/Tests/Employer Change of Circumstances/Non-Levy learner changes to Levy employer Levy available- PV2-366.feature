@@ -1,4 +1,3 @@
- @ignore
 Feature: Learner changes from a non-levy to levy employer, levy is available for the levy employer PV2-366
 	As a provider,
 	I want an apprentice that changes from a non-levy to levy employer, levy is available for the levy employer, to be paid the correct amount
@@ -37,8 +36,8 @@ Scenario Outline: Learner changes from a non-levy to levy employer, levy is avai
 		| R07/Current Academic Year | Feb/Current Academic Year | 360                    | 40                          | Learning         | employer 1 |
 		| R08/Current Academic Year | Mar/Current Academic Year | 360                    | 40                          | Learning         | employer 1 |
     But the Provider now changes the Learner details as follows
-		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-		| 06/Aug/Current Academic Year | 12 months        | 5000                 | 06/Aug/Current Academic Year        | 1000                   | 06/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
+		| 06/Aug/Current Academic Year | 12 months        | 5000                 | 06/Aug/Current Academic Year        | 1000                   | 06/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
 	And price details as follows
         | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
         | 1st price details | 5000                 | 06/Aug/Current Academic Year        | 1000                   | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
@@ -82,6 +81,7 @@ Examples:
 		| R10/Current Academic Year | 2600                        |
 		| R11/Current Academic Year | 1900                        |
 		| R12/Current Academic Year | 1200                        |
+
 
 #Scenario: Apprentice changes from a non-levy to levy employer, levy is available for the levy employer
  #       Given The learner is programme only DAS
