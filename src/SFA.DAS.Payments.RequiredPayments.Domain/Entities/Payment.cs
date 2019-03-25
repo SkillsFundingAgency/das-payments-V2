@@ -17,5 +17,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
         public byte DeliveryPeriod { get; set; }
 
         public CollectionPeriod CollectionPeriod { get; set; }
+
+        public decimal SfaContributionPercentage { get; set; }
     }
 }

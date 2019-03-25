@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using Learner = SFA.DAS.Payments.Model.Core.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
@@ -39,11 +40,62 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override IList<RequiredPaymentEvent> GetActualEvents()
         {
-            return RequiredPaymentEventHandler.ReceivedEvents
+            var events = RequiredPaymentEventHandler.ReceivedEvents
                 .Where(e => e.Ukprn == provider.Ukprn && 
                             e.CollectionPeriod.Period== collectionPeriod.Period &&
                             e.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                             e.JobId == provider.JobId).ToList();
+
+            var results = new List<RequiredPaymentEvent>();
+
+            var aggregatedOnProgEvents = events
+                .Select(x => x as CalculatedRequiredOnProgrammeAmount)
+                .Where(x => x != null)
+                .GroupBy(x => new
+                {
+                    x.DeliveryPeriod,
+                    x.OnProgrammeEarningType,
+                    x.Learner.ReferenceNumber,
+                    x.LearningAim.Reference,
+                });
+            foreach (var aggregatedEvent in aggregatedOnProgEvents)
+            {
+                // This is creating levy events. They aren't used outside of matching
+                //  BUT it is slightly dishonest! CalculatedRequiredOnProgrammeAmount
+                //  is abstract and would be a better choice
+                results.Add(new CalculatedRequiredLevyAmount
+                {
+                    AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
+                    DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
+                    OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
+                    LearningAim = new LearningAim {Reference = aggregatedEvent.Key.Reference},
+                    Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber},
+                });
+            }
+
+            var aggregatedIncentiveEvents = events
+                .Select(x => x as CalculatedRequiredIncentiveAmount)
+                .Where(x => x != null)
+                .GroupBy(x => new
+                {
+                    x.DeliveryPeriod,
+                    x.Type,
+                    x.Learner.ReferenceNumber,
+                    x.LearningAim.Reference,
+                });
+            foreach (var aggregatedEvent in aggregatedIncentiveEvents)
+            {
+                results.Add(new CalculatedRequiredIncentiveAmount
+                {
+                    AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
+                    DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
+                    Type = aggregatedEvent.Key.Type,
+                    LearningAim = new LearningAim { Reference = aggregatedEvent.Key.Reference},
+                    Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber },
+                });
+            }
+
+            return results;
         }
 
         protected override IList<RequiredPaymentEvent> GetExpectedEvents()
@@ -73,17 +125,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             Type = incentiveTypeKey,
                             DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(payment.DeliveryPeriod).Build(),
                         });
-
                 }    
             }
 
             return expectedPayments;
         }
 
-        private void AddOnProgPayment(Payment paymentToValidate, List<RequiredPaymentEvent> expectedPayments, decimal amountDue, OnProgrammeEarningType type)
+        private void AddOnProgPayment(Payment paymentToValidate, List<RequiredPaymentEvent> expectedPayments,
+            decimal amountDue, OnProgrammeEarningType type)
         {
-            var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build();
-            var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type, deliveryPeriod);
+            var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type,
+                new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build());
             
             if (payment.AmountDue != 0)
                 expectedPayments.Add(payment);
@@ -91,9 +143,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(RequiredPaymentEvent expected, RequiredPaymentEvent actual)
         {
-            if (expected.GetType() != actual.GetType())
-                return false;
-
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue &&
                    MatchAct(expected as CalculatedRequiredOnProgrammeAmount, actual as CalculatedRequiredOnProgrammeAmount) &&
@@ -116,7 +165,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.Type == actual.Type;
         }
 
-        private RequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue, OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
+        private RequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue,
+            OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
         {
             var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
 
@@ -127,7 +177,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     {
                         AmountDue = amountDue,
                         OnProgrammeEarningType = onProgrammeEarningType,
-                        DeliveryPeriod = deliveryPeriod
+                        DeliveryPeriod = deliveryPeriod,
                     };
 
                 case ContractType.Act2:
@@ -135,7 +185,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     {
                         AmountDue = amountDue,
                         OnProgrammeEarningType = onProgrammeEarningType,
-                        DeliveryPeriod = deliveryPeriod
+                        DeliveryPeriod = deliveryPeriod,
                     };
 
                 default:

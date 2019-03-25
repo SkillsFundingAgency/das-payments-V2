@@ -9,8 +9,8 @@ Given the employer levy account balance in collection period "R04/Current Academ
 
 And the following commitments exist 
 	| commitment Id | version Id | start date                   | end date                     | agreed price | effective from               | effective to                 |
-	| 1             | 1          | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |
-	| 1             | 2          | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9375         | 01/Nov/Current Academic Year |                              |
+	| 360           | 1          | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |
+	| 360           | 2          | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9375         | 01/Nov/Current Academic Year |                              |
 
 And the provider previously submitted the following learner details
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
@@ -33,9 +33,9 @@ And the following earnings had been generated for the learner
 
 And the following provider payments had been generated
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-    | R01/Current Academic Year | Aug/Current Academic Year | 1000              | Learning         |
-    | R02/Current Academic Year | Sep/Current Academic Year | 1000              | Learning         |
-    | R03/Current Academic Year | Oct/Current Academic Year | 1000              | Learning         |
+    | R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         |
+    | R02/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
+    | R03/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |
        
 But the Provider now changes the Learner details as follows
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |

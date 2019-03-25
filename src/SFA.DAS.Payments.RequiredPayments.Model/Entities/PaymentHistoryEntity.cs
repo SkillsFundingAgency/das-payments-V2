@@ -16,5 +16,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         public CollectionPeriod CollectionPeriod { get; set; }
         public decimal Amount { get; set; }
         public FundingSourceType FundingSource { get; set; }
+        public decimal SfaContributionPercentage { get; set; }
     }
 }
