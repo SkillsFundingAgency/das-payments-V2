@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
             using (var operation = telemetry.StartOperation())
             {
-                var actorId = new ActorId(command.EmployerAccountId);
+                var actorId = new ActorId(command.AccountId);
                 var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
                 var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
                 await Task.WhenAll(fundingSourceEvents.Select(context.Publish));

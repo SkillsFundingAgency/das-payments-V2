@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         public async Task HandleRequiredPayment(CalculatedRequiredLevyAmount message)
         {
-            paymentLogger.LogVerbose($"Handling RequiredPayment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.EmployerAccountId}");
+            paymentLogger.LogVerbose($"Handling RequiredPayment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
 
             using (var operation = telemetry.StartOperation())
             {
@@ -59,11 +59,11 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command)
         {
-            paymentLogger.LogVerbose($"Handling ProcessLevyPaymentsOnMonthEndCommand for {Id}, Job: {command.JobId}, Account: {command.EmployerAccountId}");
+            paymentLogger.LogVerbose($"Handling ProcessLevyPaymentsOnMonthEndCommand for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
 
             using (var operation = telemetry.StartOperation())
             {
-                var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.EmployerAccountId, command.JobId);
+                var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.AccountId, command.JobId);
                 telemetry.StopOperation(operation);
                 return fundingSourceEvents;
             }

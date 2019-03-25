@@ -7,8 +7,8 @@ So that I am accurately paid my apprenticeship provision.
 Scenario Outline: Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362
 Given the "employer 1" levy account balance in collection period R01/Current Academic Year is 15000
 And the following commitments exist 
-	| Employer   | start date | end date   | agreed price | status | effective from | effective to |
-	| employer 1 | 01/08/2019 | 04/08/2019 | 15000        | active | 01/08/2018     |              |
+	| Employer   | start date                   | end date                     | agreed price | status | effective from            | effective to |
+	| employer 1 | 01/Aug/Current Academic Year | 04/Aug/Current Academic Year | 15000        | active | 01/Aug/Last Academic Year |              |
 
 And the provider previously submitted the following learner details
 	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
@@ -36,8 +36,8 @@ And the following provider payments had been generated
 	| R03/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         | employer 1 |
       
 But the Provider now changes the Learner details as follows
-	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage |
-	| 03/Aug/Current Academic Year | 12 months        | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |
+	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                      |
+	| 03/Aug/Current Academic Year | 12 months        | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract |
 
 And price details as follows
 	| Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |

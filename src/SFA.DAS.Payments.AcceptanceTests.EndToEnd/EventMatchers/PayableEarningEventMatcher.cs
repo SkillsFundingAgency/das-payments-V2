@@ -171,7 +171,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedEvent.LearningAim.ProgrammeType != actualEvent.LearningAim.ProgrammeType ||
                 expectedEvent.LearningAim.StandardCode != actualEvent.LearningAim.StandardCode ||
                 expectedEvent.Priority != actualEvent.Priority ||
-                expectedEvent.EmployerAccountId != actualEvent.EmployerAccountId ||
+                expectedEvent.AccountId != actualEvent.AccountId ||
                 expectedEvent.CommitmentId != actualEvent.CommitmentId ||
                 expectedEvent.CommitmentVersion != actualEvent.CommitmentVersion)
                 return false;
