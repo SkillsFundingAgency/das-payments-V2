@@ -22,8 +22,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public List<Employer> Employers { get; }
         private readonly Random random;
         private readonly Faker<Course> courseFaker;
-        private static readonly ConcurrentBag<long> allLearners = new ConcurrentBag<long>();
-
+        
         public List<Provider> Providers { get; }
         public Provider Provider => GetProviderByIdentifier("Test Provider");
         public long Ukprn => Provider.Ukprn;
@@ -65,7 +64,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             Providers = new List<Provider> {};
             IlrSubmissionTime = Provider.IlrSubmissionTime;
-            Learners = new List<Learner> { GenerateLearner(Provider.Ukprn) };
+            Learners = new List<Learner>();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
 
@@ -116,14 +115,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Learner GenerateLearner(long ukprn, long? uniqueLearnerNumber = null)
         {
             var uln = uniqueLearnerNumber ?? GenerateId();
-            var limit = 10;
-            while (allLearners.Contains(uln))
-            {
-                if (--limit < 0)
-                    throw new InvalidOperationException("Failed to generate random learners.");
-                uln = GenerateId();
-            }
-            allLearners.Add(uln);
             return new Learner
             {
                 Ukprn = ukprn,
@@ -138,7 +129,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var learner = Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier && l.Ukprn == ukprn);
             if (learner == null)
             {
-                learner = GenerateLearner(ukprn);
+                var uln = GetUlnFromLearnerId(learnerIdentifier);
+                learner = GenerateLearner(ukprn, uln);
                 learner.LearnerIdentifier = learnerIdentifier;
                 Learners.Add(learner);
             }
@@ -146,6 +138,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return learner;
         }
 
+        public long GetUlnFromLearnerId(string learnerId)
+        {
+            var learner = Learners.FirstOrDefault(x => x.LearnerIdentifier == learnerId);
+            if (learner == null)
+            {
+                return GenerateId();
+            }
+
+            return learner.Uln;
+        }
 
         public void CompleteScenario()
         {
