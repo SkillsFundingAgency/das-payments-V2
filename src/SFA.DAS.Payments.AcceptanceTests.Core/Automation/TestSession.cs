@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
 
-            Providers = new List<Provider> {};
+            Providers = new List<Provider>();
             IlrSubmissionTime = Provider.IlrSubmissionTime;
             Learners = new List<Learner>();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
