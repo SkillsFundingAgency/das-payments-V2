@@ -1,5 +1,5 @@
 @ignore
-Feature: Holding back completion payments
+Feature: Holding back completion payments - PV2-521
 	As a provider,
 	I want a levy learner with co-funding, where the employer has used LDM code 356, and has not paid their 10% co-investment for the on-program element, and has not yet paid their employer completion payment element
 	So that I am accurately paid the completion payment by SFA PV2-521
@@ -11,7 +11,7 @@ Scenario Outline: Levy Learner-in co-funding, insufficient employer contribution
 #        <LearnDelFAMCode>361</LearnDelFAMCode>
 #      </LearningDeliveryFAM>
 	
-	Given the employer levy account balance in collection period R01/Current Academic Year is 0
+	Given the employer levy account balance in collection period <Collection_Period> is 0
 	
 	And the following commitments exist
         | start date                | end date                     | agreed price | status |

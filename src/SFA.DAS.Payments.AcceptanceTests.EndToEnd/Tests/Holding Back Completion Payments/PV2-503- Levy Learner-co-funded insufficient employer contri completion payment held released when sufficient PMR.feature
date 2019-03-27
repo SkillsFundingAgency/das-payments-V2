@@ -1,12 +1,12 @@
 ﻿@ignore
-Feature:
+Feature: Holding Back Completion Payments - PV2-503
 	As a provider,
 	I want a levy learner, where the employer initially pays less than the 10% co-investment for the on-program element in the month of completion, but in the following month the employer achieves the 10% co-investment, although has not yet paid the employer completion payment element
 	So that I am accurately paid the completion payment by SFA 
 
 Scenario: Levy Learner -in co-funding,completion payment held back due to insuffucient employer contribution - payment is released when sufficient contribution evidenced
 
-	Given the employer levy account balance in collection period R01/Current Academic Year is 0
+	Given the employer levy account balance in collection period R12/Current Academic Year is 0
 	
 	And the following commitments exist
 	    | start date                | end date                     | agreed price | status |
