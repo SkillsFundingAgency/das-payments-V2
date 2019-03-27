@@ -37,8 +37,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             ActorService actorService,
             ActorId actorId,
             IPaymentLogger paymentLogger,
-            ITelemetry telemetry, 
-            IRequiredLevyAmountFundingSourceService fundingSourceService, ILifetimeScope lifetimeScope) 
+            ITelemetry telemetry,
+            IRequiredLevyAmountFundingSourceService fundingSourceService, ILifetimeScope lifetimeScope)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
@@ -60,25 +60,25 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command)
         {
-            paymentLogger.LogVerbose($"Handling ProcessLevyPaymentsOnMonthEndCommand for {Id}, Job: {command.JobId}, Account: {command.EmployerAccountId}");
+            paymentLogger.LogVerbose($"Handling ProcessLevyPaymentsOnMonthEndCommand for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
             try
             {
                 using (var operation = telemetry.StartOperation())
                 {
-                var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.AccountId, command.JobId);
+                    var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.AccountId, command.JobId);
                     telemetry.StopOperation(operation);
                     return fundingSourceEvents;
                 }
             }
             catch (Exception ex)
             {
-                paymentLogger.LogError($"Failed to get levy or co-invested month end payments. Error: {ex.Message}",ex);
+                paymentLogger.LogError($"Failed to get levy or co-invested month end payments. Error: {ex.Message}", ex);
                 throw;
             }
         }
 
         protected override async Task OnActivateAsync()
-        {   
+        {
             requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
             requiredPaymentKeys = new ReliableCollectionCache<List<string>>(StateManager);
             fundingSourceService = new RequiredLevyAmountFundingSourceService(
