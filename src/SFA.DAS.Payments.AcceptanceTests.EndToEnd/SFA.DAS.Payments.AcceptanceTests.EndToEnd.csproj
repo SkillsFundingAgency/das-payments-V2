@@ -519,6 +519,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1050,6 +1055,10 @@
     <None Include="Tests\Holding Back Completion Payments\PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
