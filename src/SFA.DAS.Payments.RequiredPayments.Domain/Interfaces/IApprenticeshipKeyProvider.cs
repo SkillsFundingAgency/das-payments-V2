@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain
 {
-    public interface IApprenticeshipKeyFactory
+    public interface IApprenticeshipKeyProvider
     {
         ApprenticeshipKey GetCurrentKey();
     }

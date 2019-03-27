@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
             builder.RegisterType<ServiceFabricConfigurationHelper>().As<IConfigurationHelper>().SingleInstance();
             builder.RegisterType<ReliableStateManagerProvider>().As<IReliableStateManagerProvider>().SingleInstance();
             builder.RegisterType<ActorStateManagerProvider>().As<IActorStateManagerProvider>().InstancePerLifetimeScope();
+            builder.RegisterType<ActorIdProvider>().As<IActorIdProvider>().InstancePerLifetimeScope();
         }
     }
 }
