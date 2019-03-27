@@ -154,6 +154,38 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             AssertCommonProperties(requiredPayment, functionalSkillEarningsEvent);
         }
 
+        [Test]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(CalculatedRequiredLevyAmount))]
+        [TestCase(typeof(CalculatedRequiredLevyAmount))]
+        public void PriceEpisodeMapsEarningsInfo(Type requiredPaymentEventType)
+        {
+            var priceEpisode = new PriceEpisode
+            {
+                StartDate = DateTime.UtcNow,
+                PlannedEndDate = DateTime.UtcNow,
+                ActualEndDate = DateTime.UtcNow,
+                CompletionAmount = 100M,
+                InstalmentAmount = 200M,
+                NumberOfInstalments = 16
+            };
+
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+
+            mapper.Map(priceEpisode, requiredPaymentEvent);
+
+            requiredPaymentEvent.StartDate.Should().Be(priceEpisode.StartDate);
+            requiredPaymentEvent.PlannedEndDate.Should().Be(priceEpisode.PlannedEndDate);
+            requiredPaymentEvent.ActualEndDate.Should().Be(priceEpisode.ActualEndDate);
+            requiredPaymentEvent.CompletionStatus.Should().Be(0);
+            requiredPaymentEvent.CompletionAmount.Should().Be(priceEpisode.CompletionAmount);
+            requiredPaymentEvent.InstalmentAmount.Should().Be(priceEpisode.InstalmentAmount);
+            requiredPaymentEvent.NumberOfInstalments.Should().Be((short)priceEpisode.NumberOfInstalments);
+        }
+
         private static void AssertCommonProperties(RequiredPaymentEvent requiredPayment, IEarningEvent earning)
         {
             Assert.AreNotSame(requiredPayment.Learner, earning.Learner);
