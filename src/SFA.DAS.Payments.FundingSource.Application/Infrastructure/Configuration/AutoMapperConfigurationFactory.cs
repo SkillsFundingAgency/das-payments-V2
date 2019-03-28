@@ -17,7 +17,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<CalculatedRequiredIncentiveAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.EventId, opt => opt.Ignore())
                     .ForMember(dest => dest.EventTime, opt => opt.Ignore())
-                    .ForMember(dest => dest.RequiredPaymentEventId, opt => opt.MapFrom(source => source.EventId));
+                    .ForMember(dest => dest.RequiredPaymentEventId, opt => opt.MapFrom(source => source.EventId))
+                    .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
+                    .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(src => src.PlannedEndDate))
+                    .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(src => src.ActualEndDate))
+                    .ForMember(dest => dest.CompletionStatus, opt => opt.Ignore())
+                    .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(src => src.CompletionAmount))
+                    .ForMember(dest => dest.InstalmentAmount, opt => opt.MapFrom(src => src.InstalmentAmount))
+                    .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(src => src.NumberOfInstalments));
 
                 cfg.CreateMap<CalculatedRequiredLevyAmount, EmployerCoInvestedFundingSourcePaymentEvent>();
                 cfg.CreateMap<CalculatedRequiredLevyAmount, SfaCoInvestedFundingSourcePaymentEvent>();
