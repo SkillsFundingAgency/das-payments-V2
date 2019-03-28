@@ -418,6 +418,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 newPriceEpisode.PriceEpisodeValues.TNP4 = priceEpisode.ResidualAssessmentPrice;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice = priceEpisode.TotalTNPPrice;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct = sfaContributionPercent;
+                newPriceEpisode.PriceEpisodeValues.PriceEpisodeCumulativePMRs = priceEpisode.Pmr;
+                newPriceEpisode.PriceEpisodeValues.PriceEpisodeCompExemCode = priceEpisode.LdmCode == 0 ? 0 : new Random().Next(1, 4);
 
                 priceEpisodesForAim.Add(newPriceEpisode);
             }
@@ -726,7 +728,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     TotalAssessmentPrice = firstPriceEpisode.TotalAssessmentPrice,
                     TotalTrainingPrice = firstPriceEpisode.TotalTrainingPrice,
                     Uln = TestSession.GetLearner(ukprn, aim.LearnerId).Uln,
-                    Ukprn = ukprn
+                    Ukprn = ukprn,
+                    Pmr = firstPriceEpisode.Pmr,
+                    LdmCode = firstPriceEpisode.LdmCode,
                 };
 
                 trainings.Add(training);
@@ -837,6 +841,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             TotalTrainingPriceEffectiveDate = training.StartDate,
                             TotalAssessmentPriceEffectiveDate = training.StartDate,
                             SfaContributionPercentage = training.SfaContributionPercentage,
+                            LdmCode = training.LdmCode,
+                            Pmr = training.Pmr,
                         });
                     }
                     else
