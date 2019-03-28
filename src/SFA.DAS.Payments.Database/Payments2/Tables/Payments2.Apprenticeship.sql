@@ -1,0 +1,20 @@
+﻿CREATE TABLE [Payments2].[Apprenticeship]
+(	
+	Id BIGINT NOT NULL  CONSTRAINT PK_Apprenticeship PRIMARY KEY,
+	AccountId BIGINT NOT NULL,
+	AgreementId CHAR(6) NULL, 
+	AgreedOnDate DateTime2 not null,
+	Uln BIGINT NOT NULL,
+	Ukprn BIGINT NOT NULL,
+	EstimatedStartDate DateTime2 NOT NULL,
+	EstimatedEndDate DateTime2 NOT NULL,
+    [Priority]      INT  NOT NULL,
+	StandardCode BIGINT NULL,
+	ProgrammeType INT NULL,
+	FrameworkCode INT NULL,
+	PathwayCode INT NULL,
+	LegalEntityName NVARCHAR (100) NULL,
+	TransferSendingEmployerAccountId BIGINT NULL,
+	StopDate DateTime2 NULL, 
+    [Status] TINYINT NULL
+)
