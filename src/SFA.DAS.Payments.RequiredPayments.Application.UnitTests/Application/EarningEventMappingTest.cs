@@ -156,10 +156,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
         [Test]
         [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
-        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
         [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(CalculatedRequiredLevyAmount))]
         [TestCase(typeof(CalculatedRequiredLevyAmount))]
         public void PriceEpisodeMapsEarningsInfo(Type requiredPaymentEventType)
         {
