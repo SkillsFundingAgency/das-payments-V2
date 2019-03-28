@@ -131,6 +131,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             {
                 var uln = GetUlnFromLearnerId(learnerIdentifier);
                 learner = GenerateLearner(ukprn, uln);
+                learner.LearnerIdentifier = learnerIdentifier;
                 Learners.Add(learner);
             }
 
