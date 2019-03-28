@@ -24,12 +24,18 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         private readonly IRequiredPaymentProcessor requiredPaymentProcessor;
         private readonly IPaymentKeyService paymentKeyService;
         private readonly IMapper mapper;
+        private readonly IHoldingBackCompletionPaymentService completionPaymentService;
+        private readonly IPaymentHistoryRepository paymentHistoryRepository;
+        private readonly IApprenticeshipKeyProvider apprenticeshipKeyProvider;
 
-        protected EarningEventProcessorBase(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentProcessor requiredPaymentProcessor)
+        protected EarningEventProcessorBase(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentProcessor requiredPaymentProcessor, IHoldingBackCompletionPaymentService completionPaymentService, IPaymentHistoryRepository paymentHistoryRepository, IApprenticeshipKeyProvider apprenticeshipKeyProvider)
         {
             this.paymentKeyService = paymentKeyService ?? throw new ArgumentNullException(nameof(paymentKeyService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentProcessor = requiredPaymentProcessor ?? throw new ArgumentNullException(nameof(requiredPaymentProcessor));
+            this.completionPaymentService = completionPaymentService;
+            this.paymentHistoryRepository = paymentHistoryRepository;
+            this.apprenticeshipKeyProvider = apprenticeshipKeyProvider;
         }
 
         public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
@@ -70,9 +76,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     continue;
                 }
 
+                var holdBackCompletionPayments = await HoldBackCompletionPayments(earningEvent, earning, type, cancellationToken).ConfigureAwait(false);
+
                 foreach (var requiredPayment in requiredPayments)
                 {
-                    var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType, type);
+                    var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType, type, holdBackCompletionPayments);
 
                     mapper.Map(earningEvent, requiredPaymentEvent);
                     mapper.Map(requiredPayment, requiredPaymentEvent);
@@ -86,10 +94,25 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             return result.AsReadOnly();
         }
 
+        private async Task<bool> HoldBackCompletionPayments(TEarningEvent earningEvent, Earning earning, int type, CancellationToken cancellationToken)
+        {
+            if (type != (int) OnProgrammeEarningType.Completion)
+                return false;
+
+            var priceEpisode = earningEvent.PriceEpisodes.Single(p => p.Identifier == earning.PriceEpisodeIdentifier);
+            var key = apprenticeshipKeyProvider.GetCurrentKey();
+            var employerPayments = await paymentHistoryRepository.GetEmployerCoInvestedPaymentHistoryTotal(key, cancellationToken).ConfigureAwait(false);
+
+            return completionPaymentService.HoldBackCompletionPayment(employerPayments, priceEpisode);
+        }
+
         protected abstract EarningType GetEarningType(int type);
 
-        protected RequiredPaymentEvent CreateRequiredPaymentEvent(EarningType earningType, int transactionType)
+        protected RequiredPaymentEvent CreateRequiredPaymentEvent(EarningType earningType, int transactionType, bool holdBackCompletionPayment)
         {
+            if (holdBackCompletionPayment)
+                return new CompletionPaymentHeldBackEvent();
+
             switch (earningType)
             {
                 case EarningType.CoInvested:

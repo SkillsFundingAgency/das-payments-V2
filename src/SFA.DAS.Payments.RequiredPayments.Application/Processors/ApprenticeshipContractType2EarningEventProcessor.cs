@@ -4,15 +4,27 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public class ApprenticeshipContractType2EarningEventProcessor : ApprenticeshipContractTypeEarningEventProcessor<CalculatedRequiredCoInvestedAmount, ApprenticeshipContractType2EarningEvent>, IApprenticeshipContractType2EarningsEventProcessor
+    public class ApprenticeshipContractType2EarningEventProcessor 
+        : ApprenticeshipContractTypeEarningEventProcessor<ApprenticeshipContractType2EarningEvent>, IApprenticeshipContractType2EarningsEventProcessor
     {
-        public ApprenticeshipContractType2EarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper,
-            IRequiredPaymentProcessor requiredPaymentProcessor)
-            : base(paymentKeyService, mapper, requiredPaymentProcessor)
+        public ApprenticeshipContractType2EarningEventProcessor(
+            IPaymentKeyService paymentKeyService,
+            IMapper mapper,
+            IRequiredPaymentProcessor requiredPaymentProcessor,
+            IHoldingBackCompletionPaymentService holdingBackCompletionPaymentService,
+            IPaymentHistoryRepository paymentHistoryRepository,
+            IApprenticeshipKeyProvider apprenticeshipKeyProvider
+        ) : base(
+            paymentKeyService,
+            mapper,
+            requiredPaymentProcessor,
+            holdingBackCompletionPaymentService,
+            paymentHistoryRepository,
+            apprenticeshipKeyProvider
+        )
         {
         }
 

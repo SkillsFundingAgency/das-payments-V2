@@ -3,16 +3,27 @@ using AutoMapper;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Domain;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public abstract class ApprenticeshipContractTypeEarningEventProcessor<TRequiredPaymentEvent, TEarningEvent> : EarningEventProcessorBase<TEarningEvent>
-        where TRequiredPaymentEvent : CalculatedRequiredOnProgrammeAmount, new()
+    public abstract class ApprenticeshipContractTypeEarningEventProcessor<TEarningEvent> : EarningEventProcessorBase<TEarningEvent>
         where TEarningEvent : IContractTypeEarningEvent
     {
-        protected ApprenticeshipContractTypeEarningEventProcessor(IPaymentKeyService paymentKeyService, IMapper mapper, IRequiredPaymentProcessor requiredPaymentsProcessor)
-            : base(paymentKeyService, mapper, requiredPaymentsProcessor)
+        protected ApprenticeshipContractTypeEarningEventProcessor(
+            IPaymentKeyService paymentKeyService,
+            IMapper mapper,
+            IRequiredPaymentProcessor requiredPaymentProcessor,
+            IHoldingBackCompletionPaymentService holdingBackCompletionPaymentService,
+            IPaymentHistoryRepository paymentHistoryRepository,
+            IApprenticeshipKeyProvider apprenticeshipKeyProvider
+        ) : base(
+            paymentKeyService,
+            mapper,
+            requiredPaymentProcessor,
+            holdingBackCompletionPaymentService,
+            paymentHistoryRepository,
+            apprenticeshipKeyProvider
+        )
         {
         }
 
