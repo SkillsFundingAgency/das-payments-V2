@@ -21,6 +21,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public decimal ResidualTrainingPrice { get; set; }
         public decimal ResidualAssessmentPrice { get; set; }
         public string ResidualTrainingPriceEffectiveDate { get; set; }
+        [TableAliases("[E|e]mployer [C|c]ontribution")]
+        public int Pmr { get; set; }
+        [TableAliases("[L|l][D|d][M|m] [C|c]ode")]
+        public int LdmCode { get; set; }
 
         public DateTime EpisodeStartDate =>
             ResidualAssessmentPrice == 0 && ResidualTrainingPrice == 0

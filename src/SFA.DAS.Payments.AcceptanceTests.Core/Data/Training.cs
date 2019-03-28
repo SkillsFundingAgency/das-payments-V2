@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Payments.Model.Core.Entities;
+using TechTalk.SpecFlow.Assist.Attributes;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
@@ -28,5 +29,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string FundingLineType { get; set; }
         public int FrameworkCode { get; set; }
         public int PathwayCode { get; set; }
+
+        [TableAliases("[E|e]mployer [C|c]ontribution")]
+        public int Pmr { get; set; }
+        [TableAliases("[L|l][D|d][M|m] [C|c]ode")]
+        public int LdmCode { get; set; }
     }
 }
