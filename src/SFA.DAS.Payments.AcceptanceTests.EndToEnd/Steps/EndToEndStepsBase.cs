@@ -968,6 +968,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var jobId = await jobService.SubmitJob(submission);
 
+            //TODO: Overriding JobId, but better implementation needed. Eg: calling GetProvider with proper Identifier when needed.
+            foreach (var provider in TestSession.Providers)
+            {
+                provider.JobId = jobId;
+            }
+
             var retryPolicy = Policy
                 .Handle<JobStatusNotWaitingException>()
                 .WaitAndRetryAsync(10, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));

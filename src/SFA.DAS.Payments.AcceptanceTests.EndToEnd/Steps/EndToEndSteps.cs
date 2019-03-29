@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
         {
             var service = Scope.Resolve<IUkprnService>();
-            GivenTheProviderIsProvidingTrainingForTheFollowingLearners(service.GenerateUkprn().ToString(), table);
+            GivenTheProviderIsProvidingTrainingForTheFollowingLearners(null, table);
         }
 
         [Given(@"the provider ""(.*)"" is providing training for the following learners")]

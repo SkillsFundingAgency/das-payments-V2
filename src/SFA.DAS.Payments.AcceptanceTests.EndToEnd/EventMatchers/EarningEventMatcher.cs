@@ -189,7 +189,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             if (expectedEvent.CollectionPeriod.Period != actualEvent.CollectionPeriod.Period ||
                 expectedEvent.CollectionPeriod.AcademicYear != actualEvent.CollectionPeriod.AcademicYear ||
-                expectedEvent.Learner.ReferenceNumber != actualEvent.Learner.ReferenceNumber ||
+                //expectedEvent.Learner.ReferenceNumber != actualEvent.Learner.ReferenceNumber ||
                 //expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
                 expectedEvent.LearningAim.Reference != actualEvent.LearningAim.Reference ||
                 expectedEvent.LearningAim.FundingLineType != actualEvent.LearningAim.FundingLineType ||
