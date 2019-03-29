@@ -2,6 +2,7 @@
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.EntityFrameworkCore;
+using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
@@ -20,7 +21,6 @@ using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using System;
-using NServiceBus;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -221,8 +221,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             apprenticeshipSpec.AccountId = TestSession.GetEmployer(apprenticeshipSpec.Employer).AccountId;
             apprenticeshipSpec.Uln = TestSession.GetLearner(apprenticeshipSpec.Ukprn, apprenticeshipSpec.LearnerId).Uln;
 
-            ApprenticeshipPaymentStatus? apprenticeshipStatus;
-            switch (apprenticeshipSpec.Status.ToLower())
+            ApprenticeshipPaymentStatus? apprenticeshipStatus = null;
+
+            switch (apprenticeshipSpec.Status?.ToLower())
             {
                 case "active":
                     apprenticeshipStatus = ApprenticeshipPaymentStatus.Active;
@@ -232,9 +233,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     break;
                 case "paused":
                     apprenticeshipStatus = ApprenticeshipPaymentStatus.Paused;
-                    break;
-                default:
-                    apprenticeshipStatus = null;
                     break;
             }
 
@@ -258,7 +256,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                         new    ApprenticeshipPriceEpisodeModel {
                                     Cost = apprenticeshipSpec.AgreedPrice,
-                                    StartDate = apprenticeshipSpec.EffectiveFrom.ToDate(),
+                                    StartDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveFrom) 
+                                        ?apprenticeshipSpec.StartDate.ToDate()
+                                        :apprenticeshipSpec.EffectiveFrom.ToDate(),
                                     EndDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveTo)
                                         ? default(DateTime?)
                                         : apprenticeshipSpec.EffectiveTo.ToDate()
@@ -268,7 +268,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             return apprenticeshipModel;
         }
-        
+
         protected async Task SaveLevyAccount(Employer employer)
         {
             var existingEmployer = await DataContext.LevyAccount.FirstOrDefaultAsync(o => o.AccountId == employer.AccountId);

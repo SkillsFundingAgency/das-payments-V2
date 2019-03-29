@@ -260,7 +260,6 @@
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Handlers\FundingSourcePaymentEventHandler.cs" />
     <Compile Include="Handlers\PayableEarningEventHandler.cs" />
-    <Compile Include="Extensions\CommitmentExtensions.cs" />
     <Compile Include="Extensions\EmployerExtensions.cs" />
     <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\EarningEventHandler.cs" />
@@ -270,7 +269,6 @@
     <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
-
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
@@ -421,20 +419,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available- PV2-366.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy learner changes to Levy employer Levy available- PV2-366.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature.cs">
       <AutoGen>True</AutoGen>
@@ -901,9 +889,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available- PV2-366.feature">
+    <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy learner changes to Levy employer Levy available- PV2-366.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
