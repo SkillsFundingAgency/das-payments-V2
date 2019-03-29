@@ -18,9 +18,10 @@ Scenario Outline: Levy Learner-in co-funding, insufficient employer contribution
         | 01/Jun/Last Academic Year | 01/Jun/Current Academic Year | 9000         | active |
 	#Please note : New field added -LDM code
 	
+	# LDM 356
 	And the provider previously submitted the following learner details
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | LDM Code | Funding Line Type                                  | SFA Contribution Percentage |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 356      | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
+		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	
 	And the following earnings had been generated for the learner
 	    | Delivery Period        | On-Programme | Completion | Balancing |
@@ -42,9 +43,10 @@ Scenario Outline: Levy Learner-in co-funding, insufficient employer contribution
         | R11/Last Academic Year | Jun/Last Academic Year | 540                    | 60                          | 0             | Learning         |
         | R12/Last Academic Year | Jul/Last Academic Year | 540                    | 60                          | 0             | Learning         |
     
+	# LDM 356
 	But the Provider now changes the Learner details as follows
-    	| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | LDM Code | Funding Line Type                                  | SFA Contribution Percentage | Employer Contribution |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 356      | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         | 700                   |
+    	| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Exemption Code | Funding Line Type                                  | SFA Contribution Percentage | Employer Contribution |
+    	| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 2              | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         | 700                   |
 	
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	
