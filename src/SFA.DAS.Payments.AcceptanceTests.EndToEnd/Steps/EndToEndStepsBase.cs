@@ -146,7 +146,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 if (testLearner == null)
                 {
-                    testLearner = TestSession.GenerateLearner(ukprn);
+                    testLearner = TestSession.GetLearner(ukprn, learner.LearnerIdentifier);
                 }
                 testLearner.LearnerIdentifier = string.IsNullOrEmpty(learner.LearnerIdentifier) ? testLearner.LearnerIdentifier : learner.LearnerIdentifier;
                 testLearner.Uln = learner.Uln == 0 ? testLearner.Uln : learner.Uln;
