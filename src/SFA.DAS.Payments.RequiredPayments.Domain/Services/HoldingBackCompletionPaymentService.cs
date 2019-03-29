@@ -6,16 +6,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
     {
         public bool HoldBackCompletionPayment(decimal employerPayments, PriceEpisode priceEpisode)
         {
-            if (!priceEpisode.EmployerContribution.HasValue)
+            var employerContribution = priceEpisode.EmployerContribution ?? 0;
+            var completionHoldBackExemptionCode = priceEpisode.CompletionHoldBackExemptionCode ?? 0;
+
+            if (completionHoldBackExemptionCode > 0)
                 return false;
 
-            if (!priceEpisode.CompletionHoldBackExemptionCode.HasValue)
-                return false;
-
-            if (priceEpisode.CompletionHoldBackExemptionCode.Value > 0)
-                return false;
-
-            return employerPayments < priceEpisode.EmployerContribution.Value;
+            return employerContribution < employerPayments;
         }
     }
 }

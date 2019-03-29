@@ -38,9 +38,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [Test]
-        [TestCase(0)]
-        [TestCase(9)]
-        public void CompletionPaymentIsHeldWhenPaymentsInsufficient(decimal paymentHistory)
+        [TestCase(11)]
+        [TestCase(10.00001)]
+        public void CompletionPaymentIsHeldWhenContributionInsufficient(decimal paymentHistory)
         {
             // arrange
             var priceEpisode = new PriceEpisode
@@ -57,8 +57,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [Test]
+        [TestCase(0)]
+        [TestCase(9)]
         [TestCase(10)]
-        [TestCase(11)]
         public void CompletionPaymentIsNotHeldWhenPaymentsSufficient(decimal paymentHistory)
         {
             // arrange
@@ -76,7 +77,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [Test]
-        public void CompletionPaymentIsNotHeldWhenEmployerContributionNull()
+        public void CompletionPaymentIsHeldWhenEmployerContributionNull()
         {
             // arrange
             var paymentHistory = 10;
@@ -90,17 +91,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var result = service.HoldBackCompletionPayment(paymentHistory, priceEpisode);
 
             // assert
-            result.Should().BeFalse();
+            result.Should().BeTrue();
         }
 
         [Test]
-        public void CompletionPaymentIsNotHeldWhenExemptCodeIsNull()
+        public void CompletionPaymentIsHeldWhenExemptCodeIsNull()
         {
             // arrange
-            var paymentHistory = 10;
+            var paymentHistory = 12;
             var priceEpisode = new PriceEpisode
             {
-                EmployerContribution = 12,
+                EmployerContribution = 11,
                 CompletionHoldBackExemptionCode = null
             };
 
@@ -108,7 +109,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var result = service.HoldBackCompletionPayment(paymentHistory, priceEpisode);
 
             // assert
-            result.Should().BeFalse();
+            result.Should().BeTrue();
         }
 
     }
