@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     });
 
                 foreach (var aimSpec in learnerSpec.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, collectionPeriod,
-                    a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference)))
+                    a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration)))
                 {
                     var learningAim = new LearningAim
                     {
@@ -171,7 +171,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedEvent.LearningAim.ProgrammeType != actualEvent.LearningAim.ProgrammeType ||
                 expectedEvent.LearningAim.StandardCode != actualEvent.LearningAim.StandardCode ||
                 expectedEvent.Priority != actualEvent.Priority ||
-                expectedEvent.EmployerAccountId != actualEvent.EmployerAccountId ||
+                expectedEvent.AccountId != actualEvent.AccountId ||
                 expectedEvent.CommitmentId != actualEvent.CommitmentId ||
                 expectedEvent.CommitmentVersion != actualEvent.CommitmentVersion)
                 return false;

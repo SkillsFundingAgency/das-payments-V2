@@ -24,5 +24,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public TransactionType TransactionType { get; set; }
         public string LearnerId { get; set; }
         public long Uln { get; set; }
+        public string Employer { get; set; }
+        public long? AccountId { get; set; }
+        public int? StandardCode { get; set; }
     }
 }

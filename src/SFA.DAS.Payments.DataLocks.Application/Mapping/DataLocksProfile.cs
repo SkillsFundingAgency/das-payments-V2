@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
         {
             CreateMap<ApprenticeshipContractType1EarningEvent, PayableEarningEvent>()
                 .ForMember(destinationMember => destinationMember.Priority, opt => opt.Ignore())
-                .ForMember(destinationMember => destinationMember.EmployerAccountId, opt => opt.Ignore())
+                .ForMember(destinationMember => destinationMember.AccountId, opt => opt.Ignore())
                 .ForMember(destinationMember => destinationMember.CommitmentId, opt => opt.Ignore())
                 .ForMember(destinationMember => destinationMember.CommitmentVersion, opt => opt.Ignore());
         }

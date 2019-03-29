@@ -85,10 +85,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         }
 
         [Test]
-        [TestCase(typeof(PayableEarningEvent))]
-        public void ContractTypeIsCorrectForPayableEarningEvent(Type earningEventType)
+        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredLevyAmount))]
+        public void ContractTypeIsCorrectForPayableEarningEvent(Type earningEventType, Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = new CalculatedRequiredIncentiveAmount();
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
             var earningEvent = Activator.CreateInstance(earningEventType);
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
@@ -96,11 +98,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         }
 
         [Test]
-        [TestCase(typeof(ApprenticeshipContractType2EarningEvent))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent))]
-        public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType)
+        [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredLevyAmount))]
+        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredLevyAmount))]
+        public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType, Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = new CalculatedRequiredIncentiveAmount();
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
             var earningEvent = Activator.CreateInstance(earningEventType);
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
@@ -126,7 +132,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             var act1RequiredPayment = (CalculatedRequiredLevyAmount)requiredPayment;
 
-            Assert.AreEqual(payableEarning.EmployerAccountId, act1RequiredPayment.EmployerAccountId);
+            Assert.AreEqual(payableEarning.AccountId, act1RequiredPayment.AccountId);
             Assert.AreEqual(payableEarning.CommitmentId, act1RequiredPayment.CommitmentId);
             Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId);
             Assert.AreEqual(payableEarning.Priority, act1RequiredPayment.Priority);
@@ -215,7 +221,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             return new PayableEarningEvent
             {
-                EmployerAccountId = 101,
+                AccountId = 101,
                 CommitmentId = 102,
                 AgreementId = "103",
                 Priority = 104,

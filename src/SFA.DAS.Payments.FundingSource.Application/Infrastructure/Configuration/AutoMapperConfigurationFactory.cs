@@ -31,7 +31,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<CalculatedRequiredLevyAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredLevyAmount, SfaCoInvestedFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredLevyAmount, SfaFullyFundedFundingSourcePaymentEvent>()
-                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.ContractType, opt => opt.UseValue(ContractType.Act1))
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.AmountDue, opt => opt.Ignore())
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType));
 
@@ -54,15 +53,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<CalculatedRequiredCoInvestedAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredCoInvestedAmount, SfaCoInvestedFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredCoInvestedAmount, SfaFullyFundedFundingSourcePaymentEvent>()
-                    .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2));
-
+                    ;
+          
                 cfg.CreateMap<CalculatedRequiredOnProgrammeAmount, FundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredLevyAmount, FundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredCoInvestedAmount, FundingSourcePaymentEvent>()
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType));
 
                 cfg.CreateMap<CalculatedRequiredIncentiveAmount, SfaFullyFundedFundingSourcePaymentEvent>()
-                    .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.Type))
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa));
 
@@ -76,7 +74,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<EmployerCoInvestedPayment, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .Include<SfaCoInvestedPayment, SfaCoInvestedFundingSourcePaymentEvent>()
                     .Include<LevyPayment, LevyFundingSourcePaymentEvent>()
-                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.FundingSourceType, opt => opt.MapFrom(payment => payment.Type));
+                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.FundingSourceType,
+                        opt => opt.MapFrom(payment => payment.Type));
             });
         }
     }

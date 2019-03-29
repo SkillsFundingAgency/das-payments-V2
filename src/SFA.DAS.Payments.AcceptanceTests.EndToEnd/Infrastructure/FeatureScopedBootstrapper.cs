@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             context.Set(dcHelper);
         }
 
-        [AfterFeature(Order = 1)]
+        [AfterFeature(Order = 100)]
         public static void CleanUpFeature(FeatureContext context)
         {
             CleanUpTestSession(context);
