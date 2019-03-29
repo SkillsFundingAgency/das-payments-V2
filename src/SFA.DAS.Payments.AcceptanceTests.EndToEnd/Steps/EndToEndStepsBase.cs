@@ -252,7 +252,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 LegalEntityName = "Test SFA",
                 EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
                 EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
-                AgreedOnDate = DateTimeOffset.UtcNow,
+                AgreedOnDate = DateTime.UtcNow,
 
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
@@ -260,7 +260,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                     Cost = apprenticeshipSpec.AgreedPrice,
                                     StartDate = apprenticeshipSpec.EffectiveFrom.ToDate(),
                                     EndDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveTo)
-                                        ? default(DateTimeOffset?)
+                                        ? default(DateTime?)
                                         : apprenticeshipSpec.EffectiveTo.ToDate()
                              }
                  }

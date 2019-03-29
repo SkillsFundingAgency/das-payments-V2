@@ -51,6 +51,24 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 4)
 	INSERT INTO [Payments2].[JobType] VALUES (4,'Component test month end job')
 GO 
 
+MERGE INTO [Payments2].[ApprenticeshipStatus]	 AS Target
+USING (VALUES
+(1	, N'Active'),
+(2	, N'Paused'),
+(3 , N'Stopped'),
+(4 , N'InActive')
+) AS Source ([Id],[Description])
+ON (Target.[Id] = Source.[Id])
+WHEN MATCHED AND
+  ( NULLIF(Source.[Description], Target.[Description]) IS NOT NULL OR NULLIF(Target.[Description], Source.[Description]) IS NOT NULL) THEN
+ UPDATE SET [Description] = Source.[Description]
+WHEN NOT MATCHED BY TARGET THEN
+ INSERT([Id],[Description]) VALUES(Source.[Id],Source.[Description])
+WHEN NOT MATCHED BY SOURCE THEN 
+ DELETE;
+ GO
+
+
 RAISERROR('		   Extended Property',10,1) WITH NOWAIT;
 GO
 
