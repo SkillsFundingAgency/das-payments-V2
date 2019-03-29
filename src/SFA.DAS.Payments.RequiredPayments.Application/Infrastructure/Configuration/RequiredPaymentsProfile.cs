@@ -57,8 +57,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.ContractType)
                 ;
 
-            CreateMap<PayableEarningEvent, CompletionPaymentHeldBackEvent>();
-            CreateMap<ApprenticeshipContractType2EarningEvent, CompletionPaymentHeldBackEvent>();
+            CreateMap<PayableEarningEvent, CompletionPaymentHeldBackEvent>()
+                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
+                ;
+            CreateMap<ApprenticeshipContractType2EarningEvent, CompletionPaymentHeldBackEvent>()
+                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
+                ;
 
             CreateMap<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
