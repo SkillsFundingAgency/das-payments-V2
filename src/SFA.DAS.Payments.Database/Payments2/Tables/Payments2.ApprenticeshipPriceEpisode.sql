@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [Payments2].[ApprenticeshipPriceEpisode]
 (
 	Id BIGINT NOT NULL IDENTITY CONSTRAINT PK_ApprenticeshipPriceEpisode PRIMARY KEY,
-	ApprenticeshipId BIGINT NOT NULL CONSTRAINT FK_ApprenticeshipPriceEpisode__Apprenticeship FOREIGN KEY REFERENCES [Payments2].[Apprenticeship] (Id),
+	ApprenticeshipId BIGINT NOT NULL CONSTRAINT FK_ApprenticeshipPriceEpisode__Apprenticeship FOREIGN KEY REFERENCES [Payments2].[Apprenticeship] (Id) ON DELETE CASCADE,
 	StartDate Date NOT NULL,
 	EndDate Date NULL,
 	Cost DECIMAL NOT NULL,

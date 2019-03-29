@@ -181,21 +181,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             foreach (var x in apprenticeships)
             {
-                var existingCommitment = Apprenticeships
-                    .FirstOrDefault(c => c.CommitmentId == x.CommitmentId && c.VersionId == x.VersionId);
-
-                Apprenticeships.Remove(existingCommitment);
-
                 var apprenticeshipModel = CreateApprenticeshipModels(x);
-                var matchedApprenticeship = await DataContext.Apprenticeship
-                                     .FirstOrDefaultAsync(e => e.Id == apprenticeshipModel.Id).ConfigureAwait(false);
+                var matchedApprenticeship = await DataContext.Apprenticeship.FirstOrDefaultAsync(e => e.Id == apprenticeshipModel.Id).ConfigureAwait(false);
 
                 if (matchedApprenticeship != null)
                 {
                     DataContext.Apprenticeship.Remove(matchedApprenticeship);
                     await DataContext.SaveChangesAsync().ConfigureAwait(false);
                 }
-
+               
                 await DataContext.Apprenticeship.AddAsync(apprenticeshipModel).ConfigureAwait(false);
             }
 
