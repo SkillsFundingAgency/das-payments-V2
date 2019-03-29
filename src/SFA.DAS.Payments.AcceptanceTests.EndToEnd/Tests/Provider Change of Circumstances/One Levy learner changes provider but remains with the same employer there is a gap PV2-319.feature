@@ -35,7 +35,8 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
         | R05/Current Academic Year | Dec/Current Academic Year | 500           | Learning         |
         | R06/Current Academic Year | Jan/Current Academic Year | 500           | Learning         |
         | R07/Current Academic Year | Feb/Current Academic Year | 500           | Learning         |
-    But the "provider a" now changes the Learner details as follows
+    
+	But the "provider a" now changes the Learner details as follows
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 06/Aug/Current Academic Year | 12 months        | 6000                 | 06/Aug/Current Academic Year        | 1500                   | 06/Aug/Current Academic Year          | 7 months        | withdrawn         | Act1          | 1                   | ZPROG001      | 51            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
