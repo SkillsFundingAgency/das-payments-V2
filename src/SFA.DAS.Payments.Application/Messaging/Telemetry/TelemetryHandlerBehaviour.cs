@@ -31,6 +31,7 @@ namespace SFA.DAS.Payments.Application.Messaging.Telemetry
                 catch (Exception ex)
                 {
                     failure = ex.Message;
+                    throw;
                 }
                 finally
                 {
