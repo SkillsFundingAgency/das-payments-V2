@@ -4,6 +4,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain
 {
     public interface IHoldingBackCompletionPaymentService
     {
-        bool HoldBackCompletionPayment(decimal employerPayments, PriceEpisode priceEpisode);
+        bool ShouldHoldBackCompletionPayment(decimal expectedContribution, PriceEpisode priceEpisode);
     }
 }

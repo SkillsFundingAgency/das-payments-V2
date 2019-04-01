@@ -4,15 +4,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class HoldingBackCompletionPaymentService : IHoldingBackCompletionPaymentService
     {
-        public bool HoldBackCompletionPayment(decimal employerPayments, PriceEpisode priceEpisode)
+        public bool ShouldHoldBackCompletionPayment(decimal expectedContribution, PriceEpisode priceEpisode)
         {
-            var employerContribution = priceEpisode.EmployerContribution ?? 0;
+            var reportedContribution = priceEpisode.EmployerContribution ?? 0;
             var completionHoldBackExemptionCode = priceEpisode.CompletionHoldBackExemptionCode ?? 0;
 
             if (completionHoldBackExemptionCode > 0)
                 return false;
 
-            return employerContribution < employerPayments;
+            return reportedContribution < expectedContribution;
         }
     }
 }

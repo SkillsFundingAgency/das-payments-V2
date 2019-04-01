@@ -220,7 +220,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>())).Returns(requiredPayments).Verifiable();
             apprenticeshipKeyProviderMock.Setup(a => a.GetCurrentKey()).Returns(key).Verifiable();
             paymentHistoryRepositoryMock.Setup(repo => repo.GetEmployerCoInvestedPaymentHistoryTotal(key, It.IsAny<CancellationToken>())).ReturnsAsync(11).Verifiable();
-            holdingBackCompletionPaymentServiceMock.Setup(h => h.HoldBackCompletionPayment(11, priceEpisodes[1])).Returns(true).Verifiable();
+            holdingBackCompletionPaymentServiceMock.Setup(h => h.ShouldHoldBackCompletionPayment(11, priceEpisodes[1])).Returns(true).Verifiable();
 
             // act           
             var actualRequiredPayment = await processor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);

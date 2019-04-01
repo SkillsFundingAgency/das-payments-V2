@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             var key = apprenticeshipKeyProvider.GetCurrentKey();
             var employerPayments = await paymentHistoryRepository.GetEmployerCoInvestedPaymentHistoryTotal(key, cancellationToken).ConfigureAwait(false);
 
-            return completionPaymentService.HoldBackCompletionPayment(employerPayments, priceEpisode);
+            return completionPaymentService.ShouldHoldBackCompletionPayment(employerPayments, priceEpisode);
         }
 
         protected abstract EarningType GetEarningType(int type);

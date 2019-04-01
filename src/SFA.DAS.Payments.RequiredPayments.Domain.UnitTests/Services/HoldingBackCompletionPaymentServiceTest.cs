@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
 
             // act
-            var result = service.HoldBackCompletionPayment(paymentHistory, priceEpisode);
+            var result = service.ShouldHoldBackCompletionPayment(paymentHistory, priceEpisode);
 
             // assert
             result.Should().BeFalse();
@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
 
             // act
-            var result = service.HoldBackCompletionPayment(paymentHistory, priceEpisode);
+            var result = service.ShouldHoldBackCompletionPayment(paymentHistory, priceEpisode);
 
             // assert
             result.Should().BeTrue();
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
 
             // act
-            var result = service.HoldBackCompletionPayment(paymentHistory, priceEpisode);
+            var result = service.ShouldHoldBackCompletionPayment(paymentHistory, priceEpisode);
 
             // assert
             result.Should().BeFalse();
@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
 
             // act
-            var result = service.HoldBackCompletionPayment(paymentHistory, priceEpisode);
+            var result = service.ShouldHoldBackCompletionPayment(paymentHistory, priceEpisode);
 
             // assert
             result.Should().BeTrue();
@@ -106,10 +106,28 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
 
             // act
-            var result = service.HoldBackCompletionPayment(paymentHistory, priceEpisode);
+            var result = service.ShouldHoldBackCompletionPayment(paymentHistory, priceEpisode);
 
             // assert
             result.Should().BeTrue();
+        }
+
+        [Test]
+        public void CompletionPaymentIsNotHeldWhenExemptCodeIsNullAndContributionIsSufficient()
+        {
+            // arrange
+            var paymentHistory = 10;
+            var priceEpisode = new PriceEpisode
+            {
+                EmployerContribution = 11,
+                CompletionHoldBackExemptionCode = null
+            };
+
+            // act
+            var result = service.ShouldHoldBackCompletionPayment(paymentHistory, priceEpisode);
+
+            // assert
+            result.Should().BeFalse();
         }
 
     }
