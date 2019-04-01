@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(dest => dest.InstalmentAmount, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeInstalmentValue))
                 .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeCompletionElement))
                 .ForMember(dest => dest.Completed, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeCompleted))
-                .ForMember(dest => dest.EmployerContribution, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeCumulativePMRs ?? decimal.MaxValue)) // TODO: default value is to be removed when PV2-811 is merged in
+                .ForMember(dest => dest.EmployerContribution, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeCumulativePMRs))
                 .ForMember(dest => dest.CompletionHoldBackExemptionCode, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeCompExemCode));
         }
     }
