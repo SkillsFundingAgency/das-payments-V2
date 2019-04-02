@@ -28,5 +28,7 @@ namespace SFA.DAS.Payments.Model.Core
         public decimal InstalmentAmount { get; set; }
         public decimal CompletionAmount { get; set; }
         public bool Completed { get; set; }
+        public decimal? EmployerContribution { get; set; }
+        public int? CompletionHoldBackExemptionCode { get; set; }
     }
 }

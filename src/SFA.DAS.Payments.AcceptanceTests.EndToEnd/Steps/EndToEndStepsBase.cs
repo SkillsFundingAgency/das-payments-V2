@@ -431,6 +431,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 newPriceEpisode.PriceEpisodeValues.TNP4 = priceEpisode.ResidualAssessmentPrice;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice = priceEpisode.TotalTNPPrice;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct = sfaContributionPercent;
+                // Default to max value so that not setting employer contribution won't fail tests 
+                newPriceEpisode.PriceEpisodeValues.PriceEpisodeCumulativePMRs = priceEpisode.Pmr ?? int.MaxValue;
+                newPriceEpisode.PriceEpisodeValues.PriceEpisodeCompExemCode = priceEpisode.CompletionHoldBackExemptionCode;
 
                 priceEpisodesForAim.Add(newPriceEpisode);
             }
@@ -739,7 +742,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     TotalAssessmentPrice = firstPriceEpisode.TotalAssessmentPrice,
                     TotalTrainingPrice = firstPriceEpisode.TotalTrainingPrice,
                     Uln = TestSession.GetLearner(ukprn, aim.LearnerId).Uln,
-                    Ukprn = ukprn
+                    Ukprn = ukprn,
+                    Pmr = firstPriceEpisode.Pmr,
+                    CompletionHoldBackExemptionCode = firstPriceEpisode.CompletionHoldBackExemptionCode,
                 };
 
                 trainings.Add(training);
@@ -850,6 +855,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             TotalTrainingPriceEffectiveDate = training.StartDate,
                             TotalAssessmentPriceEffectiveDate = training.StartDate,
                             SfaContributionPercentage = training.SfaContributionPercentage,
+                            CompletionHoldBackExemptionCode = training.CompletionHoldBackExemptionCode,
+                            Pmr = training.Pmr,
                         });
                     }
                     else

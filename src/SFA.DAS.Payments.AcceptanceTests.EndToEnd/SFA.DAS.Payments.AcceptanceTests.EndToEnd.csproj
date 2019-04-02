@@ -434,6 +434,96 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy learner changes to Levy employer Levy available PV2-366.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-499 - Non-Levy Learner completion payment made as enough employer contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-499 - Non-Levy Learner completion payment made as enough employer contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-500 - Levy Learner-co-funded,insufficient employer contribution - hold back completion payment.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-500 - Levy Learner-co-funded,insufficient employer contribution - hold back completion payment.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-501- Non-Levy Learner no completion payment made as not enough employer contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-501- Non-Levy Learner no completion payment made as not enough employer contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-503- Levy Learner-co-funded insufficient employer contri completion payment held released when sufficient PMR.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-503- Levy Learner-co-funded insufficient employer contri completion payment held released when sufficient PMR.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-509- Non-Levy Learner insuffucient employer contri completion payment held released when correct PMR.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-509- Non-Levy Learner insuffucient employer contri completion payment held released when correct PMR.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-513- Levy Learner-co-funded end date is census month sufficient employer contri pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-513- Levy Learner-co-funded end date is census month sufficient employer contri pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-514- NonLevy Learner-planned end date is census month suffucient employer contri pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-514- NonLevy Learner-planned end date is census month suffucient employer contri pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-515 - Levy Learner-co-funded sufficient employer contribution LDM code 356 - pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-515 - Levy Learner-co-funded sufficient employer contribution LDM code 356 - pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-516- Non-Levy Learner completion payment made due to LDM 356 enough employer contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-516- Non-Levy Learner completion payment made due to LDM 356 enough employer contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-517- Levy Learner co-funded insufficient employer contribution LDM code 356 used pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-517- Levy Learner co-funded insufficient employer contribution LDM code 356 used pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-518- Non-Levy Learner completion payment made due to LDM 356 not enough employer contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-518- Non-Levy Learner completion payment made due to LDM 356 not enough employer contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-519 - Levy Learner-co-funded sufficient employer contribution LDM code 361- pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-519 - Levy Learner-co-funded sufficient employer contribution LDM code 361- pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-520- Non-Levy learner sufficient employer contribution LDM code 361 used– pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-520- Non-Levy learner sufficient employer contribution LDM code 361 used– pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-521- Levy Learner co-funded insufficient employer contribution  LDM code 361 used  – pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-521- Levy Learner co-funded insufficient employer contribution  LDM code 361 used  – pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-522- Non-Levy learner,insufficient employer contribution  LDM code 361 used – pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-522- Non-Levy learner,insufficient employer contribution  LDM code 361 used – pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -897,6 +987,78 @@
     <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-499 - Non-Levy Learner completion payment made as enough employer contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-499 - Non-Levy Learner completion payment made as enough employer contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-500 - Levy Learner-co-funded,insufficient employer contribution - hold back completion payment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-500 - Levy Learner-co-funded,insufficient employer contribution - hold back completion payment.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-501- Non-Levy Learner no completion payment made as not enough employer contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-501- Non-Levy Learner no completion payment made as not enough employer contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-503- Levy Learner-co-funded insufficient employer contri completion payment held released when sufficient PMR.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-503- Levy Learner-co-funded insufficient employer contri completion payment held released when sufficient PMR.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-509- Non-Levy Learner insuffucient employer contri completion payment held released when correct PMR.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-509- Non-Levy Learner insuffucient employer contri completion payment held released when correct PMR.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-513- Levy Learner-co-funded end date is census month sufficient employer contri pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-513- Levy Learner-co-funded end date is census month sufficient employer contri pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-514- NonLevy Learner-planned end date is census month suffucient employer contri pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-514- NonLevy Learner-planned end date is census month suffucient employer contri pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-515 - Levy Learner-co-funded sufficient employer contribution LDM code 356 - pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-515 - Levy Learner-co-funded sufficient employer contribution LDM code 356 - pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-516- Non-Levy Learner completion payment made due to LDM 356 enough employer contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-516- Non-Levy Learner completion payment made due to LDM 356 enough employer contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-517- Levy Learner co-funded insufficient employer contribution LDM code 356 used pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-517- Levy Learner co-funded insufficient employer contribution LDM code 356 used pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-518- Non-Levy Learner completion payment made due to LDM 356 not enough employer contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-518- Non-Levy Learner completion payment made due to LDM 356 not enough employer contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-519 - Levy Learner-co-funded sufficient employer contribution LDM code 361- pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-519 - Levy Learner-co-funded sufficient employer contribution LDM code 361- pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-520- Non-Levy learner sufficient employer contribution LDM code 361 used– pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-520- Non-Levy learner sufficient employer contribution LDM code 361 used– pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-521- Levy Learner co-funded insufficient employer contribution  LDM code 361 used  – pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-521- Levy Learner co-funded insufficient employer contribution  LDM code 361 used  – pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-522- Non-Levy learner,insufficient employer contribution  LDM code 361 used – pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-522- Non-Levy learner,insufficient employer contribution  LDM code 361 used – pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
