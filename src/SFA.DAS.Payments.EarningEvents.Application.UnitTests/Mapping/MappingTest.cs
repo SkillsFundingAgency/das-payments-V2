@@ -80,6 +80,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             TNP1 = 15000,
                             TNP2 = 15000,
                             PriceEpisodeCompleted = true,
+                            PriceEpisodeCumulativePMRs = 13,
+                            PriceEpisodeCompExemCode = 14
                         },
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                         {
@@ -259,6 +261,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.PriceEpisodes.First().InstalmentAmount.Should().Be(1000);
             earningEvent.PriceEpisodes.First().NumberOfInstalments.Should().Be(12);
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice3.Should().BeNull();
+            earningEvent.PriceEpisodes.First().EmployerContribution.Should().Be(13);
+            earningEvent.PriceEpisodes.First().CompletionHoldBackExemptionCode.Should().Be(14);
         }
 
         [Test]
