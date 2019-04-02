@@ -1,8 +1,6 @@
-﻿using NServiceBus;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
