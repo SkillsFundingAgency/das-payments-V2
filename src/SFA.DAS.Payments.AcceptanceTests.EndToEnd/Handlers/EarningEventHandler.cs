@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -12,6 +13,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
 
         public Task Handle(EarningEvent message, IMessageHandlerContext context)
         {
+            if (message is FunctionalSkillEarningsEvent && !((FunctionalSkillEarningsEvent) message).Earnings.Any())
+            {
+                return Task.CompletedTask;
+            }
+
             ReceivedEvents.Add(message);
             return Task.CompletedTask;
         }
