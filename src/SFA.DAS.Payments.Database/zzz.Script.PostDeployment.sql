@@ -56,11 +56,11 @@ USING (VALUES
 (1	, N'Active'),
 (2	, N'Paused'),
 (3 , N'Stopped'),
-(4 , N'InActive')
+(4 , N'Inactive')
 ) AS Source ([Id],[Description])
 ON (Target.[Id] = Source.[Id])
 WHEN MATCHED AND
-  ( NULLIF(Source.[Description], Target.[Description]) IS NOT NULL OR NULLIF(Target.[Description], Source.[Description]) IS NOT NULL) THEN
+  ( NULLIF(Source.[Description], Target.[Description]) IS NOT NULL) THEN
  UPDATE SET [Description] = Source.[Description]
 WHEN NOT MATCHED BY TARGET THEN
  INSERT([Id],[Description]) VALUES(Source.[Id],Source.[Description])

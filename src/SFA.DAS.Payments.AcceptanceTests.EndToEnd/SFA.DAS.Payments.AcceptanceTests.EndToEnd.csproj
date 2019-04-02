@@ -419,10 +419,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy learner changes to Levy employer Levy available PV2-366.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature.cs">
       <AutoGen>True</AutoGen>
@@ -448,11 +458,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner submits Ilr several months into learning - PV2-340.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Learning Support\PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
       <AutoGen>True</AutoGen>
@@ -913,10 +918,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner submits Ilr several months into learning - PV2-340.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Learning Support\PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature.cs</LastGenOutput>
-    </None>
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs</LastGenOutput>
@@ -1227,9 +1228,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Mapping\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

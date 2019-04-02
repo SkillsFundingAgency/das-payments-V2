@@ -83,18 +83,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "ProvidersWithCacheCleared");
         }
 
-        public List<Apprenticeship> Apprenticeships
-        {
-            get
-            {
-                if (!Context.TryGetValue<List<Apprenticeship>>("commitments", out var commitments))
-                {
-                    Set(new List<Apprenticeship>(), "commitments");
-                    commitments = Get<List<Apprenticeship>>("commitments");
-                }
-                return commitments;
-            }
-        }
 
         protected EndToEndStepsBase(FeatureContext context) : base(context)
         {

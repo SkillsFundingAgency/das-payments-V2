@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         Active = 1,
         Paused = 2,
         Stopped = 3,
-        InActive = 4
+        Inactive = 4
     }
 
 

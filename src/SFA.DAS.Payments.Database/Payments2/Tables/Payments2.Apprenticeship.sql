@@ -15,6 +15,6 @@
 	PathwayCode INT NULL,
 	LegalEntityName NVARCHAR (100) NULL,
 	TransferSendingEmployerAccountId BIGINT NULL,
-	StopDate DateTime2 NULL, 
+	StopDate Date NULL, 
     [Status] TINYINT NULL
 )
