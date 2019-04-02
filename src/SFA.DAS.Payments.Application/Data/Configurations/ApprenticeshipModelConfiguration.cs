@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.LegalEntityName).HasColumnName(@"LegalEntityName");
             builder.Property(x => x.TransferSendingEmployerAccountId).HasColumnName(@"TransferSendingEmployerAccountId");
             builder.Property(x => x.StopDate).HasColumnName(@"StopDate");
-            builder.Property(x => x.Status).HasColumnName(@"Status");
+            builder.Property(x => x.Status).HasColumnName(@"Status").IsRequired();
         }
     }
 }

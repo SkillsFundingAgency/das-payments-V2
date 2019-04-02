@@ -16,5 +16,5 @@
 	LegalEntityName NVARCHAR (100) NULL,
 	TransferSendingEmployerAccountId BIGINT NULL,
 	StopDate Date NULL, 
-    [Status] TINYINT NULL
+    [Status] TINYINT NOT NULL
 )
