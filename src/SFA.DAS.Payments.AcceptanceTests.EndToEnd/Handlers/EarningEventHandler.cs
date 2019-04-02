@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
 
         public Task Handle(EarningEvent message, IMessageHandlerContext context)
         {
-            if (message is FunctionalSkillEarningsEvent && !((FunctionalSkillEarningsEvent) message).Earnings.Any())
+            if (message is FunctionalSkillEarningsEvent @event && !@event.Earnings.Any())
             {
                 return Task.CompletedTask;
             }

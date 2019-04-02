@@ -110,8 +110,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
 
-            await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
-
             if (CurrentIlr != null && CurrentIlr.Any())
             {
                 var mapper = Scope.Resolve<IMapper>();
@@ -121,6 +119,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 // currently only support a single ILR file being generated.
                 if (ilrFile.Any())
                 {
+                    RefreshTestSessionLearnerFromIlr(ilrFile.First().Value);
+
+                    await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
+
                     await StoreAndPublishIlrFile(learnerRequest: mappedrecord, ilrFileName: ilrFile.First().Key, ilrFile: ilrFile.First().Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
                 }
             }

@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using ESFA.DC.ILR.TestDataGenerator.Interfaces;
 using ESFA.DC.ILR.TestDataGenerator.Models;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
@@ -964,6 +965,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear, collectionPeriod);
 
+        }
+
+        protected void RefreshTestSessionLearnerFromIlr(string ilrFile)
+        {
+            XNamespace xsdns = "ESFA/ILR/2018-19";
+            var xDoc = XDocument.Parse(ilrFile);
+            var learner = xDoc.Descendants(xsdns + "Learner").First();
+            var learningProvider = xDoc.Descendants(xsdns + "LearningProvider").First();
+
+            var testSessionLearner = TestSession.GetLearner(TestSession.Provider.Ukprn, null);
+
+            testSessionLearner.Ukprn = long.Parse(learningProvider.Elements(xsdns + "UKPRN").First().Value);
+            testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
+            testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
         }
 
         private async Task StoreIlrFile(int ukPrn, string ilrFileName, string ilrFile)
