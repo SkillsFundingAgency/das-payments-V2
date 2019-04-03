@@ -5,9 +5,11 @@ Feature: Holding back completion payments - PV2-609
 	So that I am accurately paid the completion payment by SFA
 
 Scenario Outline: Non-Levy learner, sufficient employer contribution, on program payment same day as completion payment - pay completion PV2-609
+	
 	Given the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage |
 		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |
+	
 	And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing |
         | Aug/Last Academic Year | 0            | 0          | 0         |
@@ -22,15 +24,18 @@ Scenario Outline: Non-Levy learner, sufficient employer contribution, on program
         | May/Last Academic Year | 0            | 0          | 0         |
         | Jun/Last Academic Year | 600          | 0          | 0         |
         | Jul/Last Academic Year | 600          | 0          | 0         |
+   
     And the following provider payments had been generated 
         | Collection Period      | Delivery Period        | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R11/Last Academic Year | Jun/Last Academic Year | 540                    | 60                          | Learning         |
         | R12/Last Academic Year | Jul/Last Academic Year | 540                    | 60                          | Learning         |	
+	
 	# New field - Employer Contribution
     But the Provider now changes the Learner details as follows
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage | Employer Contribution |
 		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         | 720                   |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
+
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing |
 		| Aug/Current Academic Year | 600          | 0          | 0         |
@@ -45,6 +50,7 @@ Scenario Outline: Non-Levy learner, sufficient employer contribution, on program
 		| May/Current Academic Year | 600          | 1800       | 0         |
 		| Jun/Current Academic Year | 0            | 0          | 0         |
 		| Jul/Current Academic Year | 0            | 0          | 0         |
+
     And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R01/Current Academic Year | Aug/Current Academic Year | 600          | 0          | 0         |
@@ -57,6 +63,7 @@ Scenario Outline: Non-Levy learner, sufficient employer contribution, on program
         | R08/Current Academic Year | Mar/Current Academic Year | 600          | 0          | 0         |
         | R09/Current Academic Year | Apr/Current Academic Year | 600          | 0          | 0         |
         | R10/Current Academic Year | May/Current Academic Year | 600          | 1800       | 0         |
+
 	And  at month end only the following provider payments will be generated
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 540                    | 60                          | Learning         |
@@ -69,7 +76,8 @@ Scenario Outline: Non-Levy learner, sufficient employer contribution, on program
         | R08/Current Academic Year | Mar/Current Academic Year | 540                    | 60                          | Learning         |
         | R09/Current Academic Year | Apr/Current Academic Year | 540                    | 60                          | Learning         |
         | R10/Current Academic Year | May/Current Academic Year | 540                    | 60                          | Learning         |
-        | R10/Current Academic Year | Jun/Current Academic Year | 1620                   | 180                         | Completion       |
+        | R10/Current Academic Year | May/Current Academic Year | 1620                   | 180                         | Completion       |
+
 	And only the following provider payments will be generated
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 540                    | 60                          | Learning         |
@@ -82,7 +90,8 @@ Scenario Outline: Non-Levy learner, sufficient employer contribution, on program
         | R08/Current Academic Year | Mar/Current Academic Year | 540                    | 60                          | Learning         |
         | R09/Current Academic Year | Apr/Current Academic Year | 540                    | 60                          | Learning         |
         | R10/Current Academic Year | May/Current Academic Year | 540                    | 60                          | Learning         |
-        | R10/Current Academic Year | Jun/Current Academic Year | 1620                   | 180                         | Completion       |
+        | R10/Current Academic Year | May/Current Academic Year | 1620                   | 180                         | Completion       |
+
 Examples: 
         | Collection_Period         |
         | R01/Current Academic Year |
