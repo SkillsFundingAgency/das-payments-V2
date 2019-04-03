@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             string plannedDuration,
             string actualDuration)
         {
-            if (startDate == null) return true;
+            if (startDate == null || completionStatus == CompletionStatus.Completed) return true;
             var aimStartDate = startDate.ToDate();
             var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
             var aimDurationTimespan = actualDurationAsTimeSpan ?? plannedDurationAsTimeSpan;
