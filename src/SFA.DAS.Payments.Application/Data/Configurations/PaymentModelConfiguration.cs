@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();
             builder.Property(x => x.StartDate).HasColumnName(@"EarningsStartDate").IsRequired();
-            builder.Property(x => x.PlannedEndDate).HasColumnName(@"EarningsPlannedEndDate").IsRequired();
+            builder.Property(x => x.PlannedEndDate).HasColumnName(@"EarningsPlannedEndDate");
             builder.Property(x => x.ActualEndDate).HasColumnName(@"EarningsActualEndDate");
             builder.Property(x => x.CompletionStatus).HasColumnName(@"EarningsCompletionStatus").IsRequired();
             builder.Property(x => x.CompletionAmount).HasColumnName(@"EarningsCompletionAmount").IsRequired();

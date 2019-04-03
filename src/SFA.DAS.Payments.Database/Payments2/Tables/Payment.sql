@@ -28,7 +28,7 @@
 	[AccountId] BIGINT NULL , 
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 	EarningsStartDate DATETIME NOT NULL,
-	EarningsPlannedEndDate DATETIME NOT NULL,
+	EarningsPlannedEndDate DATETIME NULL,
 	EarningsActualEndDate DATETIME NULL,
 	EarningsCompletionStatus TINYINT NOT NULL,
 	EarningsCompletionAmount DECIMAL (15,5),

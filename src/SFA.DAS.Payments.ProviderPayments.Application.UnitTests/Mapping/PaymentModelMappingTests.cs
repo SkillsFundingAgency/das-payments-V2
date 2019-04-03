@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             Mapper.Map(providerPaymentEvent, providerPayment);
 
             providerPayment.StartDate.Should().Be(providerPaymentEvent.StartDate);
-            providerPayment.PlannedEndDate.Should().Be(providerPaymentEvent.PlannedEndDate);
+            providerPayment.PlannedEndDate.Should().Be(providerPaymentEvent.PlannedEndDate.Value);
             providerPayment.ActualEndDate.Should().Be(providerPaymentEvent.ActualEndDate);
             providerPayment.CompletionStatus.Should().Be(providerPaymentEvent.CompletionStatus);
             providerPayment.CompletionAmount.Should().Be(providerPaymentEvent.CompletionAmount);

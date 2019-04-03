@@ -13,13 +13,6 @@ namespace SFA.DAS.Payments.Audit.Model
          decimal SfaContributionPercentage { get; set; }
          string AgreementId { get; set; }
          long? AccountId { get; set; }
-         DateTime StartDate { get; set; }
-         DateTime PlannedEndDate { get; set; }
-         DateTime? ActualEndDate { get; set; }
-         byte CompletionStatus { get; set; }
-         decimal CompletionAmount { get; set; }
-         decimal InstalmentAmount { get; set; }
-         short NumberOfInstalments { get; set; }
     }
 
     public abstract class PeriodisedPaymentsEventModel: PaymentsEventModel, IPeriodisedPaymentsEventModel
@@ -33,12 +26,5 @@ namespace SFA.DAS.Payments.Audit.Model
         public decimal SfaContributionPercentage { get; set; }
         public string AgreementId { get; set; }
         public long? AccountId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime PlannedEndDate { get; set; }
-        public DateTime? ActualEndDate { get; set; }
-        public byte CompletionStatus { get; set; }
-        public decimal CompletionAmount { get; set; }
-        public decimal InstalmentAmount { get; set; }
-        public short NumberOfInstalments { get; set; }
     }
 }
