@@ -15,6 +15,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 {
@@ -181,6 +182,31 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             requiredPaymentEvent.CompletionAmount.Should().Be(priceEpisode.CompletionAmount);
             requiredPaymentEvent.InstalmentAmount.Should().Be(priceEpisode.InstalmentAmount);
             requiredPaymentEvent.NumberOfInstalments.Should().Be((short)priceEpisode.NumberOfInstalments);
+        }
+
+        [Test]
+        public void PaymentHistoryEntityMapsEarningsInfo()
+        {
+            var paymentHistoryEntity = new PaymentHistoryEntity
+            {
+                CollectionPeriod = new CollectionPeriod(),
+                StartDate = DateTime.UtcNow,
+                PlannedEndDate = DateTime.UtcNow,
+                ActualEndDate = DateTime.UtcNow,
+                CompletionAmount = 100M,
+                InstalmentAmount = 200M,
+                NumberOfInstalments = 16
+            };
+
+            var payment = mapper.Map<Payment>(paymentHistoryEntity);
+
+            payment.StartDate.Should().Be(paymentHistoryEntity.StartDate);
+            payment.PlannedEndDate.Should().Be(paymentHistoryEntity.PlannedEndDate);
+            payment.ActualEndDate.Should().Be(paymentHistoryEntity.ActualEndDate);
+            payment.CompletionStatus.Should().Be(0);
+            payment.CompletionAmount.Should().Be(paymentHistoryEntity.CompletionAmount);
+            payment.InstalmentAmount.Should().Be(paymentHistoryEntity.InstalmentAmount);
+            payment.NumberOfInstalments.Should().Be((short)paymentHistoryEntity.NumberOfInstalments);
         }
 
         private static void AssertCommonProperties(RequiredPaymentEvent requiredPayment, IEarningEvent earning)

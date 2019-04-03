@@ -18,7 +18,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
             CreateMap<PaymentHistoryEntity, Payment>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.ResolveUsing(src => src.DeliveryPeriod))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod.Clone()));
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod.Clone()))
+                .ForMember(payment => payment.StartDate, opt => opt.MapFrom(episode => episode.StartDate))
+                .ForMember(payment => payment.PlannedEndDate, opt => opt.MapFrom(episode => episode.PlannedEndDate))
+                .ForMember(payment => payment.ActualEndDate, opt => opt.MapFrom(episode => episode.ActualEndDate))
+                .ForMember(payment => payment.CompletionStatus, opt => opt.Ignore())
+                .ForMember(payment => payment.CompletionAmount, opt => opt.MapFrom(episode => episode.CompletionAmount))
+                .ForMember(payment => payment.InstalmentAmount, opt => opt.MapFrom(episode => episode.InstalmentAmount))
+                .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments));
 
             // Earning event --> required payment event
             CreateMap<IEarningEvent, RequiredPaymentEvent>()

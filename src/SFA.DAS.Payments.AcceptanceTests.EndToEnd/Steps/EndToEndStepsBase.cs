@@ -441,12 +441,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     .PriceEpisodeValues.EpisodeStartDate;
                 currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
 
-                //if (aim.PlannedDurationAsTimespan.HasValue)
-                //{
-                //    currentPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedEndDate =
-                //        aim.StartDate.ToDate() + aim.PlannedDurationAsTimespan;
-                //}
-
                 if (aim.ActualDurationAsTimespan.HasValue)
                 {
                     currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =

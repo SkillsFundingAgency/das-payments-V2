@@ -79,8 +79,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                     var priceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier;
 
-                    var priceEpisode =
-                        earningEvent.PriceEpisodes?.SingleOrDefault(x => x.Identifier == priceEpisodeIdentifier);
+                    var priceEpisode = earningEvent.PriceEpisodes.Count == 1
+                        ? earningEvent.PriceEpisodes.FirstOrDefault()
+                        : earningEvent.PriceEpisodes?.SingleOrDefault(x => x.Identifier == priceEpisodeIdentifier);
 
                     mapper.Map(priceEpisode, requiredPaymentEvent);
 
