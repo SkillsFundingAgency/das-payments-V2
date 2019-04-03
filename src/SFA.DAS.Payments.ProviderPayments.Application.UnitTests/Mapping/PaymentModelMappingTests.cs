@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             Mapper.AssertConfigurationIsValid();
         }
 
+        [Test]
         [TestCase(typeof(EmployerCoInvestedFundingSourcePaymentEvent))]
         [TestCase(typeof(SfaCoInvestedFundingSourcePaymentEvent))]
         [TestCase(typeof(SfaFullyFundedFundingSourcePaymentEvent))]
