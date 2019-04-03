@@ -13,7 +13,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
         {
             var builder = ContainerFactory.CreateBuilder();
             builder.RegisterActor<TActor>()
-                .OnActivating(e => ((ActorStateManagerProvider) e.Context.Resolve<IActorStateManagerProvider>()).Current = e.Instance.StateManager);            
+                .OnActivating(e =>
+                {
+                    ((ActorStateManagerProvider) e.Context.Resolve<IActorStateManagerProvider>()).Current = e.Instance.StateManager;
+                    ((ActorIdProvider) e.Context.Resolve<IActorIdProvider>()).Current = e.Instance.Id;
+                });
             var container = ContainerFactory.CreateContainer(builder);
             return container;
         }
