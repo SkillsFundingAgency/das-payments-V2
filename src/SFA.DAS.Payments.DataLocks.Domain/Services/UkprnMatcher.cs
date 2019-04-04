@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
         }
         public async Task<DataLockErrorCode?> MatchUkprn()
         {
-            var hasLearnerData = await dataLockLearnerCache.HasLearnerRecords();
+            var hasLearnerData = await dataLockLearnerCache.HasLearnerRecords().ConfigureAwait(false);
             if (!hasLearnerData) return DataLockErrorCode.DLOCK_01;
 
             return default(DataLockErrorCode?);

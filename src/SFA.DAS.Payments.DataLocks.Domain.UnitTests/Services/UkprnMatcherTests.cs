@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var ukprnMatcher = new UkprnMatcher(dataLockLearnerCache.Object);
 
-            var result = await ukprnMatcher.MatchUkprn();
+            var result = await ukprnMatcher.MatchUkprn().ConfigureAwait(false);
 
             result.Should().NotBeNull();
             result.Should().Be(DataLockErrorCode.DLOCK_01);
@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 .Returns(Task.FromResult(true));
 
             var ukprnMatcher = new UkprnMatcher(dataLockLearnerCache.Object);
-            var result = await ukprnMatcher.MatchUkprn();
+            var result = await ukprnMatcher.MatchUkprn().ConfigureAwait(false);
             result.Should().BeNull();
         }
 

@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Cache
                 .Returns(Task.FromResult(true));
 
             var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object);
-            await dataLockLearnerCache.HasLearnerRecords();
+            await dataLockLearnerCache.HasLearnerRecords().ConfigureAwait(false);
 
             dataCache.Verify(o => o.IsEmpty(It.IsAny<CancellationToken>()), Times.Once);
         }

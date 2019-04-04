@@ -28,13 +28,13 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache
 
         public async Task<bool> IsInitialised(CancellationToken cancellationToken = default(CancellationToken))
         {
-           var isInitialised = await this.Contains(initialisedKey, cancellationToken);
+           var isInitialised = await this.Contains(initialisedKey, cancellationToken).ConfigureAwait(false);
             return isInitialised;
         }
 
         public async Task<bool> IsEmpty(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var keys = await StateManager.GetStateNamesAsync(cancellationToken);
+            var keys = await StateManager.GetStateNamesAsync(cancellationToken).ConfigureAwait(false);
             return (keys == null || keys.All(o => o.Equals(initialisedKey)));
         }
 

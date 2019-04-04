@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Cache
 
         public async Task<bool> HasLearnerRecords()
         {
-            var isEmpty =  await dataCache.IsEmpty();
+            var isEmpty = await dataCache.IsEmpty().ConfigureAwait(false);
             return !isEmpty;
         }
     }
