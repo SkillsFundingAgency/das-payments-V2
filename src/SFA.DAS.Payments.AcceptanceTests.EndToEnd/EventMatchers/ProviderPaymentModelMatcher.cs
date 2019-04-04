@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                    expected.ContractType == actual.ContractType &&
                    expected.FundingSource == actual.FundingSource &&
                    expected.Amount == actual.Amount &&
-                   //expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
+                   expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
                    expected.Ukprn == actual.Ukprn &&
                    expected.AccountId == actual.AccountId &&
                    expected.LearningAimStandardCode == actual.LearningAimStandardCode;

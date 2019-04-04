@@ -144,7 +144,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override bool Match(RequiredPaymentEvent expected, RequiredPaymentEvent actual)
         {
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
-                   //expected.AmountDue == actual.AmountDue &&
+                   expected.AmountDue == actual.AmountDue &&
                    MatchAct(expected as CalculatedRequiredOnProgrammeAmount, actual as CalculatedRequiredOnProgrammeAmount) &&
                    MatchIncentive(expected as CalculatedRequiredIncentiveAmount, actual as CalculatedRequiredIncentiveAmount);
         }

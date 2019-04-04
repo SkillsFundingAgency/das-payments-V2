@@ -448,14 +448,12 @@
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Tests\Additional Payments English and Maths\" />
     <Folder Include="Tests\Capping\" />
     <Folder Include="Tests\Disadvantage - Uplift\" />
     <Folder Include="Tests\Learner Change of Circumstances\" />
     <Folder Include="Tests\Levy Learner\Basic Day\" />
+    <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
     <Folder Include="Tests\Non-Levy Learner - Learner Change of Circumstances\" />
     <Folder Include="Tests\Non-Levy Learner - Learning Support\" />
     <Folder Include="Tests\Non-Levy Learner - Refunds\" />
@@ -464,6 +462,7 @@
     <Folder Include="Tests\Non-Levy Learner\Small Employer\" />
     <Folder Include="Tests\Refunds\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
