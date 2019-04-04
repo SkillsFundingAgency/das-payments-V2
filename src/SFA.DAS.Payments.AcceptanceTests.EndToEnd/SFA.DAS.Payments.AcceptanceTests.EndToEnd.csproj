@@ -248,7 +248,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Commitment.cs" />
+    <Compile Include="Data\Apprenticeship.cs" />
     <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
@@ -260,7 +260,6 @@
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Handlers\FundingSourcePaymentEventHandler.cs" />
     <Compile Include="Handlers\PayableEarningEventHandler.cs" />
-    <Compile Include="Extensions\CommitmentExtensions.cs" />
     <Compile Include="Extensions\EmployerExtensions.cs" />
     <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\EarningEventHandler.cs" />
@@ -270,7 +269,6 @@
     <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
-    <Compile Include="Mapping\CommitmentProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
@@ -431,10 +429,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available- PV2-366.feature.cs">
+    <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Non-Levy learner changes to Levy employer Levy available- PV2-366.feature</DependentUpon>
+      <DependentUpon>Non-Levy learner changes to Levy employer Levy available PV2-366.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature.cs">
       <AutoGen>True</AutoGen>
@@ -986,9 +984,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available- PV2-366.feature">
+    <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-Levy learner changes to Levy employer Levy available- PV2-366.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1392,9 +1390,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
