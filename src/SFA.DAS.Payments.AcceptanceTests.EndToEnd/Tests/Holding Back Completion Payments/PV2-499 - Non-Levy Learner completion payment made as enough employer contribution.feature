@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: Holding back completion payments - PV2-499
+﻿Feature: Holding back completion payments - PV2-499
 	As a provider,
 	I want a Non-levy learner, where the employer has paid all their 10% co-investment for the on-program element only, but has not yet paid the employer completion payment element
 	So that I am accurately paid the completion payment by SFA
