@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ReliableCollectionCache<List<CommitmentModel>>>().AsImplementedInterfaces();
+            builder.RegisterType<ReliableCollectionCache<List<ApprenticeshipModel>>>().AsImplementedInterfaces();
         }
     }
 }
