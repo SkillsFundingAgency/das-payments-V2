@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 
 namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {

@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.DataLockService.Interfaces;
+using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -18,9 +19,11 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
     [StatePersistence(StatePersistence.Persisted)]
     public class DataLockService : Actor, IDataLockService
     {
+        private readonly ActorService actorService;
+        private readonly ActorId actorId;
         private readonly IMapper mapper;
         private readonly IPaymentLogger paymentLogger;
-        private readonly IDataCache<List<ApprenticeshipModel>> apprenticeships;
+        private readonly IActorDataCache<List<ApprenticeshipModel>> apprenticeships;
         private readonly IApprenticeshipRepository apprenticeshipRepository;
 
         public DataLockService(
@@ -28,17 +31,17 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             ActorId actorId, 
             IMapper mapper,
             IPaymentLogger paymentLogger, 
-            IApprenticeshipRepository apprenticeshipRepository, 
-            IDataCache<List<ApprenticeshipModel>> apprenticeships) 
+            IApprenticeshipRepository apprenticeshipRepository,
+            IActorDataCache<List<ApprenticeshipModel>> apprenticeships) 
             : base(actorService, actorId)
         {
+            this.actorService = actorService;
+            this.actorId = actorId;
             this.mapper = mapper;
             this.paymentLogger = paymentLogger;
             this.apprenticeshipRepository = apprenticeshipRepository;
             this.apprenticeships = apprenticeships;
         }
-
-        private const string InitialisedKey = "initialised";
 
         public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
@@ -55,7 +58,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         public async Task Reset()
         {
             paymentLogger.LogInfo($"Resetting actor for provider {Id}");
-            await StateManager.TryRemoveStateAsync(InitialisedKey, CancellationToken.None).ConfigureAwait(false);
+            await apprenticeships.Reset().ConfigureAwait(false);
             // TODO: When we can clear the list
             //await commitments.Clear().ConfigureAwait(false);
         }
@@ -69,7 +72,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         private async Task Initialise()
         {
-            if (await StateManager.ContainsStateAsync(InitialisedKey).ConfigureAwait(false)) return;
+            if (await apprenticeships.IsInitialised().ConfigureAwait(false)) return;
 
             paymentLogger.LogInfo($"Initialising actor for provider {Id}");
 
@@ -84,7 +87,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
             paymentLogger.LogInfo($"Initialised actor for provider {Id}");
 
-            await StateManager.TryAddStateAsync(InitialisedKey, true).ConfigureAwait(false);
+            await apprenticeships.Initialise().ConfigureAwait(false);
         }
     }
 }

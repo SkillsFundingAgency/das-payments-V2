@@ -1,0 +1,47 @@
+﻿using Moq;
+using NUnit.Framework;
+using NUnit.Framework.Internal;
+using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
+using SFA.DAS.Payments.DataLocks.Domain.Services;
+using System.Threading.Tasks;
+using FluentAssertions;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
+
+namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
+{
+    [TestFixture]
+    public class UkprnMatcherTests
+    {
+        private Mock<IDataLockLearnerCache> dataLockLearnerCache;
+
+        [Test]
+        public async Task ShouldReturnDataLockOneWhenCacheIsEmpty()
+        {
+            dataLockLearnerCache = new Mock<IDataLockLearnerCache>();
+            dataLockLearnerCache
+                .Setup(o => o.HasLearnerRecords())
+                .Returns(Task.FromResult(false));
+
+            var ukprnMatcher = new UkprnMatcher(dataLockLearnerCache.Object);
+
+            var result = await ukprnMatcher.MatchUkprn();
+
+            result.Should().NotBeNull();
+            result.Should().Be(DataLockErrorCode.DLOCK_01);
+        }
+
+        [Test]
+        public async Task ShouldReturnNulWhenCacheHasLearnerRecords()
+        {
+            dataLockLearnerCache = new Mock<IDataLockLearnerCache>();
+            dataLockLearnerCache
+                .Setup(o => o.HasLearnerRecords())
+                .Returns(Task.FromResult(true));
+
+            var ukprnMatcher = new UkprnMatcher(dataLockLearnerCache.Object);
+            var result = await ukprnMatcher.MatchUkprn();
+            result.Should().BeNull();
+        }
+
+    }
+}
