@@ -9,5 +9,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application
     public interface IPaymentHistoryRepository
     {
         Task<List<PaymentHistoryEntity>> GetPaymentHistory(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<decimal> GetEmployerCoInvestedPaymentHistoryTotal(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
