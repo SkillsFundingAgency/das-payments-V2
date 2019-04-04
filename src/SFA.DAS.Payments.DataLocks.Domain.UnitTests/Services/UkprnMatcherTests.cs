@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Test]
-        public async Task ShouldReturnNulWhenCacheHasLearnerRecords()
+        public async Task ShouldReturnNullWhenCacheHasLearnerRecords()
         {
             dataLockLearnerCache = new Mock<IDataLockLearnerCache>();
             dataLockLearnerCache
