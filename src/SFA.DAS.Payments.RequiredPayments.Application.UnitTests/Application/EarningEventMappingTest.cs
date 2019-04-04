@@ -88,6 +88,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
         [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
         [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredLevyAmount))]
+        [TestCase(typeof(PayableEarningEvent), typeof(CompletionPaymentHeldBackEvent))]
         public void ContractTypeIsCorrectForPayableEarningEvent(Type earningEventType, Type requiredPaymentEventType)
         {
             var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
@@ -104,6 +105,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredCoInvestedAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredLevyAmount))]
         [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredLevyAmount))]
+        [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CompletionPaymentHeldBackEvent))]
         public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType, Type requiredPaymentEventType)
         {
             var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;

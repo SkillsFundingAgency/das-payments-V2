@@ -22,6 +22,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
 
             // Earning event --> required payment event
             CreateMap<IEarningEvent, RequiredPaymentEvent>()
+                .Include<PayableEarningEvent, CompletionPaymentHeldBackEvent>()
+                .Include<ApprenticeshipContractType2EarningEvent, CompletionPaymentHeldBackEvent>()
                 .Include<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<IEarningEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(requiredPayment => requiredPayment.EarningEventId, opt => opt.MapFrom(earning => earning.EventId))
@@ -53,6 +55,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.AmountDue)
                 .Ignore(x => x.DeliveryPeriod)
                 .Ignore(x => x.ContractType)
+                ;
+
+            CreateMap<PayableEarningEvent, CompletionPaymentHeldBackEvent>()
+                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
+                ;
+            CreateMap<ApprenticeshipContractType2EarningEvent, CompletionPaymentHeldBackEvent>()
+                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
                 ;
 
             CreateMap<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()

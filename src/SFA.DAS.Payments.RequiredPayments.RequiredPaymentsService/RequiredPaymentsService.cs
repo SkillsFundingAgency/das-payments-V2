@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.ServiceFabric.Actors;
@@ -66,6 +67,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             {
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await contractType2EarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                Log(requiredPaymentEvents);
                 telemetry.StopOperation(operation);
                 return requiredPaymentEvents;
             }
@@ -79,6 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             {
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                Log(requiredPaymentEvents);
                 telemetry.StopOperation(operation);
                 return requiredPaymentEvents;
             }
@@ -92,9 +95,16 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             {
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await payableEarningEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                Log(requiredPaymentEvents);
                 telemetry.StopOperation(operation);
                 return requiredPaymentEvents;
             }
+        }
+
+        private void Log(ReadOnlyCollection<RequiredPaymentEvent> requiredPaymentEvents)
+        {
+            var stats = requiredPaymentEvents.GroupBy(p => p.GetType()).Select(group => $"{group.Key.Name}: {group.Count()}");
+            paymentLogger.LogDebug($"Created {requiredPaymentEvents.Count} required payment events for {apprenticeshipKeyString}. {string.Join(", ", stats)}");
         }
 
         protected override async Task OnActivateAsync()
