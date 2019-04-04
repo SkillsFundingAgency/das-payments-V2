@@ -191,7 +191,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (apprenticeshipSpec.Ukprn == default(long))
             {
-                if (string.IsNullOrEmpty(apprenticeshipSpec.Provider))
+                if (string.IsNullOrWhiteSpace(apprenticeshipSpec.Provider))
                 {
                     apprenticeshipSpec.Ukprn = TestSession.Ukprn;
                 }
