@@ -40,19 +40,19 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
         {
             var actorService = MockActorServiceFactory.CreateActorServiceForActor<DataLockService>();
             var paymentLoggerMock = Mock.Of<IPaymentLogger>();
-            var commitmentRepositoryMock = Mock.Of<ICommitmentRepository>();
-            var dataCacheMock = Mock.Of<IDataCache<List<CommitmentModel>>>();
+            var commitmentRepositoryMock = Mock.Of<IApprenticeshipRepository>();
+            var dataCacheMock = Mock.Of<IDataCache<List<ApprenticeshipModel>>>();
 
-            var commitments = new List<CommitmentModel>
+            var commitments = new List<ApprenticeshipModel>
             {
-                new CommitmentModel
+                new ApprenticeshipModel
                 {
                     AccountId = 456,
                 }
             };
 
             Mock.Get(dataCacheMock).Setup(x => x.TryGet(It.IsAny<string>(), CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<CommitmentModel>>(true, commitments));
+                .ReturnsAsync(() => new ConditionalValue<List<ApprenticeshipModel>>(true, commitments));
 
             var testEarning = new ApprenticeshipContractType1EarningEvent
             {

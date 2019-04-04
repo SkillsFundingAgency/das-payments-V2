@@ -119,8 +119,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
-                var commitments = table.CreateSet<Commitment>().ToList();
-                await AddTestCommitments(commitments).ConfigureAwait(false);
+                var apprenticeships = table.CreateSet<Apprenticeship>().ToList();
+                await AddTestApprenticeships(apprenticeships).ConfigureAwait(false);
             }
         }
 

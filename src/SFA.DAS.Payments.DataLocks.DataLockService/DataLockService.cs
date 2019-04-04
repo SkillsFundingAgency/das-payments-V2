@@ -20,35 +20,35 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
     {
         private readonly IMapper mapper;
         private readonly IPaymentLogger paymentLogger;
-        private readonly IDataCache<List<CommitmentModel>> commitments;
-        private readonly ICommitmentRepository commitmentRepository;
+        private readonly IDataCache<List<ApprenticeshipModel>> apprenticeships;
+        private readonly IApprenticeshipRepository apprenticeshipRepository;
 
         public DataLockService(
             ActorService actorService, 
             ActorId actorId, 
             IMapper mapper,
             IPaymentLogger paymentLogger, 
-            ICommitmentRepository commitmentRepository, 
-            IDataCache<List<CommitmentModel>> commitments) 
+            IApprenticeshipRepository apprenticeshipRepository, 
+            IDataCache<List<ApprenticeshipModel>> apprenticeships) 
             : base(actorService, actorId)
         {
             this.mapper = mapper;
             this.paymentLogger = paymentLogger;
-            this.commitmentRepository = commitmentRepository;
-            this.commitments = commitments;
+            this.apprenticeshipRepository = apprenticeshipRepository;
+            this.apprenticeships = apprenticeships;
         }
 
         private const string InitialisedKey = "initialised";
 
         public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
-            var commitmentsForUln = await commitments.TryGet(message.Learner.Uln.ToString(), cancellationToken)
+            var apprenticeshipsForUln = await apprenticeships.TryGet(message.Learner.Uln.ToString(), cancellationToken)
                 .ConfigureAwait(false);
-            var commitment = commitmentsForUln.Value.FirstOrDefault();
+            var apprenticeship = apprenticeshipsForUln.Value.FirstOrDefault();
 
             var returnMessage = mapper.Map<PayableEarningEvent>(message);
-            returnMessage.AccountId = commitment.AccountId;
-            returnMessage.Priority = commitment.Priority;
+            returnMessage.AccountId = apprenticeship.AccountId;
+            returnMessage.Priority = apprenticeship.Priority;
             return returnMessage;
         }
 
@@ -73,13 +73,13 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
             paymentLogger.LogInfo($"Initialising actor for provider {Id}");
 
-            var providerCommitments = await commitmentRepository.CommitmentsForProvider(long.Parse(Id.ToString())).ConfigureAwait(false);
+            var providerCommitments = await apprenticeshipRepository.ApprenticeshipsForProvider(long.Parse(Id.ToString())).ConfigureAwait(false);
 
             var groupedCommitments = providerCommitments.ToLookup(x => x.Uln);
 
             foreach (var group in groupedCommitments)
             {
-                await this.commitments.AddOrReplace(group.Key.ToString(), group.ToList()).ConfigureAwait(false);
+                await this.apprenticeships.AddOrReplace(group.Key.ToString(), group.ToList()).ConfigureAwait(false);
             }
 
             paymentLogger.LogInfo($"Initialised actor for provider {Id}");
