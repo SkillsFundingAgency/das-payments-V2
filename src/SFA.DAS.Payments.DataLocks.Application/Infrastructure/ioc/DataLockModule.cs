@@ -13,10 +13,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ActorReliableCollectionCache<List<ApprenticeshipModel>>>().As<IActorDataCache<List<ApprenticeshipModel>>>().InstancePerLifetimeScope();
+            builder.RegisterType<ActorReliableCollectionCache<List<ApprenticeshipModel>>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockLearnerCache>().As<IDataLockLearnerCache>().InstancePerLifetimeScope();
             builder.RegisterType<UkprnMatcher>().As<IUkprnMatcher>().InstancePerLifetimeScope();
-            builder.RegisterType<UlnLearnerMatcher>().As<IUlnLearnerMatcher>().InstancePerLifetimeScope();
+            builder.RegisterType<UlnLearnerMatcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }
