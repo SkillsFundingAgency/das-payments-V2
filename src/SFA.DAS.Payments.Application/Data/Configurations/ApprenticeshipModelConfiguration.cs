@@ -4,7 +4,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
-    class ApprenticeshipModelConfiguration : IEntityTypeConfiguration<ApprenticeshipModel>
+    public class ApprenticeshipModelConfiguration : IEntityTypeConfiguration<ApprenticeshipModel>
     {
         public void Configure(EntityTypeBuilder<ApprenticeshipModel> builder)
         {

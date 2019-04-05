@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
             var actorService = MockActorServiceFactory.CreateActorServiceForActor<DataLockService>();
             var paymentLoggerMock = Mock.Of<IPaymentLogger>();
             var commitmentRepositoryMock = Mock.Of<IApprenticeshipRepository>();
-            var dataCacheMock = Mock.Of<IDataCache<List<ApprenticeshipModel>>>();
+            var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
 
             var commitments = new List<ApprenticeshipModel>
             {
