@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Cache
 {
@@ -16,7 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Cache
         private Mock<IActorDataCache<List<ApprenticeshipModel>>> dataCache;
 
         [Test]
-        public async Task ShouldCallDataCacheService()
+        public async Task HasLearnerRecordsShouldReturnFalseIfCacheIsEmpty()
         {
             dataCache = new Mock<IActorDataCache<List<ApprenticeshipModel>>>();
             dataCache.
@@ -24,9 +25,31 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Cache
                 .Returns(Task.FromResult(true));
 
             var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object);
-            await dataLockLearnerCache.HasLearnerRecords().ConfigureAwait(false);
-
-            dataCache.Verify(o => o.IsEmpty(It.IsAny<CancellationToken>()), Times.Once);
+            var actual = await dataLockLearnerCache.HasLearnerRecords().ConfigureAwait(false);
+            actual.Should().BeFalse();
         }
+
+        [Test]
+        public async Task ShouldReturnApprenticeshipsIfCacheIsNotEmpty()
+        {
+            var apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
+                {
+                    Ukprn = 100,
+                    AccountId = 100
+                }
+            };
+            var cacheApprenticeships = new ConditionalValue<List<ApprenticeshipModel>>(true, apprenticeships);
+            dataCache = new Mock<IActorDataCache<List<ApprenticeshipModel>>>();
+            dataCache.Setup(o => o.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                     .Returns(Task.FromResult(cacheApprenticeships));
+
+            var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object);
+            var actual = await dataLockLearnerCache.GetLearnerApprenticeships(100).ConfigureAwait(false);
+            actual.Should().NotBeNull();
+            actual.Should().HaveCount(1);
+        }
+
     }
 }

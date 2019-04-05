@@ -82,9 +82,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         public async Task Reset()
         {
             paymentLogger.LogInfo($"Resetting actor for provider {Id}");
-            await apprenticeships.Reset().ConfigureAwait(false);
-            // TODO: When we can clear the list
-            //await commitments.Clear().ConfigureAwait(false);
+            await apprenticeships.ResetInitialiseFlag().ConfigureAwait(false);
         }
 
         protected override async Task OnActivateAsync()
@@ -96,7 +94,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         private async Task Initialise()
         {
-            if (await apprenticeships.IsInitialised().ConfigureAwait(false)) return;
+            if (await apprenticeships.IsInitialiseFlagIsSet().ConfigureAwait(false)) return;
 
             paymentLogger.LogInfo($"Initialising actor for provider {Id}");
 
@@ -111,7 +109,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
             paymentLogger.LogInfo($"Initialised actor for provider {Id}");
 
-            await apprenticeships.Initialise().ConfigureAwait(false);
+            await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
         }
     }
 }
