@@ -15,6 +15,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<ActorReliableCollectionCache<List<ApprenticeshipModel>>>().AsImplementedInterfaces();
             builder.RegisterType<DataLockLearnerCache>().As<IDataLockLearnerCache>().InstancePerLifetimeScope();
             builder.RegisterType<UkprnMatcher>().As<IUkprnMatcher>().InstancePerLifetimeScope();
+            builder.RegisterType<LearnerMatcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<CourseValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }
