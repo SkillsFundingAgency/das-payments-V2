@@ -1,5 +1,3 @@
-@ignore
-
 Feature: PV2-442 Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid
 	As a provider,
 	I want a levy learner who does not live in a Disadvantaged Postcode area to undertake an Apprenticeship Framework course
