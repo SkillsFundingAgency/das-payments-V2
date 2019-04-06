@@ -1,8 +1,6 @@
 @ignore
-
-#Feature: Payment Priority
-#
-#Background: 2 learners, paid in priority order
+Feature: Payment Priority - PV2-602
+	2 learners, paid in priority order
 
 #Scenario: Earnings and payments for two DAS learners, levy is spent in priority order and available for both learners
 #
@@ -72,7 +70,8 @@
 #                | SFA Levy employer budget       | 2000  | 2000  | 2000  | 2000  | ... | 2000  | 0     |
 #                | SFA Levy co-funding budget     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
 #                | SFA non-Levy co-funding budget | 0     | 0     | 0     | 0     | ... | 0     | 0     |
-				
+
+
 Scenario Outline:  Earnings and payments for two DAS learners, levy is spent in priority order and available for both learners PV2-602
 	# employer 1 levy balance > agreed price for all months for both learners
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>

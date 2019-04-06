@@ -74,7 +74,7 @@
 #                | SFA non-Levy co-funding budget | 0     | 0     | 0     | 0     | ... | 0     | 0     |
 
 	
-	Feature:
+	Feature: PV2-604
 	As a provider,
 	I want 2 Levy learners, where levy is spent in priority order and there is only enough levy available for one and half learners
 	So that I am accurately paid the apprenticeship amount by SFA  PV2-604

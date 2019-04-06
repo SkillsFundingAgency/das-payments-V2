@@ -87,6 +87,7 @@
 #                | SFA Levy co-funding budget     | 0     | 0     | 720   | 225   | 225   | ... | 225   | 0     |
 #                | SFA non-Levy co-funding budget | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
 
+Feature: PV2-656
 Scenario Outline: Two levy learners, full levy available for one learner, partial levy available for the other
 
 	Given the employer levy account balance in collection period  <Collection_Period> is <Levy_Balance>
