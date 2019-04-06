@@ -1,4 +1,3 @@
-@ignore
 Feature: Holding back completion payments - PV2-521
 	As a provider,
 	I want a levy learner with co-funding, where the employer has used LDM code 356, and has not paid their 10% co-investment for the on-program element, and has not yet paid their employer completion payment element

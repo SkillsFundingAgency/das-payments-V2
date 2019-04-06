@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: Holding back completion payments - PV2-522
+﻿Feature: Holding back completion payments - PV2-522
 	As a provider,
 	I want a Non-levy learner, where the employer has used LDM code 361, and has not paid their 10% co-investment for the on-program element, and has not yet paid the employer completion payment element
 	So that I am accurately paid the completion payment by SFA PV2-522

@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: Holding back completion payments - PV2-513
+﻿Feature: Holding back completion payments - PV2-513
 	As a provider,
 	I want a levy learner, where the planned end date is the last day of month and the employer has paid their 10% co-investment for the on-program element for the first 12 months, but has not yet paid the employer completion payment element and the 13th month on program payment
 	So that I am accurately paid the completion payment by SFA
