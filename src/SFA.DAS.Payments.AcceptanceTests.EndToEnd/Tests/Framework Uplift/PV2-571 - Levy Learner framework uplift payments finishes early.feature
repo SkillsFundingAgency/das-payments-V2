@@ -1,5 +1,3 @@
-@ignore
-
 #Scenario: Levy learner, with a framework uplift, finishes early, Balancing payment applied
 #    
 #    Given The learner is programme only DAS

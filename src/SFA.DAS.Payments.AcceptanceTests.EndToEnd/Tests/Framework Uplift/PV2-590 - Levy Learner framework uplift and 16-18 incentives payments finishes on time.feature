@@ -1,5 +1,3 @@
-@ignore
-
 #Scenario:A Levy learner, with a framework uplift and 16-18 Additional Incentive, finishes on time
 #    
 #    Given The learner is programme only DAS

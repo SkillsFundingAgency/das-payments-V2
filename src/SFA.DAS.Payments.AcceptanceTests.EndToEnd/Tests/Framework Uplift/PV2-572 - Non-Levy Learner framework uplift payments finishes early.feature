@@ -1,5 +1,3 @@
-@ignore
-
 #Scenario: Non Levy learner, with a framework uplift, finishes early, Balancing payment applied
 #    
 #    Given the apprenticeship funding band maximum is 9000
