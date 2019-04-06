@@ -604,6 +604,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner submits Ilr several months into learning - PV2-340.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Learning Support Funding\PV2-474 - Levy learner requires learning support doing an apprenticeship framework.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-474 - Levy learner requires learning support doing an apprenticeship framework.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learning Support Funding\PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Learning Support Funding\PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1218,6 +1228,14 @@
     <None Include="Tests\Learner Change of Circumstances\Levy learner submits Ilr several months into learning - PV2-340.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner submits Ilr several months into learning - PV2-340.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learning Support Funding\PV2-474 - Levy learner requires learning support doing an apprenticeship framework.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-474 - Levy learner requires learning support doing an apprenticeship framework.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learning Support Funding\PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learning Support Funding\PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
