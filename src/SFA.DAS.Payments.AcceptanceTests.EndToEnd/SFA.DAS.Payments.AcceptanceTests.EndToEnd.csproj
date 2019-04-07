@@ -374,16 +374,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\PV2-439 -Payment for a DAS learner, lives in a disadvantaged postocde area - 01-10 most deprived.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-439 -Payment for a DAS learner, lives in a disadvantaged postocde area - 01-10 most deprived.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\PV2-440 -Payment for a DAS learner, lives in a disadvantaged postocde area - 11-20 most deprived.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-440 -Payment for a DAS learner, lives in a disadvantaged postocde area - 11-20 most deprived.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Disadvantaged Uplift\PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
