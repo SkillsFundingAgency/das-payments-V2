@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         private readonly IMapper mapper;
         private readonly IPaymentLogger paymentLogger;
         private readonly IActorDataCache<List<ApprenticeshipModel>> apprenticeships;
+        private readonly ILearnerMatcher learnerMatcher;
+        private readonly ICourseValidator courseValidator;
         private readonly IApprenticeshipRepository apprenticeshipRepository;
 
         public DataLockService(
@@ -32,7 +35,9 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             IMapper mapper,
             IPaymentLogger paymentLogger, 
             IApprenticeshipRepository apprenticeshipRepository,
-            IActorDataCache<List<ApprenticeshipModel>> apprenticeships) 
+            IActorDataCache<List<ApprenticeshipModel>> apprenticeships,
+            ILearnerMatcher learnerMatcher,
+            ICourseValidator courseValidator) 
             : base(actorService, actorId)
         {
             this.actorService = actorService;
@@ -41,15 +46,34 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             this.paymentLogger = paymentLogger;
             this.apprenticeshipRepository = apprenticeshipRepository;
             this.apprenticeships = apprenticeships;
+            this.learnerMatcher = learnerMatcher;
+            this.courseValidator = courseValidator;
         }
 
         public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
-            var apprenticeshipsForUln = await apprenticeships.TryGet(message.Learner.Uln.ToString(), cancellationToken)
-                .ConfigureAwait(false);
-            var apprenticeship = apprenticeshipsForUln.Value.FirstOrDefault();
+            var learnerMatchResult = await learnerMatcher.MatchLearner(message.Ukprn, message.Ukprn);
+
+            if (learnerMatchResult.DataLockErrorCode.HasValue)
+            {
+                // TODO: return non-payable earning
+                return null;
+            }
+
+            var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
+            var apprenticeship = apprenticeshipsForUln.FirstOrDefault();
 
             var returnMessage = mapper.Map<PayableEarningEvent>(message);
+
+            // TODO: After implementing CourseValidator, need correct message going into CourseValidator
+            var courseValidationResult = await courseValidator.ValidateCourse(returnMessage.CollectionPeriod, apprenticeshipsForUln);
+
+            if (courseValidationResult.ValidationResults.Any(x => x.DataLockErrorCode.HasValue))
+            {
+                // TODO: return non-payable earning
+                return null;
+            }
+
             returnMessage.AccountId = apprenticeship.AccountId;
             returnMessage.Priority = apprenticeship.Priority;
             return returnMessage;
