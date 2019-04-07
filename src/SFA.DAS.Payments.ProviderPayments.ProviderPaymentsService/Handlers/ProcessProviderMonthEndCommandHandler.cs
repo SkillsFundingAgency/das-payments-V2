@@ -54,6 +54,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 foreach (var paymentEvent in payments.Select(payment => MapToProviderPaymentEvent(payment, message.JobId)))
                 {
                     await context.Publish(paymentEvent);
+                    paymentLogger.LogInfo($"Sent {paymentEvent.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
                     await jobClient.ProcessedJobMessage(message.JobId, paymentEvent.EventId,paymentEvent.GetType().FullName, new List<GeneratedMessage>()).ConfigureAwait(false);
                 }
 

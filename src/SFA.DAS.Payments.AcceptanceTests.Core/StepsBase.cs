@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -24,7 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
         public static bool IsDevEnvironment => (Environment?.Equals("DEVELOPMENT", StringComparison.OrdinalIgnoreCase) ?? false) ||
                                         (Environment?.Equals("LOCAL", StringComparison.OrdinalIgnoreCase) ?? false);
         protected decimal SfaContributionPercentage { get => Get<decimal>("sfa_contribution_percentage"); set => Set(value, "sfa_contribution_percentage"); }
-        protected byte ContractType { get => Get<byte>("contract_type"); set => Set(value, "contract_type"); }
+        protected ContractType ContractType { get => Get<ContractType>("contract_type"); set => Set(value, "contract_type"); }
 
         protected StepsBase(SpecFlowContext context)
         {

@@ -874,25 +874,25 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Payment Priority\PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners.feature.cs">
+    <Compile Include="Tests\Payment Priority\Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners.feature</DependentUpon>
+      <DependentUpon>Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Payment Priority\PV2-603 - Two levy learners paid in priority order enough levy to fund one learner.feature.cs">
+    <Compile Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-603 - Two levy learners paid in priority order enough levy to fund one learner.feature</DependentUpon>
+      <DependentUpon>Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Payment Priority\PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners.feature.cs">
+    <Compile Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners.feature</DependentUpon>
+      <DependentUpon>Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Payment Priority\PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R04.feature.cs">
+    <Compile Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R04.feature</DependentUpon>
+      <DependentUpon>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1445,21 +1445,21 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Payment Priority\PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners.feature">
+    <None Include="Tests\Payment Priority\Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners.feature.cs</LastGenOutput>
+      <LastGenOutput>Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Payment Priority\PV2-603 - Two levy learners paid in priority order enough levy to fund one learner.feature">
+    <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-603 - Two levy learners paid in priority order enough levy to fund one learner.feature.cs</LastGenOutput>
+      <LastGenOutput>Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Payment Priority\PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners.feature">
+    <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners.feature.cs</LastGenOutput>
+      <LastGenOutput>Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Payment Priority\PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R04.feature">
+    <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R04.feature.cs</LastGenOutput>
+      <LastGenOutput>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

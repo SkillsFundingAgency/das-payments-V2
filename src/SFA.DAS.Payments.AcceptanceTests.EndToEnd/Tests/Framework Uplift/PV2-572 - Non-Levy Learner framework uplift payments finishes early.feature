@@ -1,39 +1,3 @@
-@ignore
-
-#Scenario: Non Levy learner, with a framework uplift, finishes early, Balancing payment applied
-#    
-#    Given the apprenticeship funding band maximum is 9000
-#	
-#    When an ILR file is submitted with the following data:
-#		| ULN   | learner type           | agreed price | start date | planned end date | actual end date | completion status | framework code | programme type | pathway code | 
-#        | a     | programme only non-DAS | 8250         | 06/08/2018 | 09/08/2019       | 06/05/2019      | Completed         | 403            | 2              | 1            | 
-#
-#    Then the provider earnings and payments break down as follows:
-#        | Type                                    | 08/18 | 09/18 | 10/18 | ... | 04/19 | 05/19 | 06/19 |
-#        | Provider Earned Total                   | 670   | 670   | 670   | ... | 670   | 4020  | 0     |
-#        | Provider Earned from SFA                | 615   | 615   | 615   | ... | 615   | 3690  | 0     | (1845 Balancing + 1845 Completion)
-#        | Provider Earned from Employer           | 55    | 55    | 55    | ... | 55    | 330   | 0     | (165 Balancing + 165 Completion)
-#        | Provider Paid by SFA                    | 0     | 615   | 615   | ... | 615   | 615   | 3690  |
-#        | Payment due from Employer               | 0     | 55    | 55    | ... | 55    | 55    | 330   |
-#        | Levy account debited                    | 0     | 0     | 0     | ... | 0     | 0     | 0     |
-#        | SFA Levy employer budget                | 0     | 0     | 0     | ... | 0     | 0     | 0     |
-#        | SFA Levy co-funding budget              | 0     | 0     | 0     | ... | 0     | 0     | 0     |
-#		| SFA non-Levy co-funding budget          | 495   | 495   | 495   | ... | 495   | 2970  | 0     | (1485 Balancing + 1485 Completion)
-#        | SFA non-Levy additional payments budget | 120   | 120   | 120   | ... | 120   | 720   | 0     | (360 Balancing + 360 Completion)
-#
-#      And the transaction types for the payments are:
-#        | Payment type                 | 09/18 | 10/18 | ... | 04/19 | 05/19 | 06/19 |
-#        | On-program                   | 495   | 495   | ... | 495   | 495   | 0     |
-#        | Completion                   | 0     | 0     | ... | 0     | 0     | 1485  |
-#        | Balancing                    | 0     | 0     | ... | 0     | 0     | 1485  |
-#        | Framework uplift on-program  | 120   | 120   | ... | 120   | 120   | 0     |
-#        | Framework uplift completion  | 0     | 0     | ... | 0     | 0     | 360   |
-#        | Framework uplift balancing   | 0     | 0     | ... | 0     | 0     | 360   |
-#        | Provider disadvantage uplift | 0     | 0     | ..  | 0     | 0     | 0     |
-
-#For DC Integration
-#To generate 120 framework uplift payment: the apprenticeship funding band maximum is 9000
-
 Feature: Non Levy learner, with a framework uplift, finishes early, Balancing payment applied PV2-572
 		As a provider,
 		I want a Non-Levy learner with a framework uplift, where the learner finishes earlier than planned end date, and a balancing payment is applied

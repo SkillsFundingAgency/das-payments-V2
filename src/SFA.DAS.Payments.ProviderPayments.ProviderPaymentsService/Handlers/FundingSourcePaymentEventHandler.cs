@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
@@ -47,7 +48,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 var afterMonthEndPayment = await afterMonthEndPaymentService.GetPaymentEvent(message);
                 if (afterMonthEndPayment != null)
                 {
-                    paymentLogger.LogDebug($"Sending Provider Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
+                    paymentLogger.LogInfo($"Sent {afterMonthEndPayment.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
+                    paymentLogger.LogDebug($"Sending Provider Payment Event {JsonConvert.SerializeObject(afterMonthEndPayment)} for Message Id : {context.MessageId}.  {message.ToDebug()}");
                     await context.Publish(afterMonthEndPayment);
                     await earningsJobClient.ProcessedJobMessage(afterMonthEndPayment.JobId, afterMonthEndPayment.EventId, afterMonthEndPayment.GetType().FullName, new List<GeneratedMessage>())
                         .ConfigureAwait(false);
@@ -62,7 +64,5 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
             paymentLogger.LogDebug($"Finished processing Funding Source Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
         }
-
-
     }
 }
