@@ -384,32 +384,32 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-440 -Payment for a DAS learner, lives in a disadvantaged postocde area - 11-20 most deprived.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework1.feature.cs">
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid1.feature.cs">
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard1.feature.cs">
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard1.feature.cs">
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard1.feature.cs">
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard1.feature.cs">
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature</DependentUpon>
@@ -474,17 +474,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy learner changes to Levy employer Levy available PV2-366.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early1.feature.cs">
+    <Compile Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-571 - Levy Learner framework uplift payments finishes early.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Framework Uplift\PV2-572 - Non-Levy Learner framework uplift payments finishes early1.feature.cs">
+    <Compile Include="Tests\Framework Uplift\PV2-572 - Non-Levy Learner framework uplift payments finishes early.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-572 - Non-Levy Learner framework uplift payments finishes early.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Framework Uplift\PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time1.feature.cs">
+    <Compile Include="Tests\Framework Uplift\PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature</DependentUpon>
@@ -619,17 +619,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Learning Support Funding\PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended1.feature.cs">
+    <Compile Include="Tests\Learning Support Funding\PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Learning Support Funding\PV2-805 - Levy learner with learning support and maths and eng changes price during programme1.feature.cs">
+    <Compile Include="Tests\Learning Support Funding\PV2-805 - Levy learner with learning support and maths and eng changes price during programme.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-805 - Levy learner with learning support and maths and eng changes price during programme.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Learning Support Funding\PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme1.feature.cs">
+    <Compile Include="Tests\Learning Support Funding\PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature</DependentUpon>
@@ -874,22 +874,22 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Payment Priority\PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners1.feature.cs">
+    <Compile Include="Tests\Payment Priority\PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Payment Priority\PV2-603 - Two levy learners paid in priority order enough levy to fund one learner1.feature.cs">
+    <Compile Include="Tests\Payment Priority\PV2-603 - Two levy learners paid in priority order enough levy to fund one learner.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-603 - Two levy learners paid in priority order enough levy to fund one learner.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Payment Priority\PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners1.feature.cs">
+    <Compile Include="Tests\Payment Priority\PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Payment Priority\PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R041.feature.cs">
+    <Compile Include="Tests\Payment Priority\PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R04.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R04.feature</DependentUpon>
@@ -1055,27 +1055,27 @@
     </None>
     <None Include="Tests\Disadvantaged Uplift\PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantaged Uplift\PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantaged Uplift\PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantaged Uplift\PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantaged Uplift\PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantaged Uplift\PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Employer Change of Circumstances\16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1127,15 +1127,15 @@
     </None>
     <None Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-571 - Levy Learner framework uplift payments finishes early1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-571 - Levy Learner framework uplift payments finishes early.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Framework Uplift\PV2-572 - Non-Levy Learner framework uplift payments finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-572 - Non-Levy Learner framework uplift payments finishes early1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-572 - Non-Levy Learner framework uplift payments finishes early.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Framework Uplift\PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1239,19 +1239,19 @@
     </None>
     <None Include="Tests\Learning Support Funding\PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learning Support Funding\PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learning Support Funding\PV2-805 - Levy learner with learning support and maths and eng changes price during programme.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-805 - Levy learner with learning support and maths and eng changes price during programme1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-805 - Levy learner with learning support and maths and eng changes price during programme.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learning Support Funding\PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1447,19 +1447,19 @@
     </None>
     <None Include="Tests\Payment Priority\PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-602 -Two Levy learners where levy spent in priority order and enough levy for both learners.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Payment Priority\PV2-603 - Two levy learners paid in priority order enough levy to fund one learner.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-603 - Two levy learners paid in priority order enough levy to fund one learner1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-603 - Two levy learners paid in priority order enough levy to fund one learner.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Payment Priority\PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners1.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-604 - Two Levy learners where levy spent in priority order and is available for only 1 and half learners.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Payment Priority\PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R04.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R041.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-656  - two Levy learners where levy spent in priority order and the priority is changed in R04.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
