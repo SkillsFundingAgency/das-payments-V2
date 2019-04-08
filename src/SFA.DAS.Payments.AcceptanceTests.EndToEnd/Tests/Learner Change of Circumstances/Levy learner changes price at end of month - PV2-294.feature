@@ -1,4 +1,4 @@
-﻿ #Scenario: Earnings and payments for a DAS learner, levy available, and there is a change to the Negotiated Cost which happens at the end of the month
+ #Scenario: Earnings and payments for a DAS learner, levy available, and there is a change to the Negotiated Cost which happens at the end of the month
  #       Given the following commitments exist:
  #           | commitment Id | version Id | ULN       | start date | end date   | status | agreed price | effective from | effective to |
  #           | 1             | 1-001      | learner a | 01/08/2018 | 31/08/2019 | active | 15000        | 01/08/2018     | 31/10/2018   |
@@ -31,8 +31,8 @@ Scenario Outline: Levy learner changes to the agreed price at the end of the mon
 	# Do I need to move the second commitment after history?	
 	And the following commitments exist
 		| commitment Id | version Id | start date                   | end date                  | status | agreed price | effective from               | effective to                 |
-		| 294           | 1-001      | 01/Aug/Current Academic Year | 31/Aug/Next Academic Year | active | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |
-		| 294           | 1-002      | 01/Aug/Current Academic Year | 31/Aug/Next Academic Year | active | 9375         | 01/Nov/Current Academic Year |                              |
+		| 29400         | 1-001      | 01/Aug/Current Academic Year | 31/Aug/Next Academic Year | active | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |
+		| 29401         | 1-002      | 01/Aug/Current Academic Year | 31/Aug/Next Academic Year | active | 9375         | 01/Nov/Current Academic Year |                              |
 	
 	And the provider previously submitted the following learner details
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |

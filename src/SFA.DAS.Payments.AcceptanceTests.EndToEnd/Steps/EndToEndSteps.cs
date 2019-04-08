@@ -119,8 +119,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
-                var commitments = table.CreateSet<Commitment>().ToList();
-                await AddTestCommitments(commitments).ConfigureAwait(false);
+                var apprenticeships = table.CreateSet<Apprenticeship>().ToList();
+                await AddTestApprenticeships(apprenticeships).ConfigureAwait(false);
             }
         }
 
@@ -225,6 +225,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await MatchOnlyProviderPayments(table, provider).ConfigureAwait(false);
+        }
+
+        [Then(@"no provider payments will be generated")]
+        public async Task ThenNoProviderPaymentsWillBeGenerated()
+        {
+            var provider = TestSession.Provider;
+            await ThenNoProviderPaymentsWillBeGenerated(provider.Identifier);
         }
 
         [Then(@"no ""(.*)"" payments will be generated")]

@@ -7,28 +7,28 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 {
-    public interface ICommitmentRepository
+    public interface IApprenticeshipRepository
     {
-        Task<List<CommitmentModel>> CommitmentsForProvider(long ukprn);
+        Task<List<ApprenticeshipModel>> ApprenticeshipsForProvider(long ukprn);
     }
 
-    public class CommitmentRepository : ICommitmentRepository
+    public class ApprenticeshipRepository : IApprenticeshipRepository
     {
         private readonly IPaymentsDataContext dataContext;
 
-        public CommitmentRepository(IPaymentsDataContext dataContext)
+        public ApprenticeshipRepository(IPaymentsDataContext dataContext)
         {
             this.dataContext = dataContext;
         }
 
-        public async Task<List<CommitmentModel>> CommitmentsForProvider(long ukprn)
+        public async Task<List<ApprenticeshipModel>> ApprenticeshipsForProvider(long ukprn)
         {
-            var commitments = await dataContext.Commitment
+            var apprenticeships = await dataContext.Apprenticeship
                 .Where(x => x.Ukprn == ukprn)
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            return commitments;
+            return apprenticeships;
         }
     }
 }

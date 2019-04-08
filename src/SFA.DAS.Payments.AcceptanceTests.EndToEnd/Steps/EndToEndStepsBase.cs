@@ -83,18 +83,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "ProvidersWithCacheCleared");
         }
 
-        public List<Commitment> Commitments
-        {
-            get
-            {
-                if (!Context.TryGetValue<List<Commitment>>("commitments", out var commitments))
-                {
-                    Set(new List<Commitment>(), "commitments");
-                    commitments = Get<List<Commitment>>("commitments");
-                }
-                return commitments;
-            }
-        }
 
         protected EndToEndStepsBase(FeatureContext context) : base(context)
         {
@@ -177,67 +165,92 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected async Task AddTestCommitments(List<Commitment> commitments)
+        protected async Task AddTestApprenticeships(List<Apprenticeship> apprenticeships)
         {
-            commitments.ForEach(x =>
+            foreach (var x in apprenticeships)
             {
-                var existingCommitment = Commitments
-                    .FirstOrDefault(c => c.CommitmentId == x.CommitmentId && c.VersionId == x.VersionId);
-                Commitments.Remove(existingCommitment);
+                var apprenticeshipModel = CreateApprenticeshipModels(x);
+                var matchedApprenticeship = await DataContext.Apprenticeship.FirstOrDefaultAsync(e => e.Id == apprenticeshipModel.Id).ConfigureAwait(false);
 
-                if (x.CommitmentId == default(long))
+                if (matchedApprenticeship != null)
                 {
-                    x.CommitmentId = TestSession.GenerateId();
-                }
-
-                if (x.Ukprn == default(long))
-                {
-                    if (string.IsNullOrEmpty(x.Provider))
-                    {
-                        x.Ukprn = TestSession.Ukprn;
-                    }
-                    else
-                    {
-                        x.Ukprn = TestSession.GetProviderByIdentifier(x.Provider).Ukprn;
-                    }
-
-                }
-
-                if (x.VersionId == null)
-                {
-                    x.VersionId = TestSession.GenerateId().ToString();
-                }
-
-                x.AccountId = TestSession.GetEmployer(x.Employer).AccountId;
-
-                x.Uln = TestSession.GetLearner(x.Ukprn, x.LearnerId).Uln;
-            });
-
-            Commitments.AddRange(commitments);
-            await SaveTestCommitments();
-        }
-
-        protected async Task SaveTestCommitments()
-        {
-            var mappedCommitments = Mapper.ToModel(Commitments);
-
-            foreach (var mappedCommitment in mappedCommitments)
-            {
-                var matchedCommitment =
-                    await DataContext.Commitment.FirstOrDefaultAsync(e =>
-                        e.CommitmentId == mappedCommitment.CommitmentId &&
-                        e.VersionId == mappedCommitment.VersionId);
-
-                if (matchedCommitment != null)
-                {
-                    DataContext.Commitment.Remove(matchedCommitment);
+                    DataContext.Apprenticeship.Remove(matchedApprenticeship);
                     await DataContext.SaveChangesAsync().ConfigureAwait(false);
                 }
-
-                await DataContext.Commitment.AddAsync(mappedCommitment);
+               
+                await DataContext.Apprenticeship.AddAsync(apprenticeshipModel).ConfigureAwait(false);
             }
 
             await DataContext.SaveChangesAsync().ConfigureAwait(false);
+
+        }
+
+        private ApprenticeshipModel CreateApprenticeshipModels(Apprenticeship apprenticeshipSpec)
+        {
+            if (apprenticeshipSpec.CommitmentId == default(long)) apprenticeshipSpec.CommitmentId = TestSession.GenerateId();
+
+            if (apprenticeshipSpec.Ukprn == default(long))
+            {
+                if (string.IsNullOrWhiteSpace(apprenticeshipSpec.Provider))
+                {
+                    apprenticeshipSpec.Ukprn = TestSession.Ukprn;
+                }
+                else
+                {
+                    apprenticeshipSpec.Ukprn = TestSession.GetProviderByIdentifier(apprenticeshipSpec.Provider).Ukprn;
+                }
+            }
+            apprenticeshipSpec.AccountId = TestSession.GetEmployer(apprenticeshipSpec.Employer).AccountId;
+            apprenticeshipSpec.Uln = TestSession.GetLearner(apprenticeshipSpec.Ukprn, apprenticeshipSpec.LearnerId).Uln;
+
+            ApprenticeshipPaymentStatus apprenticeshipStatus;
+            switch (apprenticeshipSpec.Status?.ToLower())
+            {
+                case "active":
+                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Active;
+                    break;
+                case "cancelled":
+                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Stopped;
+                    break;
+                case "paused":
+                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Paused;
+                    break;
+                default:
+                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Inactive;
+                    break;
+            }
+
+            var apprenticeshipModel = new ApprenticeshipModel
+            {
+                Id = apprenticeshipSpec.CommitmentId,
+                Ukprn = apprenticeshipSpec.Ukprn,
+                AccountId = apprenticeshipSpec.AccountId,
+                Uln = apprenticeshipSpec.Uln,
+                FrameworkCode = apprenticeshipSpec.FrameworkCode,
+                ProgrammeType = apprenticeshipSpec.ProgrammeType,
+                PathwayCode = apprenticeshipSpec.PathwayCode,
+                Priority = apprenticeshipSpec.Priority,
+                Status = apprenticeshipStatus,
+                LegalEntityName = "Test SFA",
+                EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
+                EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
+                AgreedOnDate = DateTime.UtcNow,
+
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                        new    ApprenticeshipPriceEpisodeModel {
+                                    Cost = apprenticeshipSpec.AgreedPrice,
+                                    StartDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveFrom) 
+                                        ?apprenticeshipSpec.StartDate.ToDate()
+                                        :apprenticeshipSpec.EffectiveFrom.ToDate(),
+                                    EndDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveTo)
+                                        ? default(DateTime?)
+                                        : apprenticeshipSpec.EffectiveTo.ToDate()
+                             }
+                 }
+            };
+
+            return apprenticeshipModel;
         }
 
         protected async Task SaveLevyAccount(Employer employer)
@@ -321,8 +334,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             learner.PriceEpisodes = new List<PriceEpisode>();
             learner.LearningDeliveries = new List<LearningDelivery>();
 
-            foreach (var aim in testLearner.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, CurrentCollectionPeriod,
-                a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration)))
+            IEnumerable<Aim> currentAims;
+
+            // AimPeriodMatcher doesn't support completed aims from the past, this is a workaround until imminent refactoring
+            if (testLearner.Aims.Count == 1)
+            {
+                currentAims = testLearner.Aims;
+            }
+            else
+            {
+                currentAims = testLearner.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, CurrentCollectionPeriod,
+                    a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration));
+            }
+
+            foreach (var aim in currentAims)
             {
                 learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
 
@@ -688,7 +713,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var ilr = CurrentIlr ?? PreviousIlr;
             ilr = ilr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
 
-            expectedPayments = SetProviderPaymentAccountIds(ilr,expectedPayments);
+            expectedPayments = SetProviderPaymentAccountIds(ilr, expectedPayments);
             var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
@@ -751,7 +776,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var payment in payments)
             {
                 payment.Uln = TestSession.GetLearner(ukprn, payment.LearnerId).Uln;
-                SetProviderPaymentAccountId(previousIlr,payment);
+                SetProviderPaymentAccountId(previousIlr, payment);
             }
 
             var previousJobId = TestSession.GenerateId();
@@ -791,8 +816,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var providerCurrentIlr = CurrentIlr?.Where(c => c.Ukprn == provider.Ukprn).ToList();
 
-            expectedPayments = SetProviderPaymentAccountIds(providerCurrentIlr,expectedPayments);
-            
+            expectedPayments = SetProviderPaymentAccountIds(providerCurrentIlr, expectedPayments);
+
             var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
             var contractType = providerCurrentIlr == null
                 ? providerLearners.First().Aims.First().PriceEpisodes.First().ContractType
@@ -882,7 +907,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
         }
-        
+
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
         {
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
