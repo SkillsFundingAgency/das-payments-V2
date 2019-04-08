@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: Holding back completion payments - PV2-608
+﻿Feature: Holding back completion payments - PV2-608
 	As a provider,
 	I want a levy learner with co-funding, where the employer has paid their 10% co-investment for the on-program element, but has not yet paid the employer completion payment element, and the final on program payment is the same day as the completion payment
 	So that I am accurately paid the completion payment by SFA
@@ -82,7 +81,7 @@ Scenario Outline: Levy learner but co-funded, sufficient employer contribution, 
         | R08/Current Academic Year | Mar/Current Academic Year | 540                    | 60                          | 0             | Learning         |
         | R09/Current Academic Year | Apr/Current Academic Year | 540                    | 60                          | 0             | Learning         |
         | R10/Current Academic Year | May/Current Academic Year | 540                    | 60                          | 0             | Learning         |
-        | R10/Current Academic Year | Jun/Current Academic Year | 1620                   | 180                         | 0             | Completion       |
+        | R10/Current Academic Year | May/Current Academic Year | 1620                   | 180                         | 0             | Completion       |
 	
 	And only the following provider payments will be generated
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
@@ -96,7 +95,7 @@ Scenario Outline: Levy learner but co-funded, sufficient employer contribution, 
         | R08/Current Academic Year | Mar/Current Academic Year | 540                    | 60                          | 0             | Learning         |
         | R09/Current Academic Year | Apr/Current Academic Year | 540                    | 60                          | 0             | Learning         |
         | R10/Current Academic Year | May/Current Academic Year | 540                    | 60                          | 0             | Learning         |
-        | R10/Current Academic Year | Jun/Current Academic Year | 1620                   | 180                         | 0             | Completion       |
+        | R10/Current Academic Year | May/Current Academic Year | 1620                   | 180                         | 0             | Completion       |
 
 Examples: 
         | Collection_Period         |
