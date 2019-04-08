@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
             this.ukprnMatcher = ukprnMatcher;
         }
 
-        public async Task<LearnerMatchResult> MatchLearner(long ukprn, long uln)
+        public async Task<LearnerMatchResult> MatchLearner(long uln)
         {
             var dataLockErrorCode = await ukprnMatcher.MatchUkprn();
             if (dataLockErrorCode.HasValue)
