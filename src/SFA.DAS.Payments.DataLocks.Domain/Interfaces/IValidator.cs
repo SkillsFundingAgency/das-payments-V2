@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Interfaces
 {
     public interface IValidator
     {
-        CourseValidationResult Validate(PriceEpisode priceEpisode, List<ApprenticeshipModel> apprenticeships);
+        CourseValidationResult Validate(CourseValidation courseValidation, List<ApprenticeshipModel> apprenticeships);
     }
 }
