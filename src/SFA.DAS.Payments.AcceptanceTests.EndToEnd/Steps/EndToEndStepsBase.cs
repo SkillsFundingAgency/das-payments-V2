@@ -886,7 +886,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     learners.Add(learner);
                 }
             }
-
             var dcHelper = Scope.Resolve<DcHelper>();
             await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
                 provider.JobId, provider.IlrSubmissionTime);
