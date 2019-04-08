@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
@@ -68,6 +69,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             routing.RouteToEndpoint(typeof(CollectionStartedEvent), EndpointNames.RequiredPayments);
             routing.RouteToEndpoint(typeof(RecordStartedProcessingMonthEndJob).Assembly, EndpointNames.JobMonitoring);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
+            transportConfig.Queues().LockDuration(TimeSpan.FromMinutes(5));
         }
 
         [AfterScenario]

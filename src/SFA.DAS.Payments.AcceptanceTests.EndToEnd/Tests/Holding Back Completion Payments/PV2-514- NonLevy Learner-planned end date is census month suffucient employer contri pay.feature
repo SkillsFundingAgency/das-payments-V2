@@ -1,15 +1,12 @@
-﻿@ignore
-Feature: Holding Back Completion Payments - PV2-514
-	As a provider,
-	I want a Non levy learner, where the planned end date is the last day of month and the employer has paid their 10% co-investment for the on-program element for the first 12 months, but has not yet paid the employer completion payment element and the 13th month on program payment
-	So that I am accurately paid the completion payment by SFA PV2-514
+﻿Feature: Non-Levy Learner-in co-funding and planned end date is last day of month, completion payment made as enough employer contribution PV2-514
+		As a provider,
+		I want a Non levy learner, where the planned end date is the last day of month and the employer has paid their 10% co-investment for the on-program element for the first 12 months, but has not yet paid the employer completion payment element and the 13th month on program payment
+		So that I am accurately paid the completion payment by SFA PV2-514
 
-Scenario Outline: Levy Learner-in co-funding completion payment made as enough employer contribution PV2-514
-	
+Scenario Outline: Non-Levy Learner-in co-funding and planned end date is last day of month, completion payment made as enough employer contribution PV2-514
 	Given the provider previously submitted the following learner details
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-		| 01/Jun/Last Academic Year | 13 months        | 8125                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
-	
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage |
+		| 01/Jun/Last Academic Year | 13 months        | 8125                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |
 	And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing |
         | Aug/Last Academic Year | 0            | 0          | 0         |
@@ -24,18 +21,14 @@ Scenario Outline: Levy Learner-in co-funding completion payment made as enough e
         | May/Last Academic Year | 0            | 0          | 0         |
         | Jun/Last Academic Year | 500          | 0          | 0         |
         | Jul/Last Academic Year | 500          | 0          | 0         |
-    
-	And the following provider payments had been generated 
+    And the following provider payments had been generated 
         | Collection Period      | Delivery Period        | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
         | R11/Last Academic Year | Jun/Last Academic Year | 450                    | 50                          | 0             | Learning         |
         | R12/Last Academic Year | Jul/Last Academic Year | 450                    | 50                          | 0             | Learning         |
-    
-	But the Provider now changes the Learner details as follows
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage | Employer Contribution |
-		| 01/Jun/Last Academic Year | 13 months        | 8125                 | 01/Jun/Last Academic Year           | 0                      |                                       | 13 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         | 600                   |
-	
+    But the Provider now changes the Learner details as follows
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage | Employer Contribution |
+		| 01/Jun/Last Academic Year | 13 months        | 8125                 | 01/Jun/Last Academic Year           | 0                      |                                       | 13 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         | 600                   |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
-	
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing |
 		| Aug/Current Academic Year | 500          | 0          | 0         |
@@ -50,8 +43,7 @@ Scenario Outline: Levy Learner-in co-funding completion payment made as enough e
 		| May/Current Academic Year | 500          | 0          | 0         |
 		| Jun/Current Academic Year | 500          | 1625       | 0         |
 		| Jul/Current Academic Year | 0            | 0          | 0         |
-    
-	And at month end only the following payments will be calculated
+    And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R01/Current Academic Year | Aug/Current Academic Year | 500          | 0          | 0         |
         | R02/Current Academic Year | Sep/Current Academic Year | 500          | 0          | 0         |
@@ -64,7 +56,6 @@ Scenario Outline: Levy Learner-in co-funding completion payment made as enough e
         | R09/Current Academic Year | Apr/Current Academic Year | 500          | 0          | 0         |
         | R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         |
         | R11/Current Academic Year | Jun/Current Academic Year | 500          | 1625       | 0         |
-	
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 450                    | 50                          | Learning         |
@@ -79,7 +70,6 @@ Scenario Outline: Levy Learner-in co-funding completion payment made as enough e
         | R10/Current Academic Year | May/Current Academic Year | 450                    | 50                          | Learning         |
         | R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         |
         | R11/Current Academic Year | Jun/Current Academic Year | 1462.5                 | 162.5                       | Completion       |
-	
 	And only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 450                    | 50                          | Learning         |
@@ -108,7 +98,7 @@ Examples:
 		| R09/Current Academic Year |
 		| R10/Current Academic Year |
 		| R11/Current Academic Year |
- 
+		| R12/Current Academic Year |
 
     
 

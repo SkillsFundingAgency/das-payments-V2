@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         }
 
         [Given(@"the required payments component generates the following contract type (.*) payable earnings:")]
-        public void GivenTheRequiredPaymentsComponentGeneratesTheFollowingContractTypePayableEarnings(byte contractType, Table payments)
+        public void GivenTheRequiredPaymentsComponentGeneratesTheFollowingContractTypePayableEarnings(ContractType contractType, Table payments)
         {
             ContractType = contractType;
             RequiredPayments = payments.CreateSet<RequiredPayment>().ToList();
@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
 
         private CalculatedRequiredOnProgrammeAmount BuildApprenticeshipContractTypeRequiredPaymentEvent(RequiredPayment requiredPayment)
         {
-            var paymentEvent = ContractType == 1
+            var paymentEvent = ContractType == ContractType.Act1
                 ? (CalculatedRequiredOnProgrammeAmount)new CalculatedRequiredLevyAmount()
                 : new CalculatedRequiredCoInvestedAmount();
 
