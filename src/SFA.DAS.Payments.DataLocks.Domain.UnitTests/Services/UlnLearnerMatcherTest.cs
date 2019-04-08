@@ -17,17 +17,18 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
     public class UlnLearnerMatcherTest
     {
         private Mock<IDataLockLearnerCache> dataLockLearnerCache;
+        private long uln = 1;
 
         [Test]
         public async Task ShouldReturnDatalockErrorIfNoApprenticeshipExistForUln()
         {
             dataLockLearnerCache = new Mock<IDataLockLearnerCache>();
             dataLockLearnerCache
-                .Setup(o => o.GetLearnerApprenticeships(It.IsAny<long>()))
+                .Setup(o => o.GetLearnerApprenticeships(uln))
                 .Returns(Task.FromResult(new List<ApprenticeshipModel>()));
 
             var ulnLearnerMatcher = new UlnLearnerMatcher(dataLockLearnerCache.Object);
-            var matchResult = await ulnLearnerMatcher.MatchUln(1).ConfigureAwait(false);
+            var matchResult = await ulnLearnerMatcher.MatchUln(uln).ConfigureAwait(false);
 
             matchResult.Should().NotBeNull();
             matchResult.ErrorCode.Should().Be(DataLockErrorCode.DLOCK_02);
@@ -44,11 +45,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             dataLockLearnerCache = new Mock<IDataLockLearnerCache>();
             dataLockLearnerCache
-                .Setup(o => o.GetLearnerApprenticeships(It.IsAny<long>()))
+                .Setup(o => o.GetLearnerApprenticeships(uln))
                 .Returns(Task.FromResult(apprenticeships));
 
             var ulnLearnerMatcher = new UlnLearnerMatcher(dataLockLearnerCache.Object);
-            var matchResult = await ulnLearnerMatcher.MatchUln(1).ConfigureAwait(false);
+            var matchResult = await ulnLearnerMatcher.MatchUln(uln).ConfigureAwait(false);
 
             matchResult.Should().NotBeNull();
             matchResult.Apprenticeships.Should().NotBeNull();
