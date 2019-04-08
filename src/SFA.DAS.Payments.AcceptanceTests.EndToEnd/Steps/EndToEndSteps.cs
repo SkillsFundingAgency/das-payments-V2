@@ -227,6 +227,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await MatchOnlyProviderPayments(table, provider).ConfigureAwait(false);
         }
 
+        [Then(@"no provider payments will be generated")]
+        public async Task ThenNoProviderPaymentsWillBeGenerated()
+        {
+            var provider = TestSession.Provider;
+            await ThenNoProviderPaymentsWillBeGenerated(provider.Identifier);
+        }
+
         [Then(@"no ""(.*)"" payments will be generated")]
         public async Task ThenNoProviderPaymentsWillBeGenerated(string providerIdentifier)
         {

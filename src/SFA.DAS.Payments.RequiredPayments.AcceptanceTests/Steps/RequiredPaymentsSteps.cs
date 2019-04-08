@@ -9,6 +9,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Handlers;
@@ -41,7 +42,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         private ApprenticeshipContractTypeEarningsEvent CreateEarningEvent(IGrouping<string, OnProgrammeEarning> group)
         {
 
-            var earningEvent = ContractType == 1
+            var earningEvent = ContractType == ContractType.Act1
                 ? (ApprenticeshipContractTypeEarningsEvent)new ApprenticeshipContractType1EarningEvent()
                 : new ApprenticeshipContractType2EarningEvent();
 
