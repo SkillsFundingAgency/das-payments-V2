@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using SFA.DAS.Payments.DataLocks.Application.Cache;
+using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -18,6 +19,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<UlnLearnerMatcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LearnerMatcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CourseValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }
