@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
-            var learnerMatchResult = await learnerMatcher.MatchLearner(message.Ukprn, message.Ukprn);
+            var learnerMatchResult = await learnerMatcher.MatchLearner(message.Ukprn);
 
             if (learnerMatchResult.DataLockErrorCode.HasValue)
             {
