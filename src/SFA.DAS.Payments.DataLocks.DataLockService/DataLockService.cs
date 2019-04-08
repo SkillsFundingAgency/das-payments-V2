@@ -98,11 +98,11 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
             paymentLogger.LogInfo($"Initialising actor for provider {Id}");
 
-            var providerCommitments = await apprenticeshipRepository.ApprenticeshipsForProvider(long.Parse(Id.ToString())).ConfigureAwait(false);
+            var providerApprenticeships = await apprenticeshipRepository.ApprenticeshipsForProvider(long.Parse(Id.ToString())).ConfigureAwait(false);
 
-            var groupedCommitments = providerCommitments.ToLookup(x => x.Uln);
+            var groupedApprenticeships = providerApprenticeships.ToLookup(x => x.Uln);
 
-            foreach (var group in groupedCommitments)
+            foreach (var group in groupedApprenticeships)
             {
                 await this.apprenticeships.AddOrReplace(group.Key.ToString(), group.ToList()).ConfigureAwait(false);
             }
