@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.DataLocks.Messages
+﻿namespace SFA.DAS.Payments.DataLocks.Domain.Models
 {
     public enum DataLockErrorCode
     {

@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [Given(@"the provider has submitted an ILR file which has generated the following contract type (.*) payments:")]
-        public async Task GivenTheProviderHasSubmittedAnILRFileWithJobIdWhichHasGeneratedTheFollowingPayments(byte contractType, Table table)
+        public async Task GivenTheProviderHasSubmittedAnILRFileWithJobIdWhichHasGeneratedTheFollowingPayments(ContractType contractType, Table table)
         {
             var submissionTime = DateTime.UtcNow.AddMinutes(-10);
             PreviousJobId = TestSession.GenerateId();
@@ -87,7 +87,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [When(@"the provider re-submits an ILR file which triggers the following contract type (.*) funding source payments:")]
-        public async Task WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePayments(byte contractType, Table table)
+        public async Task WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePayments(ContractType contractType, Table table)
         {
             var submissionTime = DateTime.UtcNow;
             var jobId = TestSession.JobId;
@@ -113,7 +113,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [When(@"the provider re-submits an ILR file which triggers the following contract type (.*) funding source payments with the ILR Submission event sent after the payments:")]
-        public async Task WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePaymentsWithTheILRSubmissionEventSentAfterThePayments(byte contractType, Table table)
+        public async Task WhenTheProviderRe_SubmitsAnILRFileWhichTriggersTheFollowingContractTypeFundingSourcePaymentsWithTheILRSubmissionEventSentAfterThePayments(ContractType contractType, Table table)
         {
             var submissionTime = DateTime.UtcNow;
             var jobId = TestSession.JobId;

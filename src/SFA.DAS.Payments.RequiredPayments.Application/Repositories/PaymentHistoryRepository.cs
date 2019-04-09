@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
@@ -60,6 +61,22 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 SfaContributionPercentage = payment.SfaContributionPercentage,
             })
             .ToList();
+        }
+
+        public async Task<decimal> GetEmployerCoInvestedPaymentHistoryTotal(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await dataContext.Payment
+                .Where(payment => apprenticeshipKey.Ukprn == payment.Ukprn &&
+                                  apprenticeshipKey.FrameworkCode == payment.LearningAimFrameworkCode &&
+                                  apprenticeshipKey.LearnAimRef == payment.LearningAimReference &&
+                                  apprenticeshipKey.LearnerReferenceNumber == payment.LearnerReferenceNumber &&
+                                  apprenticeshipKey.PathwayCode == payment.LearningAimPathwayCode &&
+                                  apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
+                                  apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
+                                  payment.FundingSource == FundingSourceType.CoInvestedEmployer)
+                .Select(payment => payment.Amount)
+                .DefaultIfEmpty(0)
+                .SumAsync(cancellationToken);
         }
     }
 }

@@ -76,8 +76,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         AimReference = learnerSpec.Course.LearnAimRef
                     });
 
-                foreach (var aimSpec in learnerSpec.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, collectionPeriod,
-                    a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration)))
+
+                IEnumerable<Aim> currentAims;
+
+                // AimPeriodMatcher doesn't support completed aims from the past, this is a workaround until imminent refactoring
+                if (learnerSpec.Aims.Count == 1)
+                {
+                    currentAims = learnerSpec.Aims;
+                }
+                else
+                {
+                    currentAims = learnerSpec.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, collectionPeriod,
+                        a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration));
+                }
+
+                foreach (var aimSpec in currentAims)
                 {
                     var learningAim = new LearningAim
                     {

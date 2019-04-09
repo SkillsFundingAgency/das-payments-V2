@@ -19,6 +19,8 @@ using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
+using SFA.DAS.Payments.RequiredPayments.Domain.Services;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 using Earning = SFA.DAS.Payments.RequiredPayments.Domain.Entities.Earning;
 
@@ -32,6 +34,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private IPayableEarningEventProcessor processor;
         private Mock<IDataCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
         private Mock<IRequiredPaymentProcessor> requiredPaymentsService;
+        private Mock<IPaymentHistoryRepository> paymentHistoryRepositoryMock;
+        private Mock<IApprenticeshipKeyProvider> apprenticeshipKeyProviderMock;
+        private Mock<IHoldingBackCompletionPaymentService> holdingBackCompletionPaymentServiceMock;
+        protected internal Mock<IPaymentKeyService> paymentKeyServiceMock;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -47,17 +53,18 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             mocker = AutoMock.GetStrict();
             requiredPaymentsService = mocker.Mock<IRequiredPaymentProcessor>();
             paymentHistoryCacheMock = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
- 
-            processor = mocker.Create<PayableEarningEventProcessor>(
-                new NamedParameter("apprenticeshipKey", "key"),
-                new NamedParameter("mapper", mapper));
+            paymentHistoryRepositoryMock = mocker.Mock<IPaymentHistoryRepository>();
+            apprenticeshipKeyProviderMock = mocker.Mock<IApprenticeshipKeyProvider>();
+            holdingBackCompletionPaymentServiceMock = mocker.Mock<IHoldingBackCompletionPaymentService>();
+            paymentKeyServiceMock = mocker.Mock<IPaymentKeyService>();
+
+            processor = mocker.Create<PayableEarningEventProcessor>(new NamedParameter("mapper", mapper));
         }
         
         [TearDown]
         public void TearDown()
         {
-            requiredPaymentsService.Verify();
-            paymentHistoryCacheMock.Verify();
+            mocker.Dispose();
         }
 
         
@@ -143,6 +150,84 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             // assert
             actualRequiredPayment.Should().HaveCount(1);
+        }
+
+        [Test]
+        public async Task TestHoldingBackCompletionPayment()
+        {
+            // arrange
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
+
+            var priceEpisodes = new List<PriceEpisode>(new []
+            {
+                new PriceEpisode
+                {
+                    Identifier = "1",
+                    EmployerContribution = 100,
+                    CompletionHoldBackExemptionCode = 0
+                },
+                new PriceEpisode
+                {
+                    Identifier = "2",
+                    EmployerContribution = 1,
+                    CompletionHoldBackExemptionCode = 2
+                }
+            });
+
+
+            var earningEvent = new PayableEarningEvent
+            {
+                Ukprn = 1,
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
+                CollectionYear = period.AcademicYear,
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
+                PriceEpisodes = priceEpisodes,
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
+                {
+                    new OnProgrammeEarning
+                    {
+                        Type = OnProgrammeEarningType.Completion,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                        {
+                            new EarningPeriod
+                            {
+                                Amount = 200,
+                                Period = period.Period,
+                                PriceEpisodeIdentifier = "2",
+                                SfaContributionPercentage = 0.9m,
+                            }
+                        })
+                    }
+                }
+            };
+
+            var requiredPayments = new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = 100,
+                    EarningType = EarningType.Levy,
+                },
+            };
+
+            var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2), DeliveryPeriod = 2}};
+            var paymentHistory = new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities);
+            var key = new ApprenticeshipKey();
+
+            paymentKeyServiceMock.Setup(s => s.GeneratePaymentKey("9", 2, 1819, 2)).Returns("payment key").Verifiable();
+            paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(paymentHistory).Verifiable();
+            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>())).Returns(requiredPayments).Verifiable();
+            apprenticeshipKeyProviderMock.Setup(a => a.GetCurrentKey()).Returns(key).Verifiable();
+            paymentHistoryRepositoryMock.Setup(repo => repo.GetEmployerCoInvestedPaymentHistoryTotal(key, It.IsAny<CancellationToken>())).ReturnsAsync(11).Verifiable();
+            holdingBackCompletionPaymentServiceMock.Setup(h => h.ShouldHoldBackCompletionPayment(11, priceEpisodes[1])).Returns(true).Verifiable();
+
+            // act           
+            var actualRequiredPayment = await processor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
+
+            // assert
+            actualRequiredPayment.Should().HaveCount(1);
+            actualRequiredPayment[0].Should().BeOfType<CompletionPaymentHeldBackEvent>();
         }
     }
 }
