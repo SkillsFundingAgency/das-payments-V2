@@ -2,10 +2,9 @@
 {
     using System;
     using AutoMapper;
-    using ESFA.DC.ILR.TestDataGenerator.Models;
     using Core.Data;
     using Payments.Tests.Core;
-    using CompletionStatus = ESFA.DC.ILR.TestDataGenerator.Models.Enums.CompletionStatus;
+    using DCT.TestDataGenerator.Model;
 
     public class IlrProfile : Profile
     {

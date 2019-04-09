@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
-using ESFA.DC.ILR.TestDataGenerator.Models;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
+using DCT.TestDataGenerator.Model;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -109,21 +109,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
+            var featureNumber = FeatureContext.Current.FeatureInfo.Title.Substring(
+                FeatureContext.Current.FeatureInfo.Title.IndexOf("PV2-", StringComparison.Ordinal) + 4, 3);
 
             if (CurrentIlr != null && CurrentIlr.Any())
             {
                 var mapper = Scope.Resolve<IMapper>();
-                var mappedrecord = mapper.Map<NonLevyLearnerRequest>(CurrentIlr.First());
-                var ilrFile = await GenerateTestIlrFile(mappedrecord);
-                
-                // currently only support a single ILR file being generated.
-                if (ilrFile.Any())
+
+                foreach (var ilr in CurrentIlr)
                 {
-                    RefreshTestSessionLearnerFromIlr(ilrFile.First().Value);
+                    var learnerId = ilr.LearnerId;
 
-                    await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
+                    var nonLevyLearnerRequest = mapper.Map<NonLevyLearnerRequest>(ilr);
+                    nonLevyLearnerRequest.FeatureNumber = featureNumber;
 
-                    await StoreAndPublishIlrFile(learnerRequest: mappedrecord, ilrFileName: ilrFile.First().Key, ilrFile: ilrFile.First().Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
+                    var ilrFile = await GenerateTestIlrFile(nonLevyLearnerRequest);
+
+                    RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerId);
+
+                    await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText,
+                        TestSession.Provider.Identifier).ConfigureAwait(false);
+
+                    await PublishIlrFile(learnerRequest: nonLevyLearnerRequest, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value,
+                        collectionYear: collectionYear, collectionPeriod: collectionPeriod);
                 }
             }
         }

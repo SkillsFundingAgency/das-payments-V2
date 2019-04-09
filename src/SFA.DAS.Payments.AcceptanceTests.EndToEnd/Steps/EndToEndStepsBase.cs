@@ -29,7 +29,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using ESFA.DC.ILR.TestDataGenerator.Interfaces;
-using ESFA.DC.ILR.TestDataGenerator.Models;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Jobs.Model.Enums;
@@ -44,6 +43,7 @@ using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.
 using SFA.DAS.Payments.AcceptanceTests.Services;
 using SFA.DAS.Payments.AcceptanceTests.Services.Exceptions;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
+using DCT.TestDataGenerator.Model;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -960,52 +960,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
-        protected async Task<Dictionary<string, string>> GenerateTestIlrFile(LearnerRequestBase learnerRequest)
+        protected async Task<KeyValuePair<string, string>> GenerateTestIlrFile(LearnerRequestBase learnerRequest)
         {
             TdgService = Scope.Resolve<ITdgService>();
             return await TdgService.GenerateIlrTestData((NonLevyLearnerRequest) learnerRequest);
         }
 
-        protected async Task StoreAndPublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
-        {
-            await StoreIlrFile(learnerRequest.Ukprn, ilrFileName, ilrFile);
-
-            await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear, collectionPeriod);
-
-        }
-
-        protected void RefreshTestSessionLearnerFromIlr(string ilrFile)
+        protected void RefreshTestSessionLearnerFromIlr(string ilrFile, string learnerId = null)
         {
             XNamespace xsdns = "ESFA/ILR/2018-19";
             var xDoc = XDocument.Parse(ilrFile);
             var learner = xDoc.Descendants(xsdns + "Learner").First();
             var learningProvider = xDoc.Descendants(xsdns + "LearningProvider").First();
 
-            var testSessionLearner = TestSession.GetLearner(TestSession.Provider.Ukprn, null);
+            var testSessionLearner = TestSession.GetLearner(TestSession.Provider.Ukprn, learnerId);
 
             testSessionLearner.Ukprn = long.Parse(learningProvider.Elements(xsdns + "UKPRN").First().Value);
             testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
             testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
         }
 
-        private async Task StoreIlrFile(int ukPrn, string ilrFileName, string ilrFile)
-        {
-            var storageServiceConfig = Scope.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
-            var storageService = Scope.Resolve<IStreamableKeyValuePersistenceService>(new NamedParameter("keyValuePersistenceServiceConfig", storageServiceConfig));
-
-            var byteArray = Encoding.UTF8.GetBytes(ilrFile);
-            var stream = new MemoryStream(byteArray);
-
-            var ilrStoragePathAndFileName = $"{ukPrn}/{ilrFileName}";
-
-            await storageService.SaveAsync(ilrStoragePathAndFileName, stream);
-        }
-
-        private async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
+        protected async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
             var jobService = Scope.Resolve<IJobService>();
 
-            var nonLevyLearnerRequest = (NonLevyLearnerRequest) learnerRequest;
+            var nonLevyLearnerRequest = (NonLevyLearnerRequest)learnerRequest;
 
             var storageServiceConfig = Scope.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
 
@@ -1013,7 +992,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 FileName = $"{learnerRequest.Ukprn}/{ilrFileName}",
                 FileSizeBytes = ilrFile.Length,
-                SubmittedBy = "System", 
+                SubmittedBy = "System",
                 CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
                 Period = collectionPeriod,
                 NotifyEmail = "SpecFlow@e2e.com",
@@ -1044,6 +1023,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var result = await jobService.UpdateJobStatus(jobId, JobStatusType.Ready);
 
         }
+
+        private async Task StoreIlrFile(int ukPrn, string ilrFileName, string ilrFile)
+        {
+            var storageServiceConfig = Scope.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
+            var storageService = Scope.Resolve<IStreamableKeyValuePersistenceService>(new NamedParameter("keyValuePersistenceServiceConfig", storageServiceConfig));
+
+            var byteArray = Encoding.UTF8.GetBytes(ilrFile);
+            var stream = new MemoryStream(byteArray);
+
+            var ilrStoragePathAndFileName = $"{ukPrn}/{ilrFileName}";
+
+            await storageService.SaveAsync(ilrStoragePathAndFileName, stream);
+        }
+
+     
 
     }
 }
