@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
@@ -48,7 +49,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         }
 
         [Given(@"the funding source service generates the following contract type (.*) payments:")]
-        public void GivenTheFundingSourceServiceGeneratesTheFollowingContractTypePayments(byte contractType, Table payments)
+        public void GivenTheFundingSourceServiceGeneratesTheFollowingContractTypePayments(ContractType contractType, Table payments)
         {
             ContractType = contractType;
             FundingSourcePayments = payments.CreateSet<FundingSourcePayment>().ToList();

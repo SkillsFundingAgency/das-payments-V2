@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
@@ -77,7 +78,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         }
 
         [Given(@"the earning events component generates the following contract type (.*) earnings:")]
-        public void GivenTheEarningEventsComponentGeneratesTheFollowingContractTypeEarningEvents(byte contractType, Table payments)
+        public void GivenTheEarningEventsComponentGeneratesTheFollowingContractTypeEarningEvents(ContractType contractType, Table payments)
         {
             ContractType = contractType;
             Earnings = payments.CreateSet<OnProgrammeEarning>()
