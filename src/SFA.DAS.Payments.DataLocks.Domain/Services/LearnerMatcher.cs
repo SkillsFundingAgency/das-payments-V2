@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Interfaces
 {
     public class LearnerMatcher : ILearnerMatcher
     {
-        public async Task<LearnerMatchResult> MatchLearner(long ukprn, long uln)
+        public async Task<LearnerMatchResult> MatchLearner(DataLockValidation uln)
         {
             throw new System.NotImplementedException();
         }
