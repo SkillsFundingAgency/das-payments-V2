@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -15,6 +17,7 @@ using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
@@ -40,7 +43,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     Uln = 123,
                 },
-                PriceEpisodes = new List<PriceEpisode> { new PriceEpisode { StartDate = DateTime.UtcNow } }
+                PriceEpisodes = new List<PriceEpisode> { new PriceEpisode { StartDate = DateTime.UtcNow, } },
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
+                {
+                    new OnProgrammeEarning
+                    {
+                        Periods = new ReadOnlyCollection<EarningPeriod>(
+                            new List<EarningPeriod>
+                            {
+                                new EarningPeriod{Period = 1, PriceEpisodeIdentifier = "pe-1"}
+                            })
+                    }
+                }
             };
         }
 
@@ -73,7 +87,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                             {
                                 DataLockErrorCode = null,
                                 ApprenticeshipId = 1,
-                                ApprenticeshipPriceEpisodeId = 1,
+                                ApprenticeshipPriceEpisodeIdentifier = "pe-1",
                                 Period = 1
                             }
                         }
@@ -88,6 +102,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             actual.Should().BeOfType<PayableEarningEvent>();
             (actual as PayableEarningEvent).AccountId.Should().Be(456);
+            var payableEarning = actual as PayableEarningEvent;
+            payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
+            payableEarning.OnProgrammeEarnings.First().Periods.Count.Should().Be(0);
         }
 
         [Test]
@@ -117,7 +134,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock)
                 .Validate(earningEvent, default(CancellationToken));
 
-            actual.Should().BeNull();
+            actual.Should().BeOfType<NonPayableEarningEvent>();
+            (actual as NonPayableEarningEvent).Errors.Contains(DataLockErrorCode.DLOCK_01);
         }
 
         [Test]
@@ -149,7 +167,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                             {
                                 DataLockErrorCode = DataLockErrorCode.DLOCK_09,
                                 ApprenticeshipId = 1,
-                                ApprenticeshipPriceEpisodeId = 1,
+                                ApprenticeshipPriceEpisodeIdentifier = "pe-1",
                                 Period = 1
                             }
                         }
@@ -161,7 +179,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object)
                 .Validate(earningEvent, default(CancellationToken));
 
-            actual.Should().BeNull();
+            actual.Should().BeOfType<PayableEarningEvent>();
+            var payableEarning = actual as PayableEarningEvent;
+            payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
+            payableEarning.OnProgrammeEarnings.First().Periods.Count.Should().Be(0);
         }
     }
 }

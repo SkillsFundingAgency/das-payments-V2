@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +10,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
@@ -29,6 +32,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             var startDate = earningEvent.PriceEpisodes.FirstOrDefault()?.StartDate ?? DateTime.UtcNow;
 
+         
             var courseValidation = new DataLockValidation
             {
                 Uln = earningEvent.Learner.Uln,
@@ -39,28 +43,48 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             if (learnerMatchResult.DataLockErrorCode.HasValue)
             {
-                // TODO: return non-payable earning
-                return null;
+                var nonPayableEarning = mapper.Map<NonPayableEarningEvent>(earningEvent);
+                nonPayableEarning.Errors = new ReadOnlyCollection<DataLockErrorCode>(
+                    new[]
+                    {
+                        learnerMatchResult.DataLockErrorCode.Value
+                    });
+
+                return nonPayableEarning;
             }
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
 
             var courseValidationResult = await courseValidator.ValidateCourse(courseValidation, apprenticeshipsForUln);
 
+            var returnMessage = mapper.Map<PayableEarningEvent>(earningEvent);
+
             if (courseValidationResult.ValidationResults.Any(x => x.DataLockErrorCode.HasValue))
             {
-                // TODO: return non-payable earning
-                return null;
+                ProcessDataLockErrors(courseValidationResult, returnMessage);
             }
 
             var apprenticeship = apprenticeshipsForUln.FirstOrDefault();
-
-            var returnMessage = mapper.Map<PayableEarningEvent>(earningEvent);
-
+            
             returnMessage.AccountId = apprenticeship.AccountId;
             returnMessage.Priority = apprenticeship.Priority;
 
             return returnMessage;
+        }
+
+        private void ProcessDataLockErrors(CourseValidationResult courseValidation, PayableEarningEvent returnMessage)
+        {
+            foreach (var result in courseValidation.ValidationResults)
+            {
+                foreach (var onProgrammeEarning in returnMessage.OnProgrammeEarnings)
+                {
+                    var matchingPeriods = onProgrammeEarning.Periods.Where(x =>
+                        x.Period == result.Period &&
+                        x.PriceEpisodeIdentifier == result.ApprenticeshipPriceEpisodeIdentifier);
+
+                    onProgrammeEarning.Periods = new ReadOnlyCollection<EarningPeriod>(onProgrammeEarning.Periods.Except(matchingPeriods).ToList());
+                }
+            }
         }
     }
 }

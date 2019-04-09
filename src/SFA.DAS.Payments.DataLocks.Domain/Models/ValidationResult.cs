@@ -8,6 +8,6 @@
 
         public byte Period { get; set; }
 
-        public long ApprenticeshipPriceEpisodeId { get; set; }
+        public string ApprenticeshipPriceEpisodeIdentifier { get; set; }
     }
 }
