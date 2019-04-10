@@ -11,7 +11,7 @@ Scenario Outline: Levy Learner-co-funded,sufficient employer contribution LDM co
         | start date                | end date                     | agreed price | status |
         | 01/Jun/Last Academic Year | 01/Jun/Current Academic Year | 9000         | active |
 	
-	And the provider previously submitted the following learner details in collection period <Collection_Period>
+	And the provider previously submitted the following learner details in collection period "<Collection_Period>"
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	

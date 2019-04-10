@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.DataLockService.Interfaces;
-using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -22,61 +20,32 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
     {
         private readonly ActorService actorService;
         private readonly ActorId actorId;
-        private readonly IMapper mapper;
         private readonly IPaymentLogger paymentLogger;
         private readonly IActorDataCache<List<ApprenticeshipModel>> apprenticeships;
-        private readonly ILearnerMatcher learnerMatcher;
-        private readonly ICourseValidator courseValidator;
+        private readonly IDataLockProcessor dataLockProcessor;
         private readonly IApprenticeshipRepository apprenticeshipRepository;
 
         public DataLockService(
             ActorService actorService, 
-            ActorId actorId, 
-            IMapper mapper,
+            ActorId actorId,
             IPaymentLogger paymentLogger, 
             IApprenticeshipRepository apprenticeshipRepository,
             IActorDataCache<List<ApprenticeshipModel>> apprenticeships,
-            ILearnerMatcher learnerMatcher,
-            ICourseValidator courseValidator) 
+            IDataLockProcessor dataLockProcessor) 
             : base(actorService, actorId)
         {
             this.actorService = actorService;
             this.actorId = actorId;
-            this.mapper = mapper;
             this.paymentLogger = paymentLogger;
             this.apprenticeshipRepository = apprenticeshipRepository;
             this.apprenticeships = apprenticeships;
-            this.learnerMatcher = learnerMatcher;
-            this.courseValidator = courseValidator;
+            this.dataLockProcessor = dataLockProcessor;
         }
 
-        public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
+        public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message,
+            CancellationToken cancellationToken)
         {
-            var learnerMatchResult = await learnerMatcher.MatchLearner(message.Ukprn);
-
-            if (learnerMatchResult.DataLockErrorCode.HasValue)
-            {
-                // TODO: return non-payable earning
-                return null;
-            }
-
-            var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
-            var apprenticeship = apprenticeshipsForUln.FirstOrDefault();
-
-            var returnMessage = mapper.Map<PayableEarningEvent>(message);
-
-            // TODO: After implementing CourseValidator, need correct message going into CourseValidator
-            var courseValidationResult = await courseValidator.ValidateCourse(returnMessage.CollectionPeriod, apprenticeshipsForUln);
-
-            if (courseValidationResult.ValidationResults.Any(x => x.DataLockErrorCode.HasValue))
-            {
-                // TODO: return non-payable earning
-                return null;
-            }
-
-            returnMessage.AccountId = apprenticeship.AccountId;
-            returnMessage.Priority = apprenticeship.Priority;
-            return returnMessage;
+            return await dataLockProcessor.Validate(message, cancellationToken);
         }
 
         public async Task Reset()
