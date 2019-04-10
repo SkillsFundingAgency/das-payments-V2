@@ -109,8 +109,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
-            var featureNumber = FeatureContext.Current.FeatureInfo.Title.Substring(
-                FeatureContext.Current.FeatureInfo.Title.IndexOf("PV2-", StringComparison.Ordinal) + 4, 3);
+            var featureContext = (FeatureContext) Context;
+            var featureNumber = featureContext.FeatureInfo.Title.Substring(
+                featureContext.FeatureInfo.Title.IndexOf("PV2-", StringComparison.Ordinal) + 4, 3);
 
             if (CurrentIlr != null && CurrentIlr.Any())
             {
