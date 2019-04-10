@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 new LearnerMatchResult
                     {DataLockErrorCode = null, Apprenticeships = commitments});
 
-            var courseValidationMock = new Mock<ICourseValidator>();
+            var courseValidationMock = new Mock<IProcessCourseValidator>();
             courseValidationMock.Setup(x =>
                     x.ValidateCourse(It.IsAny<DataLockValidation>(), It.IsAny<List<ApprenticeshipModel>>()))
                 .ReturnsAsync(() =>
@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 new LearnerMatchResult
                 { DataLockErrorCode = DataLockErrorCode.DLOCK_01, Apprenticeships = new List<ApprenticeshipModel>(commitments) });
 
-            var courseValidationMock = Mock.Of<ICourseValidator>();
+            var courseValidationMock = Mock.Of<IProcessCourseValidator>();
 
             Mock.Get(dataCacheMock).Setup(x => x.TryGet(It.IsAny<string>(), CancellationToken.None))
                 .ReturnsAsync(() => new ConditionalValue<List<ApprenticeshipModel>>(true, commitments));
@@ -160,7 +160,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 new LearnerMatchResult
                 { DataLockErrorCode = null, Apprenticeships = new List<ApprenticeshipModel>(commitments) });
 
-            var courseValidationMock = new Mock<ICourseValidator>();
+            var courseValidationMock = new Mock<IProcessCourseValidator>();
             courseValidationMock.Setup(x =>
                     x.ValidateCourse(It.IsAny<DataLockValidation>(), It.IsAny<List<ApprenticeshipModel>>()))
                 .ReturnsAsync(() =>
