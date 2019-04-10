@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Interfaces
 {
     public class CourseValidator : ICourseValidator
     {
-        public Task<CourseValidationResult> ValidateCourse(DataLockValidation validation,
+        public Task<List<ValidationResult>> ValidateCourse(DataLockValidation validation,
             List<ApprenticeshipModel> apprenticeships)
         {
             throw new System.NotImplementedException();
