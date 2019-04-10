@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Interfaces
 {
     public interface ICourseValidator
     {
-        Task<CourseValidationResult> ValidateCourse(DataLockValidation validation,
+        Task<List<ValidationResult>> ValidateCourse(DataLockValidation validation,
             List<ApprenticeshipModel> apprenticeships);
     }
 }

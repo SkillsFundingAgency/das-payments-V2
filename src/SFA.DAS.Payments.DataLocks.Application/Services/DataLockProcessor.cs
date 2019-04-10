@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             var returnMessage = mapper.Map<PayableEarningEvent>(earningEvent);
 
-            if (courseValidationResult.ValidationResults.Any(x => x.DataLockErrorCode.HasValue))
+            if (courseValidationResult.Any(x => x.DataLockErrorCode.HasValue))
             {
                 ProcessDataLockErrors(courseValidationResult, returnMessage);
             }
@@ -72,9 +72,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return returnMessage;
         }
 
-        private void ProcessDataLockErrors(CourseValidationResult courseValidation, PayableEarningEvent returnMessage)
+        private void ProcessDataLockErrors(List<ValidationResult> courseValidation, PayableEarningEvent returnMessage)
         {
-            foreach (var result in courseValidation.ValidationResults)
+            foreach (var result in courseValidation)
             {
                 foreach (var onProgrammeEarning in returnMessage.OnProgrammeEarnings)
                 {
