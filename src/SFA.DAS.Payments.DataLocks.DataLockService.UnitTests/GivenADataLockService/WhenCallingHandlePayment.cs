@@ -10,6 +10,7 @@ using NUnit.Framework;
 using ServiceFabric.Mocks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
@@ -43,17 +44,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
             var commitmentRepositoryMock = Mock.Of<IApprenticeshipRepository>();
             var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
 
-            var commitments = new List<ApprenticeshipModel>
-            {
-                new ApprenticeshipModel
-                {
-                    AccountId = 456,
-                }
-            };
-
-            Mock.Get(dataCacheMock).Setup(x => x.TryGet(It.IsAny<string>(), CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<ApprenticeshipModel>>(true, commitments));
-
             var testEarning = new ApprenticeshipContractType1EarningEvent
             {
                 Learner = new Learner
@@ -62,8 +52,12 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
                 }
             };
 
-            var actual = await (new DataLockService(actorService, new ActorId(Guid.Empty), mapper, paymentLoggerMock,
-                    commitmentRepositoryMock, dataCacheMock))
+            var dataLockProcessor = new Mock<IDataLockProcessor>();
+            dataLockProcessor.Setup(x => x.Validate(It.IsAny<ApprenticeshipContractType1EarningEvent>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new PayableEarningEvent {AccountId = 456});
+
+            var actual = await new DataLockService(actorService, new ActorId(Guid.Empty), paymentLoggerMock,
+                    commitmentRepositoryMock, dataCacheMock, dataLockProcessor.Object)
                 .HandleEarning(testEarning, default(CancellationToken));
 
             actual.Should().BeOfType<PayableEarningEvent>();
