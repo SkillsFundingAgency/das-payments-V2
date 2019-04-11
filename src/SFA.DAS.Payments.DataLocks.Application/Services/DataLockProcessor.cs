@@ -55,6 +55,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
 
+            
             var courseValidationResult = await processCourseValidator.ValidateCourse(courseValidation, apprenticeshipsForUln);
 
             var returnMessage = mapper.Map<PayableEarningEvent>(earningEvent);

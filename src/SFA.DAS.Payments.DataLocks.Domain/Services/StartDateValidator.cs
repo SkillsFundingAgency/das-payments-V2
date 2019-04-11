@@ -12,14 +12,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
 
             foreach (var apprenticeshipModel in courseValidation.Apprenticeships)
             {
-                if (courseValidation.StartDate < apprenticeshipModel.EstimatedStartDate ||
-                    courseValidation.StartDate > apprenticeshipModel.EstimatedEndDate)
+                if (courseValidation.PriceEpisode.StartDate < apprenticeshipModel.EstimatedStartDate ||
+                    courseValidation.PriceEpisode.StartDate > apprenticeshipModel.EstimatedEndDate)
                 {
                     result.Add(new ValidationResult
                     {
                         DataLockErrorCode = DataLockErrorCode.DLOCK_09,
                         Period = courseValidation.Period,
-                        ApprenticeshipPriceEpisodeIdentifier = courseValidation.PriceEpisodeIdentifier,
+                        ApprenticeshipPriceEpisodeIdentifier = courseValidation.PriceEpisode.Identifier,
                         ApprenticeshipId = apprenticeshipModel.Id
                     });
                 }
