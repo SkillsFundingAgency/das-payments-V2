@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             this.dataLockProcessor = dataLockProcessor;
         }
 
-        public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message,
+        public async Task<List<DataLockEvent>> HandleEarning(ApprenticeshipContractType1EarningEvent message,
             CancellationToken cancellationToken)
         {
             return await dataLockProcessor.Validate(message, cancellationToken);

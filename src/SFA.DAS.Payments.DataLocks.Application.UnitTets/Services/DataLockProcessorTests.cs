@@ -104,9 +104,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object).Validate(earningEvent, default(CancellationToken));
 
-            actual.Should().BeOfType<PayableEarningEvent>();
-            (actual as PayableEarningEvent).AccountId.Should().Be(456);
-            var payableEarning = actual as PayableEarningEvent;
+            actual.Count.Should().Be(1);
+            var payableEarningEvent = actual.First();
+            payableEarningEvent.Should().BeOfType<PayableEarningEvent>();
+            (payableEarningEvent as PayableEarningEvent).AccountId.Should().Be(456);
+            var payableEarning = payableEarningEvent as PayableEarningEvent;
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
             payableEarning.OnProgrammeEarnings.First().Periods.Count.Should().Be(1);
         }
@@ -137,9 +139,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock)
                 .Validate(earningEvent, default(CancellationToken));
+            actual.Count.Should().Be(1);
+            var payableEarningEvent = actual.First();
 
-            actual.Should().BeOfType<NonPayableEarningEvent>();
-            (actual as NonPayableEarningEvent).Errors.Contains(DataLockErrorCode.DLOCK_01);
+            payableEarningEvent.Should().BeOfType<NonPayableEarningEvent>();
+            (payableEarningEvent as NonPayableEarningEvent).Errors.Contains(DataLockErrorCode.DLOCK_01);
         }
 
         [Test]
@@ -189,8 +193,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object)
                 .Validate(earningEvent, default(CancellationToken));
 
-            actual.Should().BeOfType<PayableEarningEvent>();
-            var payableEarning = actual as PayableEarningEvent;
+            actual.Count.Should().Be(1);
+            var payableEarningEvent = actual.First();
+
+            payableEarningEvent.Should().BeOfType<PayableEarningEvent>();
+            var payableEarning = payableEarningEvent as PayableEarningEvent;
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
 
             var onProgrammeEarning = payableEarning.OnProgrammeEarnings.First();

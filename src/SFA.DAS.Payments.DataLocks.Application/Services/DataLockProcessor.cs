@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.processCourseValidator = processCourseValidator;
         }
 
-        public async Task<DataLockEvent> Validate(ApprenticeshipContractType1EarningEvent earningEvent,
+        public async Task<List<DataLockEvent>> Validate(ApprenticeshipContractType1EarningEvent earningEvent,
             CancellationToken cancellationToken)
         {
             var startDate = earningEvent.PriceEpisodes.FirstOrDefault()?.StartDate ?? DateTime.UtcNow;
@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         learnerMatchResult.DataLockErrorCode.Value
                     });
 
-                return nonPayableEarning;
+                return new List<DataLockEvent> {nonPayableEarning};
             }
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             returnMessage.AccountId = apprenticeship.AccountId;
             returnMessage.Priority = apprenticeship.Priority;
 
-            return returnMessage;
+            return new List<DataLockEvent> {returnMessage};
         }
 
         private void ProcessDataLockErrors(List<ValidationResult> courseValidation, PayableEarningEvent returnMessage)

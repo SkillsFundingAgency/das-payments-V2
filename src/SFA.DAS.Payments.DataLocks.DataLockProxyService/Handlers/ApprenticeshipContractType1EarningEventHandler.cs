@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
@@ -34,14 +34,17 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             paymentLogger.LogDebug($"Actor proxy created for provider with UKPRN {ukprn}");
 
             paymentLogger.LogVerbose("Calling actor proxy to handle earning");
-            var dataLockEvent = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
+            var dataLockEvents = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
             paymentLogger.LogDebug("Earning handled");
 
-            if (dataLockEvent != null)
+            if (dataLockEvents != null && dataLockEvents.Any())
             {
-                paymentLogger.LogVerbose("Publishing data lock event");
-                await context.Publish(dataLockEvent);
-                paymentLogger.LogDebug("Data lock event published");
+                foreach (var dataLockEvent in dataLockEvents)
+                {
+                    paymentLogger.LogVerbose($"Publishing data lock event of type {dataLockEvent.GetType()}");
+                    await context.Publish(dataLockEvents);
+                    paymentLogger.LogDebug("Data lock event published");
+                }
             }
 
             paymentLogger.LogInfo($"Successfully processed DataLockProxyProxyService event for Actor Id {actorId}");

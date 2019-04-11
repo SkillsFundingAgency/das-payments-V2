@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
@@ -8,7 +9,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Interfaces
 {
     public interface IDataLockProcessor
     {
-        Task<DataLockEvent> Validate(ApprenticeshipContractType1EarningEvent earningEvent,
+        Task<List<DataLockEvent>> Validate(ApprenticeshipContractType1EarningEvent earningEvent,
             CancellationToken cancellationToken);
     }
 }
