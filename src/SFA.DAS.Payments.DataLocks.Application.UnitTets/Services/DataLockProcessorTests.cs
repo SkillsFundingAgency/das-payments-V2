@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task TheReturnedObjectIsOfTheCorrectType()
+        public async Task ReturnsCorrectType()
         {
             var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
 
@@ -92,7 +92,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         {
                             DataLockErrorCode = null,
                             ApprenticeshipId = 1,
-                            ApprenticeshipPriceEpisodeIdentifier = "pe-1",
+                            ApprenticeshipPriceEpisodeIdentifier = 1,
                             Period = 1
                         }
                     });
@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task ThenLearnerDataLockReturned()
+        public async Task ReturnsLearnerDataLock()
         {
             var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
 
@@ -143,7 +143,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task ThenCourseValidationDataLockReturned()
+        public async Task ReturnsCourseValidationDataLock()
         {
             var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
 
@@ -170,7 +170,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         {
                             DataLockErrorCode = DataLockErrorCode.DLOCK_09,
                             ApprenticeshipId = 1,
-                            ApprenticeshipPriceEpisodeIdentifier = "pe-1",
+                            ApprenticeshipPriceEpisodeIdentifier = 1,
                             Period = 1
                         }
                     });
@@ -182,8 +182,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             earningEvent.OnProgrammeEarnings[0].Periods = new ReadOnlyCollection<EarningPeriod>(
                 new List<EarningPeriod>
                 {
-                    new EarningPeriod {Period = 1, PriceEpisodeIdentifier = "pe-1"},
-                    new EarningPeriod {Period = secondPeriod, PriceEpisodeIdentifier = "pe-1"}
+                    new EarningPeriod {Period = 1, PriceEpisodeIdentifier = "1"},
+                    new EarningPeriod {Period = secondPeriod, PriceEpisodeIdentifier = "1"}
                 });
 
             var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object)

@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     var matchingPeriods = onProgrammeEarning.Periods.Where(x =>
                         x.Period == result.Period &&
-                        x.PriceEpisodeIdentifier == result.ApprenticeshipPriceEpisodeIdentifier);
+                        x.PriceEpisodeIdentifier == result.ApprenticeshipPriceEpisodeIdentifier.ToString());
 
                     onProgrammeEarning.Periods = new ReadOnlyCollection<EarningPeriod>(onProgrammeEarning.Periods.Except(matchingPeriods).ToList());
                 }
