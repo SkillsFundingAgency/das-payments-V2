@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -349,8 +350,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var aim in currentAims)
             {
-                learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
-
                 var learningDelivery = new LearningDelivery
                 {
                     AimSeqNumber = aim.AimSequenceNumber,
@@ -368,42 +367,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learningDelivery.LearningDeliveryValues.StdCode = aim.StandardCode;
 
                 learner.LearningDeliveries.Add(learningDelivery);
+
+                if (aim.AimReference == "ZPROG001")
+                {
+                    learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
+                }
+                else // maths & english doesn't use price episodes
+                {
+                    learningDelivery.LearningDeliveryPeriodisedValues = SetPeriodisedValues<LearningDeliveryPeriodisedValues>(aim, earnings);
+                }
             }
         }
 
         private List<PriceEpisode> GeneratePriceEpisodes(Aim aim, IList<Earning> earnings)
         {
-            var aimPeriodisedValues = new List<PriceEpisodePeriodisedValues>();
-
-            PriceEpisodePeriodisedValues sfaContributionPeriodisedValue = null;
-
-            if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
-            {
-                sfaContributionPeriodisedValue = new PriceEpisodePeriodisedValues { AttributeName = "PriceEpisodeSFAContribPct", };
-                aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
-            }
-
-            foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
-                                                        e.AimSequenceNumber == aim.AimSequenceNumber))
-            {
-                var period = earning.DeliveryCalendarPeriod;
-                foreach (var earningValue in earning.Values)
-                {
-                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
-                    if (periodisedValues == null)
-                    {
-                        periodisedValues = new PriceEpisodePeriodisedValues { AttributeName = earningValue.Key.ToAttributeName() };
-                        aimPeriodisedValues.Add(periodisedValues);
-                    }
-
-                    SetPeriodValue(period, periodisedValues, earningValue.Value);
-                }
-
-                if (sfaContributionPeriodisedValue != null)
-                {
-                    SetPeriodValue(period, sfaContributionPeriodisedValue, earning.SfaContributionPercentage.ToPercent());
-                }
-            }
+            var aimPeriodisedValues = SetPeriodisedValues<PriceEpisodePeriodisedValues>(aim, earnings);
 
             var priceEpisodePrefix = (aim.StandardCode != 0)
                 ? $"{aim.ProgrammeType}-{aim.StandardCode}"
@@ -562,6 +540,43 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        private static List<T> SetPeriodisedValues<T>(Aim aim, IList<Earning> earnings) where T : PeriodisedAttribute, new()
+        {
+            var aimPeriodisedValues = new List<T>();
+
+            T sfaContributionPeriodisedValue = null;
+
+            if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
+            {
+                sfaContributionPeriodisedValue = new T {AttributeName = "PriceEpisodeSFAContribPct",};
+                aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
+            }
+
+            foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
+                                                        e.AimSequenceNumber == aim.AimSequenceNumber))
+            {
+                var period = earning.DeliveryCalendarPeriod;
+                foreach (var earningValue in earning.Values)
+                {
+                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
+                    if (periodisedValues == null)
+                    {
+                        periodisedValues = new T {AttributeName = earningValue.Key.ToAttributeName()};
+                        aimPeriodisedValues.Add(periodisedValues);
+                    }
+
+                    SetPeriodValue(period, periodisedValues, earningValue.Value);
+                }
+
+                if (sfaContributionPeriodisedValue != null)
+                {
+                    SetPeriodValue(period, sfaContributionPeriodisedValue, earning.SfaContributionPercentage.ToPercent());
+                }
+            }
+
+            return aimPeriodisedValues;
+        }
+
         private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
         {
             var episodeStartDate = priceEpisode.EpisodeStartDate;
@@ -570,7 +585,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 : priceEpisode.PriceEpisodeId;
         }
 
-        private static void SetPeriodValue(int period, PriceEpisodePeriodisedValues periodisedValues, decimal amount)
+        private static void SetPeriodValue(int period, PeriodisedAttribute periodisedValues, decimal amount)
         {
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);
