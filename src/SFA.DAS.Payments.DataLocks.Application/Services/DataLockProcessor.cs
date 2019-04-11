@@ -30,11 +30,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<DataLockEvent> Validate(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
         {
-            var startDate = earningEvent.PriceEpisodes.FirstOrDefault()?.StartDate ?? DateTime.UtcNow;
-
            var validationResults = new List<ValidationResult>();
             
-            var learnerMatchResult = await learnerMatcher.MatchLearner(courseValidation);
+            var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Learner.Uln);
 
             if (learnerMatchResult.DataLockErrorCode.HasValue)
             {
@@ -49,36 +47,33 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
-            var validOnProgrammeEarningPeriods = new List<EarningPeriod>();
+          
 
             foreach (var onProgrammeEarning in earningEvent.OnProgrammeEarnings)
             {
                 var onProgrammeEarningPeriods = onProgrammeEarning.Periods;
-               
-                
+                var validOnProgrammeEarningPeriods = new List<EarningPeriod>();
+
                 foreach (var period  in onProgrammeEarningPeriods)
                 {
                     var validationModel = CreateDataLockValidationModel(earningEvent.Learner.Uln ,earningEvent.PriceEpisodes, period, apprenticeshipsForUln);
-                    var validationResult =  processCourseValidator.ValidateCourse(validationModel);
+                    var periodValidationResults =  processCourseValidator.ValidateCourse(validationModel);
 
-                    if (validationResult != null && validationResults.Any())
+                    if (periodValidationResults != null && periodValidationResults.Any())
                     {
-                        validationResults.AddRange(validationResult);
+                        validationResults.AddRange(periodValidationResults);
+
+                    }
+                    else
+                    {
+                        validOnProgrammeEarningPeriods.Add(period);
                     }
                 }
 
-                onProgrammeEarning.Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>());
-
-
+                onProgrammeEarning.Periods = new ReadOnlyCollection<EarningPeriod>(validOnProgrammeEarningPeriods);
             }
 
             var returnMessage = mapper.Map<PayableEarningEvent>(earningEvent);
-
-            if (courseValidationResult.Any(x => x.DataLockErrorCode.HasValue))
-            {
-                ProcessDataLockErrors(courseValidationResult, returnMessage);
-            }
-
             var apprenticeship = apprenticeshipsForUln.FirstOrDefault();
             
             returnMessage.AccountId = apprenticeship.AccountId;
@@ -86,22 +81,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             return returnMessage;
         }
-
-        private void ProcessDataLockErrors(List<ValidationResult> courseValidation, PayableEarningEvent returnMessage)
-        {
-            foreach (var result in courseValidation)
-            {
-                foreach (var onProgrammeEarning in returnMessage.OnProgrammeEarnings)
-                {
-                    var matchingPeriods = onProgrammeEarning.Periods.Where(x =>
-                        x.Period == result.Period &&
-                        x.PriceEpisodeIdentifier == result.ApprenticeshipPriceEpisodeIdentifier);
-
-                    onProgrammeEarning.Periods = new ReadOnlyCollection<EarningPeriod>(onProgrammeEarning.Periods.Except(matchingPeriods).ToList());
-                }
-            }
-        }
-
+        
         private DataLockValidation CreateDataLockValidationModel(long uln, 
             List<PriceEpisode> priceEpisodes, 
             EarningPeriod earningPeriod, 
