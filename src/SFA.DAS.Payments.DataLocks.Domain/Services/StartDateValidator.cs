@@ -10,6 +10,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
         {
             var result = new List<ValidationResult>();
 
+            var startDate = courseValidation.PriceEpisode.StartDate;
+
             foreach (var apprenticeshipModel in courseValidation.Apprenticeships)
             {
                 if (courseValidation.PriceEpisode.StartDate < apprenticeshipModel.EstimatedStartDate ||
