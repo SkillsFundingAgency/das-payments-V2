@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Castle.Components.DictionaryAdapter;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
@@ -8,7 +7,6 @@ using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 {
@@ -30,7 +28,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     LearningDeliveries = new EditableList<LearningDelivery>
                     {
                         new LearningDelivery {AimSeqNumber = 1, LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "ZPROG001"}},
-                        new LearningDelivery {AimSeqNumber = 2, LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "M&E"}}
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 2, 
+                            LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "M&E"},
+                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
+                            {
+                                new LearningDeliveryPeriodisedValues
+                                {
+                                    AttributeName = "MathEngBalPayment",
+                                    Period1 = 1,
+                                    Period2 = 2
+                                }
+                            }
+                        }
                     },
                     PriceEpisodes = new EditableList<PriceEpisode>
                     {
@@ -44,19 +55,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     AttributeName = "PriceEpisodeOnProgPayment",
                                     Period1 = 10,
                                     Period2 = 20
-                                }
-                            }
-                        },
-                        new PriceEpisode
-                        {
-                            PriceEpisodeValues = new PriceEpisodeValues {PriceEpisodeAimSeqNumber = 2},
-                            PriceEpisodePeriodisedValues = new EditableList<PriceEpisodePeriodisedValues>
-                            {
-                                new PriceEpisodePeriodisedValues
-                                {
-                                    AttributeName = "MathEngBalPayment",
-                                    Period1 = 1,
-                                    Period2 = 2
                                 }
                             }
                         }

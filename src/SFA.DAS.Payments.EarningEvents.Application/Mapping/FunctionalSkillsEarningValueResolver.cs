@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -21,22 +20,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
         public ReadOnlyCollection<FunctionalSkillEarning> Resolve(IntermediateLearningAim source, FunctionalSkillEarningsEvent destination, ReadOnlyCollection<FunctionalSkillEarning> destMember, ResolutionContext context)
         {
-            return source.PriceEpisodes.SelectMany(priceEpisode => priceEpisode.PriceEpisodePeriodisedValues)
+            return source.Aim.LearningDeliveryPeriodisedValues
                 .Where(periodisedValues => TypeMap.ContainsKey(periodisedValues.AttributeName))
                 .GroupBy(v => v.AttributeName)
-                .Select(values => CreateEarning(source, values))
+                .Select(CreateEarning)
                 .ToList()
                 .AsReadOnly();
         }
 
-        private FunctionalSkillEarning CreateEarning(IntermediateLearningAim source, IGrouping<string, PriceEpisodePeriodisedValues> grouping)
+        private FunctionalSkillEarning CreateEarning(IGrouping<string, LearningDeliveryPeriodisedValues> groupItem)
         {
-            if (grouping.Count() > 1)
-                throw new ArgumentException($"More than one functional skill earning of type {grouping.Key}");
-
-            var allPeriods = source.PriceEpisodes.Select(p => p.PriceEpisodePeriodisedValues.SingleOrDefault(v => v.AttributeName == grouping.Key))
-                .Where(p => p != null)
-                .ToArray();
+            if (groupItem.Count() > 1)
+                throw new ArgumentException($"More than one functional skill earning of type {groupItem.Key}");
 
             const byte earningPeriods = 12;
 
@@ -44,22 +39,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             for (byte i = 1; i <= earningPeriods; i++)
             {
-                var periodValues = allPeriods.Select(p => p.GetPeriodValue(i)).ToArray();
+                var periodValues = groupItem.Select(p => p.GetPeriodValue(i)).ToArray();
                 var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
-                var priceEpisodeIdentifier = periodValue == 0 ? null : source.PriceEpisodes[periodValues.IndexOf(periodValue)].PriceEpisodeIdentifier;
                 
                 periods[i - 1] = new EarningPeriod
                 {
                     Period = i,
                     Amount = periodValue,
-                    PriceEpisodeIdentifier = priceEpisodeIdentifier,
                     SfaContributionPercentage = 1,
                 };
             }
 
             return new FunctionalSkillEarning
             {
-                Type = TypeMap[grouping.Key],
+                Type = TypeMap[groupItem.Key],
                 Periods = new ReadOnlyCollection<EarningPeriod>(periods)
             };
         }

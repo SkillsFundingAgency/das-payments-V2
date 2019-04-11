@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FastMember;
 using SFA.DAS.Payments.Model.Core;
@@ -9,9 +10,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public static class MappingExtensions
     {
-        private static readonly TypeAccessor PeriodAccessor = TypeAccessor.Create(typeof(PriceEpisodePeriodisedValues));
+        private static readonly TypeAccessor PeriodAccessor = TypeAccessor.Create(typeof(PeriodisedAttribute));
 
-        public static decimal? GetPeriodValue(this PriceEpisodePeriodisedValues periodisedValues, int period)
+        public static decimal? GetPeriodValue(this PeriodisedAttribute periodisedValues, int period)
         {
             return (decimal?) PeriodAccessor[periodisedValues, "Period" + period];
         }
