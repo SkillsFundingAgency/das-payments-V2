@@ -18,13 +18,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         private readonly IMapper mapper;
         private readonly ILearnerMatcher learnerMatcher;
-        private readonly ICourseValidator courseValidator;
+        private readonly IProcessCourseValidator processCourseValidator;
 
-        public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher, ICourseValidator courseValidator)
+        public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher, IProcessCourseValidator processCourseValidator)
         {
             this.mapper = mapper;
             this.learnerMatcher = learnerMatcher;
-            this.courseValidator = courseValidator;
+            this.processCourseValidator = processCourseValidator;
         }
 
         public async Task<DataLockEvent> Validate(ApprenticeshipContractType1EarningEvent earningEvent,
@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
 
-            var courseValidationResult = await courseValidator.ValidateCourse(courseValidation, apprenticeshipsForUln);
+            var courseValidationResult = await processCourseValidator.ValidateCourse(courseValidation, apprenticeshipsForUln);
 
             var returnMessage = mapper.Map<PayableEarningEvent>(earningEvent);
 
