@@ -131,8 +131,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText,
                         TestSession.Provider.Identifier).ConfigureAwait(false);
 
-                    await PublishIlrFile(learnerRequest: nonLevyLearnerRequest, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value,
-                        collectionYear: collectionYear, collectionPeriod: collectionPeriod);
+                    await StoreAndPublishIlrFile(learnerRequest: nonLevyLearnerRequest, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
                 }
             }
         }

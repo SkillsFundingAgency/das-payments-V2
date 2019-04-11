@@ -1005,7 +1005,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
         }
 
-        protected async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
+        protected async Task StoreAndPublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
+        {
+            await StoreIlrFile(learnerRequest.Ukprn, ilrFileName, ilrFile);
+
+            await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear, collectionPeriod);
+
+        }
+
+        private async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
             var jobService = Scope.Resolve<IJobService>();
 
@@ -1035,7 +1043,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var retryPolicy = Policy
                 .Handle<JobStatusNotWaitingException>()
-                .WaitAndRetryAsync(10, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+                .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
             await retryPolicy.ExecuteAsync(async () =>
                 {
@@ -1045,7 +1053,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
             );
 
-            var result = await jobService.UpdateJobStatus(jobId, JobStatusType.Ready);
+            await jobService.UpdateJobStatus(jobId, JobStatusType.Ready);
 
         }
 
@@ -1061,8 +1069,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             await storageService.SaveAsync(ilrStoragePathAndFileName, stream);
         }
-
-     
-
     }
 }
