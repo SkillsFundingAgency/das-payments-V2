@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Test]
-        public void ValidateCourseShouldReturnValidationResult()
+        public void ValidateCourseShouldReturnValidationResults()
         {
             var processCourseValidator = new ProcessCourseValidator(courseValidators);
             var actualResults = processCourseValidator.ValidateCourse(new DataLockValidation());
