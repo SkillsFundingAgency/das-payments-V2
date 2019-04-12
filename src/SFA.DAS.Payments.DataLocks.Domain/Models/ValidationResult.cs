@@ -2,12 +2,12 @@
 {
     public class ValidationResult
     {
-        public DataLockErrorCode? DataLockErrorCode { get; set; }
+        public DataLockErrorCode DataLockErrorCode { get; set; }
 
         public long ApprenticeshipId { get; set; }
 
         public byte Period { get; set; }
 
-        public string ApprenticeshipPriceEpisodeIdentifier { get; set; }
+        public long ApprenticeshipPriceEpisodeIdentifier { get; set; }
     }
 }
