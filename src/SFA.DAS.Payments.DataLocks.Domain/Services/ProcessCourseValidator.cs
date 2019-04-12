@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Interfaces
 {
-    public class CourseValidator : ICourseValidator
+    public class ProcessCourseValidator : IProcessCourseValidator
     {
         public Task<List<ValidationResult>> ValidateCourse(DataLockValidation validation,
             List<ApprenticeshipModel> apprenticeships)
