@@ -24,14 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
                     DataLockErrorCode = dataLockErrorCode
                 };
 
-            var ulnMatchResult = await ulnLearnerMatcher.MatchUln(uln).ConfigureAwait(false);
-            if (ulnMatchResult.DataLockErrorCode.HasValue)
-                return new LearnerMatchResult
-                {
-                    DataLockErrorCode = ulnMatchResult.DataLockErrorCode
-                };
-
-            return ulnMatchResult;
+           return await ulnLearnerMatcher.MatchUln(uln).ConfigureAwait(false);
         }
     }
 }
