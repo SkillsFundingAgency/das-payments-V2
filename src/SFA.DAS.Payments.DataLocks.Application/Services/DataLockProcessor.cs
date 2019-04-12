@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<DataLockEvent> Validate(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
         {
-            var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Learner.Uln);
+            var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Learner.Uln).ConfigureAwait(false);
             if (learnerMatchResult.DataLockErrorCode.HasValue) return CreateDataLockNonPayableEarningEvent(earningEvent, learnerMatchResult.DataLockErrorCode.Value);
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
