@@ -1,13 +1,30 @@
-﻿using System.Threading.Tasks;
+﻿using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
+using System.Threading.Tasks;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.Interfaces
+namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
     public class LearnerMatcher : ILearnerMatcher
     {
-        public async Task<LearnerMatchResult> MatchLearner(DataLockValidation uln)
+        private readonly IUlnLearnerMatcher ulnLearnerMatcher;
+        private readonly IUkprnMatcher ukprnMatcher;
+
+        public LearnerMatcher(IUkprnMatcher ukprnMatcher, IUlnLearnerMatcher ulnLearnerMatcher)
         {
-            throw new System.NotImplementedException();
+            this.ulnLearnerMatcher = ulnLearnerMatcher;
+            this.ukprnMatcher = ukprnMatcher;
+        }
+
+        public async Task<LearnerMatchResult> MatchLearner(long uln)
+        {
+            var dataLockErrorCode = await ukprnMatcher.MatchUkprn().ConfigureAwait(false);
+            if (dataLockErrorCode.HasValue)
+                return new LearnerMatchResult
+                {
+                    DataLockErrorCode = dataLockErrorCode
+                };
+
+           return await ulnLearnerMatcher.MatchUln(uln).ConfigureAwait(false);
         }
     }
 }

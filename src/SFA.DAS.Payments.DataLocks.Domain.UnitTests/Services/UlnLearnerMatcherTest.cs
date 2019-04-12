@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             var matchResult = await ulnLearnerMatcher.MatchUln(uln).ConfigureAwait(false);
 
             matchResult.Should().NotBeNull();
-            matchResult.ErrorCode.Should().Be(DataLockErrorCode.DLOCK_02);
+            matchResult.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_02);
             matchResult.Apprenticeships.Should().BeNull();
         }
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             matchResult.Should().NotBeNull();
             matchResult.Apprenticeships.Should().NotBeNull();
             matchResult.Apprenticeships.Should().HaveCount(1);
-            matchResult.ErrorCode.Should().BeNull();
+            matchResult.DataLockErrorCode.Should().BeNull();
         }
 
 
