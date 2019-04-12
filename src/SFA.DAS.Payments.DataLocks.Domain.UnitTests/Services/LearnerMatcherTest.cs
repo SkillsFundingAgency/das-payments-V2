@@ -21,8 +21,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         [SetUp]
         public void SetUpTest()
         {
-            ukprnMatcher = new Mock<IUkprnMatcher>();
-            ulnLearnerMatcher = new Mock<IUlnLearnerMatcher>();
+            ukprnMatcher = new Mock<IUkprnMatcher>(MockBehavior.Strict);
+            ulnLearnerMatcher = new Mock<IUlnLearnerMatcher>(MockBehavior.Strict);
+        }
+
+        [TearDown]
+        public void CleanUp()
+        {
+            ukprnMatcher.Verify();
+            ulnLearnerMatcher.Verify();
         }
 
         [Test]
@@ -63,7 +70,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             var learnerMatcher = new LearnerMatcher(ukprnMatcher.Object, ulnLearnerMatcher.Object);
 
             var actual = await learnerMatcher.MatchLearner(Uln);
-
             actual.Should().NotBeNull();
             actual.DataLockErrorCode.Should().Be(expectedLearnerMatchResult.DataLockErrorCode);
 
@@ -92,12 +98,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var actual = await learnerMatcher.MatchLearner(Uln);
 
-            actual.Apprenticeships.Should().NotBeNull();
-            actual.Apprenticeships.Should().HaveSameCount(expectedLearnerMatchResult.Apprenticeships);
-            actual.Apprenticeships.Should().BeSameAs(expectedLearnerMatchResult.Apprenticeships);
-
             actual.Should().NotBeNull();
             actual.DataLockErrorCode.Should().BeNull();
+
+            actual.Apprenticeships.Should().NotBeNull();
+            actual.Apprenticeships.Should().BeSameAs(expectedLearnerMatchResult.Apprenticeships);
         }
 
     }
