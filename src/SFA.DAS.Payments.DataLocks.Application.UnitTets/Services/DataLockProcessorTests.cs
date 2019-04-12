@@ -67,8 +67,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         [Test]
         public async Task ReturnsCorrectType()
         {
-            var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
-
             var commitments = new List<ApprenticeshipModel>
             {
                 new ApprenticeshipModel
@@ -97,11 +95,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         }
                     });
 
-            Mock.Get(dataCacheMock).Setup(x => x.TryGet(It.IsAny<string>(), CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<ApprenticeshipModel>>(true, commitments));
-
-           
-
             var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object).Validate(earningEvent, default(CancellationToken));
 
             actual.Should().BeOfType<PayableEarningEvent>();
@@ -114,8 +107,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         [Test]
         public async Task ReturnsLearnerDataLock()
         {
-            var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
-
             var commitments = new List<ApprenticeshipModel>
             {
                 new ApprenticeshipModel
@@ -131,10 +122,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var courseValidationMock = Mock.Of<IProcessCourseValidator>();
 
-            Mock.Get(dataCacheMock).Setup(x => x.TryGet(It.IsAny<string>(), CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<ApprenticeshipModel>>(true, commitments));
-
-
             var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock)
                 .Validate(earningEvent, default(CancellationToken));
 
@@ -145,8 +132,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         [Test]
         public async Task ReturnsCourseValidationDataLock()
         {
-            var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
-
             var commitments = new List<ApprenticeshipModel>
             {
                 new ApprenticeshipModel
@@ -174,9 +159,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                             Period = 1
                         }
                     });
-
-            Mock.Get(dataCacheMock).Setup(x => x.TryGet(It.IsAny<string>(), CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<ApprenticeshipModel>>(true, commitments));
 
             byte secondPeriod = 2;
             earningEvent.OnProgrammeEarnings[0].Periods = new ReadOnlyCollection<EarningPeriod>(

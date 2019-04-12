@@ -11,7 +11,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
     [TestFixture]
-    public class StartDateValidatorTests
+    public class StartDateValidatorTest
     {
         [Test]
         public void ReturnsNoDataLockErrors()
@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Test]
-        public void ReturnsDataLockErrorWheNotBegun()
+        public void ReturnsDataLockErrorWhenNotBegun()
         {
             var startDate = DateTime.UtcNow;
             var priceEpisodeIdentifier = "pe-1";
@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var result = validator.Validate(validation);
 
-            result.Count.Should().Equals(1);
+            result.Should().HaveCount(1);
             result.First().DataLockErrorCode.HasValue.Should().Be(true);
             result.First().DataLockErrorCode.Value.Should().Be(DataLockErrorCode.DLOCK_09);
         }
@@ -89,6 +89,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             var startDate = DateTime.UtcNow.AddDays(-5);
             var priceEpisodeIdentifier = "pe-1";
             byte period = 1;
+            var priceEpisodeId = 3L;
 
             var earlyApprenticeship = new ApprenticeshipModel
             {
@@ -107,6 +108,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 {
                     new ApprenticeshipPriceEpisodeModel
                     {
+                        Id = priceEpisodeId,
                         StartDate = startDate.AddDays(2)
                     }
                 }
@@ -125,12 +127,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var result = validator.Validate(validation);
 
-            result.Count.Should().Equals(1);
+            result.Should().HaveCount(1);
 
             var firstError = result.First();
 
             firstError.DataLockErrorCode.HasValue.Should().Be(true);
             firstError.DataLockErrorCode.Value.Should().Be(DataLockErrorCode.DLOCK_09);
+            firstError.ApprenticeshipPriceEpisodeIdentifier.Should().Be(priceEpisodeId);
         }
     }
 }
