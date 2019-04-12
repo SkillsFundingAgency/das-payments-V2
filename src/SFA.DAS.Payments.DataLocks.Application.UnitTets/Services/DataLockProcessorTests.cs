@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
 
             var learnerMatcherMock = new Mock<ILearnerMatcher>();
-            learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<DataLockValidation>())).ReturnsAsync(() =>
+            learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<long>())).ReturnsAsync(() =>
                 new LearnerMatchResult
                     {DataLockErrorCode = null, Apprenticeships = commitments});
 
@@ -116,7 +116,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
 
             var learnerMatcherMock = new Mock<ILearnerMatcher>();
-            learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<DataLockValidation>())).ReturnsAsync(() =>
+            learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<long>())).ReturnsAsync(() =>
                 new LearnerMatchResult
                 { DataLockErrorCode = DataLockErrorCode.DLOCK_01, Apprenticeships = new List<ApprenticeshipModel>(commitments) });
 
@@ -141,7 +141,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
 
             var learnerMatcherMock = new Mock<ILearnerMatcher>();
-            learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<DataLockValidation>())).ReturnsAsync(() =>
+            learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<long>())).ReturnsAsync(() =>
                 new LearnerMatchResult
                 { DataLockErrorCode = null, Apprenticeships = new List<ApprenticeshipModel>(commitments) });
 

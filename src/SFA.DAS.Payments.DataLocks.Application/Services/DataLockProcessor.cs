@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 StartDate = startDate
             };
 
-            var learnerMatchResult = await learnerMatcher.MatchLearner(courseValidation);
+            var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Learner.Uln);
 
             if (learnerMatchResult.DataLockErrorCode.HasValue)
             {

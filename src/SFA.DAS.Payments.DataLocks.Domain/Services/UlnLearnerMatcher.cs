@@ -14,21 +14,21 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
             this.dataLockLearnerCache = dataLockLearnerCache;
         }
         
-        public async Task<UlnLearnerMatchResult> MatchUln(long uln)
+        public async Task<LearnerMatchResult> MatchUln(long uln)
         {
             var apprenticeships = await dataLockLearnerCache.GetLearnerApprenticeships(uln).ConfigureAwait(false);
 
             if (!apprenticeships.Any())
             {
-                return new UlnLearnerMatchResult
+                return new LearnerMatchResult
                 {
-                    ErrorCode = DataLockErrorCode.DLOCK_02
+                    DataLockErrorCode = DataLockErrorCode.DLOCK_02
                 };
             }
 
-            return new UlnLearnerMatchResult
+            return new LearnerMatchResult
             {
-                Apprenticeships =  apprenticeships.AsReadOnly()
+                Apprenticeships =  apprenticeships
             };
         }
     }
