@@ -31,7 +31,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             DataLockErrorCode? expectedDataLockErrorCode = DataLockErrorCode.DLOCK_01;
             ukprnMatcher
                 .Setup(o => o.MatchUkprn())
-                .Returns(Task.FromResult(expectedDataLockErrorCode));
+                .Returns(Task.FromResult(expectedDataLockErrorCode))
+                .Verifiable();
 
             var learnerMatcher = new LearnerMatcher(ukprnMatcher.Object, ulnLearnerMatcher.Object);
 
@@ -51,11 +52,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             ukprnMatcher
                 .Setup(o => o.MatchUkprn())
-                .Returns(Task.FromResult(default(DataLockErrorCode?)));
+                .Returns(Task.FromResult(default(DataLockErrorCode?)))
+                .Verifiable();
 
             ulnLearnerMatcher
                 .Setup(o => o.MatchUln(Uln))
-                .Returns(Task.FromResult<LearnerMatchResult>(expectedLearnerMatchResult));
+                .Returns(Task.FromResult<LearnerMatchResult>(expectedLearnerMatchResult))
+                .Verifiable();
 
             var learnerMatcher = new LearnerMatcher(ukprnMatcher.Object, ulnLearnerMatcher.Object);
 
@@ -77,11 +80,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             ukprnMatcher
                 .Setup(o => o.MatchUkprn())
-                .Returns(Task.FromResult(default(DataLockErrorCode?)));
+                .Returns(Task.FromResult(default(DataLockErrorCode?)))
+                .Verifiable();
 
             ulnLearnerMatcher
                 .Setup(o => o.MatchUln(Uln))
-                .Returns(Task.FromResult<LearnerMatchResult>(expectedLearnerMatchResult));
+                .Returns(Task.FromResult<LearnerMatchResult>(expectedLearnerMatchResult))
+                .Verifiable();
 
             var learnerMatcher = new LearnerMatcher(ukprnMatcher.Object, ulnLearnerMatcher.Object);
 
@@ -89,6 +94,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             actual.Apprenticeships.Should().NotBeNull();
             actual.Apprenticeships.Should().HaveSameCount(expectedLearnerMatchResult.Apprenticeships);
+            actual.Apprenticeships.Should().BeSameAs(expectedLearnerMatchResult.Apprenticeships);
 
             actual.Should().NotBeNull();
             actual.DataLockErrorCode.Should().BeNull();
