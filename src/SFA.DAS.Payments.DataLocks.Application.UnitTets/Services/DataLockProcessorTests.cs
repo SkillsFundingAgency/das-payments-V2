@@ -26,6 +26,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
     {
         private IMapper mapper;
         private ApprenticeshipContractType1EarningEvent earningEvent;
+        private  Mock<ILearnerMatcher> learnerMatcherMock;
+        private Mock<IProcessCourseValidator> courseValidationMock;
 
         [OneTimeSetUp]
         public void Initialise()
@@ -62,6 +64,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     }
                 }
             };
+
+             learnerMatcherMock = new Mock<ILearnerMatcher>();
         }
 
         [Test]
@@ -77,7 +81,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }
             };
 
-            var learnerMatcherMock = new Mock<ILearnerMatcher>();
+            
             learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<long>())).ReturnsAsync(() =>
                 new LearnerMatchResult
                 { DataLockErrorCode = null, Apprenticeships = commitments });
@@ -168,7 +172,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     {
                         DataLockErrorCode = DataLockErrorCode.DLOCK_09,
                         ApprenticeshipId = 1,
-                        ApprenticeshipPriceEpisodeIdentifier = "pe-1",
+                        ApprenticeshipPriceEpisodeIdentifier = 100,
                         Period = 1
                     }
                 })

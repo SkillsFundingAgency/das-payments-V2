@@ -79,8 +79,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             var result = validator.Validate(validation);
 
             result.Should().HaveCount(1);
-            result.First().DataLockErrorCode.HasValue.Should().Be(true);
-            result.First().DataLockErrorCode.Value.Should().Be(DataLockErrorCode.DLOCK_09);
+            result.First().DataLockErrorCode.Should().Be(true);
+            result.First().DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
         }
 
         [Test]
@@ -131,8 +131,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var firstError = result.First();
 
-            firstError.DataLockErrorCode.HasValue.Should().Be(true);
-            firstError.DataLockErrorCode.Value.Should().Be(DataLockErrorCode.DLOCK_09);
+            firstError.DataLockErrorCode.Should().Be(true);
+            firstError.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
             firstError.ApprenticeshipPriceEpisodeIdentifier.Should().Be(priceEpisodeId);
         }
     }
