@@ -54,12 +54,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 
             if (config.ValidateDcAndDasServices)
             {
-                Builder.RegisterType<IlrService>().As<IIlrService>().InstancePerLifetimeScope();
+                Builder.RegisterType<IlrDcService>().As<IIlrService>().InstancePerLifetimeScope();
                 Builder.RegisterType< UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
             }
             else
             {
-                Builder.RegisterType<NullIlrService>().As<IIlrService>().InstancePerLifetimeScope();
+                Builder.RegisterType<IlrNullService>().As<IIlrService>().InstancePerLifetimeScope();
                 Builder.RegisterType<RandomUkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
             }
 

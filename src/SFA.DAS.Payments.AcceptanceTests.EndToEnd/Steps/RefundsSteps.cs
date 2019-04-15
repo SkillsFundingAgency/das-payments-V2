@@ -3,6 +3,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -103,9 +104,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
-            Task check() => WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier);
+            Task verifyIlr() => WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier);
 
-            await Scope.Resolve<IIlrService>().PublishNonLevyLearnerRequest(CurrentIlr, collectionPeriodText, Context, check);
+            var featureContext = (FeatureContext)Context;
+            var featureNumber = featureContext.FeatureInfo.Title.Substring(
+                featureContext.FeatureInfo.Title.IndexOf("PV2-", StringComparison.Ordinal) + 4, 3);
+
+            await Scope.Resolve<IIlrService>().PublishNonLevyLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]
