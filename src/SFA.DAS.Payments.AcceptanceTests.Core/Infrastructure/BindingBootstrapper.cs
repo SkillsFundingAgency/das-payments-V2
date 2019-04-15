@@ -52,8 +52,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             Builder.RegisterType<TdgService>().As<ITdgService>().InstancePerLifetimeScope();
             Builder.Register(c => new TestSession(c.Resolve<IUkprnService>())).InstancePerLifetimeScope();
 
-            var ukprnServiceType = config.ValidateDcAndDasServices ? typeof(UkprnService) : typeof(RandomUkprnService);
-            Builder.RegisterType(ukprnServiceType).As<IUkprnService>().InstancePerLifetimeScope();
+            if (config.ValidateDcAndDasServices)
+            {
+                Builder.RegisterType<IlrService>().As<IIlrService>().InstancePerLifetimeScope();
+                Builder.RegisterType< UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
+            }
+            else
+            {
+                Builder.RegisterType<NullIlrService>().As<IIlrService>().InstancePerLifetimeScope();
+                Builder.RegisterType<RandomUkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
+            }
 
             Builder.Register(context =>
                 {

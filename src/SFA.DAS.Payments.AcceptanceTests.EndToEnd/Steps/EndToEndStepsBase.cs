@@ -22,28 +22,13 @@ using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using ESFA.DC.ILR.TestDataGenerator.Interfaces;
-using ESFA.DC.IO.AzureStorage.Config.Interfaces;
-using ESFA.DC.IO.Interfaces;
-using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.JobStatus.Interface;
-using Microsoft.ApplicationInsights;
-using Polly;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
-using SFA.DAS.Payments.AcceptanceTests.Services;
-using SFA.DAS.Payments.AcceptanceTests.Services.Exceptions;
-using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
-using DCT.TestDataGenerator.Model;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -62,8 +47,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected IMapper Mapper => Scope.Resolve<IMapper>();
 
         protected DcHelper DcHelper => Get<DcHelper>();
-
-        public ITdgService TdgService;
 
         protected List<Price> CurrentPriceEpisodes
         {
@@ -917,10 +900,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
             }
 
+            // This was remoed for DC tests, maybe needs to be conditional on config?
             var dcHelper = Scope.Resolve<DcHelper>();
-            //await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId, provider.IlrSubmissionTime);
-
-
+            await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId, provider.IlrSubmissionTime);
 
             var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
                 TestSession, CurrentCollectionPeriod, learners);
@@ -983,91 +965,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 p.JobId = monthEndJobId;
                 p.MonthEndJobIdGenerated = true;
             });
-        }
-
-        protected async Task<KeyValuePair<string, string>> GenerateTestIlrFile(LearnerRequestBase learnerRequest)
-        {
-            TdgService = Scope.Resolve<ITdgService>();
-            return await TdgService.GenerateIlrTestData((NonLevyLearnerRequest) learnerRequest);
-        }
-
-        protected void RefreshTestSessionLearnerFromIlr(string ilrFile, string learnerId = null)
-        {
-            XNamespace xsdns = "ESFA/ILR/2018-19";
-            var xDoc = XDocument.Parse(ilrFile);
-            var learner = xDoc.Descendants(xsdns + "Learner").First();
-            var learningProvider = xDoc.Descendants(xsdns + "LearningProvider").First();
-
-            var testSessionLearner = TestSession.GetLearner(TestSession.Provider.Ukprn, learnerId);
-
-            testSessionLearner.Ukprn = long.Parse(learningProvider.Elements(xsdns + "UKPRN").First().Value);
-            testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
-            testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
-        }
-
-        protected async Task StoreAndPublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
-        {
-            await StoreIlrFile(learnerRequest.Ukprn, ilrFileName, ilrFile);
-
-            await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear, collectionPeriod);
-
-        }
-
-        private async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
-        {
-            var jobService = Scope.Resolve<IJobService>();
-
-            var nonLevyLearnerRequest = (NonLevyLearnerRequest)learnerRequest;
-
-            var storageServiceConfig = Scope.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
-
-            var submission = new SubmissionModel(JobType.IlrSubmission, nonLevyLearnerRequest.Ukprn)
-            {
-                FileName = $"{learnerRequest.Ukprn}/{ilrFileName}",
-                FileSizeBytes = ilrFile.Length,
-                SubmittedBy = "System",
-                CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
-                Period = collectionPeriod,
-                NotifyEmail = "SpecFlow@e2e.com",
-                StorageReference = storageServiceConfig.ContainerName,
-                CollectionYear = collectionYear
-            };
-
-            var jobId = await jobService.SubmitJob(submission);
-
-            //TODO: Overriding JobId, but better implementation needed. Eg: calling GetProvider with proper Identifier when needed.
-            foreach (var provider in TestSession.Providers)
-            {
-                provider.JobId = jobId;
-            }
-
-            var retryPolicy = Policy
-                .Handle<JobStatusNotWaitingException>()
-                .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-
-            await retryPolicy.ExecuteAsync(async () =>
-                {
-                    var jobStatus = await jobService.GetJobStatus(jobId);
-                    if (jobStatus != JobStatusType.Waiting)
-                        throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status");
-                }
-            );
-
-            await jobService.UpdateJobStatus(jobId, JobStatusType.Ready);
-
-        }
-
-        private async Task StoreIlrFile(int ukPrn, string ilrFileName, string ilrFile)
-        {
-            var storageServiceConfig = Scope.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
-            var storageService = Scope.Resolve<IStreamableKeyValuePersistenceService>(new NamedParameter("keyValuePersistenceServiceConfig", storageServiceConfig));
-
-            var byteArray = Encoding.UTF8.GetBytes(ilrFile);
-            var stream = new MemoryStream(byteArray);
-
-            var ilrStoragePathAndFileName = $"{ukPrn}/{ilrFileName}";
-
-            await storageService.SaveAsync(ilrStoragePathAndFileName, stream);
         }
     }
 }

@@ -1,17 +1,13 @@
-using System;
+using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
-using AutoMapper;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using SFA.DAS.Payments.Tests.Core;
-using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
-using DCT.TestDataGenerator.Model;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -107,33 +103,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
-            var collectionYear = collectionPeriodText.ToDate().Year;
-            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
-            var featureContext = (FeatureContext) Context;
-            var featureNumber = featureContext.FeatureInfo.Title.Substring(
-                featureContext.FeatureInfo.Title.IndexOf("PV2-", StringComparison.Ordinal) + 4, 3);
+            Task check() => WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier);
 
-            if (CurrentIlr != null && CurrentIlr.Any())
-            {
-                var mapper = Scope.Resolve<IMapper>();
-
-                foreach (var ilr in CurrentIlr)
-                {
-                    var learnerId = ilr.LearnerId;
-
-                    var nonLevyLearnerRequest = mapper.Map<NonLevyLearnerRequest>(ilr);
-                    nonLevyLearnerRequest.FeatureNumber = featureNumber;
-
-                    var ilrFile = await GenerateTestIlrFile(nonLevyLearnerRequest);
-
-                    RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerId);
-
-                    await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText,
-                        TestSession.Provider.Identifier).ConfigureAwait(false);
-
-                    await StoreAndPublishIlrFile(learnerRequest: nonLevyLearnerRequest, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
-                }
-            }
+            await Scope.Resolve<IIlrService>().PublishNonLevyLearnerRequest(CurrentIlr, collectionPeriodText, Context, check);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]

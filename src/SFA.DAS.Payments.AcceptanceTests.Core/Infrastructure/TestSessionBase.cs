@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         {
             var scope = Container.BeginLifetimeScope(builder => builder.RegisterInstance<IMessageSession>(MessageSession));
             context.Set(scope, "container_scope");
-            var testSession = new TestSession(Container.Resolve<IUkprnService>());
+            var testSession = Container.Resolve<TestSession>();
             context.Set(testSession);
             Console.WriteLine($"Created test session: Ukprn: {testSession.Ukprn}, Job Id: {testSession.JobId}");
         }
