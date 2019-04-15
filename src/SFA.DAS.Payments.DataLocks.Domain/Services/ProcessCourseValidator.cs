@@ -1,9 +1,7 @@
 ﻿using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
-using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
