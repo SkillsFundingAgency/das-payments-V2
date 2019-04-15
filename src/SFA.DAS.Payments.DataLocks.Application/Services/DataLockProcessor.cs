@@ -70,6 +70,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             foreach (var period in onProgrammeEarningPeriods)
             {
+                if (period.Amount == decimal.Zero)
+                {
+                    validOnProgrammeEarningPeriods.Add(period);
+                    continue;
+                }
+
                 var validationModel = CreateDataLockValidationModel(uln, priceEpisodes, period, apprenticeships);
                 var periodValidationResults = processCourseValidator.ValidateCourse(validationModel);
 
