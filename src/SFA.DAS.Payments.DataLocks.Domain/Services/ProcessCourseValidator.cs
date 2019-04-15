@@ -11,9 +11,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
     {
         private readonly List<ICourseValidator> courseValidators;
 
-        public ProcessCourseValidator(List<ICourseValidator> courseValidators)
+        public ProcessCourseValidator(IEnumerable<ICourseValidator> courseValidators)
         {
-            this.courseValidators = courseValidators;
+            this.courseValidators = new List<ICourseValidator>(courseValidators);
         }
         
         public List<ValidationResult> ValidateCourse(DataLockValidation validation)
