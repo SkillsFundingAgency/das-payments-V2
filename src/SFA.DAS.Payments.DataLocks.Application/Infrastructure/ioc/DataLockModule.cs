@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using SFA.DAS.Payments.DataLocks.Application.Cache;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
@@ -20,14 +21,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<LearnerMatcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            builder.RegisterType<StartDateValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.Register
-                (c => new ProcessCourseValidator(
-                     new List<ICourseValidator>()
-                    {
-                        c.Resolve<StartDateValidator>()
-                    })
-                ).InstancePerLifetimeScope();
+            builder.RegisterAssemblyTypes(AppDomain.CurrentDomain.GetAssemblies()).As<ICourseValidator>().InstancePerLifetimeScope();
+            builder.RegisterType<ProcessCourseValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }
