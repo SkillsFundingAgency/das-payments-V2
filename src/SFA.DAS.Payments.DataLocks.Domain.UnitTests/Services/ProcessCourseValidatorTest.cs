@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
@@ -42,7 +39,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         public void ValidateCourseShouldReturnValidationResults()
         {
             var processCourseValidator = new ProcessCourseValidator(courseValidators);
-            var actualResults = processCourseValidator.ValidateCourse(new DataLockValidation());
+
+            var validation = new DataLockValidation
+            {
+                EarningPeriod = new EarningPeriod {Period = 1}
+            };
+
+            var actualResults = processCourseValidator.ValidateCourse(validation);
 
             actualResults.Should().NotBeNull();
             actualResults.Should().HaveCount(courseValidators.Count);

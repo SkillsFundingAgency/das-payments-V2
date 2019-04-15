@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
@@ -15,7 +14,6 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -82,7 +80,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
             var actual = await dataLockProcessor.Validate(earningEvent, default(CancellationToken));
 
-            var payableEarning = actual as PayableEarningEvent;
+            actual.Should().HaveCount(1);
+            var payableEarning = actual.FirstOrDefault() as PayableEarningEvent;
             payableEarning.Should().NotBeNull();
             payableEarning.AccountId.Should().Be(456);
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
@@ -102,7 +101,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
             var actual = await dataLockProcessor.Validate(earningEvent, default(CancellationToken));
 
-            var nonPayableEarningEvent = actual as NonPayableEarningEvent;
+            actual.Should().HaveCount(1);
+            var nonPayableEarningEvent = actual.FirstOrDefault() as NonPayableEarningEvent;
             nonPayableEarningEvent.Should().NotBeNull();
             nonPayableEarningEvent.Errors.Should().Contain(DataLockErrorCode.DLOCK_01);
         }
@@ -141,7 +141,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidation>()), Times.Exactly(2));
 
-            var payableEarning = actual as PayableEarningEvent;
+            actual.Should().HaveCount(2);
+
+            var payableEarning = actual.FirstOrDefault() as NonPayableEarningEvent;
             payableEarning.Should().NotBeNull();
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
 
@@ -156,14 +158,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             var testEarningEvent = new ApprenticeshipContractType1EarningEvent
             {
-                Learner = new Learner
-                {
-                    Uln = 123,
-                }
+                Learner = new Learner {Uln = 123,},
+                PriceEpisodes = new List<PriceEpisode>()
             };
-
-            testEarningEvent.PriceEpisodes = new List<PriceEpisode>();
-
+            
             var earningPeriods = new List<EarningPeriod>();
             for (byte i = 1; i <= periodsToCreate; i++)
             {
@@ -190,7 +188,5 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             return testEarningEvent;
         }
-
     }
-
 }

@@ -33,26 +33,60 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             CancellationToken cancellationToken)
         {
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Learner.Uln).ConfigureAwait(false);
-            if (learnerMatchResult.DataLockErrorCode.HasValue) return CreateDataLockNonPayableEarningEvent(earningEvent, learnerMatchResult.DataLockErrorCode.Value);
+            if (learnerMatchResult.DataLockErrorCode.HasValue)
+                return new List<DataLockEvent>
+                {
+                    CreateNonPayableEarningEvent(earningEvent, learnerMatchResult.DataLockErrorCode.Value)
+                };
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
 
+            var result = new List<DataLockEvent>();
+
             foreach (var onProgrammeEarning in earningEvent.OnProgrammeEarnings)
             {
-                var validOnProgrammeEarningPeriods = ValidOnProgEarningPeriods(earningEvent.Learner.Uln, earningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln);
-                onProgrammeEarning.Periods = new ReadOnlyCollection<EarningPeriod>(validOnProgrammeEarningPeriods);
+                var onProgrammeEarningPeriods = ValidateOnProgEarningPeriods(earningEvent.Learner.Uln, earningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln);
+
+                var validPeriods = onProgrammeEarningPeriods.ValidPeriods;
+                var validationErrors = onProgrammeEarningPeriods.ValidationErrors;
+
+                if (validationErrors != null && validationErrors.Any())
+                {
+                    result.Add(CreateNonPayableEarningEvent(earningEvent, validationErrors));
+                }
+
+                onProgrammeEarning.Periods = new ReadOnlyCollection<EarningPeriod>(validPeriods);
             }
 
-            var returnMessage = mapper.Map<PayableEarningEvent>(earningEvent);
-            var apprenticeship = apprenticeshipsForUln.FirstOrDefault();
+            result.Add(CreatePayableEarningEvent(earningEvent, apprenticeshipsForUln));
 
-            returnMessage.AccountId = apprenticeship.AccountId;
-            returnMessage.Priority = apprenticeship.Priority;
-
-            return returnMessage;
+            return result;
         }
 
-        private NonPayableEarningEvent CreateDataLockNonPayableEarningEvent( ApprenticeshipContractType1EarningEvent earningEvent, DataLockErrorCode dataLockErrorCode)
+        private DataLockEvent CreatePayableEarningEvent(ApprenticeshipContractType1EarningEvent earningEvent,
+             List<ApprenticeshipModel> apprenticeshipsForUln)
+        {
+            var result = mapper.Map<PayableEarningEvent>(earningEvent);
+            var apprenticeship = apprenticeshipsForUln.FirstOrDefault();
+
+            result.AccountId = apprenticeship.AccountId;
+            result.Priority = apprenticeship.Priority;
+
+            return result;
+        }
+
+        private DataLockEvent CreateNonPayableEarningEvent(ApprenticeshipContractType1EarningEvent earningEvent,
+            List<ValidationResult> validationResults)
+        {
+            var result = mapper.Map<NonPayableEarningEvent>(earningEvent);
+
+            result.Errors = new ReadOnlyCollection<DataLockErrorCode>(
+                validationResults.Select(x => x.DataLockErrorCode).Distinct().ToList());
+
+            return result;
+        }
+
+        private NonPayableEarningEvent CreateNonPayableEarningEvent(ApprenticeshipContractType1EarningEvent earningEvent, DataLockErrorCode dataLockErrorCode)
         {
             var nonPayableEarning = mapper.Map<NonPayableEarningEvent>(earningEvent);
             nonPayableEarning.Errors = new ReadOnlyCollection<DataLockErrorCode>(
@@ -63,7 +97,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return nonPayableEarning;
         }
 
-        private List<EarningPeriod> ValidOnProgEarningPeriods(long uln, List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning, List<ApprenticeshipModel> apprenticeships)
+        private (List<EarningPeriod> ValidPeriods, List<ValidationResult> ValidationErrors) ValidateOnProgEarningPeriods(long uln, List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning, List<ApprenticeshipModel> apprenticeships)
         {
             var onProgrammeEarningPeriods = onProgrammeEarning.Periods;
             var validOnProgrammeEarningPeriods = new List<EarningPeriod>();
@@ -84,7 +118,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 }
             }
 
-            return validOnProgrammeEarningPeriods;
+            return (validOnProgrammeEarningPeriods, validationResults);
         }
 
         private DataLockValidation CreateDataLockValidationModel(long uln, List<PriceEpisode> priceEpisodes, EarningPeriod earningPeriod, List<ApprenticeshipModel> apprenticeships)

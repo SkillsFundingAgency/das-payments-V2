@@ -18,16 +18,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<UkprnMatcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<UlnLearnerMatcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LearnerMatcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<StartDateValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.Register
-                (c => new ProcessCourseValidator(
-                     new List<ICourseValidator>()
-                    {
-                        c.Resolve<StartDateValidator>()
-                    })
-                ).InstancePerLifetimeScope();
+            (c => new ProcessCourseValidator(
+                new List<ICourseValidator>
+                {
+                    c.Resolve<StartDateValidator>()
+                })
+            ).AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }
