@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 foreach (var dataLockEvent in dataLockEvents)
                 {
                     paymentLogger.LogVerbose($"Publishing data lock event of type {dataLockEvent.GetType()}");
-                    await context.Publish(dataLockEvents);
+                    await context.Publish(dataLockEvent).ConfigureAwait(false);
                     paymentLogger.LogDebug("Data lock event published");
                 }
             }
