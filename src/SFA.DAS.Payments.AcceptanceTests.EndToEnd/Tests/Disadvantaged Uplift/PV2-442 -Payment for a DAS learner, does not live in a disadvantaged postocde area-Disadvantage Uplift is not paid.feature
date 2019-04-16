@@ -5,7 +5,7 @@ Feature: PV2-442 Payment for a DAS learner, does not live in a disadvantaged pos
 # For DCT Integration
 #ILR entry: <PostcodePrior>OX17 1EZ</PostcodePrior>
 
-Scenario Outline:Levy learner - on framework , Disadvantage Uplift 21-27% paid PV2-441
+Scenario Outline: Payment for a DAS learner, does not live in a disadvantaged postocde area - PV2-442
 Given the following commitments exist	
 	 | framework code | programme type | pathway code | agreed price | start date                | end date                     | status | effective from            |
 	 | 593            | 20             | 1            | 15000        | 01/Aug/Last Academic Year | 01/Aug/Current Academic Year | active | 01/Aug/Last Academic Year |
@@ -19,7 +19,7 @@ And the following earnings had been generated for the learner
     | Aug/Last Academic Year | 1000         | 0          | 0         | 0                        |
     | Sep/Last Academic Year | 1000         | 0          | 0         | 0                        |
     | Oct/Last Academic Year | 1000         | 0          | 0         | 0                        |
-    | Nov/Last Academic Year | 1000         | 0          | 0         | 100                      |
+    | Nov/Last Academic Year | 1000         | 0          | 0         | 0                        |
     | Dec/Last Academic Year | 1000         | 0          | 0         | 0                        |
     | Jan/Last Academic Year | 1000         | 0          | 0         | 0                        |
     | Feb/Last Academic Year | 1000         | 0          | 0         | 0                        |
@@ -29,19 +29,19 @@ And the following earnings had been generated for the learner
     | Jun/Last Academic Year | 1000         | 0          | 0         | 0                        |
     | Jul/Last Academic Year | 1000         | 0          | 0         | 0                        |
 And the following provider payments had been generated
-    | Collection Period      | Delivery Period        | Levy Payments | SFA Fully-Funded Payments | Transaction Type         |
-    | R01/Last Academic Year | Aug/Last Academic Year | 900           | 0                         | Learning                 |
-    | R02/Last Academic Year | Sep/Last Academic Year | 900           | 0                         | Learning                 |
-    | R03/Last Academic Year | Oct/Last Academic Year | 900           | 0                         | Learning                 |
-    | R04/Last Academic Year | Nov/Last Academic Year | 900           | 0                         | Learning                 |
-    | R05/Last Academic Year | Dec/Last Academic Year | 900           | 0                         | Learning                 |
-    | R06/Last Academic Year | Jan/Last Academic Year | 900           | 0                         | Learning                 |
-    | R07/Last Academic Year | Feb/Last Academic Year | 900           | 0                         | Learning                 |
-    | R08/Last Academic Year | Mar/Last Academic Year | 900           | 0                         | Learning                 |
-    | R09/Last Academic Year | Apr/Last Academic Year | 900           | 0                         | Learning                 |
-    | R10/Last Academic Year | May/Last Academic Year | 900           | 0                         | Learning                 |
-    | R11/Last Academic Year | Jun/Last Academic Year | 900           | 0                         | Learning                 |
-    | R12/Last Academic Year | Jul/Last Academic Year | 900           | 0                         | Learning                 |
+    | Collection Period      | Delivery Period        | Levy Payments | SFA Fully-Funded Payments | Transaction Type |
+    | R01/Last Academic Year | Aug/Last Academic Year | 1000          | 0                         | Learning         |
+    | R02/Last Academic Year | Sep/Last Academic Year | 1000          | 0                         | Learning         |
+    | R03/Last Academic Year | Oct/Last Academic Year | 1000          | 0                         | Learning         |
+    | R04/Last Academic Year | Nov/Last Academic Year | 1000          | 0                         | Learning         |
+    | R05/Last Academic Year | Dec/Last Academic Year | 1000          | 0                         | Learning         |
+    | R06/Last Academic Year | Jan/Last Academic Year | 1000          | 0                         | Learning         |
+    | R07/Last Academic Year | Feb/Last Academic Year | 1000          | 0                         | Learning         |
+    | R08/Last Academic Year | Mar/Last Academic Year | 1000          | 0                         | Learning         |
+    | R09/Last Academic Year | Apr/Last Academic Year | 1000          | 0                         | Learning         |
+    | R10/Last Academic Year | May/Last Academic Year | 1000          | 0                         | Learning         |
+    | R11/Last Academic Year | Jun/Last Academic Year | 1000          | 0                         | Learning         |
+    | R12/Last Academic Year | Jul/Last Academic Year | 1000          | 0                         | Learning         |
 
 
 But the Provider now changes the Learner details as follows
