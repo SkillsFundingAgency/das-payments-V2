@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         [SetUp]
         public void Setup()
         {
-            earningEvent = CreateTestEarningEvent(1);
+            earningEvent = CreateTestEarningEvent(1,100m);
             learnerMatcherMock = new Mock<ILearnerMatcher>(MockBehavior.Strict);
             courseValidationMock = new Mock<IProcessCourseValidator>(MockBehavior.Strict);
         }
@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
                 }).Verifiable();
 
-            var testEarningEvent = CreateTestEarningEvent(2);
+            var testEarningEvent = CreateTestEarningEvent(2, 100m);
 
             courseValidationMock
                 .SetupSequence(x => x.ValidateCourse(It.IsAny<DataLockValidation>()))
@@ -152,7 +152,33 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             earningPeriod.Period.Should().Be(2);
         }
 
-        private ApprenticeshipContractType1EarningEvent CreateTestEarningEvent(byte periodsToCreate)
+        [Test]
+        public async Task ThenAllPaymentWillBePayableWhenEarningAmountIsZero()
+        {
+            learnerMatcherMock
+                .Setup(x => x.MatchLearner(It.IsAny<long>()))
+                .ReturnsAsync(() => new LearnerMatchResult
+                {
+                    DataLockErrorCode = null,
+                    Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
+
+                }).Verifiable();
+
+            var testEarningEvent = CreateTestEarningEvent(2, decimal.Zero);
+            
+            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
+            var actual = await dataLockProcessor.Validate(testEarningEvent, default(CancellationToken));
+
+            var payableEarning = actual as PayableEarningEvent;
+            payableEarning.Should().NotBeNull();
+            payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
+
+            var onProgrammeEarning = payableEarning.OnProgrammeEarnings.First();
+            onProgrammeEarning.Periods.Count.Should().Be(2);
+        }
+
+
+        private ApprenticeshipContractType1EarningEvent CreateTestEarningEvent(byte periodsToCreate, decimal earningPeriodAmount)
         {
             var testEarningEvent = new ApprenticeshipContractType1EarningEvent
             {
@@ -175,6 +201,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
                 earningPeriods.Add(new EarningPeriod
                 {
+                    Amount = earningPeriodAmount,
                     Period = i,
                     PriceEpisodeIdentifier = $"pe-{i}"
                 });
