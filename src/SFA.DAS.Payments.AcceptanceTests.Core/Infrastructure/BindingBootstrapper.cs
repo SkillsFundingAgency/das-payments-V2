@@ -39,7 +39,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var conventions = EndpointConfiguration.Conventions();
             conventions.DefiningMessagesAs(type => type.IsMessage());
 
-            Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
+            var ukprnServiceType = config.ValidateDcAndDasServices ? typeof(UkprnService) : typeof(RandomUkprnService);
+            Builder.RegisterType(ukprnServiceType).As<IUkprnService>().InstancePerLifetimeScope();
 
             EndpointConfiguration.UsePersistence<AzureStoragePersistence>()
                 .ConnectionString(config.StorageConnectionString);

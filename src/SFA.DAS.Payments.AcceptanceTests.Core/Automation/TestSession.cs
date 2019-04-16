@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Bogus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.Services;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -28,6 +30,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
 
+        private readonly IUkprnService _ukprnService = new RandomUkprnService();
 
         public Employer GetEmployer(string identifier)
         {
@@ -70,6 +73,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         }
 
+        public TestSession(IUkprnService ukprnService) : this()
+        {
+            _ukprnService = ukprnService;
+        }
+
         public long GenerateId(int maxValue = 1000000)
         {
             var id = random.Next(maxValue);
@@ -79,14 +87,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public void RegenerateUkprn()
         {
-            Provider.Ukprn = GenerateId();
+            Provider.Ukprn = _ukprnService.GenerateUkprn();
         }
 
         private Provider GenerateProvider()
         {
             return new Provider
             {
-                Ukprn = GenerateId(),
+                Ukprn = _ukprnService.GenerateUkprn(),
                 JobId = GenerateId(),
                 IlrSubmissionTime = DateTime.UtcNow
             };
