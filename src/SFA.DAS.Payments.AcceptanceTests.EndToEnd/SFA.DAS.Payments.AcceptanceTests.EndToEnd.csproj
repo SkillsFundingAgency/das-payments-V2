@@ -258,6 +258,7 @@
     <Compile Include="EventMatchers\ProviderPaymentModelMatcher.cs" />
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
+    <Compile Include="Extensions\ApprenticeshipExtensions.cs" />
     <Compile Include="Handlers\FundingSourcePaymentEventHandler.cs" />
     <Compile Include="Handlers\PayableEarningEventHandler.cs" />
     <Compile Include="Extensions\EmployerExtensions.cs" />
@@ -589,6 +590,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes price during month - PV2-295.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes standard with change to price - PV2-290.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes standard with change to price - PV2-290.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner goes on a planned break - PV2-296.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -638,11 +644,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>2 learners 2 employers 1 provider enough levy - PV2-267.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes standard with change to price - PV2-290.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Levy learner changes standard with change to price - PV2-290.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\One levy learner finishes on time not enough levy to cover full payment-PV2-266.feature.cs">
       <AutoGen>True</AutoGen>

@@ -65,6 +65,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "previous_training");
         }
 
+        protected List<Apprenticeship> Apprenticeships
+        {
+            get => !Context.TryGetValue<List<Apprenticeship>>(out var apprenticeships) ? null : apprenticeships;
+            set => Set(value);
+        }
+
         protected List<Earning> PreviousEarnings
         {
             get => !Context.TryGetValue<List<Earning>>("previous_earnings", out var previousEarnings) ? null : previousEarnings;
@@ -165,24 +171,64 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected async Task AddTestApprenticeships(List<Apprenticeship> apprenticeships)
+        protected async Task AddOrUpdateTestApprenticeships(List<Apprenticeship> apprenticeshipsSpec)
         {
-            foreach (var x in apprenticeships)
-            {
-                var apprenticeshipModel = CreateApprenticeshipModels(x);
-                var matchedApprenticeship = await DataContext.Apprenticeship.FirstOrDefaultAsync(e => e.Id == apprenticeshipModel.Id).ConfigureAwait(false);
+            if (Apprenticeships == null) Apprenticeships = new List<Apprenticeship>();
 
-                if (matchedApprenticeship != null)
+            foreach (var apprenticeshipSpec in apprenticeshipsSpec)
+            {
+                var learnerId = string.IsNullOrWhiteSpace(apprenticeshipSpec.LearnerId) ? TestSession.Learner.LearnerIdentifier : apprenticeshipSpec.LearnerId;
+                var foundApprenticeship = Apprenticeships.SingleOrDefault(x => x.LearnerId == learnerId);
+                var apprenticeshipModel = CreateApprenticeshipModels(apprenticeshipSpec);
+
+                if (foundApprenticeship == null)
                 {
-                    DataContext.Apprenticeship.Remove(matchedApprenticeship);
-                    await DataContext.SaveChangesAsync().ConfigureAwait(false);
+                    await AddApprenticeships(apprenticeshipModel, apprenticeshipSpec, learnerId);
                 }
-               
-                await DataContext.Apprenticeship.AddAsync(apprenticeshipModel).ConfigureAwait(false);
+                else
+                {
+                    await UpdateApprenticeships(foundApprenticeship.CommitmentId, apprenticeshipModel, apprenticeshipSpec);
+                }
             }
+        }
+
+        private async Task AddApprenticeships(ApprenticeshipModel apprenticeshipModel, Apprenticeship apprenticeshipSpec,string learnerId)
+        {
+            apprenticeshipModel.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+            {
+                CreateApprenticeshipPriceEpisodes(apprenticeshipSpec)
+            };
+            await DataContext.Apprenticeship.AddAsync(apprenticeshipModel).ConfigureAwait(false);
+
+            apprenticeshipSpec.LearnerId = learnerId;
+            apprenticeshipSpec.CommitmentId = apprenticeshipModel.Id;
+            Apprenticeships.Add(apprenticeshipSpec);
 
             await DataContext.SaveChangesAsync().ConfigureAwait(false);
+        }
 
+        private async Task UpdateApprenticeships(long currentApprenticeshipId, ApprenticeshipModel apprenticeshipModel,Apprenticeship apprenticeshipSpec)
+        {
+            var savedApprenticeship = await DataContext.Apprenticeship.SingleAsync(x => x.Id == currentApprenticeshipId).ConfigureAwait(false);
+
+            savedApprenticeship.StandardCode = apprenticeshipModel.StandardCode;
+            savedApprenticeship.FrameworkCode = apprenticeshipModel.FrameworkCode;
+            savedApprenticeship.ProgrammeType = apprenticeshipModel.ProgrammeType;
+            savedApprenticeship.PathwayCode = apprenticeshipModel.PathwayCode;
+            savedApprenticeship.Priority = apprenticeshipModel.Priority;
+            savedApprenticeship.Status = apprenticeshipModel.Status;
+
+            var currentEpisodes = await DataContext.ApprenticeshipPriceEpisode
+                .Where(x => x.ApprenticeshipId == currentApprenticeshipId)
+                .ToListAsync().ConfigureAwait(false);
+
+            currentEpisodes.ForEach(x => x.Removed = true);
+
+            apprenticeshipSpec.CommitmentId = currentApprenticeshipId;
+            var newPriceEpisodes = CreateApprenticeshipPriceEpisodes(apprenticeshipSpec);
+
+            await DataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisodes).ConfigureAwait(false);
+            await DataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         private ApprenticeshipModel CreateApprenticeshipModels(Apprenticeship apprenticeshipSpec)
@@ -200,25 +246,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     apprenticeshipSpec.Ukprn = TestSession.GetProviderByIdentifier(apprenticeshipSpec.Provider).Ukprn;
                 }
             }
-            apprenticeshipSpec.AccountId = TestSession.GetEmployer(apprenticeshipSpec.Employer).AccountId;
-            apprenticeshipSpec.Uln = TestSession.GetLearner(apprenticeshipSpec.Ukprn, apprenticeshipSpec.LearnerId).Uln;
 
-            ApprenticeshipPaymentStatus apprenticeshipStatus;
-            switch (apprenticeshipSpec.Status?.ToLower())
-            {
-                case "active":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Active;
-                    break;
-                case "cancelled":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Stopped;
-                    break;
-                case "paused":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Paused;
-                    break;
-                default:
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Inactive;
-                    break;
-            }
+            if (apprenticeshipSpec.AccountId == default(long))
+                apprenticeshipSpec.AccountId = TestSession.GetEmployer(apprenticeshipSpec.Employer).AccountId;
+
+            if (apprenticeshipSpec.Uln == default(long))
+                apprenticeshipSpec.Uln = TestSession.GetLearner(apprenticeshipSpec.Ukprn, apprenticeshipSpec.LearnerId).Uln;
 
             var apprenticeshipModel = new ApprenticeshipModel
             {
@@ -230,27 +263,35 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ProgrammeType = apprenticeshipSpec.ProgrammeType,
                 PathwayCode = apprenticeshipSpec.PathwayCode,
                 Priority = apprenticeshipSpec.Priority,
-                Status = apprenticeshipStatus,
+                Status = apprenticeshipSpec.Status.ToApprenticeshipPaymentStatus(),
                 LegalEntityName = "Test SFA",
                 EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
                 EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
                 AgreedOnDate = DateTime.UtcNow,
-
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
-                        new    ApprenticeshipPriceEpisodeModel {
-                                    Cost = apprenticeshipSpec.AgreedPrice,
-                                    StartDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveFrom) 
-                                        ?apprenticeshipSpec.StartDate.ToDate()
-                                        :apprenticeshipSpec.EffectiveFrom.ToDate(),
-                                    EndDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveTo)
-                                        ? default(DateTime?)
-                                        : apprenticeshipSpec.EffectiveTo.ToDate()
-                             }
-                 }
+                StandardCode = apprenticeshipSpec.StandardCode
             };
 
             return apprenticeshipModel;
+        }
+        
+        private static ApprenticeshipPriceEpisodeModel CreateApprenticeshipPriceEpisodes(Apprenticeship apprenticeshipSpec)
+        {
+            var startDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveFrom)
+                ? apprenticeshipSpec.StartDate.ToDate()
+                : apprenticeshipSpec.EffectiveFrom.ToDate();
+
+            var endDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveTo)
+                ? default(DateTime?)
+                : apprenticeshipSpec.EffectiveTo.ToDate();
+
+            return new ApprenticeshipPriceEpisodeModel
+            {
+                ApprenticeshipId = apprenticeshipSpec.CommitmentId,
+                Cost = apprenticeshipSpec.AgreedPrice,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
         }
 
         protected async Task SaveLevyAccount(Employer employer)
