@@ -14,16 +14,44 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
 
         public int GenerateUkprn()
         {
-            //return 10036143;
             var provider = LeastRecentlyUsed();
             provider.Use();
             SaveChanges();
+
+            ClearPaymentsData(provider);
+
             return provider.Ukprn;
         }
 
-        private Provider LeastRecentlyUsed() => 
-            Providers.OrderByDescending(x => x.LastUsed).FirstOrDefault()
+        private Provider LeastRecentlyUsed() =>
+            Providers.OrderBy(x => x.LastUsed).FirstOrDefault()
             ?? throw new InvalidOperationException("There are no UKPRNs available in the well-known Providers pool.");
+
+        private void ClearPaymentsData(Provider provider)
+        {
+            const string DeleteUkprnData = @"
+delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId in 
+	(select Id from Payments2.Apprenticeship where Ukprn = {0})
+
+delete from Payments2.Apprenticeship where Ukprn = {0}
+
+delete from Payments2.EarningEventPeriod where EarningEventId in 
+	(select EventId from Payments2.EarningEvent where Ukprn = {0})
+
+delete from Payments2.EarningEventPriceEpisode where EarningEventId in 
+	(select EventId from Payments2.EarningEvent where Ukprn = {0})
+
+delete from Payments2.EarningEvent where Ukprn = {0}
+
+delete from Payments2.FundingSourceEvent where Ukprn = {0}
+
+delete from Payments2.RequiredPaymentEvent where Ukprn = {0}
+
+delete from Payments2.Payment where Ukprn = {0}
+";
+
+            Database.ExecuteSqlCommand(DeleteUkprnData, provider.Ukprn);
+        }
 
         private DbSet<Provider> Providers { get; set; }
 
