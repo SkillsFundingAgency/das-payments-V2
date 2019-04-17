@@ -19,8 +19,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
         public List<ValidationResult> ValidateCourse(DataLockValidationModel validationModel)
         {
             var validationResult = new List<ValidationResult>();
-            var courseValidationModel = CreateCourseValidationModel(validationModel);
-            
+            var courseValidationModel =  new CourseValidationModel
+            {
+                Period = validationModel.EarningPeriod.Period,
+                PriceEpisode = validationModel.PriceEpisode,
+                Apprenticeships = validationModel.Apprenticeships
+            };
+
             foreach (var courseValidator in courseValidators)
             {
                 var results = courseValidator.Validate(courseValidationModel);
@@ -34,15 +39,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
             return validationResult;
         }
 
-        private CourseValidationModel CreateCourseValidationModel(DataLockValidationModel validationModel)
-        {
-            return new CourseValidationModel
-            {
-                Period = validationModel.EarningPeriod.Period,
-                PriceEpisode = validationModel.PriceEpisode,
-                Apprenticeships = validationModel.Apprenticeships
-            };
-        }
 
     }
 }
