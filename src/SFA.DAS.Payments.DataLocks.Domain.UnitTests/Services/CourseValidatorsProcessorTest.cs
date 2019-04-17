@@ -15,12 +15,12 @@ using SFA.DAS.Payments.Model.Core.Entities;
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
     [TestFixture]
-    public class ProcessCourseValidatorTest
+    public class CourseValidatorsProcessorTest
     {
         private List<ICourseValidator> courseValidators;
         private List<ValidationResult>  courseValidationResults ;
         private DataLockValidation dataLockValidation;
-
+        private Mock<ICourseValidator> startDateValidator;
 
         [SetUp]
         public void Prepare()
@@ -38,19 +38,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 Apprenticeships = new List<ApprenticeshipModel> {new ApprenticeshipModel()}
             };
 
-            var courseValidation = new CourseValidation
-            {
-                Period = dataLockValidation.EarningPeriod.Period,
-                PriceEpisode = dataLockValidation.PriceEpisode,
-                Apprenticeships = dataLockValidation.Apprenticeships
-            };
-
              courseValidationResults = new List<ValidationResult>
             {
                 new ValidationResult()
             };
 
-            var startDateValidator = new Mock<ICourseValidator>();
+            startDateValidator = new Mock<ICourseValidator>(MockBehavior.Strict);
             startDateValidator
                 .Setup(o => o.Validate(It.IsAny<CourseValidation>()))
                 .Returns(courseValidationResults);
@@ -61,12 +54,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             };
 
         }
-
+        
         [Test]
         public void ValidateCourseShouldReturnValidationResults()
         {
-            var processCourseValidator = new ProcessCourseValidator(courseValidators);
-            var actualResults = processCourseValidator.ValidateCourse(dataLockValidation);
+            var courseValidatorsProcessor = new CourseValidatorsProcessor(courseValidators);
+            var actualResults = courseValidatorsProcessor.ValidateCourse(dataLockValidation);
+
+            startDateValidator.Verify(o => o.Validate(It.IsAny<CourseValidation>()), Times.Once);
 
             actualResults.Should().NotBeNull();
             actualResults.Should().HaveCount(courseValidators.Count);

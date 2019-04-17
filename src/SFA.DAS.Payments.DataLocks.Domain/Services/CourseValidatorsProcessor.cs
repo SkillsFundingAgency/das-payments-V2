@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
-    public class ProcessCourseValidator : IProcessCourseValidator
+    public class CourseValidatorsProcessor : ICourseValidatorsProcessor
     {
         private readonly List<ICourseValidator> courseValidators;
 
-        public ProcessCourseValidator(IEnumerable<ICourseValidator> courseValidators)
+        public CourseValidatorsProcessor(IEnumerable<ICourseValidator> courseValidators)
         {
             this.courseValidators = new List<ICourseValidator>(courseValidators);
         }

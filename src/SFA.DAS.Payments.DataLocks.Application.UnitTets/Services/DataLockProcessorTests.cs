@@ -28,8 +28,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         private IMapper mapper;
         private ApprenticeshipContractType1EarningEvent earningEvent;
         private Mock<ILearnerMatcher> learnerMatcherMock;
-        private Mock<IProcessCourseValidator> courseValidationMock;
-        private List<ApprenticeshipModel> apprenticeships; 
+        private Mock<ICourseValidatorsProcessor> courseValidationMock;
+        private List<ApprenticeshipModel> apprenticeships;
+        private const long Uln = 123;
 
         [OneTimeSetUp]
         public void Initialise()
@@ -43,10 +44,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             apprenticeships = new List<ApprenticeshipModel>
             {
-                new ApprenticeshipModel
-                {
-                    AccountId = 456,
-                }
+                new ApprenticeshipModel{AccountId = 456, Uln = Uln},
+                new ApprenticeshipModel{ AccountId = 456, Uln = Uln}
             };
         }
 
@@ -61,14 +60,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             earningEvent = CreateTestEarningEvent(1,100m);
             learnerMatcherMock = new Mock<ILearnerMatcher>(MockBehavior.Strict);
-            courseValidationMock = new Mock<IProcessCourseValidator>(MockBehavior.Strict);
+            courseValidationMock = new Mock<ICourseValidatorsProcessor>(MockBehavior.Strict);
         }
 
         [Test]
-        public async Task TheReturnedObjectIsOfTheCorrectType()
+        public async Task GivenNoDataLockErrorReturnedAllEarningPeriodsInPayableEvent()
         {
             learnerMatcherMock
-                .Setup(x => x.MatchLearner(It.IsAny<long>()))
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
                 .ReturnsAsync(() =>new LearnerMatchResult
                 {
                     DataLockErrorCode = null, Apprenticeships = apprenticeships
@@ -76,8 +75,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             courseValidationMock
                 .Setup(x => x.ValidateCourse(It.IsAny<DataLockValidation>()))
-                .Returns(() => new List<ValidationResult>())
-                .Verifiable();
+                .Returns(() => new List<ValidationResult>());
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
             var actual = await dataLockProcessor.Validate(earningEvent, default(CancellationToken));
@@ -93,7 +91,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         public async Task ThenLearnerDataLockReturned()
         {
             learnerMatcherMock
-                .Setup(x => x.MatchLearner(It.IsAny<long>()))
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
                 .ReturnsAsync(() =>new LearnerMatchResult
                 {
                     DataLockErrorCode = DataLockErrorCode.DLOCK_01, Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
@@ -104,14 +102,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var nonPayableEarningEvent = actual as NonPayableEarningEvent;
             nonPayableEarningEvent.Should().NotBeNull();
+            nonPayableEarningEvent.Errors.Should().HaveCount(1);
             nonPayableEarningEvent.Errors.Should().Contain(DataLockErrorCode.DLOCK_01);
         }
 
         [Test]
-        public async Task ThenCourseValidationDataLockReturned()
+        public async Task GivenCourseValidationDataLockIsReturnedMapOnlyValidEarningPeriods()
         {
             learnerMatcherMock
-                .Setup(x => x.MatchLearner(It.IsAny<long>()))
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
                 .ReturnsAsync(() => new LearnerMatchResult
                 {
                     DataLockErrorCode = null,
@@ -136,8 +135,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .Returns(() => new List<ValidationResult>());
             
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
-            var actual = await dataLockProcessor.Validate(testEarningEvent, default(CancellationToken));
-
+            var actual = await dataLockProcessor.Validate(testEarningEvent, default(CancellationToken))
+                .ConfigureAwait(false);
 
             courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidation>()), Times.Exactly(2));
 
@@ -153,10 +152,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task ThenAllPaymentWillBePayableWhenEarningAmountIsZero()
+        public async Task GivenEarningAmountIsZeroThenAllPaymentWillBePayable()
         {
             learnerMatcherMock
-                .Setup(x => x.MatchLearner(It.IsAny<long>()))
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
                 .ReturnsAsync(() => new LearnerMatchResult
                 {
                     DataLockErrorCode = null,
@@ -184,7 +183,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             {
                 Learner = new Learner
                 {
-                    Uln = 123,
+                    Uln = Uln,
                 }
             };
 

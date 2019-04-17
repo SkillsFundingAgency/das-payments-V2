@@ -20,9 +20,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         private readonly IMapper mapper;
         private readonly ILearnerMatcher learnerMatcher;
-        private readonly IProcessCourseValidator processCourseValidator;
+        private readonly ICourseValidatorsProcessor processCourseValidator;
 
-        public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher, IProcessCourseValidator processCourseValidator)
+        public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher, ICourseValidatorsProcessor processCourseValidator)
         {
             this.mapper = mapper;
             this.learnerMatcher = learnerMatcher;
@@ -32,7 +32,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         public async Task<DataLockEvent> Validate(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Learner.Uln).ConfigureAwait(false);
-            if (learnerMatchResult.DataLockErrorCode.HasValue) return CreateDataLockNonPayableEarningEvent(earningEvent, learnerMatchResult.DataLockErrorCode.Value);
+            if (learnerMatchResult.DataLockErrorCode.HasValue)
+            {
+                return CreateDataLockNonPayableEarningEvent(earningEvent, learnerMatchResult.DataLockErrorCode.Value);
+            }
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
 
@@ -66,8 +69,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             var onProgrammeEarningPeriods = onProgrammeEarning.Periods;
             var validOnProgrammeEarningPeriods = new List<EarningPeriod>();
-            var validationResults = new List<ValidationResult>();
-
+       
             foreach (var period in onProgrammeEarningPeriods)
             {
                 if (period.Amount == decimal.Zero)
@@ -79,11 +81,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var validationModel = CreateDataLockValidationModel(uln, priceEpisodes, period, apprenticeships);
                 var periodValidationResults = processCourseValidator.ValidateCourse(validationModel);
 
-                if (periodValidationResults != null && periodValidationResults.Any())
-                {
-                    validationResults.AddRange(periodValidationResults);
-                }
-                else
+                if (periodValidationResults == null || !periodValidationResults.Any())
                 {
                     validOnProgrammeEarningPeriods.Add(period);
                 }
