@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task ThenLearnerDataLockReturned()
+        public async Task LearnerDataLockShouldReturnNonPayableEarningEvent()
         {
             learnerMatcherMock
                 .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
@@ -168,7 +168,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var testEarningEvent = CreateTestEarningEvent(2, decimal.Zero);
             
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
-            var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken));
+            var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken)).ConfigureAwait(false);
 
             var payableEarning = actual as PayableEarningEvent;
             payableEarning.Should().NotBeNull();
