@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -37,5 +38,26 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
             Mapper.Map<TDest>(PaymentEvent).PriceEpisodeIdentifier.Should().Be(PaymentEvent.PriceEpisodeIdentifier);
         }
 
+        [Test]
+        public void ShouldMapEarningsInfo()
+        {
+            PaymentEvent.StartDate = DateTime.UtcNow;
+            PaymentEvent.PlannedEndDate = DateTime.UtcNow;
+            PaymentEvent.ActualEndDate = DateTime.UtcNow;
+            PaymentEvent.CompletionStatus = 2;
+            PaymentEvent.CompletionAmount = 100M;
+            PaymentEvent.InstalmentAmount = 200M;
+            PaymentEvent.NumberOfInstalments = 5;
+
+            var mapped = Mapper.Map<TDest>(PaymentEvent);
+
+            mapped.StartDate.Should().Be(PaymentEvent.StartDate);
+            mapped.PlannedEndDate.Should().Be(PaymentEvent.PlannedEndDate);
+            mapped.ActualEndDate.Should().Be(PaymentEvent.ActualEndDate);
+            mapped.CompletionStatus.Should().Be(PaymentEvent.CompletionStatus);
+            mapped.CompletionAmount.Should().Be(PaymentEvent.CompletionAmount);
+            mapped.InstalmentAmount.Should().Be(PaymentEvent.InstalmentAmount);
+            mapped.NumberOfInstalments.Should().Be(PaymentEvent.NumberOfInstalments);
+        }
     }
 }
