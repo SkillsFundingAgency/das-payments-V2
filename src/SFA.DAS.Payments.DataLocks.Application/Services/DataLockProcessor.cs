@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
 
             var returnMessage = mapper.Map<PayableEarningEvent>(earningEvent);
-            var apprenticeship = apprenticeshipsForUln.FirstOrDefault();
+            var apprenticeship = apprenticeshipsForUln.First();
 
             returnMessage.AccountId = apprenticeship.AccountId;
             returnMessage.Priority = apprenticeship.Priority;
