@@ -9,11 +9,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public static class MappingExtensions
     {
-        private static readonly TypeAccessor PeriodAccessor = TypeAccessor.Create(typeof(PriceEpisodePeriodisedValues));
+        private static readonly TypeAccessor PriceEpisodePeriodAccessor = TypeAccessor.Create(typeof(PriceEpisodePeriodisedValues));
+        private static readonly TypeAccessor LearningDeliveryPeriodAccessor = TypeAccessor.Create(typeof(LearningDeliveryPeriodisedValues));
 
         public static decimal? GetPeriodValue(this PriceEpisodePeriodisedValues periodisedValues, int period)
         {
-            return (decimal?) PeriodAccessor[periodisedValues, "Period" + period];
+            return (decimal?) PriceEpisodePeriodAccessor[periodisedValues, "Period" + period];
+        }
+
+        public static decimal? GetPeriodValue(this LearningDeliveryPeriodisedValues periodisedValues, int period)
+        {
+            return (decimal?)LearningDeliveryPeriodAccessor[periodisedValues, "Period" + period];
         }
 
         public static bool IsMainAim(this LearningDelivery learningDelivery)
