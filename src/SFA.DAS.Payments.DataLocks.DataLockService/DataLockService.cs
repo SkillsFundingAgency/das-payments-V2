@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         public async Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message,
             CancellationToken cancellationToken)
         {
-            return await dataLockProcessor.Validate(message, cancellationToken);
+            return await dataLockProcessor.ProcessEarning(message, cancellationToken);
         }
 
         public async Task Reset()
