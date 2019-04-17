@@ -49,6 +49,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
         }
 
+        [TearDown]
         public void CleanUp()
         {
             learnerMatcherMock.Verify();
@@ -75,7 +76,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             courseValidationMock
                 .Setup(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new List<ValidationResult>());
+                .Returns(() => new List<ValidationResult>())
+                .Verifiable();
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
             var actual = await dataLockProcessor.GetPaymentEvent(earningEvent, default(CancellationToken));
