@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             startDateValidator.Verify(o => o.Validate(It.IsAny<CourseValidationModel>()), Times.Once);
 
             actualResults.Should().NotBeNull();
-            actualResults.Should().HaveCount(courseValidators.Count);
+            actualResults.Should().HaveCount(courseValidationResults.Count);
         }
 
     }
