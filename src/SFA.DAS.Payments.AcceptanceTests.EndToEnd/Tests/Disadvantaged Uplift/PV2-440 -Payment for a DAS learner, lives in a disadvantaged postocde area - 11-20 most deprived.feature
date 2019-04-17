@@ -29,18 +29,18 @@ And the following earnings had been generated for the learner
     | Jul/Last Academic Year | 1000         | 0          | 0         | 0                        |
 And the following provider payments had been generated
     | Collection Period      | Delivery Period        | Levy Payments | SFA Fully-Funded Payments | Transaction Type         |
-    | R01/Last Academic Year | Aug/Last Academic Year | 900           | 0                         | Learning                 |
-    | R02/Last Academic Year | Sep/Last Academic Year | 900           | 0                         | Learning                 |
-    | R03/Last Academic Year | Oct/Last Academic Year | 900           | 0                         | Learning                 |
-    | R04/Last Academic Year | Nov/Last Academic Year | 900           | 0                         | Learning                 |
-    | R05/Last Academic Year | Dec/Last Academic Year | 900           | 0                         | Learning                 |
-    | R06/Last Academic Year | Jan/Last Academic Year | 900           | 0                         | Learning                 |
-    | R07/Last Academic Year | Feb/Last Academic Year | 900           | 0                         | Learning                 |
-    | R08/Last Academic Year | Mar/Last Academic Year | 900           | 0                         | Learning                 |
-    | R09/Last Academic Year | Apr/Last Academic Year | 900           | 0                         | Learning                 |
-    | R10/Last Academic Year | May/Last Academic Year | 900           | 0                         | Learning                 |
-    | R11/Last Academic Year | Jun/Last Academic Year | 900           | 0                         | Learning                 |
-    | R12/Last Academic Year | Jul/Last Academic Year | 900           | 0                         | Learning                 |
+    | R01/Last Academic Year | Aug/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R02/Last Academic Year | Sep/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R03/Last Academic Year | Oct/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R04/Last Academic Year | Nov/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R05/Last Academic Year | Dec/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R06/Last Academic Year | Jan/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R07/Last Academic Year | Feb/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R08/Last Academic Year | Mar/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R09/Last Academic Year | Apr/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R10/Last Academic Year | May/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R11/Last Academic Year | Jun/Last Academic Year | 1000          | 0                         | Learning                 |
+    | R12/Last Academic Year | Jul/Last Academic Year | 1000          | 0                         | Learning                 |
     | R04/Last Academic Year | Nov/Last Academic Year | 0             | 150                       | FirstDisadvantagePayment |
 
 But the Provider now changes the Learner details as follows
