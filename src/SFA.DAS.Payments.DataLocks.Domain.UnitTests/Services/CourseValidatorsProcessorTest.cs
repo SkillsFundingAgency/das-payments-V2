@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
     {
         private List<ICourseValidator> courseValidators;
         private List<ValidationResult>  courseValidationResults ;
-        private DataLockValidation dataLockValidation;
+        private DataLockValidationModel dataLockValidationModel;
         private Mock<ICourseValidator> startDateValidator;
 
         [SetUp]
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 Period = 1
             };
 
-            dataLockValidation = new DataLockValidation
+            dataLockValidationModel = new DataLockValidationModel
             {
                 EarningPeriod = earningPeriod,
                 Uln = 100,
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             startDateValidator = new Mock<ICourseValidator>(MockBehavior.Strict);
             startDateValidator
-                .Setup(o => o.Validate(It.IsAny<CourseValidation>()))
+                .Setup(o => o.Validate(It.IsAny<CourseValidationModel>()))
                 .Returns(courseValidationResults);
 
             courseValidators = new List<ICourseValidator>
@@ -59,9 +59,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         public void ValidateCourseShouldReturnValidationResults()
         {
             var courseValidatorsProcessor = new CourseValidatorsProcessor(courseValidators);
-            var actualResults = courseValidatorsProcessor.ValidateCourse(dataLockValidation);
+            var actualResults = courseValidatorsProcessor.ValidateCourse(dataLockValidationModel);
 
-            startDateValidator.Verify(o => o.Validate(It.IsAny<CourseValidation>()), Times.Once);
+            startDateValidator.Verify(o => o.Validate(It.IsAny<CourseValidationModel>()), Times.Once);
 
             actualResults.Should().NotBeNull();
             actualResults.Should().HaveCount(courseValidators.Count);

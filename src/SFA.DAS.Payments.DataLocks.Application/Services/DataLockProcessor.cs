@@ -96,9 +96,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return validationResults;
         }
 
-        private DataLockValidation CreateDataLockValidationModel(long uln, List<PriceEpisode> priceEpisodes, EarningPeriod earningPeriod, List<ApprenticeshipModel> apprenticeships)
+        private DataLockValidationModel CreateDataLockValidationModel(long uln, List<PriceEpisode> priceEpisodes, EarningPeriod earningPeriod, List<ApprenticeshipModel> apprenticeships)
         {
-            return new DataLockValidation
+            return new DataLockValidationModel
             {
                 Uln = uln,
                 EarningPeriod = earningPeriod,

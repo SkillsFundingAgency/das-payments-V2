@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }).Verifiable();
 
             courseValidationMock
-                .Setup(x => x.ValidateCourse(It.IsAny<DataLockValidation>()))
+                .Setup(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new List<ValidationResult>());
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
@@ -121,7 +121,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var testEarningEvent = CreateTestEarningEvent(2, 100m);
 
             courseValidationMock
-                .SetupSequence(x => x.ValidateCourse(It.IsAny<DataLockValidation>()))
+                .SetupSequence(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new List<ValidationResult>
                 {
                     new ValidationResult
@@ -138,7 +138,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
-            courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidation>()), Times.Exactly(2));
+            courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Exactly(2));
 
             var payableEarning = actual as PayableEarningEvent;
             payableEarning.Should().NotBeNull();

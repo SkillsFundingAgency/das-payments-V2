@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var apprenticeships = new List<ApprenticeshipModel> { apprenticeship };
 
-            var validation = new CourseValidation
+            var validation = new CourseValidationModel
             {
                 PriceEpisode = new PriceEpisode {StartDate = startDate, Identifier = priceEpisodeIdentifier},
                 Period = period,
@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var apprenticeships = new List<ApprenticeshipModel> { apprenticeship };
 
-            var validation = new CourseValidation
+            var validation = new CourseValidationModel
             {
                 PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
                 Period = period,
@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var apprenticeships = new List<ApprenticeshipModel> {earlyApprenticeship, lateApprenticeship};
 
-            var validation = new CourseValidation
+            var validation = new CourseValidationModel
             {
                 PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
                 Period = period,
