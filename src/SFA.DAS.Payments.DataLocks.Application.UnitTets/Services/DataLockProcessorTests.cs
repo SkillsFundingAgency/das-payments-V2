@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .Returns(() => new List<ValidationResult>());
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
-            var actual = await dataLockProcessor.ProcessEarning(earningEvent, default(CancellationToken));
+            var actual = await dataLockProcessor.GetPaymentEvent(earningEvent, default(CancellationToken));
 
             var payableEarning = actual as PayableEarningEvent;
             payableEarning.Should().NotBeNull();
@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }).Verifiable();
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
-            var actual = await dataLockProcessor.ProcessEarning(earningEvent, default(CancellationToken));
+            var actual = await dataLockProcessor.GetPaymentEvent(earningEvent, default(CancellationToken));
 
             var nonPayableEarningEvent = actual as NonPayableEarningEvent;
             nonPayableEarningEvent.Should().NotBeNull();
@@ -135,7 +135,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .Returns(() => new List<ValidationResult>());
             
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
-            var actual = await dataLockProcessor.ProcessEarning(testEarningEvent, default(CancellationToken))
+            var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
             courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidation>()), Times.Exactly(2));
@@ -166,7 +166,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var testEarningEvent = CreateTestEarningEvent(2, decimal.Zero);
             
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
-            var actual = await dataLockProcessor.ProcessEarning(testEarningEvent, default(CancellationToken));
+            var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken));
 
             var payableEarning = actual as PayableEarningEvent;
             payableEarning.Should().NotBeNull();

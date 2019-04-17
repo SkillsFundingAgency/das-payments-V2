@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.processCourseValidator = processCourseValidator;
         }
 
-        public async Task<DataLockEvent> ProcessEarning(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<DataLockEvent> GetPaymentEvent(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Learner.Uln).ConfigureAwait(false);
             if (learnerMatchResult.DataLockErrorCode.HasValue)
