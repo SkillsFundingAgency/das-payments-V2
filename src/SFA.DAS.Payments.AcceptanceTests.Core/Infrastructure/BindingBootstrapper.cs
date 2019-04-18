@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -50,6 +50,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             Builder.RegisterType<AzureStorageKeyValuePersistenceService>().As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
             Builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
             Builder.RegisterType<TdgService>().As<ITdgService>().InstancePerLifetimeScope();
+            Builder.Register(c => new TestSession(c.Resolve<IUkprnService>())).InstancePerLifetimeScope();
+
+            var ukprnServiceType = config.ValidateDcAndDasServices ? typeof(UkprnService) : typeof(RandomUkprnService);
+            Builder.RegisterType(ukprnServiceType).As<IUkprnService>().InstancePerLifetimeScope();
 
             Builder.Register(context =>
                 {
