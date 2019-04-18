@@ -13,7 +13,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
@@ -39,29 +38,52 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
-
             var payableEarningEvent = mapper.Map<PayableEarningEvent>(earningEvent);
-            var apprenticeship = apprenticeshipsForUln.First();
-            payableEarningEvent.AccountId = apprenticeship.AccountId;
-            payableEarningEvent.Priority = apprenticeship.Priority;
 
-            FilterToValidEarningPeriods(payableEarningEvent, apprenticeshipsForUln);
+            var validationResults = FilterForValidationResults(payableEarningEvent, apprenticeshipsForUln);
+            var apprenticeship = GetValidApprenticeship(validationResults, apprenticeshipsForUln);
+
+            if (apprenticeship != null)
+            {
+                payableEarningEvent.AccountId = apprenticeship.AccountId;
+                payableEarningEvent.Priority = apprenticeship.Priority;
+            }
+            else
+            {
+                if (payableEarningEvent.OnProgrammeEarnings.SelectMany(x => x.Periods).Any(p => p.Amount != decimal.Zero))
+                {
+                    throw new InvalidOperationException("There are no valid apprenticeship to complete DataLock");
+                }
+            }
 
             return payableEarningEvent;
         }
 
-        private void FilterToValidEarningPeriods(PayableEarningEvent payableEarningEvent, List<ApprenticeshipModel> apprenticeshipsForUln)
+        private ApprenticeshipModel GetValidApprenticeship(List<ValidationResult> allPeriodValidationResults, List<ApprenticeshipModel> apprenticeshipsForUln)
         {
+            return apprenticeshipsForUln
+                .OrderByDescending(x => x.EstimatedStartDate)
+                .FirstOrDefault(a => allPeriodValidationResults.All(x => x.ApprenticeshipId != a.Id));
+        }
+
+        private List<ValidationResult> FilterForValidationResults(PayableEarningEvent payableEarningEvent, List<ApprenticeshipModel> apprenticeshipsForUln)
+        {
+            var allPeriodValidationResults = new List<ValidationResult>();
+
             foreach (var onProgrammeEarning in payableEarningEvent.OnProgrammeEarnings)
             {
                 var periodsValidationResults = ValidOnProgEarningPeriods(payableEarningEvent.Learner.Uln,
                     payableEarningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln);
+
+                allPeriodValidationResults.AddRange(periodsValidationResults);
 
                 var validPeriods = onProgrammeEarning.Periods
                     .Where(p => periodsValidationResults.All(x => x.Period != p.Period)).ToList();
 
                 onProgrammeEarning.Periods = new ReadOnlyCollection<EarningPeriod>(validPeriods);
             }
+
+            return allPeriodValidationResults;
         }
 
         private NonPayableEarningEvent CreateDataLockNonPayableEarningEvent(ApprenticeshipContractType1EarningEvent earningEvent, DataLockErrorCode dataLockErrorCode)
