@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -12,6 +12,7 @@ using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using NServiceBus;
@@ -50,6 +51,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             Builder.RegisterType<AzureStorageKeyValuePersistenceService>().As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
             Builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
             Builder.RegisterType<TdgService>().As<ITdgService>().InstancePerLifetimeScope();
+            Builder.Register(c => new TestSession(c.Resolve<IUkprnService>())).InstancePerLifetimeScope();
+
+            if (config.ValidateDcAndDasServices)
+            {
+                var ukprnDbOptions = new DbContextOptionsBuilder<UkprnService>()
+                    .UseSqlServer(config.PaymentsConnectionString)
+                    .Options;
+
+                Builder.RegisterInstance(ukprnDbOptions);
+                Builder.RegisterType<IlrDcService>().As<IIlrService>().InstancePerLifetimeScope();
+                Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
+            }
+            else
+            {
+                Builder.RegisterType<IlrNullService>().As<IIlrService>().InstancePerLifetimeScope();
+                Builder.RegisterType<RandomUkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
+            }
 
             Builder.Register(context =>
                 {
