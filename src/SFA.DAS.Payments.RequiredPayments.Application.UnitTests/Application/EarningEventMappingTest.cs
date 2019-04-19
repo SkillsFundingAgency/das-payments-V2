@@ -100,11 +100,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
         [Test]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredIncentiveAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredCoInvestedAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredLevyAmount))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredLevyAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CompletionPaymentHeldBackEvent))]
         public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType, Type requiredPaymentEventType)
         {
@@ -113,6 +110,22 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.ContractType.Should().Be(ContractType.Act2);
+        }
+
+        [Test]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(CalculatedRequiredLevyAmount))]
+        public void ContractTypeIsCorrectForFunctionalSkills(Type requiredPaymentEventType)
+        {
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var earningEvent = new FunctionalSkillEarningsEvent
+            {
+                ContractType = ContractType.Act1,
+            };
+            
+            var actual = mapper.Map(earningEvent, requiredPaymentEvent);
+            actual.ContractType.Should().Be(ContractType.Act1);
         }
 
         [Test]

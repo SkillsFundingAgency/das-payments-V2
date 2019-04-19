@@ -153,7 +153,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
         private static IEnumerable<CompletionStatus> GetInactiveStatuses()
         {
-            yield return CompletionStatus.BreakInLearning;
+            yield return CompletionStatus.PlannedBreak;
             yield return CompletionStatus.Withdrawn;
         }
 

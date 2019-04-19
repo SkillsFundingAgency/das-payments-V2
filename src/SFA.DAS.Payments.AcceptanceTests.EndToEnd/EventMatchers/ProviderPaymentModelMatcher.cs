@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core;
+﻿using System;
+using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
@@ -81,17 +82,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(PaymentModel expected, PaymentModel actual)
         {
-            return expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
-                   expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
-                   expected.DeliveryPeriod == actual.DeliveryPeriod &&
-                   expected.TransactionType == actual.TransactionType &&
-                   expected.ContractType == actual.ContractType &&
-                   expected.FundingSource == actual.FundingSource &&
-                   expected.Amount == actual.Amount &&
-                   expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
-                   expected.Ukprn == actual.Ukprn &&
-                   expected.AccountId == actual.AccountId &&
-                   expected.LearningAimStandardCode == actual.LearningAimStandardCode;
+            if (expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
+                expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
+                expected.DeliveryPeriod == actual.DeliveryPeriod &&
+                expected.TransactionType == actual.TransactionType &&
+                expected.ContractType == actual.ContractType &&
+                expected.FundingSource == actual.FundingSource &&
+                expected.Amount == actual.Amount &&
+                expected.LearnerReferenceNumber == actual.LearnerReferenceNumber &&
+                expected.Ukprn == actual.Ukprn &&
+                expected.LearningAimStandardCode == actual.LearningAimStandardCode)
+            {
+                if (actual.LearningAimReference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase))
+                {
+                    return expected.AccountId == actual.AccountId;
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         private PaymentModel ToPaymentModel(
