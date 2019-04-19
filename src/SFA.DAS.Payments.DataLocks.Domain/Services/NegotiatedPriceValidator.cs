@@ -16,16 +16,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
             {
                 foreach (var apprenticeshipPriceEpisodeModel in apprenticeshipModel.ApprenticeshipPriceEpisodes)
                 {
-                    if (ilrAgreedPrice != apprenticeshipPriceEpisodeModel.Cost)
+                    if (ilrAgreedPrice == apprenticeshipPriceEpisodeModel.Cost) break;
+                   
+                    result.Add(new ValidationResult
                     {
-                        result.Add(new ValidationResult
-                        {
-                            DataLockErrorCode = DataLockErrorCode.DLOCK_07,
-                            Period = courseValidationModel.Period,
-                            ApprenticeshipPriceEpisodeIdentifier = apprenticeshipPriceEpisodeModel.Id,
-                            ApprenticeshipId = apprenticeshipModel.Id
-                        });
-                    }
+                        DataLockErrorCode = DataLockErrorCode.DLOCK_07,
+                        Period = courseValidationModel.Period,
+                        ApprenticeshipPriceEpisodeIdentifier = apprenticeshipPriceEpisodeModel.Id,
+                        ApprenticeshipId = apprenticeshipModel.Id
+                    });
                 }
             }
 

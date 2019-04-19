@@ -27,6 +27,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                     new ApprenticeshipPriceEpisodeModel
                     {
                         Cost = Price
+                    },
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        Cost = Price + 100
                     }
                 }
             };
@@ -76,6 +80,5 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             result.Should().HaveCount(1);
             result.First().DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_07);
         }
-        
     }
 }
