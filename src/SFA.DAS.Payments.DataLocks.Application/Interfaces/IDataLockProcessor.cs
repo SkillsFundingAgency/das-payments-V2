@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Interfaces
 {
     public interface IDataLockProcessor
     {
-        Task<DataLockEvent> Validate(ApprenticeshipContractType1EarningEvent earningEvent,
+        Task<DataLockEvent> GetPaymentEvent(ApprenticeshipContractType1EarningEvent earningEvent,
             CancellationToken cancellationToken);
     }
 }

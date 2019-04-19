@@ -10,6 +10,5 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public DateTime? EndDate { get; set; }
         public decimal Cost { get; set; }
         public bool Removed { get; set; }
-        public ApprenticeshipModel Apprenticeship { get; set; }
     }
 }

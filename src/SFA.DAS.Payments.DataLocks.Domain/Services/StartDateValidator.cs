@@ -6,13 +6,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
     public class StartDateValidator : ICourseValidator
     {
-        public List<ValidationResult> Validate(CourseValidation courseValidation)
+        public List<ValidationResult> Validate(CourseValidationModel courseValidationModel)
         {
             var result = new List<ValidationResult>();
 
-            var startDate = courseValidation.PriceEpisode.StartDate;
+            var startDate = courseValidationModel.PriceEpisode.StartDate;
 
-            foreach (var apprenticeshipModel in courseValidation.Apprenticeships)
+            foreach (var apprenticeshipModel in courseValidationModel.Apprenticeships)
             {
                 foreach (var priceEpisode in apprenticeshipModel.ApprenticeshipPriceEpisodes)
                 {
@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
                         result.Add(new ValidationResult
                         {
                             DataLockErrorCode = DataLockErrorCode.DLOCK_09,
-                            Period = courseValidation.Period,
+                            Period = courseValidationModel.Period,
                             ApprenticeshipPriceEpisodeIdentifier = priceEpisode.Id,
                             ApprenticeshipId = apprenticeshipModel.Id
                         });

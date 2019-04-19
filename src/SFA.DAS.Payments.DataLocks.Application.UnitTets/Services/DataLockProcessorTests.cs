@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -18,6 +12,13 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
@@ -26,6 +27,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
     {
         private IMapper mapper;
         private ApprenticeshipContractType1EarningEvent earningEvent;
+        private Mock<ILearnerMatcher> learnerMatcherMock;
+        private Mock<ICourseValidatorsProcessor> courseValidationMock;
+        private List<ApprenticeshipModel> apprenticeships;
+        private const long Uln = 123;
 
         [OneTimeSetUp]
         public void Initialise()
@@ -36,151 +41,273 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             });
             configuration.AssertConfigurationIsValid();
             mapper = configuration.CreateMapper();
+        }
 
-            
+        [TearDown]
+        public void CleanUp()
+        {
+            learnerMatcherMock.Verify();
+            courseValidationMock.Verify();
         }
 
         [SetUp]
         public void Setup()
         {
-            earningEvent = new ApprenticeshipContractType1EarningEvent
+            apprenticeships = new List<ApprenticeshipModel>
             {
-                Learner = new Learner
-                {
-                    Uln = 123,
-                },
-                PriceEpisodes = new List<PriceEpisode> { new PriceEpisode { StartDate = DateTime.UtcNow, } },
-                OnProgrammeEarnings = new List<OnProgrammeEarning>
-                {
-                    new OnProgrammeEarning
-                    {
-                        Periods = new ReadOnlyCollection<EarningPeriod>(
-                            new List<EarningPeriod>
-                            {
-                                new EarningPeriod{Period = 1, PriceEpisodeIdentifier = "pe-1"}
-                            })
-                    }
-                }
+                new ApprenticeshipModel{AccountId = 456, Uln = Uln},
+                new ApprenticeshipModel{ AccountId = 456, Uln = Uln}
             };
+
+            earningEvent = CreateTestEarningEvent(1,100m);
+            learnerMatcherMock = new Mock<ILearnerMatcher>(MockBehavior.Strict);
+            courseValidationMock = new Mock<ICourseValidatorsProcessor>(MockBehavior.Strict);
         }
 
         [Test]
-        public async Task ReturnsCorrectType()
+        public async Task GivenNoDataLockErrorReturnedAllEarningPeriodsInPayableEvent()
         {
-            var commitments = new List<ApprenticeshipModel>
-            {
-                new ApprenticeshipModel
+            learnerMatcherMock
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .ReturnsAsync(() =>new LearnerMatchResult
                 {
-                    AccountId = 456,
-                }
-            };
+                    DataLockErrorCode = null, Apprenticeships = apprenticeships
+                }).Verifiable();
 
-            var learnerMatcherMock = new Mock<ILearnerMatcher>();
-            learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<long>())).ReturnsAsync(() =>
-                new LearnerMatchResult
-                    {DataLockErrorCode = null, Apprenticeships = commitments});
+            courseValidationMock
+                .Setup(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()))
+                .Returns(() => new List<ValidationResult>())
+                .Verifiable();
 
-            var courseValidationMock = new Mock<IProcessCourseValidator>();
-            courseValidationMock.Setup(x =>
-                    x.ValidateCourse(It.IsAny<DataLockValidation>(), It.IsAny<List<ApprenticeshipModel>>()))
-                .ReturnsAsync(() =>
-                    new List<ValidationResult>
-                    {
-                        new ValidationResult
-                        {
-                            DataLockErrorCode = null,
-                            ApprenticeshipId = 1,
-                            ApprenticeshipPriceEpisodeIdentifier = 1,
-                            Period = 1
-                        }
-                    });
+            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
+            var actual = await dataLockProcessor.GetPaymentEvent(earningEvent, default(CancellationToken));
 
-            var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object).Validate(earningEvent, default(CancellationToken));
-
-            actual.Should().BeOfType<PayableEarningEvent>();
-            (actual as PayableEarningEvent).AccountId.Should().Be(456);
             var payableEarning = actual as PayableEarningEvent;
+            payableEarning.Should().NotBeNull();
+            payableEarning.AccountId.Should().Be(456);
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
             payableEarning.OnProgrammeEarnings.First().Periods.Count.Should().Be(1);
         }
 
         [Test]
-        public async Task ReturnsLearnerDataLock()
+        public async Task LearnerDataLockShouldReturnNonPayableEarningEvent()
         {
-            var commitments = new List<ApprenticeshipModel>
-            {
-                new ApprenticeshipModel
+            learnerMatcherMock
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .ReturnsAsync(() =>new LearnerMatchResult
                 {
-                    AccountId = 456,
-                }
-            };
+                    DataLockErrorCode = DataLockErrorCode.DLOCK_01, Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
+                }).Verifiable();
 
-            var learnerMatcherMock = new Mock<ILearnerMatcher>();
-            learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<long>())).ReturnsAsync(() =>
-                new LearnerMatchResult
-                { DataLockErrorCode = DataLockErrorCode.DLOCK_01, Apprenticeships = new List<ApprenticeshipModel>(commitments) });
+            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
+            var actual = await dataLockProcessor.GetPaymentEvent(earningEvent, default(CancellationToken));
 
-            var courseValidationMock = Mock.Of<IProcessCourseValidator>();
-
-            var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock)
-                .Validate(earningEvent, default(CancellationToken));
-
-            actual.Should().BeOfType<NonPayableEarningEvent>();
-            (actual as NonPayableEarningEvent).Errors.Contains(DataLockErrorCode.DLOCK_01);
+            var nonPayableEarningEvent = actual as NonPayableEarningEvent;
+            nonPayableEarningEvent.Should().NotBeNull();
+            nonPayableEarningEvent.Errors.Should().HaveCount(1);
+            nonPayableEarningEvent.Errors.Should().Contain(DataLockErrorCode.DLOCK_01);
         }
 
         [Test]
-        public async Task ReturnsCourseValidationDataLock()
+        public async Task GivenCourseValidationDataLockIsReturnedMapOnlyValidEarningPeriods()
         {
-            var commitments = new List<ApprenticeshipModel>
-            {
-                new ApprenticeshipModel
+            learnerMatcherMock
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .ReturnsAsync(() => new LearnerMatchResult
                 {
-                    AccountId = 456,
-                }
-            };
+                    DataLockErrorCode = null,
+                    Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
 
-            var learnerMatcherMock = new Mock<ILearnerMatcher>();
-            learnerMatcherMock.Setup(x => x.MatchLearner(It.IsAny<long>())).ReturnsAsync(() =>
-                new LearnerMatchResult
-                { DataLockErrorCode = null, Apprenticeships = new List<ApprenticeshipModel>(commitments) });
+                }).Verifiable();
 
-            var courseValidationMock = new Mock<IProcessCourseValidator>();
-            courseValidationMock.Setup(x =>
-                    x.ValidateCourse(It.IsAny<DataLockValidation>(), It.IsAny<List<ApprenticeshipModel>>()))
-                .ReturnsAsync(() =>
-                    new List<ValidationResult>
+            var testEarningEvent = CreateTestEarningEvent(2, 100m);
+
+            courseValidationMock
+                .SetupSequence(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()))
+                .Returns(() => new List<ValidationResult>
+                {
+                    new ValidationResult
                     {
-                        new ValidationResult
-                        {
-                            DataLockErrorCode = DataLockErrorCode.DLOCK_09,
-                            ApprenticeshipId = 1,
-                            ApprenticeshipPriceEpisodeIdentifier = 1,
-                            Period = 1
-                        }
-                    });
+                        DataLockErrorCode = DataLockErrorCode.DLOCK_09,
+                        ApprenticeshipId = 1,
+                        ApprenticeshipPriceEpisodeIdentifier = 100,
+                        Period = 1
+                    }
+                })
+                .Returns(() => new List<ValidationResult>());
+            
+            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
+            var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken))
+                .ConfigureAwait(false);
 
-            byte secondPeriod = 2;
-            earningEvent.OnProgrammeEarnings[0].Periods = new ReadOnlyCollection<EarningPeriod>(
-                new List<EarningPeriod>
-                {
-                    new EarningPeriod {Period = 1, PriceEpisodeIdentifier = "1"},
-                    new EarningPeriod {Period = secondPeriod, PriceEpisodeIdentifier = "1"}
-                });
+            courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Exactly(2));
 
-            var actual = await new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object)
-                .Validate(earningEvent, default(CancellationToken));
-
-            actual.Should().BeOfType<PayableEarningEvent>();
             var payableEarning = actual as PayableEarningEvent;
+            payableEarning.Should().NotBeNull();
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
 
             var onProgrammeEarning = payableEarning.OnProgrammeEarnings.First();
             onProgrammeEarning.Periods.Count.Should().Be(1);
 
-            var earningPeriod = onProgrammeEarning.Periods.First();
-
-            earningPeriod.Period.Should().Be(secondPeriod);
+            var earningPeriod = onProgrammeEarning.Periods.Single();
+            earningPeriod.Period.Should().Be(2);
         }
+
+        [Test]
+        public async Task GivenEarningAmountIsZeroThenAllPaymentWillBePayable()
+        {
+            learnerMatcherMock
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .ReturnsAsync(() => new LearnerMatchResult
+                {
+                    DataLockErrorCode = null,
+                    Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
+
+                }).Verifiable();
+
+            var testEarningEvent = CreateTestEarningEvent(2, decimal.Zero);
+            
+            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
+            var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken)).ConfigureAwait(false);
+
+            var payableEarning = actual as PayableEarningEvent;
+            payableEarning.Should().NotBeNull();
+            payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
+
+            var onProgrammeEarning = payableEarning.OnProgrammeEarnings.First();
+            onProgrammeEarning.Periods.Count.Should().Be(2);
+        }
+
+        [Test]
+        public async Task GivenCourseValidationDataLockSelectValidCurrentApprenticeshipAccountId()
+        {
+            const int validAccountId = 456;
+
+            apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel{ Id = 1,  AccountId = 123, Uln = Uln, EstimatedStartDate = DateTime.Today.AddDays(-3)},
+                new ApprenticeshipModel{ Id = 2, AccountId = validAccountId, Uln = Uln, EstimatedStartDate = DateTime.Today.AddDays(-1)},
+                new ApprenticeshipModel{ Id = 3, AccountId = 789, Uln = Uln, EstimatedStartDate = DateTime.Today.AddDays(-2)}
+            };
+
+            learnerMatcherMock
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .ReturnsAsync(() => new LearnerMatchResult
+                {
+                    DataLockErrorCode = null,
+                    Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
+
+                }).Verifiable();
+
+            var testEarningEvent = CreateTestEarningEvent(2, 100m);
+
+            courseValidationMock
+                .SetupSequence(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()))
+                .Returns(() => new List<ValidationResult>
+                {
+                    new ValidationResult
+                    {
+                        DataLockErrorCode = DataLockErrorCode.DLOCK_09,
+                        ApprenticeshipId = 1,
+                        ApprenticeshipPriceEpisodeIdentifier = 100,
+                        Period = 1
+                    }
+                })
+                .Returns(() => new List<ValidationResult>());
+
+            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
+            var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken))
+                .ConfigureAwait(false);
+
+            courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Exactly(2));
+
+            var payableEarning = actual as PayableEarningEvent;
+            payableEarning.Should().NotBeNull();
+            payableEarning.AccountId.Should().Be(validAccountId);
+        }
+        [Test]
+        public void GivenEarningGreaterThanZeroAndNoValidApprenticeshipThrowException()
+        {
+            apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel{ Id = 1,  AccountId = 123, Uln = Uln, EstimatedStartDate = DateTime.Today.AddDays(-3)}
+            };
+
+            learnerMatcherMock
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .ReturnsAsync(() => new LearnerMatchResult
+                {
+                    DataLockErrorCode = null,
+                    Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
+
+                }).Verifiable();
+
+            var testEarningEvent = CreateTestEarningEvent(2, 100m);
+
+            courseValidationMock
+                .SetupSequence(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()))
+                .Returns(() => new List<ValidationResult>
+                {
+                    new ValidationResult
+                    {
+                        DataLockErrorCode = DataLockErrorCode.DLOCK_09,
+                        ApprenticeshipId = 1,
+                        ApprenticeshipPriceEpisodeIdentifier = 100,
+                        Period = 1
+                    }
+                })
+                .Returns(() => new List<ValidationResult>());
+
+            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
+
+            Func<Task> task = async () => {  await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken)).ConfigureAwait(false); };
+
+            task.Should().Throw<InvalidOperationException>();
+            courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Exactly(2));
+        }
+
+
+
+        private ApprenticeshipContractType1EarningEvent CreateTestEarningEvent(byte periodsToCreate, decimal earningPeriodAmount)
+        {
+            var testEarningEvent = new ApprenticeshipContractType1EarningEvent
+            {
+                Learner = new Learner
+                {
+                    Uln = Uln,
+                }
+            };
+
+            testEarningEvent.PriceEpisodes = new List<PriceEpisode>();
+
+            var earningPeriods = new List<EarningPeriod>();
+            for (byte i = 1; i <= periodsToCreate; i++)
+            {
+                testEarningEvent.PriceEpisodes.Add(new PriceEpisode
+                {
+                    StartDate = DateTime.UtcNow.AddDays(1),
+                    Identifier = $"pe-{i}"
+                });
+
+                earningPeriods.Add(new EarningPeriod
+                {
+                    Amount = earningPeriodAmount,
+                    Period = i,
+                    PriceEpisodeIdentifier = $"pe-{i}"
+                });
+            }
+
+            testEarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>
+            {
+                new OnProgrammeEarning
+                {
+                    Periods = new ReadOnlyCollection<EarningPeriod>(earningPeriods)
+                }
+            };
+
+            return testEarningEvent;
+        }
+
     }
+
 }
