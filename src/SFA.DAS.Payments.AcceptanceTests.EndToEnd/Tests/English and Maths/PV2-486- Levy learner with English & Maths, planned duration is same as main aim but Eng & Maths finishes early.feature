@@ -128,7 +128,7 @@ Scenario Outline: Levy learner requires english or maths above level 2, complete
         | R09/Current Academic Year | Apr/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
         | R10/Current Academic Year | May/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
         | R11/Current Academic Year | Jun/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
-        | R11/Current Academic Year | Jul/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
+        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
 	And only the following provider payments will be generated
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           |
         | R01/Current Academic Year | Aug/Current Academic Year | 1000          | 0                         | Learning                   |
@@ -154,7 +154,7 @@ Scenario Outline: Levy learner requires english or maths above level 2, complete
         | R09/Current Academic Year | Apr/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
         | R10/Current Academic Year | May/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
         | R11/Current Academic Year | Jun/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
-        | R11/Current Academic Year | Jul/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
+        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
 Examples: 
         | Collection_Period         | Levy Balance |
         | R01/Current Academic Year | 15500        |

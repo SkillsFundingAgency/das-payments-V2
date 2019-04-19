@@ -128,7 +128,7 @@ Scenario Outline: Levy learner takes single level 2 aim, fails, retakes beyond p
         | R07/Last Academic Year | Feb/Last Academic Year | 0             | 47.10                     | OnProgrammeMathsAndEnglish |
         | R08/Last Academic Year | Mar/Last Academic Year | 0             | 47.10                     | OnProgrammeMathsAndEnglish |
         | R09/Last Academic Year | Apr/Last Academic Year | 0             | 47.10                     | OnProgrammeMathsAndEnglish |
-	#	| R10/Last Academic Year | May/Last Academic Year | 0             | 0                         | OnProgrammeMathsAndEnglish |
+		| R10/Last Academic Year | May/Last Academic Year | 0             | 0                         | OnProgrammeMathsAndEnglish |
         | R11/Last Academic Year | Jun/Last Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
         | R12/Last Academic Year | Jul/Last Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
 
