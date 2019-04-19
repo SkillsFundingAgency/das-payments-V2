@@ -334,8 +334,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             learner.PriceEpisodes = new List<PriceEpisode>();
             learner.LearningDeliveries = new List<LearningDelivery>();
 
-            foreach (var aim in testLearner.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, CurrentCollectionPeriod,
-                a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration)))
+            IEnumerable<Aim> currentAims;
+
+            // AimPeriodMatcher doesn't support completed aims from the past, this is a workaround until imminent refactoring
+            if (testLearner.Aims.Count == 1)
+            {
+                currentAims = testLearner.Aims;
+            }
+            else
+            {
+                currentAims = testLearner.Aims.Where(a => AimPeriodMatcher.IsStartDateValidForCollectionPeriod(a.StartDate, CurrentCollectionPeriod,
+                    a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration));
+            }
+
+            foreach (var aim in currentAims)
             {
                 learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
 
