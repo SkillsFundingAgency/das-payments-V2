@@ -47,7 +47,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     {
                         new PriceEpisode
                         {
-                            PriceEpisodeValues = new PriceEpisodeValues {PriceEpisodeAimSeqNumber = 1},
+                            PriceEpisodeValues = new PriceEpisodeValues
+                            {
+                                PriceEpisodeAimSeqNumber = 1,
+                                PriceEpisodeContractType = "Levy Contract",
+                            },
                             PriceEpisodePeriodisedValues = new EditableList<PriceEpisodePeriodisedValues>
                             {
                                 new PriceEpisodePeriodisedValues
