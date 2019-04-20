@@ -62,34 +62,35 @@ Scenario Outline: Levy learner requires english or maths above level 2, complete
         |                  | 0                    | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | Act1          | 2                   | 100%                        |
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier |
-		#p1
-		| Aug/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Sep/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Oct/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Nov/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Dec/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Jan/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Feb/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Mar/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Apr/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| May/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Jun/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
-		| Jul/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     |
+		| Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | BalancingMathsAndEnglish | Aim Sequence Number | Price Episode Identifier |
+		#p1																								                      
+		| Aug/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Sep/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Oct/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Nov/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Dec/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Jan/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Feb/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Mar/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Apr/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| May/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Jun/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
+		| Jul/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1                   | pe-1                     |
 		#p2 - Maths and English
-		| Aug/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Sep/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Oct/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Nov/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Dec/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Jan/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Feb/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Mar/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Apr/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| May/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Jun/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-		| Jul/Current Academic Year | 0            | 0          | 0         | 39.25                      | 2                   |                          |
-    And at month end only the following payments will be calculated
+		| Aug/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| Sep/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| Oct/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| Nov/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| Dec/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| Jan/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| Feb/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| Mar/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| Apr/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| May/Current Academic Year | 0            | 0          | 0         | 39.25                      | 0                        | 2                   |                          |
+		| Jun/Current Academic Year | 0            | 0          | 0         | 0                          | 78.50                    | 2                   |                          |
+		| Jul/Current Academic Year | 0            | 0          | 0         | 0                          | 0                        | 2                   |                          |
+    
+	And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | BalancingMathsAndEnglish |
         | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         | 39.25                      | 0                        |
         | R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         | 39.25                      | 0                        |
@@ -127,8 +128,8 @@ Scenario Outline: Levy learner requires english or maths above level 2, complete
         | R08/Current Academic Year | Mar/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
         | R09/Current Academic Year | Apr/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
         | R10/Current Academic Year | May/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
-        | R11/Current Academic Year | Jun/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
-        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
+        | R11/Current Academic Year | Jun/Current Academic Year | 0             | 78.50                     | BalancingMathsAndEnglish   |
+        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 0                         | BalancingMathsAndEnglish   |
 	And only the following provider payments will be generated
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           |
         | R01/Current Academic Year | Aug/Current Academic Year | 1000          | 0                         | Learning                   |
@@ -153,8 +154,8 @@ Scenario Outline: Levy learner requires english or maths above level 2, complete
         | R08/Current Academic Year | Mar/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
         | R09/Current Academic Year | Apr/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
         | R10/Current Academic Year | May/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish |
-        | R11/Current Academic Year | Jun/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
-        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 39.25                     | BalancingMathsAndEnglish   |
+        | R11/Current Academic Year | Jun/Current Academic Year | 0             | 78.50                     | BalancingMathsAndEnglish   |
+        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 0                         | BalancingMathsAndEnglish   |
 Examples: 
         | Collection_Period         | Levy Balance |
         | R01/Current Academic Year | 15500        |

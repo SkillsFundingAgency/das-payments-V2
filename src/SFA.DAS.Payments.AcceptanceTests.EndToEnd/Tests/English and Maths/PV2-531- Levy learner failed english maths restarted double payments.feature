@@ -136,12 +136,10 @@ Scenario Outline: Levy learner takes single level 2 aim, fails, retakes beyond p
     But aims details are changed as follows
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
 		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        | 12 months       | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | completed         |
-		| Maths or English | 12345         | 06/Aug/Last Academic Year | 10 months        | 9 months        | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | withdrawn         |
 		| Maths or English | 12345         | 09/Jun/Last Academic Year | 12 months        |                 | 3                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
 	And price details as follows	
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | pe-1             | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act1          | 1                   | 90%                         |
-        |                  | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act1          | 2                   | 100%                        |
         |                  | 0                    | 09/Jun/Last Academic Year           | 0                      | 09/Jun/Last Academic Year             | Act1          | 3                   | 100%                        |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
@@ -160,19 +158,7 @@ Scenario Outline: Levy learner takes single level 2 aim, fails, retakes beyond p
         | May/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-1                     |
         | Jun/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-1                     |
         | Jul/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-1                     |
-		#p2 - Not sure if earnings calc will return 0 rows for aim 2 as it has been withdrawn
-        | Aug/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Sep/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Oct/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Nov/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Dec/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Jan/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Feb/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Mar/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Apr/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | May/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Jun/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Jul/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
+		
 		#p3
         | Aug/Current Academic Year | 0            | 0          | 0         | 39.25                      | 3                   |                          |
         | Sep/Current Academic Year | 0            | 0          | 0         | 39.25                      | 3                   |                          |
