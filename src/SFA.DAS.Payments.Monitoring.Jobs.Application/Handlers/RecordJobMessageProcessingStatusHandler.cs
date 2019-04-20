@@ -40,11 +40,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
                 if (!sqlExceptionService.IsConstraintViolation(updateEx))
                     throw;
                 logger.LogWarning($"Failed to store/update job details probably due to KEY violation for job: {message.JobId}, message id: {message.Id}, message name: {message.MessageName}. Error: {updateEx.Message}");
-                var options = new SendOptions();
-                options.DelayDeliveryWith(TimeSpan.FromSeconds(delayInSeconds));
-                await context.Send(message, options).ConfigureAwait(false);
-                context.DoNotContinueDispatchingCurrentMessageToHandlers();
-                return;
+                var successfullyDeferred = await context.Defer(message, TimeSpan.FromSeconds(delayInSeconds), "JobUpdateFailedRetries");
+                if (successfullyDeferred)
+                    return;
+                logger.LogError($"Failed to store/update job details probably due to KEY violation for job: {message.JobId}, message id: {message.Id}, message name: {message.MessageName}. Error: {updateEx.Message}", updateEx);
+                throw;
             }
             catch (DcJobNotFoundException jobNotFoundException)
             {
