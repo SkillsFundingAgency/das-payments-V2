@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 
@@ -17,8 +18,14 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 
         public IReadOnlyList<FundingSourcePayment> Process(RequiredPayment requiredPayment)
         {
-            return new []{ employerCoInvestedPaymentProcessor.Process(requiredPayment),
-                sfaCoInvestedPaymentProcessor.Process(requiredPayment)};
+            var results = new List<FundingSourcePayment>
+                {
+                    employerCoInvestedPaymentProcessor.Process(requiredPayment),
+                    sfaCoInvestedPaymentProcessor.Process(requiredPayment),
+                }
+                .Where(x => x.AmountDue != 0);
+
+            return results.ToArray();
         }
     }
 }
