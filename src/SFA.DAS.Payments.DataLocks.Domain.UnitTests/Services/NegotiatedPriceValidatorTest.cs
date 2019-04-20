@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
@@ -14,7 +13,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
     public class NegotiatedPriceValidatorTest
     {
         private const decimal Price = 100m;
-        private const  string PriceEpisodeIdentifier = "pe-1";
+        private const string PriceEpisodeIdentifier = "pe-1";
         private const byte Period = 1;
 
         [Test]
@@ -24,14 +23,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Cost = Price
-                    },
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Cost = Price + 100
-                    }
+                    new ApprenticeshipPriceEpisodeModel {Cost = Price + 10},
+                    new ApprenticeshipPriceEpisodeModel{ Cost = Price},
+                    new ApprenticeshipPriceEpisodeModel{Cost = Price + 20}
                 }
             };
 
@@ -39,7 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var validation = new CourseValidationModel
             {
-                PriceEpisode = new PriceEpisode {AgreedPrice = Price, Identifier = PriceEpisodeIdentifier},
+                PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
                 Period = Period,
                 Apprenticeships = apprenticeships
             };
@@ -52,7 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         [Test]
         public void GivenAgreedPriceDoNotMatchReturnDataLockError07()
         {
-          
+
             var apprenticeship = new ApprenticeshipModel
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>

@@ -16,7 +16,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
             {
                 foreach (var apprenticeshipPriceEpisodeModel in apprenticeshipModel.ApprenticeshipPriceEpisodes)
                 {
-                    if (ilrAgreedPrice == apprenticeshipPriceEpisodeModel.Cost) break;
+                    if (ilrAgreedPrice == apprenticeshipPriceEpisodeModel.Cost)
+                    {
+                        return new List<ValidationResult>();
+                    }
                    
                     result.Add(new ValidationResult
                     {
