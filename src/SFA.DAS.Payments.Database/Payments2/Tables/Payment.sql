@@ -27,6 +27,13 @@
 	AgreementId NVARCHAR(255) NULL, 
 	[AccountId] BIGINT NULL , 
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
+	EarningsStartDate DATETIME NOT NULL,
+	EarningsPlannedEndDate DATETIME NULL,
+	EarningsActualEndDate DATETIME NULL,
+	EarningsCompletionStatus TINYINT NOT NULL,
+	EarningsCompletionAmount DECIMAL (15,5),
+	EarningsInstalmentAmount DECIMAL (15,5),
+	EarningsNumberOfInstalments SMALLINT NOT NULL,
 );
 GO
 
