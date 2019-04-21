@@ -43,6 +43,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     payment.Amount,
                     payment.FundingSource,
                     payment.SfaContributionPercentage,
+                    payment.StartDate,
+                    payment.PlannedEndDate,
+                    payment.ActualEndDate,
+                    payment.CompletionStatus,
+                    payment.CompletionAmount,
+                    payment.InstalmentAmount,
+                    payment.NumberOfInstalments
                 })
                 .ToListAsync(cancellationToken);
 
@@ -59,6 +66,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 Amount = payment.Amount,
                 FundingSource = payment.FundingSource,
                 SfaContributionPercentage = payment.SfaContributionPercentage,
+                StartDate = payment.StartDate,
+                PlannedEndDate = payment.PlannedEndDate,
+                ActualEndDate = payment.ActualEndDate,
+                CompletionStatus = payment.CompletionStatus,
+                CompletionAmount = payment.CompletionAmount,
+                InstalmentAmount = payment.InstalmentAmount,
+                NumberOfInstalments = payment.NumberOfInstalments
             })
             .ToList();
         }
