@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using SFA.DAS.Payments.Audit.Model;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
@@ -7,7 +8,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
     {
         protected PeriodisedPaymentsEventModelDataTable()
         {
-            DataTable.Columns.AddRange(new []
+            DataTable.Columns.AddRange(new[]
             {
                 new DataColumn("PriceEpisodeIdentifier"),
                 new DataColumn("ContractType"),
@@ -16,7 +17,14 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("DeliveryPeriod"),
                 new DataColumn("AgreementId"),
                 new DataColumn("SfaContributionPercentage"),
-                new DataColumn("AccountId")
+                new DataColumn("AccountId"),
+                new DataColumn("EarningsStartDate",typeof(DateTime)),
+                new DataColumn("EarningsPlannedEndDate",typeof(DateTime)) {AllowDBNull = true},
+                new DataColumn("EarningsActualEndDate",typeof(DateTime)) {AllowDBNull = true},
+                new DataColumn("EarningsCompletionStatus"),
+                new DataColumn("EarningsCompletionAmount"),
+                new DataColumn("EarningsInstalmentAmount"),
+                new DataColumn("EarningsNumberOfInstalments")
             });
         }
 
@@ -31,6 +39,29 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["AgreementId"] = eventModel.AgreementId;
             dataRow["SfaContributionPercentage"] = eventModel.SfaContributionPercentage;
             dataRow["AccountId"] = eventModel.AccountId;
+            dataRow["EarningsStartDate"] = eventModel.StartDate;
+            dataRow["EarningsCompletionStatus"] = eventModel.CompletionStatus;
+            dataRow["EarningsCompletionAmount"] = eventModel.CompletionAmount;
+            dataRow["EarningsInstalmentAmount"] = eventModel.InstalmentAmount;
+            dataRow["EarningsNumberOfInstalments"] = eventModel.NumberOfInstalments;
+
+            if (eventModel.PlannedEndDate == DateTime.MinValue)
+            {
+                dataRow["EarningsPlannedEndDate"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["EarningsPlannedEndDate"] = eventModel.PlannedEndDate;
+            }
+
+            if (!eventModel.ActualEndDate.HasValue || eventModel.ActualEndDate == DateTime.MinValue)
+            {
+                dataRow["EarningsActualEndDate"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["EarningsActualEndDate"] = eventModel.ActualEndDate;
+            }
             return dataRow;
         }
     }
