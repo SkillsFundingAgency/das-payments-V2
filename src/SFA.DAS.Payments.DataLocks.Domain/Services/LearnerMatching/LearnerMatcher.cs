@@ -1,8 +1,8 @@
-﻿using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
+﻿using System.Threading.Tasks;
+using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.Services
+namespace SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching
 {
     public class LearnerMatcher : ILearnerMatcher
     {

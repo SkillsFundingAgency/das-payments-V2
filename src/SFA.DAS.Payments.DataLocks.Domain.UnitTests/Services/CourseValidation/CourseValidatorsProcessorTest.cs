@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void ValidateCourseShouldReturnValidationResults()
         {
-            var courseValidatorsProcessor = new CourseValidatorsProcessor(courseValidators);
+            var courseValidatorsProcessor = new CourseValidationProcessor(courseValidators);
             var actualResults = courseValidatorsProcessor.ValidateCourse(dataLockValidationModel);
 
             startDateValidator.Verify(o => o.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);

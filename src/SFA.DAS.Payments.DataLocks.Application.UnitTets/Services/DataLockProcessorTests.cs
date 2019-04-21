@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         private IMapper mapper;
         private ApprenticeshipContractType1EarningEvent earningEvent;
         private Mock<ILearnerMatcher> learnerMatcherMock;
-        private Mock<ICourseValidatorsProcessor> courseValidationMock;
+        private Mock<ICourseValidationProcessor> courseValidationMock;
         private List<ApprenticeshipModel> apprenticeships;
         private const long Uln = 123;
 
@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             earningEvent = CreateTestEarningEvent(1,100m);
             learnerMatcherMock = new Mock<ILearnerMatcher>(MockBehavior.Strict);
-            courseValidationMock = new Mock<ICourseValidatorsProcessor>(MockBehavior.Strict);
+            courseValidationMock = new Mock<ICourseValidationProcessor>(MockBehavior.Strict);
         }
 
         [Test]

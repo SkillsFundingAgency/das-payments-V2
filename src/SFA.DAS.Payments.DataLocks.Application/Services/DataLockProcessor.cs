@@ -20,13 +20,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         private readonly IMapper mapper;
         private readonly ILearnerMatcher learnerMatcher;
-        private readonly ICourseValidatorsProcessor processCourseValidator;
+        private readonly ICourseValidationProcessor courseValidationProcessor;
 
-        public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher, ICourseValidatorsProcessor processCourseValidator)
+        public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher, ICourseValidationProcessor courseValidationProcessor)
         {
             this.mapper = mapper;
             this.learnerMatcher = learnerMatcher;
-            this.processCourseValidator = processCourseValidator;
+            this.courseValidationProcessor = courseValidationProcessor;
         }
 
         public async Task<DataLockEvent> GetPaymentEvent(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
@@ -116,7 +116,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         PriceEpisode = priceEpisodes.Single(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
                     };
 
-                    var periodValidationResults = processCourseValidator.ValidateCourse(validationModel);
+                    var periodValidationResults = courseValidationProcessor.ValidateCourse(validationModel);
 
                     if (periodValidationResults != null && periodValidationResults.Any())
                     {

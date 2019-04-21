@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Interfaces
 {
-    public interface ICourseValidatorsProcessor
+    public interface ICourseValidationProcessor
     {
         List<ValidationResult> ValidateCourse(DataLockValidationModel validationModel);
     }

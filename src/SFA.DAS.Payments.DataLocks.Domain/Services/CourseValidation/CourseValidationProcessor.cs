@@ -5,11 +5,11 @@ using SFA.DAS.Payments.DataLocks.Domain.Models;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class CourseValidatorsProcessor : ICourseValidatorsProcessor
+    public class CourseValidationProcessor : ICourseValidationProcessor
     {
         private readonly List<ICourseValidator> courseValidators;
 
-        public CourseValidatorsProcessor(IEnumerable<ICourseValidator> courseValidators)
+        public CourseValidationProcessor(IEnumerable<ICourseValidator> courseValidators)
         {
             this.courseValidators = new List<ICourseValidator>(courseValidators);
         }
