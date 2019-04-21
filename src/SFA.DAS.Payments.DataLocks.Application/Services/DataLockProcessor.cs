@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
-using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -13,6 +12,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
+using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {

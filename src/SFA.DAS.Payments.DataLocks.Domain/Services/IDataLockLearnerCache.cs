@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.Payments.Model.Core.Entities;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.Interfaces
+namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
     public interface IDataLockLearnerCache
     {
