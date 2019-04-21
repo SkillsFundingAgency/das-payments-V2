@@ -2,7 +2,7 @@
 {
     public class ValidationResult
     {
-        public DataLockErrorCode DataLockErrorCode { get; set; }
+        public DataLockErrorCode? DataLockErrorCode { get; set; }
 
         public long ApprenticeshipId { get; set; }
 

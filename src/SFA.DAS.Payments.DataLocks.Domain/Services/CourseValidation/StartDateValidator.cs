@@ -1,30 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
     public class StartDateValidator : ICourseValidator
     {
-        public List<ValidationResult> Validate(DataLockValidationModel dataLockValidationModel)
+        public ValidationResult Validate(DataLockValidationModel dataLockValidationModel)
         {
-            var result = new List<ValidationResult>();
-
-            var ilrStartDate = dataLockValidationModel.PriceEpisode.StartDate;
-            var apprenticeship = dataLockValidationModel.Apprenticeship;
-
-            foreach (var priceEpisode in apprenticeship.ApprenticeshipPriceEpisodes)
+            var result = new ValidationResult
             {
-                if (priceEpisode.StartDate < ilrStartDate ) return new List<ValidationResult>();
+                ApprenticeshipId = dataLockValidationModel.Apprenticeship.Id,
+                Period = dataLockValidationModel.EarningPeriod.Period,
+            };
 
-                result.Add(new ValidationResult
-                {
-                    DataLockErrorCode = DataLockErrorCode.DLOCK_09,
-                    Period = dataLockValidationModel.EarningPeriod.Period,
-                    ApprenticeshipPriceEpisodeIdentifier = priceEpisode.Id,
-                    ApprenticeshipId = apprenticeship.Id
-                });
+            var apprenticeshipPriceEpisode = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes?
+                .LastOrDefault(priceEpisode => priceEpisode.StartDate <= dataLockValidationModel.PriceEpisode.StartDate && !priceEpisode.Removed);
+
+            if (apprenticeshipPriceEpisode == null)
+            {
+                result.DataLockErrorCode = DataLockErrorCode.DLOCK_09;
             }
-
+            else
+            {
+                result.ApprenticeshipPriceEpisodeIdentifier = apprenticeshipPriceEpisode.Id;
+            }
 
             return result;
         }

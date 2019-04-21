@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
     public interface ICourseValidator
     {
-        List<ValidationResult> Validate(DataLockValidationModel courseValidationModel);
+        ValidationResult Validate(DataLockValidationModel courseValidationModel);
     }
 }
