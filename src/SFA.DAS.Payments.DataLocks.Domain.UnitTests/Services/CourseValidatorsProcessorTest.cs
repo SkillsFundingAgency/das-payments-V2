@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentAssertions;
+using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using FluentAssertions;
-using Moq;
 using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
@@ -18,7 +15,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
     public class CourseValidatorsProcessorTest
     {
         private List<ICourseValidator> courseValidators;
-        private List<ValidationResult>  courseValidationResults ;
+        private List<ValidationResult> courseValidationResults;
         private DataLockValidationModel dataLockValidationModel;
         private Mock<ICourseValidator> startDateValidator;
 
@@ -35,17 +32,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 EarningPeriod = earningPeriod,
                 Uln = 100,
                 PriceEpisode = new PriceEpisode(),
-                Apprenticeships = new List<ApprenticeshipModel> {new ApprenticeshipModel()}
+                Apprenticeship = new ApprenticeshipModel()
             };
 
-             courseValidationResults = new List<ValidationResult>
+            courseValidationResults = new List<ValidationResult>
             {
                 new ValidationResult()
             };
 
             startDateValidator = new Mock<ICourseValidator>(MockBehavior.Strict);
             startDateValidator
-                .Setup(o => o.Validate(It.IsAny<CourseValidationModel>()))
+                .Setup(o => o.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(courseValidationResults);
 
             courseValidators = new List<ICourseValidator>
@@ -54,14 +51,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             };
 
         }
-        
+
         [Test]
         public void ValidateCourseShouldReturnValidationResults()
         {
             var courseValidatorsProcessor = new CourseValidatorsProcessor(courseValidators);
             var actualResults = courseValidatorsProcessor.ValidateCourse(dataLockValidationModel);
 
-            startDateValidator.Verify(o => o.Validate(It.IsAny<CourseValidationModel>()), Times.Once);
+            startDateValidator.Verify(o => o.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
             actualResults.Should().NotBeNull();
             actualResults.Should().HaveCount(courseValidationResults.Count);

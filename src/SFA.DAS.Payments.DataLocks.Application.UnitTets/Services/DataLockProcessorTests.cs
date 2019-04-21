@@ -134,13 +134,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         Period = 1
                     }
                 })
+                .Returns(() => new List<ValidationResult>())
+                .Returns(() => new List<ValidationResult>())
                 .Returns(() => new List<ValidationResult>());
-            
+
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
             var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
-            courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Exactly(2));
+            courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Exactly(4));
 
             var payableEarning = actual as PayableEarningEvent;
             payableEarning.Should().NotBeNull();
@@ -213,18 +215,23 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         Period = 1
                     }
                 })
+                .Returns(() => new List<ValidationResult>())
+                .Returns(() => new List<ValidationResult>())
+                .Returns(() => new List<ValidationResult>())
+                .Returns(() => new List<ValidationResult>())
                 .Returns(() => new List<ValidationResult>());
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, courseValidationMock.Object);
             var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
-            courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Exactly(2));
+            courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Exactly(6));
 
             var payableEarning = actual as PayableEarningEvent;
             payableEarning.Should().NotBeNull();
             payableEarning.AccountId.Should().Be(validAccountId);
         }
+
         [Test]
         public void GivenEarningGreaterThanZeroAndNoValidApprenticeshipThrowException()
         {
@@ -265,8 +272,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             task.Should().Throw<InvalidOperationException>();
             courseValidationMock.Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Exactly(2));
         }
-
-
 
         private ApprenticeshipContractType1EarningEvent CreateTestEarningEvent(byte periodsToCreate, decimal earningPeriodAmount)
         {

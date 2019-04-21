@@ -6,28 +6,27 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
     public class StartDateValidator : ICourseValidator
     {
-        public List<ValidationResult> Validate(CourseValidationModel courseValidationModel)
+        public List<ValidationResult> Validate(DataLockValidationModel dataLockValidationModel)
         {
             var result = new List<ValidationResult>();
 
-            var startDate = courseValidationModel.PriceEpisode.StartDate;
+            var startDate = dataLockValidationModel.PriceEpisode.StartDate;
+            var apprenticeship = dataLockValidationModel.Apprenticeship;
 
-            foreach (var apprenticeshipModel in courseValidationModel.Apprenticeships)
-            {
-                foreach (var priceEpisode in apprenticeshipModel.ApprenticeshipPriceEpisodes)
+                foreach (var priceEpisode in apprenticeship.ApprenticeshipPriceEpisodes)
                 {
                     if (startDate < priceEpisode.StartDate)
                     {
                         result.Add(new ValidationResult
                         {
                             DataLockErrorCode = DataLockErrorCode.DLOCK_09,
-                            Period = courseValidationModel.Period,
+                            Period = dataLockValidationModel.EarningPeriod.Period,
                             ApprenticeshipPriceEpisodeIdentifier = priceEpisode.Id,
-                            ApprenticeshipId = apprenticeshipModel.Id
+                            ApprenticeshipId = apprenticeship.Id
                         });
                     }
                 }
-            }
+            
 
             return result;
         }

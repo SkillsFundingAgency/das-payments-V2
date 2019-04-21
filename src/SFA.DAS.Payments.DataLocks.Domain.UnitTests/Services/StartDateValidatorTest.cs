@@ -13,13 +13,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
     [TestFixture]
     public class StartDateValidatorTest
     {
+        private DateTime startDate = DateTime.UtcNow;
+        private string priceEpisodeIdentifier = "pe-1";
+        private EarningPeriod period;
+
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            period = new EarningPeriod
+            {
+                Period = 1
+            };
+        }
+
         [Test]
         public void ReturnsNoDataLockErrors()
         {
-            var startDate = DateTime.UtcNow;
-            var priceEpisodeIdentifier = "pe-1";
-            byte period = 1;
-
             var apprenticeship = new ApprenticeshipModel
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
@@ -30,14 +39,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                     }
                 }
             };
-
-            var apprenticeships = new List<ApprenticeshipModel> { apprenticeship };
-
-            var validation = new CourseValidationModel
+            
+            var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode {StartDate = startDate, Identifier = priceEpisodeIdentifier},
-                Period = period,
-                Apprenticeships = apprenticeships
+                EarningPeriod = period,
+                Apprenticeship = apprenticeship
             };
 
             var validator = new StartDateValidator();
@@ -50,10 +57,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         [Test]
         public void ReturnsDataLockErrorWhenNotBegun()
         {
-            var startDate = DateTime.UtcNow;
-            var priceEpisodeIdentifier = "pe-1";
-            byte period = 1;
-
             var apprenticeship = new ApprenticeshipModel
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
@@ -65,13 +68,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            var apprenticeships = new List<ApprenticeshipModel> { apprenticeship };
-
-            var validation = new CourseValidationModel
+            var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
-                Period = period,
-                Apprenticeships = apprenticeships
+                EarningPeriod = period,
+                Apprenticeship = apprenticeship
             };
 
             var validator = new StartDateValidator();
@@ -84,27 +85,18 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
         [Test]
         public void ReturnsDataLockErrorWhenGapBetweenApprenticeshipsButStartDateMatchesOne()
-        {
-            var startDate = DateTime.UtcNow.AddDays(-5);
-            var priceEpisodeIdentifier = "pe-1";
-            byte period = 1;
+        {         
             var priceEpisodeId = 3L;
+            startDate = DateTime.UtcNow.AddDays(-5);
 
-            var earlyApprenticeship = new ApprenticeshipModel
+            var apprenticeship = new ApprenticeshipModel
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
                     new ApprenticeshipPriceEpisodeModel
                     {
                         StartDate = startDate.AddDays(-10)
-                    }
-                }
-            };
-
-            var lateApprenticeship = new ApprenticeshipModel
-            {
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
+                    },
                     new ApprenticeshipPriceEpisodeModel
                     {
                         Id = priceEpisodeId,
@@ -112,14 +104,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                     }
                 }
             };
-
-            var apprenticeships = new List<ApprenticeshipModel> {earlyApprenticeship, lateApprenticeship};
-
-            var validation = new CourseValidationModel
+            
+            var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
-                Period = period,
-                Apprenticeships = apprenticeships
+                EarningPeriod = period,
+                Apprenticeship = apprenticeship
             };
 
             var validator = new StartDateValidator();

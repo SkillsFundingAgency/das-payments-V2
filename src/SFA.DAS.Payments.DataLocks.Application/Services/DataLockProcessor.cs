@@ -106,19 +106,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 if (period.Amount == decimal.Zero) continue;
 
-                var validationModel = new DataLockValidationModel
+                foreach (var apprenticeship in apprenticeships)
                 {
-                    Uln = uln,
-                    EarningPeriod = period,
-                    Apprenticeships = apprenticeships,
-                    PriceEpisode = priceEpisodes.Single(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
-                };
+                    var validationModel = new DataLockValidationModel
+                    {
+                        Uln = uln,
+                        EarningPeriod = period,
+                        Apprenticeship = apprenticeship,
+                        PriceEpisode = priceEpisodes.Single(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
+                    };
 
-                var periodValidationResults = processCourseValidator.ValidateCourse(validationModel);
+                    var periodValidationResults = processCourseValidator.ValidateCourse(validationModel);
 
-                if (periodValidationResults != null && periodValidationResults.Any())
-                {
-                    validationResults.AddRange(periodValidationResults);
+                    if (periodValidationResults != null && periodValidationResults.Any())
+                    {
+                        validationResults.AddRange(periodValidationResults);
+                    }
                 }
             }
 
