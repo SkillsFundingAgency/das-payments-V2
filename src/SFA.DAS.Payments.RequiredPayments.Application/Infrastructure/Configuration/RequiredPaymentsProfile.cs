@@ -18,7 +18,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
             CreateMap<PaymentHistoryEntity, Payment>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.ResolveUsing(src => src.DeliveryPeriod))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod.Clone()));
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod.Clone()))
+                .ForMember(payment => payment.StartDate, opt => opt.MapFrom(episode => episode.StartDate))
+                .ForMember(payment => payment.PlannedEndDate, opt => opt.MapFrom(episode => episode.PlannedEndDate))
+                .ForMember(payment => payment.ActualEndDate, opt => opt.MapFrom(episode => episode.ActualEndDate))
+                .ForMember(payment => payment.CompletionStatus, opt => opt.Ignore())
+                .ForMember(payment => payment.CompletionAmount, opt => opt.MapFrom(episode => episode.CompletionAmount))
+                .ForMember(payment => payment.InstalmentAmount, opt => opt.MapFrom(episode => episode.InstalmentAmount))
+                .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments));
 
             // Earning event --> required payment event
             CreateMap<IEarningEvent, RequiredPaymentEvent>()
@@ -35,9 +42,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
                 .Ignore(x => x.ContractType)
-                .ForMember(requiredPayment => requiredPayment.AccountId, opt => opt.Ignore());
-
-
+                .ForMember(requiredPayment => requiredPayment.AccountId, opt => opt.Ignore())
+                .Ignore(x => x.StartDate)
+                .Ignore(x => x.PlannedEndDate)
+                .Ignore(x => x.ActualEndDate)
+                .Ignore(x => x.CompletionStatus)
+                .Ignore(x => x.CompletionAmount)
+                .Ignore(x => x.InstalmentAmount)
+                .Ignore(x => x.NumberOfInstalments);
+         
             CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
@@ -119,7 +132,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.CollectionPeriod)
                 .Ignore(x => x.ContractType)
                 .Ignore(x => x.AccountId)
-                ;
+                .Ignore(x => x.StartDate)
+                .Ignore(x => x.PlannedEndDate)
+                .Ignore(x => x.ActualEndDate)
+                .Ignore(x => x.CompletionStatus)
+                .Ignore(x => x.CompletionAmount)
+                .Ignore(x => x.InstalmentAmount)
+                .Ignore(x => x.NumberOfInstalments);
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
                 .Ignore(x => x.OnProgrammeEarningType)
@@ -134,6 +153,28 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.CommitmentId)
                 .Ignore(x => x.AgreementId)
                 ;
+
+            CreateMap<PriceEpisode, PeriodisedPaymentEvent>()
+                .ForMember(payment => payment.StartDate, opt => opt.MapFrom(episode => episode.StartDate))
+                .ForMember(payment => payment.PlannedEndDate, opt => opt.MapFrom(episode => episode.PlannedEndDate))
+                .ForMember(payment => payment.ActualEndDate, opt => opt.MapFrom(episode => episode.ActualEndDate))
+                .ForMember(payment => payment.CompletionStatus, opt => opt.Ignore())
+                .ForMember(payment => payment.CompletionAmount, opt => opt.MapFrom(episode => episode.CompletionAmount))
+                .ForMember(payment => payment.InstalmentAmount, opt => opt.MapFrom(episode => episode.InstalmentAmount))
+                .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments))
+                .Ignore(x => x.PriceEpisodeIdentifier)
+                .Ignore(x => x.AmountDue)
+                .Ignore(x => x.DeliveryPeriod)
+                .Ignore(x => x.AccountId)
+                .Ignore(x => x.ContractType)
+                .Ignore(x => x.JobId)
+                .Ignore(x => x.EventTime)
+                .Ignore(x => x.EventId)
+                .Ignore(x => x.Ukprn)
+                .Ignore(x => x.Learner)
+                .Ignore(x => x.LearningAim)
+                .Ignore(x => x.IlrSubmissionDateTime)
+                .Ignore(x => x.CollectionPeriod);
             // End Required Payment --> RequiredPaymentEvent
         }
     }

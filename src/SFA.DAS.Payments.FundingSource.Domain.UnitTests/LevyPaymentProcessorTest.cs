@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             // arrange
             var requiredPayment = new RequiredPayment
             {
-                SfaContributionPercentage = 1m,
+                SfaContributionPercentage = 0m,
                 AmountDue = 100
             };
             levyBalanceServiceMock.Setup(s => s.TryFund(100)).Returns(100).Verifiable();
@@ -83,6 +83,23 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             payments.Should().HaveCount(1);
             payments[0].AmountDue.Should().Be(100);
             payments[0].Type.Should().Be(FundingSourceType.Levy);
+        }
+
+        [Test]
+        public void TestProcessPaymentWithOneSfaContribution() // Small employer earnings have SFA contribution of 1
+        {
+            // arrange
+            var requiredPayment = new RequiredPayment
+            {
+                SfaContributionPercentage = 1m,
+                AmountDue = 100
+            };
+            
+            // act
+            var payments = processor.Process(requiredPayment);
+
+            // assert
+            payments.Should().HaveCount(0);
         }
 
         [Test]

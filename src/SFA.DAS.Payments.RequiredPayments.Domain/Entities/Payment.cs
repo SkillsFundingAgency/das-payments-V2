@@ -19,5 +19,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
         public CollectionPeriod CollectionPeriod { get; set; }
 
         public decimal SfaContributionPercentage { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? PlannedEndDate { get; set; }
+        public DateTime? ActualEndDate { get; set; }
+        public byte CompletionStatus { get; set; }
+        public decimal CompletionAmount { get; set; }
+        public decimal InstalmentAmount { get; set; }
+        public short NumberOfInstalments { get; set; }
     }
 }
