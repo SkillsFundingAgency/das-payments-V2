@@ -15,7 +15,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         private static readonly Dictionary<string, FunctionalSkillType> TypeMap = new Dictionary<string, FunctionalSkillType>
         {
             {"MathEngBalPayment", FunctionalSkillType.BalancingMathsAndEnglish},
-            {"MathEngOnProgPayment", FunctionalSkillType.OnProgrammeMathsAndEnglish}
+            {"MathEngOnProgPayment", FunctionalSkillType.OnProgrammeMathsAndEnglish},
+            {"LearnSuppFundCash", FunctionalSkillType.LearningSupport},
         };
 
         public ReadOnlyCollection<FunctionalSkillEarning> Resolve(IntermediateLearningAim source, FunctionalSkillEarningsEvent destination, ReadOnlyCollection<FunctionalSkillEarning> destMember, ResolutionContext context)

@@ -94,8 +94,24 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                                 Period10 = 0,
                                 Period11 = 0,
                                 Period12 = 300,
-                            }
-                        }
+                            },
+                            new LearningDeliveryPeriodisedValues
+                            {
+                                AttributeName = "LearnSuppFundCash",
+                                Period1 = 0,
+                                Period2 = 150,
+                                Period3 = 0,
+                                Period4 = 0,
+                                Period5 = 0,
+                                Period6 = 0,
+                                Period7 = 0,
+                                Period8 = 0,
+                                Period9 = 0,
+                                Period10 = 0,
+                                Period11 = 0,
+                                Period12 = 0,
+                            },
+                        },
                     }
                 },
                 PriceEpisodes = new List<PriceEpisode>
@@ -167,7 +183,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                                 Period10 = 0,
                                 Period11 = 0,
                                 Period12 = 3000,
-                            }
+                            },
                         }
                     }
                 }
@@ -388,7 +404,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, FunctionalSkillEarningsEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("M&E");
-            earningEvent.Earnings.Should().HaveCount(2);
+            earningEvent.Earnings.Should().HaveCount(3);
 
             var balancing = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.BalancingMathsAndEnglish).ToArray();
             balancing.Should().HaveCount(1);
@@ -398,6 +414,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var onProg = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).ToArray();
             onProg.Should().HaveCount(1);
             onProg[0].Periods.Where(p => p.Amount == 100).Should().HaveCount(12);
+
+            var learningSupport = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.LearningSupport).ToArray();
+            learningSupport.Should().HaveCount(1);
+            learningSupport[0].Periods.Where(p => p.Amount == 0).Should().HaveCount(11);
+            learningSupport[0].Periods.Where(p => p.Amount == 150).Should().HaveCount(1);
         }
 
         [Test]
