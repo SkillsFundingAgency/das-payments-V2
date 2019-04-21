@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
+using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
+namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
     [TestFixture]
-    public class StartDateValidatorTest
+    public class NegotiatedPriceValidatorTest
     {
-        private DateTime startDate = DateTime.Today;
-        private string priceEpisodeIdentifier = "pe-1";
+        private const decimal Price = 100m;
+        private const string PriceEpisodeIdentifier = "pe-1";
         private EarningPeriod period;
 
         [OneTimeSetUp]
@@ -27,61 +27,57 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Test]
-        public void ReturnsNoDataLockErrors()
+        public void GivenAgreedPriceMatchReturnNoDataLockErrors()
         {
             var apprenticeship = new ApprenticeshipModel
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        StartDate = startDate.AddDays(-1)
-                    }
+                    new ApprenticeshipPriceEpisodeModel {Cost = Price + 10},
+                    new ApprenticeshipPriceEpisodeModel{ Cost = Price},
+                    new ApprenticeshipPriceEpisodeModel{Cost = Price + 20}
                 }
             };
-            
             var validation = new DataLockValidationModel
             {
-                PriceEpisode = new PriceEpisode {StartDate = startDate, Identifier = priceEpisodeIdentifier},
+                PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
                 Apprenticeship = apprenticeship
             };
 
-            var validator = new StartDateValidator();
-
+            var validator = new NegotiatedPriceValidator();
             var result = validator.Validate(validation);
-
             result.Any().Should().BeFalse();
         }
 
         [Test]
-        public void ReturnsDataLockErrorWhenNotBegun()
+        public void GivenAgreedPriceDoNotMatchReturnDataLockError07()
         {
+
             var apprenticeship = new ApprenticeshipModel
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
                     new ApprenticeshipPriceEpisodeModel
                     {
-                        StartDate = startDate.AddDays(1)
+                       Cost = 200
                     }
                 }
             };
 
             var validation = new DataLockValidationModel
             {
-                PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
+                PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
                 Apprenticeship = apprenticeship
             };
 
-            var validator = new StartDateValidator();
+            var validator = new NegotiatedPriceValidator();
 
             var result = validator.Validate(validation);
 
             result.Should().HaveCount(1);
-            result.First().DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
+            result.First().DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_07);
         }
-
     }
 }

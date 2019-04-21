@@ -1,19 +1,21 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
+using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
+namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
     [TestFixture]
-    public class NegotiatedPriceValidatorTest
+    public class StartDateValidatorTest
     {
-        private const decimal Price = 100m;
-        private const string PriceEpisodeIdentifier = "pe-1";
+        private DateTime startDate = DateTime.Today;
+        private string priceEpisodeIdentifier = "pe-1";
         private EarningPeriod period;
 
         [OneTimeSetUp]
@@ -26,57 +28,61 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Test]
-        public void GivenAgreedPriceMatchReturnNoDataLockErrors()
+        public void ReturnsNoDataLockErrors()
         {
-            var apprenticeship = new ApprenticeshipModel
-            {
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
-                    new ApprenticeshipPriceEpisodeModel {Cost = Price + 10},
-                    new ApprenticeshipPriceEpisodeModel{ Cost = Price},
-                    new ApprenticeshipPriceEpisodeModel{Cost = Price + 20}
-                }
-            };
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = apprenticeship
-            };
-
-            var validator = new NegotiatedPriceValidator();
-            var result = validator.Validate(validation);
-            result.Any().Should().BeFalse();
-        }
-
-        [Test]
-        public void GivenAgreedPriceDoNotMatchReturnDataLockError07()
-        {
-
             var apprenticeship = new ApprenticeshipModel
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
                     new ApprenticeshipPriceEpisodeModel
                     {
-                       Cost = 200
+                        StartDate = startDate.AddDays(-1)
+                    }
+                }
+            };
+            
+            var validation = new DataLockValidationModel
+            {
+                PriceEpisode = new PriceEpisode {StartDate = startDate, Identifier = priceEpisodeIdentifier},
+                EarningPeriod = period,
+                Apprenticeship = apprenticeship
+            };
+
+            var validator = new StartDateValidator();
+
+            var result = validator.Validate(validation);
+
+            result.Any().Should().BeFalse();
+        }
+
+        [Test]
+        public void ReturnsDataLockErrorWhenNotBegun()
+        {
+            var apprenticeship = new ApprenticeshipModel
+            {
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        StartDate = startDate.AddDays(1)
                     }
                 }
             };
 
             var validation = new DataLockValidationModel
             {
-                PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
+                PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
                 EarningPeriod = period,
                 Apprenticeship = apprenticeship
             };
 
-            var validator = new NegotiatedPriceValidator();
+            var validator = new StartDateValidator();
 
             var result = validator.Validate(validation);
 
             result.Should().HaveCount(1);
-            result.First().DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_07);
+            result.First().DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
         }
+
     }
 }

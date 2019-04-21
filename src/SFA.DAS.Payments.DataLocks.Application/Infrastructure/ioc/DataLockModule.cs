@@ -7,6 +7,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System.Collections.Generic;
+using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
 {

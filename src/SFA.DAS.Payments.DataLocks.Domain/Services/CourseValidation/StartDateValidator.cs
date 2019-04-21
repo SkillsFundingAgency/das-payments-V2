@@ -1,8 +1,8 @@
-﻿using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
+﻿using System.Collections.Generic;
+using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
-using System.Collections.Generic;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.Services
+namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
     public class StartDateValidator : ICourseValidator
     {

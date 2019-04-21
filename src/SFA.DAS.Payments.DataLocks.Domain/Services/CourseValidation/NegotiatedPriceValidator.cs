@@ -2,7 +2,7 @@
 using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.Services
+namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
     public class NegotiatedPriceValidator : ICourseValidator
     {
