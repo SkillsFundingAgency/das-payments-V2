@@ -98,13 +98,13 @@
 		| R01/Current Academic Year | Aug/Current Academic Year | 0            | 1650       | 0         | 500                           | 500                           |
 			
 	And only the following provider payments will be recorded
-		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type              |
-		| R01/Current Academic Year | Aug/Current Academic Year | 1485                   | 165                         | Completion                    |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 500                         | Second16To18EmployerIncentive |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 500                         | Second16To18ProviderIncentive |
+		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully Funded Payments | Transaction Type              |
+		| R01/Current Academic Year | Aug/Current Academic Year | 1485                   | 165                         | 0                         | Completion                    |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500                       | Second16To18EmployerIncentive |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500                       | Second16To18ProviderIncentive |
 
 	And at month end only the following provider payments will be generated
-		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type              |
-		| R01/Current Academic Year | Aug/Current Academic Year | 1485                   | 165                         | Completion                    |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 500                         | Second16To18EmployerIncentive |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 500                         | Second16To18ProviderIncentive |
+		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully Funded Payments | Transaction Type              |
+		| R01/Current Academic Year | Aug/Current Academic Year | 1485                   | 165                         | 0                         | Completion                    |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500                       | Second16To18EmployerIncentive |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500                       | Second16To18ProviderIncentive |

@@ -111,13 +111,13 @@
 	And only the following provider payments will be recorded
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully Funded Payments | Transaction Type                |
 		| R01/Current Academic Year | Aug/Current Academic Year | 1620                   | 180                         | 0                         | Completion                      |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 500                         | 0                         | Second16To18EmployerIncentive   |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 500                         | 0                         | Second16To18ProviderIncentive   |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500                       | Second16To18EmployerIncentive   |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500                       | Second16To18ProviderIncentive   |
 		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 360                       | Completion16To18FrameworkUplift |
 
 	And at month end only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully Funded Payments | Transaction Type                |
 		| R01/Current Academic Year | Aug/Current Academic Year | 1620                   | 180                         | 0                         | Completion                      |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 500                         | 0                         | Second16To18EmployerIncentive   |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 500                         | 0                         | Second16To18ProviderIncentive   |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500                       | Second16To18EmployerIncentive   |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500                       | Second16To18ProviderIncentive   |
 		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 360                       | Completion16To18FrameworkUplift |
