@@ -473,30 +473,30 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy learner changes to Levy employer Levy available PV2-366.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng &amp; maths.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-284- Levy learner changes course details in ILR after payments made and adds eng &amp; maths.feature</DependentUpon>
+      <DependentUpon>PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\English and Maths\PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-287- Levy learner moves start date forward and add Eng &amp; Maths.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-287- Levy learner moves start date forward and add Eng and Maths.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-287- Levy learner moves start date forward and add Eng &amp; Maths.feature</DependentUpon>
+      <DependentUpon>PV2-287- Levy learner moves start date forward and add Eng and Maths.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-288- Levy learner moves start date forward payments refunded including english &amp; maths.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-288- Levy learner moves start date forward payments refunded including english &amp; maths.feature</DependentUpon>
+      <DependentUpon>PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English &amp; Maths, planned duration is same as main aim but Eng &amp; Maths finishes early.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-486- Levy learner with English &amp; Maths, planned duration is same as main aim but Eng &amp; Maths finishes early.feature</DependentUpon>
+      <DependentUpon>PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\English and Maths\PV2-531- Levy learner failed english maths restarted double payments.feature.cs">
       <AutoGen>True</AutoGen>
@@ -508,40 +508,40 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-532- Levy learner taking single Level 1 aim progressing to and completing single Level 2 aim on time.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-533- Levy learner with English &amp; Maths funding within band maximum, planned duration is same as main aim.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-533- Levy learner with English and Maths funding within band maximum, planned duration is same as main aim.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-533- Levy learner with English &amp; Maths funding within band maximum, planned duration is same as main aim.feature</DependentUpon>
+      <DependentUpon>PV2-533- Levy learner with English and Maths funding within band maximum, planned duration is same as main aim.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-535- Levy learner with English &amp; Maths and prior funding adjustment.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-535- Levy learner with English and Maths and prior funding adjustment.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-535- Levy learner with English &amp; Maths and prior funding adjustment.feature</DependentUpon>
+      <DependentUpon>PV2-535- Levy learner with English and Maths and prior funding adjustment.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-537- Levy learner with English &amp; Maths and prior funding adjustment of 0.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-537- Levy learner with English and Maths and prior funding adjustment of 0.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-537- Levy learner with English &amp; Maths and prior funding adjustment of 0.feature</DependentUpon>
+      <DependentUpon>PV2-537- Levy learner with English and Maths and prior funding adjustment of 0.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-540 - Levy learner English and Maths where planned duration is same as core program, planned break, other funding adjustment is 42%25.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-540 - Levy learner English and Maths where planned duration is same as core program, planned break, other funding adjustment is 42.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-540 - Levy learner English and Maths where planned duration is same as core program, planned break, other funding adjustment is 42%25.feature</DependentUpon>
+      <DependentUpon>PV2-540 - Levy learner English and Maths where planned duration is same as core program, planned break, other funding adjustment is 42.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-541- Levy learner with English &amp; Maths and other funding adjustment.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-541- Levy learner with English and Maths and other funding adjustment.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-541- Levy learner with English &amp; Maths and other funding adjustment.feature</DependentUpon>
+      <DependentUpon>PV2-541- Levy learner with English and Maths and other funding adjustment.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-542- Non-Levy learner with English &amp; Maths submits first ILR in R08.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-542- Non-Levy learner with English and Maths submits first ILR in R08.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-542- Non-Levy learner with English &amp; Maths submits first ILR in R08.feature</DependentUpon>
+      <DependentUpon>PV2-542- Non-Levy learner with English and Maths submits first ILR in R08.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-543- Levy learner with English &amp; Maths submits first ILR in R08.feature.cs">
+    <Compile Include="Tests\English and Maths\PV2-543- Levy learner with English and Maths submits first ILR in R08.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-543- Levy learner with English &amp; Maths submits first ILR in R08.feature</DependentUpon>
+      <DependentUpon>PV2-543- Levy learner with English and Maths submits first ILR in R08.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1194,25 +1194,25 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng &amp; maths.feature">
+    <None Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-284- Levy learner changes course details in ILR after payments made and adds eng &amp; maths.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-287- Levy learner moves start date forward and add Eng &amp; Maths.feature">
+    <None Include="Tests\English and Maths\PV2-287- Levy learner moves start date forward and add Eng and Maths.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-287- Levy learner moves start date forward and add Eng &amp; Maths.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-287- Levy learner moves start date forward and add Eng and Maths.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-288- Levy learner moves start date forward payments refunded including english &amp; maths.feature">
+    <None Include="Tests\English and Maths\PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-288- Levy learner moves start date forward payments refunded including english &amp; maths.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-486- Levy learner with English &amp; Maths, planned duration is same as main aim but Eng &amp; Maths finishes early.feature">
+    <None Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-486- Levy learner with English &amp; Maths, planned duration is same as main aim but Eng &amp; Maths finishes early.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-531- Levy learner failed english maths restarted double payments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1222,33 +1222,33 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-532- Levy learner taking single Level 1 aim progressing to and completing single Level 2 aim on time.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-533- Levy learner with English &amp; Maths funding within band maximum, planned duration is same as main aim.feature">
+    <None Include="Tests\English and Maths\PV2-533- Levy learner with English and Maths funding within band maximum, planned duration is same as main aim.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-533- Levy learner with English &amp; Maths funding within band maximum, planned duration is same as main aim.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-533- Levy learner with English and Maths funding within band maximum, planned duration is same as main aim.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-535- Levy learner with English &amp; Maths and prior funding adjustment.feature">
+    <None Include="Tests\English and Maths\PV2-535- Levy learner with English and Maths and prior funding adjustment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-535- Levy learner with English &amp; Maths and prior funding adjustment.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-535- Levy learner with English and Maths and prior funding adjustment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-537- Levy learner with English &amp; Maths and prior funding adjustment of 0.feature">
+    <None Include="Tests\English and Maths\PV2-537- Levy learner with English and Maths and prior funding adjustment of 0.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-537- Levy learner with English &amp; Maths and prior funding adjustment of 0.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-537- Levy learner with English and Maths and prior funding adjustment of 0.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-540 - Levy learner English and Maths where planned duration is same as core program, planned break, other funding adjustment is 42%25.feature">
+    <None Include="Tests\English and Maths\PV2-540 - Levy learner English and Maths where planned duration is same as core program, planned break, other funding adjustment is 42.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-540 - Levy learner English and Maths where planned duration is same as core program, planned break, other funding adjustment is 42%25.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-540 - Levy learner English and Maths where planned duration is same as core program, planned break, other funding adjustment is 42.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-541- Levy learner with English &amp; Maths and other funding adjustment.feature">
+    <None Include="Tests\English and Maths\PV2-541- Levy learner with English and Maths and other funding adjustment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-541- Levy learner with English &amp; Maths and other funding adjustment.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-541- Levy learner with English and Maths and other funding adjustment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-542- Non-Levy learner with English &amp; Maths submits first ILR in R08.feature">
+    <None Include="Tests\English and Maths\PV2-542- Non-Levy learner with English and Maths submits first ILR in R08.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-542- Non-Levy learner with English &amp; Maths submits first ILR in R08.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-542- Non-Levy learner with English and Maths submits first ILR in R08.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\English and Maths\PV2-543- Levy learner with English &amp; Maths submits first ILR in R08.feature">
+    <None Include="Tests\English and Maths\PV2-543- Levy learner with English and Maths submits first ILR in R08.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-543- Levy learner with English &amp; Maths submits first ILR in R08.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-543- Levy learner with English and Maths submits first ILR in R08.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
