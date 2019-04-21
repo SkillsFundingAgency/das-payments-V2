@@ -8,26 +8,24 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
     public class ApprenticeshipPauseValidator : ICourseValidator
     {
-        public List<ValidationResult> Validate(CourseValidationModel validationModel)
+        public List<ValidationResult> Validate(DataLockValidationModel validationModel)
         {
             var result = new List<ValidationResult>();
-            foreach (var apprenticeshipModel in validationModel.Apprenticeships)
-            {
-                if (apprenticeshipModel.Status == ApprenticeshipPaymentStatus.Paused)
+            var apprenticeship = validationModel.Apprenticeship;
+         
+                if (apprenticeship.Status == ApprenticeshipPaymentStatus.Paused)
                 {
-                    foreach(var priceEpisode in apprenticeshipModel.ApprenticeshipPriceEpisodes)
+                    foreach(var priceEpisode in apprenticeship.ApprenticeshipPriceEpisodes)
                     {
                         result.Add(new ValidationResult
                         {
                             DataLockErrorCode = DataLockErrorCode.DLOCK_12,
-                            Period = validationModel.Period,
+                            Period = validationModel.EarningPeriod.Period,
                             ApprenticeshipPriceEpisodeIdentifier = priceEpisode.Id,
-                            ApprenticeshipId = apprenticeshipModel.Id
+                            ApprenticeshipId = apprenticeship.Id
                         });
                     }
                 }
-            }
-
             return result;
         }
     }

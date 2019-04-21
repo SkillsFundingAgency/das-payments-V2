@@ -6,15 +6,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
     public class NegotiatedPriceValidator : ICourseValidator
     {
-        public List<ValidationResult> Validate(CourseValidationModel courseValidationModel)
+        public List<ValidationResult> Validate(DataLockValidationModel courseValidationModel)
         {
             var result = new List<ValidationResult>();
 
             var ilrAgreedPrice = courseValidationModel.PriceEpisode.AgreedPrice;
+            var apprenticeship = courseValidationModel.Apprenticeship;
 
-            foreach (var apprenticeshipModel in courseValidationModel.Apprenticeships)
-            {
-                foreach (var apprenticeshipPriceEpisodeModel in apprenticeshipModel.ApprenticeshipPriceEpisodes)
+
+                foreach (var apprenticeshipPriceEpisodeModel in apprenticeship.ApprenticeshipPriceEpisodes)
                 {
                     if (ilrAgreedPrice == apprenticeshipPriceEpisodeModel.Cost)
                     {
@@ -24,12 +24,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
                     result.Add(new ValidationResult
                     {
                         DataLockErrorCode = DataLockErrorCode.DLOCK_07,
-                        Period = courseValidationModel.Period,
+                        Period = courseValidationModel.EarningPeriod.Period,
                         ApprenticeshipPriceEpisodeIdentifier = apprenticeshipPriceEpisodeModel.Id,
-                        ApprenticeshipId = apprenticeshipModel.Id
+                        ApprenticeshipId = apprenticeship.Id
                     });
                 }
-            }
+           
 
             return result;
         }

@@ -12,8 +12,18 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
     [TestFixture]
     public class ApprenticeshipPausedValidatorTest
     {
-        private string priceEpisodeIdentifier = "pe-1";
-        private byte period = 1;
+        private const string PriceEpisodeIdentifier = "pe-1";
+        private EarningPeriod period;
+
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            period = new EarningPeriod
+            {
+                Period = 1
+            };
+        }
+
 
         [Test]
         public void WhenStatusIsNotPauseReturnNoDataLockErrors()
@@ -30,13 +40,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            var apprenticeships = new List<ApprenticeshipModel> { apprenticeship };
-
-            var validation = new CourseValidationModel
+            var validation = new DataLockValidationModel
             {
-                PriceEpisode = new PriceEpisode { Identifier = priceEpisodeIdentifier },
-                Period = period,
-                Apprenticeships = apprenticeships
+                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
+                EarningPeriod = period,
+                Apprenticeship = apprenticeship
             };
 
             var validator = new ApprenticeshipPauseValidator();
@@ -48,38 +56,27 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         [Test]
         public void GivenStatusIsPausedReturnDataLockErrors()
         {
-
-            var apprenticeships = new List<ApprenticeshipModel>
+            var apprenticeship = new ApprenticeshipModel
             {
-                new ApprenticeshipModel
+                Status = ApprenticeshipPaymentStatus.Paused,
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
-                    Status = ApprenticeshipPaymentStatus.Paused,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    new ApprenticeshipPriceEpisodeModel
                     {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 1
-                        }
-                    }
-                },
-                new ApprenticeshipModel
-                {
-                    Status = ApprenticeshipPaymentStatus.Paused,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                        Id = 1
+                    },
+                    new ApprenticeshipPriceEpisodeModel
                     {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 2
-                        }
+                        Id = 2
                     }
-                 }
+                }
             };
-
-            var validation = new CourseValidationModel
+           
+            var validation = new DataLockValidationModel
             {
-                PriceEpisode = new PriceEpisode { Identifier = priceEpisodeIdentifier },
-                Period = period,
-                Apprenticeships = apprenticeships
+                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
+                EarningPeriod = period,
+                Apprenticeship = apprenticeship
             };
 
             var validator = new ApprenticeshipPauseValidator();

@@ -14,7 +14,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
     {
         private const decimal Price = 100m;
         private const string PriceEpisodeIdentifier = "pe-1";
-        private const byte Period = 1;
+        private EarningPeriod period;
+
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            period = new EarningPeriod
+            {
+                Period = 1
+            };
+        }
 
         [Test]
         public void GivenAgreedPriceMatchReturnNoDataLockErrors()
@@ -28,14 +37,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                     new ApprenticeshipPriceEpisodeModel{Cost = Price + 20}
                 }
             };
-
-            var apprenticeships = new List<ApprenticeshipModel> { apprenticeship };
-
-            var validation = new CourseValidationModel
+            var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
-                Period = Period,
-                Apprenticeships = apprenticeships
+                EarningPeriod = period,
+                Apprenticeship = apprenticeship
             };
 
             var validator = new NegotiatedPriceValidator();
@@ -58,13 +64,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            var apprenticeships = new List<ApprenticeshipModel> { apprenticeship };
-
-            var validation = new CourseValidationModel
+            var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
-                Period = Period,
-                Apprenticeships = apprenticeships
+                EarningPeriod = period,
+                Apprenticeship = apprenticeship
             };
 
             var validator = new NegotiatedPriceValidator();

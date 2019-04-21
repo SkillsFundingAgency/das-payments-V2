@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
+﻿using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
@@ -10,23 +10,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
         {
             var result = new List<ValidationResult>();
 
-            var startDate = dataLockValidationModel.PriceEpisode.StartDate;
+            var ilrStartDate = dataLockValidationModel.PriceEpisode.StartDate;
             var apprenticeship = dataLockValidationModel.Apprenticeship;
 
-                foreach (var priceEpisode in apprenticeship.ApprenticeshipPriceEpisodes)
+            foreach (var priceEpisode in apprenticeship.ApprenticeshipPriceEpisodes)
+            {
+                if (priceEpisode.StartDate < ilrStartDate ) return new List<ValidationResult>();
+
+                result.Add(new ValidationResult
                 {
-                    if (startDate < priceEpisode.StartDate)
-                    {
-                        result.Add(new ValidationResult
-                        {
-                            DataLockErrorCode = DataLockErrorCode.DLOCK_09,
-                            Period = dataLockValidationModel.EarningPeriod.Period,
-                            ApprenticeshipPriceEpisodeIdentifier = priceEpisode.Id,
-                            ApprenticeshipId = apprenticeship.Id
-                        });
-                    }
-                }
-            
+                    DataLockErrorCode = DataLockErrorCode.DLOCK_09,
+                    Period = dataLockValidationModel.EarningPeriod.Period,
+                    ApprenticeshipPriceEpisodeIdentifier = priceEpisode.Id,
+                    ApprenticeshipId = apprenticeship.Id
+                });
+            }
+
 
             return result;
         }

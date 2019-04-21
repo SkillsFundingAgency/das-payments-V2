@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
     [TestFixture]
     public class StartDateValidatorTest
     {
-        private DateTime startDate = DateTime.UtcNow;
+        private DateTime startDate = DateTime.Today;
         private string priceEpisodeIdentifier = "pe-1";
         private EarningPeriod period;
 
@@ -83,45 +83,5 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             result.First().DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
         }
 
-        [Test]
-        public void ReturnsDataLockErrorWhenGapBetweenApprenticeshipsButStartDateMatchesOne()
-        {         
-            var priceEpisodeId = 3L;
-            startDate = DateTime.UtcNow.AddDays(-5);
-
-            var apprenticeship = new ApprenticeshipModel
-            {
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        StartDate = startDate.AddDays(-10)
-                    },
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = priceEpisodeId,
-                        StartDate = startDate.AddDays(2)
-                    }
-                }
-            };
-            
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = apprenticeship
-            };
-
-            var validator = new StartDateValidator();
-
-            var result = validator.Validate(validation);
-
-            result.Should().HaveCount(1);
-
-            var firstError = result.First();
-
-            firstError.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
-            firstError.ApprenticeshipPriceEpisodeIdentifier.Should().Be(priceEpisodeId);
-        }
     }
 }
