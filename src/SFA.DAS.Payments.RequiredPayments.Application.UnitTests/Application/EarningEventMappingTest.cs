@@ -114,19 +114,22 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         }
 
         [Test]
-        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
-        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(CalculatedRequiredLevyAmount))]
-        public void ContractTypeIsCorrectForFunctionalSkills(Type requiredPaymentEventType)
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act1)]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act2)]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount), ContractType.Act1)]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount), ContractType.Act2)]
+        [TestCase(typeof(CalculatedRequiredLevyAmount), ContractType.Act1)]
+        [TestCase(typeof(CalculatedRequiredLevyAmount), ContractType.Act2)]
+        public void ContractTypeIsCorrectForFunctionalSkills(Type requiredPaymentEventType, ContractType expectedContractType)
         {
             var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
             var earningEvent = new FunctionalSkillEarningsEvent
             {
-                ContractType = ContractType.Act1,
+                ContractType = expectedContractType,
             };
             
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
-            actual.ContractType.Should().Be(ContractType.Act1);
+            actual.ContractType.Should().Be(expectedContractType);
         }
 
         [Test]
