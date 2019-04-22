@@ -131,7 +131,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     {
                         DataLockErrorCode = DataLockErrorCode.DLOCK_09,
                         ApprenticeshipId = 1,
-                        ApprenticeshipPriceEpisodeIdentifier = 100,
+                        ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel> { new ApprenticeshipPriceEpisodeModel{ApprenticeshipId = 1, Id = 100}},
                         Period = 1
                     }
                 })
@@ -212,7 +212,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     {
                         DataLockErrorCode = DataLockErrorCode.DLOCK_09,
                         ApprenticeshipId = 1,
-                        ApprenticeshipPriceEpisodeIdentifier = 100,
+                        ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel> { new ApprenticeshipPriceEpisodeModel{ApprenticeshipId = 1, Id = 100}},
                         Period = 1
                     }
                 })
@@ -260,7 +260,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     {
                         DataLockErrorCode = DataLockErrorCode.DLOCK_09,
                         ApprenticeshipId = 1,
-                        ApprenticeshipPriceEpisodeIdentifier = 100,
+                        ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel> { new ApprenticeshipPriceEpisodeModel{ApprenticeshipId = 1, Id = 100}},
                         Period = 1
                     }
                 })

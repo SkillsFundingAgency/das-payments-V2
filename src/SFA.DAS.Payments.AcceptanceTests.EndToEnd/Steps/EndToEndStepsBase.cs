@@ -203,20 +203,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             apprenticeshipSpec.AccountId = TestSession.GetEmployer(apprenticeshipSpec.Employer).AccountId;
             apprenticeshipSpec.Uln = TestSession.GetLearner(apprenticeshipSpec.Ukprn, apprenticeshipSpec.LearnerId).Uln;
 
-            ApprenticeshipPaymentStatus apprenticeshipStatus;
+            ApprenticeshipStatus apprenticeshipStatus;
             switch (apprenticeshipSpec.Status?.ToLower())
             {
                 case "active":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Active;
+                    apprenticeshipStatus = ApprenticeshipStatus.Active;
                     break;
                 case "cancelled":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Stopped;
+                    apprenticeshipStatus = ApprenticeshipStatus.Stopped;
                     break;
                 case "paused":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Paused;
+                    apprenticeshipStatus = ApprenticeshipStatus.Paused;
                     break;
                 default:
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Inactive;
+                    apprenticeshipStatus = ApprenticeshipStatus.Inactive;
                     break;
             }
 

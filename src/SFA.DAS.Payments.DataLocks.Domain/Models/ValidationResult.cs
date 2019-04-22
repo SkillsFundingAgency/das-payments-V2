@@ -1,4 +1,7 @@
-﻿namespace SFA.DAS.Payments.DataLocks.Domain.Models
+﻿using System.Collections.Generic;
+using SFA.DAS.Payments.Model.Core.Entities;
+
+namespace SFA.DAS.Payments.DataLocks.Domain.Models
 {
     public class ValidationResult
     {
@@ -8,6 +11,11 @@
 
         public byte Period { get; set; }
 
-        public long ApprenticeshipPriceEpisodeIdentifier { get; set; }
+        public List<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisodes { get; set; }
+
+        public ValidationResult()
+        {
+            ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
+        }
     }
 }

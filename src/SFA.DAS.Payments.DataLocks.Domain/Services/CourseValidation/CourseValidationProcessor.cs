@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 
@@ -8,9 +9,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
     {
         private readonly List<ICourseValidator> courseValidators;
 
-        public CourseValidationProcessor(IEnumerable<ICourseValidator> courseValidators)
+        public CourseValidationProcessor(IStartDateValidator startDateValidator, INegotiatedPriceValidator negotiatedPriceValidator, IApprenticeshipPauseValidator apprenticeshipPauseValidator)
         {
-            this.courseValidators = new List<ICourseValidator>(courseValidators);
+            if (startDateValidator == null) throw new ArgumentNullException(nameof(startDateValidator));
+            if (negotiatedPriceValidator == null) throw new ArgumentNullException(nameof(negotiatedPriceValidator));
+            if (apprenticeshipPauseValidator == null)
+                throw new ArgumentNullException(nameof(apprenticeshipPauseValidator));
+            courseValidators = new List<ICourseValidator> { startDateValidator, negotiatedPriceValidator, apprenticeshipPauseValidator };
         }
 
         public List<ValidationResult> ValidateCourse(DataLockValidationModel validationModel)
@@ -19,12 +24,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
             foreach (var courseValidator in courseValidators)
             {
-                var results = courseValidator.Validate(validationModel);
-
-                if (results != null && results.Any())
-                {
-                    validationResult.AddRange(results);
-                }
+                var validatorResult = courseValidator.Validate(validationModel);
+                validationResult.Add(validatorResult);
             }
             return validationResult;
         }

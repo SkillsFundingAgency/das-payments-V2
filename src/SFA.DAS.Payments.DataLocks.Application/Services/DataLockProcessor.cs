@@ -113,12 +113,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     {
                         Uln = uln,
                         EarningPeriod = period,
-                        Apprenticeship = apprenticeship,
+                        ApprenticeshipId = apprenticeship.Id,
                         PriceEpisode = priceEpisodes.Single(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
                     };
 
                     var periodValidationResults = courseValidationProcessor.ValidateCourse(validationModel);
-
                     if (periodValidationResults != null && periodValidationResults.Any())
                     {
                         validationResults.AddRange(periodValidationResults);

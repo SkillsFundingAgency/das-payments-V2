@@ -1,29 +1,31 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class ApprenticeshipPauseValidator : ICourseValidator
-    {
-        public ValidationResult Validate(DataLockValidationModel validationModel)
-        {
-            var result = new ValidationResult();
-            var apprenticeship = validationModel.Apprenticeship;
+    public interface IApprenticeshipPauseValidator: ICourseValidator { }
 
-            //if (apprenticeship.Status == ApprenticeshipPaymentStatus.Paused)
-            //{
-            //    foreach (var priceEpisode in apprenticeship.ApprenticeshipPriceEpisodes)
-            //    {
-            //        result.Add(new ValidationResult
-            //        {
-            //            DataLockErrorCode = DataLockErrorCode.DLOCK_12,
-            //            Period = validationModel.EarningPeriod.Period,
-            //            ApprenticeshipPriceEpisodeIdentifier = priceEpisode.Id,
-            //            ApprenticeshipId = apprenticeship.Id
-            //        });
-            //    }
-            //}
+    public class ApprenticeshipPauseValidator : IApprenticeshipPauseValidator
+    {
+        public ValidationResult Validate(DataLockValidationModel dataLockValidationModel)
+        {
+            var result = new ValidationResult
+            {
+                ApprenticeshipId = dataLockValidationModel.ApprenticeshipId,
+                Period = dataLockValidationModel.EarningPeriod.Period,
+            };
+
+            if (dataLockValidationModel.ApprenticeshipStatus == ApprenticeshipStatus.Paused)
+            {
+                result.DataLockErrorCode = DataLockErrorCode.DLOCK_12;
+            }
+            else
+            {
+                result.ApprenticeshipPriceEpisodes.AddRange(dataLockValidationModel.ApprenticeshipPriceEpisodes);
+            }
+
             return result;
         }
     }

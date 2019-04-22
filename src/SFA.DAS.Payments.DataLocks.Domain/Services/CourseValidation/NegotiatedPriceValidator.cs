@@ -1,34 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class NegotiatedPriceValidator : ICourseValidator
+    public interface INegotiatedPriceValidator: ICourseValidator { }
+
+    public class NegotiatedPriceValidator : INegotiatedPriceValidator
     {
-        public ValidationResult Validate(DataLockValidationModel courseValidationModel)
+        public ValidationResult Validate(DataLockValidationModel dataLockValidationModel)
         {
-            var result = new ValidationResult();
+            var result = new ValidationResult
+            {
+                ApprenticeshipId = dataLockValidationModel.ApprenticeshipId,
+                Period = dataLockValidationModel.EarningPeriod.Period,
+            };
 
-            var ilrAgreedPrice = courseValidationModel.PriceEpisode.AgreedPrice;
-            var apprenticeship = courseValidationModel.Apprenticeship;
+            var apprenticeshipPriceEpisodes = dataLockValidationModel.ApprenticeshipPriceEpisodes
+                .Where(priceEpisode => priceEpisode.Cost == dataLockValidationModel.PriceEpisode.AgreedPrice && !priceEpisode.Removed)
+                .ToList();
 
-
-            //foreach (var apprenticeshipPriceEpisodeModel in apprenticeship.ApprenticeshipPriceEpisodes)
-            //{
-            //    if (ilrAgreedPrice == apprenticeshipPriceEpisodeModel.Cost)
-            //    {
-            //        return new List<ValidationResult>();
-            //    }
-
-            //    result.Add(new ValidationResult
-            //    {
-            //        DataLockErrorCode = DataLockErrorCode.DLOCK_07,
-            //        Period = courseValidationModel.EarningPeriod.Period,
-            //        ApprenticeshipPriceEpisodeIdentifier = apprenticeshipPriceEpisodeModel.Id,
-            //        ApprenticeshipId = apprenticeship.Id
-            //    });
-            //}
-
+            if (!apprenticeshipPriceEpisodes.Any())
+            {
+                result.DataLockErrorCode = DataLockErrorCode.DLOCK_07;
+            }
+            else
+            {
+                result.ApprenticeshipPriceEpisodes.AddRange(apprenticeshipPriceEpisodes);
+            }
 
             return result;
         }

@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
-using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -29,25 +28,42 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void GivenAgreedPriceMatchReturnNoDataLockErrors()
         {
-            var apprenticeship = new ApprenticeshipModel
-            {
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
-                    new ApprenticeshipPriceEpisodeModel {Cost = Price + 10},
-                    new ApprenticeshipPriceEpisodeModel{ Cost = Price},
-                    new ApprenticeshipPriceEpisodeModel{Cost = Price + 20}
-                }
-            };
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
-                Apprenticeship = apprenticeship
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel {Cost = Price + 10, Id = 97},
+                    new ApprenticeshipPriceEpisodeModel{ Cost = Price, Id = 98},
+                    new ApprenticeshipPriceEpisodeModel{Cost = Price + 20, Id = 99}
+                }
             };
 
             var validator = new NegotiatedPriceValidator();
             var result = validator.Validate(validation);
-            result.Any().Should().BeFalse();
+            result.DataLockErrorCode.Should().BeNull();
+        }
+
+
+        [Test]
+        public void GivenAgreedPriceMatchReturnMatchingPriceEpisode()
+        {
+            var validation = new DataLockValidationModel
+            {
+                PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
+                EarningPeriod = period,
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel {Cost = Price + 10, Id = 97},
+                    new ApprenticeshipPriceEpisodeModel{ Cost = Price, Id = 98},
+                    new ApprenticeshipPriceEpisodeModel{Cost = Price + 20, Id = 99}
+                }
+            };
+
+            var validator = new NegotiatedPriceValidator();
+            var result = validator.Validate(validation);
+            result.ApprenticeshipPriceEpisodes.Any(ape => ape.Id == 98).Should().BeTrue();
         }
 
         [Test]
@@ -56,28 +72,26 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
             var apprenticeship = new ApprenticeshipModel
             {
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                       Cost = 200
-                    }
-                }
             };
 
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
-                Apprenticeship = apprenticeship
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        Cost = 200
+                    }
+                }
             };
 
             var validator = new NegotiatedPriceValidator();
 
             var result = validator.Validate(validation);
 
-            result.Should().HaveCount(1);
-            result.First().DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_07);
+            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_07);
         }
     }
 }

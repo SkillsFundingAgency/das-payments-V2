@@ -28,67 +28,34 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void WhenStatusIsNotPauseReturnNoDataLockErrors()
         {
-            var apprenticeship = new ApprenticeshipModel
-            {
-                Status = ApprenticeshipPaymentStatus.Active,
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = 1
-                    }
-                }
-            };
-
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
-                Apprenticeship = apprenticeship
+                ApprenticeshipId = 1
             };
 
             var validator = new ApprenticeshipPauseValidator();
             var result = validator.Validate(validation);
-
-            result.Any().Should().BeFalse();
+            result.DataLockErrorCode.Should().BeNull();
         }
 
         [Test]
         public void GivenStatusIsPausedReturnDataLockErrors()
         {
-            var apprenticeship = new ApprenticeshipModel
-            {
-                Status = ApprenticeshipPaymentStatus.Paused,
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = 1
-                    },
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = 2
-                    }
-                }
-            };
-           
+
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
-                Apprenticeship = apprenticeship
+                ApprenticeshipStatus = ApprenticeshipStatus.Paused,
+                ApprenticeshipId = 1
             };
 
             var validator = new ApprenticeshipPauseValidator();
-
             var result = validator.Validate(validation);
-
-            result.Should().HaveCount(2);
-            result[0].DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_12);
-            result[0].ApprenticeshipPriceEpisodeIdentifier.Should().Be(1);
-            result[1].DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_12);
-            result[1].ApprenticeshipPriceEpisodeIdentifier.Should().Be(2);
+            result.DataLockErrorCode.Should().NotBeNull();
+            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_12);
         }
-
     }
 }

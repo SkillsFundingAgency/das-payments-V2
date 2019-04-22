@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
@@ -26,10 +27,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
         [Test]
-        public void ReturnsNoDataLockErrors()
+        public void ReturnsMatchedPriceEpisodes()
         {
-            var apprenticeship = new ApprenticeshipModel
+            var validation = new DataLockValidationModel
             {
+                PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
+                EarningPeriod = period,
+                ApprenticeshipId = 1,
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
                     new ApprenticeshipPriceEpisodeModel
@@ -40,24 +44,20 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 }
             };
 
+            var validator = new StartDateValidator();
+            var result = validator.Validate(validation);
+            result.DataLockErrorCode.Should().BeNull();
+            result.ApprenticeshipPriceEpisodes.Any(ape => ape.Id == 99).Should().BeTrue();
+        }
+
+        [Test]
+        public void AssignsCoveringPriceEpisodes()
+        {
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
                 EarningPeriod = period,
-                Apprenticeship = apprenticeship
-            };
-
-            var validator = new StartDateValidator();
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodeIdentifier.Should().Be(99);
-        }
-
-        [Test]
-        public void AssignsMostRecentCoveringPriceEpisode()
-        {
-            var apprenticeship = new ApprenticeshipModel
-            {
+                ApprenticeshipId = 1,
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
                     new ApprenticeshipPriceEpisodeModel
@@ -68,29 +68,29 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     },
                     new ApprenticeshipPriceEpisodeModel
                     {
+                        Id = 99,
+                        StartDate = startDate.AddDays(-2),
+                        EndDate = startDate.AddDays(-1)
+                    },
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        Id = 100,
+                        StartDate = startDate
+                    },
+                    new ApprenticeshipPriceEpisodeModel
+                    {
                         Id = 98,
                         StartDate = startDate.AddDays(-4),
                         EndDate = startDate.AddDays(-3),
                     },
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = 99,
-                        StartDate = startDate.AddDays(-2)
-                    },
                 }
-            };
-
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = apprenticeship
             };
 
             var validator = new StartDateValidator();
             var result = validator.Validate(validation);
             result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodeIdentifier.Should().Be(99);
+            result.ApprenticeshipPriceEpisodes.Any(ape => ape.Id == 99).Should().BeTrue();
+            result.ApprenticeshipPriceEpisodes.Any(ape => ape.Id == 100).Should().BeTrue();
         }
 
         [Test]
@@ -98,6 +98,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         {
             var apprenticeship = new ApprenticeshipModel
             {
+            };
+
+            var validation = new DataLockValidationModel
+            {
+                PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
+                EarningPeriod = period,
+                ApprenticeshipId = 1,
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
                     new ApprenticeshipPriceEpisodeModel
@@ -107,18 +114,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 }
             };
 
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = apprenticeship
-            };
-
             var validator = new StartDateValidator();
             var result = validator.Validate(validation);
             result.DataLockErrorCode.Should().NotBeNull();
             result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
         }
-
     }
 }

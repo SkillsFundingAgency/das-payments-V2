@@ -4,26 +4,32 @@ using SFA.DAS.Payments.DataLocks.Domain.Models;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class StartDateValidator : ICourseValidator
+    public interface IStartDateValidator : ICourseValidator
+    {
+
+    }
+
+    public class StartDateValidator : IStartDateValidator
     {
         public ValidationResult Validate(DataLockValidationModel dataLockValidationModel)
         {
             var result = new ValidationResult
             {
-                ApprenticeshipId = dataLockValidationModel.Apprenticeship.Id,
+                ApprenticeshipId = dataLockValidationModel.ApprenticeshipId,
                 Period = dataLockValidationModel.EarningPeriod.Period,
             };
 
-            var apprenticeshipPriceEpisode = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes?
-                .LastOrDefault(priceEpisode => priceEpisode.StartDate <= dataLockValidationModel.PriceEpisode.StartDate && !priceEpisode.Removed);
+            var apprenticeshipPriceEpisodes = dataLockValidationModel.ApprenticeshipPriceEpisodes
+                .Where(priceEpisode => priceEpisode.StartDate <= dataLockValidationModel.PriceEpisode.StartDate && !priceEpisode.Removed)
+                .ToList();
 
-            if (apprenticeshipPriceEpisode == null)
+            if (!apprenticeshipPriceEpisodes.Any())
             {
                 result.DataLockErrorCode = DataLockErrorCode.DLOCK_09;
             }
             else
             {
-                result.ApprenticeshipPriceEpisodeIdentifier = apprenticeshipPriceEpisode.Id;
+                result.ApprenticeshipPriceEpisodes.AddRange(apprenticeshipPriceEpisodes);
             }
 
             return result;
