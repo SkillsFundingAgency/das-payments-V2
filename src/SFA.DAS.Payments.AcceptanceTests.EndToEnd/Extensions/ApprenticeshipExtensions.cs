@@ -10,22 +10,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions
 {
     public static class ApprenticeshipExtensions
     {
-
-
-
-        public static ApprenticeshipPaymentStatus ToApprenticeshipPaymentStatus(this string status)
+        public static ApprenticeshipStatus ToApprenticeshipPaymentStatus(this string status)
         {
-            var apprenticeshipStatus = ApprenticeshipPaymentStatus.Inactive;
+            var apprenticeshipStatus = ApprenticeshipStatus.Inactive;
             switch (status?.ToLower())
             {
                 case "active":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Active;
+                    apprenticeshipStatus = ApprenticeshipStatus.Active;
                     break;
                 case "cancelled":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Stopped;
+                    apprenticeshipStatus = ApprenticeshipStatus.Stopped;
                     break;
                 case "paused":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Paused;
+                    apprenticeshipStatus = ApprenticeshipStatus.Paused;
                     break;
             }
 
