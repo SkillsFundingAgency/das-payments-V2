@@ -911,8 +911,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
             }
 
-            // This was remoed for DC tests, maybe needs to be conditional on config?
-            var dcHelper = Scope.Resolve<DcHelper>();
+            var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId, provider.IlrSubmissionTime);
 
             var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
