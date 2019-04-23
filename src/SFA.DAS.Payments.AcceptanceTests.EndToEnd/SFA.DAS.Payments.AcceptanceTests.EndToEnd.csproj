@@ -318,6 +318,22 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Tests\Additional Payments Incentives\PV2-849 - Levy learner earns 16-18 incentives payments.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-849 - Levy learner earns 16-18 incentives payments.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional Payments Incentives\PV2-851 - Non Levy learner earns 16-18 incentives payment, and finishes on times.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-851 - Non Levy learner earns 16-18 incentives payment, and finishes on times.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\AimPeriodMatcherTest.cs" />
     <Compile Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1089,6 +1105,18 @@
     <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments Incentives\PV2-849 - Levy learner earns 16-18 incentives payments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-849 - Levy learner earns 16-18 incentives payments.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments Incentives\PV2-851 - Non Levy learner earns 16-18 incentives payment, and finishes on times.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-851 - Non Levy learner earns 16-18 incentives payment, and finishes on times.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
