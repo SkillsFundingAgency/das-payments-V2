@@ -324,7 +324,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 LearnerUln = providerPayment.Uln,
                 LearningAimFrameworkCode = learnerTraining.FrameworkCode,
                 LearningAimProgrammeType = learnerTraining.ProgrammeType,
-                AccountId = accountId
+                AccountId = accountId,
+                StartDate = DateTime.UtcNow,
+                PlannedEndDate = DateTime.UtcNow,
+                ActualEndDate = DateTime.UtcNow,
+                CompletionStatus = 1,
+                CompletionAmount = 100M,
+                InstalmentAmount = 200M,
+                NumberOfInstalments = 12
             };
         }
 
