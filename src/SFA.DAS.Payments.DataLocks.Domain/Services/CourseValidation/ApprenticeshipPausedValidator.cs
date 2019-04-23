@@ -13,17 +13,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         {
             var result = new ValidationResult
             {
-                ApprenticeshipId = dataLockValidationModel.ApprenticeshipId,
+                ApprenticeshipId = dataLockValidationModel.Apprenticeship.Id,
                 Period = dataLockValidationModel.EarningPeriod.Period,
             };
 
-            if (dataLockValidationModel.ApprenticeshipStatus == ApprenticeshipStatus.Paused)
+            if (dataLockValidationModel.Apprenticeship.Status == ApprenticeshipStatus.Paused)
             {
                 result.DataLockErrorCode = DataLockErrorCode.DLOCK_12;
             }
             else
             {
-                result.ApprenticeshipPriceEpisodes.AddRange(dataLockValidationModel.ApprenticeshipPriceEpisodes);
+                result.ApprenticeshipPriceEpisodes.AddRange(dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes);
             }
 
             return result;

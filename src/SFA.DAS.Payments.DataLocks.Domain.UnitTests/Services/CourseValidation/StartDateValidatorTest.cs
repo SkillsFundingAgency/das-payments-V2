@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
@@ -33,13 +33,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
                 EarningPeriod = period,
-                ApprenticeshipId = 1,
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                Apprenticeship = new ApprenticeshipModel
                 {
-                    new ApprenticeshipPriceEpisodeModel
+                    Id = 1,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
-                        Id = 99,
-                        StartDate = startDate.AddDays(-1)
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 99,
+                            StartDate = startDate.AddDays(-1)
+                        }
                     }
                 }
             };
@@ -57,32 +60,35 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
                 EarningPeriod = period,
-                ApprenticeshipId = 1,
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                Apprenticeship = new ApprenticeshipModel
                 {
-                    new ApprenticeshipPriceEpisodeModel
+                    Id = 1,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
-                        Id = 97,
-                        StartDate = startDate.AddDays(-6),
-                        EndDate = startDate.AddDays(-5),
-                    },
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = 99,
-                        StartDate = startDate.AddDays(-2),
-                        EndDate = startDate.AddDays(-1)
-                    },
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = 100,
-                        StartDate = startDate
-                    },
-                    new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = 98,
-                        StartDate = startDate.AddDays(-4),
-                        EndDate = startDate.AddDays(-3),
-                    },
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 97,
+                            StartDate = startDate.AddDays(-6),
+                            EndDate = startDate.AddDays(-5),
+                        },
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 99,
+                            StartDate = startDate.AddDays(-2),
+                            EndDate = startDate.AddDays(-1)
+                        },
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 100,
+                            StartDate = startDate
+                        },
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 98,
+                            StartDate = startDate.AddDays(-4),
+                            EndDate = startDate.AddDays(-3),
+                        },
+                    }
                 }
             };
 
@@ -96,20 +102,20 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void ReturnsDataLockErrorWhenNoCoveringPriceEpisodeFound()
         {
-            var apprenticeship = new ApprenticeshipModel
-            {
-            };
 
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
                 EarningPeriod = period,
-                ApprenticeshipId = 1,
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                Apprenticeship = new ApprenticeshipModel
                 {
-                    new ApprenticeshipPriceEpisodeModel
+                    Id = 1,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
-                        StartDate = startDate.AddDays(1)
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            StartDate = startDate.AddDays(1)
+                        }
                     }
                 }
             };

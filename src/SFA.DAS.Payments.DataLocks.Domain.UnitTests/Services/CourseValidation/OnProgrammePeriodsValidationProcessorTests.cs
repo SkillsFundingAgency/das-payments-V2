@@ -65,10 +65,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 Periods = new List<EarningPeriod> { new EarningPeriod { Amount = 1, PriceEpisodeIdentifier = "pe-1" } }.AsReadOnly()
             };
             mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.ApprenticeshipId == 1)))
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
             mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.ApprenticeshipId == 2)))
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { DataLockErrors = new List<DataLockErrorCode> { DataLockErrorCode.DLOCK_03 } });
 
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,
@@ -85,10 +85,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 Periods = new List<EarningPeriod> { new EarningPeriod { Amount = 1, PriceEpisodeIdentifier = "pe-1" } }.AsReadOnly()
             };
             mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.ApprenticeshipId == 1)))
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
             mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.ApprenticeshipId == 2)))
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 96 } });
 
 
@@ -107,10 +107,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 Periods = new List<EarningPeriod> { new EarningPeriod { Amount = 1, PriceEpisodeIdentifier = "pe-1" } }.AsReadOnly()
             };
             mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.ApprenticeshipId == 1)))
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
             mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.ApprenticeshipId == 2)))
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { DataLockErrors = new List<DataLockErrorCode> { DataLockErrorCode.DLOCK_03 } });
 
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,
@@ -127,10 +127,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 Periods = new List<EarningPeriod> { new EarningPeriod { Amount = 0, PriceEpisodeIdentifier = "pe-1" } }.AsReadOnly()
             };
             mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.ApprenticeshipId == 1)))
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
             mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.ApprenticeshipId == 2)))
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { DataLockErrors = new List<DataLockErrorCode> { DataLockErrorCode.DLOCK_03 } });
 
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,

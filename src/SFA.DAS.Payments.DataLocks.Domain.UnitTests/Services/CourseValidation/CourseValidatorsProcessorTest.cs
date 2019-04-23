@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac.Extras.Moq;
-using Castle.Components.DictionaryAdapter;
+﻿using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
-using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
@@ -19,9 +17,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
     {
         private AutoMock mocker;
         private List<ICourseValidator> courseValidators;
-        private List<ValidationResult> courseValidationResults;
+        private readonly List<ValidationResult> courseValidationResults;
         private DataLockValidationModel dataLockValidationModel;
-        private Mock<ICourseValidator> startDateValidator;
+        private readonly Mock<ICourseValidator> startDateValidator;
 
         [SetUp]
         public void Prepare()
@@ -37,10 +35,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 EarningPeriod = earningPeriod,
                 Uln = 100,
                 PriceEpisode = new PriceEpisode(),
-                ApprenticeshipId = 1,
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                Apprenticeship = new ApprenticeshipModel
                 {
-                    new ApprenticeshipPriceEpisodeModel{ Id  = 99, ApprenticeshipId = 1, Cost = 100, StartDate = DateTime.Today}
+                    Id = 1,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel{ Id  = 99, ApprenticeshipId = 1, Cost = 100, StartDate = DateTime.Today}
+                    }
                 }
             };
 
@@ -83,7 +84,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel{Id = 53}
                     }
                 });
-            
+
             var courseValidator = mocker.Create<CourseValidationProcessor>();
             courseValidator.ValidateCourse(dataLockValidationModel);
             mocker.Mock<IStartDateValidator>()
@@ -97,12 +98,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void PassesAllApprenticeshipPriceEpisodesToEachValidator()
         {
-            dataLockValidationModel.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+            dataLockValidationModel.Apprenticeship = new ApprenticeshipModel
+            {
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
                     new ApprenticeshipPriceEpisodeModel {Id = 50},
                     new ApprenticeshipPriceEpisodeModel {Id = 51},
                     new ApprenticeshipPriceEpisodeModel {Id = 52}
-                };
+                }
+            };
+
             mocker.Mock<IStartDateValidator>()
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
@@ -135,31 +140,34 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             courseValidator.ValidateCourse(dataLockValidationModel);
             mocker.Mock<IStartDateValidator>()
                 .Verify(validator => validator.Validate(It.Is<DataLockValidationModel>(model =>
-                    model.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
-                    model.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
+                    model.Apprenticeship.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
+                    model.Apprenticeship.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
 
             mocker.Mock<INegotiatedPriceValidator>()
                 .Verify(validator => validator.Validate(It.Is<DataLockValidationModel>(model =>
-                    model.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
-                    model.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
+                    model.Apprenticeship.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
+                    model.Apprenticeship.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
 
             mocker.Mock<IApprenticeshipPauseValidator>()
                 .Verify(validator => validator.Validate(It.Is<DataLockValidationModel>(model =>
-                    model.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
-                    model.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
+                    model.Apprenticeship.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
+                    model.Apprenticeship.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
 
         }
 
         [Test]
         public void ReturnsMatchedApprenticeshipPriceEpisode()
         {
-            dataLockValidationModel.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+            dataLockValidationModel.Apprenticeship = new ApprenticeshipModel
             {
-                new ApprenticeshipPriceEpisodeModel {Id = 50},
-                new ApprenticeshipPriceEpisodeModel {Id = 51},
-                new ApprenticeshipPriceEpisodeModel {Id = 52},
-                new ApprenticeshipPriceEpisodeModel {Id = 53},
-                new ApprenticeshipPriceEpisodeModel {Id = 54},
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel {Id = 50},
+                    new ApprenticeshipPriceEpisodeModel {Id = 51},
+                    new ApprenticeshipPriceEpisodeModel {Id = 52},
+                    new ApprenticeshipPriceEpisodeModel {Id = 53},
+                    new ApprenticeshipPriceEpisodeModel {Id = 54},
+                }
             };
             mocker.Mock<IStartDateValidator>()
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
@@ -200,13 +208,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void ReturnsNoPriceEpisodeIfThereWereFailures()
         {
-            dataLockValidationModel.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+            dataLockValidationModel.Apprenticeship = new ApprenticeshipModel
             {
-                new ApprenticeshipPriceEpisodeModel {Id = 50},
-                new ApprenticeshipPriceEpisodeModel {Id = 51},
-                new ApprenticeshipPriceEpisodeModel {Id = 52},
-                new ApprenticeshipPriceEpisodeModel {Id = 53},
-                new ApprenticeshipPriceEpisodeModel {Id = 54},
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel {Id = 50},
+                    new ApprenticeshipPriceEpisodeModel {Id = 51},
+                    new ApprenticeshipPriceEpisodeModel {Id = 52},
+                    new ApprenticeshipPriceEpisodeModel {Id = 53},
+                    new ApprenticeshipPriceEpisodeModel {Id = 54},
+                }
             };
             mocker.Mock<IStartDateValidator>()
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
@@ -243,13 +254,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void ReturnsAllDataLockFailures()
         {
-            dataLockValidationModel.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+            dataLockValidationModel.Apprenticeship = new ApprenticeshipModel
             {
-                new ApprenticeshipPriceEpisodeModel {Id = 50},
-                new ApprenticeshipPriceEpisodeModel {Id = 51},
-                new ApprenticeshipPriceEpisodeModel {Id = 52},
-                new ApprenticeshipPriceEpisodeModel {Id = 53},
-                new ApprenticeshipPriceEpisodeModel {Id = 54},
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel {Id = 50},
+                    new ApprenticeshipPriceEpisodeModel {Id = 51},
+                    new ApprenticeshipPriceEpisodeModel {Id = 52},
+                    new ApprenticeshipPriceEpisodeModel {Id = 53},
+                    new ApprenticeshipPriceEpisodeModel {Id = 54},
+                }
             };
             mocker.Mock<IStartDateValidator>()
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))

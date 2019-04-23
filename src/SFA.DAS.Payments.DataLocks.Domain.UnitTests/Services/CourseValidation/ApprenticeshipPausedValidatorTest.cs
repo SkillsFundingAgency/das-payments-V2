@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using Castle.Components.DictionaryAdapter;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
@@ -32,7 +32,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
-                ApprenticeshipId = 1
+                Apprenticeship = new ApprenticeshipModel
+                {
+                    Id = 1 ,
+                    ApprenticeshipPriceEpisodes =new List<ApprenticeshipPriceEpisodeModel>()
+                }
             };
 
             var validator = new ApprenticeshipPauseValidator();
@@ -43,13 +47,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void GivenStatusIsPausedReturnDataLockErrors()
         {
-
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
-                ApprenticeshipStatus = ApprenticeshipStatus.Paused,
-                ApprenticeshipId = 1
+                Apprenticeship = new ApprenticeshipModel
+                {
+                    Id = 1,
+                    Status = ApprenticeshipStatus.Paused,
+                }
             };
 
             var validator = new ApprenticeshipPauseValidator();

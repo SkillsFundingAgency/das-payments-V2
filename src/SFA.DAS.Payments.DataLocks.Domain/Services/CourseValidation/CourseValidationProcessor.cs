@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     .Where(validationResult => validationResult.DataLockErrorCode.HasValue)
                     .Select(validationResult => validationResult.DataLockErrorCode.Value)
                     .ToList(),
-                MatchedPriceEpisode = dataLockValidationModel.ApprenticeshipPriceEpisodes
+                MatchedPriceEpisode = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
                     .Where(ape => !ape.Removed)
                     .FirstOrDefault(ape => validationResults.All(validationResult => validationResult.ApprenticeshipPriceEpisodes.Any(resultApe => resultApe.Id == ape.Id))  )
             };

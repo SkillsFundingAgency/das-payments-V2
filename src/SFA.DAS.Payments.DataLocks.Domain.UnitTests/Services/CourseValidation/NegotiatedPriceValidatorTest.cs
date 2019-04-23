@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
@@ -32,11 +32,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                Apprenticeship = new ApprenticeshipModel
                 {
-                    new ApprenticeshipPriceEpisodeModel {Cost = Price + 10, Id = 97},
-                    new ApprenticeshipPriceEpisodeModel{ Cost = Price, Id = 98},
-                    new ApprenticeshipPriceEpisodeModel{Cost = Price + 20, Id = 99}
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel {Cost = Price + 10, Id = 97},
+                        new ApprenticeshipPriceEpisodeModel{ Cost = Price, Id = 98},
+                        new ApprenticeshipPriceEpisodeModel{Cost = Price + 20, Id = 99}
+                    }
                 }
             };
 
@@ -53,11 +56,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                Apprenticeship = new ApprenticeshipModel
                 {
-                    new ApprenticeshipPriceEpisodeModel {Cost = Price + 10, Id = 97},
-                    new ApprenticeshipPriceEpisodeModel{ Cost = Price, Id = 98},
-                    new ApprenticeshipPriceEpisodeModel{Cost = Price + 20, Id = 99}
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel {Cost = Price + 10, Id = 97},
+                        new ApprenticeshipPriceEpisodeModel{ Cost = Price, Id = 98},
+                        new ApprenticeshipPriceEpisodeModel{Cost = Price + 20, Id = 99}
+                    }
                 }
             };
 
@@ -78,11 +84,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
                 EarningPeriod = period,
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                Apprenticeship = new ApprenticeshipModel
                 {
-                    new ApprenticeshipPriceEpisodeModel
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
-                        Cost = 200
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Cost = 200
+                        }
                     }
                 }
             };

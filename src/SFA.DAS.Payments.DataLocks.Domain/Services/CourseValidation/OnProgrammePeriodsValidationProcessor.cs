@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     {
                         Uln = uln,
                         EarningPeriod = period,
-                        ApprenticeshipId = apprenticeship.Id,
+                        Apprenticeship = apprenticeship,
                         PriceEpisode = priceEpisodes.SingleOrDefault(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
                                        ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}")
                     };

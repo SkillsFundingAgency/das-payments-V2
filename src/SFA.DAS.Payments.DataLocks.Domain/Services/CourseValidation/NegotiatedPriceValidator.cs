@@ -11,11 +11,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         {
             var result = new ValidationResult
             {
-                ApprenticeshipId = dataLockValidationModel.ApprenticeshipId,
+                ApprenticeshipId = dataLockValidationModel.Apprenticeship.Id,
                 Period = dataLockValidationModel.EarningPeriod.Period,
             };
 
-            var apprenticeshipPriceEpisodes = dataLockValidationModel.ApprenticeshipPriceEpisodes
+            var apprenticeshipPriceEpisodes = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
                 .Where(priceEpisode => priceEpisode.Cost == dataLockValidationModel.PriceEpisode.AgreedPrice && !priceEpisode.Removed)
                 .ToList();
 
