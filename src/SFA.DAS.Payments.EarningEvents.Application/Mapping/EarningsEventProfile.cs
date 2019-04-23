@@ -42,6 +42,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             CreateMap<IntermediateLearningAim, FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.Earnings, opt => opt.ResolveUsing<FunctionalSkillsEarningValueResolver>())
+                .ForMember(destinationMember => destinationMember.StartDate, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnStartDate))
                 .Ignore(x => x.ContractType)
                 ;
 
