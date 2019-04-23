@@ -24,7 +24,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
-    public class DcHelper
+    public class DcHelper : IDcHelper
     {
         private readonly IJsonSerializationService serializationService;
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
@@ -39,23 +39,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
         }
 
-        //TODO: Remove when integration with DC services in Test environment is working
-        public async Task SendLearnerCommands(List<FM36Learner> learners, long ukprn, short collectionYear, 
+        public async Task SendLearnerCommands(List<FM36Learner> learners, long ukprn, short collectionYear,
             byte collectionPeriod, long jobId, DateTime ilrSubmissionTime)
         {
             try
             {
                 var startTime = DateTimeOffset.UtcNow;
                 var commands = learners.Select(learner => new ProcessLearnerCommand
-                    {
-                        JobId = jobId,
-                        CollectionPeriod = collectionPeriod,
-                        CollectionYear = collectionYear,
-                        IlrSubmissionDateTime = ilrSubmissionTime,
-                        SubmissionDate = ilrSubmissionTime,
-                        Ukprn = ukprn,
-                        Learner = learner
-                    })
+                {
+                    JobId = jobId,
+                    CollectionPeriod = collectionPeriod,
+                    CollectionYear = collectionYear,
+                    IlrSubmissionDateTime = ilrSubmissionTime,
+                    SubmissionDate = ilrSubmissionTime,
+                    Ukprn = ukprn,
+                    Learner = learner
+                })
                     .ToList();
                 var startedJob = new RecordStartedProcessingEarningsJob
                 {
@@ -76,7 +75,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 await TestSessionBase.MessageSession.Send(startedJob).ConfigureAwait(false);
                 foreach (var processLearnerCommand in commands)
                 {
-                    await TestSessionBase.MessageSession.Send(processLearnerCommand).ConfigureAwait(false); 
+                    await TestSessionBase.MessageSession.Send(processLearnerCommand).ConfigureAwait(false);
                     Console.WriteLine($"sent process learner command: {processLearnerCommand.ToJson()}");
                 }
             }
