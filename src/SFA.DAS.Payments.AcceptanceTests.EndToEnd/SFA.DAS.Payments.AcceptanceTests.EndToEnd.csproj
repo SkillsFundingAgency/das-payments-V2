@@ -335,6 +335,442 @@
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
+    <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
+      <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy employer, learner moves start date forward, no prog payments and English and Maths refunded PV2-466.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy employer, learner moves start date forward, no prog payments and English and Maths refunded PV2-466.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature.cs">
+      <DependentUpon>Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature.cs">
+      <DependentUpon>Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature.cs">
+      <DependentUpon>Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature.cs">
+      <DependentUpon>Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs">
+      <DependentUpon>Non-Levy learner, provider changes aim sequence numbers PV2-393.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Tests\Additional Payments Incentives\PV2-849 - Levy learner earns 16-18 incentives payments.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-849 - Levy learner earns 16-18 incentives payments.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional Payments Incentives\PV2-851 - Non Levy learner earns 16-18 incentives payment, and finishes on times.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-851 - Non Levy learner earns 16-18 incentives payment, and finishes on times.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\AimPeriodMatcherTest.cs" />
+    <Compile Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner over funding band cap - PV2-528.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Capping\Non-levy Learner over funding band cap - PV2-529.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-levy Learner over funding band cap - PV2-529.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\Framework-and-disadvantaged-uplift-on-time-PV2-487.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Framework-and-disadvantaged-uplift-on-time-PV2-487.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\Non-Levy-On Framework-Disadvantage-Uplift-11-20-paid-PV2-436.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On Framework-Disadvantage-Uplift-11-20-paid-PV2-436.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\Non-Levy-On-Framework-Disadvantage-Uplift 21-27-paid-PV2-437.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Framework-Disadvantage-Uplift 21-27-paid-PV2-437.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\Non-Levy-On-Framework-Disadvantage-Uplift not paid-PV2-438.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Framework-Disadvantage-Uplift not paid-PV2-438.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\Non-Levy-On-Standard Disadvantage-Uplift-not-paid-PV2-446.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Standard Disadvantage-Uplift-not-paid-PV2-446.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\Non-Levy-On-Standard-Disadvantage-Uplift 1-10-not paid-PV2-443.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift 1-10-not paid-PV2-443.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\Non-Levy-On-Standard-Disadvantage-Uplift-11-20-not paid-PV2-444.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift-11-20-not paid-PV2-444.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-439 -Payment for a DAS learner, lives in a disadvantaged postocde area - 01-10 most deprived.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-439 -Payment for a DAS learner, lives in a disadvantaged postocde area - 01-10 most deprived.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-440 -Payment for a DAS learner, lives in a disadvantaged postocde area - 11-20 most deprived.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-440 -Payment for a DAS learner, lives in a disadvantaged postocde area - 11-20 most deprived.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Disadvantaged Uplift\PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, when negotiated cost changes at the end of the month - PV2-359.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Earnings and payments for a levy learner, when negotiated cost changes at the end of the month - PV2-359.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning in the mid of a month and return in the mid of a later month-PV2-369.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer break in learning in the mid of a month and return in the mid of a later month-PV2-369.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Non-Levy learner changes to Levy employer Levy available PV2-366.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-571 - Levy Learner framework uplift payments finishes early.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Framework Uplift\PV2-572 - Non-Levy Learner framework uplift payments finishes early.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-572 - Non-Levy Learner framework uplift payments finishes early.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Framework Uplift\PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-499 - Non-Levy Learner completion payment made as enough employer contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-499 - Non-Levy Learner completion payment made as enough employer contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-500 - Levy Learner-co-funded,insufficient employer contribution - hold back completion payment.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-500 - Levy Learner-co-funded,insufficient employer contribution - hold back completion payment.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-501- Non-Levy Learner no completion payment made as not enough employer contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-501- Non-Levy Learner no completion payment made as not enough employer contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-503- Levy Learner-co-funded insufficient employer contri completion payment held released when sufficient PMR.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-503- Levy Learner-co-funded insufficient employer contri completion payment held released when sufficient PMR.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-509- Non-Levy Learner insuffucient employer contri completion payment held released when correct PMR.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-509- Non-Levy Learner insuffucient employer contri completion payment held released when correct PMR.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-513- Levy Learner-co-funded end date is census month sufficient employer contri pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-513- Levy Learner-co-funded end date is census month sufficient employer contri pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-514- NonLevy Learner-planned end date is census month suffucient employer contri pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-514- NonLevy Learner-planned end date is census month suffucient employer contri pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-515 - Levy Learner-co-funded sufficient employer contribution LDM code 356 - pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-515 - Levy Learner-co-funded sufficient employer contribution LDM code 356 - pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-516- Non-Levy Learner completion payment made due to LDM 356 enough employer contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-516- Non-Levy Learner completion payment made due to LDM 356 enough employer contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-517- Levy Learner co-funded insufficient employer contribution LDM code 356 used pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-517- Levy Learner co-funded insufficient employer contribution LDM code 356 used pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-518- Non-Levy Learner completion payment made due to LDM 356 not enough employer contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-518- Non-Levy Learner completion payment made due to LDM 356 not enough employer contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-519 - Levy Learner-co-funded sufficient employer contribution LDM code 361- pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-519 - Levy Learner-co-funded sufficient employer contribution LDM code 361- pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-520- Non-Levy learner sufficient employer contribution LDM code 361 used– pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-520- Non-Levy learner sufficient employer contribution LDM code 361 used– pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-521- Levy Learner co-funded insufficient employer contribution  LDM code 361 used  – pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-521- Levy Learner co-funded insufficient employer contribution  LDM code 361 used  – pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-522- Non-Levy learner,insufficient employer contribution  LDM code 361 used – pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-522- Non-Levy learner,insufficient employer contribution  LDM code 361 used – pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes price at end of month - PV2-294.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price during month - PV2-295.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes price during month - PV2-295.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner goes on a planned break - PV2-296.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner goes on a planned break - PV2-296.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner Ilr is submitted late - PV2-428.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner Ilr is submitted late - PV2-428.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner submits Ilr several months into learning - PV2-340.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner submits Ilr several months into learning - PV2-340.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learning Support Funding\PV2-474 - Levy learner requires learning support doing an apprenticeship framework.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-474 - Levy learner requires learning support doing an apprenticeship framework.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learning Support Funding\PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learning Support Funding\PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learning Support Funding\PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learning Support Funding\PV2-805 - Levy learner with learning support and maths and eng changes price during programme.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-805 - Levy learner with learning support and maths and eng changes price during programme.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learning Support Funding\PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>2 learners 2 employers 1 provider enough levy - PV2-267.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes standard with change to price - PV2-290.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Levy learner changes standard with change to price - PV2-290.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\One levy learner finishes on time not enough levy to cover full payment-PV2-266.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One levy learner finishes on time not enough levy to cover full payment-PV2-266.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finished late PV2-274.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy Learner, levy available, finished late PV2-274.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes one month early PV2-275.feature.cs">
+      <DependentUpon>One Levy Learner, levy available, finishes one month early PV2-275.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes on time PV2-261.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy Learner, levy available, finishes on time PV2-261.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes two months early PV2-276.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy Learner, levy available, finishes two months early PV2-276.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\One Levy Learner, no levy available, finishes on time PV2-262.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy Learner, no levy available, finishes on time PV2-262.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two Learners two employers one provider not enough levy - PV2-268.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two Learners two employers one provider not enough levy - PV2-268.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners but only enough levy to fund one learner- PV2-264.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two levy learners but only enough levy to fund one learner- PV2-264.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers and enough levy PV2-269.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two levy learners one employer but two providers and enough levy PV2-269.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -345,25 +781,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy learner continuing 12 months earnings PV2-615.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-levy learner withdraws after planned end date PV2-278.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-336.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner Finishes Late PV2-336.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature.cs">
+      <DependentUpon>One Non-Levy Learner finishes on time completion payment made PV2-334.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner finishes on time completion payment made PV2-334.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature.cs">
       <DependentUpon>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature</DependentUpon>
@@ -641,6 +1062,354 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-Levy employer, learner moves start date forward, no prog payments and English and Maths refunded PV2-466.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy employer, learner moves start date forward, no prog payments and English and Maths refunded PV2-466.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy employer, provider moves forward course start date after payments have occurred PV2-465.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy learner funding agreed within maximum completes maths and english early PV2-485.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner, requires english or maths at level 2 with prior funding adjustment after break PV2-392.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments English and Maths\Non-Levy learner, provider changes aim sequence numbers PV2-393.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy learner, provider changes aim sequence numbers PV2-393.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments Incentives\PV2-849 - Levy learner earns 16-18 incentives payments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-849 - Levy learner earns 16-18 incentives payments.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments Incentives\PV2-851 - Non Levy learner earns 16-18 incentives payment, and finishes on times.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-851 - Non Levy learner earns 16-18 incentives payment, and finishes on times.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner over funding band cap - PV2-528.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Capping\Non-levy Learner over funding band cap - PV2-529.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy Learner over funding band cap - PV2-529.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\Framework-and-disadvantaged-uplift-on-time-PV2-487.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Framework-and-disadvantaged-uplift-on-time-PV2-487.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\Non-Levy-On Framework-Disadvantage-Uplift-11-20-paid-PV2-436.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On Framework-Disadvantage-Uplift-11-20-paid-PV2-436.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\Non-Levy-On-Framework-Disadvantage-Uplift 21-27-paid-PV2-437.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Framework-Disadvantage-Uplift 21-27-paid-PV2-437.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\Non-Levy-On-Framework-Disadvantage-Uplift not paid-PV2-438.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Framework-Disadvantage-Uplift not paid-PV2-438.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\Non-Levy-On-Standard Disadvantage-Uplift-not-paid-PV2-446.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Standard Disadvantage-Uplift-not-paid-PV2-446.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\Non-Levy-On-Standard-Disadvantage-Uplift 1-10-not paid-PV2-443.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Standard-Disadvantage-Uplift 1-10-not paid-PV2-443.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\Non-Levy-On-Standard-Disadvantage-Uplift-11-20-not paid-PV2-444.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Standard-Disadvantage-Uplift-11-20-not paid-PV2-444.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy-On-Standard-Disadvantage-Uplift-21-27-not-paid-PV2-445.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\PV2-439 -Payment for a DAS learner, lives in a disadvantaged postocde area - 01-10 most deprived.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-439 -Payment for a DAS learner, lives in a disadvantaged postocde area - 01-10 most deprived.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\PV2-440 -Payment for a DAS learner, lives in a disadvantaged postocde area - 11-20 most deprived.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-440 -Payment for a DAS learner, lives in a disadvantaged postocde area - 11-20 most deprived.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-441 -Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-442 -Payment for a DAS learner, does not live in a disadvantaged postocde area-Disadvantage Uplift is not paid.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-447 - Levy learner, lives in a disadvantaged postocde area - 1-10 most deprived,undertaking standard.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-448 - Levy learner, lives in a disadvantaged postocde area - 11-20 most deprived,on standard.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-449 - Levy learner, lives in a disadvantaged postocde area - 21-27 most deprived, on standard.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Disadvantaged Uplift\PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, when negotiated cost changes at the end of the month - PV2-359.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Earnings and payments for a levy learner, when negotiated cost changes at the end of the month - PV2-359.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning in the mid of a month and return in the mid of a later month-PV2-369.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer break in learning in the mid of a month and return in the mid of a later month-PV2-369.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer with change to negotiated price at the mid of month with gap- PV2-364.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-571 - Levy Learner framework uplift payments finishes early.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Framework Uplift\PV2-572 - Non-Levy Learner framework uplift payments finishes early.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-572 - Non-Levy Learner framework uplift payments finishes early.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Framework Uplift\PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-499 - Non-Levy Learner completion payment made as enough employer contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-499 - Non-Levy Learner completion payment made as enough employer contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-500 - Levy Learner-co-funded,insufficient employer contribution - hold back completion payment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-500 - Levy Learner-co-funded,insufficient employer contribution - hold back completion payment.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-501- Non-Levy Learner no completion payment made as not enough employer contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-501- Non-Levy Learner no completion payment made as not enough employer contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-503- Levy Learner-co-funded insufficient employer contri completion payment held released when sufficient PMR.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-503- Levy Learner-co-funded insufficient employer contri completion payment held released when sufficient PMR.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-509- Non-Levy Learner insuffucient employer contri completion payment held released when correct PMR.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-509- Non-Levy Learner insuffucient employer contri completion payment held released when correct PMR.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-513- Levy Learner-co-funded end date is census month sufficient employer contri pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-513- Levy Learner-co-funded end date is census month sufficient employer contri pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-514- NonLevy Learner-planned end date is census month suffucient employer contri pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-514- NonLevy Learner-planned end date is census month suffucient employer contri pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-515 - Levy Learner-co-funded sufficient employer contribution LDM code 356 - pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-515 - Levy Learner-co-funded sufficient employer contribution LDM code 356 - pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-516- Non-Levy Learner completion payment made due to LDM 356 enough employer contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-516- Non-Levy Learner completion payment made due to LDM 356 enough employer contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-517- Levy Learner co-funded insufficient employer contribution LDM code 356 used pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-517- Levy Learner co-funded insufficient employer contribution LDM code 356 used pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-518- Non-Levy Learner completion payment made due to LDM 356 not enough employer contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-518- Non-Levy Learner completion payment made due to LDM 356 not enough employer contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-519 - Levy Learner-co-funded sufficient employer contribution LDM code 361- pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-519 - Levy Learner-co-funded sufficient employer contribution LDM code 361- pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-520- Non-Levy learner sufficient employer contribution LDM code 361 used– pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-520- Non-Levy learner sufficient employer contribution LDM code 361 used– pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-521- Levy Learner co-funded insufficient employer contribution  LDM code 361 used  – pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-521- Levy Learner co-funded insufficient employer contribution  LDM code 361 used  – pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-522- Non-Levy learner,insufficient employer contribution  LDM code 361 used – pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-522- Non-Levy learner,insufficient employer contribution  LDM code 361 used – pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-608 - Levy but co-funded sufficient emp contribution  on program same day as completion payment - pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes price at end of month - PV2-294.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner changes price during month - PV2-295.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes price during month - PV2-295.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner goes on a planned break - PV2-296.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner goes on a planned break - PV2-296.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner Ilr is submitted late - PV2-428.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner Ilr is submitted late - PV2-428.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner submits Ilr several months into learning - PV2-340.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner submits Ilr several months into learning - PV2-340.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learning Support Funding\PV2-474 - Levy learner requires learning support doing an apprenticeship framework.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-474 - Levy learner requires learning support doing an apprenticeship framework.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learning Support Funding\PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-734 - Levy learner requires learning support doing an apprenticeship standard.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learning Support Funding\PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-802 - Non-Levy learner - learning support applicable for maths and eng after main aim ended.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learning Support Funding\PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-803 - Levy learner - learning support applicable for maths and eng after main aim ended.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learning Support Funding\PV2-805 - Levy learner with learning support and maths and eng changes price during programme.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-805 - Levy learner with learning support and maths and eng changes price during programme.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learning Support Funding\PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Learner Change of Circumstances\Levy learner changes standard with change to price - PV2-290.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes standard with change to price - PV2-290.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\One levy learner finishes on time not enough levy to cover full payment-PV2-266.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One levy learner finishes on time not enough levy to cover full payment-PV2-266.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finished late PV2-274.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finished late PV2-274.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes one month early PV2-275.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finishes one month early PV2-275.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes on time PV2-261.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finishes on time PV2-261.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes two months early PV2-276.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, no levy available, finishes on time PV2-262.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, no levy available, finishes on time PV2-262.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two Learners two employers one provider not enough levy - PV2-268.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two Learners two employers one provider not enough levy - PV2-268.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two levy learners but only enough levy to fund one learner- PV2-264.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two levy learners but only enough levy to fund one learner- PV2-264.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers and enough levy PV2-269.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two levy learners one employer but two providers and enough levy PV2-269.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
@@ -648,18 +1417,6 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-Levy learner continuing 12 months earnings PV2-615.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner continuing 12 months earnings PV2-615.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner withdraws after planned end date PV2-278.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-336.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner Finishes Late PV2-336.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
