@@ -60,6 +60,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             ProgType = 300,
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
+                            LearnStartDate = DateTime.Today.AddDays(-10)
                         },
                         LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
                         {
@@ -389,6 +390,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("M&E");
             earningEvent.Earnings.Should().HaveCount(2);
+            earningEvent.StartDate.Should().Be(DateTime.Today.AddDays(-10));
 
             var balancing = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.BalancingMathsAndEnglish).ToArray();
             balancing.Should().HaveCount(1);
