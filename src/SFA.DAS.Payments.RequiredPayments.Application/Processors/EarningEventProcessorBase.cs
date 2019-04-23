@@ -85,6 +85,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     mapper.Map(earningEvent, requiredPaymentEvent);
                     mapper.Map(requiredPayment, requiredPaymentEvent);
 
+                    var priceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier;
+
+                    if (earningEvent.PriceEpisodes != null && earningEvent.PriceEpisodes.Any())
+                    {
+                        var priceEpisode = earningEvent.PriceEpisodes.Count == 1
+                            ? earningEvent.PriceEpisodes.FirstOrDefault()
+                            : earningEvent.PriceEpisodes?.SingleOrDefault(x => x.Identifier == priceEpisodeIdentifier);
+
+                        mapper.Map(priceEpisode, requiredPaymentEvent);
+                    }
+
                     requiredPaymentEvent.DeliveryPeriod = period.Period;
                     
                     result.Add(requiredPaymentEvent);
