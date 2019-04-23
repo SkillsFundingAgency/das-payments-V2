@@ -333,7 +333,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\AimPeriodMatcherTest.cs" />
     <Compile Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
