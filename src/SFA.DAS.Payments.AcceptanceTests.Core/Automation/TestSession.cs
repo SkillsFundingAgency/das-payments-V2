@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
 
-        private readonly IUkprnService _ukprnService;
+        private readonly IUkprnService _ukprnService = new RandomUkprnService();
 
         public Employer GetEmployer(string identifier)
         {
@@ -47,8 +47,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return employer;
         }
 
-        public TestSession(long? ukprn = null)
+        public TestSession(IUkprnService ukprnService)
         {
+            _ukprnService = ukprnService;
+
             courseFaker = new Faker<Course>();
             courseFaker
                 .RuleFor(course => course.AimSeqNumber, faker => faker.Random.Short(1))
@@ -62,8 +64,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 .RuleFor(course => course.StandardCode, faker => faker.Random.Int(1))
                 .RuleFor(course => course.AgreedPrice, 15000);
 
-            _ukprnService = new UkprnService();
-
             SessionId = Guid.NewGuid().ToString();
             random = new Random(Guid.NewGuid().GetHashCode());
 
@@ -73,6 +73,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
 
+        }
+
+        public TestSession(long? ukprn = null) : this(new RandomUkprnService())
+        {
         }
 
         public long GenerateId(int maxValue = 1000000)

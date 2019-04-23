@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         }
 
         [TestFixture]
-        public class AndAllEventsArePayments 
+        public class AndAllEventsArePayments : WhenCallingGenerate
         {
             [Test]
             public void ThenTheResultsShouldSortByPriority()
@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         }
 
         [TestFixture]
-        public class AndAllEventsAreRefunds 
+        public class AndAllEventsAreRefunds : WhenCallingGenerate
         {
             [Test]
             public void ThenTheResultsShouldSortByPriority()
