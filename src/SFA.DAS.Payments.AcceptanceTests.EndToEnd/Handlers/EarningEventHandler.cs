@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NServiceBus;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -13,6 +14,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
 
         public Task Handle(EarningEvent message, IMessageHandlerContext context)
         {
+            var json = JsonConvert.SerializeObject(message);
+
             if (message is FunctionalSkillEarningsEvent @event && !@event.Earnings.Any())
             {
                 return Task.CompletedTask;
