@@ -8,26 +8,31 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
     public class CourseValidationProcessor : ICourseValidationProcessor
     {
         private readonly List<ICourseValidator> courseValidators;
-
-        public CourseValidationProcessor(IStartDateValidator startDateValidator, INegotiatedPriceValidator negotiatedPriceValidator, IApprenticeshipPauseValidator apprenticeshipPauseValidator)
+        public CourseValidationProcessor(IEnumerable<ICourseValidator> courseValidators)
         {
-            if (startDateValidator == null) throw new ArgumentNullException(nameof(startDateValidator));
-            if (negotiatedPriceValidator == null) throw new ArgumentNullException(nameof(negotiatedPriceValidator));
-            if (apprenticeshipPauseValidator == null)
-                throw new ArgumentNullException(nameof(apprenticeshipPauseValidator));
-            courseValidators = new List<ICourseValidator> { startDateValidator, negotiatedPriceValidator, apprenticeshipPauseValidator };
+            this.courseValidators = new List<ICourseValidator>(courseValidators);
         }
 
-        public List<ValidationResult> ValidateCourse(DataLockValidationModel validationModel)
+        public CourseValidationResult ValidateCourse(DataLockValidationModel dataLockValidationModel)
         {
-            var validationResult = new List<ValidationResult>();
-
+            var validationResults = new List<ValidationResult>();
             foreach (var courseValidator in courseValidators)
             {
-                var validatorResult = courseValidator.Validate(validationModel);
-                validationResult.Add(validatorResult);
+                var validatorResult = courseValidator.Validate(dataLockValidationModel);
+                validationResults.Add(validatorResult);
             }
-            return validationResult;
+            var result = new CourseValidationResult
+            {
+                DataLockErrors = validationResults
+                    .Where(validationResult => validationResult.DataLockErrorCode.HasValue)
+                    .Select(validationResult => validationResult.DataLockErrorCode.Value)
+                    .ToList(),
+                MatchedPriceEpisode = dataLockValidationModel.ApprenticeshipPriceEpisodes
+                    .Where(ape => !ape.Removed)
+                    .FirstOrDefault(ape => validationResults.All(validationResult => validationResult.ApprenticeshipPriceEpisodes.Any(resultApe => resultApe.Id == ape.Id))  )
+            };
+
+            return result;
         }
     }
 }

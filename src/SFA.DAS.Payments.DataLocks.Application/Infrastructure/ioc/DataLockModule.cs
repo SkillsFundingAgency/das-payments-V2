@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
 
             builder.RegisterAssemblyTypes(typeof(ICourseValidator).Assembly).As<ICourseValidator>().InstancePerLifetimeScope();
 
+            builder.RegisterType<OnProgrammePeriodsValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CourseValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
