@@ -61,12 +61,25 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                             Period = period
                         });
                     else
-                        validPeriods.Add(new ValidOnProgrammePeriod
+                    {
+                        var validPeriod = new ValidOnProgrammePeriod
                         {
                             ApprenticeshipPriceEpisodeId = validationResult.MatchedPriceEpisode.Id,
                             Apprenticeship = apprenticeship,
-                            Period = period
-                        });
+                            Period = new EarningPeriod
+                            {
+                                Period = period.Period,
+                                Amount = period.Amount,
+                                PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
+                                SfaContributionPercentage = period.SfaContributionPercentage,
+                                AccountId = apprenticeship.AccountId,
+                                ApprenticeshipId = apprenticeship.Id,
+                                ApprenticeshipPriceEpisodeId = validationResult.MatchedPriceEpisode.Id,
+                                Priority = apprenticeship.Priority
+                            }
+                        };
+                        validPeriods.Add(validPeriod);
+                    }
                 }
             }
             return (validPeriods, invalidPeriods);

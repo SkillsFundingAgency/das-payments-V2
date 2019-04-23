@@ -34,6 +34,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 new ApprenticeshipModel
                 {
                     Id = 1,
+                    AccountId = 21,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                         new ApprenticeshipPriceEpisodeModel{Id = 90},
@@ -45,6 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 new ApprenticeshipModel
                 {
                     Id = 2,
+                    AccountId = 22,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                         new ApprenticeshipPriceEpisodeModel{Id = 94},
@@ -82,7 +84,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         {
             var earning = new OnProgrammeEarning
             {
-                Periods = new List<EarningPeriod> { new EarningPeriod { Amount = 1, PriceEpisodeIdentifier = "pe-1" } }.AsReadOnly()
+                Periods = new List<EarningPeriod> { new EarningPeriod
+                {
+                    Amount = 1, 
+                    PriceEpisodeIdentifier = "pe-1",
+                } }.AsReadOnly()
             };
             mocker.Mock<ICourseValidationProcessor>()
                 .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
@@ -95,8 +101,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,
                 earning, apprenticeships);
             periods.ValidPeriods.Count.Should().Be(2);
-            periods.ValidPeriods.Any(p => p.Apprenticeship.Id == 1 && p.ApprenticeshipPriceEpisodeId == 90).Should().Be(true);
-            periods.ValidPeriods.Any(p => p.Apprenticeship.Id == 2 && p.ApprenticeshipPriceEpisodeId == 96).Should().Be(true);
+            periods.ValidPeriods.Any(p => p.Apprenticeship.Id == 1 && p.ApprenticeshipPriceEpisodeId == 90 && p.Period.AccountId == 21 ).Should().Be(true);
+            periods.ValidPeriods.Any(p => p.Apprenticeship.Id == 2 && p.ApprenticeshipPriceEpisodeId == 96 && p.Period.AccountId == 22).Should().Be(true);
+
         }
 
         [Test]

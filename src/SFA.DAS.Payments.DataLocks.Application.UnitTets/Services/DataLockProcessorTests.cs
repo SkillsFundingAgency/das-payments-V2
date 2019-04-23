@@ -101,7 +101,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var payableEarning = actual as PayableEarningEvent;
             payableEarning.Should().NotBeNull();
-            payableEarning.AccountId.Should().Be(456);
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
             payableEarning.OnProgrammeEarnings.First().Periods.Count.Should().Be(1);
         }
