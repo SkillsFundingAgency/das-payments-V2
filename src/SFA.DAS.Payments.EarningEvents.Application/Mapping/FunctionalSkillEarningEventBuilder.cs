@@ -27,7 +27,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             {
                 var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(intermediateLearningAim.PriceEpisodes);
                 var functionalSkillEarning = mapper.Map<FunctionalSkillEarningsEvent>(learnerWithSortedPriceEpisodes);
-                if (learnerSubmission.Learner.PriceEpisodes.First().PriceEpisodeValues.PriceEpisodeContractType.Equals("Levy Contract", StringComparison.OrdinalIgnoreCase))
+                if (learnerSubmission.Learner.PriceEpisodes.First().PriceEpisodeValues
+                    .PriceEpisodeContractType.Equals(ApprenticeshipContractTypeEarningsEventFactory.Act1, StringComparison.OrdinalIgnoreCase))
                 {
                     functionalSkillEarning.ContractType = ContractType.Act1;
                 }
