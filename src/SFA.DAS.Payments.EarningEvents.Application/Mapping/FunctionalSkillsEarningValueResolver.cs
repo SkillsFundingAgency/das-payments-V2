@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return new FunctionalSkillEarning
             {
                 Type = TypeMap[groupItem.Key],
-                Periods = new ReadOnlyCollection<EarningPeriod>(periods)
+                Periods = new ReadOnlyCollection<EarningPeriod>(periods),
             };
         }
     }

@@ -83,8 +83,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(requiredPayment => requiredPayment.AccountId, opt => opt.MapFrom(p => p.AccountId))
                 ;
             CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
-                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
                 .ForMember(x => x.StartDate, opt => opt.MapFrom(source => source.StartDate))
+                .ForMember(x => x.ContractType, opt => opt.MapFrom(x => x.ContractType))
                 ;
             CreateMap<ApprenticeshipContractType2EarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
@@ -99,8 +99,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
                 ;
             CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
-                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
                 .ForMember(x => x.StartDate, opt => opt.MapFrom(source => source.StartDate))
+                .ForMember(x => x.ContractType, opt => opt.MapFrom(x => x.ContractType))
                 ;
 
             CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()

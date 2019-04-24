@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
@@ -21,5 +22,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public ReadOnlyCollection<FunctionalSkillEarning> Earnings { get; set; }
 
         public DateTime StartDate { get; set; }
+        
+        public ContractType ContractType { get; set; }
     }
 }
