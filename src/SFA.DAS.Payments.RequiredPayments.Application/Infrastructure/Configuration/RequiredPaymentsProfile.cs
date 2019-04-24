@@ -110,6 +110,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
             // End Earning Event --> Required Payment Event
 
             CreateMap<EarningPeriod, RequiredPaymentEvent>()
+                .Include<EarningPeriod, CalculatedRequiredOnProgrammeAmount>()
                 .Include<EarningPeriod, CalculatedRequiredCoInvestedAmount>()
                 .Include<EarningPeriod, CalculatedRequiredIncentiveAmount>()
                 .Include<EarningPeriod, CalculatedRequiredLevyAmount>()
@@ -123,12 +124,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Include<EarningPeriod, CalculatedRequiredCoInvestedAmount>()
                 .Include<EarningPeriod, CalculatedRequiredLevyAmount>()
                 .ForMember(requiredPayment => requiredPayment.SfaContributionPercentage, opt => opt.MapFrom(period => period.SfaContributionPercentage))
-//                .Ignore(x => x.OnProgrammeEarningType)
-                .ForAllOtherMembers(opt => opt.Ignore());
+                .Ignore(x => x.OnProgrammeEarningType)
                 ;
 
             CreateMap<EarningPeriod, CalculatedRequiredCoInvestedAmount>()
-                .ForAllOtherMembers(opt => opt.Ignore())
                 ;
 
             CreateMap<EarningPeriod, CalculatedRequiredLevyAmount>()
@@ -141,7 +140,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
 
             CreateMap<EarningPeriod, CalculatedRequiredIncentiveAmount>()
                 .Ignore(x => x.Type)
-                .ForAllOtherMembers(opt => opt.Ignore())
                 ;
 
             // Required Payment --> RequiredPaymentEvent
