@@ -155,6 +155,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             // assert
             AssertCommonProperties(requiredPayment, functionalSkillEarningsEvent);
+            requiredPayment.StartDate.Should().Be(DateTime.Today.AddDays(-10));
         }
 
         [Test]
@@ -250,6 +251,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 },
                 JobId = 8,
                 IlrSubmissionDateTime = DateTime.Today,
+                StartDate = DateTime.Today.AddDays(-10),
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning
