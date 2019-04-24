@@ -9,6 +9,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         public string StorageConnectionString => GetConnectionString("StorageConnectionString");
         public string ServiceBusConnectionString => GetConnectionString("ServiceBusConnectionString");
         public string PaymentsConnectionString => GetConnectionString("PaymentsConnectionString");
+        public bool ValidateDcAndDasServices => bool.Parse(ConfigurationManager.AppSettings["ValidateDcAndDasServices"] ?? "false");
         public TimeSpan TimeToWait => TimeSpan.Parse(ConfigurationManager.AppSettings["TimeToWait"] ?? "00:00:30");
         public TimeSpan TimeToWaitForUnexpected => TimeSpan.Parse(ConfigurationManager.AppSettings["TimeToWaitForUnexpected"] ?? "00:00:30");
         public TimeSpan TimeToPause => TimeSpan.Parse(ConfigurationManager.AppSettings["TimeToPause"] ?? "00:00:05");

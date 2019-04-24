@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Bogus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.Services;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -28,6 +30,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
 
+        private readonly IUkprnService _ukprnService;
 
         public Employer GetEmployer(string identifier)
         {
@@ -44,8 +47,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return employer;
         }
 
-        public TestSession(long? ukprn = null)
+        public TestSession(IUkprnService ukprnService)
         {
+            _ukprnService = ukprnService;
+
             courseFaker = new Faker<Course>();
             courseFaker
                 .RuleFor(course => course.AimSeqNumber, faker => faker.Random.Short(1))
@@ -70,6 +75,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         }
 
+        public TestSession(long? ukprn = null) : this(new RandomUkprnService())
+        {
+        }
+
         public long GenerateId(int maxValue = 1000000)
         {
             var id = random.Next(maxValue);
@@ -79,14 +88,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public void RegenerateUkprn()
         {
-            Provider.Ukprn = GenerateId();
+            Provider.Ukprn = _ukprnService.GenerateUkprn();
         }
 
         private Provider GenerateProvider()
         {
             return new Provider
             {
-                Ukprn = GenerateId(),
+                Ukprn = _ukprnService.GenerateUkprn(),
                 JobId = GenerateId(),
                 IlrSubmissionTime = DateTime.UtcNow
             };
