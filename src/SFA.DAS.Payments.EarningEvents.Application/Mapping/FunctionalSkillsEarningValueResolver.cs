@@ -12,12 +12,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public class FunctionalSkillsEarningValueResolver : IValueResolver<IntermediateLearningAim, FunctionalSkillEarningsEvent, ReadOnlyCollection<FunctionalSkillEarning>>
     {
-        private static readonly Dictionary<string, FunctionalSkillType> TypeMap = new Dictionary<string, FunctionalSkillType>
-        {
-            {"MathEngBalPayment", FunctionalSkillType.BalancingMathsAndEnglish},
-            {"MathEngOnProgPayment", FunctionalSkillType.OnProgrammeMathsAndEnglish},
-            {"LearnSuppFundCash", FunctionalSkillType.LearningSupport},
-        };
+        private static readonly Dictionary<string, FunctionalSkillType> TypeMap =
+            new Dictionary<string, FunctionalSkillType>
+            {
+                {"MathEngBalPayment", FunctionalSkillType.BalancingMathsAndEnglish},
+                {"MathEngOnProgPayment", FunctionalSkillType.OnProgrammeMathsAndEnglish},
+                {"PriceEpisodeLSFCash", FunctionalSkillType.LearningSupport},
+            };
 
         public ReadOnlyCollection<FunctionalSkillEarning> Resolve(IntermediateLearningAim source, FunctionalSkillEarningsEvent destination, ReadOnlyCollection<FunctionalSkillEarning> destMember, ResolutionContext context)
         {

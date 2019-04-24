@@ -108,9 +108,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var functionalSkillEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsFunctionalSkillType).ToList();
                     var incentiveEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsIncentiveType).ToList();
 
+                    if (aimSpec.LearningSupportIsFunctionalSkill)
+                    {
+                        incentiveEarnings.Remove(TransactionType.LearningSupport);
+                    }
+                    else
+                    {
+                        functionalSkillEarnings.Remove(TransactionType.LearningSupport);
+                    }
+
                     if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
                     {
-                        var onProgEarning  = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
+                        var onProgEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
                         onProgEarning.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                         {
                             Type = (OnProgrammeEarningType) (int) tt,
@@ -124,8 +133,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         onProgEarning.JobId = provider.JobId;
                         onProgEarning.Learner = learner;
                         onProgEarning.LearningAim = learningAim;
-     
+
                         result.Add(onProgEarning);
+
+                        //if (incentiveEarnings.Any())
+                        //{
+                        //    onProgEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
+                        //    {
+                        //        Type = (IncentiveEarningType) (int) tt,
+                        //        Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                        //        {
+                        //            Amount = e.Values[tt],
+                        //            Period = e.DeliveryCalendarPeriod,
+                        //            PriceEpisodeIdentifier =
+                        //                FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                        //        }).ToList().AsReadOnly()
+                        //    }).ToList();
+                        //}
                     }
 
                     if (aimSpec.AimReference != "ZPROG001" && functionalSkillEarnings.Any())
@@ -151,7 +175,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         result.Add(functionalSkillEarning);
                     }
 
-                    if (incentiveEarnings.Any())
+                    if (aimSpec.AimReference != "ZPROG001" && incentiveEarnings.Any())
                     {
                         var incentiveEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
                         incentiveEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
