@@ -60,6 +60,42 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             ProgType = 300,
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
+                            LearnStartDate = DateTime.Today.AddDays(-10)
+                        },
+                        LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
+                        {
+                            new LearningDeliveryPeriodisedValues
+                            {
+                                AttributeName = "MathEngOnProgPayment",
+                                Period1 = 100,
+                                Period2 = 100,
+                                Period3 = 100,
+                                Period4 = 100,
+                                Period5 = 100,
+                                Period6 = 100,
+                                Period7 = 100,
+                                Period8 = 100,
+                                Period9 = 100,
+                                Period10 = 100,
+                                Period11 = 100,
+                                Period12 = 100,
+                            },
+                            new LearningDeliveryPeriodisedValues
+                            {
+                                AttributeName = "MathEngBalPayment",
+                                Period1 = 0,
+                                Period2 = 0,
+                                Period3 = 0,
+                                Period4 = 0,
+                                Period5 = 0,
+                                Period6 = 0,
+                                Period7 = 0,
+                                Period8 = 0,
+                                Period9 = 0,
+                                Period10 = 0,
+                                Period11 = 0,
+                                Period12 = 300,
+                            }
                         }
                     }
                 },
@@ -132,39 +168,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                                 Period10 = 0,
                                 Period11 = 0,
                                 Period12 = 3000,
-                            },
-                            new PriceEpisodePeriodisedValues
-                            {
-                                AttributeName = "MathEngOnProgPayment",
-                                Period1 = 100,
-                                Period2 = 100,
-                                Period3 = 100,
-                                Period4 = 100,
-                                Period5 = 100,
-                                Period6 = 100,
-                                Period7 = 100,
-                                Period8 = 100,
-                                Period9 = 100,
-                                Period10 = 100,
-                                Period11 = 100,
-                                Period12 = 100,
-                            },
-                            new PriceEpisodePeriodisedValues
-                            {
-                                AttributeName = "MathEngBalPayment",
-                                Period1 = 0,
-                                Period2 = 0,
-                                Period3 = 0,
-                                Period4 = 0,
-                                Period5 = 0,
-                                Period6 = 0,
-                                Period7 = 0,
-                                Period8 = 0,
-                                Period9 = 0,
-                                Period10 = 0,
-                                Period11 = 0,
-                                Period12 = 300,
-                            }                        }
+                            }
+                        }
                     }
                 }
             };
@@ -385,6 +390,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("M&E");
             earningEvent.Earnings.Should().HaveCount(2);
+            earningEvent.StartDate.Should().Be(DateTime.Today.AddDays(-10));
 
             var balancing = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.BalancingMathsAndEnglish).ToArray();
             balancing.Should().HaveCount(1);
