@@ -17,6 +17,11 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 
         public IReadOnlyList<FundingSourcePayment> Process(RequiredPayment requiredPayment)
         {
+            if (requiredPayment.SfaContributionPercentage == 1)
+            {
+                return new FundingSourcePayment[0];
+            }
+
             var amountDue = levyBalanceService.TryFund(requiredPayment.AmountDue).AsRounded();
 
             if (amountDue == 0) 
