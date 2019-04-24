@@ -80,7 +80,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
             CreateMap<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
-                .ForMember(requiredPayment => requiredPayment.AccountId, opt => opt.MapFrom(p => p.AccountId))
                 ;
             CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
@@ -91,7 +90,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
 
             CreateMap<PayableEarningEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
-                .ForMember(requiredPayment => requiredPayment.AccountId, opt => opt.MapFrom(p => p.AccountId))
                 ;
 
             CreateMap<ApprenticeshipContractType2EarningEvent, CalculatedRequiredIncentiveAmount>()
@@ -103,16 +101,48 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
 
             CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
-                .ForMember(requiredPayment => requiredPayment.AccountId, opt => opt.MapFrom(p => p.AccountId))
-                ;
+                .ForMember(x => x.Priority, opt => opt.Ignore())
+                .ForMember(x => x.ApprenticeshipId, opt => opt.Ignore())
+                .ForMember(x => x.ApprenticeshipPriceEpisodeId, opt => opt.Ignore())
+                //.ForAllOtherMembers(opt => opt.Ignore())
+            ;
 
             // End Earning Event --> Required Payment Event
 
             CreateMap<EarningPeriod, RequiredPaymentEvent>()
-                .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.MapFrom(period => period.Amount))
-                .ForMember(requiredPayment => requiredPayment.PriceEpisodeIdentifier, opt => opt.MapFrom(period => period.PriceEpisodeIdentifier))
-                .ForAllOtherMembers(opt => opt.Ignore());
+                .Include<EarningPeriod, CalculatedRequiredCoInvestedAmount>()
+                .Include<EarningPeriod, CalculatedRequiredIncentiveAmount>()
+                .Include<EarningPeriod, CalculatedRequiredLevyAmount>()
+                .ForMember(requiredPayment => requiredPayment.DeliveryPeriod, opt => opt.MapFrom(period => period.Period))
+                .ForMember(requiredPayment => requiredPayment.AccountId, opt => opt.MapFrom(period => period.AccountId))
+                .ForAllOtherMembers(opt => opt.Ignore())
+                ;
 
+
+            CreateMap<EarningPeriod, CalculatedRequiredOnProgrammeAmount>()
+                .Include<EarningPeriod, CalculatedRequiredCoInvestedAmount>()
+                .Include<EarningPeriod, CalculatedRequiredLevyAmount>()
+                .ForMember(requiredPayment => requiredPayment.SfaContributionPercentage, opt => opt.MapFrom(period => period.SfaContributionPercentage))
+//                .Ignore(x => x.OnProgrammeEarningType)
+                .ForAllOtherMembers(opt => opt.Ignore());
+                ;
+
+            CreateMap<EarningPeriod, CalculatedRequiredCoInvestedAmount>()
+                .ForAllOtherMembers(opt => opt.Ignore())
+                ;
+
+            CreateMap<EarningPeriod, CalculatedRequiredLevyAmount>()
+                .ForMember(requiredPayment => requiredPayment.ApprenticeshipId, opt => opt.MapFrom(period => period.ApprenticeshipId))
+                .ForMember(requiredPayment => requiredPayment.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(period => period.ApprenticeshipPriceEpisodeId))
+                .ForMember(requiredPayment => requiredPayment.Priority, opt => opt.MapFrom(period => period.Priority))
+                .ForMember(x => x.AgreementId, opt => opt.Ignore())
+                //.ForAllOtherMembers(opt => opt.Ignore())
+                ;
+
+            CreateMap<EarningPeriod, CalculatedRequiredIncentiveAmount>()
+                .Ignore(x => x.Type)
+                .ForAllOtherMembers(opt => opt.Ignore())
+                ;
 
             // Required Payment --> RequiredPaymentEvent
             CreateMap<RequiredPayment, RequiredPaymentEvent>()
@@ -141,6 +171,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.NumberOfInstalments);
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
+                .ForMember(x => x.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
                 .Ignore(x => x.OnProgrammeEarningType)
                 ;
             CreateMap<RequiredPayment, CalculatedRequiredIncentiveAmount>()
@@ -150,7 +181,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
             CreateMap<RequiredPayment, CalculatedRequiredLevyAmount>()
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.Priority)
-                .Ignore(x => x.CommitmentId)
+                .Ignore(x => x.ApprenticeshipId)
+                .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.AgreementId)
                 ;
 

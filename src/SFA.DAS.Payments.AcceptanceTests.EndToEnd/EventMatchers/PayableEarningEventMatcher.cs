@@ -169,11 +169,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedEvent.LearningAim.FrameworkCode != actualEvent.LearningAim.FrameworkCode ||
                 expectedEvent.LearningAim.PathwayCode != actualEvent.LearningAim.PathwayCode ||
                 expectedEvent.LearningAim.ProgrammeType != actualEvent.LearningAim.ProgrammeType ||
-                expectedEvent.LearningAim.StandardCode != actualEvent.LearningAim.StandardCode ||
-                expectedEvent.Priority != actualEvent.Priority ||
-                expectedEvent.AccountId != actualEvent.AccountId ||
-                expectedEvent.CommitmentId != actualEvent.CommitmentId ||
-                expectedEvent.CommitmentVersion != actualEvent.CommitmentVersion)
+                expectedEvent.LearningAim.StandardCode != actualEvent.LearningAim.StandardCode 
+                //TODO: should every period be checked as these properties have now moved to earning period
+                //|| expectedEvent.Priority != actualEvent.Priority ||
+                //expectedEvent.AccountId != actualEvent.AccountId ||
+                //expectedEvent.CommitmentId != actualEvent.CommitmentId ||
+                //expectedEvent.CommitmentVersion != actualEvent.CommitmentVersion
+                )
                 return false;
 
             return true;
