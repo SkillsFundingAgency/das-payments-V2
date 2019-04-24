@@ -405,7 +405,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, FunctionalSkillEarningsEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("M&E");
-            earningEvent.Earnings.Should().HaveCount(2);
+            earningEvent.Earnings.Should().HaveCount(3);
             earningEvent.StartDate.Should().Be(DateTime.Today.AddDays(-10));
 
             var balancing = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.BalancingMathsAndEnglish).ToArray();
