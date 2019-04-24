@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
         public static decimal? GetPeriodValue(this PeriodisedAttribute periodisedValues, int period)
         {
-            return (decimal?) PeriodAccessor[periodisedValues, "Period" + period];
+            return (decimal?)PeriodAccessor[periodisedValues, "Period" + period];
         }
 
         public static bool IsMainAim(this LearningDelivery learningDelivery)
