@@ -1,44 +1,4 @@
-﻿#Scenario: Levy learner, levy available, provider retrospectively notifies a withdrawal and previously-paid monthly instalments need to be refunded.
-#
-#  Given The learner is programme only DAS
-#    And the apprenticeship funding band maximum is 17000
-#    And levy balance > agreed price for all months
-# And the following commitments exist:
-#		| commitment Id | version Id | ULN       | start date | end date   | status | agreed price | effective from | effective to | programme type |
-#		| 1             | 1          | learner a | 04/08/2018 | 01/08/2019 | active | 11250        | 01/08/2018     |              | 25				|
-#
-#	And following learning has been recorded for previous payments:
-#		| ULN       | start date | aim sequence number |  completion status | programme type	|
-#		| learner a | 04/08/2018 | 1                   |  continuing        | 25				|
-#  
-# And the following earnings and payments have been made to the provider A for learner a:
-#	    | Type                          | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 | 01/19 |
-#        | Provider Earned Total         | 750   | 750   | 750   | 750   | 750   | 0     |       
-#        | Provider Earned from SFA      | 750   | 750   | 750   | 750   | 750   | 0     |       
-#        | Provider Earned from Employer | 0     | 0     | 0     | 0     | 0     | 0     |       
-#        | Provider Paid by SFA          | 0     | 750   | 750   | 750   | 750   | 750   |        
-#        | Payment due from Employer     | 0     | 0     | 0     | 0     | 0     | 0     |       
-#        | Levy account debited          | 0     | 750   | 750   | 750   | 750   | 750   |         
-#        | SFA Levy employer budget      | 750   | 750   | 750   | 750   | 750   | 0     |        
-#        | SFA Levy co-funding budget    | 0     | 0     | 0     | 0     | 0     | 0     |       
-#    When an ILR file is submitted for the first time on 10/01/18 with the following data:
-#        | ULN       | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | programme type	|
-#        | learner a | 04/08/2018 | 20/08/2019       | 12/11/2018      | withdrawn         | 9000                 | 04/08/2018                          | 2250                   | 04/08/2018                            | 25				|
-#	Then the provider earnings and payments break down as follows:
-#        | Type                          | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 | 01/19 | 02/19 |
-#        | Provider Earned Total         | 750   | 750   | 750   | 0     | 0     | 0     | 0     |
-#        | Provider Earned from SFA      | 750   | 750   | 750   | 0     | 0     | 0     | 0     |
-#        | Provider Earned from Employer | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
-#        | Provider Paid by SFA          | 0     | 750   | 750   | 750   | 750   | 750   | 0     |
-#        | Refund taken by SFA           | 0     | 0     | 0     | 0     | 0     | 0     | -1500 |
-#        | Payment due from Employer     | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
-#        | Levy account debited          | 0     | 750   | 750   | 750   | 750   | 750   | 0     |
-#        | Levy account credited         | 0     | 0     | 0     | 0     | 0     | 0     | 1500  |
-#        | SFA Levy employer budget      | 750   | 750   | 750   | 0     | 0     | 0     | 0     |
-#        | SFA Levy co-funding budget    | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
-
-
-
+﻿
 Feature: Levy Learner is withdrawn retrospectively PV2-250
 	As a provider,
 	I want a levy learner, where levy is available the provider retrospectively notifies a withdrawal and previously paid monthly instalments are refunded
@@ -115,5 +75,47 @@ And only the following provider payments will be generated
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
     | R06/Current Academic Year | Nov/Current Academic Year | -750          | Learning         |
     | R06/Current Academic Year | Dec/Current Academic Year | -750          | Learning         |
+
+
+
+
+#Scenario: Levy learner, levy available, provider retrospectively notifies a withdrawal and previously-paid monthly instalments need to be refunded.
+#
+#  Given The learner is programme only DAS
+#    And the apprenticeship funding band maximum is 17000
+#    And levy balance > agreed price for all months
+# And the following commitments exist:
+#		| commitment Id | version Id | ULN       | start date | end date   | status | agreed price | effective from | effective to | programme type |
+#		| 1             | 1          | learner a | 04/08/2018 | 01/08/2019 | active | 11250        | 01/08/2018     |              | 25				|
+#
+#	And following learning has been recorded for previous payments:
+#		| ULN       | start date | aim sequence number |  completion status | programme type	|
+#		| learner a | 04/08/2018 | 1                   |  continuing        | 25				|
+#  
+# And the following earnings and payments have been made to the provider A for learner a:
+#	    | Type                          | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 | 01/19 |
+#        | Provider Earned Total         | 750   | 750   | 750   | 750   | 750   | 0     |       
+#        | Provider Earned from SFA      | 750   | 750   | 750   | 750   | 750   | 0     |       
+#        | Provider Earned from Employer | 0     | 0     | 0     | 0     | 0     | 0     |       
+#        | Provider Paid by SFA          | 0     | 750   | 750   | 750   | 750   | 750   |        
+#        | Payment due from Employer     | 0     | 0     | 0     | 0     | 0     | 0     |       
+#        | Levy account debited          | 0     | 750   | 750   | 750   | 750   | 750   |         
+#        | SFA Levy employer budget      | 750   | 750   | 750   | 750   | 750   | 0     |        
+#        | SFA Levy co-funding budget    | 0     | 0     | 0     | 0     | 0     | 0     |       
+#    When an ILR file is submitted for the first time on 10/01/18 with the following data:
+#        | ULN       | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date | programme type	|
+#        | learner a | 04/08/2018 | 20/08/2019       | 12/11/2018      | withdrawn         | 9000                 | 04/08/2018                          | 2250                   | 04/08/2018                            | 25				|
+#	Then the provider earnings and payments break down as follows:
+#        | Type                          | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 | 01/19 | 02/19 |
+#        | Provider Earned Total         | 750   | 750   | 750   | 0     | 0     | 0     | 0     |
+#        | Provider Earned from SFA      | 750   | 750   | 750   | 0     | 0     | 0     | 0     |
+#        | Provider Earned from Employer | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
+#        | Provider Paid by SFA          | 0     | 750   | 750   | 750   | 750   | 750   | 0     |
+#        | Refund taken by SFA           | 0     | 0     | 0     | 0     | 0     | 0     | -1500 |
+#        | Payment due from Employer     | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
+#        | Levy account debited          | 0     | 750   | 750   | 750   | 750   | 750   | 0     |
+#        | Levy account credited         | 0     | 0     | 0     | 0     | 0     | 0     | 1500  |
+#        | SFA Levy employer budget      | 750   | 750   | 750   | 0     | 0     | 0     | 0     |
+#        | SFA Levy co-funding budget    | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
 
 

@@ -1,30 +1,4 @@
-﻿#Background:
-#        Given The learner is programme only DAS
-#        And the apprenticeship funding band maximum is 17000
-#        And levy balance > agreed price for all months
-#
-#    Scenario: Earnings and payments for a DAS learner, levy available, where the apprenticeship standard changes
-#        Given the following commitments exist on 03/12/2018:
-#            | commitment Id | version Id | ULN       | standard code | start date | end date   | agreed price | effective from | effective to |
-#            | 1             | 1-001      | learner a | 51            | 01/08/2018 | 01/08/2019 | 15000        | 01/08/2018     | 31/10/2018   |
-#            | 1             | 1-002      | learner a | 52            | 01/08/2018 | 01/08/2019 | 5625         | 03/11/2018     |              |
-#        When an ILR file is submitted with the following data:
-#            | ULN       | standard code | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date |
-#            | learner a | 51            | 03/08/2018 | 01/08/2019       | 31/10/2018      | withdrawn         | 12000                | 03/08/2018                          | 3000                   | 03/08/2017                            |
-#            | learner a | 52            | 03/11/2018 | 01/08/2019       |                 | continuing        | 4500                 | 03/11/2018                          | 1125                   | 03/11/2017                            |
-#        #Then the data lock status of the ILR in 03/12/2018 is:
-#        #    | Payment type | 08/18               | 09/18               | 10/18               | 11/18               | 12/18               |
-#        #    | On-program   | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-002 | commitment 1 v1-002 |
-#        Then the provider earnings and payments break down as follows:
-#            | Type                       | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 |
-#            | Provider Earned Total      | 1000  | 1000  | 1000  | 500   | 500   |
-#            | Provider Earned from SFA   | 1000  | 1000  | 1000  | 500   | 500   |
-#            | Provider Paid by SFA       | 0     | 1000  | 1000  | 1000  | 500   |
-#            | Levy account debited       | 0     | 1000  | 1000  | 1000  | 500   |
-#            | SFA Levy employer budget   | 1000  | 1000  | 1000  | 500   | 500   |
-#            | SFA Levy co-funding budget | 0     | 0     | 0     | 0     | 0     |
-
-Feature: Levy learner changes course and there is a change in price - PV2-290
+﻿Feature: Levy learner changes course and there is a change in price - PV2-290
 	As a provider,
 	I want a levy learner, that changes standard with change to negotiated price, to be paid correct amount
 	So that I am accurately paid my apprenticeship provision. PV2-290
@@ -137,3 +111,30 @@ Examples:
         | R10/Current Academic Year |
         | R11/Current Academic Year |
         | R12/Current Academic Year |
+
+
+#Background:
+#        Given The learner is programme only DAS
+#        And the apprenticeship funding band maximum is 17000
+#        And levy balance > agreed price for all months
+#
+#    Scenario: Earnings and payments for a DAS learner, levy available, where the apprenticeship standard changes
+#        Given the following commitments exist on 03/12/2018:
+#            | commitment Id | version Id | ULN       | standard code | start date | end date   | agreed price | effective from | effective to |
+#            | 1             | 1-001      | learner a | 51            | 01/08/2018 | 01/08/2019 | 15000        | 01/08/2018     | 31/10/2018   |
+#            | 1             | 1-002      | learner a | 52            | 01/08/2018 | 01/08/2019 | 5625         | 03/11/2018     |              |
+#        When an ILR file is submitted with the following data:
+#            | ULN       | standard code | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date |
+#            | learner a | 51            | 03/08/2018 | 01/08/2019       | 31/10/2018      | withdrawn         | 12000                | 03/08/2018                          | 3000                   | 03/08/2017                            |
+#            | learner a | 52            | 03/11/2018 | 01/08/2019       |                 | continuing        | 4500                 | 03/11/2018                          | 1125                   | 03/11/2017                            |
+#        #Then the data lock status of the ILR in 03/12/2018 is:
+#        #    | Payment type | 08/18               | 09/18               | 10/18               | 11/18               | 12/18               |
+#        #    | On-program   | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-002 | commitment 1 v1-002 |
+#        Then the provider earnings and payments break down as follows:
+#            | Type                       | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 |
+#            | Provider Earned Total      | 1000  | 1000  | 1000  | 500   | 500   |
+#            | Provider Earned from SFA   | 1000  | 1000  | 1000  | 500   | 500   |
+#            | Provider Paid by SFA       | 0     | 1000  | 1000  | 1000  | 500   |
+#            | Levy account debited       | 0     | 1000  | 1000  | 1000  | 500   |
+#            | SFA Levy employer budget   | 1000  | 1000  | 1000  | 500   | 500   |
+#            | SFA Levy co-funding budget | 0     | 0     | 0     | 0     | 0     |

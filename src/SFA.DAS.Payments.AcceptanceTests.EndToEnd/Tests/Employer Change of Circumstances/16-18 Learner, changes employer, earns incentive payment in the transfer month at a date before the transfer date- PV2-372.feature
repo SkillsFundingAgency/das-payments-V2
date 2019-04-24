@@ -1,4 +1,3 @@
-@ignore
 Feature:16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372
 As a provider,
 I want 1 learner aged 16-18, levy available, changes employer, earns incentive payment in the transfer month - and the date at which the incentive is earned is before the transfer date, to be paid the correct amount
@@ -7,9 +6,9 @@ Scenario Outline: 16-18 Learner changes employer earns incentive payment in the 
 Given the "employer 1" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 1>
 And  the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 And the following commitments exist 
-    | Employer   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          |
-    | employer 1 | 01/Aug/Current Academic Year | 28/Aug/Next Academic Year | 7500         | cancelled | 05/Aug/Current Academic Year | 14/Nov/Current Academic Year | 15/Nov/Current Academic Year |
-    | employer 2 | 01/Nov/Current Academic Year | 28/Aug/Next Academic Year | 5625         | active    | 15/Nov/Current Academic Year |                              |                              |
+  | Identifier      | Employer   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          |
+  | Apprentiiship 1 | employer 1 | 01/Aug/Current Academic Year | 28/Aug/Next Academic Year | 7500         | cancelled | 05/Aug/Current Academic Year | 14/Nov/Current Academic Year | 15/Nov/Current Academic Year |
+  | Apprentiiship 2 | employer 2 | 01/Nov/Current Academic Year | 28/Aug/Next Academic Year | 5625         | active    | 15/Nov/Current Academic Year |                              |                              |
 
 And the provider previously submitted the following learner details
 	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
@@ -42,25 +41,25 @@ But the Provider now changes the Learner details as follows
 	| Employer2   | 15/Nov/Current Academic Year | 12 months        | 9 months        | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 And price details as follows
-    | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
+    | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
     | 1st price details | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
     | 2nd price details | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 5000                    | 05/Nov/Current Academic Year           | 625                       | 05/Nov/Current Academic Year             | 90%                         |
 
 When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 Then the following learner earnings should be generated
-	| Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive |
-	| Aug/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| Sep/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| Oct/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| Nov/Current Academic Year | 500          | 0          | 0         | 500                          | 0                             | 500                          | 0                             |
-	| Dec/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| Jan/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| Feb/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| Mar/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| Apr/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| May/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| Jun/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-	| Jul/Current Academic Year | 500          | 1125       | 0         | 0                            | 500                           | 0                            | 500                           |
+	| Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive | Price Episode Identifier |
+	| Aug/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 1st price details        |
+	| Sep/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 1st price details        |
+	| Oct/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 1st price details        |
+	| Nov/Current Academic Year | 500          | 0          | 0         | 500                          | 0                             | 500                          | 0                             | 2nd price details        |
+	| Dec/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 2nd price details        |
+	| Jan/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 2nd price details        |
+	| Feb/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 2nd price details        |
+	| Mar/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 2nd price details        |
+	| Apr/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 2nd price details        |
+	| May/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 2nd price details        |
+	| Jun/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | 2nd price details        |
+	| Jul/Current Academic Year | 500          | 1125       | 0         | 0                            | 500                           | 0                            | 500                           | 2nd price details        |
 
 And at month end only the following payments will be calculated
     | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive |
