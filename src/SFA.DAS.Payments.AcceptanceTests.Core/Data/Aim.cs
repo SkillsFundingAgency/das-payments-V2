@@ -30,7 +30,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             switch (completionStatus.ToLower())
             {
                 case "break in learning":
-                    return CompletionStatus.BreakInLearning;
+                case "planned break":
+                    return CompletionStatus.PlannedBreak;
                 case "completed":
                     return CompletionStatus.Completed;
                 case "continuing":

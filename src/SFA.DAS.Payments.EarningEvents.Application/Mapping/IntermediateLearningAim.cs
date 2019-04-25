@@ -17,7 +17,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public long JobId { get; set; }
         
         public IntermediateLearningAim(
-            ProcessLearnerCommand command, IEnumerable<PriceEpisode> priceEpisodes, LearningDelivery aim)
+            ProcessLearnerCommand command, 
+            IEnumerable<PriceEpisode> priceEpisodes, 
+            LearningDelivery aim)
         {
             Aim = aim;
             PriceEpisodes.AddRange(priceEpisodes);
@@ -29,9 +31,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             JobId = command.JobId;
         }
 
-        protected IntermediateLearningAim(FM36Learner learner, LearningDelivery aim,
-            IEnumerable<PriceEpisode> priceEpisodes, long ukprn, short collectionYear,
-            int collectionPeriod, DateTime ilrSubmissionDateTime, long jobId)
+        protected IntermediateLearningAim(
+            FM36Learner learner, 
+            LearningDelivery aim,
+            IEnumerable<PriceEpisode> priceEpisodes, 
+            long ukprn, 
+            short collectionYear,
+            int collectionPeriod, 
+            DateTime ilrSubmissionDateTime, 
+            long jobId)
         {
             Aim = aim;
             Learner = learner;
