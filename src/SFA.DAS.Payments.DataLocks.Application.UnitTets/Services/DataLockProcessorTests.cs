@@ -55,8 +55,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             apprenticeships = new List<ApprenticeshipModel>
             {
-                new ApprenticeshipModel{AccountId = 456, Uln = Uln},
-                new ApprenticeshipModel{ AccountId = 456, Uln = Uln}
+                new ApprenticeshipModel{ Id = 1, AccountId = 456, Uln = Uln},
+                new ApprenticeshipModel{ Id = 2 , AccountId = 456, Uln = Uln}
             };
 
             earningEvent = CreateTestEarningEvent(1, 100m);
