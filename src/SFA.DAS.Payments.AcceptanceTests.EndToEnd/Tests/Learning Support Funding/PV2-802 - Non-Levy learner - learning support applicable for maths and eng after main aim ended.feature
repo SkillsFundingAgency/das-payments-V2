@@ -9,9 +9,6 @@ Feature: Non Levy learner, takes an English qualification that has a planned end
 		So that I am paid Learning Support by SFA until English & Maths completes
 
 Scenario Outline: Non Levy learner, Eng aim planned end date exceeds the actual end date of the programme aim and learning support is applicable to all learning PV2-802
-	#Given the following learners
- #       | Learner Reference Number | Uln      |
- #       | abc123                   | 12345678 |
     Given the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Reference | SFA Contribution Percentage | Funding Line Type             | Framework Code | Pathway Code | Programme Type |
 		| 06/Aug/Last Academic Year | 12 months        | 12000                | 06/Aug/Last Academic Year           | 3000                   | 06/Aug/Last Academic Year             |                 | continuing        | Act2          | ZPROG001      | 90%                         | 19-24 Apprenticeship Non-Levy | 593            | 1            | 20             |
