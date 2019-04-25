@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 MessageName = "Test Message",
                 Id = Guid.NewGuid()
             };
-            Assert.ThrowsAsync<DbUpdateException>(async () => await handler.Handle(recordJobMessageProcessingStatus, mockContext.Object));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(recordJobMessageProcessingStatus, mockContext.Object));
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 MessageName = "Test Message",
                 Id = Guid.NewGuid()
             };
-            Assert.ThrowsAsync<DcJobNotFoundException>(async () => await handler.Handle(recordJobMessageProcessingStatus, mockContext.Object));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await handler.Handle(recordJobMessageProcessingStatus, mockContext.Object));
         }
     }
 }
