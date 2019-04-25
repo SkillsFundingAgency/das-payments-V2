@@ -6,9 +6,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure
 {
     public static class Extensions
     {
-        public static async Task<bool> DeferDueToJobNotFound(this IMessageHandlerContext context, object message, TimeSpan delay)
+        public static async Task<bool> DeferDueToJobNotFound(this IMessageHandlerContext context, object message, int delayInSeconds)
         {
-            return await Defer(context, message, delay, "JobNotFoundRetries");
+            return await Defer(context, message, TimeSpan.FromSeconds(delayInSeconds), "JobNotFoundRetries");
+        }
+
+        public static async Task<bool> DeferDueToUpdateException(this IMessageHandlerContext context, object message, int delayInSeconds)
+        {
+            return await Defer(context, message, TimeSpan.FromSeconds(delayInSeconds), "JobUpdateFailedRetries");
         }
 
         public static async Task<bool> Defer(this IMessageHandlerContext context, object message, TimeSpan delay, string retriesKey)
