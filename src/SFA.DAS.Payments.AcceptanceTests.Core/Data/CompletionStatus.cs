@@ -5,6 +5,6 @@
         Continuing = 1,
         Completed = 2,
         Withdrawn = 3,
-        BreakInLearning = 6,
+        PlannedBreak = 6,
     }
 }
