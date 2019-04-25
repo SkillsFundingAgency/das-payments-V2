@@ -10,6 +10,8 @@ using NServiceBus;
 using NServiceBus.Faults;
 using NServiceBus.Features;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Services;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using TechTalk.SpecFlow;
@@ -36,6 +38,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 .SingleInstance();
             var conventions = EndpointConfiguration.Conventions();
             conventions.DefiningMessagesAs(type => type.IsMessage());
+
+            var ukprnServiceType = config.ValidateDcAndDasServices ? typeof(UkprnService) : typeof(RandomUkprnService);
+            Builder.RegisterType(ukprnServiceType).As<IUkprnService>().InstancePerLifetimeScope();
 
             EndpointConfiguration.UsePersistence<AzureStoragePersistence>()
                 .ConnectionString(config.StorageConnectionString);
