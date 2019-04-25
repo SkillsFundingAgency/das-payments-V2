@@ -1,4 +1,5 @@
-Feature: Employer change of circumstances - Change in Negotiated Price
+@ignore
+Feature: Earnings and payments for a levy learner when the negotiated price changes at the end of the month PV2-359
 As a provider,
 I want earnings and payments for a levy learner, levy available, and there is a change to the Negotiated Cost which happens at the end of the month to be paid the correct amount
 So that I am accurately paid my apprenticeship provision.

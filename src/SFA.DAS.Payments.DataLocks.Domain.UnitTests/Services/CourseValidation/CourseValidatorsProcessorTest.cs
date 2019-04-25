@@ -17,9 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
     {
         private AutoMock mocker;
         private List<ICourseValidator> courseValidators;
-        private readonly List<ValidationResult> courseValidationResults;
         private DataLockValidationModel dataLockValidationModel;
-        private readonly Mock<ICourseValidator> startDateValidator;
 
         [SetUp]
         public void Prepare()

@@ -1,25 +1,4 @@
- #Scenario: Earnings and payments for a DAS learner, levy available, and there is a change to the Negotiated Cost which happens at the end of the month
- #       Given the following commitments exist:
- #           | commitment Id | version Id | ULN       | start date | end date   | status | agreed price | effective from | effective to |
- #           | 1             | 1-001      | learner a | 01/08/2018 | 31/08/2019 | active | 15000        | 01/08/2018     | 31/10/2018   |
- #           | 1             | 1-002      | learner a | 01/08/2018 | 31/08/2019 | active | 9375         | 01/11/2018     |              |
- #       When an ILR file is submitted with the following data:
- #           | ULN       | start date | planned end date | actual end date | completion status | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date | Total training price 2 | Total training price 2 effective date | Total assessment price 2 | Total assessment price 2 effective date |
- #           | learner a | 01/08/2018 | 04/08/2019       |                 | continuing        | 12000                  | 01/08/2018                            | 3000                     | 01/08/2018                              | 7500                   | 01/11/2018                            | 1875                     | 01/11/2018                              |
- #       #Then the data lock status will be as follows:
- #       #    | Payment type | 08/18               | 09/18               | 10/18               | 11/18               | 12/18               | ... | 07/19               |
- #       #    | On-program   | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-002 | commitment 1 v1-002 | ... | commitment 1 v1-002 | 
- #       Then the provider earnings and payments break down as follows:
- #           | Type                          | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 | ... | 07/19 | 08/19 |
- #           | Provider Earned Total         | 1000  | 1000  | 1000  | 500   | 500   | ... | 500   | 0     |
- #           | Provider Earned from SFA      | 1000  | 1000  | 1000  | 500   | 500   | ... | 500   | 0     |
- #           | Provider Earned from Employer | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
- #           | Provider Paid by SFA          | 0     | 1000  | 1000  | 1000  | 500   | ... | 500   | 500   |
- #           | Payment due from Employer     | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
- #           | Levy account debited          | 0     | 1000  | 1000  | 1000  | 500   | ... | 500   | 500   |
- #           | SFA Levy employer budget      | 1000  | 1000  | 1000  | 500   | 500   | ... | 500   | 0     |
- #           | SFA Levy co-funding budget    | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
-
+@ignore
 Feature: Levy learner, and there is a change to the negotiated price which happens at the end of the month - PV2-294
 	As a provider,
 	I want a levy learner, changes to the agreed price at the end of the month, to be paid the correct amount
@@ -127,3 +106,26 @@ Examples:
         | R10/Current Academic Year | 
         | R11/Current Academic Year | 
         | R12/Current Academic Year | 
+
+
+ #Scenario: Earnings and payments for a DAS learner, levy available, and there is a change to the Negotiated Cost which happens at the end of the month
+ #       Given the following commitments exist:
+ #           | commitment Id | version Id | ULN       | start date | end date   | status | agreed price | effective from | effective to |
+ #           | 1             | 1-001      | learner a | 01/08/2018 | 31/08/2019 | active | 15000        | 01/08/2018     | 31/10/2018   |
+ #           | 1             | 1-002      | learner a | 01/08/2018 | 31/08/2019 | active | 9375         | 01/11/2018     |              |
+ #       When an ILR file is submitted with the following data:
+ #           | ULN       | start date | planned end date | actual end date | completion status | Total training price 1 | Total training price 1 effective date | Total assessment price 1 | Total assessment price 1 effective date | Total training price 2 | Total training price 2 effective date | Total assessment price 2 | Total assessment price 2 effective date |
+ #           | learner a | 01/08/2018 | 04/08/2019       |                 | continuing        | 12000                  | 01/08/2018                            | 3000                     | 01/08/2018                              | 7500                   | 01/11/2018                            | 1875                     | 01/11/2018                              |
+ #       #Then the data lock status will be as follows:
+ #       #    | Payment type | 08/18               | 09/18               | 10/18               | 11/18               | 12/18               | ... | 07/19               |
+ #       #    | On-program   | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-001 | commitment 1 v1-002 | commitment 1 v1-002 | ... | commitment 1 v1-002 | 
+ #       Then the provider earnings and payments break down as follows:
+ #           | Type                          | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 | ... | 07/19 | 08/19 |
+ #           | Provider Earned Total         | 1000  | 1000  | 1000  | 500   | 500   | ... | 500   | 0     |
+ #           | Provider Earned from SFA      | 1000  | 1000  | 1000  | 500   | 500   | ... | 500   | 0     |
+ #           | Provider Earned from Employer | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
+ #           | Provider Paid by SFA          | 0     | 1000  | 1000  | 1000  | 500   | ... | 500   | 500   |
+ #           | Payment due from Employer     | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
+ #           | Levy account debited          | 0     | 1000  | 1000  | 1000  | 500   | ... | 500   | 500   |
+ #           | SFA Levy employer budget      | 1000  | 1000  | 1000  | 500   | 500   | ... | 500   | 0     |
+ #           | SFA Levy co-funding budget    | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |

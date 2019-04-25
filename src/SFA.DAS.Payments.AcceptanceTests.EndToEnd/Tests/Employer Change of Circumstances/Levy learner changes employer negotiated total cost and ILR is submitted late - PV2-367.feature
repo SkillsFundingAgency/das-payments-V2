@@ -1,3 +1,4 @@
+@ignore
 Feature: Levy learner changes employer negotiated total cost and ILR is submitted late - PV2-367
 		As a provider,
 		I want earnings and payments for a levy learner, levy available, where a total cost changes during the programme and ILR is submitted late, to be paid the correct amount

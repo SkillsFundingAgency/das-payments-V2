@@ -1,3 +1,4 @@
+@ignore
 Feature: Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368
 		As a provider,
 		I want earnings and payments for a levy learner, levy available, and they have a break in learning at the end of a month and return at the start of a later month with a different employer, to be paid the correct amount

@@ -1,3 +1,4 @@
+@ignore
 Feature: Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360
 As a provider,
 I want earnings and payments for a levy learner, levy available, and there is a change to the Negotiated Cost which happens in the middle of the month to be paid the correct amount
