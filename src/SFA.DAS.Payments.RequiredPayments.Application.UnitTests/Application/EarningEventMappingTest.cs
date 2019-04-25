@@ -15,6 +15,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 {
@@ -100,11 +101,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
         [Test]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredIncentiveAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredCoInvestedAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredLevyAmount))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredLevyAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CompletionPaymentHeldBackEvent))]
         public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType, Type requiredPaymentEventType)
         {
@@ -113,6 +111,25 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.ContractType.Should().Be(ContractType.Act2);
+        }
+
+        [Test]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act1)]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act2)]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount), ContractType.Act1)]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount), ContractType.Act2)]
+        [TestCase(typeof(CalculatedRequiredLevyAmount), ContractType.Act1)]
+        [TestCase(typeof(CalculatedRequiredLevyAmount), ContractType.Act2)]
+        public void ContractTypeIsCorrectForFunctionalSkills(Type requiredPaymentEventType, ContractType expectedContractType)
+        {
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var earningEvent = new FunctionalSkillEarningsEvent
+            {
+                ContractType = expectedContractType,
+            };
+            
+            var actual = mapper.Map(earningEvent, requiredPaymentEvent);
+            actual.ContractType.Should().Be(expectedContractType);
         }
 
         [Test]
@@ -154,6 +171,61 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             // assert
             AssertCommonProperties(requiredPayment, functionalSkillEarningsEvent);
+            requiredPayment.StartDate.Should().Be(DateTime.Today.AddDays(-10));
+        }
+
+        [Test]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(CalculatedRequiredLevyAmount))]
+        public void PriceEpisodeMapsEarningsInfo(Type requiredPaymentEventType)
+        {
+            var priceEpisode = new PriceEpisode
+            {
+                StartDate = DateTime.UtcNow,
+                PlannedEndDate = DateTime.UtcNow,
+                ActualEndDate = DateTime.UtcNow,
+                CompletionAmount = 100M,
+                InstalmentAmount = 200M,
+                NumberOfInstalments = 16
+            };
+
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+
+            mapper.Map(priceEpisode, requiredPaymentEvent);
+
+            requiredPaymentEvent.StartDate.Should().Be(priceEpisode.StartDate);
+            requiredPaymentEvent.PlannedEndDate.Should().Be(priceEpisode.PlannedEndDate);
+            requiredPaymentEvent.ActualEndDate.Should().Be(priceEpisode.ActualEndDate);
+            requiredPaymentEvent.CompletionStatus.Should().Be(0);
+            requiredPaymentEvent.CompletionAmount.Should().Be(priceEpisode.CompletionAmount);
+            requiredPaymentEvent.InstalmentAmount.Should().Be(priceEpisode.InstalmentAmount);
+            requiredPaymentEvent.NumberOfInstalments.Should().Be((short)priceEpisode.NumberOfInstalments);
+        }
+
+        [Test]
+        public void PaymentHistoryEntityMapsEarningsInfo()
+        {
+            var paymentHistoryEntity = new PaymentHistoryEntity
+            {
+                CollectionPeriod = new CollectionPeriod(),
+                StartDate = DateTime.UtcNow,
+                PlannedEndDate = DateTime.UtcNow,
+                ActualEndDate = DateTime.UtcNow,
+                CompletionAmount = 100M,
+                InstalmentAmount = 200M,
+                NumberOfInstalments = 16
+            };
+
+            var payment = mapper.Map<Payment>(paymentHistoryEntity);
+
+            payment.StartDate.Should().Be(paymentHistoryEntity.StartDate);
+            payment.PlannedEndDate.Should().Be(paymentHistoryEntity.PlannedEndDate);
+            payment.ActualEndDate.Should().Be(paymentHistoryEntity.ActualEndDate);
+            payment.CompletionStatus.Should().Be(0);
+            payment.CompletionAmount.Should().Be(paymentHistoryEntity.CompletionAmount);
+            payment.InstalmentAmount.Should().Be(paymentHistoryEntity.InstalmentAmount);
+            payment.NumberOfInstalments.Should().Be((short)paymentHistoryEntity.NumberOfInstalments);
         }
 
         private static void AssertCommonProperties(RequiredPaymentEvent requiredPayment, IEarningEvent earning)
@@ -195,6 +267,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 },
                 JobId = 8,
                 IlrSubmissionDateTime = DateTime.Today,
+                StartDate = DateTime.Today.AddDays(-10),
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning

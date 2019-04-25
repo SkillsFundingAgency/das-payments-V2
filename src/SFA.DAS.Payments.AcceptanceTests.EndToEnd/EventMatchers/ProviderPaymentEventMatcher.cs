@@ -157,17 +157,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(ProviderPaymentEvent expected, ProviderPaymentEvent actual)
         {
-            return expected.GetType() == actual.GetType() &&
-                   expected.TransactionType == actual.TransactionType &&
-                   expected.AmountDue == actual.AmountDue &&
-                   expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
-                   expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
-                   expected.DeliveryPeriod == actual.DeliveryPeriod &&
-                   expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
-                   expected.Learner.Uln == actual.Learner.Uln &&
-                   expected.AccountId == actual.AccountId &&
-                   expected.LearningAim.StandardCode == actual.LearningAim.StandardCode;
+            if (expected.GetType() == actual.GetType() &&
+                expected.TransactionType == actual.TransactionType &&
+                expected.AmountDue == actual.AmountDue &&
+                expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
+                expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
+                expected.DeliveryPeriod == actual.DeliveryPeriod &&
+                expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
+                expected.Learner.Uln == actual.Learner.Uln &&
+                expected.LearningAim.StandardCode == actual.LearningAim.StandardCode)
+            {
+                if (actual.LearningAim.Reference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase))
+                {
+                    return expected.AccountId == actual.AccountId;
+                }
+
+                return true;
+            }
+
+            return false;
         }
-        
     }
 }

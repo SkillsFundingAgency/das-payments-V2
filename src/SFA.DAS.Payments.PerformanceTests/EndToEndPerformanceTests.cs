@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         {
             Randomizer.Seed = new Random(8675309);
             var sessions = Enumerable.Range(1, providerCount)
-                .Select(i => new TestSession(i))
+                .Select(i => new TestSession(ukprn: i))
                 .ToList();
             var ilrSubmissions = new List<Task>();
             if (providerLearnerCount > 1)

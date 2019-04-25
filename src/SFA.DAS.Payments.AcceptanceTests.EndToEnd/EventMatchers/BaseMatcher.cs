@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -15,6 +16,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         public (bool pass, string reason, bool final) MatchPayments()
         {            
             var actualPayments = GetActualEvents();
+
+            actualPayments = actualPayments.Where(x => (x is FunctionalSkillEarningsEvent &&
+                                                       (x as FunctionalSkillEarningsEvent).Earnings.Any()) ||
+                                                       (x as FunctionalSkillEarningsEvent) == null)
+                .ToList();
 
             var expectedPayments = GetExpectedEvents();
 
