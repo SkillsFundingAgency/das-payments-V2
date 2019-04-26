@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [SetUp]
         public void Prepare()
         {
-            mocker = AutoMock.GetLoose();
+            mocker = AutoMock.GetStrict();
             var earningPeriod = new EarningPeriod
             {
                 Period = 1
@@ -199,6 +199,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 });
             var courseValidator = mocker.Create<CourseValidationProcessor>();
             var result = courseValidator.ValidateCourse(dataLockValidationModel);
+
+            mocker.Mock<IStartDateValidator>()
+             .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+
+            mocker.Mock<INegotiatedPriceValidator>()
+                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipPauseValidator>()
+                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+
+
             result.MatchedPriceEpisode.Should().NotBeNull();
             result.MatchedPriceEpisode.Id.Should().Be(52);
         }
@@ -246,6 +257,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 });
             var courseValidator = mocker.Create<CourseValidationProcessor>();
             var result = courseValidator.ValidateCourse(dataLockValidationModel);
+
+            mocker.Mock<IStartDateValidator>()
+               .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+
+            mocker.Mock<INegotiatedPriceValidator>()
+                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipPauseValidator>()
+                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+
             result.MatchedPriceEpisode.Should().BeNull();
         }
 
@@ -292,8 +313,20 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 });
             var courseValidator = mocker.Create<CourseValidationProcessor>();
             var result = courseValidator.ValidateCourse(dataLockValidationModel);
+
+            mocker.Mock<IStartDateValidator>()
+             .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+
+            mocker.Mock<INegotiatedPriceValidator>()
+                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipPauseValidator>()
+                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+
+
             result.DataLockErrors.Should().Contain(DataLockErrorCode.DLOCK_07);
             result.DataLockErrors.Should().Contain(DataLockErrorCode.DLOCK_12);
+            result.DataLockErrors.Should().HaveCount(2);
         }
     }
 }

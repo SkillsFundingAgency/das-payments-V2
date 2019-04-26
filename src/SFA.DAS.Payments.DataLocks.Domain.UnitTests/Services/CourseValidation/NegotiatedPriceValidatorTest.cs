@@ -70,16 +70,35 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var validator = new NegotiatedPriceValidator();
             var result = validator.Validate(validation);
             result.ApprenticeshipPriceEpisodes.Any(ape => ape.Id == 98).Should().BeTrue();
+            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
+        }
+
+        [Test]
+        public void ShouldNotMatchRevmovedApprenticeshipPriceEpisodes()
+        {
+            var validation = new DataLockValidationModel
+            {
+                PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },
+                EarningPeriod = period,
+                Apprenticeship = new ApprenticeshipModel
+                {
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel{ Cost = Price, Id = 98},
+                        new ApprenticeshipPriceEpisodeModel{Cost = Price , Id = 99, Removed = true}
+                    }
+                }
+            };
+
+            var validator = new NegotiatedPriceValidator();
+            var result = validator.Validate(validation);
+            result.ApprenticeshipPriceEpisodes.Any(ape => ape.Id == 98).Should().BeTrue();
+            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
         }
 
         [Test]
         public void GivenAgreedPriceDoNotMatchReturnDataLockError07()
         {
-
-            var apprenticeship = new ApprenticeshipModel
-            {
-            };
-
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { AgreedPrice = Price, Identifier = PriceEpisodeIdentifier },

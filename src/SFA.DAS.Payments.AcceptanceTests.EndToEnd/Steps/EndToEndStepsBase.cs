@@ -30,6 +30,7 @@ using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -178,119 +179,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var apprenticeshipSpec in apprenticeshipsSpec)
             {
                 var foundApprenticeship = Apprenticeships.SingleOrDefault(x => x.Identifier == apprenticeshipSpec.Identifier);
-              
-
                 if (foundApprenticeship == null)
                 {
-                    await AddApprenticeships( apprenticeshipSpec);
+                    await ApprenticeshipHelper.AddApprenticeships(apprenticeshipSpec, Apprenticeships, DataContext, TestSession);
                 }
                 else
                 {
-                    await UpdateApprenticeships(foundApprenticeship.CommitmentId, apprenticeshipSpec);
+                    await ApprenticeshipHelper.UpdateApprenticeships(foundApprenticeship.CommitmentId, apprenticeshipSpec, DataContext);
                 }
             }
-        }
-
-        private async Task AddApprenticeships( Apprenticeship apprenticeshipSpec)
-        {
-            var apprenticeshipModel = CreateApprenticeshipModels(apprenticeshipSpec);
-
-            apprenticeshipModel.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-            {
-                CreateApprenticeshipPriceEpisodes(apprenticeshipSpec)
-            };
-            await DataContext.Apprenticeship.AddAsync(apprenticeshipModel).ConfigureAwait(false);
-            Apprenticeships.Add(apprenticeshipSpec);
-
-            await DataContext.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        private async Task UpdateApprenticeships(long currentApprenticeshipId, Apprenticeship apprenticeshipSpec)
-        {
-            var savedApprenticeship = await DataContext.Apprenticeship.SingleAsync(x => x.Id == currentApprenticeshipId).ConfigureAwait(false);
-            savedApprenticeship.Status = apprenticeshipSpec.Status.ToApprenticeshipPaymentStatus();
-
-            var currentEpisodes = await DataContext.ApprenticeshipPriceEpisode
-                .Where(x => x.ApprenticeshipId == currentApprenticeshipId)
-                .ToListAsync().ConfigureAwait(false);
-
-            currentEpisodes.ForEach(x => x.Removed = true);
-
-            apprenticeshipSpec.CommitmentId = currentApprenticeshipId;
-            var newPriceEpisodes = CreateApprenticeshipPriceEpisodes(apprenticeshipSpec);
-
-            await DataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisodes).ConfigureAwait(false);
-            await DataContext.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        private ApprenticeshipModel CreateApprenticeshipModels(Apprenticeship apprenticeshipSpec)
-        {
-            if (apprenticeshipSpec.CommitmentId == default(long)) apprenticeshipSpec.CommitmentId = TestSession.GenerateId();
-
-            if (apprenticeshipSpec.Ukprn == default(long))
-            {
-                if (string.IsNullOrWhiteSpace(apprenticeshipSpec.Provider))
-                {
-                    apprenticeshipSpec.Ukprn = TestSession.Ukprn;
-                }
-                else
-                {
-                    apprenticeshipSpec.Ukprn = TestSession.GetProviderByIdentifier(apprenticeshipSpec.Provider).Ukprn;
-                }
-            }
-
-            if (apprenticeshipSpec.AccountId == default(long))
-                apprenticeshipSpec.AccountId = TestSession.GetEmployer(apprenticeshipSpec.Employer).AccountId;
-
-            if (apprenticeshipSpec.Uln == default(long))
-            {
-                var learnerId = string.IsNullOrWhiteSpace(apprenticeshipSpec.Identifier)
-                    ? TestSession.Learner.LearnerIdentifier 
-                    : apprenticeshipSpec.LearnerId;
-
-                apprenticeshipSpec.Uln = TestSession.GetLearner(apprenticeshipSpec.Ukprn, learnerId).Uln;
-            }
-
-
-            var apprenticeshipModel = new ApprenticeshipModel
-            {
-                Id = apprenticeshipSpec.CommitmentId,
-                Ukprn = apprenticeshipSpec.Ukprn,
-                AccountId = apprenticeshipSpec.AccountId,
-                Uln = apprenticeshipSpec.Uln,
-                FrameworkCode = apprenticeshipSpec.FrameworkCode,
-                ProgrammeType = apprenticeshipSpec.ProgrammeType,
-                PathwayCode = apprenticeshipSpec.PathwayCode,
-                Priority = apprenticeshipSpec.Priority,
-                Status = apprenticeshipSpec.Status.ToApprenticeshipPaymentStatus(),
-                LegalEntityName = "Test SFA",
-                EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
-                EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
-                AgreedOnDate = DateTime.UtcNow,
-                StandardCode = apprenticeshipSpec.StandardCode
-            };
-
-            return apprenticeshipModel;
-        }
-
-        private static ApprenticeshipPriceEpisodeModel CreateApprenticeshipPriceEpisodes(Apprenticeship apprenticeshipSpec)
-        {
-            var startDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveFrom)
-                ? apprenticeshipSpec.StartDate.ToDate()
-                : apprenticeshipSpec.EffectiveFrom.ToDate();
-
-            var endDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveTo)
-                ? default(DateTime?)
-                : apprenticeshipSpec.EffectiveTo.ToDate();
-
-            return new ApprenticeshipPriceEpisodeModel
-            {
-                ApprenticeshipId = apprenticeshipSpec.CommitmentId,
-                Cost = apprenticeshipSpec.AgreedPrice,
-                StartDate = startDate,
-                EndDate = endDate
-            };
-
         }
 
         protected async Task SaveLevyAccount(Employer employer)
