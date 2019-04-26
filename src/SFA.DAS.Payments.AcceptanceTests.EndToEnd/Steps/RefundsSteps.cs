@@ -2,8 +2,8 @@ using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,8 +15,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     public class RefundsSteps : EndToEndStepsBase
     {
-        public RefundsSteps(FeatureContext context) : base(context)
+        private readonly FeatureNumber featureNumber;
+
+        public RefundsSteps(FeatureContext context, FeatureNumber featureNumber) : base(context)
         {
+            this.featureNumber = featureNumber;
         }
 
         [Given("\"(.*)\" previously submitted the following learner details")]
@@ -36,7 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenThePreviouslySubmittedTheFollowingLearnerDetails(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-        
+
             var newIlrSubmission = table.CreateSet<Training>().ToList();
             AddTestLearners(newIlrSubmission, provider.Ukprn);
 
@@ -106,9 +109,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             Task verifyIlr() => WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier);
 
-            var featureContext = (FeatureContext)Context;
-            var featureNumber = featureContext.FeatureInfo.Title.Substring(
-                featureContext.FeatureInfo.Title.IndexOf("PV2-", StringComparison.Ordinal) + 4, 3);
+            var featureNumber = this.featureNumber.Extract();
 
             await Scope.Resolve<IIlrService>().PublishNonLevyLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
         }
@@ -120,7 +121,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await HandleIlrReSubmissionForTheLearners(collectionPeriodText, provider).ConfigureAwait(false);
         }
-        
+
         [Then(@"only the following provider payments will be recorded")]
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
@@ -139,13 +140,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await ThenNoProviderPaymentsWillBeRecorded(TestSession.Provider.Identifier).ConfigureAwait(false);
         }
-        
+
         [Then(@"no ""(.*)"" payments will be recorded")]
         public async Task ThenNoProviderPaymentsWillBeRecorded(string providerIdentifier)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Recorded payments check failed").ConfigureAwait(false);
-        }        
+        }
     }
 }
