@@ -172,11 +172,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected async Task AddOrUpdateTestApprenticeships(List<Apprenticeship> apprenticeshipsSpec)
+        protected async Task AddOrUpdateTestApprenticeships(List<Apprenticeship> apprenticeshipSpecs)
         {
             if (Apprenticeships == null) Apprenticeships = new List<Apprenticeship>();
 
-            foreach (var apprenticeshipSpec in apprenticeshipsSpec)
+            foreach (var apprenticeshipSpec in apprenticeshipSpecs)
             {
                 var foundApprenticeship = Apprenticeships.SingleOrDefault(x => x.Identifier == apprenticeshipSpec.Identifier);
                 if (foundApprenticeship == null)

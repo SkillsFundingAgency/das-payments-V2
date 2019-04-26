@@ -5,28 +5,20 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public interface IApprenticeshipPauseValidator: ICourseValidator { }
-
-    public class ApprenticeshipPauseValidator : IApprenticeshipPauseValidator
+    public class ApprenticeshipPauseValidator : BaseCourseDateValidator, ICourseValidator
     {
-        public ValidationResult Validate(DataLockValidationModel dataLockValidationModel)
+        protected override void SetDataLockErrorCode(ValidationResult result, ApprenticeshipModel apprenticeship)
         {
-            var result = new ValidationResult
-            {
-                ApprenticeshipId = dataLockValidationModel.Apprenticeship.Id,
-                Period = dataLockValidationModel.EarningPeriod.Period,
-            };
-
-            if (dataLockValidationModel.Apprenticeship.Status == ApprenticeshipStatus.Paused)
+            if (apprenticeship.Status == ApprenticeshipStatus.Paused)
             {
                 result.DataLockErrorCode = DataLockErrorCode.DLOCK_12;
             }
-            else
-            {
-                result.ApprenticeshipPriceEpisodes.AddRange(dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes);
-            }
+        }
 
-            return result;
+        protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(DataLockValidationModel dataLockValidationModel)
+        {
+           
+            return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes.Where(o => !o.Removed)?.ToList();
         }
     }
 }

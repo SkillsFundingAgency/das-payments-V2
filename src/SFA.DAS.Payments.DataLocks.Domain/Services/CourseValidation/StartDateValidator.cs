@@ -1,38 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public interface IStartDateValidator : ICourseValidator
+    public class StartDateValidator : BaseCourseDateValidator, ICourseValidator
     {
-
-    }
-
-    public class StartDateValidator : IStartDateValidator
-    {
-        public ValidationResult Validate(DataLockValidationModel dataLockValidationModel)
+        protected override void SetDataLockErrorCode(ValidationResult result, ApprenticeshipModel apprenticeship)
         {
-            var result = new ValidationResult
-            {
-                ApprenticeshipId = dataLockValidationModel.Apprenticeship.Id,
-                Period = dataLockValidationModel.EarningPeriod.Period,
-            };
+            result.DataLockErrorCode = DataLockErrorCode.DLOCK_09;
+        }
 
+        protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(DataLockValidationModel dataLockValidationModel)
+        {
             var apprenticeshipPriceEpisodes = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
                 .Where(priceEpisode => priceEpisode.StartDate <= dataLockValidationModel.PriceEpisode.StartDate && !priceEpisode.Removed)
                 .ToList();
-
-            if (!apprenticeshipPriceEpisodes.Any())
-            {
-                result.DataLockErrorCode = DataLockErrorCode.DLOCK_09;
-            }
-            else
-            {
-                result.ApprenticeshipPriceEpisodes.AddRange(apprenticeshipPriceEpisodes);
-            }
-
-            return result;
+            return apprenticeshipPriceEpisodes;
         }
     }
 }

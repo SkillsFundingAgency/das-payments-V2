@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 {
-    public class ApprenticeshipHelper
+    public static class ApprenticeshipHelper
     {
         public static async Task AddApprenticeships(Apprenticeship apprenticeshipSpec, List<Apprenticeship> testSessionApprenticeships, IPaymentsDataContext dataContext, TestSession testSession)
         {

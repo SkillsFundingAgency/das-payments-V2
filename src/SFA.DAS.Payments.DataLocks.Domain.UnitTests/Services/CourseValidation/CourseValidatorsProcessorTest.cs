@@ -19,6 +19,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         private List<ICourseValidator> courseValidators;
         private DataLockValidationModel dataLockValidationModel;
 
+        private Mock<ICourseValidator> startDateValidator;
+        private Mock<ICourseValidator> negotiatedPriceValidator;
+        private Mock<ICourseValidator> apprenticeshipPauseValidator;
+
+
         [SetUp]
         public void Prepare()
         {
@@ -43,11 +48,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 }
             };
 
+            startDateValidator = new Mock<ICourseValidator>();
+            negotiatedPriceValidator = new Mock<ICourseValidator>();
+            apprenticeshipPauseValidator = new Mock<ICourseValidator>();
+
             courseValidators = new List<ICourseValidator>
             {
-                mocker.Mock<IStartDateValidator>().Object,
-                mocker.Mock<INegotiatedPriceValidator>().Object,
-                mocker.Mock<IApprenticeshipPauseValidator>().Object,
+                startDateValidator.Object,
+                negotiatedPriceValidator.Object,
+                apprenticeshipPauseValidator.Object,
             };
             mocker.Provide<IEnumerable<ICourseValidator>>(courseValidators);
         }
@@ -55,41 +64,23 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void UsesAllCourseValidators()
         {
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel{Id = 51},
-                    }
-                });
-            mocker.Mock<INegotiatedPriceValidator>()
+                .Returns(() => new ValidationResult());
+           negotiatedPriceValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel{Id = 52}
-                    }
-                });
-            mocker.Mock<IApprenticeshipPauseValidator>()
+                .Returns(() => new ValidationResult());
+            apprenticeshipPauseValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel{Id = 53}
-                    }
-                });
+                .Returns(() => new ValidationResult());
 
             var courseValidator = mocker.Create<CourseValidationProcessor>();
             courseValidator.ValidateCourse(dataLockValidationModel);
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
                 .Verify(x => x.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
-            mocker.Mock<INegotiatedPriceValidator>()
+           negotiatedPriceValidator
                 .Verify(x => x.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
-            mocker.Mock<IApprenticeshipPauseValidator>()
+           apprenticeshipPauseValidator
                 .Verify(x => x.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
         }
 
@@ -106,7 +97,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 }
             };
 
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -116,7 +107,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             new ApprenticeshipPriceEpisodeModel{Id = 52}
                     }
                 });
-            mocker.Mock<INegotiatedPriceValidator>()
+           negotiatedPriceValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -125,7 +116,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             new ApprenticeshipPriceEpisodeModel{Id = 52}
                     }
                 });
-            mocker.Mock<IApprenticeshipPauseValidator>()
+           apprenticeshipPauseValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -134,22 +125,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             new ApprenticeshipPriceEpisodeModel{Id = 52}
                     }
                 });
-            var courseValidator = mocker.Create<CourseValidationProcessor>();
+           var courseValidator = mocker.Create<CourseValidationProcessor>();
             courseValidator.ValidateCourse(dataLockValidationModel);
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
                 .Verify(validator => validator.Validate(It.Is<DataLockValidationModel>(model =>
                     model.Apprenticeship.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
                     model.Apprenticeship.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
 
-            mocker.Mock<INegotiatedPriceValidator>()
-                .Verify(validator => validator.Validate(It.Is<DataLockValidationModel>(model =>
-                    model.Apprenticeship.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
-                    model.Apprenticeship.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
+            negotiatedPriceValidator
+                 .Verify(validator => validator.Validate(It.Is<DataLockValidationModel>(model =>
+                     model.Apprenticeship.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
+                     model.Apprenticeship.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
 
-            mocker.Mock<IApprenticeshipPauseValidator>()
-                .Verify(validator => validator.Validate(It.Is<DataLockValidationModel>(model =>
-                    model.Apprenticeship.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
-                    model.Apprenticeship.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
+            apprenticeshipPauseValidator
+                 .Verify(validator => validator.Validate(It.Is<DataLockValidationModel>(model =>
+                     model.Apprenticeship.ApprenticeshipPriceEpisodes.All(ape => ape.Id == 50 || ape.Id == 51 || ape.Id == 52) &&
+                     model.Apprenticeship.ApprenticeshipPriceEpisodes.Count == 3)), Times.Once);
 
         }
 
@@ -167,7 +158,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     new ApprenticeshipPriceEpisodeModel {Id = 54},
                 }
             };
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -177,7 +168,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel{Id = 52}
                     }
                 });
-            mocker.Mock<INegotiatedPriceValidator>()
+           negotiatedPriceValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -187,7 +178,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel{Id = 53},
                     }
                 });
-            mocker.Mock<IApprenticeshipPauseValidator>()
+           apprenticeshipPauseValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -200,13 +191,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var courseValidator = mocker.Create<CourseValidationProcessor>();
             var result = courseValidator.ValidateCourse(dataLockValidationModel);
 
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
              .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-            mocker.Mock<INegotiatedPriceValidator>()
+           negotiatedPriceValidator
                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-            mocker.Mock<IApprenticeshipPauseValidator>()
+           apprenticeshipPauseValidator
                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
 
@@ -228,7 +219,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     new ApprenticeshipPriceEpisodeModel {Id = 54},
                 }
             };
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -237,7 +228,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     {
                     }
                 });
-            mocker.Mock<INegotiatedPriceValidator>()
+           negotiatedPriceValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -246,7 +237,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel{Id = 52},
                     }
                 });
-            mocker.Mock<IApprenticeshipPauseValidator>()
+           apprenticeshipPauseValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -258,13 +249,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var courseValidator = mocker.Create<CourseValidationProcessor>();
             var result = courseValidator.ValidateCourse(dataLockValidationModel);
 
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
                .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-            mocker.Mock<INegotiatedPriceValidator>()
+           negotiatedPriceValidator
                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-            mocker.Mock<IApprenticeshipPauseValidator>()
+           apprenticeshipPauseValidator
                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
             result.MatchedPriceEpisode.Should().BeNull();
@@ -284,7 +275,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     new ApprenticeshipPriceEpisodeModel {Id = 54},
                 }
             };
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -293,7 +284,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     {
                     }
                 });
-            mocker.Mock<INegotiatedPriceValidator>()
+           negotiatedPriceValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -302,7 +293,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel{Id = 52},
                     }
                 });
-            mocker.Mock<IApprenticeshipPauseValidator>()
+           apprenticeshipPauseValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
@@ -314,13 +305,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var courseValidator = mocker.Create<CourseValidationProcessor>();
             var result = courseValidator.ValidateCourse(dataLockValidationModel);
 
-            mocker.Mock<IStartDateValidator>()
+            startDateValidator
              .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-            mocker.Mock<INegotiatedPriceValidator>()
+           negotiatedPriceValidator
                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-            mocker.Mock<IApprenticeshipPauseValidator>()
+           apprenticeshipPauseValidator
                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
 

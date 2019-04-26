@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
         [Test]
-        public void AssignsCoveringPriceEpisodes()
+        public void AssignsAllValidPriceEpisodes()
         {
             var validation = new DataLockValidationModel
             {
@@ -67,24 +67,24 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     {
                         new ApprenticeshipPriceEpisodeModel
                         {
-                            Id = 97,
+                            Id = 1,
                             StartDate = startDate.AddDays(-6),
                             EndDate = startDate.AddDays(-5),
                         },
                         new ApprenticeshipPriceEpisodeModel
                         {
-                            Id = 99,
+                            Id = 2,
                             StartDate = startDate.AddDays(-2),
                             EndDate = startDate.AddDays(-1)
                         },
                         new ApprenticeshipPriceEpisodeModel
                         {
-                            Id = 100,
+                            Id = 3,
                             StartDate = startDate
                         },
                         new ApprenticeshipPriceEpisodeModel
                         {
-                            Id = 98,
+                            Id = 4,
                             StartDate = startDate.AddDays(-4),
                             EndDate = startDate.AddDays(-3),
                         },
@@ -95,8 +95,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var validator = new StartDateValidator();
             var result = validator.Validate(validation);
             result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodes.Any(ape => ape.Id == 99).Should().BeTrue();
-            result.ApprenticeshipPriceEpisodes.Any(ape => ape.Id == 100).Should().BeTrue();
+            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(1);
+            result.ApprenticeshipPriceEpisodes[1].Id.Should().Be(2);
+            result.ApprenticeshipPriceEpisodes[2].Id.Should().Be(3);
+            result.ApprenticeshipPriceEpisodes[3].Id.Should().Be(4);
         }
 
         [Test]

@@ -55,13 +55,40 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 {
                     Id = 1,
                     Status = ApprenticeshipStatus.Paused,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
                 }
             };
 
             var validator = new ApprenticeshipPauseValidator();
             var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().NotBeNull();
             result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_12);
+        }
+
+        [Test]
+        public void ShouldNotMatchRemovedApprenticeshipPriceEpisodes()
+        {
+            var validation = new DataLockValidationModel
+            {
+                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
+                EarningPeriod = period,
+                Apprenticeship = new ApprenticeshipModel
+                {
+                    Id = 1,
+                    Status = ApprenticeshipStatus.Active,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Removed = true
+                        }
+                    }
+                },
+            };
+
+            var validator = new ApprenticeshipPauseValidator();
+            var result = validator.Validate(validation);
+            result.DataLockErrorCode.Should().BeNull();
+            result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
         }
     }
 }
