@@ -609,6 +609,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     if (e.DeliveryPeriod != tableRow["Delivery Period"])
                         return false;
 
+                    if (tableRow.TryGetValue("Learning Aim Reference", out var aimRef) && aimRef != e.LearningAimReference)
+                        return false;
+
                     if (tableRow.TryGetValue("Aim Sequence Number", out var aimSequenceNumber) && long.Parse(aimSequenceNumber) != e.AimSequenceNumber)
                         return false;
 
