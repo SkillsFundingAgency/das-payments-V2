@@ -125,5 +125,32 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             result.DataLockErrorCode.Should().NotBeNull();
             result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
         }
+
+        [Test]
+        public void ShouldNotMatchRevmovedApprenticeshipPriceEpisodes()
+        {
+            var validation = new DataLockValidationModel
+            {
+                PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
+                EarningPeriod = period,
+                Apprenticeship = new ApprenticeshipModel
+                {
+                    Id = 1,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            StartDate = startDate.AddDays(-1),
+                            Removed = true
+                        }
+                    }
+                }
+            };
+
+            var validator = new StartDateValidator();
+            var result = validator.Validate(validation);
+            result.DataLockErrorCode.Should().NotBeNull();
+            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
+        }
     }
 }
