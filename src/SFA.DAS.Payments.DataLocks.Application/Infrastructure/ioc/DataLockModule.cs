@@ -2,11 +2,12 @@
 using Autofac;
 using SFA.DAS.Payments.DataLocks.Application.Cache;
 using SFA.DAS.Payments.DataLocks.Application.Services;
-using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System.Collections.Generic;
+using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
+using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
 {
@@ -22,7 +23,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
 
             builder.RegisterAssemblyTypes(typeof(ICourseValidator).Assembly).As<ICourseValidator>().InstancePerLifetimeScope();
 
-            builder.RegisterType<CourseValidatorsProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<OnProgrammePeriodsValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<CourseValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }

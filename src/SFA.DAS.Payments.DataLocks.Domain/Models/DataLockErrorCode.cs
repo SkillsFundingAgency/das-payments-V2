@@ -12,6 +12,7 @@
         DLOCK_08 = 8,
         DLOCK_09 = 9,
         DLOCK_10 = 10,
-        DLOCK_11 = 11
+        DLOCK_11 = 11,
+        DLOCK_12 = 12
     }
 }
