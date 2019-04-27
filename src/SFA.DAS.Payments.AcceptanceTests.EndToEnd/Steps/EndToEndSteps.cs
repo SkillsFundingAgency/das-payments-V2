@@ -120,7 +120,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
                 var apprenticeships = table.CreateSet<Apprenticeship>().ToList();
-                await AddTestApprenticeships(apprenticeships).ConfigureAwait(false);
+                await AddOrUpdateTestApprenticeships(apprenticeships).ConfigureAwait(false);
             }
         }
 
