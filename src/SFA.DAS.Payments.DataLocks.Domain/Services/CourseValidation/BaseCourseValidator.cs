@@ -5,8 +5,9 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public abstract class BaseCourseDateValidator
+    public abstract class BaseCourseValidator
     {
+        protected abstract DataLockErrorCode DataLockerErrorCode { get; } 
         public ValidationResult Validate(DataLockValidationModel dataLockValidationModel)
         {
             var result = CreateValidationResult(dataLockValidationModel);
@@ -15,17 +16,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
             if (FailedValidation(dataLockValidationModel.Apprenticeship.Status, validApprenticeshipPriceEpisodes))
             {
-                SetDataLockErrorCode(result, dataLockValidationModel.Apprenticeship);
+                result.DataLockErrorCode = DataLockerErrorCode;
             }
             else
             {
                 result.ApprenticeshipPriceEpisodes.AddRange(validApprenticeshipPriceEpisodes);
             }
-
             return result;
         }
-
-        protected abstract void SetDataLockErrorCode(ValidationResult result, ApprenticeshipModel apprenticeship);
 
         protected abstract List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes( DataLockValidationModel dataLockValidationModel);
 
