@@ -5,12 +5,9 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class NegotiatedPriceValidator : BaseCourseDateValidator,  ICourseValidator
+    public class NegotiatedPriceValidator : BaseCourseValidator,  ICourseValidator
     {
-        protected override void SetDataLockErrorCode(ValidationResult result, ApprenticeshipModel apprenticeship)
-        {
-            result.DataLockErrorCode = DataLockErrorCode.DLOCK_07;
-        }
+        protected override DataLockErrorCode DataLockerErrorCode => DataLockErrorCode.DLOCK_07;
 
         protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(DataLockValidationModel dataLockValidationModel)
         {
