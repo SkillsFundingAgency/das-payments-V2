@@ -9,10 +9,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
     {
         protected override void SetDataLockErrorCode(ValidationResult result, ApprenticeshipModel apprenticeship)
         {
-            if (apprenticeship.Status == ApprenticeshipStatus.Paused)
-            {
-                result.DataLockErrorCode = DataLockErrorCode.DLOCK_12;
-            }
+           result.DataLockErrorCode = DataLockErrorCode.DLOCK_12;
         }
 
         protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(DataLockValidationModel dataLockValidationModel)
@@ -20,5 +17,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
            
             return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes.Where(o => !o.Removed)?.ToList();
         }
+
+        protected override bool FailedValidation(ApprenticeshipStatus apprenticeshipStatus, List<ApprenticeshipPriceEpisodeModel> apprenticeshipPriceEpisodes)
+        {
+            return apprenticeshipStatus == ApprenticeshipStatus.Paused;
+        }
+
     }
 }

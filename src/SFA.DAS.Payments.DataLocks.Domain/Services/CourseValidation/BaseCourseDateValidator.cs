@@ -11,15 +11,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         {
             var result = CreateValidationResult(dataLockValidationModel);
 
-            var apprenticeshipPriceEpisodes = GetValidApprenticeshipPriceEpisodes(dataLockValidationModel);
+             var validApprenticeshipPriceEpisodes = GetValidApprenticeshipPriceEpisodes(dataLockValidationModel);
 
-            if (!apprenticeshipPriceEpisodes.Any())
+            if (FailedValidation(dataLockValidationModel.Apprenticeship.Status, validApprenticeshipPriceEpisodes))
             {
                 SetDataLockErrorCode(result, dataLockValidationModel.Apprenticeship);
             }
             else
             {
-                result.ApprenticeshipPriceEpisodes.AddRange(apprenticeshipPriceEpisodes);
+                result.ApprenticeshipPriceEpisodes.AddRange(validApprenticeshipPriceEpisodes);
             }
 
             return result;
@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
         protected abstract List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes( DataLockValidationModel dataLockValidationModel);
 
-        private static ValidationResult CreateValidationResult(DataLockValidationModel dataLockValidationModel)
+        private ValidationResult CreateValidationResult(DataLockValidationModel dataLockValidationModel)
         {
             var result = new ValidationResult
             {
@@ -38,5 +38,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             };
             return result;
         }
+
+        protected virtual bool FailedValidation(ApprenticeshipStatus  apprenticeshipStatus, List<ApprenticeshipPriceEpisodeModel> apprenticeshipPriceEpisodes)
+        {
+            return !apprenticeshipPriceEpisodes.Any();
+        }
+
     }
 }

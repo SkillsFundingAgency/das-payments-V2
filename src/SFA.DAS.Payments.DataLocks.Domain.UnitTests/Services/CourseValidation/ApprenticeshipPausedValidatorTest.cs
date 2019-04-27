@@ -35,13 +35,21 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 Apprenticeship = new ApprenticeshipModel
                 {
                     Id = 1 ,
-                    ApprenticeshipPriceEpisodes =new List<ApprenticeshipPriceEpisodeModel>()
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 100
+                        }
+                    }
                 }
             };
 
             var validator = new ApprenticeshipPauseValidator();
             var result = validator.Validate(validation);
             result.DataLockErrorCode.Should().BeNull();
+            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
+            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
         }
 
         [Test]
@@ -55,13 +63,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 {
                     Id = 1,
                     Status = ApprenticeshipStatus.Paused,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel()
+                    }
                 }
             };
 
             var validator = new ApprenticeshipPauseValidator();
             var result = validator.Validate(validation);
             result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_12);
+            result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
         }
 
         [Test]
