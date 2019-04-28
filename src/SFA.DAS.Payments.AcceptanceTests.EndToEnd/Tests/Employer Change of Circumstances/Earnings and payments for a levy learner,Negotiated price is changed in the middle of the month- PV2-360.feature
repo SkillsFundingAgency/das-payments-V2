@@ -1,4 +1,3 @@
-@ignore
 Feature: Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360
 As a provider,
 I want earnings and payments for a levy learner, levy available, and there is a change to the Negotiated Cost which happens in the middle of the month to be paid the correct amount
@@ -70,6 +69,10 @@ And only the following provider payments will be generated
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Standard Code |
     | R04/Current Academic Year | Nov/Current Academic Year | 833.33        | Learning         | 51            |
      
+
+
+
+
 	   #Scenario: Earnings and payments for a levy learner, levy available, and there is a change to the Negotiated Cost which happens in the middle of the month
   #      
   #      Given the following commitments exist:
