@@ -176,18 +176,52 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (Apprenticeships == null) Apprenticeships = new List<Apprenticeship>();
 
-            foreach (var apprenticeshipSpec in apprenticeshipSpecs)
+            var groupedApprenticeships = apprenticeshipSpecs
+                .GroupBy(a => a.Identifier)
+                //.Select(g =>
+                //{
+                //    var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(g.FirstOrDefault(), TestSession);
+                //    apprenticeship.ApprenticeshipPriceEpisodes = g.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
+                //    return (ApprenticeshipModel: apprenticeship, ApprenticeshipSpec: g.FirstOrDefault());
+
+                //})
+                .ToList();
+
+            foreach (var group in groupedApprenticeships)
             {
-                var foundApprenticeship = Apprenticeships.SingleOrDefault(x => x.Identifier == apprenticeshipSpec.Identifier);
-                if (foundApprenticeship == null)
+                var specApprenticeship = Apprenticeships.FirstOrDefault(a => a.Identifier == group.Key);
+                if (specApprenticeship == null)
                 {
-                    await ApprenticeshipHelper.AddApprenticeships(apprenticeshipSpec, Apprenticeships, DataContext, TestSession);
+                    //use last apprenticeship to make sure it picks up the most recent status
+                    specApprenticeship = group.LastOrDefault() ?? throw new InvalidOperationException($"No apprenticeships in group. Identifier: {group.Key}");
+                    var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
+                    apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
+                    await ApprenticeshipHelper.AddApprenticeship(apprenticeship, DataContext).ConfigureAwait(false);
+                    specApprenticeship.CommitmentId = apprenticeship.Id;
+                    Apprenticeships.Add(specApprenticeship);
                 }
                 else
                 {
-                    await ApprenticeshipHelper.UpdateApprenticeships(foundApprenticeship.CommitmentId, apprenticeshipSpec, DataContext);
+                    var priceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
+                    var status = group.LastOrDefault()?.Status?.ToApprenticeshipPaymentStatus() ??
+                                 throw new InvalidOperationException($"last item not found: {group.Key}");
+                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.CommitmentId, 
+                        status, priceEpisodes, DataContext);
                 }
             }
+
+            //foreach (var apprenticeshipSpec in apprenticeshipSpecs)
+            //{
+            //    var foundApprenticeship = Apprenticeships.SingleOrDefault(x => x.Identifier == apprenticeshipSpec.Identifier);
+            //    if (foundApprenticeship == null)
+            //    {
+            //        await ApprenticeshipHelper.AddApprenticeships(apprenticeshipSpec, Apprenticeships, DataContext, TestSession);
+            //    }
+            //    else
+            //    {
+            //        await ApprenticeshipHelper.UpdateApprenticeships(foundApprenticeship.CommitmentId, apprenticeshipSpec, DataContext);
+            //    }
+            //}
         }
 
         protected async Task SaveLevyAccount(Employer employer)
@@ -491,7 +525,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
             {
-                sfaContributionPeriodisedValue = new T {AttributeName = "PriceEpisodeSFAContribPct",};
+                sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeSFAContribPct", };
                 aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
             }
 
@@ -504,7 +538,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
                     if (periodisedValues == null)
                     {
-                        periodisedValues = new T {AttributeName = earningValue.Key.ToAttributeName()};
+                        periodisedValues = new T { AttributeName = earningValue.Key.ToAttributeName() };
                         aimPeriodisedValues.Add(periodisedValues);
                     }
 

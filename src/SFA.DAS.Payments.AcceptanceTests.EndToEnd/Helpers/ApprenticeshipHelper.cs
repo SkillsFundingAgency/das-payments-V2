@@ -14,13 +14,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 {
     public static class ApprenticeshipHelper
     {
+        public static async Task AddApprenticeship(ApprenticeshipModel apprenticeship, IPaymentsDataContext dataContext)
+        {
+            await dataContext.Apprenticeship.AddAsync(apprenticeship).ConfigureAwait(false);
+            await dataContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public static async Task UpdateApprenticeship(long apprenticeshipId, ApprenticeshipStatus status, List<ApprenticeshipPriceEpisodeModel> priceEpisodes, IPaymentsDataContext dataContext)
+        {
+            var apprenticeship = await dataContext.Apprenticeship
+                                     .Include(a => a.ApprenticeshipPriceEpisodes)
+                                     .FirstOrDefaultAsync(a => a.Id == apprenticeshipId) 
+                                 ?? throw new InvalidOperationException($"Apprenticeship not found: {apprenticeshipId}");
+            apprenticeship.ApprenticeshipPriceEpisodes.ForEach(priceEpisode => priceEpisode.Removed = true);
+            apprenticeship.ApprenticeshipPriceEpisodes.AddRange(priceEpisodes);
+            await dataContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
         public static async Task AddApprenticeships(Apprenticeship apprenticeshipSpec, List<Apprenticeship> testSessionApprenticeships, IPaymentsDataContext dataContext, TestSession testSession)
         {
-            var apprenticeshipModel = CreateApprenticeshipModels(apprenticeshipSpec, testSession);
+            var apprenticeshipModel = CreateApprenticeshipModel(apprenticeshipSpec, testSession);
 
             apprenticeshipModel.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
             {
-                CreateApprenticeshipPriceEpisodes(apprenticeshipSpec)
+                CreateApprenticeshipPriceEpisode(apprenticeshipSpec)
             };
             await dataContext.Apprenticeship.AddAsync(apprenticeshipModel).ConfigureAwait(false);
             testSessionApprenticeships.Add(apprenticeshipSpec);
@@ -40,13 +57,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             currentEpisodes.ForEach(x => x.Removed = true);
 
             apprenticeshipSpec.CommitmentId = currentApprenticeshipId;
-            var newPriceEpisodes = CreateApprenticeshipPriceEpisodes(apprenticeshipSpec);
+            var newPriceEpisodes = CreateApprenticeshipPriceEpisode(apprenticeshipSpec);
 
             await dataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisodes).ConfigureAwait(false);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        private static ApprenticeshipModel CreateApprenticeshipModels(Apprenticeship apprenticeshipSpec, TestSession testSession)
+        public static ApprenticeshipModel CreateApprenticeshipModel(Apprenticeship apprenticeshipSpec, TestSession testSession)
         {
             if (apprenticeshipSpec.CommitmentId == default(long)) apprenticeshipSpec.CommitmentId = testSession.GenerateId();
 
@@ -96,7 +113,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             return apprenticeshipModel;
         }
 
-        private static ApprenticeshipPriceEpisodeModel CreateApprenticeshipPriceEpisodes(Apprenticeship apprenticeshipSpec)
+        public static ApprenticeshipPriceEpisodeModel CreateApprenticeshipPriceEpisode(Apprenticeship apprenticeshipSpec)
         {
             var startDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveFrom)
                 ? apprenticeshipSpec.StartDate.ToDate()
