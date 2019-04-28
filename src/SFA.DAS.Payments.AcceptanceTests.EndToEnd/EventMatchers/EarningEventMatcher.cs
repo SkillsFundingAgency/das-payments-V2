@@ -189,7 +189,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             // find first price episode with non-zero value for a period
             var period = earning.DeliveryCalendarPeriod;
             return fm36Learner.PriceEpisodes
-                .FirstOrDefault(pe => pe.PriceEpisodePeriodisedValues
+                .SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues
                     .Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
                                  pepv.AttributeName == transactionType.ToAttributeName()))?
                 .PriceEpisodeIdentifier;
