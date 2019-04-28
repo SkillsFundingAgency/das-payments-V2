@@ -358,6 +358,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private List<PriceEpisode> GeneratePriceEpisodes(Aim aim, IList<Earning> earnings)
         {
+            //TODO: refactor all of this, way too big, too complicated, local methods!!!
             var aimPeriodisedValues = SetPeriodisedValues<PriceEpisodePeriodisedValues>(aim, earnings);
 
             var priceEpisodePrefix = (aim.StandardCode != 0)
@@ -407,16 +408,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             var orderedPriceEpisodes = priceEpisodesForAim
-                .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
+                .OrderBy(x => x.PriceEpisodeValues.EpisodeEffectiveTNPStartDate)
                 .ToList();
             for (var i = 0; i < orderedPriceEpisodes.Count; i++)
             {
                 var currentPriceEpisode = priceEpisodesForAim[i];
-                var tnpStartDate = orderedPriceEpisodes
+                var tnpStartDate =  orderedPriceEpisodes
                     .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
                                 currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
-                    .PriceEpisodeValues.EpisodeStartDate;
-                currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
+                    .PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
+                //currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
 
                 if (aim.ActualDurationAsTimespan.HasValue)
                 {
@@ -427,7 +428,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (i + 1 < orderedPriceEpisodes.Count &&
                          orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.HasValue)
                 {
-                    var actualEndDate = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.AddDays(-1);
+                    var actualEndDate = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Value.AddDays(-1);
                     if (currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.HasValue)
                     {
                         if (actualEndDate < currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate)
@@ -442,7 +443,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
 
                 var episodeLastPeriod = LastOnProgPeriod(currentPriceEpisode);
-                var episodeStart = new CollectionPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value).Build();
+                var episodeStart = new CollectionPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Value).Build();
 
                 foreach (var currentValues in aimPeriodisedValues)
                 {
@@ -575,6 +576,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var tableRow in table.Rows)
             {
+                //TODO: why do we need this?!?
                 var earning = earnings.Single(e =>
                 {
                     if (e.DeliveryPeriod != tableRow["Delivery Period"])
@@ -586,7 +588,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     if ((tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId)) && learnerId != e.LearnerId)
                         return false;
 
-                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)
+                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)  
                         return false;
 
                     return true;
