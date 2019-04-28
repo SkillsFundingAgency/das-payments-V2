@@ -222,7 +222,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             {
                 testEarningEvent.PriceEpisodes.Add(new PriceEpisode
                 {
-                    StartDate = DateTime.UtcNow.AddDays(1),
+                    EffectiveTotalNegotiatedPriceStartDate = DateTime.UtcNow.AddDays(1),
                     Identifier = $"pe-{i}"
                 });
 

@@ -337,7 +337,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var id = CalculatePriceEpisodeIdentifier(priceEpisode, priceEpisodePrefix);
 
                 var priceEpisodeStartDateAsDeliveryPeriod = new DeliveryPeriodBuilder()
-                    .WithDate(priceEpisode.EpisodeStartDate)
+                    .WithDate(priceEpisode.EpisodeEffectiveStartDate)
                     .Build();
 
                 var firstEarningForPriceEpisode = earnings
@@ -355,7 +355,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 };
 
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = CalculateAimSequenceNumber(priceEpisode);
-                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = priceEpisode.EpisodeStartDate;
+                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = aim.StartDate.ToDate();
+                newPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = priceEpisode.EpisodeEffectiveStartDate;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType = CalculateContractType(priceEpisode);
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
                 newPriceEpisode.PriceEpisodeValues.TNP1 = priceEpisode.TotalTrainingPrice;
@@ -522,7 +523,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
         {
-            var episodeStartDate = priceEpisode.EpisodeStartDate;
+            var episodeStartDate = priceEpisode.EpisodeEffectiveStartDate;
             return string.IsNullOrEmpty(priceEpisode.PriceEpisodeId)
                 ? $"{priceEpisodePrefix}-{episodeStartDate.Day:D2}/{episodeStartDate.Month:D2}/{episodeStartDate.Year}"
                 : priceEpisode.PriceEpisodeId;
@@ -825,8 +826,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             AimSequenceNumber = training.AimSequenceNumber,
                             TotalAssessmentPrice = training.TotalAssessmentPrice,
                             TotalTrainingPrice = training.TotalTrainingPrice,
-                            TotalTrainingPriceEffectiveDate = training.StartDate,
-                            TotalAssessmentPriceEffectiveDate = training.StartDate,
+                            TotalTrainingPriceEffectiveDate = training.TotalTrainingPriceEffectiveDate,
+                            TotalAssessmentPriceEffectiveDate = training.TotalAssessmentPriceEffectiveDate,
                             SfaContributionPercentage = training.SfaContributionPercentage,
                             CompletionHoldBackExemptionCode = training.CompletionHoldBackExemptionCode,
                             Pmr = training.Pmr,
