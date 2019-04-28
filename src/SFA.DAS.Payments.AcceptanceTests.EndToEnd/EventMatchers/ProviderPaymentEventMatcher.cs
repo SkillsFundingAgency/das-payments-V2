@@ -157,6 +157,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(ProviderPaymentEvent expected, ProviderPaymentEvent actual)
         {
+            var onProgTypes = new[] { TransactionType.Balancing, TransactionType.Completion, TransactionType.Learning };
             if (expected.GetType() == actual.GetType() &&
                 expected.TransactionType == actual.TransactionType &&
                 expected.AmountDue == actual.AmountDue &&
@@ -167,7 +168,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expected.Learner.Uln == actual.Learner.Uln &&
                 expected.LearningAim.StandardCode == actual.LearningAim.StandardCode)
             {
-                if (actual.LearningAim.Reference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase))
+                if (actual.LearningAim.Reference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase) && onProgTypes.Contains(actual.TransactionType))  //TODO: check with PO if this is ok
                 {
                     return expected.AccountId == actual.AccountId;
                 }

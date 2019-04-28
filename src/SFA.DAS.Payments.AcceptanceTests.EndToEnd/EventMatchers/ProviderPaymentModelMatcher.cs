@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<PaymentModel> GetActualEvents()
         {
             return dataContext.Payment
-                .Where(p => 
+                .Where(p =>
                             p.CollectionPeriod.Period == currentCollectionPeriod.Period &&
                             p.CollectionPeriod.AcademicYear == currentCollectionPeriod.AcademicYear &&
                             p.Ukprn == provider.Ukprn)
@@ -82,6 +82,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(PaymentModel expected, PaymentModel actual)
         {
+            var onProgTypes = new[] { TransactionType.Balancing, TransactionType.Completion, TransactionType.Learning };
             if (expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
                 expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
                 expected.DeliveryPeriod == actual.DeliveryPeriod &&
@@ -93,7 +94,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expected.Ukprn == actual.Ukprn &&
                 expected.LearningAimStandardCode == actual.LearningAimStandardCode)
             {
-                if (actual.LearningAimReference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase))
+                if (actual.LearningAimReference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase) && onProgTypes.Contains(actual.TransactionType))  //TODO: check with PO if this is ok
                 {
                     return expected.AccountId == actual.AccountId;
                 }
