@@ -187,7 +187,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 ;
 
             CreateMap<PriceEpisode, PeriodisedPaymentEvent>()
-                .ForMember(payment => payment.StartDate, opt => opt.MapFrom(episode => episode.StartDate))
+                .ForMember(payment => payment.StartDate, opt => opt.MapFrom(episode => episode.EffectiveTotalNegotiatedPriceStartDate))
                 .ForMember(payment => payment.PlannedEndDate, opt => opt.MapFrom(episode => episode.PlannedEndDate))
                 .ForMember(payment => payment.ActualEndDate, opt => opt.MapFrom(episode => episode.ActualEndDate))
                 .ForMember(payment => payment.CompletionStatus, opt => opt.Ignore())

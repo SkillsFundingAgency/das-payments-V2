@@ -27,7 +27,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         [TableAliases("Exemption Code")]
         public int CompletionHoldBackExemptionCode { get; set; }
 
-        public DateTime EpisodeStartDate =>
+
+        public DateTime EpisodeEffectiveStartDate =>
             ResidualAssessmentPrice == 0 && ResidualTrainingPrice == 0
                 ? TotalTrainingPriceEffectiveDate.ToDate()
                 : ResidualTrainingPriceEffectiveDate.ToDate();

@@ -215,7 +215,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             var priceEpisode = new PriceEpisode
             {
-                StartDate = DateTime.UtcNow,
+                EffectiveTotalNegotiatedPriceStartDate = DateTime.UtcNow,
                 PlannedEndDate = DateTime.UtcNow,
                 ActualEndDate = DateTime.UtcNow,
                 CompletionAmount = 100M,
@@ -227,7 +227,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             mapper.Map(priceEpisode, requiredPaymentEvent);
 
-            requiredPaymentEvent.StartDate.Should().Be(priceEpisode.StartDate);
+            requiredPaymentEvent.StartDate.Should().Be(priceEpisode.EffectiveTotalNegotiatedPriceStartDate);
             requiredPaymentEvent.PlannedEndDate.Should().Be(priceEpisode.PlannedEndDate);
             requiredPaymentEvent.ActualEndDate.Should().Be(priceEpisode.ActualEndDate);
             requiredPaymentEvent.CompletionStatus.Should().Be(0);
