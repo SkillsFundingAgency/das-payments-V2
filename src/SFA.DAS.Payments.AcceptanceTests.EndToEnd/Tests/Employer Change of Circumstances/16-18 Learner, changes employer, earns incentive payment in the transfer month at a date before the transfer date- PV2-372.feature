@@ -1,4 +1,3 @@
-@ignore
 Feature:16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372
 As a provider,
 I want 1 learner aged 16-18, levy available, changes employer, earns incentive payment in the transfer month - and the date at which the incentive is earned is before the transfer date, to be paid the correct amount
