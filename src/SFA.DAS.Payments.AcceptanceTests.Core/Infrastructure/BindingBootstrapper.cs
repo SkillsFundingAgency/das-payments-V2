@@ -60,7 +60,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                     .Options;
 
                 Builder.RegisterInstance(ukprnDbOptions);
-                Builder.RegisterType<IlrDcService>().As<IIlrService>().InstancePerLifetimeScope();
                 Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
                 Builder.RegisterType<DcHelper>().As<IDcHelper>().InstancePerLifetimeScope();
             }
@@ -137,7 +136,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         public static async Task ClearQueue()
         {
             var namespaceManager = NamespaceManager.CreateFromConnectionString(Config.ServiceBusConnectionString);
-            if (!namespaceManager.QueueExists(Config.AcceptanceTestsEndpointName))
+            if (!await namespaceManager.QueueExistsAsync(Config.AcceptanceTestsEndpointName))
             {
                 Console.WriteLine($"'{Config.AcceptanceTestsEndpointName}' not found.");
                 return;
@@ -158,11 +157,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 }
             }
 
-            var queueDescription = namespaceManager.GetQueue(Config.AcceptanceTestsEndpointName);
+            var queueDescription = await namespaceManager.GetQueueAsync(Config.AcceptanceTestsEndpointName);
             if (queueDescription.DefaultMessageTimeToLive != Config.DefaultMessageTimeToLive)
             {
                 queueDescription.DefaultMessageTimeToLive = Config.DefaultMessageTimeToLive;
-                namespaceManager.UpdateQueue(queueDescription);
+                await namespaceManager.UpdateQueueAsync(queueDescription);
             }
 
             Console.WriteLine($"Finished purging messages from {Config.AcceptanceTestsEndpointName}. Took: {stopwatch.ElapsedMilliseconds}ms");

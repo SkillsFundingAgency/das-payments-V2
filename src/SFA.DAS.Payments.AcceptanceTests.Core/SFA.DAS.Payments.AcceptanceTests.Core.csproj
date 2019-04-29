@@ -399,7 +399,6 @@
     <Compile Include="Infrastructure\TestsConfiguration.cs" />
     <Compile Include="Infrastructure\TestSessionBase.cs" />
     <Compile Include="Services\IIlrService.cs" />
-    <Compile Include="Services\IlrDcService.cs" />
     <Compile Include="Services\IlrNullService.cs" />
     <Compile Include="Services\RandomUkprnService.cs" />
     <Compile Include="StepsBase.cs" />

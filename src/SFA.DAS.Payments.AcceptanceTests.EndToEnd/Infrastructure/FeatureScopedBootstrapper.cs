@@ -4,6 +4,7 @@ using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure.IoC;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
@@ -35,6 +36,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             }).As<IPaymentsDataContext>().InstancePerLifetimeScope();
             DcHelper.AddDcConfig(Builder);
 
+            Builder.RegisterType<IlrDcService>().As<IIlrService>().InstancePerLifetimeScope();
             Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
 
             Builder.Register((c, p) => new RequiredPaymentsCacheCleaner(c.Resolve<IApprenticeshipKeyService>(), MessageSession)).AsSelf();
