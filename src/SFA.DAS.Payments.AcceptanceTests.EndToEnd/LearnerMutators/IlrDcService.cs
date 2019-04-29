@@ -18,6 +18,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using DCT.TestDataGenerator.Functor;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
@@ -48,57 +50,61 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
 
-            foreach (var ilr in currentIlr)
-            {
-                var learnerId = ilr.LearnerId;
+            //foreach (var ilr in currentIlr)
+            //{
+            //}
+                //var learnerId = ilr.LearnerId;
 
-                var nonLevyLearnerRequest = mapper.Map<NonLevyLearnerRequest>(ilr);
-                nonLevyLearnerRequest.FeatureNumber = featureNumber;
+                //var nonLevyLearnerRequest = mapper.Map<NonLevyLearnerRequest>(ilr);
+                //nonLevyLearnerRequest.FeatureNumber = featureNumber;
 
-                var ilrFile = await GenerateTestIlrFile(nonLevyLearnerRequest);
+                var learnerRequests = mapper.Map<IEnumerable<LearnerRequest>>(currentIlr);
+                var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learnerRequests);
 
-                RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerId);
+                var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
+
+          //      RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerRequests);
 
                 await verifyIlr();
 
-                await StoreAndPublishIlrFile(learnerRequest: nonLevyLearnerRequest, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
-            }
+                await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
         }
 
-        private async Task<KeyValuePair<string, string>> GenerateTestIlrFile(LearnerRequestBase learnerRequest)
+        //private Task<KeyValuePair<string, string>> GenerateTestIlrFile(ILearnerMultiMutator learnerRequest, int ukprn)
+        //{
+        //    return tdgService.GenerateIlrTestData(learnerRequest, ukprn);
+        //}
+
+        private void RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<LearnerRequest> currentIlr)
         {
-            return await tdgService.GenerateIlrTestData((NonLevyLearnerRequest)learnerRequest);
+            //XNamespace xsdns = tdgService.IlrNamespace;
+            //var xDoc = XDocument.Parse(ilrFile);
+            //var learner = xDoc.Descendants(xsdns + "Learner").First();
+            //var learningProvider = xDoc.Descendants(xsdns + "LearningProvider").First();
+
+            //foreach (var request in currentIlr)
+            //{
+            //    var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerId);
+
+            //    testSessionLearner.Ukprn = long.Parse(learningProvider.Elements(xsdns + "UKPRN").First().Value);
+            //    testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
+            //    testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
+            //}
         }
 
-        private void RefreshTestSessionLearnerFromIlr(string ilrFile, string learnerId = null)
+        private async Task StoreAndPublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
-            XNamespace xsdns = "ESFA/ILR/2018-19";
-            var xDoc = XDocument.Parse(ilrFile);
-            var learner = xDoc.Descendants(xsdns + "Learner").First();
-            var learningProvider = xDoc.Descendants(xsdns + "LearningProvider").First();
+            await StoreIlrFile(ukprn, ilrFileName, ilrFile);
 
-            var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, learnerId);
-
-            testSessionLearner.Ukprn = long.Parse(learningProvider.Elements(xsdns + "UKPRN").First().Value);
-            testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
-            testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
-        }
-
-        private async Task StoreAndPublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
-        {
-            await StoreIlrFile(learnerRequest.Ukprn, ilrFileName, ilrFile);
-
-            await PublishIlrFile(learnerRequest, ilrFileName, ilrFile, collectionYear, collectionPeriod);
+            await PublishIlrFile(ukprn, ilrFileName, ilrFile, collectionYear, collectionPeriod);
 
         }
 
-        private async Task PublishIlrFile(LearnerRequestBase learnerRequest, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
+        private async Task PublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
-            var nonLevyLearnerRequest = (NonLevyLearnerRequest)learnerRequest;
-
-            var submission = new SubmissionModel(JobType.IlrSubmission, nonLevyLearnerRequest.Ukprn)
+            var submission = new SubmissionModel(JobType.IlrSubmission, ukprn)
             {
-                FileName = $"{learnerRequest.Ukprn}/{ilrFileName}",
+                FileName = $"{ukprn}/{ilrFileName}",
                 FileSizeBytes = ilrFile.Length,
                 SubmittedBy = "System",
                 CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
@@ -132,14 +138,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
 
         }
 
-        private async Task StoreIlrFile(int ukPrn, string ilrFileName, string ilrFile)
+        private Task StoreIlrFile(int ukPrn, string ilrFileName, string ilrFile)
         {
             var byteArray = Encoding.UTF8.GetBytes(ilrFile);
             var stream = new MemoryStream(byteArray);
 
             var ilrStoragePathAndFileName = $"{ukPrn}/{ilrFileName}";
 
-            await storageService.SaveAsync(ilrStoragePathAndFileName, stream);
+            return storageService.SaveAsync(ilrStoragePathAndFileName, stream);
         }
     }
 }

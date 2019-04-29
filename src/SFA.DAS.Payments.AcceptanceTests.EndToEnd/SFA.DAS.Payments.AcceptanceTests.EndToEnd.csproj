@@ -330,11 +330,21 @@
     <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
+    <Compile Include="LearnerMutators\FM36Base.cs" />
+    <Compile Include="LearnerMutators\FM36_615.cs" />
+    <Compile Include="LearnerMutators\IlrDcService.cs" />
+    <Compile Include="LearnerMutators\LearnerMutatorFactory.cs" />
+    <Compile Include="LearnerMutators\LearnerRequest.cs" />
     <Compile Include="Mapping\IlrProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
+    <Compile Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes on time PV2-261.feature.cs">
+      <DependentUpon>One Levy Learner, levy available, finishes on time PV2-261.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -364,21 +374,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner finishes on time completion payment made PV2-334.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature.cs">
-      <DependentUpon>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-336.feature.cs">
-      <DependentUpon>One Non-Levy Learner Finishes Late PV2-336.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-levy learner withdraws after planned end date PV2-278.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner submitted late PV2-427.feature.cs">
       <AutoGen>True</AutoGen>
@@ -641,6 +636,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes on time PV2-261.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finishes on time PV2-261.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
@@ -664,18 +663,6 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner finishes on time completion payment made PV2-334.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-336.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner Finishes Late PV2-336.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner withdraws after planned end date PV2-278.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner submitted late PV2-427.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -960,15 +947,7 @@
     <Folder Include="Tests\Capping\" />
     <Folder Include="Tests\Disadvantage - Uplift\" />
     <Folder Include="Tests\Learner Change of Circumstances\" />
-    <Folder Include="Tests\Levy Learner\Basic Day\" />
     <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
-    <Folder Include="Tests\Non-Levy Learner - Learner Change of Circumstances\" />
-    <Folder Include="Tests\Non-Levy Learner - Learning Support\" />
-    <Folder Include="Tests\Non-Levy Learner - Refunds\" />
-    <Folder Include="Tests\Non-Levy Learner\Employer Change of CIrcumstances\" />
-    <Folder Include="Tests\Non-Levy Learner\Provider Change of Circumstances\" />
-    <Folder Include="Tests\Non-Levy Learner\Small Employer\" />
-    <Folder Include="Tests\Refunds\" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
