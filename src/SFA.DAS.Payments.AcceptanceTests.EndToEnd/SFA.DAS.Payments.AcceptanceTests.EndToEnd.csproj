@@ -490,26 +490,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy learner changes to Levy employer Levy available PV2-366.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\English and Maths\PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\English and Maths\PV2-287- Levy learner moves start date forward and add Eng and Maths.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-287- Levy learner moves start date forward and add Eng and Maths.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\English and Maths\PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1070,11 +1050,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Refunds\Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Refunds\Levy-learner changes start date backwards in month - PV2-281.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1302,22 +1277,6 @@
     <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\English and Maths\PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\English and Maths\PV2-287- Levy learner moves start date forward and add Eng and Maths.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-287- Levy learner moves start date forward and add Eng and Maths.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\English and Maths\PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1766,10 +1725,6 @@
     <None Include="Tests\Refunds\Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Refunds\Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Levy learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Refunds\Levy-learner changes start date backwards in month - PV2-281.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
