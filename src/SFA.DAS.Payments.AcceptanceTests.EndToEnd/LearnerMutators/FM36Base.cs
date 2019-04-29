@@ -9,8 +9,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
     public abstract class FM36Base : ILearnerMultiMutator
     {
         private readonly string _featureNumber;
-        private ILearnerCreatorDataCache _dataCache;
-        private GenerationOptions _options;
+        protected ILearnerCreatorDataCache dataCache;
 
         protected FM36Base(string featureNumber)
         {
@@ -24,7 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         public IEnumerable<LearnerTypeMutator> LearnerMutators(ILearnerCreatorDataCache cache)
         {
-            _dataCache = cache;
+            dataCache = cache;
 
             return CreateLearnerTypeMutators();
         }
@@ -217,10 +216,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             });
 
             learner.LearningDelivery[1].LearningDeliveryHE = ldhe.ToArray();
-        }
-
-        private void MutateGenerationOptionsOlderApprenticeship(GenerationOptions options)
-        {
         }
     }
 }
