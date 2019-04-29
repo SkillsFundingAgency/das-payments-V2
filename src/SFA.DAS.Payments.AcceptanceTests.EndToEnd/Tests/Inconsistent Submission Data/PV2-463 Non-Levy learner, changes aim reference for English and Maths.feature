@@ -15,7 +15,7 @@ Scenario Outline: Non-levy learner provider changes aim reference for English/ma
 	# Price details
         | Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 1st price details | 9000                 | 06/May/Current Academic Year        | 0                      | 06/May/Current Academic Year          | Act2          | 1                   | 90%                         |
-        | 2nd price details | 0                    | 06/May/Current Academic Year        | 0                      | 06/May/Current Academic Year          | Act2          | 2                   | 100%                        |
+        | 2nd price details | 0                    | 06/May/Current Academic Year        | 0                      | 06/May/Current Academic Year          | Act2          | 2                   |                             |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
         | Aug/Current Academic Year | 0            | 0          | 0         | 0                          |

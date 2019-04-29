@@ -45,7 +45,7 @@ Scenario Outline: Levy learner changes course details in ILR after payments made
 	And price details are changed as follows																																																								                  
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | pe-1             | 9000                 | 06/Aug/Current Academic Year        | Act1          | 2                   | 90%                         |
-        |                  | 471                  | 06/Aug/Current Academic Year        | Act1          | 1                   | 100%                        |  
+        |                  | 471                  | 06/Aug/Current Academic Year        | Act1          | 1                   |                             |
         | pe-3             | 9000                 | 06/Aug/Current Academic Year        | Act1          | 2                   | 90%                         |
 	And the commitment changed as follows
         | start date                   | end date                  | agreed price | status    | Framework Code | Pathway Code | Programme Type | stop effective from          |

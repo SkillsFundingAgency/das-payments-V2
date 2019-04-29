@@ -19,7 +19,7 @@ Scenario Outline: Levy learner deletes aim reference for eng and maths aim and p
 		
 	And price details as follows	
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        |                  | 471                  | 01/Aug/Current Academic Year        | Act1          | 1                   | 100%                        |
+        |                  | 471                  | 01/Aug/Current Academic Year        | Act1          | 1                   |                             |
         | pe-1             | 9000                 | 01/Aug/Current Academic Year        | Act1          | 2                   | 90%                         |
 
     And the following earnings had been generated for the learner

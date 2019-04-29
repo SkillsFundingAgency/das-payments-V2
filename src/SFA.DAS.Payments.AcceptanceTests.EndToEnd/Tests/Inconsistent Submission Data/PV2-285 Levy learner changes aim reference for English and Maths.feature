@@ -16,7 +16,7 @@ Scenario Outline: Levy learner changes aim reference for eng and maths aim and p
 	And price details as follows	
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | pe-1             | 9000                 | 01/May/Last Academic Year           | Act1          | 1                   | 90%                         |
-        |                  | 471                  | 01/May/Last Academic Year           | Act1          | 2                   | 100%                        |
+        |                  | 471                  | 01/May/Last Academic Year           | Act1          | 2                   |                             |
     And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier |
 		#p1
@@ -60,7 +60,7 @@ Scenario Outline: Levy learner changes aim reference for eng and maths aim and p
 																																																																			                 
 	And price details are changed as follows																																																								                  
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        |                  | 471                  | 01/May/Last Academic Year           | Act1          | 1                   | 100%                        |
+        |                  | 471                  | 01/May/Last Academic Year           | Act1          | 1                   |                             |
         | pe-1             | 9000                 | 01/May/Last Academic Year           | Act1          | 2                   | 90%                         |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>

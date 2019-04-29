@@ -15,7 +15,7 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
 		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
 	And price details as follows	
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        |                  | 471                  | 06/Aug/Current Academic Year        | Act1          | 1                   | 100%                        |  
+        |                  | 471                  | 06/Aug/Current Academic Year        | Act1          | 1                   |                             |  
         | pe-2             | 9000                 | 06/Aug/Current Academic Year        | Act1          | 2                   | 90%                         |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier |
@@ -60,7 +60,7 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
 																																																																			                 
 	And price details are changed as follows																																																								                  
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        |                  | 471                  | 06/Oct/Current Academic Year        | Act1          | 1                   | 100%                        |    
+        |                  | 471                  | 06/Oct/Current Academic Year        | Act1          | 1                   |                             |    
         | pe-4             | 9000                 | 06/Oct/Current Academic Year        | Act1          | 2                   | 90%                         |
 
 	# This may need changing 

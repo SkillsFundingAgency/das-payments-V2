@@ -43,7 +43,7 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
 																																																																			                 
 	And price details are changed as follows																																																								                  
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        |                  | 471                  | 06/Oct/Current Academic Year        | Act1          | 1                   | 100%                        |    
+        |                  | 471                  | 06/Oct/Current Academic Year        | Act1          | 1                   |                             |    
         | pe-3             | 9000                 | 06/Oct/Current Academic Year        | Act1          | 2                   | 90%                         |
 
 	# This may need changing 
