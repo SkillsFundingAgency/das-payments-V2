@@ -35,7 +35,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void MutateLearnerOptions(GenerationOptions options)
         {
-            throw new NotImplementedException();
+            _options = options;
+            options.LD.IncludeHHS = true;
         }
 
         private void MutateLearner(MessageLearner learner, bool valid)
@@ -43,14 +44,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var trainingRecord = _learnerRequests.First();
             Helpers.MutateDOB(learner, valid, Helpers.AgeRequired.Exact19, Helpers.BasedOn.LearnDelStart, Helpers.MakeOlderOrYoungerWhenInvalid.NoChange);
             MutateCommon(learner, trainingRecord);
-            MutateSpecific(learner, trainingRecord);
+            //MutateSpecific(learner, trainingRecord);
         }
 
-        private void MutateSpecific(MessageLearner messageLearner, LearnerRequest trainingRecord)
-        {
-            messageLearner.ULN = trainingRecord.Uln;
-            messageLearner.ULNSpecified = true;
-            messageLearner.LearnRefNumber = $"{LearnerReferenceNumberStub()}{trainingRecord.LearnerId}";
-        }
+        //private void MutateSpecific(MessageLearner messageLearner, LearnerRequest trainingRecord)
+        //{
+        //    messageLearner.ULN = trainingRecord.Uln;
+        //    messageLearner.ULNSpecified = true;
+        //    messageLearner.LearnRefNumber = $"{LearnerReferenceNumberStub()}{trainingRecord.LearnerId}";
+        //}
     }
 }

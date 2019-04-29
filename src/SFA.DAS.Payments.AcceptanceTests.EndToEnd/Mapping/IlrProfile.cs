@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Mapping
+﻿using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
+
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Mapping
 {
     using System;
     using AutoMapper;
@@ -10,7 +12,7 @@
     {
         public IlrProfile()
         {
-            CreateMap<Training, NonLevyLearnerRequest>()
+            CreateMap<Training, LearnerRequest>()
                 .ForMember(x => x.StartDate, opt => opt.MapFrom(src => src.StartDate.ToDate()))
                 .ForMember(x => x.PlannedDurationInMonths, opt => opt.MapFrom(src => (src.PlannedDuration !=null) ? int.Parse(src.PlannedDuration.Split(' ')[0]) : (int?)null))
                 .ForMember(x => x.TotalTrainingPrice, opt => opt.MapFrom(src => (int)src.TotalTrainingPrice))

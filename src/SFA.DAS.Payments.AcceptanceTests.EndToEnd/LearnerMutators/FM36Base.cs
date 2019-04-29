@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         public string RuleName()
         {
-            return "FM36";
+            return "FM36_E2E";
         }
 
         public string LearnerReferenceNumberStub()
@@ -221,8 +221,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void MutateGenerationOptionsOlderApprenticeship(GenerationOptions options)
         {
-            _options = options;
-            options.LD.IncludeHHS = true;
         }
     }
 }
