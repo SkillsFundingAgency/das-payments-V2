@@ -21,17 +21,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public long? TransferSendingEmployerAccountId { get; set; }
         public DateTime? StopDate { get; set; }
         public int Priority { get; set; }
-        public ApprenticeshipPaymentStatus Status { get; set; }
+        public ApprenticeshipStatus Status { get; set; }
         public List<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisodes { get; set; }
     }
-
-    public  enum ApprenticeshipPaymentStatus:byte
-    {
-        Active = 1,
-        Paused = 2,
-        Stopped = 3,
-        Inactive = 4
-    }
-
-
 }

@@ -27,6 +27,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.TransferSendingEmployerAccountId).HasColumnName(@"TransferSendingEmployerAccountId");
             builder.Property(x => x.StopDate).HasColumnName(@"StopDate");
             builder.Property(x => x.Status).HasColumnName(@"Status").IsRequired();
+
+            builder.HasMany<ApprenticeshipPriceEpisodeModel>(x => x.ApprenticeshipPriceEpisodes).WithOne().HasForeignKey(p => p.ApprenticeshipId);
         }
     }
 }

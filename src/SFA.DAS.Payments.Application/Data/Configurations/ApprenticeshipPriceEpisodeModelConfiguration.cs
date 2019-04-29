@@ -16,10 +16,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.EndDate).HasColumnName(@"EndDate");
             builder.Property(x => x.Cost).HasColumnName(@"Cost").IsRequired();
             builder.Property(x => x.Removed).HasColumnName(@"Removed").IsRequired();
-            builder.HasOne(o => o.Apprenticeship)
-                .WithMany(x => x.ApprenticeshipPriceEpisodes)
-                .HasForeignKey(x => x.ApprenticeshipId)
-                .OnDelete(DeleteBehavior.Cascade);
+
+            
         }
     }
 }
