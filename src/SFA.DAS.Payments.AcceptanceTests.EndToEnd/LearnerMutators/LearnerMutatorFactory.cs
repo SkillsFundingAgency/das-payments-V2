@@ -13,6 +13,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             {
                 case "615":
                     return new FM36_615(learnerRequests);
+                case "334":
+                    return new FM36_334(learnerRequests);
                 default:
                     throw new ArgumentException("A valid feature number is required.",nameof(featureNumber));
             }

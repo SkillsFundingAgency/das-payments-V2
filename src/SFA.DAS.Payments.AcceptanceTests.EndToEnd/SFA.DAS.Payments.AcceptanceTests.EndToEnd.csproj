@@ -331,6 +331,7 @@
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
     <Compile Include="LearnerMutators\FM36Base.cs" />
+    <Compile Include="LearnerMutators\FM36_334.cs" />
     <Compile Include="LearnerMutators\FM36_615.cs" />
     <Compile Include="LearnerMutators\IlrDcService.cs" />
     <Compile Include="LearnerMutators\LearnerMutatorFactory.cs" />

@@ -11,9 +11,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
     public class FM36_615 : FM36Base
     {
         private readonly IEnumerable<LearnerRequest> _learnerRequests;
-        private ILearnerCreatorDataCache _dataCache;
         private GenerationOptions _options;
-        private DateTime _outcomeDate;
 
         public FM36_615(IEnumerable<LearnerRequest> learnerRequests) : base("615")
         {
