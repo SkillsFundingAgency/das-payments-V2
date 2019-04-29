@@ -38,7 +38,7 @@ Scenario Outline: Non-levy learner provider deletes english/maths aim, earlier p
 	# Additional field Aim Type is just for readability and not used in the code
     But aims details are changed as follows
 		| Aim Type  | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
-		| Programme | ZPROG001      | 06/Oct/Current Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Programme | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
 	# New step 
 	# Note the order of Aim Sequence Number
 	And price details are changed as follows		
@@ -119,3 +119,45 @@ Examples:
         | R10/Current Academic Year |
         | R11/Current Academic Year |
         | R12/Current Academic Year |
+
+
+
+
+
+#Scenario: non-Levy apprentice, changes aim reference for English/maths aims and payments are reconciled 
+#
+#        Given The learner is programme only non-Levy
+#        And levy balance > agreed price for all months
+#        And the apprenticeship funding band maximum is 9000
+#
+#       
+#        When an ILR file is submitted for period R01 with the following data:
+#            | ULN       | learner type           | aim sequence number | aim type         | aim reference | aim rate | agreed price | start date | planned end date | actual end date | completion status | framework code | programme type | pathway code |
+#            | learner a | programme only non-DAS | 2                   | programme        | ZPROG001      |          | 9000         | 06/08/2018 | 20/08/2019       |                 | continuing        | 403            | 2              | 1            |
+#            | learner a | programme only non-DAS | 1                   | maths or English | 50086832      | 471      |              | 06/08/2018 | 20/08/2019       |                 | continuing        | 403            | 2              | 1            |
+#  
+#        And an ILR file is submitted for period R03 with the following data:
+#            | ULN       | learner type           | aim sequence number | aim type         | aim reference | aim rate | agreed price | start date | planned end date | actual end date | completion status | framework code | programme type | pathway code |
+#            | learner a | programme only non-DAS | 1                   | programme        | ZPROG001      |          | 9000         | 06/08/2018 | 20/08/2019       |                 | continuing        | 403            | 2              | 1            |
+#
+#
+#        
+#     Then the provider earnings and payments break down as follows:
+#
+#            | Type                                    | 08/18  | 09/18  | 10/18  | 11/18   | 12/18  | 01/19  |
+#            | Provider Earned Total                   | 639.25 | 639.25 | 600    | 600     | 600    | 600    |
+#            | Provider Earned from SFA                | 579.25 | 579.25 | 540    | 540     | 540    | 540    |
+#            | Provider Earned from Employer           | 60     | 60     | 60     | 60      | 60     | 60     |
+#            | Provider Paid by SFA                    | 0      | 579.25 | 579.25 | 540     | 540    | 540    |
+#            | Refund taken by SFA                     | 0      | 0      | 0      | -78.50  | 0      | 0      |
+#            | Payment due from Employer               | 0      | 0      | 0      | 0       | 0      | 0      |
+#            | Refund due to employer                  | 0      | 0      | 0      | 0       | 0      | 0      |
+#            | Levy account debited                    | 0      | 0      | 0      | 0       | 0      | 0      |
+#            | Levy account credited                   | 0      | 0      | 0      | 0       | 0      | 0      |
+#            | SFA Levy employer budget                | 0      | 0      | 0      | 0       | 0      | 0      |
+#            | SFA Levy co-funding budget              | 0      | 0      | 0      | 0       | 0      | 0      |
+#            | SFA Levy additional payments budget     | 0      | 0      | 0      | 0       | 0      | 0      | 
+#            | SFA non-Levy co-funding budget          | 540    | 540    | 540    | 540     | 540    | 540    |
+#            | SFA non-Levy additional payments budget | 39.25  | 39.25  | 0      | 0       | 0      | 0      |
+
+# New template
