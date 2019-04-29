@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
             this.storageService = storageService;
         }
 
-        public async Task PublishNonLevyLearnerRequest(List<Training> currentIlr, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr)
+        public async Task PublishLearnerRequest(List<Training> currentIlr, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr)
         {
             if (currentIlr?.Any() == false) return;
 
