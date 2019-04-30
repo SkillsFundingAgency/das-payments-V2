@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             lfams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
             {
                 LearnDelFAMType = LearnDelFAMType.ACT.ToString(),
-                LearnDelFAMCode = ((int)LearnDelFAMCode.ACT_ContractESFA).ToString(),
+                LearnDelFAMCode = ((int)learnerRequest.ContractType).ToString(),
                 LearnDelFAMDateFrom = ld.LearnStartDate,
                 LearnDelFAMDateFromSpecified = true,
                 LearnDelFAMDateTo = ld.LearnActEndDate,
@@ -92,30 +92,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             learner.LearningDelivery[0].AppFinRecord =
                learner.LearningDelivery[0].AppFinRecord.Where(af => af.AFinType != LearnDelAppFinType.TNP.ToString()).ToArray();
 
-            if (learnerRequest.CompletionStatus == CompStatus.Completed)
-            {
-                // change AppFin to PMR
-                var appfin = new List<MessageLearnerLearningDeliveryAppFinRecord>();
-                appfin.Add(new MessageLearnerLearningDeliveryAppFinRecord()
-                {
-                    AFinAmount = learnerRequest.TotalTrainingPrice.Value,
-                    AFinAmountSpecified = true,
-                    AFinType = LearnDelAppFinType.PMR.ToString(),
-                    AFinCode = (int)LearnDelAppFinCode.TrainingPayment,
-                    AFinCodeSpecified = true,
-                    AFinDate = learner.LearningDelivery[0].LearnActEndDate.AddMonths(-1),
-                    AFinDateSpecified = true
-                });
-
-                learner.LearningDelivery[0].AppFinRecord = appfin.ToArray();
-            }
-
             if (learnerRequest.TotalTrainingPrice.HasValue && learnerRequest.TotalTrainingPriceEffectiveDate.HasValue)
             {
                 Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, learnerRequest.TotalTrainingPrice.Value, 1, "PMR", 1, 1, learnerRequest.TotalTrainingPriceEffectiveDate);
             }
 
-            if (learnerRequest.TotalAssessmentPriceEffectiveDate.HasValue && learnerRequest.TotalAssessmentPrice.HasValue)
+            if (learnerRequest.TotalAssessmentPriceEffectiveDate.HasValue && learnerRequest.TotalAssessmentPrice.HasValue && learnerRequest.ProgrammeType.HasValue && learnerRequest.ProgrammeType.Value == 25)
             {
                 Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalAssessmentPrice, learnerRequest.TotalAssessmentPrice.Value, 1, "PMR", 1, 1, learnerRequest.TotalAssessmentPriceEffectiveDate);
             }
@@ -167,19 +149,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             var lesm = learner.LearnerEmploymentStatus.ToList();
             lesm[0].DateEmpStatApp = learner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
-
-            if (learnerRequest.CompletionStatus != CompStatus.Completed)
-            {
-                learner.LearningDelivery[1].LearnAimRef = "6030571x";
-            }
-            else
-            {
-                learner.LearningDelivery[1].LearnAimRef = "00300545";
-                MutateHE(learner);
-            }
         }
 
-        private void MutateHE(MessageLearner learner)
+        protected void MutateHE(MessageLearner learner)
         {
             var ldhe = new List<MessageLearnerLearningDeliveryLearningDeliveryHE>();
 

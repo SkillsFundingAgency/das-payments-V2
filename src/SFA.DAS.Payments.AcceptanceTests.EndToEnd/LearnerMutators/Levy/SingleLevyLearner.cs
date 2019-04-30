@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.Levy
         private void MutateLearnerOptions(GenerationOptions options)
         {
             _options = options;
-            options.LD.IncludeHHS = true;
+            options.LD.IncludeHHS = false;
         }
 
         private void MutateLearner(MessageLearner learner, bool valid)

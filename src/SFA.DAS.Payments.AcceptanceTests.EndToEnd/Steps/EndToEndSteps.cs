@@ -186,9 +186,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then(@"the following learner earnings should be generated")]
-        public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
+        public Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
-            await GeneratedAndValidateEarnings(table, TestSession.Provider).ConfigureAwait(false);
+            return GeneratedAndValidateEarnings(table, TestSession.Provider);
         }
 
         [Then(@"the following learner earnings should be generated for ""(.*)""")]
