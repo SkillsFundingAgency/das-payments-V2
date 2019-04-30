@@ -178,13 +178,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var groupedApprenticeships = apprenticeshipSpecs
                 .GroupBy(a => a.Identifier)
-                //.Select(g =>
-                //{
-                //    var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(g.FirstOrDefault(), TestSession);
-                //    apprenticeship.ApprenticeshipPriceEpisodes = g.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
-                //    return (ApprenticeshipModel: apprenticeship, ApprenticeshipSpec: g.FirstOrDefault());
-
-                //})
                 .ToList();
 
             foreach (var group in groupedApprenticeships)
@@ -205,23 +198,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var priceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
                     var status = group.LastOrDefault()?.Status?.ToApprenticeshipPaymentStatus() ??
                                  throw new InvalidOperationException($"last item not found: {group.Key}");
-                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.CommitmentId, 
-                        status, priceEpisodes, DataContext);
+                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.CommitmentId,status, priceEpisodes, DataContext);
                 }
             }
-
-            //foreach (var apprenticeshipSpec in apprenticeshipSpecs)
-            //{
-            //    var foundApprenticeship = Apprenticeships.SingleOrDefault(x => x.Identifier == apprenticeshipSpec.Identifier);
-            //    if (foundApprenticeship == null)
-            //    {
-            //        await ApprenticeshipHelper.AddApprenticeships(apprenticeshipSpec, Apprenticeships, DataContext, TestSession);
-            //    }
-            //    else
-            //    {
-            //        await ApprenticeshipHelper.UpdateApprenticeships(foundApprenticeship.CommitmentId, apprenticeshipSpec, DataContext);
-            //    }
-            //}
         }
 
         protected async Task SaveLevyAccount(Employer employer)

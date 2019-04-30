@@ -96,8 +96,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         mapper.Map(priceEpisode, requiredPaymentEvent);
                     }
 
-                    //requiredPaymentEvent.DeliveryPeriod = period.Period;
-                    
                     result.Add(requiredPaymentEvent);
                 }
             }

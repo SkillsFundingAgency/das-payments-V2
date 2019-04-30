@@ -329,15 +329,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             return new PayableEarningEvent
             {
-                //AccountId = 101,
-                //CommitmentId = 102,
                 AgreementId = "103",
-                //Priority = 104,
                 CollectionYear = 1819,
                 Learner = new Learner { ReferenceNumber = "R", Uln = 10 },
                 Ukprn = 20,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 7),
-                //SfaContributionPercentage = .5m,
                 LearningAim = new LearningAim
                 {
                     FundingLineType = "flt",

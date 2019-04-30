@@ -189,78 +189,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             },
                         }
                     },
-                    //new PriceEpisode
-                    //{
-                    //    PriceEpisodeIdentifier = "pe-2",
-                    //    PriceEpisodeValues = new PriceEpisodeValues
-                    //    {
-                    //        PriceEpisodeAimSeqNumber = 1,
-                    //        EpisodeStartDate = DateTime.Today.AddMonths(-12),
-                    //        EpisodeEffectiveTNPStartDate = DateTime.Today.AddMonths(-6),
-                    //        PriceEpisodePlannedEndDate = DateTime.Today,
-                    //        PriceEpisodeActualEndDate = DateTime.Today,
-                    //        PriceEpisodePlannedInstalments = 12,
-                    //        PriceEpisodeCompletionElement = 3000,
-                    //        PriceEpisodeInstalmentValue = 1000,
-                    //        TNP1 = 15000,
-                    //        TNP2 = 15000,
-                    //        PriceEpisodeCompleted = true,
-                    //        PriceEpisodeCumulativePMRs = 13,
-                    //        PriceEpisodeCompExemCode = 14,
-                    //        PriceEpisodeTotalTNPPrice = 30000
-                    //    },
-                    //    PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
-                    //    {
-                    //        new PriceEpisodePeriodisedValues
-                    //        {
-                    //            AttributeName = "PriceEpisodeOnProgPayment",
-                    //            Period1 = 1000,
-                    //            Period2 = 1000,
-                    //            Period3 = 1000,
-                    //            Period4 = 1000,
-                    //            Period5 = 1000,
-                    //            Period6 = 1000,
-                    //            Period7 = 1000,
-                    //            Period8 = 1000,
-                    //            Period9 = 1000,
-                    //            Period10 = 1000,
-                    //            Period11 = 1000,
-                    //            Period12 = 1000,
-                    //        },
-                    //        new PriceEpisodePeriodisedValues
-                    //        {
-                    //            AttributeName = "PriceEpisodeCompletionPayment",
-                    //            Period1 = 0,
-                    //            Period2 = 0,
-                    //            Period3 = 0,
-                    //            Period4 = 0,
-                    //            Period5 = 0,
-                    //            Period6 = 0,
-                    //            Period7 = 0,
-                    //            Period8 = 0,
-                    //            Period9 = 0,
-                    //            Period10 = 0,
-                    //            Period11 = 0,
-                    //            Period12 = 3000,
-                    //        },
-                    //        new PriceEpisodePeriodisedValues
-                    //        {
-                    //            AttributeName = "PriceEpisodeBalancePayment",
-                    //            Period1 = 0,
-                    //            Period2 = 0,
-                    //            Period3 = 0,
-                    //            Period4 = 0,
-                    //            Period5 = 0,
-                    //            Period6 = 0,
-                    //            Period7 = 0,
-                    //            Period8 = 0,
-                    //            Period9 = 0,
-                    //            Period10 = 0,
-                    //            Period11 = 0,
-                    //            Period12 = 3000,
-                    //        },
-                    //    }
-                    //}
+                   
 
                 }
             };
@@ -362,11 +291,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.PriceEpisodes.First().EmployerContribution.Should().Be(13);
             earningEvent.PriceEpisodes.First().CompletionHoldBackExemptionCode.Should().Be(14);
             earningEvent.PriceEpisodes.First().AgreedPrice.Should().Be(30000);
-
-            //TODO: Find out why multiple price episodes don't seem to work
-            //earningEvent.PriceEpisodes.Skip(1).First().Identifier.Should().Be("pe-2");
-            //earningEvent.PriceEpisodes.Skip(1).First().CourseStartDate.Should().Be(DateTime.Today.AddMonths(-12));
-            //earningEvent.PriceEpisodes.Skip(1).First().EffectiveTotalNegotiatedPriceStartDate.Should().Be(DateTime.Today.AddMonths(-6));
         }
 
         [Test]
