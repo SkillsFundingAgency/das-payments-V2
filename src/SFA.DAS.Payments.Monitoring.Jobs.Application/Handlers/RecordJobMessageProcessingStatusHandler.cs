@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
             {
                 var successfullyDeferred = await context.DeferDueToJobNotFound(message, delayInSeconds);
                 if (!successfullyDeferred)
-                    throw new InvalidOperationException($"Failed to find the job. Dc Job Id: {message.JobId}", jobNotFoundException);
+                    throw new InvalidOperationException($"Failed to find the job. Dc Job Id: {message.JobId}, message : {message.Id}, message name: {message.MessageName}. Error: {jobNotFoundException.Message}", jobNotFoundException);
                 logger.LogWarning($"Failed to store/update job details as the the message is being handled before the job creation message.  Will retry message shortly. Error: {jobNotFoundException.Message}");
             }
             catch (Exception ex)
