@@ -1,3 +1,4 @@
+@ignore
 Feature: PV2-440 Payment for a DAS learner, lives in a disadvantaged postocde area - 11-20 most deprived
 As a provider,
 I want a levy learner living in a Disadvantaged Postcode area (11-20% most deprived) to undertake an Apprenticeship Framework course
@@ -7,7 +8,7 @@ So that I am accurately paid the Disadvantage Uplift amount of £300 in 2 install
 Scenario Outline:Levy learner - on framework , Disadvantage Uplift 11-20% paid PV2-440
 Given the following commitments exist	
 	 | framework code | programme type | pathway code | agreed price | start date                | end date                     | status | effective from            |
-	 | 593            | 20             | 1            | 10000        | 01/Aug/Last Academic Year | 01/Aug/Current Academic Year | active | 01/Aug/Last Academic Year |
+	 | 593            | 20             | 1            | 15000        | 01/Aug/Last Academic Year | 01/Aug/Current Academic Year | active | 01/Aug/Last Academic Year |
 
 And the provider previously submitted the following learner details
 	| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                  | SFA Contribution Percentage |
