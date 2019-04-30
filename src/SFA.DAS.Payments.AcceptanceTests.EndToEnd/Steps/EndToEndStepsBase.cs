@@ -93,11 +93,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var ilr = table.CreateSet<Training>().ToList();
             AddTestLearners(ilr, ukprn);
-
-            //as the tests run many examples, i don't believe we need to retain state
-            //if (CurrentIlr == null) CurrentIlr = new List<Training>();
-
-            CurrentIlr = new List<Training>();
+            if (CurrentIlr == null) CurrentIlr = new List<Training>();
             CurrentIlr.AddRange(ilr);
         }
 

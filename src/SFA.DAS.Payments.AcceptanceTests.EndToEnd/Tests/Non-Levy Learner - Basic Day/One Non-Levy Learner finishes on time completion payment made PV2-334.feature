@@ -1,4 +1,5 @@
-﻿Feature: One Non-Levy Learner, finishes on time, completion payment made PV2-334
+﻿@dc-integration
+Feature: One Non-Levy Learner, finishes on time, completion payment made PV2-334
 
 @EndToEnd
 

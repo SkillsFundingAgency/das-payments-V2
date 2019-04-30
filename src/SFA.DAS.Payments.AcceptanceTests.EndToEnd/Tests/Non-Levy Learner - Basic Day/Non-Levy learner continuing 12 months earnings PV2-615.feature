@@ -1,4 +1,5 @@
-﻿Feature: Non-levy learner continuing 12 months earnings PV2-615
+﻿@dc-integration
+Feature: Non-levy learner continuing 12 months earnings PV2-615
 
 Scenario Outline: Non-levy learner continuing 12 months earnings PV2-615
 	Given the provider is providing training for the following learners
