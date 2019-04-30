@@ -1,3 +1,4 @@
+@ignore
 Feature:Learner changes employer gap between commitments - provider receives payment during the gap - PV2-375
 As a provider,
 I want provider earnings and payments where learner changes employer and there is a gap between commitments - provider receives payment during the gap as they amend the ACT code and employment status code correctly, to be paid the correct amount

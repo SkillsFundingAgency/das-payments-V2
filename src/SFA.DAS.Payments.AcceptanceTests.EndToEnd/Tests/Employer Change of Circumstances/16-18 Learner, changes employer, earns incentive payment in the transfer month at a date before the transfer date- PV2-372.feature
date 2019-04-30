@@ -1,3 +1,4 @@
+@ignore
 Feature:16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372
 	As a provider,
 	I want 1 learner aged 16-18, levy available, changes employer, earns incentive payment in the transfer month - and the date at which the incentive is earned is before the transfer date, to be paid the correct amount
@@ -37,8 +38,8 @@ Scenario Outline: 16-18 Learner changes employer earns incentive payment in the 
 
 	But the Provider now changes the Learner details as follows
 		| Employer id | Start Date                   | Planned Duration | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-		| Employer1   | 05/Aug/Current Academic Year | 12 months        | 3 months        | withdrawn         | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
-		| Employer2   | 15/Nov/Current Academic Year | 12 months        | 9 months        | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| employer 1   | 05/Aug/Current Academic Year | 12 months        | 3 months        | withdrawn         | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| employer 2   | 15/Nov/Current Academic Year | 12 months        | 9 months        | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 	And price details as follows
 		| Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |

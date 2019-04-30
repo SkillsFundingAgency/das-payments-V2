@@ -1,3 +1,4 @@
+@ignore
 Feature:Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621
 As a provider,
 I want provider earnings and payments where learner changes employer and there is a 16 week gap between commitments - provider receives payment during the first 12 weeks of the gap as they amend the ACT code and employment status code correctly, to be paid the correct amount
