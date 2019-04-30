@@ -36,7 +36,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             (ResidualTrainingPrice == 0 && ResidualAssessmentPrice == 0)
                 ? TotalTrainingPrice + TotalAssessmentPrice
                 : ResidualTrainingPrice + ResidualAssessmentPrice;
-
-       
     }
 }

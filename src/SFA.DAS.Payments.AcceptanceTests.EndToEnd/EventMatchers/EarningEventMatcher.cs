@@ -135,21 +135,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         onProgEarning.LearningAim = learningAim;
 
                         result.Add(onProgEarning);
-
-                        //if (incentiveEarnings.Any())
-                        //{
-                        //    onProgEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
-                        //    {
-                        //        Type = (IncentiveEarningType) (int) tt,
-                        //        Periods = aimEarningSpecs.Select(e => new EarningPeriod
-                        //        {
-                        //            Amount = e.Values[tt],
-                        //            Period = e.DeliveryCalendarPeriod,
-                        //            PriceEpisodeIdentifier =
-                        //                FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                        //        }).ToList().AsReadOnly()
-                        //    }).ToList();
-                        //}
                     }
 
                     if (aimSpec.AimReference != "ZPROG001" && functionalSkillEarnings.Any())

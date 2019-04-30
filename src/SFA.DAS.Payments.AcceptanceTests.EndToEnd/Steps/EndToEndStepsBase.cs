@@ -318,7 +318,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
                 }
-                else // maths & english & Learning support doesn't use price episodes
+                else // maths & english & Learning support don't use price episodes
                 {
                     learningDelivery.LearningDeliveryPeriodisedValues = SetPeriodisedValues<LearningDeliveryPeriodisedValues>(aim, earnings);
                 }
@@ -517,7 +517,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         continue;
                     }
 
-                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
+                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
                     if (periodisedValues == null)
                     {
                         periodisedValues = new T {AttributeName =earningKey};
