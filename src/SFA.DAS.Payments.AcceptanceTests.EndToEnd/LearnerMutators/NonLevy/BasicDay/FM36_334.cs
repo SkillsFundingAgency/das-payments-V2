@@ -12,27 +12,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
         protected override void DoSpecificMutate(MessageLearner learner, LearnerRequest learnerRequest)
         {
-            if (learnerRequest.CompletionStatus == CompStatus.Completed)
-            {
-                // change AppFin to PMR
-                var appfin = new List<MessageLearnerLearningDeliveryAppFinRecord>();
-                appfin.Add(new MessageLearnerLearningDeliveryAppFinRecord()
-                {
-                    AFinAmount = learnerRequest.TotalTrainingPrice.Value,
-                    AFinAmountSpecified = true,
-                    AFinType = LearnDelAppFinType.PMR.ToString(),
-                    AFinCode = (int)LearnDelAppFinCode.TrainingPayment,
-                    AFinCodeSpecified = true,
-                    AFinDate = learner.LearningDelivery[0].LearnActEndDate.AddMonths(-1),
-                    AFinDateSpecified = true
-                });
-
-                learner.LearningDelivery[0].AppFinRecord = appfin.ToArray();
-            }
-
             learner.LearningDelivery[1].LearnAimRef = "00300545";
             MutateHE(learner);
         }
-
     }
 }

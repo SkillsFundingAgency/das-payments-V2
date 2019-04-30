@@ -92,6 +92,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             learner.LearningDelivery[0].AppFinRecord =
                learner.LearningDelivery[0].AppFinRecord.Where(af => af.AFinType != LearnDelAppFinType.TNP.ToString()).ToArray();
 
+            if (learnerRequest.CompletionStatus == CompStatus.Completed)
+            {
+                // change AppFin to PMR
+                var appfin = new List<MessageLearnerLearningDeliveryAppFinRecord>();
+                appfin.Add(new MessageLearnerLearningDeliveryAppFinRecord()
+                {
+                    AFinAmount = learnerRequest.TotalTrainingPrice.Value,
+                    AFinAmountSpecified = true,
+                    AFinType = LearnDelAppFinType.PMR.ToString(),
+                    AFinCode = (int)LearnDelAppFinCode.TrainingPayment,
+                    AFinCodeSpecified = true,
+                    AFinDate = learner.LearningDelivery[0].LearnActEndDate.AddMonths(-1),
+                    AFinDateSpecified = true
+                });
+
+                learner.LearningDelivery[0].AppFinRecord = appfin.ToArray();
+            }
+
             if (learnerRequest.TotalTrainingPrice.HasValue && learnerRequest.TotalTrainingPriceEffectiveDate.HasValue)
             {
                 Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, learnerRequest.TotalTrainingPrice.Value, 1, "PMR", 1, 1, learnerRequest.TotalTrainingPriceEffectiveDate);
