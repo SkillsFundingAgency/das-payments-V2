@@ -172,41 +172,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             earningPeriod.Period.Should().Be(1);
         }
 
-        [Test]
-        public void GivenEarningGreaterThanZeroAndNoValidApprenticeshipThrowException()
-        {
-            var invalidApprenticeship = new ApprenticeshipModel();
-
-            learnerMatcherMock
-                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
-                .ReturnsAsync(() => new LearnerMatchResult
-                {
-                    DataLockErrorCode = null,
-                    Apprenticeships = apprenticeships
-                })
-                .Verifiable();
-
-            onProgValidationMock
-                .Setup(x => x.ValidatePeriods(apprenticeships[0].Uln,
-                    It.IsAny<List<PriceEpisode>>(),
-                    It.IsAny<OnProgrammeEarning>(),
-                    It.IsAny<List<ApprenticeshipModel>>()))
-                .Returns(() => (new List<ValidOnProgrammePeriod>
-                {
-                    new ValidOnProgrammePeriod
-                    {
-                        Apprenticeship = invalidApprenticeship,
-                        Period = earningEvent.OnProgrammeEarnings.FirstOrDefault()?.Periods.FirstOrDefault()
-                    }
-                }, new List<InvalidOnProgrammePeriod>()))
-                .Verifiable();
-
-            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
-            Func<Task> task = async () => { await dataLockProcessor.GetPaymentEvent(earningEvent, default(CancellationToken)).ConfigureAwait(false); };
-
-            task.Should().Throw<InvalidOperationException>();
-        }
-
         private ApprenticeshipContractType1EarningEvent CreateTestEarningEvent(byte periodsToCreate, decimal earningPeriodAmount)
         {
             var testEarningEvent = new ApprenticeshipContractType1EarningEvent
