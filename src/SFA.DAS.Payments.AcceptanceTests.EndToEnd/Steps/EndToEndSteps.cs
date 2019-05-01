@@ -39,11 +39,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the ""(.*)"" levy account balance in collection period (.*) is (.*)")]
-        public async Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(string employerIdentifier, string collectionPeriod,decimal levyAmount)
+        public Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(string employerIdentifier, string collectionPeriod,decimal levyAmount)
         {
             var employer = TestSession.GetEmployer(employerIdentifier);
             employer.Balance = levyAmount;
-            await SaveLevyAccount(employer).ConfigureAwait(false);
+            return SaveLevyAccount(employer);
         }
 
         [Given(@"the employer levy account balance in collection period (.*) is (.*)")]

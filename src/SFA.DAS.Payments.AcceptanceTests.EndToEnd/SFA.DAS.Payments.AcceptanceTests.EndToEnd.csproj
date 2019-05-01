@@ -330,11 +330,21 @@
     <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
+    <Compile Include="LearnerMutators\FM36Base.cs" />
+    <Compile Include="LearnerMutators\FM36_615.cs" />
+    <Compile Include="LearnerMutators\IlrDcService.cs" />
+    <Compile Include="LearnerMutators\LearnerMutatorFactory.cs" />
+    <Compile Include="LearnerMutators\LearnerRequest.cs" />
     <Compile Include="Mapping\IlrProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
+    <Compile Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes on time PV2-261.feature.cs">
+      <DependentUpon>One Levy Learner, levy available, finishes on time PV2-261.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -626,6 +636,10 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes on time PV2-261.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finishes on time PV2-261.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
@@ -933,7 +947,6 @@
     <Folder Include="Tests\Capping\" />
     <Folder Include="Tests\Disadvantage - Uplift\" />
     <Folder Include="Tests\Learner Change of Circumstances\" />
-    <Folder Include="Tests\Levy Learner\Basic Day\" />
     <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
   </ItemGroup>
   <ItemGroup />

@@ -81,9 +81,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following provider payments had been generated")]
-        public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
+        public Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
-            await GeneratePreviousPayment(table, TestSession.Provider.Ukprn);
+            return GeneratePreviousPayment(table, TestSession.Provider.Ukprn);
         }
 
         [Given(@"the following ""(.*)"" payments had been generated")]
@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
+        public Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
             Task verifyIlr() => WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier);
 
@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var featureNumber = featureContext.FeatureInfo.Title.Substring(
                 featureContext.FeatureInfo.Title.IndexOf("PV2-", StringComparison.Ordinal) + 4, 3);
 
-            await Scope.Resolve<IIlrService>().PublishNonLevyLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
+            return Scope.Resolve<IIlrService>().PublishNonLevyLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]
