@@ -1,4 +1,5 @@
-﻿Feature: Non-levy learner, provider deletes english/maths aim, earlier paymnts will be refunded PV2-464
+﻿@ignore
+Feature: Non-levy learner, provider deletes english/maths aim, earlier paymnts will be refunded PV2-464
 
 Scenario Outline: Non-levy learner provider deletes english/maths aim, earlier paymnts will be refunded PV2-464
 	Given the following learners
