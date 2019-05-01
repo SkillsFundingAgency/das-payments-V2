@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using SFA.DAS.Payments.DataLocks.Domain.Interfaces;
+﻿using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.Services
+namespace SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching
 {
     public class UkprnMatcher: IUkprnMatcher
     {
