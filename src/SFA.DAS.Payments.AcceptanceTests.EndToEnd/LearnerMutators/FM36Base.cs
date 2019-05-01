@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     public abstract class FM36Base : ILearnerMultiMutator
     {
+        private const int StandardProgrammeType = 25;
         private readonly string _featureNumber;
         protected ILearnerCreatorDataCache dataCache;
 
@@ -115,7 +116,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, learnerRequest.TotalTrainingPrice.Value, 1, "PMR", 1, 1, learnerRequest.TotalTrainingPriceEffectiveDate);
             }
 
-            if (learnerRequest.TotalAssessmentPriceEffectiveDate.HasValue && learnerRequest.TotalAssessmentPrice.HasValue && learnerRequest.ProgrammeType.HasValue && learnerRequest.ProgrammeType.Value == 25)
+            if (learnerRequest.TotalAssessmentPriceEffectiveDate.HasValue && learnerRequest.TotalAssessmentPrice.HasValue && learnerRequest.ProgrammeType.HasValue && learnerRequest.ProgrammeType.Value == StandardProgrammeType)
             {
                 Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalAssessmentPrice, learnerRequest.TotalAssessmentPrice.Value, 1, "PMR", 1, 1, learnerRequest.TotalAssessmentPriceEffectiveDate);
             }
