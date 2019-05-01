@@ -8,9 +8,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     public abstract class FM36Base : ILearnerMultiMutator
     {
+        private const int StandardProgrammeType = 25;
         private readonly string _featureNumber;
-        private ILearnerCreatorDataCache _dataCache;
-        private GenerationOptions _options;
+        protected ILearnerCreatorDataCache dataCache;
 
         protected FM36Base(string featureNumber)
         {
@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         public IEnumerable<LearnerTypeMutator> LearnerMutators(ILearnerCreatorDataCache cache)
         {
-            _dataCache = cache;
+            dataCache = cache;
 
             return CreateLearnerTypeMutators();
         }
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         public string RuleName()
         {
-            return "FM36";
+            return "FM36_E2E";
         }
 
         public string LearnerReferenceNumberStub()
@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             lfams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
             {
                 LearnDelFAMType = LearnDelFAMType.ACT.ToString(),
-                LearnDelFAMCode = ((int)LearnDelFAMCode.ACT_ContractESFA).ToString(),
+                LearnDelFAMCode = ((int)learnerRequest.ContractType).ToString(),
                 LearnDelFAMDateFrom = ld.LearnStartDate,
                 LearnDelFAMDateFromSpecified = true,
                 LearnDelFAMDateTo = ld.LearnActEndDate,
@@ -116,7 +116,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, learnerRequest.TotalTrainingPrice.Value, 1, "PMR", 1, 1, learnerRequest.TotalTrainingPriceEffectiveDate);
             }
 
-            if (learnerRequest.TotalAssessmentPriceEffectiveDate.HasValue && learnerRequest.TotalAssessmentPrice.HasValue)
+            if (learnerRequest.TotalAssessmentPriceEffectiveDate.HasValue && learnerRequest.TotalAssessmentPrice.HasValue && learnerRequest.ProgrammeType.HasValue && learnerRequest.ProgrammeType.Value == StandardProgrammeType)
             {
                 Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalAssessmentPrice, learnerRequest.TotalAssessmentPrice.Value, 1, "PMR", 1, 1, learnerRequest.TotalAssessmentPriceEffectiveDate);
             }
@@ -168,19 +168,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             var lesm = learner.LearnerEmploymentStatus.ToList();
             lesm[0].DateEmpStatApp = learner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
-
-            if (learnerRequest.CompletionStatus != CompStatus.Completed)
-            {
-                learner.LearningDelivery[1].LearnAimRef = "6030571x";
-            }
-            else
-            {
-                learner.LearningDelivery[1].LearnAimRef = "00300545";
-                MutateHE(learner);
-            }
         }
 
-        private void MutateHE(MessageLearner learner)
+        protected void MutateHE(MessageLearner learner)
         {
             var ldhe = new List<MessageLearnerLearningDeliveryLearningDeliveryHE>();
 
@@ -217,12 +207,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             });
 
             learner.LearningDelivery[1].LearningDeliveryHE = ldhe.ToArray();
-        }
-
-        private void MutateGenerationOptionsOlderApprenticeship(GenerationOptions options)
-        {
-            _options = options;
-            options.LD.IncludeHHS = true;
         }
     }
 }

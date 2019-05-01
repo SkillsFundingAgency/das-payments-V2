@@ -43,53 +43,40 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
             this.storageService = storageService;
         }
 
-        public async Task PublishNonLevyLearnerRequest(List<Training> currentIlr, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr)
+        public async Task PublishLearnerRequest(List<Training> currentIlr, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr)
         {
             if (currentIlr?.Any() == false) return;
 
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
 
-            //foreach (var ilr in currentIlr)
-            //{
-            //}
-                //var learnerId = ilr.LearnerId;
+            var learnerRequests = mapper.Map<IEnumerable<LearnerRequest>>(currentIlr);
+            var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learnerRequests);
 
-                //var nonLevyLearnerRequest = mapper.Map<NonLevyLearnerRequest>(ilr);
-                //nonLevyLearnerRequest.FeatureNumber = featureNumber;
+            var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
 
-                var learnerRequests = mapper.Map<IEnumerable<LearnerRequest>>(currentIlr);
-                var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learnerRequests);
+            RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerRequests);
 
-                var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
+            await verifyIlr();
 
-          //      RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerRequests);
-
-                await verifyIlr();
-
-                await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
+            await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
         }
-
-        //private Task<KeyValuePair<string, string>> GenerateTestIlrFile(ILearnerMultiMutator learnerRequest, int ukprn)
-        //{
-        //    return tdgService.GenerateIlrTestData(learnerRequest, ukprn);
-        //}
 
         private void RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<LearnerRequest> currentIlr)
         {
-            //XNamespace xsdns = tdgService.IlrNamespace;
-            //var xDoc = XDocument.Parse(ilrFile);
-            //var learner = xDoc.Descendants(xsdns + "Learner").First();
-            //var learningProvider = xDoc.Descendants(xsdns + "LearningProvider").First();
+            XNamespace xsdns = tdgService.IlrNamespace;
+            var xDoc = XDocument.Parse(ilrFile);
+            var learner = xDoc.Descendants(xsdns + "Learner").First();
+            var learningProvider = xDoc.Descendants(xsdns + "LearningProvider").First();
 
-            //foreach (var request in currentIlr)
-            //{
-            //    var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerId);
+            foreach (var request in currentIlr)
+            {
+                var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerId);
 
-            //    testSessionLearner.Ukprn = long.Parse(learningProvider.Elements(xsdns + "UKPRN").First().Value);
-            //    testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
-            //    testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
-            //}
+                testSessionLearner.Ukprn = long.Parse(learningProvider.Elements(xsdns + "UKPRN").First().Value);
+                testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
+                testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
+            }
         }
 
         private async Task StoreAndPublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)

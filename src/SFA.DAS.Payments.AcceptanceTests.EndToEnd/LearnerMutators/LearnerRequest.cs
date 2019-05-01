@@ -1,5 +1,6 @@
 ﻿using System;
 using DCT.TestDataGenerator;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -45,5 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         public string FundingLineType { get; set; }
 
         public string SfaContributionPercentage { get; set; }
+
+        public ContractType ContractType { get; set; }
     }
 }

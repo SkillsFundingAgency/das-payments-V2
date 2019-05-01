@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
 {
     public interface IIlrService
     {
-        Task PublishNonLevyLearnerRequest(List<Training> currentIlr, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr);
+        Task PublishLearnerRequest(List<Training> currentIlr, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr);
     }
 }

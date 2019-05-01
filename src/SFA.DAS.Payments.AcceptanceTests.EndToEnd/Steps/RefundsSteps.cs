@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var featureNumber = featureContext.FeatureInfo.Title.Substring(
                 featureContext.FeatureInfo.Title.IndexOf("PV2-", StringComparison.Ordinal) + 4, 3);
 
-            return Scope.Resolve<IIlrService>().PublishNonLevyLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
+            return Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]
