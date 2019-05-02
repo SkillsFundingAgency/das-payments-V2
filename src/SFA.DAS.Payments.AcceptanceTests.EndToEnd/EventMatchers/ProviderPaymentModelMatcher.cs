@@ -82,7 +82,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(PaymentModel expected, PaymentModel actual)
         {
-            var onProgTypes = new[] { TransactionType.Balancing, TransactionType.Completion, TransactionType.Learning };
             if (expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
                 expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
                 expected.DeliveryPeriod == actual.DeliveryPeriod &&

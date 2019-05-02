@@ -26,43 +26,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                                      .Include(a => a.ApprenticeshipPriceEpisodes)
                                      .FirstOrDefaultAsync(a => a.Id == apprenticeshipId) 
                                  ?? throw new InvalidOperationException($"Apprenticeship not found: {apprenticeshipId}");
+
+            apprenticeship.Status = status;
             apprenticeship.ApprenticeshipPriceEpisodes.ForEach(priceEpisode => priceEpisode.Removed = true);
             apprenticeship.ApprenticeshipPriceEpisodes.AddRange(priceEpisodes);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-
-        public static async Task AddApprenticeships(Apprenticeship apprenticeshipSpec, List<Apprenticeship> testSessionApprenticeships, IPaymentsDataContext dataContext, TestSession testSession)
-        {
-            var apprenticeshipModel = CreateApprenticeshipModel(apprenticeshipSpec, testSession);
-
-            apprenticeshipModel.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-            {
-                CreateApprenticeshipPriceEpisode(apprenticeshipSpec)
-            };
-            await dataContext.Apprenticeship.AddAsync(apprenticeshipModel).ConfigureAwait(false);
-            testSessionApprenticeships.Add(apprenticeshipSpec);
-
-            await dataContext.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        public static async Task UpdateApprenticeships(long currentApprenticeshipId, Apprenticeship apprenticeshipSpec, IPaymentsDataContext dataContext)
-        {
-            var savedApprenticeship = await dataContext.Apprenticeship.SingleAsync(x => x.Id == currentApprenticeshipId).ConfigureAwait(false);
-            savedApprenticeship.Status = apprenticeshipSpec.Status.ToApprenticeshipPaymentStatus();
-
-            var currentEpisodes = await dataContext.ApprenticeshipPriceEpisode
-                .Where(x => x.ApprenticeshipId == currentApprenticeshipId)
-                .ToListAsync().ConfigureAwait(false);
-
-            currentEpisodes.ForEach(x => x.Removed = true);
-
-            apprenticeshipSpec.CommitmentId = currentApprenticeshipId;
-            var newPriceEpisodes = CreateApprenticeshipPriceEpisode(apprenticeshipSpec);
-
-            await dataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisodes).ConfigureAwait(false);
-            await dataContext.SaveChangesAsync().ConfigureAwait(false);
-        }
-
+        
         public static ApprenticeshipModel CreateApprenticeshipModel(Apprenticeship apprenticeshipSpec, TestSession testSession)
         {
             if (apprenticeshipSpec.CommitmentId == default(long)) apprenticeshipSpec.CommitmentId = testSession.GenerateId();

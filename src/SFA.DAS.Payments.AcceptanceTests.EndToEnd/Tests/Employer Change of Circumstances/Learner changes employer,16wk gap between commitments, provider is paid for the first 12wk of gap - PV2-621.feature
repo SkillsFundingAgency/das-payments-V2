@@ -4,7 +4,8 @@ As a provider,
 I want provider earnings and payments where learner changes employer and there is a 16 week gap between commitments - provider receives payment during the first 12 weeks of the gap as they amend the ACT code and employment status code correctly, to be paid the correct amount
 So that I am accurately paid my apprenticeship provision.
 	
-Scenario Outline:Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621Scenario Outline: Learner changes employer and there is a gap between commitments - provider receives full payment for first 12weeks during the gap as they amend the ACT code and employment status code correctly, then no payment for remaining 4weeks, as learner can only get paid for up to 12weeks gap.
+Scenario Outline:Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621
+
 Given the "employer 1" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 1>
 And  the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -157,7 +158,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(ProviderPaymentEvent expected, ProviderPaymentEvent actual)
         {
-            var onProgTypes = new[] { TransactionType.Balancing, TransactionType.Completion, TransactionType.Learning };
+            
             if (expected.GetType() == actual.GetType() &&
                 expected.TransactionType == actual.TransactionType &&
                 expected.AmountDue == actual.AmountDue &&

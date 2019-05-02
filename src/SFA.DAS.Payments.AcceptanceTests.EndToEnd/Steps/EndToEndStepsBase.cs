@@ -186,7 +186,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (specApprenticeship == null)
                 {
                     //use last apprenticeship to make sure it picks up the most recent status
-                    specApprenticeship = group.LastOrDefault() ?? throw new InvalidOperationException($"No apprenticeships in group. Identifier: {group.Key}");
+                    specApprenticeship = group.Last();
                     var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
                     apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
                     await ApprenticeshipHelper.AddApprenticeship(apprenticeship, DataContext).ConfigureAwait(false);
@@ -196,7 +196,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 else
                 {
                     var priceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
-                    var status = group.LastOrDefault()?.Status?.ToApprenticeshipPaymentStatus() ??
+                    var status = group.Last().Status?.ToApprenticeshipPaymentStatus() ??
                                  throw new InvalidOperationException($"last item not found: {group.Key}");
                     await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.CommitmentId,status, priceEpisodes, DataContext);
                 }
@@ -396,7 +396,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
                                 currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
                     .PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
-                //currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
+
+                currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
 
                 if (aim.ActualDurationAsTimespan.HasValue)
                 {
