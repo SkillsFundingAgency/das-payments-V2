@@ -1,3 +1,4 @@
+@ignore
 Feature: PV2-441 - Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27 most deprived,on framework
 As a provider,
 I want a levy learner living in a Disadvantaged Postcode area (21-27% most deprived) to undertake an Apprenticeship Framework course

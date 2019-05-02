@@ -6,9 +6,9 @@ Feature: Levy learner changes provider but remains with the same employer and th
 Scenario Outline: Levy learner changes provider but remains with the same employer and there is a gap PV2-319
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | Provider   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          |
-        | provider a | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 7500         | cancelled | 01/Aug/Current Academic Year | 04/Mar/Current Academic Year | 05/Mar/Current Academic Year |
-        | provider b | 01/Jun/Current Academic Year | 01/Nov/Next Academic Year | 4500         | active    | 06/Jun/Current Academic Year |                              |                              |
+		 | Identifier         | Provider   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          |
+		 | Apprentiiship 1    | provider a | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 7500         | cancelled | 01/Aug/Current Academic Year | 04/Mar/Current Academic Year | 05/Mar/Current Academic Year |
+		 | Apprentiiship 2    | provider b | 01/Jun/Current Academic Year | 01/Nov/Next Academic Year | 4500         | active    | 06/Jun/Current Academic Year |                              |                              |
 	And the "provider a" previously submitted the following learner details
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 06/Aug/Current Academic Year | 12 months        | 6000                 | 06/Aug/Current Academic Year        | 1500                   | 06/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |

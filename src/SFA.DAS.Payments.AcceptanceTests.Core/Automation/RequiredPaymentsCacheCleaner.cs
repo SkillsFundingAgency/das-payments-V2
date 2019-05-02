@@ -4,6 +4,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -18,8 +19,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             this.messageSession = messageSession;
         }
 
-        public async Task ClearCaches(long ukprn,TestSession testSession)
+        public async Task ClearCaches(Provider provider, TestSession testSession)
         {
+            var ukprn = provider.Ukprn;
             var keys = new List<string>();
             var providerLearners = testSession.Learners.Where(x => x.Ukprn == ukprn).ToList();
 
@@ -31,21 +33,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     {
                         keys.Add(apprenticeshipKeyService.GenerateApprenticeshipKey(
                             ukprn,
-                            testSession.GetLearner(ukprn,learner.LearnerIdentifier).LearnRefNumber,
+                            testSession.GetLearner(ukprn, learner.LearnerIdentifier).LearnRefNumber,
                             aim.FrameworkCode,
                             aim.PathwayCode,
                             aim.ProgrammeType,
                             aim.StandardCode,
                             aim.AimReference));
                     }
-                }    
+                }
             }
             else
             {
                 keys.AddRange(providerLearners.Select(learner =>
                     apprenticeshipKeyService.GenerateApprenticeshipKey(
                         ukprn,
-                        testSession.GetLearner(ukprn,learner.LearnerIdentifier).LearnRefNumber,
+                        testSession.GetLearner(ukprn, learner.LearnerIdentifier).LearnRefNumber,
                         learner.Course.FrameworkCode,
                         learner.Course.PathwayCode,
                         learner.Course.ProgrammeType,
@@ -53,10 +55,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                         learner.Course.LearnAimRef))
                     .ToList());
             }
-            
+
             var startedEvent = new CollectionStartedEvent
             {
                 ApprenticeshipKeys = keys,
+                JobId = provider.JobId > 0 ? provider.JobId : testSession.JobId
             };
 
             await messageSession.Send(startedEvent).ConfigureAwait(false);

@@ -4,9 +4,9 @@ Scenario Outline:  Earnings and payments for two DAS learners, levy is spent in 
 	# employer 1 levy balance > agreed price for all months for both learners
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | Learner ID | priority | start date                | end date                     | agreed price |
-        | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
-        | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
+		 | Identifier          | Learner ID | priority | start date                | end date                     | agreed price |
+		 | Apprentiiship 1     | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
+		 | Apprentiiship 2     | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
 
 	And the provider previously submitted the following learner details
 		| Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
