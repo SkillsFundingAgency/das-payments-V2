@@ -10,7 +10,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Services;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
-    public class IlrSubmittedEventHandler : IHandleMessages<IlrSubmittedEvent>
+    public class IlrSubmittedEventHandler : IHandleMessages<ReceivedProviderEarningsEvent>
     {
 
         private readonly IPaymentLogger logger;
@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
         }
 
-        public async Task Handle(IlrSubmittedEvent message, IMessageHandlerContext context)
+        public async Task Handle(ReceivedProviderEarningsEvent message, IMessageHandlerContext context)
         {
             try
             {
