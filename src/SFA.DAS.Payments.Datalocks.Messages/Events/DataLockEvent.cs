@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
     [KnownType("GetInheritors")]
     public abstract class DataLockEvent : PaymentsEvent, IContractType1EarningEvent
     {
+        public Guid EarningEventId { get; set; }
         public List<PriceEpisode> PriceEpisodes { get; set; }
         public short CollectionYear { get; set; }
         public string AgreementId { get; set; }

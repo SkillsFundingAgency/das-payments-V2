@@ -105,9 +105,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
                 .ForMember(x => x.Priority, opt => opt.Ignore())
                 .ForMember(x => x.ApprenticeshipId, opt => opt.Ignore())
-                .ForMember(x => x.ApprenticeshipPriceEpisodeId, opt => opt.Ignore())
-                //.ForAllOtherMembers(opt => opt.Ignore())
-            ;
+                .ForMember(x => x.ApprenticeshipPriceEpisodeId, opt => opt.Ignore()) ;
 
             // End Earning Event --> Required Payment Event
 

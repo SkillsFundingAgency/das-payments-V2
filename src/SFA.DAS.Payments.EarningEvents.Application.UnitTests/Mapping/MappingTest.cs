@@ -124,7 +124,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         {
                             PriceEpisodeAimSeqNumber = 1,
                             EpisodeStartDate = DateTime.Today.AddMonths(-12),
-                            EpisodeEffectiveTNPStartDate = DateTime.Today.AddMonths(-12), 
+                            EpisodeEffectiveTNPStartDate = DateTime.Today.AddMonths(-11), 
                             PriceEpisodePlannedEndDate = DateTime.Today,
                             PriceEpisodeActualEndDate = DateTime.Today,
                             PriceEpisodePlannedInstalments = 12,
@@ -281,7 +281,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.PriceEpisodes.Should().NotBeEmpty();
             earningEvent.PriceEpisodes.First().Identifier.Should().Be("pe-1");
             earningEvent.PriceEpisodes.First().CourseStartDate.Should().Be(DateTime.Today.AddMonths(-12));
-            earningEvent.PriceEpisodes.First().EffectiveTotalNegotiatedPriceStartDate.Should().Be(DateTime.Today.AddMonths(-12));
+            earningEvent.PriceEpisodes.First().EffectiveTotalNegotiatedPriceStartDate.Should().Be(DateTime.Today.AddMonths(-11));
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice1.Should().Be(15000);
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice2.Should().Be(15000);
             earningEvent.PriceEpisodes.First().CompletionAmount.Should().Be(3000);
