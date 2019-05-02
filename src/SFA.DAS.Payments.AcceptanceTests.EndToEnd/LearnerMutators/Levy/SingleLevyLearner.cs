@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DCT.TestDataGenerator;
+using TDG = DCT.TestDataGenerator;
 using DCT.TestDataGenerator.Functor;
 using ESFA.DC.ILR.Model.Loose;
 
@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.Levy
     public abstract class SingleLevyLearner : FM36Base
     {
         private readonly IEnumerable<LearnerRequest> _learnerRequests;
-        private GenerationOptions _options;
+        private TDG.GenerationOptions _options;
 
         protected SingleLevyLearner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
         {
@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.Levy
             return list;
         }
 
-        private void MutateLearnerOptions(GenerationOptions options)
+        private void MutateLearnerOptions(TDG.GenerationOptions options)
         {
             _options = options;
             options.LD.IncludeHHS = false;
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.Levy
         private void MutateLearner(MessageLearner learner, bool valid)
         {
             var trainingRecord = _learnerRequests.First();
-            Helpers.MutateDOB(learner, valid, Helpers.AgeRequired.Exact19, Helpers.BasedOn.LearnDelStart, Helpers.MakeOlderOrYoungerWhenInvalid.NoChange);
+            TDG.Helpers.MutateDOB(learner, valid, TDG.Helpers.AgeRequired.Exact19, TDG.Helpers.BasedOn.LearnDelStart, TDG.Helpers.MakeOlderOrYoungerWhenInvalid.NoChange);
             MutateCommon(learner, trainingRecord);
             DoSpecificMutate(learner, trainingRecord);
         }
