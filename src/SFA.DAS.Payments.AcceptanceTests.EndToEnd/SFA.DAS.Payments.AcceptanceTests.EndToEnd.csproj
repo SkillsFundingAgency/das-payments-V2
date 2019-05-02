@@ -333,6 +333,8 @@
     <Compile Include="LearnerMutators\FM36Base.cs" />
     <Compile Include="LearnerMutators\Levy\BasicDay\FM36_261.cs" />
     <Compile Include="LearnerMutators\Levy\SingleLevyLearner.cs" />
+    <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_277.cs" />
+    <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_278.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_334.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_615.cs" />
     <Compile Include="LearnerMutators\IlrDcService.cs" />

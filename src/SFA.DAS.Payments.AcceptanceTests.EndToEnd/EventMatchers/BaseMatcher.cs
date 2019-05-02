@@ -20,6 +20,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             var expectedPayments = GetExpectedEvents();
 
+            // remove any FunctionalSkillEarningsEvent when we are not expecting any (only if they have all 0 values)
+            if (expectedPayments.All(x => x.GetType() != typeof(FunctionalSkillEarningsEvent)))
+            {
+                actualPayments = RemoveEmptyFunctionSkillEarningEvent(actualPayments);
+            }
+
             var matchedPayments = expectedPayments
                 .Where(expected => actualPayments.Any(actual => Match(expected, actual)))
                 .ToList();
@@ -27,12 +33,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var errors = new List<string>();
 
             var final = false;
-
-            // remove any FunctionalSkillEarningsEvent when we are not expecting any (only if they have all 0 values)
-            if (expectedPayments.All(x => x.GetType() != typeof(FunctionalSkillEarningsEvent)))
-            {
-                actualPayments = RemoveEmptyFunctionSkillEarningEvent(actualPayments);
-            }
 
             if (matchedPayments.Count < expectedPayments.Count)
                 errors.Add($"{expectedPayments.Count - matchedPayments.Count} out of {expectedPayments.Count} events were not found");
