@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Exceptions;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -89,7 +90,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             var key = $"job_model_{dcJobId}";
             return await cache.GetOrCreateAsync<JobModel>(key, async ce =>
             {
-                var jobModel = await dataContext.GetJobByDcJobId(dcJobId) ?? throw new InvalidOperationException($"Job not found. External Job id: {dcJobId}");
+                var jobModel = await dataContext.GetJobByDcJobId(dcJobId) ?? throw new DcJobNotFoundException(dcJobId);
                 ce.Value = jobModel;
                 ce.SlidingExpiration = TimeSpan.FromSeconds(120);
                 return jobModel;
