@@ -435,6 +435,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -485,10 +490,40 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy learner changes to Levy employer Levy available PV2-366.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\One Levy learner changes employer break in learning at the end of a month and return at the start of a later month_PV2-370.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes employer break in learning at the end of a month and return at the start of a later month_PV2-370.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\One Levy learner changes employer with change to price at mid month ILR submitted earlier - PV2-365.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes employer with change to price at mid month ILR submitted earlier - PV2-365.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\One Levy learner changes employer,incentive earned in transfer month, ILR transfer is before the commitment changes_PV2-374.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes employer,incentive earned in transfer month, ILR transfer is before the commitment changes_PV2-374.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature.cs">
       <AutoGen>True</AutoGen>
@@ -980,6 +1015,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes earlier than new commitment_PV2-322.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer and ILR changes earlier than new commitment_PV2-322.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1199,6 +1244,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Employer Change of Circumstances\16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs</LastGenOutput>
@@ -1239,9 +1288,33 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\One Levy learner changes employer break in learning at the end of a month and return at the start of a later month_PV2-370.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes employer break in learning at the end of a month and return at the start of a later month_PV2-370.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\One Levy learner changes employer with change to price at mid month ILR submitted earlier - PV2-365.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes employer with change to price at mid month ILR submitted earlier - PV2-365.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\One Levy learner changes employer,incentive earned in transfer month, ILR transfer is before the commitment changes_PV2-374.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes employer,incentive earned in transfer month, ILR transfer is before the commitment changes_PV2-374.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1634,6 +1707,14 @@
     <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes earlier than new commitment_PV2-322.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer and ILR changes earlier than new commitment_PV2-322.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
