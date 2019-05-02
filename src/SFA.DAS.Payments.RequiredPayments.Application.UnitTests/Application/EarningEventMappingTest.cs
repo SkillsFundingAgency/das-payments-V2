@@ -101,11 +101,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
         [Test]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredIncentiveAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredCoInvestedAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredLevyAmount))]
-        [TestCase(typeof(FunctionalSkillEarningsEvent), typeof(CalculatedRequiredLevyAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CompletionPaymentHeldBackEvent))]
         public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType, Type requiredPaymentEventType)
         {
@@ -114,6 +111,25 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.ContractType.Should().Be(ContractType.Act2);
+        }
+
+        [Test]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act1)]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act2)]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount), ContractType.Act1)]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount), ContractType.Act2)]
+        [TestCase(typeof(CalculatedRequiredLevyAmount), ContractType.Act1)]
+        [TestCase(typeof(CalculatedRequiredLevyAmount), ContractType.Act2)]
+        public void ContractTypeIsCorrectForFunctionalSkills(Type requiredPaymentEventType, ContractType expectedContractType)
+        {
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var earningEvent = new FunctionalSkillEarningsEvent
+            {
+                ContractType = expectedContractType,
+            };
+            
+            var actual = mapper.Map(earningEvent, requiredPaymentEvent);
+            actual.ContractType.Should().Be(expectedContractType);
         }
 
         [Test]
@@ -155,6 +171,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             // assert
             AssertCommonProperties(requiredPayment, functionalSkillEarningsEvent);
+            requiredPayment.StartDate.Should().Be(DateTime.Today.AddDays(-10));
         }
 
         [Test]
@@ -250,6 +267,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 },
                 JobId = 8,
                 IlrSubmissionDateTime = DateTime.Today,
+                StartDate = DateTime.Today.AddDays(-10),
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning

@@ -11,9 +11,9 @@ Scenario Outline: Two levy learners, one employer but two providers and enough l
 		| Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| learner b  | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           | 0                      | 01/Sep/Last Academic Year             |                 | continuing        | Act1          | 1                   | ZPROG001      | 403            | 1            | 2              | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
    And the following commitments exist
-        | Provider   | Learner ID | priority | start date                | end date                     | agreed price |
-        | provider a | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
-        | provider b | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
+		| Identifier         | Provider   | Learner ID | priority | start date                | end date                     | agreed price |
+		| Apprentiiship 1    | provider a | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
+		| Apprentiiship 2    | provider b | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
    
    And the following earnings had been generated for the learner for "provider a"
         | Learner ID | Delivery Period        | On-Programme | Completion | Balancing |

@@ -24,6 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         public async Task<List<ApprenticeshipModel>> ApprenticeshipsForProvider(long ukprn)
         {
             var apprenticeships = await dataContext.Apprenticeship
+                .Include(x => x.ApprenticeshipPriceEpisodes)
                 .Where(x => x.Ukprn == ukprn)
                 .ToListAsync()
                 .ConfigureAwait(false);

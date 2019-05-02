@@ -24,11 +24,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -66,6 +68,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "previous_training");
         }
 
+        protected List<Apprenticeship> Apprenticeships
+        {
+            get => !Context.TryGetValue<List<Apprenticeship>>(out var apprenticeships) ? null : apprenticeships;
+            set => Set(value);
+        }
+
         protected List<Earning> PreviousEarnings
         {
             get => !Context.TryGetValue<List<Earning>>("previous_earnings", out var previousEarnings) ? null : previousEarnings;
@@ -83,7 +91,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             get => !Context.TryGetValue<HashSet<(byte period, int academicYear, long ukprn)>>("ProvidersWithCacheCleared", out var providersWithCacheCleared) ? null : providersWithCacheCleared;
             set => Set(value, "ProvidersWithCacheCleared");
         }
-
 
         protected EndToEndStepsBase(FeatureContext context) : base(context)
         {
@@ -170,92 +177,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected async Task AddTestApprenticeships(List<Apprenticeship> apprenticeships)
+        protected async Task AddOrUpdateTestApprenticeships(List<Apprenticeship> apprenticeshipSpecs)
         {
-            foreach (var x in apprenticeships)
+            if (Apprenticeships == null) Apprenticeships = new List<Apprenticeship>();
+
+            foreach (var apprenticeshipSpec in apprenticeshipSpecs)
             {
-                var apprenticeshipModel = CreateApprenticeshipModels(x);
-                var matchedApprenticeship = await DataContext.Apprenticeship.FirstOrDefaultAsync(e => e.Id == apprenticeshipModel.Id).ConfigureAwait(false);
-
-                if (matchedApprenticeship != null)
+                var foundApprenticeship = Apprenticeships.SingleOrDefault(x => x.Identifier == apprenticeshipSpec.Identifier);
+                if (foundApprenticeship == null)
                 {
-                    DataContext.Apprenticeship.Remove(matchedApprenticeship);
-                    await DataContext.SaveChangesAsync().ConfigureAwait(false);
-                }
-               
-                await DataContext.Apprenticeship.AddAsync(apprenticeshipModel).ConfigureAwait(false);
-            }
-
-            await DataContext.SaveChangesAsync().ConfigureAwait(false);
-
-        }
-
-        private ApprenticeshipModel CreateApprenticeshipModels(Apprenticeship apprenticeshipSpec)
-        {
-            if (apprenticeshipSpec.CommitmentId == default(long)) apprenticeshipSpec.CommitmentId = TestSession.GenerateId();
-
-            if (apprenticeshipSpec.Ukprn == default(long))
-            {
-                if (string.IsNullOrWhiteSpace(apprenticeshipSpec.Provider))
-                {
-                    apprenticeshipSpec.Ukprn = TestSession.Ukprn;
+                    await ApprenticeshipHelper.AddApprenticeships(apprenticeshipSpec, Apprenticeships, DataContext, TestSession);
                 }
                 else
                 {
-                    apprenticeshipSpec.Ukprn = TestSession.GetProviderByIdentifier(apprenticeshipSpec.Provider).Ukprn;
+                    await ApprenticeshipHelper.UpdateApprenticeships(foundApprenticeship.CommitmentId, apprenticeshipSpec, DataContext);
                 }
             }
-            apprenticeshipSpec.AccountId = TestSession.GetEmployer(apprenticeshipSpec.Employer).AccountId;
-            apprenticeshipSpec.Uln = TestSession.GetLearner(apprenticeshipSpec.Ukprn, apprenticeshipSpec.LearnerId).Uln;
-
-            ApprenticeshipPaymentStatus apprenticeshipStatus;
-            switch (apprenticeshipSpec.Status?.ToLower())
-            {
-                case "active":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Active;
-                    break;
-                case "cancelled":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Stopped;
-                    break;
-                case "paused":
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Paused;
-                    break;
-                default:
-                    apprenticeshipStatus = ApprenticeshipPaymentStatus.Inactive;
-                    break;
-            }
-
-            var apprenticeshipModel = new ApprenticeshipModel
-            {
-                Id = apprenticeshipSpec.CommitmentId,
-                Ukprn = apprenticeshipSpec.Ukprn,
-                AccountId = apprenticeshipSpec.AccountId,
-                Uln = apprenticeshipSpec.Uln,
-                FrameworkCode = apprenticeshipSpec.FrameworkCode,
-                ProgrammeType = apprenticeshipSpec.ProgrammeType,
-                PathwayCode = apprenticeshipSpec.PathwayCode,
-                Priority = apprenticeshipSpec.Priority,
-                Status = apprenticeshipStatus,
-                LegalEntityName = "Test SFA",
-                EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
-                EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
-                AgreedOnDate = DateTime.UtcNow,
-
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
-                        new    ApprenticeshipPriceEpisodeModel {
-                                    Cost = apprenticeshipSpec.AgreedPrice,
-                                    StartDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveFrom) 
-                                        ?apprenticeshipSpec.StartDate.ToDate()
-                                        :apprenticeshipSpec.EffectiveFrom.ToDate(),
-                                    EndDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.EffectiveTo)
-                                        ? default(DateTime?)
-                                        : apprenticeshipSpec.EffectiveTo.ToDate()
-                             }
-                 }
-            };
-
-            return apprenticeshipModel;
         }
 
         protected async Task SaveLevyAccount(Employer employer)
@@ -284,7 +221,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001");
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, sfaContributionPercentage,
+                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 100,
                     providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId));
 
             if (providerPayment.EmployerCoFundedPayments > 0)
@@ -361,8 +298,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var aim in currentAims)
             {
-                learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
-
                 var learningDelivery = new LearningDelivery
                 {
                     AimSeqNumber = aim.AimSequenceNumber,
@@ -380,42 +315,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learningDelivery.LearningDeliveryValues.StdCode = aim.StandardCode;
 
                 learner.LearningDeliveries.Add(learningDelivery);
+
+                if (aim.AimReference == "ZPROG001")
+                {
+                    learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
+                }
+                else // maths & english doesn't use price episodes
+                {
+                    learningDelivery.LearningDeliveryPeriodisedValues = SetPeriodisedValues<LearningDeliveryPeriodisedValues>(aim, earnings);
+                }
             }
         }
 
         private List<PriceEpisode> GeneratePriceEpisodes(Aim aim, IList<Earning> earnings)
         {
-            var aimPeriodisedValues = new List<PriceEpisodePeriodisedValues>();
-
-            PriceEpisodePeriodisedValues sfaContributionPeriodisedValue = null;
-
-            if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
-            {
-                sfaContributionPeriodisedValue = new PriceEpisodePeriodisedValues { AttributeName = "PriceEpisodeSFAContribPct", };
-                aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
-            }
-
-            foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
-                                                        e.AimSequenceNumber == aim.AimSequenceNumber))
-            {
-                var period = earning.DeliveryCalendarPeriod;
-                foreach (var earningValue in earning.Values)
-                {
-                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
-                    if (periodisedValues == null)
-                    {
-                        periodisedValues = new PriceEpisodePeriodisedValues { AttributeName = earningValue.Key.ToAttributeName() };
-                        aimPeriodisedValues.Add(periodisedValues);
-                    }
-
-                    SetPeriodValue(period, periodisedValues, earningValue.Value);
-                }
-
-                if (sfaContributionPeriodisedValue != null)
-                {
-                    SetPeriodValue(period, sfaContributionPeriodisedValue, earning.SfaContributionPercentage.ToPercent());
-                }
-            }
+            var aimPeriodisedValues = SetPeriodisedValues<PriceEpisodePeriodisedValues>(aim, earnings);
 
             var priceEpisodePrefix = (aim.StandardCode != 0)
                 ? $"{aim.ProgrammeType}-{aim.StandardCode}"
@@ -574,6 +488,43 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        private static List<T> SetPeriodisedValues<T>(Aim aim, IList<Earning> earnings) where T : PeriodisedAttribute, new()
+        {
+            var aimPeriodisedValues = new List<T>();
+
+            T sfaContributionPeriodisedValue = null;
+
+            if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
+            {
+                sfaContributionPeriodisedValue = new T {AttributeName = "PriceEpisodeSFAContribPct",};
+                aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
+            }
+
+            foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
+                                                        e.AimSequenceNumber == aim.AimSequenceNumber))
+            {
+                var period = earning.DeliveryCalendarPeriod;
+                foreach (var earningValue in earning.Values)
+                {
+                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
+                    if (periodisedValues == null)
+                    {
+                        periodisedValues = new T {AttributeName = earningValue.Key.ToAttributeName()};
+                        aimPeriodisedValues.Add(periodisedValues);
+                    }
+
+                    SetPeriodValue(period, periodisedValues, earningValue.Value);
+                }
+
+                if (sfaContributionPeriodisedValue != null)
+                {
+                    SetPeriodValue(period, sfaContributionPeriodisedValue, earning.SfaContributionPercentage.ToPercent());
+                }
+            }
+
+            return aimPeriodisedValues;
+        }
+
         private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
         {
             var episodeStartDate = priceEpisode.EpisodeStartDate;
@@ -582,7 +533,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 : priceEpisode.PriceEpisodeId;
         }
 
-        private static void SetPeriodValue(int period, PriceEpisodePeriodisedValues periodisedValues, decimal amount)
+        private static void SetPeriodValue(int period, PeriodisedAttribute periodisedValues, decimal amount)
         {
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);
@@ -599,10 +550,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     if (e.DeliveryPeriod != tableRow["Delivery Period"])
                         return false;
 
+                    if (tableRow.TryGetValue("Learning Aim Reference", out var aimRef) && aimRef != e.LearningAimReference)
+                        return false;
+
                     if (tableRow.TryGetValue("Aim Sequence Number", out var aimSequenceNumber) && long.Parse(aimSequenceNumber) != e.AimSequenceNumber)
                         return false;
 
                     if ((tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId)) && learnerId != e.LearnerId)
+                        return false;
+
+                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)
                         return false;
 
                     return true;
@@ -910,12 +867,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     learners.Add(learner);
                 }
             }
-
-            if (!Config.ValidateDcAndDasServices)
-            {
-                var dcHelper = Scope.Resolve<IDcHelper>();
-                await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId, provider.IlrSubmissionTime);
-            }
+            var dcHelper = Scope.Resolve<DcHelper>();
+            await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
+                provider.JobId, provider.IlrSubmissionTime);
 
             var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
                 TestSession, CurrentCollectionPeriod, learners);
@@ -938,7 +892,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
             {
-                await RequiredPaymentsCacheCleaner.ClearCaches(provider.Ukprn, TestSession).ConfigureAwait(false);
+                await RequiredPaymentsCacheCleaner.ClearCaches(provider, TestSession).ConfigureAwait(false);
                 await Task.Delay(Config.TimeToWaitForCacheClearance).ConfigureAwait(false);
 
                 ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn));
