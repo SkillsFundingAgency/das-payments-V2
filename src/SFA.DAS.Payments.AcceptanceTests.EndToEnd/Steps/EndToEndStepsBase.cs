@@ -229,7 +229,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001");
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, sfaContributionPercentage,
+                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 100,
                     providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId));
 
             if (providerPayment.EmployerCoFundedPayments > 0)
@@ -562,6 +562,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     if (e.DeliveryPeriod != tableRow["Delivery Period"])
                         return false;
 
+                    if (tableRow.TryGetValue("Learning Aim Reference", out var aimRef) && aimRef != e.LearningAimReference)
+                        return false;
+
                     if (tableRow.TryGetValue("Aim Sequence Number", out var aimSequenceNumber) && long.Parse(aimSequenceNumber) != e.AimSequenceNumber)
                         return false;
 
@@ -876,7 +879,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     learners.Add(learner);
                 }
             }
-
             var dcHelper = Scope.Resolve<DcHelper>();
             await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
                 provider.JobId, provider.IlrSubmissionTime);
@@ -902,7 +904,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
             {
-                await RequiredPaymentsCacheCleaner.ClearCaches(provider.Ukprn, TestSession).ConfigureAwait(false);
+                await RequiredPaymentsCacheCleaner.ClearCaches(provider, TestSession).ConfigureAwait(false);
                 await Task.Delay(Config.TimeToWaitForCacheClearance).ConfigureAwait(false);
 
                 ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn));
