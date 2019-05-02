@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Exceptions;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
@@ -37,17 +39,21 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
             {
                 if (!sqlExceptionService.IsConstraintViolation(updateEx))
                     throw;
+                var successfullyDeferred = await context.DeferDueToUpdateException(message, delayInSeconds);
+                if (!successfullyDeferred)
+                    throw new InvalidOperationException($"Failed to store/update job details probably due to KEY violation for job: {message.JobId}, message id: {message.Id}, message name: {message.MessageName}. Error: {updateEx.Message}", updateEx);
                 logger.LogWarning($"Failed to store/update job details probably due to KEY violation for job: {message.JobId}, message id: {message.Id}, message name: {message.MessageName}. Error: {updateEx.Message}");
-                var options = new SendOptions();
-                options.DelayDeliveryWith(TimeSpan.FromSeconds(delayInSeconds));
-                await context.Send(message, options).ConfigureAwait(false);
-                context.DoNotContinueDispatchingCurrentMessageToHandlers();
-                return;
+            }
+            catch (DcJobNotFoundException jobNotFoundException)
+            {
+                var successfullyDeferred = await context.DeferDueToJobNotFound(message, delayInSeconds);
+                if (!successfullyDeferred)
+                    throw new InvalidOperationException($"Failed to find the job. Dc Job Id: {message.JobId}, message : {message.Id}, message name: {message.MessageName}. Error: {jobNotFoundException.Message}", jobNotFoundException);
+                logger.LogWarning($"Failed to store/update job details as the the message is being handled before the job creation message.  Will retry message shortly. Error: {jobNotFoundException.Message}");
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error recording message processing status. Job id: {message.JobId}, message : {message.Id}, message name: {message.MessageName}. Error: {ex.Message}", ex);
-                throw;
+                throw new InvalidOperationException($"Error recording message processing status. Job id: {message.JobId}, message : {message.Id}, message name: {message.MessageName}. Error: {ex.Message}", ex);
             }
         }
     }
