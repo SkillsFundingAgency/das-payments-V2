@@ -169,7 +169,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expected.Learner.Uln == actual.Learner.Uln &&
                 expected.LearningAim.StandardCode == actual.LearningAim.StandardCode)
             {
-                if (actual.LearningAim.Reference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase) && onProgTypes.Contains(actual.TransactionType))  //TODO: check with PO if this is ok
+                if (actual.LearningAim.Reference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase) && EnumHelper.IsOnProgType(actual.TransactionType))  //TODO: check with PO if this is ok
                 {
                     return expected.AccountId == actual.AccountId;
                 }

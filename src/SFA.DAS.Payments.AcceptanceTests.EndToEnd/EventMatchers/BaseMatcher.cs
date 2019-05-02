@@ -8,8 +8,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
     public abstract class BaseMatcher<T>
     {
-        protected IReadOnlyList<TransactionType> onProgTypes => new List<TransactionType> { TransactionType.Balancing, TransactionType.Completion, TransactionType.Learning };
-
         protected abstract IList<T> GetActualEvents();
 
         protected abstract IList<T> GetExpectedEvents();
