@@ -16,3 +16,7 @@
     [JobId] BIGINT NOT NULL, 
     [SfaContributionPercentage] DECIMAL(15, 5) NOT NULL,
 )
+
+GO
+
+CREATE INDEX [IX_SubmittedLearnerAim_ApprenticeshipKey] ON [Payments2].[SubmittedLearnerAim] ([Ukprn], [LearnerReferenceNumber], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimReference])
