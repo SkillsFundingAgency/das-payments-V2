@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Tests
         [TestCase(null)]
         public void ExtractPvNumberFromTitleWithout(string title)
         {
-            Assert.That(() => FeatureNumber.ExtractFrom(title), Throws.ArgumentException.With.Message.Contains("does not contain a PV2 number"));
+            Assert.That(() => FeatureNumber.ExtractFrom(title), Is.Null);
         }
     }
 }

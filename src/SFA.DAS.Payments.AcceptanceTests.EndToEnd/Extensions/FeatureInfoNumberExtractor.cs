@@ -17,25 +17,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions
 
         public string Extract()
         {
-            try
-            {
-                return ExtractFrom(feature?.FeatureInfo?.Title);
-            }
-            catch
-            {
-                return ExtractFrom(scenario?.ScenarioInfo?.Title);
-            }
+            return ExtractFrom(feature?.FeatureInfo?.Title)
+                ?? ExtractFrom(scenario?.ScenarioInfo?.Title)
+                ?? throw new ArgumentException($"Title `{feature?.FeatureInfo?.Title}` does not contain a PV2 number");
         }
 
         public static string ExtractFrom(string title)
         {
             var match = Regex.Match(title ?? "", @"PV2[-_](\d+)", RegexOptions.IgnoreCase);
 
-            var number = match.Success 
-                ? match.Groups[1].Value 
-                : throw new ArgumentException($"Title `{title}` does not contain a PV2 number");
-
-            return number;
+            return match.Success
+                ? match.Groups[1].Value
+                : null;
         }
     }
 }
