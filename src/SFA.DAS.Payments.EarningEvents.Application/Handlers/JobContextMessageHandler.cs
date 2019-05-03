@@ -14,7 +14,9 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
@@ -54,8 +56,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 using (var operation = telemetry.StartOperation("FM36Processing"))
                 {
                     var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
-                    var fm36Output = await GetFm36Global(message, collectionPeriod, cancellationToken);
-                    var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, cancellationToken);
+                    var fm36Output = await GetFm36Global(message, collectionPeriod, cancellationToken).ConfigureAwait(false);
+                    var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, cancellationToken).ConfigureAwait(false);
+                    await SendReceivedEarningsEvent(message.JobId, message.SubmissionDateTimeUtc, fm36Output.Year, collectionPeriod, fm36Output.UKPRN).ConfigureAwait(false);
+
                     telemetry.TrackEvent("Sent All ProcessLearnerCommand Messages",
                         new Dictionary<string, string>
                         {
@@ -78,6 +82,21 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 logger.LogError("Error while handling EarningService event", ex);
                 throw;
             }
+        }
+
+        private async Task SendReceivedEarningsEvent(long jobId, DateTime ilrSubmissionDateTime, string academicYear, int collectionPeriod, long ukprn)
+        {
+            var message = new ReceivedProviderEarningsEvent
+            {
+                JobId = jobId,
+                IlrSubmissionDateTime = ilrSubmissionDateTime,
+                CollectionPeriod = new CollectionPeriod {AcademicYear = short.Parse(academicYear), Period = (byte) collectionPeriod},
+                Ukprn = ukprn,
+                EventTime = DateTimeOffset.UtcNow
+            };
+
+            var endpointInstance = await factory.GetEndpointInstance().ConfigureAwait(false);
+            await endpointInstance.Publish(message).ConfigureAwait(false);
         }
 
         private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken )
