@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay
 {
@@ -49,7 +50,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
             appFinRecord.AFinDate = ld.LearnStartDate;
             appFinRecord.AFinDateSpecified = true;
-
 
             learner.LearningDelivery[1].LearnAimRef = "6030571x";
         }
