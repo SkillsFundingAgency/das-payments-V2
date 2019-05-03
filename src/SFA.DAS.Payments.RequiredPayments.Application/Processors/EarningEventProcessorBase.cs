@@ -38,12 +38,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.apprenticeshipKeyProvider = apprenticeshipKeyProvider;
         }
 
-        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
         {
             if (earningEvent == null)
                 throw new ArgumentNullException(nameof(earningEvent));
 
-            var result = new List<RequiredPaymentEvent>();
+            var result = new List<PeriodisedRequiredPaymentEvent>();
 
             foreach (var (period, type) in GetPeriods(earningEvent))
             {
@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         protected abstract EarningType GetEarningType(int type);
 
-        protected RequiredPaymentEvent CreateRequiredPaymentEvent(EarningType earningType, int transactionType, bool holdBackCompletionPayment)
+        protected PeriodisedRequiredPaymentEvent CreateRequiredPaymentEvent(EarningType earningType, int transactionType, bool holdBackCompletionPayment)
         {
             if (holdBackCompletionPayment)
                 return new CompletionPaymentHeldBackEvent();

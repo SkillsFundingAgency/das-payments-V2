@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments));
 
             // Earning event --> required payment event
-            CreateMap<IEarningEvent, RequiredPaymentEvent>()
+            CreateMap<IEarningEvent, PeriodisedRequiredPaymentEvent>()
                 .Include<PayableEarningEvent, CompletionPaymentHeldBackEvent>()
                 .Include<ApprenticeshipContractType2EarningEvent, CompletionPaymentHeldBackEvent>()
                 .Include<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
@@ -110,14 +110,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
 
             // End Earning Event --> Required Payment Event
 
-            CreateMap<EarningPeriod, RequiredPaymentEvent>()
+            CreateMap<EarningPeriod, PeriodisedRequiredPaymentEvent>()
                 .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.MapFrom(period => period.Amount))
                 .ForMember(requiredPayment => requiredPayment.PriceEpisodeIdentifier, opt => opt.MapFrom(period => period.PriceEpisodeIdentifier))
                 .ForAllOtherMembers(opt => opt.Ignore());
 
 
             // Required Payment --> RequiredPaymentEvent
-            CreateMap<RequiredPayment, RequiredPaymentEvent>()
+            CreateMap<RequiredPayment, PeriodisedRequiredPaymentEvent>()
                 .Include<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
                 .Include<RequiredPayment, CalculatedRequiredIncentiveAmount>()
                 .Include<RequiredPayment, CalculatedRequiredLevyAmount>()

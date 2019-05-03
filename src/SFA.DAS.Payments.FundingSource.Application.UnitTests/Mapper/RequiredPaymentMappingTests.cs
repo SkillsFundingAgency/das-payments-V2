@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         [TestCase(typeof(CalculatedRequiredLevyAmount), typeof(LevyFundingSourcePaymentEvent))]
         public void PriceEpisodeMapsEarningsInfo(Type requiredPaymentEventType, Type fundingSourceEventType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             requiredPaymentEvent.StartDate = DateTime.UtcNow;
             requiredPaymentEvent.PlannedEndDate = DateTime.UtcNow;
             requiredPaymentEvent.ActualEndDate = DateTime.UtcNow;
