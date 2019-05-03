@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 Ukprn = 10000,
 
                 AgreementId = "11",
-                CommitmentId = 12,
+                ApprenticeshipId = 12,
                 Priority = 13,
                 EventId = Guid.NewGuid(),
                 AccountId = 1000000,

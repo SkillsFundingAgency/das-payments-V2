@@ -1,27 +1,9 @@
-﻿ #Scenario: Apprentice goes on a planned break midway through the learning episode and this is notified through the ILR
- #       Given the following commitments exist on 03/12/2018:
- #           | commitment Id | version Id | ULN       | start date | end date   | status | agreed price | effective from | effective to |
- #           | 1             | 1-001      | learner a | 01/09/2018 | 08/09/2019 | active | 15000        | 01/09/2018     | 31/10/2018   |
- #           | 1             | 1-002      | learner a | 01/09/2018 | 08/09/2019 | paused | 15000        | 01/11/2018     | 02/01/2019   |
- #           | 1             | 1-003      | learner a | 01/09/2018 | 08/09/2019 | active | 15000        | 03/01/2019     |              |
- #       When an ILR file is submitted on 03/12/2018 with the following data:
- #           | ULN       | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date |
- #           | learner a | 01/09/2018 | 08/09/2019       | 31/10/2018      | planned break     | 12000                | 01/09/2018                          | 3000                   | 01/09/2018                            |
- #           | learner a | 03/01/2019 | 08/11/2019       |                 | continuing        | 12000                | 03/01/2019                          | 3000                   | 03/01/2019                            |
- #       Then the provider earnings and payments break down as follows:
- #           | Type                     | 09/18 | 10/18 | 11/18 | 12/18 | 01/19 | 02/19 | ... | 10/19 | 11/19 |
- #           | Provider Earned from SFA | 1000  | 1000  | 0     | 0     | 1000  | 1000  | ... | 1000  | 0     |
- #           | Provider Paid by SFA     | 0     | 1000  | 1000  | 0     | 0     | 1000  | ... | 1000  | 1000  |
- #           | Levy account debited     | 0     | 1000  | 1000  | 0     | 0     | 1000  | ... | 1000  | 1000  |
- #           | SFA Levy employer budget | 1000  | 1000  | 0     | 0     | 1000  | 1000  | ... | 1000  | 0     |
-
-	
-Feature: Learner takes a planned break from learning
-	As a provider,
+﻿@ignore	
+Feature: One Levy learner, goes on a planned break which is recorded in ILR  PV2-296
 	I want a levy learner, that goes on a planned break which is recorded in ILR, to be paid the correct amount
 	So that I am accurately paid my apprenticeship PV2-296
 
-Scenario Outline: E2E - Levy learner, goes on a planned break which is recorded in ILR  PV2-296
+Scenario Outline: One Levy learner, goes on a planned break which is recorded in ILR  PV2-296
 
 Given the employer levy account balance in collection period <Collection_Period> is 17000
 
@@ -128,3 +110,20 @@ Examples:
         | R10/Current Academic Year |
         | R11/Current Academic Year |
         | R12/Current Academic Year |
+
+ #Scenario: Apprentice goes on a planned break midway through the learning episode and this is notified through the ILR
+ #       Given the following commitments exist on 03/12/2018:
+ #           | commitment Id | version Id | ULN       | start date | end date   | status | agreed price | effective from | effective to |
+ #           | 1             | 1-001      | learner a | 01/09/2018 | 08/09/2019 | active | 15000        | 01/09/2018     | 31/10/2018   |
+ #           | 1             | 1-002      | learner a | 01/09/2018 | 08/09/2019 | paused | 15000        | 01/11/2018     | 02/01/2019   |
+ #           | 1             | 1-003      | learner a | 01/09/2018 | 08/09/2019 | active | 15000        | 03/01/2019     |              |
+ #       When an ILR file is submitted on 03/12/2018 with the following data:
+ #           | ULN       | start date | planned end date | actual end date | completion status | Total training price | Total training price effective date | Total assessment price | Total assessment price effective date |
+ #           | learner a | 01/09/2018 | 08/09/2019       | 31/10/2018      | planned break     | 12000                | 01/09/2018                          | 3000                   | 01/09/2018                            |
+ #           | learner a | 03/01/2019 | 08/11/2019       |                 | continuing        | 12000                | 03/01/2019                          | 3000                   | 03/01/2019                            |
+ #       Then the provider earnings and payments break down as follows:
+ #           | Type                     | 09/18 | 10/18 | 11/18 | 12/18 | 01/19 | 02/19 | ... | 10/19 | 11/19 |
+ #           | Provider Earned from SFA | 1000  | 1000  | 0     | 0     | 1000  | 1000  | ... | 1000  | 0     |
+ #           | Provider Paid by SFA     | 0     | 1000  | 1000  | 0     | 0     | 1000  | ... | 1000  | 1000  |
+ #           | Levy account debited     | 0     | 1000  | 1000  | 0     | 0     | 1000  | ... | 1000  | 1000  |
+ #           | SFA Levy employer budget | 1000  | 1000  | 0     | 0     | 1000  | 1000  | ... | 1000  | 0     |
