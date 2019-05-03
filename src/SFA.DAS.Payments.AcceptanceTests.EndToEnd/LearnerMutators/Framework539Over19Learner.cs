@@ -6,12 +6,12 @@
     using DCT.TestDataGenerator.Functor;
     using ESFA.DC.ILR.Model.Loose;
 
-    public class SingleLearner : FM36Base
+    public class Framework539Over19Learner : FM36Base
     {
         private readonly IEnumerable<LearnerRequest> _learnerRequests;
         private TDG.GenerationOptions _options;
 
-        public SingleLearner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
+        public Framework539Over19Learner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
         {
             _learnerRequests = learnerRequests;
         }
@@ -45,6 +45,8 @@
 
         protected void DoSpecificMutate(MessageLearner learner, LearnerRequest request)
         {
+            learner.ULN = request.Uln;
+            learner.ULNSpecified = true;
             learner.LearningDelivery[1].LearnAimRef = "00300545";
             MutateHE(learner);
         }
