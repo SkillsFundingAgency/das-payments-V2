@@ -47,7 +47,7 @@ Scenario Outline: One levy learner, levy available, finished on time PV2-261
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing |
-		| Aug/Current Academic Year | 600          | 0          | 0         |
+		| Aug/Current Academic Year | 1000         | 0          | 0         |
 		| Sep/Current Academic Year | 0            | 3000       | 0         |
 		| Oct/Current Academic Year | 0            | 0          | 0         |
 		| Nov/Current Academic Year | 0            | 0          | 0         |
