@@ -1,5 +1,5 @@
-﻿@ginore
-Feature: For a Levy Learner , the ILR is submitted several months after course commences. 
+﻿@ignore
+Feature: One levy learner, levy available, ILR submitted several months later but before AY end PV2-340
 	As a provider,
 	I want a levy learner, where ILR is submitted several months after learning has started, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision. PV2-340
