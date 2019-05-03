@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 Console.WriteLine(ex);
             }
             Console.WriteLine("Stored previous submission payments to the db.");
-            var ilrSubmissionEvent = new IlrSubmittedEvent
+            var receivedProviderEarningsEvent = new ReceivedProviderEarningsEvent
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = PreviousJobId,
@@ -54,8 +54,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 IlrSubmissionDateTime = submissionTime,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
             };
-            Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
-            await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
+            Console.WriteLine($"Sending the ilr submission event: {receivedProviderEarningsEvent.ToJson()}");
+            await MessageSession.Send(receivedProviderEarningsEvent).ConfigureAwait(false);
             await Task.Delay(Config.TimeToWaitForCacheClearance).ConfigureAwait(false); //TODO: Find out why immediate retries aren't working in the services.
         }
 
@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         {
             var submissionTime = DateTime.UtcNow;
             var jobId = TestSession.JobId;
-            var ilrSubmissionEvent = new IlrSubmittedEvent
+            var ilrSubmissionEvent = new ReceivedProviderEarningsEvent
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = jobId,
@@ -126,7 +126,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 await MessageSession.Send(fundingSourcePaymentEvent).ConfigureAwait(false);
             }
             Console.WriteLine("sent submission payments.");
-            var ilrSubmissionEvent = new IlrSubmittedEvent
+            var ilrSubmissionEvent = new ReceivedProviderEarningsEvent
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = jobId,
