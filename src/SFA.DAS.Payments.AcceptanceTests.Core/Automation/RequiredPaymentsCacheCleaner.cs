@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             this.messageSession = messageSession;
         }
 
-        public async Task ClearCaches(Provider provider, TestSession testSession)
+        public async Task ClearCaches(Provider provider, TestSession testSession, short academicYear)
         {
             var ukprn = provider.Ukprn;
             var keys = new List<string>();
@@ -38,7 +38,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                             aim.PathwayCode,
                             aim.ProgrammeType,
                             aim.StandardCode,
-                            aim.AimReference));
+                            aim.AimReference,
+                            academicYear));
                     }
                 }
             }
@@ -52,7 +53,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                         learner.Course.PathwayCode,
                         learner.Course.ProgrammeType,
                         learner.Course.StandardCode,
-                        learner.Course.LearnAimRef))
+                        learner.Course.LearnAimRef,
+                        academicYear))
                     .ToList());
             }
 

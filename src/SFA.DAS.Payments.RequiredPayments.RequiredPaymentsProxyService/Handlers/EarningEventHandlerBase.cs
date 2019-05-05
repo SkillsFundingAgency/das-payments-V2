@@ -47,7 +47,8 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     message.LearningAim.PathwayCode,
                     message.LearningAim.ProgrammeType,
                     message.LearningAim.StandardCode,
-                    message.LearningAim.Reference
+                    message.LearningAim.Reference,
+                    message.CollectionPeriod.AcademicYear
                 );
 
                 var actorId = new ActorId(key);
