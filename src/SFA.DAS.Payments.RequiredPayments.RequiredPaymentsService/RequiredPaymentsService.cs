@@ -13,6 +13,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Application;
+using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
@@ -35,7 +36,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly IPayableEarningEventProcessor payableEarningEventProcessor;
         readonly ITelemetry telemetry;
 
-        private const string InitialisedKey = "initialised";
 
         public RequiredPaymentsService(ActorService actorService,
             ActorId actorId,
@@ -118,29 +118,22 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
         public async Task Initialise()
         {
-            if (await StateManager.ContainsStateAsync(InitialisedKey).ConfigureAwait(false)) return;
+            if (await StateManager.ContainsStateAsync(CacheKeys.InitialisedKey).ConfigureAwait(false)) return;
             
-            paymentLogger.LogInfo($"Initialising actor for apprenticeship {apprenticeshipKeyString}");
+            paymentLogger.LogDebug($"Initialising actor for apprenticeship {apprenticeshipKeyString}");
 
             var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, CancellationToken.None).ConfigureAwait(false);
-
-            var groupedHistory = paymentHistory.GroupBy(payment => paymentKeyService.GeneratePaymentKey(payment.LearnAimReference, payment.TransactionType, payment.CollectionPeriod.AcademicYear, payment.DeliveryPeriod))
-                .ToDictionary(c => c.Key, c => c.ToArray());
-
-            foreach (var group in groupedHistory)
-            {
-                await paymentHistoryCache.AddOrReplace(group.Key, group.Value, CancellationToken.None).ConfigureAwait(false);
-            }
-
+            await paymentHistoryCache.AddOrReplace(CacheKeys.PaymentHistoryKey, paymentHistory.ToArray(), CancellationToken.None).ConfigureAwait(false);
+            await StateManager.TryAddStateAsync(CacheKeys.InitialisedKey, true).ConfigureAwait(false);
             paymentLogger.LogInfo($"Initialised actor for apprenticeship {apprenticeshipKeyString}");
-
-            await StateManager.TryAddStateAsync(InitialisedKey, true).ConfigureAwait(false);
         }
 
         public async Task Reset()
         {
-            paymentLogger.LogInfo($"Resetting actor for apprenticeship {apprenticeshipKeyString}");
-            await StateManager.TryRemoveStateAsync(InitialisedKey, CancellationToken.None).ConfigureAwait(false);
+            paymentLogger.LogDebug($"Resetting actor for apprenticeship {apprenticeshipKeyString}");
+            await StateManager.TryRemoveStateAsync(CacheKeys.InitialisedKey, CancellationToken.None).ConfigureAwait(false);
+            //TODO: why are we not removing the history here?
+            paymentLogger.LogInfo($"Finished resetting actor for apprenticeship {apprenticeshipKeyString}");
         }
     }
 }

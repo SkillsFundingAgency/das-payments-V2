@@ -15,6 +15,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
@@ -123,15 +124,18 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 },
             };
 
-            var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2), DeliveryPeriod = 2}};
+            var paymentHistoryEntities = new[] {new PaymentHistoryEntity
+            {
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2), 
+                DeliveryPeriod = 2,
+                LearnAimReference = earningEvent.LearningAim.Reference,
+                TransactionType = (int)FunctionalSkillType.BalancingMathsAndEnglish
+            }};
 
-            mocker.Mock<IPaymentKeyService>()
-                .Setup(s => s.GeneratePaymentKey("9", (int)FunctionalSkillType.BalancingMathsAndEnglish, It.IsAny<short>(), It.IsAny<byte>()))
-                .Returns("payment key")
-                .Verifiable();
-            paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>()))
+                        paymentHistoryCacheMock.Setup(c => c.TryGet(It.Is<string>(key => key == CacheKeys.PaymentHistoryKey),It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities))
                 .Verifiable();
+
             requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.Is<Earning>(x => x.Amount == 100), It.IsAny<List<Payment>>()))
                 .Returns(requiredPayments)
                 .Verifiable();
@@ -181,11 +185,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var paymentHistoryEntities = new PaymentHistoryEntity[0];
 
-            mocker.Mock<IPaymentKeyService>()
-                .Setup(s => s.GeneratePaymentKey("9", (int)FunctionalSkillType.OnProgrammeMathsAndEnglish, It.IsAny<short>(), It.IsAny<byte>()))
-                .Returns("payment key")
+            paymentHistoryCacheMock.Setup(c => c.TryGet(It.Is<string>(key => key == CacheKeys.PaymentHistoryKey),It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities))
                 .Verifiable();
-            paymentHistoryCacheMock.Setup(c => c.TryGet("payment key", It.IsAny<CancellationToken>())).ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities)).Verifiable();
             requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.Is<Earning>(x => x.Amount == 100), It.IsAny<List<Payment>>()))
                 .Returns(new List<RequiredPayment>())
                 .Verifiable();

@@ -10,14 +10,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
     public class FunctionalSkillEarningsEventProcessor : EarningEventProcessorBase<FunctionalSkillEarningsEvent>, IFunctionalSkillEarningsEventProcessor
     {
         public FunctionalSkillEarningsEventProcessor(
-            IPaymentKeyService paymentKeyService,
             IMapper mapper,
             IRequiredPaymentProcessor requiredPaymentProcessor,
             IHoldingBackCompletionPaymentService holdingBackCompletionPaymentService,
             IPaymentHistoryRepository paymentHistoryRepository,
             IApprenticeshipKeyProvider apprenticeshipKeyProvider
         ) : base(
-            paymentKeyService,
             mapper,
             requiredPaymentProcessor,
             holdingBackCompletionPaymentService,
@@ -25,7 +23,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             apprenticeshipKeyProvider
         )
         {
-        }   
+        }
 
         protected override EarningType GetEarningType(int type)
         {

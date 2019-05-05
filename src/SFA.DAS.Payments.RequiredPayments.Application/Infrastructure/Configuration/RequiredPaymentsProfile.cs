@@ -22,6 +22,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(payment => payment.StartDate, opt => opt.MapFrom(episode => episode.StartDate))
                 .ForMember(payment => payment.PlannedEndDate, opt => opt.MapFrom(episode => episode.PlannedEndDate))
                 .ForMember(payment => payment.ActualEndDate, opt => opt.MapFrom(episode => episode.ActualEndDate))
+                .ForMember(payment => payment.LearnAimReference, opt => opt.MapFrom(episode => episode.LearnAimReference))
+                .ForMember(payment => payment.TransactionType, opt => opt.MapFrom(episode => episode.TransactionType))
                 .ForMember(payment => payment.CompletionStatus, opt => opt.Ignore())
                 .ForMember(payment => payment.CompletionAmount, opt => opt.MapFrom(episode => episode.CompletionAmount))
                 .ForMember(payment => payment.InstalmentAmount, opt => opt.MapFrom(episode => episode.InstalmentAmount))
