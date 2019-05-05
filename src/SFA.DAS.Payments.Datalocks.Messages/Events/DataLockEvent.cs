@@ -16,7 +16,6 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
         public List<PriceEpisode> PriceEpisodes { get; set; }
         public short CollectionYear { get; set; }
         public string AgreementId { get; set; }
-        public decimal SfaContributionPercentage { get; set; }
         public List<OnProgrammeEarning> OnProgrammeEarnings { get; set; } 
         public List<IncentiveEarning> IncentiveEarnings { get; set; }
         

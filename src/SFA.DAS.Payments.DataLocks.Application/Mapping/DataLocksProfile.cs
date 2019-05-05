@@ -9,12 +9,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
         public DataLocksProfile()
         {
             CreateMap<ApprenticeshipContractType1EarningEvent, PayableEarningEvent>()
-                .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
-                .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore())
-                .ForMember(destinationMember => destinationMember.Priority, opt => opt.Ignore())
-                .ForMember(destinationMember => destinationMember.AccountId, opt => opt.Ignore())
-                .ForMember(destinationMember => destinationMember.CommitmentId, opt => opt.Ignore())
-                .ForMember(destinationMember => destinationMember.CommitmentVersion, opt => opt.Ignore());
+                .ForMember(destinationMember => destinationMember.EarningEventId,  opt => opt.MapFrom(source => source.EventId))
+                .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore());
 
             CreateMap<ApprenticeshipContractType1EarningEvent, NonPayableEarningEvent>()
                 .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
