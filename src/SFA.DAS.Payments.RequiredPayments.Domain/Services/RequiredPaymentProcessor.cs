@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
@@ -17,7 +18,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
-            var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, paymentHistory);
+            var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, paymentHistory.Where(p => p.SfaContributionPercentage == earning.SfaContributionPercentage).ToList());
 
             if (amount < 0)
             {

@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                     SfaContributionPercentage = 0,
                 };
                 var expectedAmount = 50;
-                
+
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(expectedAmount);
 
                 var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 {
                     SfaContributionPercentage = expectedSfaContribution,
                 };
-                
+
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
 
                 var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
@@ -109,9 +109,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             public void ThenThenNothingIsReturned()
             {
                 var testEarning = new Earning();
-                
+
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(0);
-                
+
                 var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
                 actual.Should().BeEmpty();
@@ -133,6 +133,27 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
                 actual.Should().BeSameAs(expectedRefundPayments);
+            }
+        }
+
+        [TestFixture]
+        public class WhenHistoricPaymentsUsedADifferentSfaContribution : RequiredPaymentProcessorTests
+        {
+            [Test]
+            public void ThenHistoricPaymentsWithDifferentSfaContributionShouldNotBeIncludedInRequiredAmountCalculation()
+            {
+                var testEarning = new Earning
+                {
+                    SfaContributionPercentage = .9M,
+                };
+                var expectedAmount = 50;
+                paymentHistory.Add(new Payment { SfaContributionPercentage = .9M });
+                paymentHistory.Add(new Payment { SfaContributionPercentage = 1M });
+                paymentHistory.Add(new Payment { SfaContributionPercentage = .95M });
+                paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(It.IsAny<decimal>(), It.IsAny<List<Payment>>() )).Returns(expectedAmount);
+
+                sut.GetRequiredPayments(testEarning, paymentHistory);
+                paymentsDueService.Verify(x => x.CalculateRequiredPaymentAmount(It.IsAny<decimal>(), It.Is<List<Payment>>(payments => payments.All(p => p.SfaContributionPercentage == .9M))), Times.Once);
             }
         }
     }
