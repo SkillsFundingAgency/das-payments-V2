@@ -1,3 +1,4 @@
+@ignore
 Feature: One Levy Learner no payment if commitment has gap while changing employers and no change in ACT code or employment status specified PV2-377
 		As a provider,
 		I want provider earnings and payments where learner changes employer and there is a gap between commitments - provider receives no payment during the gap as they do not change the ACT code or employment status on the ILR, to be paid the correct amount

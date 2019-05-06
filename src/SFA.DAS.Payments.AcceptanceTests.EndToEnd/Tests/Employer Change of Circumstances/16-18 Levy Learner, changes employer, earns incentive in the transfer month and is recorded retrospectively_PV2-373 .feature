@@ -1,3 +1,4 @@
+@ignore
 Feature: One Learner changes employer - incentives earned in transfer month PV2-373
 	As a provider,
 	I want 1 learner aged 16-18, levy available, changes employer, earns incentive payment in the commitment transfer month - and the employer transfer is recorded on the ILR in a later month, to be paid the correct amount

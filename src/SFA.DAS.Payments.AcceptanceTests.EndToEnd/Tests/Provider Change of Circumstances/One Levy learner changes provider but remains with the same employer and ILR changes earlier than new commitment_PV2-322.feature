@@ -1,3 +1,4 @@
+@ignore
 Feature: One Levy learner changes provider earns incentive in the commitment transfer month and ILR transfer happens earlier than commitment PV2-322
 	1 learner aged 16-18, levy available, changes provider, earns incentive payment in the commitment transfer month - and the ILR transfer happens earlier than commitment
 	As a provider,

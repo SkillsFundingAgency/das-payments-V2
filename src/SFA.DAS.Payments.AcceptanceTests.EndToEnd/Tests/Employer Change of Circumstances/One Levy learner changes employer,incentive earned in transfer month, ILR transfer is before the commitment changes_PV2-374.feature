@@ -1,3 +1,4 @@
+@ignore
 Feature: One Levy learner changes employer,incentive earned in transfer month but ILR transfer is before the commitment changes_PV2-374
 As a provider,
 I want 1 learner aged 16-18, levy available, changes employer, earns incentive payment in the commitment transfer month - and the ILR transfer happens at an earlier point than the commitment changes, to be paid the correct amount
