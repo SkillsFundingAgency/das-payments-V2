@@ -30,10 +30,10 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly ApprenticeshipKey apprenticeshipKey;
         private readonly string apprenticeshipKeyString;
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
-        private readonly IPaymentKeyService paymentKeyService;
         private readonly IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor;
         private readonly IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor;
         private readonly IPayableEarningEventProcessor payableEarningEventProcessor;
+        private readonly IRefundRemovedLearningAimProcessor refundRemovedLearningAimProcessor;
         readonly ITelemetry telemetry;
 
 
@@ -42,18 +42,20 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             IPaymentLogger paymentLogger,
             IApprenticeshipKeyService apprenticeshipKeyService,
             IPaymentHistoryRepository paymentHistoryRepository,
-            IPaymentKeyService paymentKeyService, 
-            IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor, 
-            IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor, 
-            IPayableEarningEventProcessor payableEarningEventProcessor, ITelemetry telemetry) 
+            IPaymentKeyService paymentKeyService,
+            IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor,
+            IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor,
+            IPayableEarningEventProcessor payableEarningEventProcessor,
+            IRefundRemovedLearningAimProcessor refundRemovedLearningAimProcessor,
+            ITelemetry telemetry)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
             this.paymentHistoryRepository = paymentHistoryRepository;
-            this.paymentKeyService = paymentKeyService ?? throw new ArgumentNullException(nameof(paymentKeyService));
             this.contractType2EarningsEventProcessor = contractType2EarningsEventProcessor;
             this.functionalSkillEarningsEventProcessor = functionalSkillEarningsEventProcessor;
             this.payableEarningEventProcessor = payableEarningEventProcessor;
+            this.refundRemovedLearningAimProcessor = refundRemovedLearningAimProcessor;
             this.telemetry = telemetry;
             apprenticeshipKeyString = actorId.GetStringId();
             apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(apprenticeshipKeyString);
@@ -101,6 +103,25 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }
         }
 
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> RefundRemovedLearningAim(IdentifiedRemovedLearningAim removedLearningAim, CancellationToken cancellationToken)
+        {
+            paymentLogger.LogDebug($"Handling identified removed learning aim for {apprenticeshipKeyString}.");
+            return await GetRequiredPayments(() => refundRemovedLearningAimProcessor.RefundLearningAim(removedLearningAim, cancellationToken)).ConfigureAwait(false);
+        }
+
+        private async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> GetRequiredPayments(Func<Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>>> getPayments)
+        {
+            //TODO: replace with azure service fabric message handler
+            using (var operation = telemetry.StartOperation())
+            {
+                await Initialise().ConfigureAwait(false);
+                var requiredPaymentEvents = await getPayments().ConfigureAwait(false);
+                Log(requiredPaymentEvents);
+                telemetry.StopOperation(operation);
+                return requiredPaymentEvents;
+            }
+        }
+
         private void Log(ReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPaymentEvents)
         {
             var stats = requiredPaymentEvents.GroupBy(p => p.GetType()).Select(group => $"{group.Key.Name}: {group.Count()}");
@@ -108,7 +129,8 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         }
 
         protected override async Task OnActivateAsync()
-        {   
+        {
+            //TODO: why are we still doing this?  We are supposed to be resolving this from the container.
             paymentHistoryCache = new ReliableCollectionCache<PaymentHistoryEntity[]>(StateManager);
 
             await Initialise().ConfigureAwait(false);
@@ -119,7 +141,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         public async Task Initialise()
         {
             if (await StateManager.ContainsStateAsync(CacheKeys.InitialisedKey).ConfigureAwait(false)) return;
-            
+
             paymentLogger.LogDebug($"Initialising actor for apprenticeship {apprenticeshipKeyString}");
 
             var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, CancellationToken.None).ConfigureAwait(false);

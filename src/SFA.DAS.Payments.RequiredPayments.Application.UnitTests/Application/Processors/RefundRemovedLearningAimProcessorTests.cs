@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Processors
 {
     [TestFixture]
-    public class RefundRemovedLearnerProcessorTests
+    public class RefundRemovedLearningAimProcessorTests
     {
         private AutoMock mocker;
 
@@ -17,7 +20,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             mocker = AutoMock.GetLoose();
         }
 
-        public void Refunds_Levy_Payments()
+        public async Task Refunds_Levy_Payments()
         {
             var identifiedLearner = new IdentifiedRemovedLearningAim
             {
@@ -47,8 +50,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Ukprn = 7
             };
 
-            //var processor = mocker.Create<RefundRemovedLearnerProcessor>();
-            //var refunds = processor.RefundLearner(identifiedLearner);
+            var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
+            var refunds = await processor.RefundLearningAim(identifiedLearner,CancellationToken.None).ConfigureAwait(false);
 
 
         }
