@@ -13,12 +13,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
     public class HandleIlrSubmissionService : IHandleIlrSubmissionService
     {
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
-        private readonly IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache;
+        private readonly IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache;
         private readonly IValidateIlrSubmission validateIlrSubmission;
         private readonly IPaymentLogger logger;
 
         public HandleIlrSubmissionService(IProviderPaymentsRepository providerPaymentsRepository,
-            IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache,
+            IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache,
             IValidateIlrSubmission validateIlrSubmission,
             IPaymentLogger logger)
         {
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.logger = logger;
         }
 
-        public async Task Handle(IlrSubmittedEvent message, CancellationToken cancellationToken)
+        public async Task Handle(ReceivedProviderEarningsEvent message, CancellationToken cancellationToken)
         {
             logger.LogVerbose($"Handling ILR Submissions. Data: {message.ToJson()}");
             var currentIlr = await GetCurrentIlrSubmissionEvent(message.Ukprn, cancellationToken);
@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             logger.LogInfo($"Successfully Deleted Old Month End Payment for Ukprn {message.Ukprn} and Job Id {message.JobId}");
         }
 
-        private async Task<IlrSubmittedEvent> GetCurrentIlrSubmissionEvent(long ukprn, CancellationToken cancellationToken)
+        private async Task<ReceivedProviderEarningsEvent> GetCurrentIlrSubmissionEvent(long ukprn, CancellationToken cancellationToken)
         {
             var currentSubmittedIlrConditionalValue = await ilrSubmittedEventCache.TryGet(ukprn.ToString(), cancellationToken);
             return currentSubmittedIlrConditionalValue.HasValue ? currentSubmittedIlrConditionalValue.Value : null;

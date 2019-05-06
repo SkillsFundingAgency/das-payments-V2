@@ -9,13 +9,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
     public class ValidatePaymentMessageTest
     {
         private ValidateIlrSubmission validateIlrSubmission;
-        private IlrSubmittedEvent currentIlr;
+        private ReceivedProviderEarningsEvent currentIlr;
 
         [SetUp]
         public void Setup()
         {
 
-            currentIlr = new IlrSubmittedEvent
+            currentIlr = new ReceivedProviderEarningsEvent
             {
                 Ukprn = 1000,
                 JobId = 1000,
