@@ -1,4 +1,5 @@
-﻿Feature: Non-Levy learner, and there is a change to the agreed price which happens in the middle of the month PV2-210
+﻿@ignore
+Feature: Non-Levy learner, and there is a change to the agreed price which happens in the middle of the month PV2-210
 As a provider,
 
 I want a non-levy learner, changes to the agreed price during the month, to be paid the correct amount

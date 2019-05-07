@@ -2,6 +2,7 @@
 using System.Linq;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -14,7 +15,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected abstract bool Match(T expected, T actual);
 
         public (bool pass, string reason, bool final) MatchPayments()
-        {            
+        {
             var actualPayments = GetActualEvents();
 
             actualPayments = actualPayments.Where(x => (x is FunctionalSkillEarningsEvent &&
@@ -48,8 +49,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var payments = GetActualEvents();
             return !payments.Any()
-                ?  (true, string.Empty)
-                :  (false, $"Found Unexpected Payments: {payments.Aggregate(string.Empty,(currText,payment)=> $"{currText}, {payment.ToJson()}")}");
+                ? (true, string.Empty)
+                : (false, $"Found Unexpected Payments: {payments.Aggregate(string.Empty, (currText, payment) => $"{currText}, {payment.ToJson()}")}");
         }
     }
 }

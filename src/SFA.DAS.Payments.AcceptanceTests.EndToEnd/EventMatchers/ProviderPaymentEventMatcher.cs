@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -157,6 +158,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(ProviderPaymentEvent expected, ProviderPaymentEvent actual)
         {
+            
             if (expected.GetType() == actual.GetType() &&
                 expected.TransactionType == actual.TransactionType &&
                 expected.AmountDue == actual.AmountDue &&
@@ -167,7 +169,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expected.Learner.Uln == actual.Learner.Uln &&
                 expected.LearningAim.StandardCode == actual.LearningAim.StandardCode)
             {
-                if (actual.LearningAim.Reference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase))
+                if (actual.LearningAim.Reference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase) && EnumHelper.IsOnProgType(actual.TransactionType))  //TODO: check with PO if this is ok
                 {
                     return expected.AccountId == actual.AccountId;
                 }

@@ -26,13 +26,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         private MonthEndService monthEndService;
 
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
-        private Mock<IDataCache<IlrSubmittedEvent>> ilrSubmittedEventCache;
+        private Mock<IDataCache<ReceivedProviderEarningsEvent>> ilrSubmittedEventCache;
         private Mock<IValidateIlrSubmission> validateIlrSubmission;
         
         private long ukprn = 10000;
         private long jobId = 10000;
         private List<PaymentModel> payments;
-        private IlrSubmittedEvent ilrSubmittedEvent;
+        private ReceivedProviderEarningsEvent receivedProviderEarningsEvent;
 
         [SetUp]
         public void SetUp()
@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
-            ilrSubmittedEvent = new IlrSubmittedEvent
+            receivedProviderEarningsEvent = new ReceivedProviderEarningsEvent
             {
                 Ukprn = ukprn,
                 JobId = jobId,
@@ -99,10 +99,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 CollectionPeriod = new CollectionPeriodBuilder().WithDate(new DateTime(2018, 2, 1)).Build(),
             };
 
-            ilrSubmittedEventCache = mocker.Mock<IDataCache<IlrSubmittedEvent>>();
+            ilrSubmittedEventCache = mocker.Mock<IDataCache<ReceivedProviderEarningsEvent>>();
             ilrSubmittedEventCache
                 .Setup(o => o.TryGet(ukprn.ToString(), default(CancellationToken)))
-                .Returns(Task.FromResult(new ConditionalValue<IlrSubmittedEvent>(true, ilrSubmittedEvent)));
+                .Returns(Task.FromResult(new ConditionalValue<ReceivedProviderEarningsEvent>(true, receivedProviderEarningsEvent)));
 
             ilrSubmittedEventCache
                 .Setup(o => o.Clear(ukprn.ToString(), default(CancellationToken)))
@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
             ilrSubmittedEventCache
                 .Setup(o => o.Add(ukprn.ToString(), 
-                    It.IsAny<IlrSubmittedEvent>(), 
+                    It.IsAny<ReceivedProviderEarningsEvent>(), 
                     default(CancellationToken)))
                 .Returns(Task.CompletedTask);
 

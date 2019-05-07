@@ -54,14 +54,13 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
 
             var dataLockProcessor = new Mock<IDataLockProcessor>();
             dataLockProcessor.Setup(x => x.GetPaymentEvent(It.IsAny<ApprenticeshipContractType1EarningEvent>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => new PayableEarningEvent {AccountId = 456});
+                .ReturnsAsync(() => new PayableEarningEvent() );
 
             var actual = await new DataLockService(actorService, new ActorId(Guid.Empty), paymentLoggerMock,
                     commitmentRepositoryMock, dataCacheMock, dataLockProcessor.Object)
                 .HandleEarning(testEarning, default(CancellationToken));
 
             actual.Should().BeOfType<PayableEarningEvent>();
-            (actual as PayableEarningEvent).AccountId.Should().Be(456);
         }
     }
 }
