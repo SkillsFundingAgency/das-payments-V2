@@ -106,7 +106,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> RefundRemovedLearningAim(IdentifiedRemovedLearningAim removedLearningAim, CancellationToken cancellationToken)
         {
             paymentLogger.LogDebug($"Handling identified removed learning aim for {apprenticeshipKeyString}.");
-            return await GetRequiredPayments(() => refundRemovedLearningAimProcessor.RefundLearningAim(removedLearningAim, cancellationToken)).ConfigureAwait(false);
+            return await GetRequiredPayments(() => refundRemovedLearningAimProcessor.RefundLearningAim(removedLearningAim, paymentHistoryCache, cancellationToken)).ConfigureAwait(false);
         }
 
         private async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> GetRequiredPayments(Func<Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>>> getPayments)
