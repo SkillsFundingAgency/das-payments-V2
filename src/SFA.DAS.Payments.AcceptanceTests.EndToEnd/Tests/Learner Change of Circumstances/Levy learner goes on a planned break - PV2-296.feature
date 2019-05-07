@@ -101,6 +101,8 @@ And only the following provider payments will be generated
 
 Examples: 
         | Collection_Period         |
+        | R04/Current Academic Year |
+        | R05/Current Academic Year |
         | R06/Current Academic Year |
         | R07/Current Academic Year |
         | R08/Current Academic Year |
