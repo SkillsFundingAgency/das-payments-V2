@@ -37,8 +37,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public int? Pmr { get; set; } 
         [TableAliases("Exemption Code")]
         public int CompletionHoldBackExemptionCode { get; set; }
-        public string TotalTrainingPriceEffectiveDate { get; set; }
-        public string TotalAssessmentPriceEffectiveDate { get; set; }
 
     }
 }
