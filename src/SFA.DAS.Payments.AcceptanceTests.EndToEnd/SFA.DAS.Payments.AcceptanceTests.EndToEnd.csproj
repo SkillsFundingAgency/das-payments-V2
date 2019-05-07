@@ -525,26 +525,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\English and Maths\PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\English and Maths\PV2-287- Levy learner moves start date forward and add Eng and Maths.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-287- Levy learner moves start date forward and add Eng and Maths.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\English and Maths\PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1370,22 +1350,6 @@
     <None Include="Tests\Employer Change of Circumstances\One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\English and Maths\PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-284- Levy learner changes course details in ILR after payments made and adds eng and maths.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\English and Maths\PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-285- Levy learner changes aim reference for eng and maths aim and payments are reconciled.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\English and Maths\PV2-287- Levy learner moves start date forward and add Eng and Maths.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-287- Levy learner moves start date forward and add Eng and Maths.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\English and Maths\PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-288- Levy learner moves start date forward payments refunded including english and maths.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
