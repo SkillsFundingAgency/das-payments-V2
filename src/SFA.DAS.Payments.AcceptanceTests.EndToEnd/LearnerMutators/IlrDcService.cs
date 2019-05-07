@@ -1,29 +1,29 @@
-﻿using AutoMapper;
-using DCT.TestDataGenerator.Model;
-using ESFA.DC.ILR.TestDataGenerator.Interfaces;
-using ESFA.DC.IO.AzureStorage.Config.Interfaces;
-using ESFA.DC.IO.Interfaces;
-using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.JobStatus.Interface;
-using Polly;
-using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.Services.Exceptions;
-using SFA.DAS.Payments.Tests.Core;
-using SFA.DAS.Payments.Tests.Core.Builders;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using DCT.TestDataGenerator.Functor;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
-using TechTalk.SpecFlow;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
 {
+    using AutoMapper;
+    using ESFA.DC.ILR.TestDataGenerator.Interfaces;
+    using ESFA.DC.IO.AzureStorage.Config.Interfaces;
+    using ESFA.DC.IO.Interfaces;
+    using ESFA.DC.Jobs.Model.Enums;
+    using ESFA.DC.JobStatus.Interface;
+    using Polly;
+    using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+    using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+    using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
+    using SFA.DAS.Payments.AcceptanceTests.Services.Exceptions;
+    using SFA.DAS.Payments.Application.Repositories;
+    using SFA.DAS.Payments.Tests.Core;
+    using SFA.DAS.Payments.Tests.Core.Builders;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Xml.Linq;
+
     public class IlrDcService : IIlrService
     {
         private readonly IMapper mapper;
@@ -32,8 +32,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
         private readonly IJobService jobService;
         private readonly IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig;
         private readonly IStreamableKeyValuePersistenceService storageService;
+        private readonly IPaymentsDataContext dataContext;
 
-        public IlrDcService(IMapper mapper, ITdgService tdgService, TestSession testSession, IJobService jobService, IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IStreamableKeyValuePersistenceService storageService)
+        public IlrDcService(IMapper mapper, ITdgService tdgService, TestSession testSession, IJobService jobService, IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IStreamableKeyValuePersistenceService storageService, IPaymentsDataContext dataContext)
         {
             this.mapper = mapper;
             this.tdgService = tdgService;
@@ -41,6 +42,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
             this.jobService = jobService;
             this.storageServiceConfig = storageServiceConfig;
             this.storageService = storageService;
+            this.dataContext = dataContext;
         }
 
         public async Task PublishLearnerRequest(List<Training> currentIlr, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr)
@@ -55,14 +57,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
 
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
 
-            RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerRequests);
+            await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerRequests);
 
             await verifyIlr();
 
             await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
         }
 
-        private void RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<LearnerRequest> currentIlr)
+        private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<LearnerRequest> currentIlr)
         {
             XNamespace xsdns = tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
@@ -76,7 +78,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
                 testSessionLearner.Ukprn = long.Parse(learningProvider.Elements(xsdns + "UKPRN").First().Value);
                 testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
                 testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
+
+                await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, testSessionLearner.LearnRefNumber,
+                    testSessionLearner.Uln);
             }
+        }
+
+        private async Task UpdatePaymentHistoryTables(long ukprn, string learnRefNumber, long uln)
+        {
+            var payments = dataContext.Payment.Where(p => p.Ukprn == ukprn);
+            foreach (var payment in payments)
+            {
+                payment.LearnerReferenceNumber = learnRefNumber;
+                payment.LearnerUln = uln;
+            }
+
+            await dataContext.SaveChangesAsync();
         }
 
         private async Task StoreAndPublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
