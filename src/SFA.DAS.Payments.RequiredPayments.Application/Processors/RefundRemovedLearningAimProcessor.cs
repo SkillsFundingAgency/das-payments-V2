@@ -50,7 +50,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                                 requiredPaymentEventFactory.Create(requiredPayment.EarningType, group.Key);
                             mapper.Map(identifiedRemovedLearningAim, requiredPaymentEvent);
                             mapper.Map(requiredPayment, requiredPaymentEvent);
-                            //mapper.Map(historicPayments.FirstOrDefault(historicPayment => historicPayment.PriceEpisodeIdentifier == requiredPayment.PriceEpisodeIdentifier), requiredPaymentEvent);
+                            var historicPayment = cacheItem.Value.FirstOrDefault(payment =>
+                                payment.PriceEpisodeIdentifier == requiredPayment.PriceEpisodeIdentifier);
+                            mapper.Map(historicPayment, requiredPaymentEvent);
+                            if (historicPayment==null)
+                                throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {requiredPayment.PriceEpisodeIdentifier}.");
                             logger.LogDebug($"Finished mapping ]");
                             return requiredPaymentEvent;
                         })

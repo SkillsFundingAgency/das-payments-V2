@@ -34,6 +34,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 .Select(payment => new PaymentHistoryEntity
                 {
                     ExternalId = payment.EventId,
+                    AccountId = payment.AccountId,
+                    ContractType = payment.ContractType,
                     Ukprn = payment.Ukprn,
                     LearnerReferenceNumber = payment.LearnerReferenceNumber,
                     LearnAimReference = payment.LearningAimReference,
