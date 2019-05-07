@@ -16,13 +16,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
     public class ProviderPaymentsService : IProviderPaymentsService
     {
 
-        private readonly IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache;
+        private readonly IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache;
         private readonly IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache;
         private readonly IValidateIlrSubmission validateIlrSubmission;
         private readonly IPaymentLogger paymentLogger;
         private readonly ITelemetry telemetry;
 
-        public ProviderPaymentsService(IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache, 
+        public ProviderPaymentsService(IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache, 
             IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache, IValidateIlrSubmission validateIlrSubmission,
             IPaymentLogger paymentLogger,
             ITelemetry telemetry)
@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             return allowPayment;
         }
 
-        private async Task<IlrSubmittedEvent> GetCurrentIlrSubmissionEvent(long ukprn, CancellationToken cancellationToken)
+        private async Task<ReceivedProviderEarningsEvent> GetCurrentIlrSubmissionEvent(long ukprn, CancellationToken cancellationToken)
         {
             var currentSubmittedIlrConditionalValue = await ilrSubmittedEventCache.TryGet(ukprn.ToString(), cancellationToken);
             return currentSubmittedIlrConditionalValue.HasValue ? currentSubmittedIlrConditionalValue.Value : null;

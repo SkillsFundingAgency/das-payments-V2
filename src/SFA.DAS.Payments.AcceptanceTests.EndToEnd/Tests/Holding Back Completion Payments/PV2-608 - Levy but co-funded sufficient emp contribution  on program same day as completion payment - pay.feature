@@ -1,4 +1,5 @@
-﻿Feature: Holding back completion payments - PV2-608
+﻿@ignore
+Feature: Holding back completion payments - PV2-608
 	As a provider,
 	I want a levy learner with co-funding, where the employer has paid their 10% co-investment for the on-program element, but has not yet paid the employer completion payment element, and the final on program payment is the same day as the completion payment
 	So that I am accurately paid the completion payment by SFA

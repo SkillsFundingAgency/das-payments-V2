@@ -126,6 +126,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
         {

@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<IlrSubmissionCache>()
-                .As<IDataCache<IlrSubmittedEvent>>()
+                .As<IDataCache<ReceivedProviderEarningsEvent>>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<MonthEndCache>()
                 .As<IMonthEndCache>()

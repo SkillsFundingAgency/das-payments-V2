@@ -9,6 +9,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string LearnerId { get; set; }
         public long Uln { get; set; }
         public string StartDate { get; set; }
+        public string TotalTrainingPriceEffectiveDate {  get; set; }
+        public string  TotalAssessmentPriceEffectiveDate { get; set; }
         public string PlannedDuration { get; set; }
         public decimal TotalTrainingPrice { get; set; }
         public decimal TotalAssessmentPrice { get; set; }
