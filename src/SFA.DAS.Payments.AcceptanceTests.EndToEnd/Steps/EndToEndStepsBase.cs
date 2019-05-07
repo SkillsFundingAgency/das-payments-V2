@@ -181,16 +181,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (Apprenticeships == null) Apprenticeships = new List<Apprenticeship>();
 
-            foreach (var apprenticeshipSpec in apprenticeshipSpecs)
+            var groupedApprenticeships = apprenticeshipSpecs
+                .GroupBy(a => a.Identifier)
+                .ToList();
+
+            foreach (var group in groupedApprenticeships)
             {
-                var foundApprenticeship = Apprenticeships.SingleOrDefault(x => x.Identifier == apprenticeshipSpec.Identifier);
-                if (foundApprenticeship == null)
+                var specApprenticeship = Apprenticeships.FirstOrDefault(a => a.Identifier == group.Key);
+                if (specApprenticeship == null)
                 {
-                    await ApprenticeshipHelper.AddApprenticeships(apprenticeshipSpec, Apprenticeships, DataContext, TestSession);
+                    //use last apprenticeship to make sure it picks up the most recent status
+                    specApprenticeship = group.Last();
+                    var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
+                    apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
+                    await ApprenticeshipHelper.AddApprenticeship(apprenticeship, DataContext).ConfigureAwait(false);
+                    specApprenticeship.CommitmentId = apprenticeship.Id;
+                    Apprenticeships.Add(specApprenticeship);
                 }
                 else
                 {
-                    await ApprenticeshipHelper.UpdateApprenticeships(foundApprenticeship.CommitmentId, apprenticeshipSpec, DataContext);
+                    var priceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
+                    var status = group.Last().Status?.ToApprenticeshipPaymentStatus() ??
+                                 throw new InvalidOperationException($"last item not found: {group.Key}");
+                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.CommitmentId,status, priceEpisodes, DataContext);
                 }
             }
         }
@@ -329,6 +342,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private List<PriceEpisode> GeneratePriceEpisodes(Aim aim, IList<Earning> earnings)
         {
+            //TODO: refactor all of this, way too big, too complicated, local methods!!!
             var aimPeriodisedValues = SetPeriodisedValues<PriceEpisodePeriodisedValues>(aim, earnings);
 
             var priceEpisodePrefix = (aim.StandardCode != 0)
@@ -342,7 +356,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var id = CalculatePriceEpisodeIdentifier(priceEpisode, priceEpisodePrefix);
 
                 var priceEpisodeStartDateAsDeliveryPeriod = new DeliveryPeriodBuilder()
-                    .WithDate(priceEpisode.EpisodeStartDate)
+                    .WithDate(priceEpisode.EpisodeEffectiveStartDate)
                     .Build();
 
                 var firstEarningForPriceEpisode = earnings
@@ -360,7 +374,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 };
 
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = CalculateAimSequenceNumber(priceEpisode);
-                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = priceEpisode.EpisodeStartDate;
+                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = aim.StartDate.ToDate();
+                newPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = priceEpisode.EpisodeEffectiveStartDate;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType = CalculateContractType(priceEpisode);
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
                 newPriceEpisode.PriceEpisodeValues.TNP1 = priceEpisode.TotalTrainingPrice;
@@ -377,15 +392,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             var orderedPriceEpisodes = priceEpisodesForAim
-                .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
+                .OrderBy(x => x.PriceEpisodeValues.EpisodeEffectiveTNPStartDate)
                 .ToList();
             for (var i = 0; i < orderedPriceEpisodes.Count; i++)
             {
                 var currentPriceEpisode = priceEpisodesForAim[i];
-                var tnpStartDate = orderedPriceEpisodes
+                var tnpStartDate =  orderedPriceEpisodes
                     .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
                                 currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
-                    .PriceEpisodeValues.EpisodeStartDate;
+                    .PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
+
                 currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
 
                 if (aim.ActualDurationAsTimespan.HasValue)
@@ -397,7 +413,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (i + 1 < orderedPriceEpisodes.Count &&
                          orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.HasValue)
                 {
-                    var actualEndDate = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.AddDays(-1);
+                    var actualEndDate = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Value.AddDays(-1);
                     if (currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.HasValue)
                     {
                         if (actualEndDate < currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate)
@@ -412,7 +428,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
 
                 var episodeLastPeriod = LastOnProgPeriod(currentPriceEpisode);
-                var episodeStart = new CollectionPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value).Build();
+                var episodeStart = new CollectionPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Value).Build();
 
                 foreach (var currentValues in aimPeriodisedValues)
                 {
@@ -496,7 +512,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
             {
-                sfaContributionPeriodisedValue = new T {AttributeName = "PriceEpisodeSFAContribPct",};
+                sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeSFAContribPct", };
                 aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
             }
 
@@ -509,7 +525,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
                     if (periodisedValues == null)
                     {
-                        periodisedValues = new T {AttributeName = earningValue.Key.ToAttributeName()};
+                        periodisedValues = new T { AttributeName = earningValue.Key.ToAttributeName() };
                         aimPeriodisedValues.Add(periodisedValues);
                     }
 
@@ -527,7 +543,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
         {
-            var episodeStartDate = priceEpisode.EpisodeStartDate;
+            var episodeStartDate = priceEpisode.EpisodeEffectiveStartDate;
             return string.IsNullOrEmpty(priceEpisode.PriceEpisodeId)
                 ? $"{priceEpisodePrefix}-{episodeStartDate.Day:D2}/{episodeStartDate.Month:D2}/{episodeStartDate.Year}"
                 : priceEpisode.PriceEpisodeId;
@@ -545,6 +561,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var tableRow in table.Rows)
             {
+                //TODO: why do we need this?!?
                 var earning = earnings.Single(e =>
                 {
                     if (e.DeliveryPeriod != tableRow["Delivery Period"])
@@ -559,7 +576,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     if ((tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId)) && learnerId != e.LearnerId)
                         return false;
 
-                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)
+                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)  
                         return false;
 
                     return true;
@@ -833,8 +850,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             AimSequenceNumber = training.AimSequenceNumber,
                             TotalAssessmentPrice = training.TotalAssessmentPrice,
                             TotalTrainingPrice = training.TotalTrainingPrice,
-                            TotalTrainingPriceEffectiveDate = training.StartDate,
-                            TotalAssessmentPriceEffectiveDate = training.StartDate,
+                            TotalTrainingPriceEffectiveDate = training.TotalTrainingPriceEffectiveDate,
+                            TotalAssessmentPriceEffectiveDate = training.TotalAssessmentPriceEffectiveDate,
                             SfaContributionPercentage = training.SfaContributionPercentage,
                             CompletionHoldBackExemptionCode = training.CompletionHoldBackExemptionCode,
                             Pmr = training.Pmr,

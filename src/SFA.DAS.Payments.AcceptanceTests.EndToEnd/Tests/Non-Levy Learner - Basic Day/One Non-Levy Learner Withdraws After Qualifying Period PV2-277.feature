@@ -4,8 +4,8 @@
 
 Scenario Outline: A non-levy learner withdraws after qualifying period
 	Given the provider is providing training for the following learners
-        | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               |
-        | 1        | start of academic year | 12 months        | 15000                | Aug/Current Academic Year           | 0                      | Aug/Current Academic Year             | 4 months        | withdrawn         | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) |
+        | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+        | 01/Aug/Current Academic Year | 12 months        | 15000                | 01/Aug/Current Academic Year        |                        |                                       | 4 months        | withdrawn         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
     When the ILR file is submitted for the learners for collection period <collection_period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing |
@@ -46,3 +46,4 @@ Scenario Outline: A non-levy learner withdraws after qualifying period
 		| R02/Current Academic Year |
 		| R03/Current Academic Year |
 		| R04/Current Academic Year |
+		| R05/Current Academic Year |

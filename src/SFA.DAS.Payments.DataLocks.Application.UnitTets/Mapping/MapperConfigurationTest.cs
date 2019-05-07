@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                         Completed = true,
                         CompletionAmount= 300m,
                         Identifier = "p-1",
-                        StartDate = DateTime.MinValue,
+                        EffectiveTotalNegotiatedPriceStartDate = DateTime.MinValue,
                         InstalmentAmount = 100m,
                         NumberOfInstalments = 12,
                         PlannedEndDate = DateTime.MaxValue,
@@ -200,7 +200,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             priceEpisode.Completed.Should().Be(earningEventPayment.PriceEpisodes.First().Completed);
             priceEpisode.CompletionAmount.Should().Be(earningEventPayment.PriceEpisodes.First().CompletionAmount);
             priceEpisode.Identifier.Should().Be(earningEventPayment.PriceEpisodes.First().Identifier);
-            priceEpisode.StartDate.Should().Be(earningEventPayment.PriceEpisodes.First().StartDate);
+            priceEpisode.EffectiveTotalNegotiatedPriceStartDate.Should().Be(earningEventPayment.PriceEpisodes.First().EffectiveTotalNegotiatedPriceStartDate);
             priceEpisode.InstalmentAmount.Should().Be(earningEventPayment.PriceEpisodes.First().InstalmentAmount);
             priceEpisode.NumberOfInstalments.Should().Be(earningEventPayment.PriceEpisodes.First().NumberOfInstalments);
             priceEpisode.PlannedEndDate.Should().Be(earningEventPayment.PriceEpisodes.First().PlannedEndDate);
