@@ -75,6 +75,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var refunds = await processor.RefundLearningAim(identifiedLearner, mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object, CancellationToken.None).ConfigureAwait(false);
             refunds.Count.Should().Be(1);
             refunds.All(refund => refund.AmountDue == -10).Should().BeTrue();
+            refunds.All(refund => refund is CalculatedRequiredLevyAmount).Should().BeTrue();
         }
     }
 }
