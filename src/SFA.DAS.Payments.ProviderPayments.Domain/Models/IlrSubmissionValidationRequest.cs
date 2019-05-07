@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Models
 {
     public class IlrSubmissionValidationRequest
     {
-        public IlrSubmittedEvent CurrentIlr { get; set; }
+        public ReceivedProviderEarningsEvent CurrentIlr { get; set; }
         public long IncomingPaymentUkprn { get; set; }
         public DateTime IncomingPaymentSubmissionDate { get; set; }
 

@@ -1,5 +1,5 @@
-﻿@ignore
-Feature:Levy standard learner, where original commitment is withdrawn after payments made and new commitment is created with lower price and a negative amount is left to be paid - results in a refund
+﻿Feature:Levy learner, price is changed and a negative amount is left to be paid resulting in a refund PV2-257
+	Levy standard learner, where original commitment is withdrawn after payments made and new commitment is created with lower price and a negative amount is left to be paid - results in a refund
 	As a provider,
 	I want a levy learner, where original commitment is withdrawn after payments made and new commitment is created with lower price and a negative amount is left to be paid - results in a refund
 	So that I am accurately paid my apprenticeship provision PV2-257
@@ -9,12 +9,12 @@ Scenario: Levy learner, price is changed and a negative amount is left to be pai
 Given the employer levy account balance in collection period R03/Current Academic Year is 15000
 
 And the following commitments exist
-	| Identifier     	| start date                   | end date                     | agreed price | status | effective from               |
-	| Apprentiiship 1	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 11250        | active | 01/Aug/Current Academic Year |
+	| start date                   | end date                  | agreed price | status | effective from               |
+	| 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 11250        | active | 01/Aug/Current Academic Year |
 
 And the provider previously submitted the following learner details
-    | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
-    | start of academic year | 12 months        | 9000                 | 01/Aug/Current Academic Year        | 2250                  | Aug/Current Academic Year            | 0               | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
+    | 04/Aug/Current Academic Year | 12 months        | 9000                 | 04/Aug/Current Academic Year        | 2250                  | 04/Aug/Current Academic Year         |                 | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 51            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract |
 
 And the following earnings had been generated for the learner
     | Delivery Period           | On-Programme | Completion | Balancing |
@@ -37,13 +37,14 @@ And the following provider payments had been generated
     | R02/Current Academic Year | Sep/Current Academic Year | 750           | Learning         |
         
 But the Commitment details are changed as follows
-	| Identifier     	| start date                   | end date                     | status  | agreed price | effective from               | stop effective from          |
-	| Apprentiiship 1	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | stopped | 11250        | 01/Aug/Current Academic Year | 01/Aug/Current Academic Year |
-	| Apprentiiship 1	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active  | 1            | 04/Oct/Current Academic Year |                              |
+
+	| start date                   | end date                  | status  | agreed price | effective from               | stop effective from          |
+	| 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | stopped | 11250        | 01/Aug/Current Academic Year | 01/Aug/Current Academic Year |
+	| 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | active  | 1            | 01/Aug/Current Academic Year |                              |
 
 And the Provider now changes the Learner details as follows
-    | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
-    | start of academic year | 12 months        | 1                    | Oct/Current Academic Year           | 0                     | Oct/Current Academic Year            | 12 months       | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
+    | 04/Aug/Current Academic Year | 12 months        | 1                    | 04/Aug/Current Academic Year        | 0                     | 04/Aug/Current Academic Year         |                 | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 51            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract |
 
 When the amended ILR file is re-submitted for the learners in collection period R03/Current Academic Year
 

@@ -1,6 +1,6 @@
 ﻿Feature: Non-levy learner, provider changes aim sequence numbers after payments have already occurred PV2-393
 
-Scenario Outline: Non-levy learner provider changes aim sequence numbers after payments have already occurred
+Scenario Outline: Non-levy learner provider changes aim sequence numbers after payments have already occurred PV2-393
 	Given the following learners
         | Learner Reference Number | Uln      |
         | abc123                   | 12345678 |

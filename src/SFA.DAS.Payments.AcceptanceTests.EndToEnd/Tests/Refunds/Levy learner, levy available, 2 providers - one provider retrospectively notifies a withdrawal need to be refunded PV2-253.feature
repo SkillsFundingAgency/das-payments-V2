@@ -1,9 +1,10 @@
-Feature: Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253
+@ignore
+Feature: One Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253
 	As a provider,
 	I want a levy learner, where levy is available the provider retrospectively notifies a withdrawal and previously paid monthly instalments are refunded
 	So that I am accurately paid my apprenticeship provision.
 
-Scenario: Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded
+Scenario: One Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253
 	
 Given the employer levy account balance in collection period R06/Current Academic Year is 0
 

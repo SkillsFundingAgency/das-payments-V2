@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(DataLockValidationModel dataLockValidationModel)
         {
             var apprenticeshipPriceEpisodes = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
-                .Where(priceEpisode => priceEpisode.StartDate <= dataLockValidationModel.PriceEpisode.StartDate && !priceEpisode.Removed)
+                .Where(priceEpisode => priceEpisode.StartDate <= dataLockValidationModel.PriceEpisode.EffectiveTotalNegotiatedPriceStartDate && !priceEpisode.Removed)
                 .ToList();
             return apprenticeshipPriceEpisodes;
         }
