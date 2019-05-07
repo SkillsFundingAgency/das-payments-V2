@@ -4,7 +4,7 @@ using System;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
-    public class IlrSubmittedEvent : IPaymentsMessage
+    public class ReceivedProviderEarningsEvent : IPaymentsMessage
     {
         public long JobId { get; set; }
         public DateTimeOffset EventTime { get; set; }
