@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
@@ -16,7 +17,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
         public List<RequiredPayment> RefundLearningAim(List<Payment> historicPayments)
         {
-            return new List<RequiredPayment>();
+            return historicPayments
+                .GroupBy(payment => payment.DeliveryPeriod)
+                .SelectMany(group => refundService.GetRefund(0, group.ToList()))
+                .ToList();
         }
     }
 }

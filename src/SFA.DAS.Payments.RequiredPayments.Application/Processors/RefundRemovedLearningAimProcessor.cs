@@ -15,7 +15,7 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public class RefundRemovedLearningAimProcessor: IRefundRemovedLearningAimProcessor
+    public class RefundRemovedLearningAimProcessor : IRefundRemovedLearningAimProcessor
     {
         private readonly IRefundRemovedLearningAimService refundRemovedLearningAimService;
         private readonly IPaymentLogger logger;
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.requiredPaymentEventFactory = requiredPaymentEventFactory ?? throw new ArgumentNullException(nameof(requiredPaymentEventFactory));
         }
 
-        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> RefundLearningAim(IdentifiedRemovedLearningAim identifiedRemovedLearningAim,  IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> RefundLearningAim(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Now processing request to generate refunds for learning aim: learner: {identifiedRemovedLearningAim.Learner.ReferenceNumber}, Aim: {identifiedRemovedLearningAim.LearningAim.Reference}");
             var cacheItem = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken)
@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                             var historicPayment = cacheItem.Value.FirstOrDefault(payment =>
                                 payment.PriceEpisodeIdentifier == requiredPayment.PriceEpisodeIdentifier);
                             mapper.Map(historicPayment, requiredPaymentEvent);
-                            if (historicPayment==null)
+                            if (historicPayment == null)
                                 throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {requiredPayment.PriceEpisodeIdentifier}.");
                             logger.LogDebug($"Finished mapping ]");
                             return requiredPaymentEvent;
