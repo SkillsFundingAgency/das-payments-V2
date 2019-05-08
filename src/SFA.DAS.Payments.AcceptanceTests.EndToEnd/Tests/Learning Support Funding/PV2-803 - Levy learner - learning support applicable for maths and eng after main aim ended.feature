@@ -18,9 +18,9 @@ Scenario Outline: Levy learner, Eng aim planned end date exceeds the actual end 
 		| 06/Aug/Last Academic Year | 12 months        | 12000                | 06/Aug/Last Academic Year           | 3000                   | 06/Aug/Last Academic Year             |                 | continuing        | Act1          | ZPROG001      | 90%                         | 19-24 Apprenticeship Levy | 593            | 1            | 20             |
 
 	And the following aims
-		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status | LearningSupportIsFunctionalSkill | Price Episode Id  |
-		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |                                  | 1st price details |
-		| Maths or English | 12345         | 06/Aug/Last Academic Year | 14 months        |                 | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        | true                             | 2nd price details | 
+		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status | Price Episode Id  |
+		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        | 1st price details |
+		| Maths or English | 12345         | 06/Aug/Last Academic Year | 14 months        |                 | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        | 2nd price details | 
 	And price details as follows	
         | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 1st price details | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act1          | 1                   | 90%                         |
@@ -91,9 +91,9 @@ Scenario Outline: Levy learner, Eng aim planned end date exceeds the actual end 
         | R11/Last Academic Year | Jun/Last Academic Year | 0             | 33.64                     | OnProgrammeMathsAndEnglish |
         | R12/Last Academic Year | Jul/Last Academic Year | 0             | 33.64                     | OnProgrammeMathsAndEnglish |
     But aims details are changed as follows
-		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status | LearningSupportIsFunctionalSkill | Price Episode Id  |
-		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        | 12 months       | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | completed         |                                  | 1st price details |
-		| Maths or English | 12345         | 06/Aug/Last Academic Year | 14 months        | 14 months       | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | completed         | true                             | 2nd price details |
+		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status | Price Episode Id  |
+		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        | 12 months       | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | completed         | 1st price details |
+		| Maths or English | 12345         | 06/Aug/Last Academic Year | 14 months        | 14 months       | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | completed         | 2nd price details |
 	And price details as follows	
         | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 1st price details | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act1          | 1                   | 90%                         |

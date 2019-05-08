@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var functionalSkillEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsFunctionalSkillType).ToList();
                     var incentiveEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsIncentiveType).ToList();
 
-                    if (aimSpec.LearningSupportIsFunctionalSkill)
+                    if (aimSpec.AimReference != "ZPROG001")
                     {
                         incentiveEarnings.Remove(TransactionType.LearningSupport);
                     }

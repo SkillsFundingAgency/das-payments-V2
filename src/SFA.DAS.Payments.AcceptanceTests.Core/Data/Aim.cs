@@ -59,6 +59,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public List<Price> PriceEpisodes { get; set; } = new List<Price>();
         public int FrameworkCode { get; set; }
         public int PathwayCode { get; set; }
-        public bool LearningSupportIsFunctionalSkill { get; set; } = false;
     }
 }

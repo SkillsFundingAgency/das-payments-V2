@@ -263,7 +263,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     sfaContributionPercentage ?? (learnerTraining.SfaContributionPercentage).ToPercent(),
                 TransactionType = providerPayment.TransactionType,
                 ContractType = learnerTraining.ContractType,
-                PriceEpisodeIdentifier = providerPayment.HasNoPriceEpisodeIdentifier ? string.Empty : "pe-1",
+                PriceEpisodeIdentifier = learnerTraining.AimReference == "ZPROG001" ? "pe-1" : string.Empty,
                 FundingSource = fundingSourceType,
                 LearningAimPathwayCode = learnerTraining.PathwayCode,
                 LearnerReferenceNumber = TestSession.GetLearner(ukprn, learnerTraining.LearnerId).LearnRefNumber,
@@ -522,7 +522,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     var earningKey = earningValue.Key.ToAttributeName();
 
-                    if (aim.AimReference == "ZPROG001" && (aim.LearningSupportIsFunctionalSkill && earningKey == TransactionType.LearningSupport.ToAttributeName() ||
+                    if (aim.AimReference == "ZPROG001" && (earningKey == TransactionType.LearningSupport.ToAttributeName() ||
                        FunctionalSkillsAttributes().Contains(earningKey)))
                     {
                         continue;
@@ -536,7 +536,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
                     if (periodisedValues == null)
                     {
-                        periodisedValues = new T { AttributeName = earningValue.Key.ToAttributeName() };
+                        periodisedValues = new T { AttributeName = earningKey };
                         aimPeriodisedValues.Add(periodisedValues);
                     }
 

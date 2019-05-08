@@ -14,9 +14,9 @@ Scenario Outline: Levy learner with learning support and maths and eng changes p
         | start date                   | end date                     | agreed price | status | 
         | 01/Aug/Current Academic Year | 01/Aug/Current Academic Year | 11250        | active | 
 	And the following aims
-		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status | LearningSupportIsFunctionalSkill | Price Episode Id |
-		| Programme        | ZPROG001      | 04/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |                                  | pe-1             |
-		| Maths or English | 12345         | 04/Aug/Current Academic Year | 14 months        |                 | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        | true                             |                  |
+		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |  Price Episode Id |
+		| Programme        | ZPROG001      | 04/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |  pe-1             |
+		| Maths or English | 12345         | 04/Aug/Current Academic Year | 14 months        |                 | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |                   |
 	And price details as follows	
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | pe-1             | 11250                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
@@ -62,9 +62,9 @@ Scenario Outline: Levy learner with learning support and maths and eng changes p
         | R02/Current Academic Year | Sep/Current Academic Year | 0             | 33.64                     | OnProgrammeMathsAndEnglish |
         | R03/Current Academic Year | Oct/Current Academic Year | 0             | 33.64                     | OnProgrammeMathsAndEnglish |
     But aims details are changed as follows
-		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status | LearningSupportIsFunctionalSkill | Price Episode Id |
-		| Programme        | ZPROG001      | 04/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |                                  | pe-3             |
-		| Maths or English | 12345         | 04/Aug/Current Academic Year | 14 months        |                 | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        | true                             |                  |
+		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status | Price Episode Id |
+		| Programme        | ZPROG001      | 04/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        | pe-3             |
+		| Maths or English | 12345         | 04/Aug/Current Academic Year | 14 months        |                 | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |                  |
 	
 	And price details are changed as follows	
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
