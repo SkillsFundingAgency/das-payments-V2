@@ -150,6 +150,42 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [TestFixture]
+        public class WhenAmountIsZero : RequiredPaymentProcessorTests
+        {
+            [Test]
+            public void ThenFullRefundIsCreated()
+            {
+                var testEarning = new Earning
+                {
+                    SfaContributionPercentage = null,
+                    Amount = 0
+                };
+                expectedAmount = -50;
+                var expectedRefundPayments = new List<RequiredPayment>
+                {
+                    new RequiredPayment
+                    {
+                        Amount = -50,
+                        SfaContributionPercentage = .9M,
+                    }
+                };
+                paymentHistory.Add(new Payment { SfaContributionPercentage = .9M });
+                paymentHistory.Add(new Payment { SfaContributionPercentage = 1M });
+                paymentHistory.Add(new Payment { SfaContributionPercentage = .95M });
+                paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(It.IsAny<decimal>(), It.IsAny<List<Payment>>())).Returns(expectedAmount);
+                sut.GetRequiredPayments(testEarning, paymentHistory);
+                refundService.Verify(svc => 
+                    svc.GetRefund(
+                        It.Is<decimal>(amount => amount == expectedAmount), 
+                        It.Is<List<Payment>>(history => 
+                            history.Count == 3 
+                            && history.Any(p => p.SfaContributionPercentage == .9M)
+                            && history.Any(p => p.SfaContributionPercentage == .95M)
+                            && history.Any(p => p.SfaContributionPercentage == 1M))));
+            }
+        }
+
+        [TestFixture]
         public class WhenHistoricPaymentsUsedADifferentSfaContribution : RequiredPaymentProcessorTests
         {
             [Test]

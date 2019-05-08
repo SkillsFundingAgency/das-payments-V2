@@ -19,12 +19,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
             var result = new List<RequiredPayment>();
-            if (earning.SfaContributionPercentage.HasValue)
+            if (earning.EarningType != EarningType.Incentive && earning.SfaContributionPercentage.HasValue)
                 result.AddRange(RefundPaymentsWithDifferentSfaContribution(earning.SfaContributionPercentage.Value, paymentHistory));
 
             var validPaymentHistory = paymentHistory
-                .Where(p => p.SfaContributionPercentage == earning.SfaContributionPercentage)
+                .Where(p => earning.EarningType == EarningType.Incentive || !earning.SfaContributionPercentage.HasValue || p.SfaContributionPercentage == earning.SfaContributionPercentage)
                 .ToList();
+
             var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, validPaymentHistory);
 
             if (amount < 0)
