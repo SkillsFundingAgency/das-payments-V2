@@ -203,9 +203,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then(@"at month end only the following payments will be calculated")]
-        public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculated(Table table)
+        public Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculated(Table table)
         {
-            await ValidateRequiredPaymentsAtMonthEnd(table, TestSession.Provider).ConfigureAwait(false);
+            return ValidateRequiredPaymentsAtMonthEnd(table, TestSession.Provider);
         }
 
         [Then(@"at month end only the following payments will be calculated for ""(.*)""")]

@@ -128,7 +128,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.ProgrammeType = ilrLearner.ProgrammeType;
                 learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
                 learner.Course.PathwayCode = ilrLearner.PathwayCode;
-                if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln;
+                ilrLearner.Uln = ilrLearner.Uln != default(long) ? ilrLearner.Uln : learner.Uln;
+                //if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln;
 
             });
         }
@@ -623,11 +624,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return payments;
         }
 
-        protected async Task MatchRequiredPayments(Table table, Provider provider)
+        protected Task MatchRequiredPayments(Table table, Provider provider)
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
-            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
+            return WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
         protected async Task StartMonthEnd(Provider provider)
