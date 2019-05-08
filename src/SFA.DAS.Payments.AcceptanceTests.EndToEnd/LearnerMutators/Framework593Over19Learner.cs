@@ -10,7 +10,7 @@
     public class Framework593Over19Learner : FM36Base
     {
         private readonly IEnumerable<LearnerRequest> _learnerRequests;
-        private TDG.GenerationOptions _options;
+        private GenerationOptions _options;
 
         public Framework593Over19Learner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
         {
@@ -45,7 +45,7 @@
             return list;
         }
 
-        private void MutateLearnerOptions(TDG.GenerationOptions options)
+        private void MutateLearnerOptions(GenerationOptions options)
         {
             _options = options;
             options.LD.IncludeHHS = true;
@@ -65,7 +65,7 @@
             DoSpecificMutate(learner, trainingRecord);
         }
 
-        protected void DoSpecificMutate(MessageLearner learner, LearnerRequest request)
+        protected virtual void DoSpecificMutate(MessageLearner learner, LearnerRequest request)
         {
             learner.ULN = request.Uln;
             learner.ULNSpecified = true;

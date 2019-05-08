@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using DCT.TestDataGenerator.Functor;
+    using NonLevy.BasicDay;
 
     public class LearnerMutatorFactory
     {

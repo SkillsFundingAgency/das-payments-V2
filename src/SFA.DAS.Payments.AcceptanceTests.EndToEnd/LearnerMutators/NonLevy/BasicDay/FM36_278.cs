@@ -1,13 +1,11 @@
-﻿using System;
-
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay
+﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay
 {
     using System.Collections.Generic;
     using System.Linq;
     using DCT.TestDataGenerator;
     using ESFA.DC.ILR.Model.Loose;
 
-    public class FM36_278 : SingleNonLevyLearner
+    public class FM36_278 : Framework593Over19Learner
     {
         public FM36_278(IEnumerable<LearnerRequest> learnerRequests) : base(learnerRequests, "278")
         {
@@ -15,6 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
         protected override void DoSpecificMutate(MessageLearner learner, LearnerRequest learnerRequest)
         {
+            base.DoSpecificMutate(learner, learnerRequest);
             var ld = learner.LearningDelivery[0];
 
             foreach (var lds in learner.LearningDelivery)
@@ -42,7 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
             if (appFinRecord == null)
             {
-                DCT.TestDataGenerator.Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, 15000);
+                Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, 15000);
 
                 appFinRecord =
                     ld.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
@@ -51,12 +50,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
             appFinRecord.AFinDate = ld.LearnStartDate;
             appFinRecord.AFinDateSpecified = true;
 
-            learner.LearningDelivery[1].LearnAimRef = "00300545";
-
             var lesm = learner.LearnerEmploymentStatus.ToList();
             lesm[0].DateEmpStatApp = learner.LearningDelivery[0].LearnStartDate.AddDays(-2);
-
-            MutateHE(learner);
         }
     }
 }

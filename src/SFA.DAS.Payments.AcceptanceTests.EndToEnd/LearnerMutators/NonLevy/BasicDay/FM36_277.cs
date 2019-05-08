@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
     using DCT.TestDataGenerator;
     using ESFA.DC.ILR.Model.Loose;
 
-    public class FM36_277 : SingleNonLevyLearner
+    public class FM36_277 : Framework593Over19Learner
     {
         public FM36_277(IEnumerable<LearnerRequest> learnerRequests) : base(learnerRequests, "277")
         {
@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
         protected override void DoSpecificMutate(MessageLearner learner, LearnerRequest learnerRequest)
         {
+            base.DoSpecificMutate(learner, learnerRequest);
             var ld = learner.LearningDelivery[0];
 
             foreach (var lds in learner.LearningDelivery)
@@ -50,8 +51,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
             appFinRecord.AFinDate = ld.LearnStartDate;
             appFinRecord.AFinDateSpecified = true;
-
-            learner.LearningDelivery[1].LearnAimRef = "6030571x";
         }
     }
 }
