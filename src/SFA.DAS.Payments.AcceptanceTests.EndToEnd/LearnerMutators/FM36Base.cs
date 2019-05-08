@@ -46,9 +46,9 @@
             if (learnerRequest.StartDate.HasValue)
             {
                 learner.DateOfBirth = learnerRequest.StartDate.Value.AddYears(-21);
+                learner.LearningDelivery[0].LearnStartDate = learnerRequest.StartDate.Value;
+                learner.LearningDelivery[0].LearnStartDateSpecified = true;
             }
-
-            learner.LearningDelivery[0].LearnPlanEndDateSpecified = learnerRequest.PlannedDurationInMonths.HasValue;
 
             if (learnerRequest.PlannedDurationInMonths.HasValue && learnerRequest.StartDate.HasValue)
             {
@@ -64,13 +64,6 @@
                 learner.LearningDelivery[0].LearnActEndDateSpecified = true;
             }
 
-            learner.LearningDelivery[0].LearnStartDateSpecified = learnerRequest.StartDate.HasValue;
-
-            if (learnerRequest.StartDate.HasValue)
-            {
-                learner.LearningDelivery[0].LearnStartDate = learnerRequest.StartDate.Value;
-                learner.LearningDelivery[0].LearnStartDateSpecified = true;
-            }
 
             var ld = learner.LearningDelivery[0];
             var ldfams = ld.LearningDeliveryFAM.Where(s => s.LearnDelFAMType != TDG.LearnDelFAMType.ACT.ToString());
@@ -147,9 +140,9 @@
                     lds.CompStatusSpecified = true;
                 }
 
-                if (ld.LearnPlanEndDateSpecified && learnerRequest.CompletionStatus == TDG.CompStatus.Completed)
+                if (ld.LearnActEndDateSpecified && learnerRequest.CompletionStatus == CompStatus.Completed)
                 {
-                    lds.LearnActEndDate = ld.LearnPlanEndDate;
+                    lds.LearnActEndDate = ld.LearnActEndDate;
                     lds.LearnActEndDateSpecified = true;
                 }
 

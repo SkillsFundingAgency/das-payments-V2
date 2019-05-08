@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var config = new TestsConfiguration();
             Builder = new ContainerBuilder();
             Builder.RegisterType<TestsConfiguration>().SingleInstance();
-            Builder.RegisterType<DcHelper>().SingleInstance();
+   //         Builder.RegisterType<DcHelper>().SingleInstance();
             Builder.RegisterType<EarningsJobClient>()
                 .As<IEarningsJobClient>()
                 .InstancePerLifetimeScope();
@@ -62,14 +62,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 
                 Builder.RegisterInstance(ukprnDbOptions);
                 Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
-                Builder.RegisterType<DcHelper>().As<IDcHelper>().InstancePerLifetimeScope();
                 Builder.RegisterType<UlnService>().As<IUlnService>().InstancePerLifetimeScope();
+                Builder.RegisterType<DcNullHelper>().As<IDcHelper>().InstancePerLifetimeScope();
             }
             else
             {
                 Builder.RegisterType<IlrNullService>().As<IIlrService>().InstancePerLifetimeScope();
                 Builder.RegisterType<RandomUkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
-                Builder.RegisterType<DcNullHelper>().As<IDcHelper>().InstancePerLifetimeScope();
+                Builder.RegisterType<DcHelper>().As<IDcHelper>().InstancePerLifetimeScope();
                 Builder.RegisterType<RandomUlnService>().As<IUlnService>().InstancePerLifetimeScope();
             }
 

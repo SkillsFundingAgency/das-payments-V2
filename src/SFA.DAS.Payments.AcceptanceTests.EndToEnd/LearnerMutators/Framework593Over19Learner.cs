@@ -1,5 +1,6 @@
 ﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using DCT.TestDataGenerator;
@@ -13,6 +14,11 @@
 
         public Framework593Over19Learner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
         {
+            if (learnerRequests == null || !learnerRequests.Any())
+            {
+                throw new ArgumentException("At least one learner is required.");
+            }
+
             _learnerRequests = learnerRequests;
         }
 
@@ -26,6 +32,16 @@
                 DoMutateOptions = MutateLearnerOptions
             });
 
+            if (_learnerRequests.Count() == 2)
+            {
+                list.Add(new LearnerTypeMutator()
+                {
+                    LearnerType = LearnerTypeRequired.Apprenticeships,
+                    DoMutateLearner = MutateLearner2,
+                    DoMutateOptions = MutateLearnerOptions
+                });
+            }
+
             return list;
         }
 
@@ -38,7 +54,13 @@
         private void MutateLearner(MessageLearner learner, bool valid)
         {
             var trainingRecord = _learnerRequests.First();
-            TDG.Helpers.MutateDOB(learner, valid, TDG.Helpers.AgeRequired.Exact19, TDG.Helpers.BasedOn.LearnDelStart, TDG.Helpers.MakeOlderOrYoungerWhenInvalid.NoChange);
+            MutateCommon(learner, trainingRecord);
+            DoSpecificMutate(learner, trainingRecord);
+        }
+
+        private void MutateLearner2(MessageLearner learner, bool valid)
+        {
+            var trainingRecord = _learnerRequests.Skip(1).First();
             MutateCommon(learner, trainingRecord);
             DoSpecificMutate(learner, trainingRecord);
         }

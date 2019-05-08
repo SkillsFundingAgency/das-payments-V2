@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
         public static void SetUpFeature(FeatureContext context)
         {
             SetUpTestSession(context);
-            var dcHelper = Container.Resolve<DcHelper>();
+            var dcHelper = Container.Resolve<IDcHelper>();
             context.Set(dcHelper);
         }
 

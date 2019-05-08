@@ -68,14 +68,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
         {
             XNamespace xsdns = tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
-            var learner = xDoc.Descendants(xsdns + "Learner").First();
-            var learningProvider = xDoc.Descendants(xsdns + "LearningProvider").First();
+            var learners = xDoc.Descendants(xsdns + "Learner");
 
-            foreach (var request in currentIlr)
+            for (var i = 0; i < currentIlr.Count(); i++)
             {
+                var request = currentIlr.Skip(i).Take(1).First();
                 var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerId);
-
-                testSessionLearner.Ukprn = long.Parse(learningProvider.Elements(xsdns + "UKPRN").First().Value);
+                var learner = learners.Skip(i).Take(1).First();
                 testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
                 testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
 
