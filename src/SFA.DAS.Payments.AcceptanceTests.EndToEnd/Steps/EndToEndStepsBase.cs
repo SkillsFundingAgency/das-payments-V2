@@ -522,17 +522,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     var earningKey = earningValue.Key.ToAttributeName();
 
-                    if (aim.AimReference == "ZPROG001" && (earningKey == TransactionType.LearningSupport.ToAttributeName() ||
-                       FunctionalSkillsAttributes().Contains(earningKey)))
-                    {
-                        continue;
-                    }
-
-                    if (aim.AimReference != "ZPROG001" && OnProgrammeAttributes().Contains(earningKey))
-                    {
-                        continue;
-                    }
-
                     var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
                     if (periodisedValues == null)
                     {
