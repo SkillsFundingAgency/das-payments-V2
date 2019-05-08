@@ -9,6 +9,8 @@ using System.Linq;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
+    using Services;
+
     public class TestSession
     {
         public LearnRefNumberGenerator LearnRefNumberGenerator { get; }
@@ -30,7 +32,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
 
-        private readonly IUkprnService _ukprnService;
+        private readonly IUkprnService _ukprnService = new RandomUkprnService();
+        private readonly IUlnService _ulnService = new RandomUlnService();
 
         public Employer GetEmployer(string identifier)
         {
@@ -47,9 +50,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return employer;
         }
 
-        public TestSession(IUkprnService ukprnService)
+        public TestSession(IUkprnService ukprnService, IUlnService ulnService)
         {
             _ukprnService = ukprnService;
+            _ulnService = ulnService;
 
             courseFaker = new Faker<Course>();
             courseFaker
@@ -69,13 +73,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             Providers = new List<Provider>();
             IlrSubmissionTime = Provider.IlrSubmissionTime;
-            Learners = new List<Learner>();
+            Learners = new List<Learner> { GenerateLearner(Provider.Ukprn, _ulnService.GenerateUln(0)) };
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
 
         }
 
-        public TestSession(long? ukprn = null) : this(new RandomUkprnService())
+        public TestSession(long? ukprn = null) : this(new RandomUkprnService(), new RandomUlnService())
         {
         }
 
@@ -125,7 +129,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Learner GenerateLearner(long ukprn, long? uniqueLearnerNumber = null)
         {
-            var uln = uniqueLearnerNumber ?? GenerateId();
+            var uln = uniqueLearnerNumber ?? _ulnService.GenerateUln(0);
             return new Learner
             {
                 Ukprn = ukprn,
@@ -154,7 +158,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var learner = Learners.FirstOrDefault(x => x.LearnerIdentifier == learnerId);
             if (learner == null)
             {
-                return GenerateId();
+                return _ulnService.GenerateUln(0);
             }
 
             return learner.Uln;

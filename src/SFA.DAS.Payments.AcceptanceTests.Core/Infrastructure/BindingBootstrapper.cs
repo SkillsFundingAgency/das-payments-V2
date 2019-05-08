@@ -30,6 +30,8 @@ using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 {
+    using Services;
+
     [Binding]
     public class BindingBootstrapper : BindingsBase
     {
@@ -47,11 +49,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 .InstancePerLifetimeScope();
 
             Builder.RegisterType<AzureStorageServiceConfig>().As<IAzureStorageKeyValuePersistenceServiceConfig>().InstancePerLifetimeScope();
-            Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
+   //         Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
             Builder.RegisterType<AzureStorageKeyValuePersistenceService>().As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
             Builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
             Builder.RegisterType<TdgService>().As<ITdgService>().InstancePerLifetimeScope();
-            Builder.Register(c => new TestSession(c.Resolve<IUkprnService>())).InstancePerLifetimeScope();
 
             if (config.ValidateDcAndDasServices)
             {
@@ -61,14 +62,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 
                 Builder.RegisterInstance(ukprnDbOptions);
                 Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
-                Builder.RegisterType<DcNullHelper>().As<IDcHelper>().InstancePerLifetimeScope();
+                Builder.RegisterType<DcHelper>().As<IDcHelper>().InstancePerLifetimeScope();
+                Builder.RegisterType<UlnService>().As<IUlnService>().InstancePerLifetimeScope();
             }
             else
             {
                 Builder.RegisterType<IlrNullService>().As<IIlrService>().InstancePerLifetimeScope();
                 Builder.RegisterType<RandomUkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
-                Builder.RegisterType<DcHelper>().As<IDcHelper>().InstancePerLifetimeScope();
+                Builder.RegisterType<DcNullHelper>().As<IDcHelper>().InstancePerLifetimeScope();
+                Builder.RegisterType<RandomUlnService>().As<IUlnService>().InstancePerLifetimeScope();
             }
+
+            Builder.Register(c => new TestSession(c.Resolve<IUkprnService>(), c.Resolve<IUlnService>())).InstancePerLifetimeScope();
 
             Builder.Register(context =>
                 {
