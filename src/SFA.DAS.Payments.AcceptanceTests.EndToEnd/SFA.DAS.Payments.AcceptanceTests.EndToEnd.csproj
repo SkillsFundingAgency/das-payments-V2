@@ -886,11 +886,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-levy learner - learning support OPP and completion payments - PV2-429.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-Levy learner continuing 12 months earnings PV2-615.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1594,10 +1589,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
-    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-Levy learner continuing 12 months earnings PV2-615.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner continuing 12 months earnings PV2-615.feature.cs</LastGenOutput>
@@ -1882,7 +1873,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\Disadvantage - Uplift\" />
-    <Folder Include="Tests\Learner Change of Circumstances\" />
     <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
   </ItemGroup>
   <ItemGroup />
