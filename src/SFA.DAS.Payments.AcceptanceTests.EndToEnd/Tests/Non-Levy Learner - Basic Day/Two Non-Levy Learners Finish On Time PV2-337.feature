@@ -3,9 +3,9 @@ Two Non-Levy Learners Finish On Time PV2-197
 
 Scenario Outline: Two Non-Levy Learners Finish On Time PV2-337
 	Given the provider previously submitted the following learner details
-        | Learner ID | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | learner a  | 1        | Sep/Last Academic Year | 12 months        | 15000                | Sep/Last Academic Year              | 0                      | Sep/Last Academic Year                |                 | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
-        | learner b  | 1        | Sep/Last Academic Year | 12 months        | 12000                | Sep/Last Academic Year              | 0                      | Sep/Last Academic Year                |                 | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+        | learner a  | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
+        | learner b  | 01/Sep/Last Academic Year | 12 months        | 12000                | 01/Sep/Last Academic Year           |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 
     And the following earnings had been generated for the learner
         | Learner ID | Delivery Period        | On-Programme | Completion | Balancing |
@@ -58,9 +58,9 @@ Scenario Outline: Two Non-Levy Learners Finish On Time PV2-337
 		| learner b  | R11/Last Academic Year | Jun/Last Academic Year | 720                    | 80                          | Learning         |
 		| learner b  | R12/Last Academic Year | Jul/Last Academic Year | 720                    | 80                          | Learning         |
     But the Provider now changes the Learner details as follows
-        | Learner ID | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | learner a  | 1        | Sep/Last Academic Year | 12 months        | 15000                | Sep/Last Academic Year              | 0                      | Sep/Last Academic Year                | 12 months       | completed         | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
-        | learner b  | 1        | Sep/Last Academic Year | 12 months        | 12000                | Sep/Last Academic Year              | 0                      | Sep/Last Academic Year                | 12 months       | completed         | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+        | learner a  | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
+        | learner b  | 01/Sep/Last Academic Year | 12 months        | 12000                | 01/Sep/Last Academic Year           |                        |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
     Then the following learner earnings should be generated
 		| Learner ID | Delivery Period           | On-Programme | Completion | Balancing |
@@ -111,12 +111,3 @@ Examples:
         | R01/Current Academic Year |
         | R02/Current Academic Year |
         | R03/Current Academic Year |
-        | R04/Current Academic Year |
-        | R05/Current Academic Year |
-        | R06/Current Academic Year |
-        | R07/Current Academic Year |
-        | R08/Current Academic Year |
-        | R09/Current Academic Year |
-        | R10/Current Academic Year |
-        | R11/Current Academic Year |
-        | R12/Current Academic Year |

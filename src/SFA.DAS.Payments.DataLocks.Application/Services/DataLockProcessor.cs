@@ -48,21 +48,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             foreach (var onProgrammeEarning in payableEarningEvent.OnProgrammeEarnings)
             {
-              
                 var validationResult = onProgrammePeriodsValidationProcessor.ValidatePeriods(
                     payableEarningEvent.Learner.Uln, payableEarningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln);
                 
                 onProgrammeEarning.Periods =
                     validationResult.ValidPeriods.Select(valid => valid.Period).ToList().AsReadOnly();
-
-                //TODO: the account id needs to be at the period level (apprentice could have changed employers).
-                if (!validationResult.ValidPeriods.Any() || validationResult.ValidPeriods.All(x => x.Period.Amount == decimal.Zero)) continue;
-
-                var apprenticeship = validationResult.ValidPeriods.FirstOrDefault(x => x.Apprenticeship != null && x.Apprenticeship.Id != 0)?.Apprenticeship 
-                                     ?? throw new InvalidOperationException("No valid apprenticeship associated with valid data-locks");
-
-                payableEarningEvent.AccountId = apprenticeship.AccountId;
-                payableEarningEvent.Priority = apprenticeship.Priority;
             }
         }
 

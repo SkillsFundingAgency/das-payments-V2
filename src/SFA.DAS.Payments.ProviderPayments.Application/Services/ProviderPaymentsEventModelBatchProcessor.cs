@@ -13,11 +13,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public class ProviderPaymentsEventModelBatchProcessor: PaymentsEventModelBatchProcessor<ProviderPaymentEventModel>
     {
-        private readonly IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache;
+        private readonly IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache;
 
         public ProviderPaymentsEventModelBatchProcessor(IPaymentsEventModelCache<ProviderPaymentEventModel> cache, 
             IPaymentsEventModelDataTable<ProviderPaymentEventModel> dataTable, IConfigurationHelper configurationHelper, 
-            IPaymentLogger logger, IDataCache<IlrSubmittedEvent> ilrSubmittedEventCache) 
+            IPaymentLogger logger, IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache) 
             : base(cache, dataTable, configurationHelper, logger)
         {
             this.ilrSubmittedEventCache = ilrSubmittedEventCache ?? throw new ArgumentNullException(nameof(ilrSubmittedEventCache));
