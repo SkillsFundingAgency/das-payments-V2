@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public interface IHandleIlrSubmissionService
     {
-        Task Handle(IlrSubmittedEvent message, CancellationToken cancellationToken);
+        Task Handle(ReceivedProviderEarningsEvent message, CancellationToken cancellationToken);
     }
 }

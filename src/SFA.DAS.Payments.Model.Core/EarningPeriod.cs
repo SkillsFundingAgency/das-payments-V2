@@ -6,5 +6,9 @@
         public byte Period { get; set; }
         public decimal Amount { get; set; }
         public decimal? SfaContributionPercentage { get; set; }
+        public long? AccountId { get; set; }
+        public long? ApprenticeshipId { get; set; }
+        public long? ApprenticeshipPriceEpisodeId { get; set; }
+        public int? Priority { get; set; }
     }
 }

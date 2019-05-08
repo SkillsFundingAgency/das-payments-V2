@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 foreach (var requiredPayment in requiredPayments)
                 {
                     var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType, type, holdBackCompletionPayments);
-
+                    mapper.Map(period, requiredPaymentEvent);
                     mapper.Map(earningEvent, requiredPaymentEvent);
                     mapper.Map(requiredPayment, requiredPaymentEvent);
 
@@ -96,8 +96,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         mapper.Map(priceEpisode, requiredPaymentEvent);
                     }
 
-                    requiredPaymentEvent.DeliveryPeriod = period.Period;
-                    
                     result.Add(requiredPaymentEvent);
                 }
             }
