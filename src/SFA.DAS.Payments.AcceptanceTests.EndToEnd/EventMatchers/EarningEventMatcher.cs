@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Newtonsoft.Json;
 using Earning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Earning;
 using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
@@ -203,7 +204,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (expectedEvent.CollectionPeriod.Period != actualEvent.CollectionPeriod.Period ||
                 expectedEvent.CollectionPeriod.AcademicYear != actualEvent.CollectionPeriod.AcademicYear ||
                 expectedEvent.Learner.ReferenceNumber != actualEvent.Learner.ReferenceNumber ||
-                //expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
+                expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
                 expectedEvent.LearningAim.Reference != actualEvent.LearningAim.Reference ||
                 expectedEvent.LearningAim.FundingLineType != actualEvent.LearningAim.FundingLineType ||
                 expectedEvent.LearningAim.FrameworkCode != actualEvent.LearningAim.FrameworkCode ||
@@ -223,6 +224,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (expectedEvent == null)
                 return true;
 
+            string expectedEventJson = JsonConvert.SerializeObject(expectedEvent);
+            string actualEventJson = JsonConvert.SerializeObject(actualEvent);
 
             var expectedEventOnProgrammeEarnings = expectedEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
             var actualEventOnProgrammeEarnings = actualEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
@@ -261,9 +264,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     expectedEarningPeriods[i].Period != actualEarningPeriods[i].Period)
                     return false;
 
-                if (expectedEarningPeriods[i].Amount != 0 &&
-                    expectedEarningPeriods[i].PriceEpisodeIdentifier != actualEarningPeriods[i].PriceEpisodeIdentifier)
-                    return false;
+                //if (expectedEarningPeriods[i].Amount != 0 &&
+                //    expectedEarningPeriods[i].PriceEpisodeIdentifier != actualEarningPeriods[i].PriceEpisodeIdentifier)
+                //    return false;
             }
 
             return true;

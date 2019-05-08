@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Model.Core.Entities;
+﻿using System;
+using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow.Assist.Attributes;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
@@ -36,5 +37,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public int? Pmr { get; set; } 
         [TableAliases("Exemption Code")]
         public int CompletionHoldBackExemptionCode { get; set; }
+
     }
 }

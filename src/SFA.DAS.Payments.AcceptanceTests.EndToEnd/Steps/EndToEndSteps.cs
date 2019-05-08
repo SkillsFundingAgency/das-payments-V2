@@ -4,6 +4,8 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -37,11 +39,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the ""(.*)"" levy account balance in collection period (.*) is (.*)")]
-        public async Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(string employerIdentifier, string collectionPeriod,decimal levyAmount)
+        public Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(string employerIdentifier, string collectionPeriod,decimal levyAmount)
         {
             var employer = TestSession.GetEmployer(employerIdentifier);
             employer.Balance = levyAmount;
-            await SaveLevyAccount(employer).ConfigureAwait(false);
+            return SaveLevyAccount(employer);
         }
 
         [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
@@ -52,7 +54,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 collectionPeriod,
                 levyAmount);
         }
-        
+
+        [Given(@"the provider is providing training for the following learners")]
+        public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(Table table)
+        {
+            var provider = TestSession.GetProviderByIdentifier(null);
+            CurrentIlr = table.CreateSet<Training>().ToList();
+
+            CurrentIlr.ForEach(c=>c.Ukprn = provider.Ukprn);
+        }
+
+        [Given(@"the provider ""(.*)"" is providing training for the following learners")]
+        public void GivenTheProviderIsProvidingTrainingForTheFollowingLearners(string providerIdentifier, Table table)
+        {
+            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+            CurrentIlr = table.CreateSet<Training>().ToList();
+            AddTestLearners(CurrentIlr, provider.Ukprn);
+        }
+
         [Given(@"the provider previously submitted the following learner details in collection period ""(.*)""")]
         public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetailsInCollectionPeriod(string previousCollectionPeriod, Table table)
         {
@@ -62,7 +81,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddTestLearners(PreviousIlr, TestSession.Ukprn);
         }
 
-        [Given(@"the provider is providing training for the following learners")]
+        //[Given(@"the provider is providing training for the following learners")]
         [Given(@"the Provider now changes the Learner details as follows")]
         public void GivenTheProviderNowChangesTheLearnerDetailsAsFollows(Table table)
         {
@@ -168,9 +187,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then(@"the following learner earnings should be generated")]
-        public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
+        public Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
-            await GeneratedAndValidateEarnings(table, TestSession.Provider).ConfigureAwait(false);
+            return GeneratedAndValidateEarnings(table, TestSession.Provider);
         }
 
         [Then(@"the following learner earnings should be generated for ""(.*)""")]

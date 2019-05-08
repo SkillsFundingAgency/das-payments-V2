@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -18,12 +19,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var actualPayments = GetActualEvents();
 
-            actualPayments = actualPayments.Where(x => (x is FunctionalSkillEarningsEvent &&
-                                                       (x as FunctionalSkillEarningsEvent).Earnings.Any()) ||
-                                                       (x as FunctionalSkillEarningsEvent) == null)
-                .ToList();
-
             var expectedPayments = GetExpectedEvents();
+
+            // remove any FunctionalSkillEarningsEvent when we are not expecting any (only if they have all 0 values)
+            if (expectedPayments.All(x => x.GetType() != typeof(FunctionalSkillEarningsEvent)))
+            {
+                actualPayments = RemoveEmptyFunctionSkillEarningEvent(actualPayments);
+            }
 
             var matchedPayments = expectedPayments
                 .Where(expected => actualPayments.Any(actual => Match(expected, actual)))
@@ -51,6 +53,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return !payments.Any()
                 ? (true, string.Empty)
                 : (false, $"Found Unexpected Payments: {payments.Aggregate(string.Empty, (currText, payment) => $"{currText}, {payment.ToJson()}")}");
+        }
+
+        private IList<T> RemoveEmptyFunctionSkillEarningEvent(IList<T> actualPayments)
+        {
+            return actualPayments.Except(actualPayments
+                .Where(actualPayment => actualPayment.GetType() == typeof(FunctionalSkillEarningsEvent) && 
+                                          (actualPayment as FunctionalSkillEarningsEvent).Earnings.All(e=>e.Periods.All(p=>p.Amount == 0)))).ToList();
         }
     }
 }

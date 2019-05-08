@@ -1,9 +1,12 @@
+using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -78,9 +81,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following provider payments had been generated")]
-        public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
+        public Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
-            await GeneratePreviousPayment(table, TestSession.Provider.Ukprn);
+            return GeneratePreviousPayment(table, TestSession.Provider.Ukprn);
         }
 
         [Given(@"the following ""(.*)"" payments had been generated")]
@@ -99,9 +102,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
+        public Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
-            await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier).ConfigureAwait(false);
+            Task verifyIlr() => WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier);
+
+            var featureContext = (FeatureContext)Context;
+            var featureNumber = featureContext.FeatureInfo.Title.Substring(
+                featureContext.FeatureInfo.Title.IndexOf("PV2-", StringComparison.Ordinal) + 4, 3);
+
+            return Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]

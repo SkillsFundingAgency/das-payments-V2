@@ -41,6 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             get => Get<bool>("new_feature");
             set => Set(value, "new_feature");
         }
+
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
         protected IPaymentsDataContext DataContext => Scope.Resolve<IPaymentsDataContext>();
@@ -99,7 +100,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var ilr = table.CreateSet<Training>().ToList();
             AddTestLearners(ilr, ukprn);
-            if (CurrentIlr == null) CurrentIlr = new List<Training>();
+
+            //as the tests run many examples, i don't believe we need to retain state
+            //if (CurrentIlr == null) CurrentIlr = new List<Training>();
+
+            CurrentIlr = new List<Training>();
             CurrentIlr.AddRange(ilr);
         }
 
@@ -879,9 +884,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     learners.Add(learner);
                 }
             }
-            var dcHelper = Scope.Resolve<DcHelper>();
-            await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
-                provider.JobId, provider.IlrSubmissionTime);
+
+            if (!Config.ValidateDcAndDasServices)
+            {
+                var dcHelper = Scope.Resolve<DcHelper>();
+                await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
+                    provider.JobId, provider.IlrSubmissionTime);
+            }
 
             var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
                 TestSession, CurrentCollectionPeriod, learners);

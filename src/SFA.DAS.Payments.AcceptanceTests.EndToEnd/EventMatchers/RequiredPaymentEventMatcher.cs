@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Model.Core;
@@ -143,6 +144,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override bool Match(RequiredPaymentEvent expected, RequiredPaymentEvent actual)
         {
+            var expectedJson = JsonConvert.SerializeObject(expected);
+            var actualJson = JsonConvert.SerializeObject(actual);
+
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue &&
                    MatchAct(expected as CalculatedRequiredOnProgrammeAmount, actual as CalculatedRequiredOnProgrammeAmount) &&
