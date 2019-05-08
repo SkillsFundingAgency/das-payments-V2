@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new ApprenticeshipModelConfiguration());
             modelBuilder.ApplyConfiguration(new ApprenticeshipPriceEpisodeModelConfiguration());
             modelBuilder.ApplyConfiguration(new LevyAccountModelConfiguration());
+            modelBuilder.ApplyConfiguration(new SubmittedLearnerAimModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
