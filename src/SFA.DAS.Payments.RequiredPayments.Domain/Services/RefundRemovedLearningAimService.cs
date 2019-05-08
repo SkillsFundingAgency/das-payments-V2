@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
         public List<RequiredPayment> RefundLearningAim(List<Payment> historicPayments)
         {
-            throw new NotImplementedException();
+            return new List<RequiredPayment>();
         }
     }
 }
