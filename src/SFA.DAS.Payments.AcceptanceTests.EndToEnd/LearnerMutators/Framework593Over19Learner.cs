@@ -6,12 +6,12 @@
     using DCT.TestDataGenerator.Functor;
     using ESFA.DC.ILR.Model.Loose;
 
-    public class Framework539Over19Learner : FM36Base
+    public class Framework593Over19Learner : FM36Base
     {
         private readonly IEnumerable<LearnerRequest> _learnerRequests;
         private TDG.GenerationOptions _options;
 
-        public Framework539Over19Learner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
+        public Framework593Over19Learner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
         {
             _learnerRequests = learnerRequests;
         }
