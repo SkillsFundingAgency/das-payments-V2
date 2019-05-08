@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using TDG = DCT.TestDataGenerator;
-using DCT.TestDataGenerator.Functor;
-using ESFA.DC.ILR.Model.Loose;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
-
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy
+﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using DCT.TestDataGenerator;
+    using DCT.TestDataGenerator.Functor;
+    using ESFA.DC.ILR.Model.Loose;
+    using LearnerMutators;
+
     public abstract class SingleNonLevyLearner : FM36Base
     {
         private readonly IEnumerable<LearnerRequest> _learnerRequests;

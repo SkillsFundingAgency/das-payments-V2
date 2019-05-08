@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using TDG = DCT.TestDataGenerator;
-using DCT.TestDataGenerator.Functor;
-using ESFA.DC.ILR.Model.Loose;
-
-
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
+﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using DCT.TestDataGenerator;
+    using DCT.TestDataGenerator.Functor;
+    using ESFA.DC.ILR.Model.Loose;
+
     public abstract class FM36Base : ILearnerMultiMutator
     {
         private const int StandardProgrammeType = 25;
