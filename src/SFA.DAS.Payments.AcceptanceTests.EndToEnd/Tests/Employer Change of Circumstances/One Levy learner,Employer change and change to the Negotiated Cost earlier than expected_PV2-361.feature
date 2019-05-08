@@ -9,8 +9,8 @@ Given the "employer 1" levy account balance in collection period <Collection_Per
 And  the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 And the following commitments exist 
 		| Identifier              | Employer   | start date                   | end date                     | agreed price | status    | effective from               | effective to                 | stop effective from          |
-		| Apprentiiship 1         | employer 1 | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 15000        | cancelled | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year | 01/Nov/Current Academic Year |  
-		| Apprentiiship 2         | employer 2 | 01/Nov/Current Academic Year | 31/Jul/Current Academic Year | 5625         | active    | 01/Nov/Current Academic Year |                              |                              |
+		| Apprenticeship 1         | employer 1 | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 15000        | cancelled | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year | 01/Nov/Current Academic Year |  
+		| Apprenticeship 2         | employer 2 | 01/Nov/Current Academic Year | 31/Jul/Current Academic Year | 5625         | active    | 01/Nov/Current Academic Year |                              |                              |
 
 And the provider previously submitted the following learner details
 	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
@@ -51,7 +51,7 @@ Then the following learner earnings should be generated
 	| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
 	| Aug/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
 	| Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-	| Oct/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
+	| Oct/Current Academic Year | 450          | 0          | 0         | pe-2                     |
 	| Nov/Current Academic Year | 450          | 0          | 0         | pe-2                     |
 	| Dec/Current Academic Year | 450          | 0          | 0         | pe-2                     |
 	| Jan/Current Academic Year | 450          | 0          | 0         | pe-2                     |
