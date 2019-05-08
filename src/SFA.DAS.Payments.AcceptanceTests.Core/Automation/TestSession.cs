@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long JobId => Provider.JobId;
 
         private readonly IUkprnService _ukprnService = new RandomUkprnService();
-        private readonly IUlnService _ulnService = new RandomUlnService();
+        private readonly IUlnService _ulnService;
 
         public Employer GetEmployer(string identifier)
         {
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             Providers = new List<Provider>();
             IlrSubmissionTime = Provider.IlrSubmissionTime;
-            Learners = new List<Learner> { GenerateLearner(Provider.Ukprn, _ulnService.GenerateUln(0)) };
+            Learners = new List<Learner> { GenerateLearner(Provider.Ukprn, _ulnService.GenerateUln(Provider.Ukprn)) };
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
 
@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Learner GenerateLearner(long ukprn, long? uniqueLearnerNumber = null)
         {
-            var uln = uniqueLearnerNumber ?? _ulnService.GenerateUln(0);
+            var uln = uniqueLearnerNumber ?? _ulnService.GenerateUln(Provider.Ukprn);
             return new Learner
             {
                 Ukprn = ukprn,
@@ -158,7 +158,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var learner = Learners.FirstOrDefault(x => x.LearnerIdentifier == learnerId);
             if (learner == null)
             {
-                return _ulnService.GenerateUln(0);
+                return _ulnService.GenerateUln(Provider.Ukprn);
             }
 
             return learner.Uln;

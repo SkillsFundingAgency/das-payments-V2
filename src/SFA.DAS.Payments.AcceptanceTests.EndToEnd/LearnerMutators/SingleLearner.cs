@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.Levy
+﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,12 +6,12 @@
     using DCT.TestDataGenerator.Functor;
     using ESFA.DC.ILR.Model.Loose;
 
-    public abstract class SingleLevyLearner : FM36Base
+    public class SingleLearner : FM36Base
     {
         private readonly IEnumerable<LearnerRequest> _learnerRequests;
         private TDG.GenerationOptions _options;
 
-        protected SingleLevyLearner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
+        public SingleLearner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
         {
             _learnerRequests = learnerRequests;
         }
@@ -32,7 +32,7 @@
         private void MutateLearnerOptions(TDG.GenerationOptions options)
         {
             _options = options;
-            options.LD.IncludeHHS = false;
+            options.LD.IncludeHHS = true;
         }
 
         private void MutateLearner(MessageLearner learner, bool valid)
@@ -43,9 +43,10 @@
             DoSpecificMutate(learner, trainingRecord);
         }
 
-        protected virtual void DoSpecificMutate(MessageLearner learner, LearnerRequest request)
+        protected void DoSpecificMutate(MessageLearner learner, LearnerRequest request)
         {
-            // override in sub class if required
+            learner.LearningDelivery[1].LearnAimRef = "00300545";
+            MutateHE(learner);
         }
     }
 }
