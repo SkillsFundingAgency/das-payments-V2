@@ -347,6 +347,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
+    <Compile Include="Extensions\FeatureInfoNumberExtractor.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
       <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
@@ -613,6 +614,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-543- Levy learner with English and Maths submits first ILR in R08.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\FeatureInfoNumberExtractorTests.cs" />
     <Compile Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -866,6 +868,27 @@
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>Two Learners two employers one provider not enough levy - PV2-268.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners but only enough levy to fund one learner- PV2-264.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two levy learners but only enough levy to fund one learner- PV2-264.feature</DependentUpon>
+      <DependentUpon>Non-levy learner - learning support OPP and completion payments - PV2-429.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers and enough levy PV2-269.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two levy learners one employer but two providers and enough levy PV2-269.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy learner - learning support OPP and completion payments - PV2-429.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-Levy learner continuing 12 months earnings PV2-615.feature.cs">
@@ -873,25 +896,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy learner continuing 12 months earnings PV2-615.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Non-levy learner withdraws after planned end date PV2-278.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-336.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner Finishes Late PV2-336.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature.cs">
+      <DependentUpon>One Non-Levy Learner finishes on time completion payment made PV2-334.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>One Non-Levy Learner finishes on time completion payment made PV2-334.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner submitted late PV2-427.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1564,22 +1572,35 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
+      <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, no levy available, finishes on time PV2-262.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, no levy available, finishes on time PV2-262.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two Learners two employers one provider not enough levy - PV2-268.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two Learners two employers one provider not enough levy - PV2-268.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two levy learners but only enough levy to fund one learner- PV2-264.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two levy learners but only enough levy to fund one learner- PV2-264.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers and enough levy PV2-269.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two levy learners one employer but two providers and enough levy PV2-269.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-Levy learner continuing 12 months earnings PV2-615.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner continuing 12 months earnings PV2-615.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner withdraws after planned end date PV2-278.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-336.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Non-Levy Learner Finishes Late PV2-336.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes on time completion payment made PV2-334.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1860,8 +1881,6 @@
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tests\Additional Payments English and Maths\" />
-    <Folder Include="Tests\Capping\" />
     <Folder Include="Tests\Disadvantage - Uplift\" />
     <Folder Include="Tests\Learner Change of Circumstances\" />
     <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />

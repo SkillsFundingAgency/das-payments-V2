@@ -1,5 +1,4 @@
-﻿using System;
-using SFA.DAS.Payments.Model.Core.Entities;
+﻿using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow.Assist.Attributes;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data

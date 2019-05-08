@@ -61,13 +61,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 
                 Builder.RegisterInstance(ukprnDbOptions);
                 Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
-                Builder.RegisterType<DcHelper>().As<IDcHelper>().InstancePerLifetimeScope();
+                Builder.RegisterType<DcNullHelper>().As<IDcHelper>().InstancePerLifetimeScope();
             }
             else
             {
                 Builder.RegisterType<IlrNullService>().As<IIlrService>().InstancePerLifetimeScope();
                 Builder.RegisterType<RandomUkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
-                Builder.RegisterType<DcNullHelper>().As<IDcHelper>().InstancePerLifetimeScope();
+                Builder.RegisterType<DcHelper>().As<IDcHelper>().InstancePerLifetimeScope();
             }
 
             Builder.Register(context =>

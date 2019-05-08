@@ -224,9 +224,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (expectedEvent == null)
                 return true;
 
-            string expectedEventJson = JsonConvert.SerializeObject(expectedEvent);
-            string actualEventJson = JsonConvert.SerializeObject(actualEvent);
-
             var expectedEventOnProgrammeEarnings = expectedEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
             var actualEventOnProgrammeEarnings = actualEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
 

@@ -1,20 +1,18 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.Services
+namespace SFA.DAS.Payments.AcceptanceTests.Services
 {
-    using System.Configuration;
-    using System.Threading.Tasks;
     using ESFA.DC.Jobs.Model;
     using ESFA.DC.Jobs.Model.Enums;
     using ESFA.DC.JobStatus.Interface;
+    using Newtonsoft.Json;
     using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
+    using SFA.DAS.Payments.AcceptanceTests.Services.Dtos;
     using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
     using System;
-    using Newtonsoft.Json;
-    using SFA.DAS.Payments.AcceptanceTests.Services.Dtos;
+    using System.Threading.Tasks;
 
     public class JobService : IJobService
     {
         private readonly IBespokeHttpClient _httpClient;
-        private string _apiBaseUrl => ConfigurationManager.AppSettings["apiBaseUrl"];
 
         public JobService(IBespokeHttpClient httpClient)
         {
@@ -23,8 +21,7 @@
 
         public async Task<JobStatusType> GetJobStatus(long jobId)
         {
-            var url = $"{_apiBaseUrl}/job/{jobId}/status";
-            var data = await _httpClient.GetDataAsync(url);
+            var data = await _httpClient.GetDataAsync($"job/{jobId}/status");
             return JsonConvert.DeserializeObject<JobStatusType>(data);
         }
 
@@ -36,7 +33,7 @@
                 JobStatus = status,
                 NumberOfLearners =  0
             };
-            return await _httpClient.SendDataAsync($"{_apiBaseUrl}/job/status", job);
+            return await _httpClient.SendDataAsync("job/status", job);
         }
 
         public async Task<long> SubmitJob(SubmissionModel submissionMessage)
@@ -65,7 +62,7 @@
                 CollectionYear = submissionMessage.CollectionYear
             };
 
-            var response = await _httpClient.SendDataAsync($"{_apiBaseUrl}/job", job);
+            var response = await _httpClient.SendDataAsync("job", job);
             long.TryParse(response, out var result);
 
             return result;

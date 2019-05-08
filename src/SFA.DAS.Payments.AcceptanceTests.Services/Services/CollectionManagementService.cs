@@ -1,16 +1,14 @@
 ﻿namespace SFA.DAS.Payments.AcceptanceTests.Services
 {
-    using System.Threading.Tasks;
-    using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
+    using ESFA.DC.CollectionsManagement.Models;
     using ESFA.DC.Serialization.Interfaces;
     using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
-    using System.Configuration;
-    using ESFA.DC.CollectionsManagement.Models;
+    using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
+    using System.Threading.Tasks;
 
     public class CollectionManagementService : ICollectionManagementService
     {
         private readonly IBespokeHttpClient _httpClient;
-        private string _baseUrl;
         private readonly IJsonSerializationService _serializationService;
 
         public CollectionManagementService(IBespokeHttpClient httpClient,
@@ -22,9 +20,7 @@
 
         public async Task<ReturnPeriodModel> GetCurrentPeriodAsync(string collectionName)
         {
-            _baseUrl = ConfigurationManager.AppSettings["apiBaseUrl"];
-
-            var data = await _httpClient.GetDataAsync($"{_baseUrl}/returns-calendar/{collectionName}/current");
+            var data = await _httpClient.GetDataAsync($"returns-calendar/{collectionName}/current");
             ReturnPeriodModel result = null;
 
             if (!string.IsNullOrEmpty(data))
