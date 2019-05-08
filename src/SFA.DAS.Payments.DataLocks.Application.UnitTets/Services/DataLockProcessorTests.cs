@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
             var actual = await dataLockProcessor.GetPaymentEvent(earningEvent, default(CancellationToken));
 
-            var nonPayableEarningEvent = actual as NonPayableEarningEvent;
+            var nonPayableEarningEvent = actual as EarningFailedDataLockMatching;
             nonPayableEarningEvent.Should().NotBeNull();
             nonPayableEarningEvent.Errors.Should().HaveCount(1);
             nonPayableEarningEvent.Errors.Should().Contain(DataLockErrorCode.DLOCK_01);

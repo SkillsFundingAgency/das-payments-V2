@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
@@ -57,9 +58,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         }
 
         //TODO: Create real NonPayableEarningEvent - PV2-835
-        private NonPayableEarningEvent CreateDataLockNonPayableEarningEvent(ApprenticeshipContractType1EarningEvent earningEvent, DataLockErrorCode dataLockErrorCode)
+        private EarningFailedDataLockMatching CreateDataLockNonPayableEarningEvent(ApprenticeshipContractType1EarningEvent earningEvent, DataLockErrorCode dataLockErrorCode)
         {
-            var nonPayableEarning = mapper.Map<NonPayableEarningEvent>(earningEvent);
+            var nonPayableEarning = mapper.Map<EarningFailedDataLockMatching>(earningEvent);
             nonPayableEarning.Errors = new ReadOnlyCollection<DataLockErrorCode>(
                 new[]
                 {

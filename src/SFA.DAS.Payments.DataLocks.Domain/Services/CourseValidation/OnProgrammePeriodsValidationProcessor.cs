@@ -53,13 +53,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     };
 
                     var validationResult = courseValidationProcessor.ValidateCourse(validationModel);
-                    if (validationResult.DataLockErrors.Any())
+                    if (validationResult.DataLockFailures.Any())
+                    { 
+
                         invalidPeriods.Add(new InvalidOnProgrammePeriod
                         {
-                            DataLockErrors = validationResult.DataLockErrors,
                             Apprenticeship = apprenticeship,
-                            Period = period
+                            Period = new EarningPeriod
+                            {
+                                Period = period.Period,
+                                Amount = period.Amount,
+                                PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
+                                SfaContributionPercentage = period.SfaContributionPercentage,
+                                DataLockFailures = validationResult.DataLockFailures
+                            }
                         });
+                    }
                     else
                     {
                         var validPeriod = new ValidOnProgrammePeriod
