@@ -170,7 +170,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 PriceEpisodeIdentifier = "123-01",
                 Amount = 1000000
             };
-            RequiredPaymentEvent requiredPayment = new CalculatedRequiredLevyAmount
+            var requiredPayment = new CalculatedRequiredLevyAmount
             {
                 SfaContributionPercentage = .9m,
                 OnProgrammeEarningType = OnProgrammeEarningType.Balancing
