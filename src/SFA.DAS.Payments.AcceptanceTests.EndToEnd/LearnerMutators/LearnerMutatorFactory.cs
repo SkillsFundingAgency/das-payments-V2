@@ -10,12 +10,14 @@
         {
             switch (featureNumber)
             {
+                case "199":
                 case "261":
                 case "262":
                 case "334":
-                case "615":
+                case "335":
+                case "336":
                 case "337":
-                case "199":
+                case "615":
                     return new Framework593Over19Learner(learnerRequests, featureNumber);
                 case "277":
                     return new FM36_277(learnerRequests);
