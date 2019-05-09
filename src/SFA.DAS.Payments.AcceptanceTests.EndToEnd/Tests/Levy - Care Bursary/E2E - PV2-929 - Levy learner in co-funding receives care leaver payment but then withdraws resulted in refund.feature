@@ -139,21 +139,8 @@ Scenario Outline: Levy learner in co-funding receives care leaver payment but th
 
 	# New column - CareLeaverApprenticePayment
 	# Refund
-	Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing | CareLeaverApprenticePayment |
-		| Aug/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Sep/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Oct/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Nov/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Dec/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Jan/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Feb/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Mar/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Apr/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| May/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Jun/Current Academic Year | 0            | 0          | 0         | 0                           |
-		| Jul/Current Academic Year | 0            | 0          | 0         | 0                           |
-
+	Then no learner earnings should be generated
+		
 	And at month end only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | CareLeaverApprenticePayment |
 		| R03/Current Academic Year | Aug/Current Academic Year | -500         | 0          | 0         | 0                           |
