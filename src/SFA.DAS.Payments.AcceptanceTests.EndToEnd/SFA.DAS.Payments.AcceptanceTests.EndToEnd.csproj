@@ -337,6 +337,7 @@
     <Compile Include="LearnerMutators\Levy\SingleLevyLearner.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_277.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_278.cs" />
+    <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_429.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_334.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_615.cs" />
     <Compile Include="LearnerMutators\IlrDcService.cs" />
@@ -1860,10 +1861,7 @@
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tests\Additional Payments English and Maths\" />
-    <Folder Include="Tests\Capping\" />
     <Folder Include="Tests\Disadvantage - Uplift\" />
-    <Folder Include="Tests\Learner Change of Circumstances\" />
     <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
   </ItemGroup>
   <ItemGroup />
