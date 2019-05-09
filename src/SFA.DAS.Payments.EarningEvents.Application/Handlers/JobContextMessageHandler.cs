@@ -17,6 +17,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -34,14 +35,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IEarningsJobClientFactory jobClientFactory;
         private readonly ITelemetry telemetry;
         private readonly IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter;
-        private readonly IMapper mapper;
+        private readonly SubmittedLearnerAimBuilder submittedLearnerAimBuilder;
 
         public JobContextMessageHandler(IPaymentLogger logger,
             IFileService azureFileService,
             IJsonSerializationService serializationService,
             IEndpointInstanceFactory factory,
             IEarningsJobClientFactory jobClientFactory,
-            ITelemetry telemetry, IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter, IMapper mapper)
+            ITelemetry telemetry, 
+            IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter, 
+            SubmittedLearnerAimBuilder submittedLearnerAimBuilder)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
@@ -50,7 +53,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.jobClientFactory = jobClientFactory ?? throw new ArgumentNullException(nameof(jobClientFactory));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             this.submittedAimWriter = submittedAimWriter;
-            this.mapper = mapper;
+            this.submittedLearnerAimBuilder = submittedLearnerAimBuilder;
         }
 
 
@@ -181,7 +184,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
                     await endpointInstance.SendLocal(learnerCommand).ConfigureAwait(false);
 
-                    var aims = mapper.Map<IList<SubmittedLearnerAimModel>>(learnerCommand);
+                    var aims = submittedLearnerAimBuilder.Build(learnerCommand);
                     await Task.WhenAll(aims.Select(aim => submittedAimWriter.Write(aim, cancellationToken))).ConfigureAwait(false);
 
                     logger.LogVerbose($"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
