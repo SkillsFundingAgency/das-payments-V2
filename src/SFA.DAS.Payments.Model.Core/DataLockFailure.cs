@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.Model.Core
 {
     public class DataLockFailure
     {
-        public List<DataLockErrorCode> DataLockErrors { get; set; }
-        public ApprenticeshipPriceEpisodeModel MatchedPriceEpisode { get; set; }
+        public DataLockErrorCode DataLockError { get; set; }
+        public List<long> ApprenticeshipPriceEpisodeIds { get; set; }
     }
 }

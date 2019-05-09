@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
@@ -11,6 +12,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.Interfaces
 {
     public interface IDataLockService : IActor
     {
-        Task<DataLockEvent> HandleEarning(ApprenticeshipContractType1EarningEvent message,  CancellationToken cancellationToken);
+        Task<List<DataLockEvent>> HandleEarning(ApprenticeshipContractType1EarningEvent message,  CancellationToken cancellationToken);
     }
 }
