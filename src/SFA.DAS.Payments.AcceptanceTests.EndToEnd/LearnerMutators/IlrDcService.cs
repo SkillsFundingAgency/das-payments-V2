@@ -1,21 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
+﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
-    using AutoMapper;
-    using ESFA.DC.ILR.TestDataGenerator.Interfaces;
-    using ESFA.DC.IO.AzureStorage.Config.Interfaces;
-    using ESFA.DC.IO.Interfaces;
-    using ESFA.DC.Jobs.Model.Enums;
-    using ESFA.DC.JobStatus.Interface;
-    using Polly;
-    using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-    using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-    using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
-    using SFA.DAS.Payments.AcceptanceTests.Services.Exceptions;
-    using SFA.DAS.Payments.Application.Repositories;
-    using SFA.DAS.Payments.Tests.Core;
-    using SFA.DAS.Payments.Tests.Core.Builders;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -23,6 +7,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
     using System.Text;
     using System.Threading.Tasks;
     using System.Xml.Linq;
+    using Application.Repositories;
+    using AutoMapper;
+    using Core.Automation;
+    using Core.Data;
+    using DCT.TestDataGenerator.Functor;
+    using ESFA.DC.ILR.TestDataGenerator.Interfaces;
+    using ESFA.DC.IO.AzureStorage.Config.Interfaces;
+    using ESFA.DC.IO.Interfaces;
+    using ESFA.DC.Jobs.Model.Enums;
+    using ESFA.DC.JobStatus.Interface;
+    using Payments.Tests.Core;
+    using Payments.Tests.Core.Builders;
+    using Polly;
+    using Services;
+    using Services.Exceptions;
+    using Services.Intefaces;
 
     public class IlrDcService : IIlrService
     {
@@ -74,25 +74,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
             {
                 var request = currentIlr.Skip(i).Take(1).First();
                 var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerId);
+                var originalUln = testSessionLearner.Uln;
                 var learner = learners.Skip(i).Take(1).First();
                 testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
                 testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
 
-                await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, testSessionLearner.LearnRefNumber,
-                    testSessionLearner.Uln);
+                await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln, testSessionLearner.LearnRefNumber);
             }
         }
 
-        private async Task UpdatePaymentHistoryTables(long ukprn, string learnRefNumber, long uln)
+        private Task UpdatePaymentHistoryTables(long ukprn, long originalUln, long newUln, string learnRefNumber)
         {
-            var payments = dataContext.Payment.Where(p => p.Ukprn == ukprn);
+            var payments = dataContext.Payment.Where(p => p.Ukprn == ukprn && p.LearnerUln == originalUln);
             foreach (var payment in payments)
             {
                 payment.LearnerReferenceNumber = learnRefNumber;
-                payment.LearnerUln = uln;
+                payment.LearnerUln = newUln;
             }
 
-            await dataContext.SaveChangesAsync();
+            return dataContext.SaveChangesAsync();
         }
 
         private async Task StoreAndPublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)

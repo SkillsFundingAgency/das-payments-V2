@@ -19,6 +19,8 @@ using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
 {
+    using LearnerMutators;
+
     [Binding]
     public class FeatureScopedBootstrapper : TestSessionBase
     {

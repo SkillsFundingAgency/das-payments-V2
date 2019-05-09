@@ -100,7 +100,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var ilr = table.CreateSet<Training>().ToList();
             AddTestLearners(ilr, ukprn);
-            if (CurrentIlr == null) CurrentIlr = new List<Training>();
+            if (Config.ValidateDcAndDasServices)
+            {
+                CurrentIlr = new List<Training>();
+            }
+            else
+            {
+                if (CurrentIlr == null) CurrentIlr = new List<Training>();
+            }
+
             CurrentIlr.AddRange(ilr);
         }
 
