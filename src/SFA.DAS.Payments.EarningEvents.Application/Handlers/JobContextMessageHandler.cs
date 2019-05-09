@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IEndpointInstanceFactory factory;
         private readonly IEarningsJobClientFactory jobClientFactory;
         private readonly ITelemetry telemetry;
-        private readonly IBatchWriter<SubmittedLearnerAimModel> submittedAimWriter;
+        private readonly IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter;
         private readonly IMapper mapper;
 
         public JobContextMessageHandler(IPaymentLogger logger,
@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             IJsonSerializationService serializationService,
             IEndpointInstanceFactory factory,
             IEarningsJobClientFactory jobClientFactory,
-            ITelemetry telemetry, IBatchWriter<SubmittedLearnerAimModel> submittedAimWriter, IMapper mapper)
+            ITelemetry telemetry, IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter, IMapper mapper)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));

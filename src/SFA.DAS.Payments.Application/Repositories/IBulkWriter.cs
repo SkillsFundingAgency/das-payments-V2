@@ -11,13 +11,13 @@ using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Application.Repositories
 {
-    public interface IBatchWriter<TEntity> where TEntity : class
+    public interface IBulkWriter<TEntity> where TEntity : class
     {
         Task Write(TEntity entity, CancellationToken cancellationToken);
         Task Flush(CancellationToken cancellationToken);
     }
 
-    public class BatchWriter<TEntity> : IBatchWriter<TEntity> where TEntity : class
+    public class BulkWriter<TEntity> : IBulkWriter<TEntity> where TEntity : class
     {
         private readonly int batchSize;
         private readonly ConcurrentQueue<TEntity> queue = new ConcurrentQueue<TEntity>();
@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         private readonly IPaymentLogger logger;
         private readonly IBulkCopyConfiguration<TEntity> bulkCopyConfig;
 
-        public BatchWriter(IConfigurationHelper configurationHelper, IPaymentLogger logger, IBulkCopyConfiguration<TEntity> bulkCopyConfig)
+        public BulkWriter(IConfigurationHelper configurationHelper, IPaymentLogger logger, IBulkCopyConfiguration<TEntity> bulkCopyConfig)
         {
             this.logger = logger;
             this.bulkCopyConfig = bulkCopyConfig;
@@ -48,11 +48,8 @@ namespace SFA.DAS.Payments.Application.Repositories
             logger.LogVerbose($"Saving {queue.Count} records of type {typeof(TEntity).Name}");
 
             var list = new List<TEntity>();
-            while (true)
+            while (queue.TryDequeue(out var item))
             {
-                if (list.Count >= batchSize || !queue.TryDequeue(out var item))
-                    break;
-
                 list.Add(item);
             }
 
@@ -62,7 +59,7 @@ namespace SFA.DAS.Payments.Application.Repositories
                 await sqlConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
 
                 using (var bulkCopy = new SqlBulkCopy(sqlConnection))
-                using (var reader = ObjectReader.Create(queue))
+                using (var reader = ObjectReader.Create(list))
                 {
                     foreach (var columnMap in bulkCopyConfig.GetColumns)
                     {
@@ -76,7 +73,7 @@ namespace SFA.DAS.Payments.Application.Repositories
                     await bulkCopy.WriteToServerAsync(reader, cancellationToken).ConfigureAwait(false);
                 }
 
-                logger.LogDebug($"Saved {queue.Count} records of type {typeof(TEntity).Name}");
+                logger.LogDebug($"Saved {list.Count} records of type {typeof(TEntity).Name}");
                 scope.Complete();
             }
         }
