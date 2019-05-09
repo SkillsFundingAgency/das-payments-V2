@@ -11,7 +11,6 @@
     using AutoMapper;
     using Core.Automation;
     using Core.Data;
-    using DCT.TestDataGenerator.Functor;
     using ESFA.DC.ILR.TestDataGenerator.Interfaces;
     using ESFA.DC.IO.AzureStorage.Config.Interfaces;
     using ESFA.DC.IO.Interfaces;
@@ -83,7 +82,7 @@
             }
         }
 
-        private Task UpdatePaymentHistoryTables(long ukprn, long originalUln, long newUln, string learnRefNumber)
+        private async Task UpdatePaymentHistoryTables(long ukprn, long originalUln, long newUln, string learnRefNumber)
         {
             var payments = dataContext.Payment.Where(p => p.Ukprn == ukprn && p.LearnerUln == originalUln);
             foreach (var payment in payments)
@@ -92,7 +91,7 @@
                 payment.LearnerUln = newUln;
             }
 
-            return dataContext.SaveChangesAsync();
+            await dataContext.SaveChangesAsync();
         }
 
         private async Task StoreAndPublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
@@ -141,14 +140,14 @@
 
         }
 
-        private Task StoreIlrFile(int ukPrn, string ilrFileName, string ilrFile)
+        private async Task StoreIlrFile(int ukPrn, string ilrFileName, string ilrFile)
         {
             var byteArray = Encoding.UTF8.GetBytes(ilrFile);
             var stream = new MemoryStream(byteArray);
 
             var ilrStoragePathAndFileName = $"{ukPrn}/{ilrFileName}";
 
-            return storageService.SaveAsync(ilrStoragePathAndFileName, stream);
+            await storageService.SaveAsync(ilrStoragePathAndFileName, stream);
         }
     }
 }

@@ -43,13 +43,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var config = new TestsConfiguration();
             Builder = new ContainerBuilder();
             Builder.RegisterType<TestsConfiguration>().SingleInstance();
-   //         Builder.RegisterType<DcHelper>().SingleInstance();
             Builder.RegisterType<EarningsJobClient>()
                 .As<IEarningsJobClient>()
                 .InstancePerLifetimeScope();
 
             Builder.RegisterType<AzureStorageServiceConfig>().As<IAzureStorageKeyValuePersistenceServiceConfig>().InstancePerLifetimeScope();
-   //         Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
             Builder.RegisterType<AzureStorageKeyValuePersistenceService>().As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
             Builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
             Builder.RegisterType<TdgService>().As<ITdgService>().InstancePerLifetimeScope();
@@ -112,7 +110,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             EndpointConfiguration.UsePersistence<AzureStoragePersistence>()
                 .ConnectionString(config.StorageConnectionString);
             EndpointConfiguration.DisableFeature<TimeoutManager>();
-            
+
             var transportConfig = EndpointConfiguration.UseTransport<AzureServiceBusTransport>();
             Builder.RegisterInstance(transportConfig)
                 .As<TransportExtensions<AzureServiceBusTransport>>()
@@ -131,7 +129,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 ruleNameSanitizer: ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
             EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             EndpointConfiguration.EnableInstallers();
-            
+
         }
 
         [BeforeTestRun(Order = 50)]
@@ -153,8 +151,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var messagingFactory = MessagingFactory.CreateFromConnectionString(Config.ServiceBusConnectionString);
-            
-            
+
+
             var receiver = await messagingFactory.CreateMessageReceiverAsync(Config.AcceptanceTestsEndpointName, ReceiveMode.ReceiveAndDelete);
             while (true)
             {
@@ -173,7 +171,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             }
 
             Console.WriteLine($"Finished purging messages from {Config.AcceptanceTestsEndpointName}. Took: {stopwatch.ElapsedMilliseconds}ms");
-        } 
+        }
 
         [BeforeTestRun(Order = 99)]
         public static void StartBus()

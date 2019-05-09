@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected IMapper Mapper => Scope.Resolve<IMapper>();
 
-        protected DcHelper DcHelper => Get<DcHelper>();
+        protected IDcHelper DcHelper => Get<IDcHelper>();
 
         protected List<Price> CurrentPriceEpisodes
         {
@@ -632,11 +632,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return payments;
         }
 
-        protected Task MatchRequiredPayments(Table table, Provider provider)
+        protected async Task MatchRequiredPayments(Table table, Provider provider)
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
-            return WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
+            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
         protected async Task StartMonthEnd(Provider provider)

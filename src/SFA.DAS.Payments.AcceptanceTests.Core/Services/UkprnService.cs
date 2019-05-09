@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SFA.DAS.Payments.AcceptanceTests.Core.TestModels;
-using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
-using System;
-using System.Linq;
-
-namespace SFA.DAS.Payments.AcceptanceTests.Services
+﻿namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
+    using System;
+    using System.Linq;
+    using Microsoft.EntityFrameworkCore;
+    using TestModels;
+
     internal class UkprnService : DbContext, IUkprnService
     {
         public UkprnService(DbContextOptions<UkprnService> options) : base(options)

@@ -84,9 +84,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following provider payments had been generated")]
-        public Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
+        public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
-            return GeneratePreviousPayment(table, TestSession.Provider.Ukprn);
+            await GeneratePreviousPayment(table, TestSession.Provider.Ukprn);
         }
 
         [Given(@"the following ""(.*)"" payments had been generated")]
@@ -105,13 +105,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
-        public Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
+        public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
             Task verifyIlr() => WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier);
 
             var featureNumber = this.featureNumber.Extract();
 
-            return Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
+            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]

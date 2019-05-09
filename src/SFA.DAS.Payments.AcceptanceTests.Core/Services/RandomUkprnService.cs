@@ -1,6 +1,5 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.Services
+﻿namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
-    using Intefaces;
     using System;
 
     public class RandomUkprnService : IUkprnService
