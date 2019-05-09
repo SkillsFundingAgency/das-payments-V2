@@ -7,10 +7,14 @@ Scenario Outline: One Levy learner, goes on a planned break which is recorded in
 
 Given the employer levy account balance in collection period R02/Current Academic Year is 17000
 
-And the following commitments exist
-	| start date                   | end date                  | status | agreed price | effective from               | effective to                 |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Active | 15000        | 01/Sep/Current Academic Year | 31/Oct/Current Academic Year |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Paused | 15000        | 01/Nov/Current Academic Year | 02/Jan/Current Academic Year |
+And the following apprenticeships exist
+	| start date                   | end date                  | agreed price | status |
+	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | 15000        | Active |
+
+And the apprenticeships status changes as follows 
+	| Collection Period         | status |
+	| Nov/Current Academic Year | Paused |
+	| Jan/Current Academic Year | Active |
 																							
 And the provider previously submitted the following learner details
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
@@ -36,21 +40,14 @@ And the following provider payments had been generated
     | R02/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
     | R03/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |
 
-But the Commitment details are changed as follows
-
-	| start date                   | end date                  | status | agreed price | effective from               | effective to                 |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Active | 15000        | 01/Sep/Current Academic Year | 31/Oct/Current Academic Year |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Paused | 15000        | 01/Nov/Current Academic Year | 02/Jan/Current Academic Year |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Active | 15000        | 03/Jan/Current Academic Year |                              |
-		
-And the Provider now changes the Learner details as follows
+But the Provider now changes the Learner details as follows
 	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Completion Status | Actual Duration | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 	| 03/Jan/Current Academic Year | 10 months        | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          | continuing        |                 | Act1          | 1                   | ZPROG001      | 55            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 And price details as follows
-    | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date |SFA Contribution Percentage |
-    | pe-1             | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          |90%                         |
-    | pe-2             | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          |90%                         |
+    | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage |
+    | pe-1             | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          | 90%                         |
+    | pe-2             | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          | 90%                         |
 
 When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
@@ -110,7 +107,6 @@ Examples:
         | R10/Current Academic Year |
         | R11/Current Academic Year |
         | R12/Current Academic Year |
-
 
 
  #Scenario: Apprentice goes on a planned break midway through the learning episode and this is notified through the ILR

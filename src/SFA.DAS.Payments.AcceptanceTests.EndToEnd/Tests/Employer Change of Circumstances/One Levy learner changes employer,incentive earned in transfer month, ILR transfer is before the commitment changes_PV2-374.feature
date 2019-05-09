@@ -8,8 +8,8 @@ Given the "employer 1" levy account balance in collection period R03/Current Aca
 And  the "employer 2" levy account balance in collection period R03/Current Academic Year is 17000
 And the following commitments exist 
     | Identifier            | Employer   | start date                   | end date                  | agreed price | status  | effective from               | effective to                 | stop effective from          |
-    | Apprenticeship 1       | employer 1 | 01/Aug/Current Academic Year | 28/Aug/Next Academic Year | 7500         | stopped | 01/Aug/Current Academic Year | 14/Nov/Current Academic Year | 15/Nov/Current Academic Year |
-    | Apprenticeship 2       | employer 2 | 15/Nov/Current Academic Year | 28/Aug/Next Academic Year | 5625         | active  | 15/Nov/Current Academic Year |                              |                              |
+    | Apprentiiship 1       | employer 1 | 01/Aug/Current Academic Year | 28/Aug/Next Academic Year | 7500         | stopped | 01/Aug/Current Academic Year | 14/Nov/Current Academic Year | 15/Nov/Current Academic Year |
+    | Apprentiiship 2       | employer 2 | 15/Nov/Current Academic Year | 28/Aug/Next Academic Year | 5625         | active  | 15/Nov/Current Academic Year |                              |                              |
 And the provider previously submitted the following learner details
 	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 	| 01/Aug/Current Academic Year | 12 months        | 6000                 | 06/Aug/Current Academic Year        | 1500                   | 06/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
@@ -42,26 +42,21 @@ And price details as follows
 When the amended ILR file is re-submitted for the learners in collection period R04/Current Academic Year
 Then the following learner earnings should be generated
 	| Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive | Price Episode Identifier |
-	| Aug/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
-	| Sep/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
-	| Oct/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
-	| Nov/Current Academic Year | 450          | 0          | 0         | 500                          | 0                             | 500                          | 0                             | pe-2                     |
-	| Dec/Current Academic Year | 450          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
-	| Jan/Current Academic Year | 450          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
-	| Feb/Current Academic Year | 450          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
-	| Mar/Current Academic Year | 450          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
-	| Apr/Current Academic Year | 450          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
-	| May/Current Academic Year | 450          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
-	| Jun/Current Academic Year | 450          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
-	| Jul/Current Academic Year | 450          | 0          | 0         | 0                            | 500                           | 0                            | 500                           | pe-2                     |
+	| Aug/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
+	| Sep/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
+	| Oct/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
+	| Nov/Current Academic Year | 500          | 0          | 0         | 500                          | 0                             | 500                          | 0                             | pe-2                     |
+	| Dec/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+	| Jan/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+	| Feb/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+	| Mar/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+	| Apr/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+	| May/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+	| Jun/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+	| Jul/Current Academic Year | 500          | 0          | 0         | 0                            | 500                           | 0                            | 500                           | pe-2                     |
 And Month end is triggered
 And no provider payments will be recorded
 And no provider payments will be generated
-
-
-
-
-
 
 #Scenario: 1 learner aged 16-18, levy available, changes employer, earns incentive payment in the commitment transfer month - and the ILR transfer happens at an earlier point than the commitment changes 
 ## The incentives are not paid for november as there is a failing datalock for november and the month is ignored
