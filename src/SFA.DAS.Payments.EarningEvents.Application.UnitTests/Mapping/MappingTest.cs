@@ -562,41 +562,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             completion.Periods.Where(p => p.Period == 12).Single().Amount.Should().Be(1500);            
         }
 
-        [Test]
-        public void TestSubmittedLearnerAimMap()
-        {
-            var submittedAims = Mapper.Instance.Map<List<SubmittedLearnerAimModel>>(processLearnerCommand);
-            submittedAims.Should().HaveCount(2);
-
-            var mainAim = submittedAims.Single(aim => aim.LearningAimReference == "ZPROG001");
-            var mathsAndEnglishAim = submittedAims.Single(aim => aim.LearningAimReference != "ZPROG001");
-
-            mainAim.SfaContributionPercentage.Should().Be(fm36Learner.PriceEpisodes[0].PriceEpisodeValues.PriceEpisodeSFAContribPct);
-            mainAim.AcademicYear.Should().Be(processLearnerCommand.CollectionYear);
-            mainAim.CollectionPeriod.Should().Be((byte)processLearnerCommand.CollectionPeriod);
-            mainAim.IlrSubmissionDateTime.Should().Be(processLearnerCommand.IlrSubmissionDateTime);
-            mainAim.JobId.Should().Be(processLearnerCommand.JobId);
-            mainAim.LearnerReferenceNumber.Should().Be(processLearnerCommand.Learner.LearnRefNumber);
-            mainAim.LearnerUln.Should().Be(processLearnerCommand.Learner.ULN);
-            mainAim.LearningAimFrameworkCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.FworkCode);
-            mainAim.LearningAimPathwayCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.PwayCode);
-            mainAim.LearningAimProgrammeType.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.ProgType);
-            mainAim.LearningAimStandardCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.StdCode);
-            mainAim.Ukprn.Should().Be(processLearnerCommand.Ukprn);
-
-            mathsAndEnglishAim.AcademicYear.Should().Be(processLearnerCommand.CollectionYear);
-            mathsAndEnglishAim.CollectionPeriod.Should().Be((byte)processLearnerCommand.CollectionPeriod);
-            mathsAndEnglishAim.IlrSubmissionDateTime.Should().Be(processLearnerCommand.IlrSubmissionDateTime);
-            mathsAndEnglishAim.JobId.Should().Be(processLearnerCommand.JobId);
-            mathsAndEnglishAim.LearnerReferenceNumber.Should().Be(processLearnerCommand.Learner.LearnRefNumber);
-            mathsAndEnglishAim.LearnerUln.Should().Be(processLearnerCommand.Learner.ULN);
-            mathsAndEnglishAim.LearningAimFrameworkCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.FworkCode);
-            mathsAndEnglishAim.LearningAimPathwayCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.PwayCode);
-            mathsAndEnglishAim.LearningAimProgrammeType.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.ProgType);
-            mathsAndEnglishAim.LearningAimStandardCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.StdCode);
-            mathsAndEnglishAim.Ukprn.Should().Be(processLearnerCommand.Ukprn);
-        }
-
         private static IEnumerable<string> GetIncentiveTypes()
         {
             yield return "PriceEpisodeFirstEmp1618Pay";
