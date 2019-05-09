@@ -127,8 +127,8 @@ Scenario Outline: Non-Levy learner in co-funding receives care leaver payment bu
 	# Refund
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | CareLeaverApprenticePayment |
-		| Aug/Current Academic Year | -500         | 0          | 0         | 0                           |
-		| Sep/Current Academic Year | -500         | 0          | 0         | -1000                       |
+		| Aug/Current Academic Year | 0            | 0          | 0         | 0                           |
+		| Sep/Current Academic Year | 0            | 0          | 0         | 0                           |
 		| Oct/Current Academic Year | 0            | 0          | 0         | 0                           |
 		| Nov/Current Academic Year | 0            | 0          | 0         | 0                           |
 		| Dec/Current Academic Year | 0            | 0          | 0         | 0                           |
