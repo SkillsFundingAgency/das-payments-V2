@@ -1,4 +1,5 @@
-﻿Feature:  Non-levy learner 16-18 employed with a small employer change to large employer PV2-351
+﻿#@supports_dc_e2e
+Feature:  Non-levy learner 16-18 employed with a small employer change to large employer PV2-351
 	As a provider,
 	I want a 16-18 non-levy learner, small employer at start, change to large employer, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

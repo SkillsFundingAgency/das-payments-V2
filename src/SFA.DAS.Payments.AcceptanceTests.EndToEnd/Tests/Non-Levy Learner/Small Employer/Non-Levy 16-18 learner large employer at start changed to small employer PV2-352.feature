@@ -1,4 +1,5 @@
-﻿Feature:  Non-levy learner 16-18 employed with a large employer change to small employer PV2-352
+﻿#@supports_dc_e2e
+Feature:  Non-levy learner 16-18 employed with a large employer change to small employer PV2-352
 	As a provider,
 	I want a non-levy learner, 1 learner aged 16-18. Second employment status record added with same employer id but small employer flag removed. Learner retains small employer funding, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

@@ -1,10 +1,9 @@
-﻿Feature: One Non-levy learner - change to start date within calendar month, backwards in month PV2-283
+﻿#@supports_dc_e2e
+Feature: One Non-levy learner - change to start date within calendar month, backwards in month PV2-283
 
 As a provider,
 I want a non-levy learner, where change to start date within calendar month, backwards in month is paid the correct amount
 So that I am accurately paid my apprenticeship provision.
-
-@EndToEnd
 
 Scenario Outline: Change to start date within calendar month, backwards in month PV2-283
 Given the provider previously submitted the following learner details

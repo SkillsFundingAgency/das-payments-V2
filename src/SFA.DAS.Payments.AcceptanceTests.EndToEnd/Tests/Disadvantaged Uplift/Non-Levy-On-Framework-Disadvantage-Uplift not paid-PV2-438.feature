@@ -1,3 +1,4 @@
+#@supports_dc_e2e
 Feature: Non-levy learner - on framework , Disadvantage Uplift not paid-PV2-438
 
 Scenario Outline: Non-levy learner - on framework , Disadvantage Uplift not paid

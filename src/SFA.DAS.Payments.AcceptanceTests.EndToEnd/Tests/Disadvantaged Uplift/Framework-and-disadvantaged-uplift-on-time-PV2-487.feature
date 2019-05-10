@@ -1,4 +1,5 @@
-﻿Feature: A non-levy learner with a framework uplift and 16-18 Additional Incentives finishes on time PV2-487
+﻿#@supports_dc_e2e
+Feature: A non-levy learner with a framework uplift and 16-18 Additional Incentives finishes on time PV2-487
 
 #Scenario:A non-DAS learner, with a framework uplift and 16-18 Additional Incentive, finishes on time, Price is less than Funding Band Maximum of �9,000
 #    

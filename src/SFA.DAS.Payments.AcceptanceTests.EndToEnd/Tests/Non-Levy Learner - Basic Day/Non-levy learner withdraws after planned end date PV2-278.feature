@@ -1,4 +1,5 @@
-﻿Feature: A non-levy learner withdraws after planned end date PV2-278
+﻿@supports_dc_e2e
+Feature: A non-levy learner withdraws after planned end date PV2-278
 
 
 Scenario Outline: A non-levy learner withdraws after planned end date

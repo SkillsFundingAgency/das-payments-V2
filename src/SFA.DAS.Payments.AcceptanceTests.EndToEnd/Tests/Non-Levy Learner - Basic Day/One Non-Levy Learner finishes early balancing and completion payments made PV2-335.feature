@@ -1,8 +1,6 @@
-﻿@dc-integration
-
+﻿@supports_dc_e2e
 Feature: One Non-Levy Learner finishes early, Balancing and Completion payments made PV2-335
 
-@EndToEnd
 
 Scenario Outline: 1 non-levy learner finishes early balancing and completon payments made
 	Given the provider previously submitted the following learner details

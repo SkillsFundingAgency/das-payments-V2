@@ -1,4 +1,5 @@
-﻿Feature: Two Non-Levy Learners Finish On Time PV2-337
+﻿@supports_dc_e2e
+Feature: Two Non-Levy Learners Finish On Time PV2-337
 Two Non-Levy Learners Finish On Time PV2-197
 
 Scenario Outline: Two Non-Levy Learners Finish On Time PV2-337

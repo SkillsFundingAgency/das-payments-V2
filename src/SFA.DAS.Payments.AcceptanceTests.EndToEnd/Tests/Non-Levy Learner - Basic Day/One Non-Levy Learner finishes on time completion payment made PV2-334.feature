@@ -1,7 +1,6 @@
-﻿@dc-integration
+﻿@supports_dc_e2e
 Feature: One Non-Levy Learner, finishes on time, completion payment made PV2-334
 
-@EndToEnd
 
 Scenario Outline:  One Non-levy learner finishes on time
 	Given the provider previously submitted the following learner details

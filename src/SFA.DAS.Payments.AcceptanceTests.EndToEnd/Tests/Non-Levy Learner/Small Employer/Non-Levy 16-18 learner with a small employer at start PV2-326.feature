@@ -1,4 +1,5 @@
-﻿Feature:  Non-levy learner 16-18 employed with a small employer at start fully funded PV2-326
+﻿#@supports_dc_e2e
+Feature:  Non-levy learner 16-18 employed with a small employer at start fully funded PV2-326
 	As a provider,
 	I want a non-levy learner, 1 learner aged 16-18, employed with a small employer at start, is fully funded for on programme and completion payments, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

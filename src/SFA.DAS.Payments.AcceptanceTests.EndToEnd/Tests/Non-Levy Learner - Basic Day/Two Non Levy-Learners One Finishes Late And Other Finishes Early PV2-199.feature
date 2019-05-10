@@ -1,8 +1,6 @@
-﻿@dc-integration
-
+﻿@supports_dc_e2e
 Feature: Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199
 
-@EndToEnd
 Scenario Outline: Two non-LEVY learners, one learner finishes early, one finishes late PV2-199
 	Given the provider previously submitted the following learner details
         | Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   |

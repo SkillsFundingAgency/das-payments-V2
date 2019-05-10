@@ -1,6 +1,6 @@
-﻿Feature: One Non-Levy Learner finishes late PV2-336
+﻿@supports_dc_e2e
+Feature: One Non-Levy Learner finishes late PV2-336
 
-@EndToEnd
 
 Scenario Outline: One Non-Levy Learner Finishes Late
 	Given the provider previously submitted the following learner details
