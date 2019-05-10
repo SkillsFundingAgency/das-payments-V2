@@ -8,7 +8,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.RequiredPaymentService.Handlers
 {
-    public class RequiredPaymentEventHandler: IHandleMessages<RequiredPaymentEvent>
+    public class RequiredPaymentEventHandler: IHandleMessages<PeriodisedRequiredPaymentEvent>
     {
         private readonly IPaymentLogger logger;
         private readonly IRequiredPaymentEventProcessor processor;
@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Audit.RequiredPaymentService.Handlers
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
         }
 
-        public async Task Handle(RequiredPaymentEvent message, IMessageHandlerContext context)
+        public async Task Handle(PeriodisedRequiredPaymentEvent message, IMessageHandlerContext context)
         {
             logger.LogDebug($"Adding required payment to audit cache. Payment: {message.ToDebug()}");
             await processor.ProcessPaymentsEvent(message);
