@@ -3,6 +3,7 @@ using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
@@ -57,6 +58,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(dest => dest.ProgrammeType, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.ProgType))
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnAimRef))
                 .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.StdCode))
+                ;
+
+            CreateMap<IntermediateLearningAim, SubmittedLearnerAimModel>()
+                .ForMember(model => model.LearnerReferenceNumber, opt => opt.MapFrom(aim => aim.Learner.LearnRefNumber))
+                .ForMember(model => model.LearningAimFrameworkCode, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.FworkCode))
+                .ForMember(model => model.LearningAimPathwayCode, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.PwayCode))
+                .ForMember(model => model.LearningAimProgrammeType, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.ProgType))
+                .ForMember(model => model.LearningAimStandardCode, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.StdCode))
+                .ForMember(model => model.LearningAimReference, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.LearnAimRef))
+                .Ignore(model => model.Id)
                 ;
 
             CreateMap<ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode, Model.Core.PriceEpisode>()
