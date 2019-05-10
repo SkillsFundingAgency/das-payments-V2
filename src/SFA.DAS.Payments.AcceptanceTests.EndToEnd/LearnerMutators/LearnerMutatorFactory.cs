@@ -18,6 +18,7 @@
                 case "335":
                 case "336":
                 case "337":
+                case "402":
                 case "427":
                 case "615":
                     return new Framework593Over19Learner(learnerRequests, featureNumber);
