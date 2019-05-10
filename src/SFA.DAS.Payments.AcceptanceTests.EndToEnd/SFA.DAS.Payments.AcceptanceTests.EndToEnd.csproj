@@ -255,6 +255,7 @@
     <Compile Include="EventMatchers\BaseMatcher.cs" />
     <Compile Include="EventMatchers\PayableEarningEventMatcher.cs" />
     <Compile Include="EventMatchers\EarningEventMatcher.cs" />
+    <Compile Include="EventMatchers\EarningFailedDataLockMatchingMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentModelMatcher.cs" />
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
@@ -262,6 +263,7 @@
     <Compile Include="Handlers\FundingSourcePaymentEventHandler.cs" />
     <Compile Include="Handlers\PayableEarningEventHandler.cs" />
     <Compile Include="Extensions\EmployerExtensions.cs" />
+    <Compile Include="Handlers\EarningFailedDataLockMatchingHandler.cs" />
     <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
