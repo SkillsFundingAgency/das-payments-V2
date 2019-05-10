@@ -28,63 +28,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenOnlyTheFollowingNonPayableEarningsWillBeGenerated(Table table)
         {
             var dataLockErrors = table.CreateSet<DataLockError>().ToList();
-            var matcher = new DataLockErrorMatcher(TestSession.Provider, TestSession, dataLockErrors);
-            await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
+            var matcher = new EarningFailedDataLockMatcher(TestSession.Provider, TestSession, CurrentCollectionPeriod,dataLockErrors);
+            await WaitForIt(() => matcher.MatchPayments(), "DataLock Failed event check failure");
         }
     }
 
-    public class DataLockErrorMatcher : BaseMatcher<NonPayableEarningEvent>
-    {
-        private IList<DataLockError> expectedErrors;
-        private TestSession testSession;
-        private Provider provider;
-
-        public DataLockErrorMatcher(Provider provider, TestSession testSession, IList<DataLockError> expectedErrors)
-        {
-            this.expectedErrors = expectedErrors;
-            this.provider = provider;
-            this.testSession = testSession;
-        }
-
-        protected override IList<NonPayableEarningEvent> GetActualEvents()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override IList<NonPayableEarningEvent> GetExpectedEvents()
-        {
-            var learner = testSession.GetLearner(provider.Ukprn, expectedErrors[0].LearnerId);
-
-            var nonPayableEarning = new NonPayableEarningEvent
-            {
-                Ukprn = provider.Ukprn,
-                Learner = new Model.Core.Learner
-                {
-                    Uln = learner.Uln
-                },
-                LearningAim = new LearningAim
-                {
-                    // framework code
-                    // programme type
-                    // pathway code
-                },
-                OnProgrammeEarnings = expectedErrors.GroupBy(e => e.TransactionType).Select(errorSpec =>
-                {
-                    return new OnProgrammeEarning
-                    {
-                        Type = (OnProgrammeEarningType) errorSpec.Key,
-                        Periods = errorSpec.Select(period => new EarningPeriod
-                        {
-                            Period = new CollectionPeriodBuilder().WithSpecDate(period.DeliveryPeriod).Build().Period
-                        }).ToList().AsReadOnly()
-                    };
-                }).ToList()
-            };
-        }
-
-        protected override bool Match(NonPayableEarningEvent expected, NonPayableEarningEvent actual)
-        {
-            throw new NotImplementedException();
-        }
-    }
+   
 }

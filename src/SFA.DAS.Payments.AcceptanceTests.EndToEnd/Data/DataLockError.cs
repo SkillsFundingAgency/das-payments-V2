@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
