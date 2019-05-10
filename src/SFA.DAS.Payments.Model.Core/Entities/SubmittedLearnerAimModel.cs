@@ -17,6 +17,5 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public DateTime IlrSubmissionDateTime { get; set; }
         public long LearnerUln { get; set; }
         public long JobId { get; set; }
-        public decimal SfaContributionPercentage { get; set; }
     }
 }

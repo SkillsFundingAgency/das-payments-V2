@@ -14,7 +14,6 @@
     [CreationDate] DATETIMEOFFSET NOT NULL CONSTRAINT DF_SubmittedLearnerAim_CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
     [LearnerUln] BIGINT NOT NULL, 
     [JobId] BIGINT NOT NULL, 
-    [SfaContributionPercentage] DECIMAL(15, 5) NOT NULL,
 )
 
 GO
