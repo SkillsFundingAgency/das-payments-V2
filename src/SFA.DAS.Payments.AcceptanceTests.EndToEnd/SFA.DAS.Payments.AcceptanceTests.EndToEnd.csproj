@@ -250,6 +250,7 @@
   <ItemGroup>
     <Compile Include="Data\Apprenticeship.cs" />
     <Compile Include="Data\Earning.cs" />
+    <Compile Include="Data\DataLockError.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Extensions\ApprenticeshipExtensions.cs" />
+    <Compile Include="Handlers\NonPayableEarningEventHandler.cs" />
     <Compile Include="Handlers\FundingSourcePaymentEventHandler.cs" />
     <Compile Include="Handlers\PayableEarningEventHandler.cs" />
     <Compile Include="Extensions\EmployerExtensions.cs" />
@@ -274,6 +276,7 @@
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\DataLockSteps.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
@@ -1777,6 +1780,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
       <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Domain\SFA.DAS.Payments.DataLocks.Domain.csproj">
+      <Project>{88F8C227-EFFC-47C7-80A4-EC7854EC813E}</Project>
+      <Name>SFA.DAS.Payments.DataLocks.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj">
       <Project>{8CCB04EB-09DC-4E49-810F-5313D6A666BA}</Project>
