@@ -31,11 +31,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             history.AddRange(Enumerable.Range(1, 12).Select(period => new Payment { DeliveryPeriod = (byte)period, SfaContributionPercentage = .9M, Amount = period * 10, PriceEpisodeIdentifier = "pe-1" }));
             var service = mocker.Create<RefundRemovedLearningAimService>();
             var requiredPayments = service.RefundLearningAim(history);
-            //requiredPayments.Count.Should().Be(12);
-            Enumerable.Range(1, 12).ToList().ForEach(period => mocker.Mock<IRefundService>().Verify(x => x.GetRefund(It.Is<decimal>(amount => amount == 0M), It.Is<List<Payment>>(payments => payments.All(payment => payment.DeliveryPeriod == period))),Times.Once));
-            //Enumerable.Range(1, 12).All(period => requiredPayments.Any(rp => rp.Amount == period * -10))
-            //    .Should()
-            //    .BeTrue();
+            for (var i = 1; i <= 12; i++)
+            {
+                var period = 1;
+                mocker.Mock<IRefundService>()
+                    .Verify(
+                        x => x.GetRefund(It.Is<decimal>(amount => amount == 0M),
+                            It.Is<List<Payment>>(payments =>
+                                payments.All(payment => payment.DeliveryPeriod == period))), Times.Once);
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using FluentAssertions;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
-namespace SFA.DAS.Payments.RequiredPayments.Application.Extensions
+namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers
 {
     public static class PeriodisedRequiredPaymentEventExtensions
     {

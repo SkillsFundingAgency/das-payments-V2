@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         private short ParseToShort(string source, string destinationName)
         {
             if (!short.TryParse(source, out var result))
-                throw new ArgumentException($"Cannot parse the key part to a long. Destination: {destinationName}, source value: '{source}'");
+                throw new ArgumentException($"Cannot parse the key part to a short. Destination: {destinationName}, source value: '{source}'");
             return result;
         }
     }
