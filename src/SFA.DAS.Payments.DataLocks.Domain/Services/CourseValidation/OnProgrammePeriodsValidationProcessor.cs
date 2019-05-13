@@ -33,7 +33,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             {
                 if (period.Amount == decimal.Zero)
                 {
-                    
                     validPeriods.Add(new ValidOnProgrammePeriod
                     {
                         Period = period
@@ -49,7 +48,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                         EarningPeriod = period,
                         Apprenticeship = apprenticeship,
                         PriceEpisode = priceEpisodes.SingleOrDefault(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
-                                       ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}")
+                                       ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}"),
+                        TransactionType = onProgrammeEarning.Type,
                     };
 
                     var validationResult = courseValidationProcessor.ValidateCourse(validationModel);
