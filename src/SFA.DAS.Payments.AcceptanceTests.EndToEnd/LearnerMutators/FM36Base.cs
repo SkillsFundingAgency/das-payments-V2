@@ -45,7 +45,7 @@
         {
             if (learnerRequest.StartDate.HasValue)
             {
-                learner.DateOfBirth = learnerRequest.StartDate.Value.AddYears(-21);
+                learner.DateOfBirth = learnerRequest.StartDate.Value.AddYears(-learnerRequest.FundingLineType.ToLearnerAge());
                 learner.LearningDelivery[0].LearnStartDate = learnerRequest.StartDate.Value;
                 learner.LearningDelivery[0].LearnStartDateSpecified = true;
             }
