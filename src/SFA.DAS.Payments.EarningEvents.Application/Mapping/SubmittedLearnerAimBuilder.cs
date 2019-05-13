@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public class SubmittedLearnerAimBuilder : EarningEventBuilderBase
+    public class SubmittedLearnerAimBuilder : EarningEventBuilderBase, ISubmittedLearnerAimBuilder
     {
         private readonly IMapper mapper;
 

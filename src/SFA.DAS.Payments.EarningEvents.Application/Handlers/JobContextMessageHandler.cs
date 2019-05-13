@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.JobContext.Interface;
@@ -17,7 +16,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -35,7 +34,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IEarningsJobClientFactory jobClientFactory;
         private readonly ITelemetry telemetry;
         private readonly IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter;
-        private readonly SubmittedLearnerAimBuilder submittedLearnerAimBuilder;
+        private readonly ISubmittedLearnerAimBuilder submittedLearnerAimBuilder;
+        private readonly ISubmittedLearnerAimRepository submittedLearnerAimRepository;
 
         public JobContextMessageHandler(IPaymentLogger logger,
             IFileService azureFileService,
@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             IEarningsJobClientFactory jobClientFactory,
             ITelemetry telemetry, 
             IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter, 
-            SubmittedLearnerAimBuilder submittedLearnerAimBuilder)
+            ISubmittedLearnerAimBuilder submittedLearnerAimBuilder, ISubmittedLearnerAimRepository submittedLearnerAimRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
@@ -54,6 +54,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             this.submittedAimWriter = submittedAimWriter;
             this.submittedLearnerAimBuilder = submittedLearnerAimBuilder;
+            this.submittedLearnerAimRepository = submittedLearnerAimRepository;
         }
 
 
@@ -66,6 +67,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 {
                     var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
                     var fm36Output = await GetFm36Global(message, collectionPeriod, cancellationToken).ConfigureAwait(false);
+                    await ClearSubmittedLearnerAims(collectionPeriod, fm36Output.Year, message.SubmissionDateTimeUtc, fm36Output.UKPRN, cancellationToken).ConfigureAwait(false);
                     var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, cancellationToken).ConfigureAwait(false);
                     await SendReceivedEarningsEvent(message.JobId, message.SubmissionDateTimeUtc, fm36Output.Year, collectionPeriod, fm36Output.UKPRN).ConfigureAwait(false);
 
@@ -91,6 +93,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 logger.LogError("Error while handling EarningService event", ex);
                 throw;
             }
+        }
+
+        private async Task ClearSubmittedLearnerAims(int period, string academicYear, DateTime newIlrSubmissionDateTime, long ukprn, CancellationToken cancellationToken)
+        {
+            logger.LogDebug($"Deleting aims for UKPRN {ukprn} {academicYear}-{period} submitted before {newIlrSubmissionDateTime}");
+
+            var records = await submittedLearnerAimRepository.DeletePreviouslySubmittedAims((byte)period, short.Parse(academicYear), newIlrSubmissionDateTime, cancellationToken).ConfigureAwait(false);
+
+            logger.LogInfo($"Deleted {records} aims for UKPRN {ukprn} {academicYear}-{period} submitted before {newIlrSubmissionDateTime}");
         }
 
         private async Task SendReceivedEarningsEvent(long jobId, DateTime ilrSubmissionDateTime, string academicYear, int collectionPeriod, long ukprn)
