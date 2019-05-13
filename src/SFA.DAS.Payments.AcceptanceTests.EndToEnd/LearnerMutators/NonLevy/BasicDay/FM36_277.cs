@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
     using DCT.TestDataGenerator;
     using ESFA.DC.ILR.Model.Loose;
 
-    public class FM36_277 : Framework593Over19Learner
+    public class FM36_277 : Framework593Learner
     {
         public FM36_277(IEnumerable<LearnerRequest> learnerRequests) : base(learnerRequests, "277")
         {

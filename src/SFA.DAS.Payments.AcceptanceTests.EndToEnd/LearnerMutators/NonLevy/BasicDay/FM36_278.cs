@@ -5,7 +5,7 @@
     using DCT.TestDataGenerator;
     using ESFA.DC.ILR.Model.Loose;
 
-    public class FM36_278 : Framework593Over19Learner
+    public class FM36_278 : Framework593Learner
     {
         public FM36_278(IEnumerable<LearnerRequest> learnerRequests) : base(learnerRequests, "278")
         {
