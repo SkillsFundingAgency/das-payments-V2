@@ -2,6 +2,7 @@
 	I want a levy learner, that goes on a planned break which is recorded in ILR, to be paid the correct amount
 	So that I am accurately paid my apprenticeship PV2-296
 
+@ignore
 Scenario Outline: One Levy learner, goes on a planned break which is recorded in ILR  PV2-296
 
 Given the employer levy account balance in collection period <Collection_Period> is 17000
@@ -51,19 +52,19 @@ And price details as follows
 When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
 Then the following learner earnings should be generated
-    | Delivery Period           | On-Programme | Completion | Balancing |
-    | Aug/Current Academic Year | 0            | 0          | 0         |
-    | Sep/Current Academic Year | 1000         | 0          | 0         |
-    | Oct/Current Academic Year | 1000         | 0          | 0         |
-    | Nov/Current Academic Year | 0            | 0          | 0         |
-    | Dec/Current Academic Year | 0            | 0          | 0         |
-    | Jan/Current Academic Year | 1000         | 0          | 0         |
-    | Feb/Current Academic Year | 1000         | 0          | 0         |
-    | Mar/Current Academic Year | 1000         | 0          | 0         |
-    | Apr/Current Academic Year | 1000         | 0          | 0         |
-    | May/Current Academic Year | 1000         | 0          | 0         |
-    | Jun/Current Academic Year | 1000         | 0          | 0         |
-    | Jul/Current Academic Year | 1000         | 0          | 0         |
+    | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+    | Aug/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+    | Sep/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+    | Oct/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+    | Nov/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+    | Dec/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+    | Jan/Current Academic Year | 1000         | 0          | 0         | 2nd price details        |
+    | Feb/Current Academic Year | 1000         | 0          | 0         | 2nd price details        |
+    | Mar/Current Academic Year | 1000         | 0          | 0         | 2nd price details        |
+    | Apr/Current Academic Year | 1000         | 0          | 0         | 2nd price details        |
+    | May/Current Academic Year | 1000         | 0          | 0         | 2nd price details        |
+    | Jun/Current Academic Year | 1000         | 0          | 0         | 2nd price details        |
+    | Jul/Current Academic Year | 1000         | 0          | 0         | 2nd price details        |
 
 And at month end only the following payments will be calculated
     | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
