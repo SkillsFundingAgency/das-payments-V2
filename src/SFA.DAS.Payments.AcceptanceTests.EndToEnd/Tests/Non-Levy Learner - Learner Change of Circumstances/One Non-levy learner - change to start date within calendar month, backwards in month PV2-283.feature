@@ -1,4 +1,4 @@
-﻿#@supports_dc_e2e
+﻿@supports_dc_e2e
 Feature: One Non-levy learner - change to start date within calendar month, backwards in month PV2-283
 
 As a provider,
@@ -7,8 +7,8 @@ So that I am accurately paid my apprenticeship provision.
 
 Scenario Outline: Change to start date within calendar month, backwards in month PV2-283
 Given the provider previously submitted the following learner details
-	| ULN       | Priority | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-	| learner a | 1        | 05/Aug/Current Academic Year | 12 months        | 9000                 | 05/Aug/Current Academic Year        | 0                      | 05/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+	| 05/Aug/Current Academic Year | 12 months        | 9000                 | 05/Aug/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 And the following earnings had been generated for the learner
     | Delivery Period           | On-Programme | Completion | Balancing |
     | Aug/Current Academic Year | 600          | 0          | 0         |
@@ -28,8 +28,8 @@ And the following provider payments had been generated
     | R01/Current Academic Year | Aug/Current Academic Year | 540                    | 60                          | Learning         |
     | R02/Current Academic Year | Sep/Current Academic Year | 540                    | 60                          | Learning         |
 But the Provider now changes the Learner details as follows
-	| ULN       | Priority | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-	| learner a | 1        | 04/Aug/Current Academic Year | 12 months        | 9000                 | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+	| 04/Aug/Current Academic Year | 12 months        | 9000                 | 04/Aug/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 Then the following learner earnings should be generated
 	| Delivery Period           | On-Programme | Completion | Balancing |
