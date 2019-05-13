@@ -3,6 +3,9 @@ using SFA.DAS.Payments.AcceptanceTests.Core.TestModels;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using System;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Services
 {
@@ -14,9 +17,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
 
         public int GenerateUkprn()
         {
-            var provider = LeastRecentlyUsed();
-            provider.Use();
-            SaveChanges();
+            string appGuid =
+                ((GuidAttribute)Assembly.GetExecutingAssembly().
+                    GetCustomAttributes(typeof(GuidAttribute), false).
+                    GetValue(0)).Value.ToString();
+
+            Provider provider = null;
+            using (var mutex = new Mutex(true, $"Global\\{{{appGuid}}}"))
+            {
+                if (!mutex.WaitOne(3))
+                {
+                    throw new ApplicationException("Unable to obtain a Ukprn due to a locked Mutex");
+                }
+
+                provider = LeastRecentlyUsed();
+                provider.Use();
+                SaveChanges();
+            }
 
             ClearPaymentsData(provider);
 
