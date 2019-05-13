@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
@@ -15,21 +17,32 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
         public CourseValidationResult ValidateCourse(DataLockValidationModel dataLockValidationModel)
         {
-            var validationResults = new List<ValidationResult>();
+            var dataLockFailures = new List<DataLockFailure>();
+            var validApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
+
             foreach (var courseValidator in courseValidators)
             {
                 var validatorResult = courseValidator.Validate(dataLockValidationModel);
-                validationResults.Add(validatorResult);
+                var apprenticeshipPriceEpisodes = validatorResult.ApprenticeshipPriceEpisodes.Where(o => !o.Removed).ToList();
+
+                if (validatorResult.DataLockErrorCode.HasValue)
+                {
+                    dataLockFailures.Add(new DataLockFailure
+                    {
+                        DataLockError =  validatorResult.DataLockErrorCode.Value,
+                        ApprenticeshipPriceEpisodeIds = apprenticeshipPriceEpisodes.Select(x => x.Id).ToList()
+                    });
+                }
+                else
+                {
+                    validApprenticeshipPriceEpisodes.AddRange(apprenticeshipPriceEpisodes);
+                }
             }
+            
             var result = new CourseValidationResult
             {
-                DataLockErrors = validationResults
-                    .Where(validationResult => validationResult.DataLockErrorCode.HasValue)
-                    .Select(validationResult => validationResult.DataLockErrorCode.Value)
-                    .ToList(),
-                MatchedPriceEpisode = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
-                    .Where(ape => !ape.Removed)
-                    .FirstOrDefault(ape => validationResults.All(validationResult => validationResult.ApprenticeshipPriceEpisodes.Any(resultApe => resultApe.Id == ape.Id))  )
+                DataLockFailures = dataLockFailures,
+                MatchedPriceEpisode = validApprenticeshipPriceEpisodes.FirstOrDefault()
             };
 
             return result;

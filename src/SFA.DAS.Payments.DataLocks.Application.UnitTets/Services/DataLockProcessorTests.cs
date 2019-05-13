@@ -82,20 +82,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                                                 earningEvent.PriceEpisodes,
                                                 earningEvent.OnProgrammeEarnings[0],
                                                 apprenticeships))
-                .Returns(() => (new List<ValidOnProgrammePeriod>
-                {
-                    new ValidOnProgrammePeriod
-                    {
-                        Apprenticeship = apprenticeships.FirstOrDefault(),
-                        Period = earningEvent.OnProgrammeEarnings.FirstOrDefault()?.Periods.FirstOrDefault()
-                    }
-                }, new List<InvalidOnProgrammePeriod>()))
-                .Verifiable();
+                .Returns(() => 
+                    (new List<EarningPeriod> {earningEvent.OnProgrammeEarnings.FirstOrDefault()?.Periods.FirstOrDefault()}, 
+                    new List<EarningPeriod>()
+                    )).Verifiable();
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
-            var actual = await dataLockProcessor.GetPaymentEvent(earningEvent, default(CancellationToken));
+            var actual = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
 
-            var payableEarning = actual as PayableEarningEvent;
+            var payableEarning = actual[0] as PayableEarningEvent;
             payableEarning.Should().NotBeNull();
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
             payableEarning.OnProgrammeEarnings.First().Periods.Count.Should().Be(1);
@@ -113,16 +108,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }).Verifiable();
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
-            var actual = await dataLockProcessor.GetPaymentEvent(earningEvent, default(CancellationToken));
+            var actual = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
 
-            var nonPayableEarningEvent = actual as NonPayableEarningEvent;
+            var nonPayableEarningEvent = actual[0] as EarningFailedDataLockMatching;
             nonPayableEarningEvent.Should().NotBeNull();
-            nonPayableEarningEvent.Errors.Should().HaveCount(1);
-            nonPayableEarningEvent.Errors.Should().Contain(DataLockErrorCode.DLOCK_01);
+            nonPayableEarningEvent.OnProgrammeEarnings
+                .SelectMany(x => x.Periods)
+                .All(p => p.DataLockFailures.All(d => d.DataLockError == DataLockErrorCode.DLOCK_01))
+                .Should().BeTrue();
         }
 
         [Test]
-        public async Task GivenCourseValidationDataLockIsReturnedMapOnlyValidEarningPeriods()
+        public async Task GivenCourseValidationDataLockIsReturnedMapBothValidAndInvalidEarningPeriods()
         {
             learnerMatcherMock
                 .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
@@ -135,34 +132,38 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var testEarningEvent = CreateTestEarningEvent(2, 100m);
 
+            var periodExpected = testEarningEvent.OnProgrammeEarnings[0].Periods[1];
+            periodExpected.DataLockFailures = new List<DataLockFailure>
+            {
+                new DataLockFailure
+                {
+                    DataLockError = DataLockErrorCode.DLOCK_09,
+                    ApprenticeshipPriceEpisodeIds = new List<long>()
+                }
+            };
+
             onProgValidationMock
                  .Setup(x => x.ValidatePeriods(apprenticeships[0].Uln, 
                     It.IsAny<List<PriceEpisode>>(),
                     It.IsAny<OnProgrammeEarning>(),
                     It.IsAny<List<ApprenticeshipModel>>()))
-                .Returns(() => (new List<ValidOnProgrammePeriod>
+                .Returns(() => (new List<EarningPeriod>
                 {
-                    new ValidOnProgrammePeriod
-                    {
-                        Apprenticeship = apprenticeships.FirstOrDefault(),
-                        Period = testEarningEvent.OnProgrammeEarnings[0].Periods[0]
-                    }
-                }, new List<InvalidOnProgrammePeriod>
+                   testEarningEvent.OnProgrammeEarnings[0].Periods[0]
+                }, new List<EarningPeriod>
                 {
-                    new InvalidOnProgrammePeriod
-                    {
-                        DataLockErrors = new List<DataLockErrorCode>{DataLockErrorCode.DLOCK_09},
-                        Period = testEarningEvent.OnProgrammeEarnings[0].Periods[1]
-                    }
+                     periodExpected
                 }))
                 .Verifiable();
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
-            var actual = await dataLockProcessor.GetPaymentEvent(testEarningEvent, default(CancellationToken))
+            var actual = await dataLockProcessor.GetPaymentEvents(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
-            var payableEarning = actual as PayableEarningEvent;
-            payableEarning.Should().NotBeNull();
+            var payableEarnings = actual.OfType<PayableEarningEvent>().ToList();
+
+            payableEarnings.Should().HaveCount(1);
+            var payableEarning = payableEarnings[0];
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
 
             var onProgrammeEarning = payableEarning.OnProgrammeEarnings.First();
@@ -170,6 +171,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var earningPeriod = onProgrammeEarning.Periods.Single();
             earningPeriod.Period.Should().Be(1);
+
+
+            var failedDatalockEarnings = actual.OfType<EarningFailedDataLockMatching>().ToList();
+            failedDatalockEarnings.Should().HaveCount(1);
+
+            var failedDatalockEarning = failedDatalockEarnings[0];
+            failedDatalockEarning.OnProgrammeEarnings.Count.Should().Be(1);
+
+            var invalidOnProgrammeEarning = failedDatalockEarning.OnProgrammeEarnings[0];
+            invalidOnProgrammeEarning.Periods.Count.Should().Be(1);
+
+            var invalidEarningPeriod = invalidOnProgrammeEarning.Periods.Single();
+            invalidEarningPeriod.Period.Should().Be(2);
+            invalidEarningPeriod.DataLockFailures.Should().NotBeNull();
+            invalidEarningPeriod.DataLockFailures.Should().HaveCount(1);
+            invalidEarningPeriod.DataLockFailures[0].DataLockError.Should().Be(DataLockErrorCode.DLOCK_09);
         }
 
         private ApprenticeshipContractType1EarningEvent CreateTestEarningEvent(byte periodsToCreate, decimal earningPeriodAmount)
