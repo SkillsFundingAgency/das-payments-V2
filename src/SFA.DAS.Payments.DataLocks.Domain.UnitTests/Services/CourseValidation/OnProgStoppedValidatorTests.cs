@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using Castle.Components.DictionaryAdapter;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
@@ -26,7 +27,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
 
         [Test]
-        public void WhenStopDateIsInAPriodPeriod_ThenNoDatalock()
+        public void WhenStopDateIsInAPriorPeriod_ThenNoDatalock()
         {
             var validation = new DataLockValidationModel
             {
@@ -42,15 +43,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             Id = 100,
                         },
                     },
-                    StopDate = new DateTime(2019,08,01),
-                }
+                    StopDate = new DateTime(2019,07,31), // Last day of 1819
+                    Status = ApprenticeshipStatus.Stopped,
+                },
+                AcademicYear = 1920,
+                TransactionType = OnProgrammeEarningType.Learning,
             };
 
             var validator = new OnProgStoppedValidator();
             var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
-            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
+            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_10);
+            result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
         }
 
         [Test]
@@ -63,19 +66,25 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 Apprenticeship = new ApprenticeshipModel
                 {
                     Id = 1,
-                    Status = ApprenticeshipStatus.Paused,
+                    Status = ApprenticeshipStatus.Stopped,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
-                        new ApprenticeshipPriceEpisodeModel()
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 100,
+                        },
                     },
-                    StopDate = new DateTime(2019, 12, 31),
-                }
+                    StopDate = new DateTime(2020, 08, 01), // First day of next academic year
+                },
+                AcademicYear = 1920,
+                TransactionType = OnProgrammeEarningType.Learning,
             };
 
             var validator = new OnProgStoppedValidator();
             var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_10);
-            result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
+            result.DataLockErrorCode.Should().BeNull();
+            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
+            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
         }
     }
 }
