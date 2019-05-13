@@ -1,4 +1,8 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
+
+namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
     using System;
     using System.Linq;
