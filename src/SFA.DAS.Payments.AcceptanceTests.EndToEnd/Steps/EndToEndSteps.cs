@@ -4,6 +4,8 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Tests.Core;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -37,11 +39,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the ""(.*)"" levy account balance in collection period (.*) is (.*)")]
-        public async Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(string employerIdentifier, string collectionPeriod,decimal levyAmount)
+        public async Task GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(string employerIdentifier, string collectionPeriodText, decimal levyAmount)
         {
             var employer = TestSession.GetEmployer(employerIdentifier);
             employer.Balance = levyAmount;
             await SaveLevyAccount(employer).ConfigureAwait(false);
+            SetCollectionPeriod(collectionPeriodText);
         }
 
         [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
@@ -52,7 +55,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 collectionPeriod,
                 levyAmount);
         }
-        
+
         [Given(@"the provider previously submitted the following learner details in collection period ""(.*)""")]
         public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetailsInCollectionPeriod(string previousCollectionPeriod, Table table)
         {
@@ -115,6 +118,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [Given(@"the following commitments exist")]
         [Given(@"the Commitment details are changed as follows")]
+        [Given(@"the following apprenticeships exist")]
         public async Task GivenTheFollowingCommitmentsExist(Table table)
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
@@ -124,6 +128,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        [Given(@"the apprenticeships status changes as follows")]
+        public async Task GivenTheApprenticeshipsStatusChangesAsFollows(Table table)
+        {
+            var statuses = table.CreateSet<ApprenticeshipStatusPeriod>();
+            var validStatuses = statuses.Select(status => new
+            {
+                status.Status,
+                CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(status.CollectionPeriod).Build(),
+                status.Identifier,
+                status.StoppedDate
+            })
+                .Where(status => status.CollectionPeriod.AcademicYear == CurrentCollectionPeriod.AcademicYear &&
+                                 status.CollectionPeriod.Period == CurrentCollectionPeriod.Period)
+                .ToList();
+            foreach (var validStatus in validStatuses)
+            {
+                var apprenticeship = Apprenticeships.FirstOrDefault(appr => appr.Identifier == validStatus.Identifier);
+                if (apprenticeship == null)
+                    throw new InvalidOperationException($"Apprenticeship not found. Identifier: {validStatus.Identifier}");
+                Console.WriteLine($"Updating status of apprenticeship. Identifier: {validStatus.Identifier}, apprenticeship id: {apprenticeship.ApprenticeshipId}, status: {validStatus.Status}");
+                await UpdateApprenticeshipStatus(apprenticeship.ApprenticeshipId, validStatus.Status, validStatus.StoppedDate);
+            }
+        }
 
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
@@ -247,7 +274,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenMonthEndIsTriggered()
         {
             await SendLevyMonthEnd().ConfigureAwait(false);
-            
+
             foreach (var provider in TestSession.Providers)
             {
                 await StartMonthEnd(provider).ConfigureAwait(false);

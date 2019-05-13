@@ -190,7 +190,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
                     apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
                     await ApprenticeshipHelper.AddApprenticeship(apprenticeship, DataContext).ConfigureAwait(false);
-                    specApprenticeship.CommitmentId = apprenticeship.Id;
+                    specApprenticeship.ApprenticeshipId = apprenticeship.Id;
                     Apprenticeships.Add(specApprenticeship);
                 }
                 else
@@ -198,9 +198,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var priceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
                     var status = group.Last().Status?.ToApprenticeshipPaymentStatus() ??
                                  throw new InvalidOperationException($"last item not found: {group.Key}");
-                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.CommitmentId,status, priceEpisodes, DataContext);
+                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.ApprenticeshipId,status, priceEpisodes, DataContext);
                 }
             }
+        }
+
+        protected async Task UpdateApprenticeshipStatus(long apprenticeshipId, ApprenticeshipStatus status, string stoppedDateText)
+        {
+            var apprenticeship = await DataContext.Apprenticeship.FirstOrDefaultAsync(appr => appr.Id == apprenticeshipId);
+            if (apprenticeship==null)
+                throw new InvalidOperationException($"Apprenticeship '{apprenticeshipId}' not found.");
+            apprenticeship.Status = status;
+            if (!string.IsNullOrEmpty(stoppedDateText) && status == ApprenticeshipStatus.Stopped)
+            {
+                var stoppedDate = stoppedDateText.ToDate();
+                apprenticeship.StopDate = stoppedDate;
+            }
+            await DataContext.SaveChangesAsync();
         }
 
         protected async Task SaveLevyAccount(Employer employer)

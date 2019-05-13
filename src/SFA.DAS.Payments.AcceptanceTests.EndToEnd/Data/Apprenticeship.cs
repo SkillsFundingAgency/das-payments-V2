@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public long Ukprn { get; set; }
 
         public int Priority { get; set; }
-        public long CommitmentId { get; set; }
+        public long ApprenticeshipId { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public decimal AgreedPrice { get; set; }

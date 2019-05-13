@@ -1,5 +1,4 @@
-﻿@ignore	
-Feature: One Levy learner, goes on a planned break which is recorded in ILR  PV2-296
+﻿Feature: One Levy learner, goes on a planned break which is recorded in ILR  PV2-296
 	I want a levy learner, that goes on a planned break which is recorded in ILR, to be paid the correct amount
 	So that I am accurately paid my apprenticeship PV2-296
 
@@ -7,10 +6,14 @@ Scenario Outline: One Levy learner, goes on a planned break which is recorded in
 
 Given the employer levy account balance in collection period <Collection_Period> is 17000
 
-And the following commitments exist
-	| start date                   | end date                  | status | agreed price |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Active | 15000        |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Paused | 15000        |
+And the following apprenticeships exist
+	| start date                   | end date                  | agreed price | status |
+	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | 15000        | Active |
+
+And the apprenticeships status changes as follows 
+	| Collection Period         | Status |
+	| R04/Current Academic Year | Paused |
+	| R06/Current Academic Year | Active |
 
 And the provider previously submitted the following learner details
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Standard Code | Programme Type | Aim Reference | Funding Line Type                                  | SFA Contribution Percentage |
@@ -35,13 +38,6 @@ And the following provider payments had been generated
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
     | R02/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
     | R03/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |
-
-But the Commitment details are changed as follows
-
-	| start date                   | end date                  | status | agreed price |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Active | 15000        |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Paused | 15000        |
-	| 01/Sep/Current Academic Year | 30/Sep/Next Academic Year | Active | 15000        |
 	
 And the Provider now changes the Learner details as follows
 	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Completion Status | Contract Type | Aim Sequence Number | Standard Code | Programme Type |Aim Reference | Funding Line Type                                  | 

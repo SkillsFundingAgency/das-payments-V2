@@ -249,6 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Apprenticeship.cs" />
+    <Compile Include="Data\ApprenticeshipStatusPeriod.cs" />
     <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
