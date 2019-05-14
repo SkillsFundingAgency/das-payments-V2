@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     },
                     LearningAim = new LearningAim
                     {
-                        ProgrammeType = learnerEarnings.First().ProgrammeType,
+                        ProgrammeType = learnerEarnings.First().ProgrammeType, //May need to move to another Matcher
                         StandardCode = learnerEarnings.First().StandardCode
                     },
                     OnProgrammeEarnings = new List<OnProgrammeEarning>()
