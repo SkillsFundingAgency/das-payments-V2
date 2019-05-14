@@ -17,7 +17,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
-            var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, paymentHistory);
+            var amount = string.IsNullOrWhiteSpace(earning.PriceEpisodeIdentifier)
+                ? 0M
+                : paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, paymentHistory);
 
             if (amount < 0)
             {

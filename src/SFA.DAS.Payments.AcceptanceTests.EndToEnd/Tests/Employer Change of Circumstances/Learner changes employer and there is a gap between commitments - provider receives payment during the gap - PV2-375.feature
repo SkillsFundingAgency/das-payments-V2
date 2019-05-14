@@ -1,4 +1,3 @@
-@ignore
 Feature:Learner changes employer gap between commitments - provider receives payment during the gap - PV2-375
 As a provider,
 I want provider earnings and payments where learner changes employer and there is a gap between commitments - provider receives payment during the gap as they amend the ACT code and employment status code correctly, to be paid the correct amount
@@ -7,17 +6,17 @@ Scenario Outline: Learner changes employer and there is a gap between commitment
 Given the "employer 1" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 1>
 And  the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 And the following commitments exist
-    | Employer   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          |
-    | employer 1 | 01/Aug/Current Academic Year | 04/Aug/Next Academic Year | 15000        | cancelled | 01/Aug/Current Academic Year | 02/Oct/Current Academic Year | 03/Oct/Current Academic Year |
-    | employer 2 | 01/Nov/Current Academic Year | 04/Aug/Next Academic Year | 5625         | active    | 01/Nov/Current Academic Year |                              |                              |
+   | Identifier       | Employer   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          |
+   | Apprenticeship 1 | employer 1 | 01/Aug/Current Academic Year | 04/Aug/Next Academic Year | 15000        | cancelled | 01/Aug/Current Academic Year | 02/Oct/Current Academic Year | 03/Oct/Current Academic Year |
+   | Apprenticeship 2 | employer 2 | 01/Nov/Current Academic Year | 04/Aug/Next Academic Year | 5625         | active    | 01/Nov/Current Academic Year |                              |                              |
 And the provider is providing training for the following learners
 	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
 	| 03/Aug/Current Academic Year | 12 months        | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
 And price details as follows
     | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | SFA Contribution Percentage |
     | pe-1             | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | Act1          | 90%                         |
-	| pe-2             | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | Act2          | 90%                         |
-    | pe-3             | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 5000                    | 03/Nov/Current Academic Year           | 625                       | 03/Nov/Current Academic Year             | Act1          | 90%                         |
+    | pe-2             | 12000                | 03/Oct/Current Academic Year        | 3000                   | 03/Oct/Current Academic Year          | 0                       |                                        | 0                         |                                          | Act2          | 100%                        |
+    | pe-3             | 12000                | 03/Nov/Current Academic Year        | 3000                   | 03/Nov/Current Academic Year          | 5000                    | 03/Nov/Current Academic Year           | 625                       | 03/Nov/Current Academic Year             | Act1          | 90%                         |
 When the ILR file is submitted for the learners for collection period <Collection_Period>
 Then the following learner earnings should be generated
 	| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
@@ -37,26 +36,26 @@ Then the following learner earnings should be generated
     | Jun/Current Academic Year | 500          | 0          | 0         | pe-3                     |
     | Jul/Current Academic Year | 500          | 0          | 0         | pe-3                     |
 And at month end only the following payments will be calculated
-    | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-    | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
-    | R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
-    | R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
-    | R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         |
-    | R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         |
+    | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+    | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
+    | R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         | pe-3                     |
+    | R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         | pe-3                     |
 And only the following provider payments will be recorded
-    | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type | Employer    |
-    | R01/Current Academic Year | Aug/Current Academic Year | 1000          | 0                         | Learning         | employer 1  |
-    | R02/Current Academic Year | Sep/Current Academic Year | 1000          | 0                         | Learning         | employer 1  |
-    | R03/Current Academic Year | Oct/Current Academic Year | 0             | 1000                      | Learning         | no employer |
-    | R04/Current Academic Year | Nov/Current Academic Year | 500           | 0                         | Learning         | employer 2  |
-    | R05/Current Academic Year | Dec/Current Academic Year | 500           | 0                         | Learning         | employer 2  |
+    | Collection Period         | Delivery Period           | Levy Payments | SFA Co-Funded Payments | Transaction Type | Employer    | Price Episode Identifier |
+    | R01/Current Academic Year | Aug/Current Academic Year | 1000          | 0                      | Learning         | employer 1  | pe-1                     |
+    | R02/Current Academic Year | Sep/Current Academic Year | 1000          | 0                      | Learning         | employer 1  | pe-1                     |
+    | R03/Current Academic Year | Oct/Current Academic Year | 0             | 1000                   | Learning         | no employer | pe-2                     |
+    | R04/Current Academic Year | Nov/Current Academic Year | 500           | 0                      | Learning         | employer 2  | pe-3                     |
+    | R05/Current Academic Year | Dec/Current Academic Year | 500           | 0                      | Learning         | employer 2  | pe-3                     |
 And only the following provider payments will be generated
-    | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type | Employer    |
-    | R01/Current Academic Year | Aug/Current Academic Year | 1000          | 0                         | Learning         | employer 1  |
-    | R02/Current Academic Year | Sep/Current Academic Year | 1000          | 0                         | Learning         | employer 1  |
-    | R03/Current Academic Year | Oct/Current Academic Year | 0             | 1000                      | Learning         | no employer |
-    | R04/Current Academic Year | Nov/Current Academic Year | 500           | 0                         | Learning         | employer 2  |
-    | R05/Current Academic Year | Dec/Current Academic Year | 500           | 0                         | Learning         | employer 2  |
+    | Collection Period         | Delivery Period           | Levy Payments | SFA Co-Funded Payments | Transaction Type | Employer    |
+    | R01/Current Academic Year | Aug/Current Academic Year | 1000          | 0                      | Learning         | employer 1  |
+    | R02/Current Academic Year | Sep/Current Academic Year | 1000          | 0                      | Learning         | employer 1  |
+    | R03/Current Academic Year | Oct/Current Academic Year | 0             | 1000                   | Learning         | no employer |
+    | R04/Current Academic Year | Nov/Current Academic Year | 500           | 0                      | Learning         | employer 2  |
+    | R05/Current Academic Year | Dec/Current Academic Year | 500           | 0                      | Learning         | employer 2  |
 
 Examples:
 	| Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 |

@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using SFA.DAS.Payments.Messages.Core.Events;
 using Earning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Earning;
 using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
@@ -52,7 +53,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<EarningEvent> GetExpectedEvents()
         {
             var result = new List<EarningEvent>();
-            var learnerIds = earningSpecs.Where(e => e.Ukprn == provider.Ukprn)?.Select(e => e.LearnerId).Distinct().ToList();
+            var learnerIds = earningSpecs.Where(e => e.Ukprn == provider.Ukprn).Select(e => e.LearnerId).Distinct().ToList();
 
             foreach (var learnerId in learnerIds)
             {
@@ -75,7 +76,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         FundingLineType = learnerSpec.Course.FundingLineType,
                         AimReference = learnerSpec.Course.LearnAimRef
                     });
-
 
                 IEnumerable<Aim> currentAims;
 
@@ -110,22 +110,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
                     {
-                        var onProgEarning  = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
-                        onProgEarning.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
+                        var contractTypeEarningsEvents  = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
+
+                        foreach (var onProgEarning in contractTypeEarningsEvents)
                         {
-                            Type = (OnProgrammeEarningType) (int) tt,
-                            Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                            onProgEarning.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                             {
-                                Amount = e.Values[tt],
-                                Period = e.DeliveryCalendarPeriod,
-                                PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                            }).ToList().AsReadOnly()
-                        }).ToList();
-                        onProgEarning.JobId = provider.JobId;
-                        onProgEarning.Learner = learner;
-                        onProgEarning.LearningAim = learningAim;
-     
-                        result.Add(onProgEarning);
+                                Type = (OnProgrammeEarningType)(int)tt,
+                                Periods = GetEarningPeriods(aimEarningSpecs, aimSpec, onProgEarning, tt, fm36Learner).AsReadOnly()
+                            }).ToList();
+                            onProgEarning.JobId = provider.JobId;
+                            onProgEarning.Learner = learner;
+                            onProgEarning.LearningAim = learningAim;
+
+                            result.Add(onProgEarning);
+                        }
                     }
 
                     if (aimSpec.AimReference != "ZPROG001" && functionalSkillEarnings.Any())
@@ -153,27 +152,68 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (incentiveEarnings.Any())
                     {
-                        var incentiveEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
-                        incentiveEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
+                        var contractTypeIncentiveEarnings = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
+
+                        foreach (var incentiveEarning in contractTypeIncentiveEarnings)
                         {
-                            Type = (IncentiveEarningType) (int) tt,
-                            Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                            incentiveEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
                             {
-                                Amount = e.Values[tt],
-                                Period = e.DeliveryCalendarPeriod,
-                                PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                            }).ToList().AsReadOnly()
-                        }).ToList();
-                        incentiveEarning.JobId = provider.JobId;
-                        incentiveEarning.Learner = learner;
-                        incentiveEarning.LearningAim = learningAim;
-                  
-                        result.Add(incentiveEarning);
+                                Type = (IncentiveEarningType)(int)tt,
+                                Periods = GetEarningPeriods(aimEarningSpecs, aimSpec, incentiveEarning, tt, fm36Learner).AsReadOnly(),
+                            }).ToList();
+                            incentiveEarning.JobId = provider.JobId;
+                            incentiveEarning.Learner = learner;
+                            incentiveEarning.LearningAim = learningAim;
+
+                            result.Add(incentiveEarning);
+                        }
                     }
                 }
             }
 
             return result;
+        }
+
+        private List<EarningPeriod> GetEarningPeriods(List<Earning> aimEarningSpecs, Aim aimSpec, ApprenticeshipContractTypeEarningsEvent onProgEarning, TransactionType tt, FM36Learner fm36Learner)
+        {
+            var matchingPriceEpisodeEarningPeriods = aimEarningSpecs
+                .Where(e => GetPriceEpisodeContractType(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning))
+                .Select(e => new EarningPeriod
+                {
+                    Amount = e.Values[tt],
+                    Period = e.DeliveryCalendarPeriod,
+                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                }).ToList();
+
+            var nonMatchingPriceEpisodeEarningPeriods = aimEarningSpecs
+                .Where(e => !GetPriceEpisodeContractType(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning))
+                .Select(e => new EarningPeriod
+                {
+                    Amount = 0M,
+                    Period = e.DeliveryCalendarPeriod,
+                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                }).ToList();
+
+            matchingPriceEpisodeEarningPeriods.AddRange(nonMatchingPriceEpisodeEarningPeriods);
+
+            return matchingPriceEpisodeEarningPeriods.OrderBy(p => p.Period).ToList();
+        }
+
+        private static bool GetPriceEpisodeContractType(List<Price> priceEpisodes, string priceEpisodeIdentifier,
+            IEarningEvent onProgEarning)
+        {
+            var matchingPriceEpisode = priceEpisodes.FirstOrDefault(p =>
+                p.PriceEpisodeId == priceEpisodeIdentifier);
+
+            switch (onProgEarning)
+            {
+                case ApprenticeshipContractType1EarningEvent _:
+                    return matchingPriceEpisode?.ContractType == ContractType.Act1;
+                case ApprenticeshipContractType2EarningEvent _:
+                    return matchingPriceEpisode?.ContractType == ContractType.Act2;
+                default:
+                    return false;
+            }
         }
 
         private string FindPriceEpisodeIdentifier(decimal value, Earning earning, FM36Learner fm36Learner, TransactionType transactionType)
@@ -269,30 +309,37 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return true;
         }
 
-        private ApprenticeshipContractTypeEarningsEvent CreateContractTypeEarningsEventEarningEvent( long ukprn)
+        private List<ApprenticeshipContractTypeEarningsEvent> CreateContractTypeEarningsEventEarningEvent( long ukprn)
         {
-            var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
+            var contractTypes = EnumHelper.GetContractTypes(currentIlr, currentPriceEpisodes);
 
-            switch (contractType)
+            var events = new List<ApprenticeshipContractTypeEarningsEvent>();
+
+            contractTypes.ForEach(c =>
             {
-                case ContractType.Act1:
-                    return new ApprenticeshipContractType1EarningEvent
-                    {
-                        CollectionPeriod = collectionPeriod,
-                        Ukprn = ukprn
-                    };
+                switch (c)
+                {
+                    case ContractType.Act1:
+                        events.Add(new ApprenticeshipContractType1EarningEvent
+                        {
+                            CollectionPeriod = collectionPeriod,
+                            Ukprn = ukprn
+                        });
+                        break;
+                    case ContractType.Act2:
+                        events.Add(new ApprenticeshipContractType2EarningEvent
+                        {
+                            CollectionPeriod = collectionPeriod,
+                            Ukprn = ukprn
+                        });
+                        break;
+                    default:
+                        throw new InvalidOperationException(
+                            "Cannot create the EarningEventMatcher invalid contract type ");
+                }
+            });
 
-                case ContractType.Act2:
-                    return new ApprenticeshipContractType2EarningEvent
-                    {
-                        CollectionPeriod = collectionPeriod,
-                        Ukprn = ukprn
-                    };
-
-                default:
-                    throw new InvalidOperationException("Cannot create the EarningEventMatcher invalid contract type ");
-            }
-
+            return events;
         }
 
 

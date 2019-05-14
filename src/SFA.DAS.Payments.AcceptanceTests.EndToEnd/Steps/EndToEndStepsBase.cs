@@ -369,8 +369,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 };
 
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = CalculateAimSequenceNumber(priceEpisode);
-                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = aim.StartDate.ToDate();
                 newPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = priceEpisode.EpisodeEffectiveStartDate;
+                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = aim.StartDate.ToDate();
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType = CalculateContractType(priceEpisode);
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
                 newPriceEpisode.PriceEpisodeValues.TNP1 = priceEpisode.TotalTrainingPrice;
@@ -392,12 +392,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             for (var i = 0; i < orderedPriceEpisodes.Count; i++)
             {
                 var currentPriceEpisode = priceEpisodesForAim[i];
-                var tnpStartDate =  orderedPriceEpisodes
-                    .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
-                                currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
-                    .PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
+                //var tnpStartDate =  orderedPriceEpisodes
+                //    .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
+                //                currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
+                //    .PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
 
-                currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
+                //currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
 
                 if (aim.ActualDurationAsTimespan.HasValue)
                 {
@@ -436,12 +436,48 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                         for (var p = 1; p < 13; p++)
                         {
+                            var earningRow = p - 1;
+
+                            var amount = (p >= episodeStart.Period && p <= episodeLastPeriod ||
+                                          (PeriodisedValuesForBalancingAndCompletion()
+                                               .Contains(currentValues.AttributeName) && p > episodeLastPeriod))
+                                ? currentValues.GetValue(p)
+                                : 0;
+
+                            var earningPriceEpisodeIdentifier = earnings[earningRow].PriceEpisodeIdentifier;
+                            var currentPriceEpisodeIdentifier = currentPriceEpisode.PriceEpisodeIdentifier;
+                            if (!string.IsNullOrWhiteSpace(earningPriceEpisodeIdentifier) &&
+                                earningPriceEpisodeIdentifier ==
+                                currentPriceEpisodeIdentifier)
+                            {
+                                newValues.SetValue(p, amount);
+                            }
+                            else
+                            {
+                                if (earningRow < earnings.Count &&
+                                    !string.IsNullOrWhiteSpace(earningPriceEpisodeIdentifier))
+                                {
+                                    if (earningPriceEpisodeIdentifier !=
+                                        currentPriceEpisodeIdentifier)
+                                    {
+                                        amount = decimal.Zero;
+                                    }
+                                }
+
+                                newValues.SetValue(p, amount);
+                            }
+                        }
+
+                        /*
+                        for (var p = 1; p < 13; p++)
+                        {
                             var amount = p >= episodeStart.Period && p <= episodeLastPeriod ||
                                          (PeriodisedValuesForBalancingAndCompletion().Contains(currentValues.AttributeName) && p > episodeLastPeriod)
                                 ? currentValues.GetValue(p)
                                 : 0;
                             newValues.SetValue(p, amount);
                         }
+                        */
                     }
                     else // put everything as is for previous years
                     {
@@ -483,7 +519,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (contractType == 0)
                     contractType = CurrentIlr[0].ContractType;
 
-                return contractType == Model.Core.Entities.ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
+                return contractType == ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
             }
 
             byte LastOnProgPeriod(PriceEpisode currentPriceEpisode)
@@ -800,12 +836,34 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             expectedPayments = SetProviderPaymentAccountIds(providerCurrentIlr, expectedPayments);
 
             var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
-            var contractType = providerCurrentIlr == null
-                ? providerLearners.First().Aims.First().PriceEpisodes.First().ContractType
-                : providerCurrentIlr.First().ContractType;
+            var contractType = GetContractType(expectedPayments, CurrentCollectionPeriod, providerCurrentIlr,
+                providerLearners);
 
             var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Recorded payments check failed");
+        }
+
+        private ContractType GetContractType(List<ProviderPayment> expectedPayments, CollectionPeriod currentCollectionPeriod, List<Training> providerCurrentIlr, List<Learner> providerLearners)
+        {
+            if (expectedPayments.Any())
+            {
+                var priceEpisodeIdentifier = expectedPayments.First().PriceEpisodeIdentifier;
+
+                if (!string.IsNullOrWhiteSpace(priceEpisodeIdentifier))
+                {
+                    var matchingPriceEpisode = CurrentPriceEpisodes.FirstOrDefault(p => p.PriceEpisodeId == priceEpisodeIdentifier);
+
+                    if (matchingPriceEpisode != null)
+                    {
+                        return matchingPriceEpisode.ContractType;
+                    }
+                }
+
+            }
+
+            return providerCurrentIlr == null
+                ? providerLearners.First().Aims.First().PriceEpisodes.First().ContractType
+                : providerCurrentIlr.First().ContractType;
         }
 
         private List<ProviderPayment> SetProviderPaymentAccountIds(List<Training> ilr, List<ProviderPayment> expectedPayments)
@@ -816,12 +874,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private void SetProviderPaymentAccountId(List<Training> ilr, ProviderPayment expectedPayment)
         {
-            var contractType = EnumHelper.GetContractType(ilr, CurrentPriceEpisodes);
-            if (contractType == Model.Core.Entities.ContractType.Act1)
+            var contractType = EnumHelper.GetContractTypes(ilr, CurrentPriceEpisodes);
+            if (contractType.Any(x => x == ContractType.Act1))
             {
                 expectedPayment.AccountId = string.IsNullOrWhiteSpace(expectedPayment.Employer)
-                               ? TestSession.Employer.AccountId
-                               : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+                    ? TestSession.Employer.AccountId
+                    : expectedPayment.Employer.ToLowerInvariant() == "no employer"
+                        ? default(long?)
+                        : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
             }
         }
 

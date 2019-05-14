@@ -27,5 +27,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public string Employer { get; set; }
         public long? AccountId { get; set; }
         public int? StandardCode { get; set; }
+
+        public string PriceEpisodeIdentifier { get; set; }
     }
 }

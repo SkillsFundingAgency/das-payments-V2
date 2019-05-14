@@ -135,6 +135,34 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             }
         }
 
+        public static List<ContractType> GetContractTypes(List<Training> currentIlr, List<Price> priceEpisodes)
+        {
+            List<ContractType> contractTypes;
+
+            if (currentIlr == null || !currentIlr.Any())
+            {
+                if (priceEpisodes == null) throw new Exception("No valid current Price Episodes found");
+
+                contractTypes = priceEpisodes.Select(x => x.ContractType).Distinct().ToList();
+            }
+            else
+            {
+                if (priceEpisodes.Count > 1)
+                {
+                    contractTypes = priceEpisodes.Select(x => x.ContractType).Distinct().ToList();
+                }
+                else
+                {
+                    contractTypes = new List<ContractType>
+                    {
+                        currentIlr.Last().ContractType
+                    };
+                }
+            }
+
+            return contractTypes;
+        }
+
         public static ContractType GetContractType(List<Training> currentIlr, List<Price> priceEpisodes)
         {
             ContractType contractType;

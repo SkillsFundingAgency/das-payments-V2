@@ -435,6 +435,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1233,6 +1238,10 @@
     <None Include="Tests\Employer Change of Circumstances\16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
