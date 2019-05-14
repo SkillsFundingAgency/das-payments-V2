@@ -13,6 +13,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
@@ -52,11 +53,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             foreach (var learnerId in learnerIds)
             {
                 var learner = testSession.GetLearner(provider.Ukprn, learnerId);
-                var learnerEarnings = expectedDataLockErrorsSpec.Where(x => x.LearnerId == learnerId);
-                var earningPerTransactionTypes = learnerEarnings.GroupBy(x => x.TransactionType);
+                var learnerEarnings = expectedDataLockErrorsSpec.Where(x => x.LearnerId == learnerId).ToList();
+                var groupedEarningPerTransactionTypes = learnerEarnings.GroupBy(x => x.TransactionType);
 
                 var earningFailedDataLockEvent = new EarningFailedDataLockMatching
                 {
+                    CollectionPeriod = collectionPeriod,
                     Ukprn = provider.Ukprn,
                     Learner = new Model.Core.Learner
                     {
@@ -64,24 +66,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     },
                     LearningAim = new LearningAim
                     {
-                        // framework code
-                        // programme type
-                        // pathway code
-                    }
+                        ProgrammeType = learnerEarnings.First().ProgrammeType,
+                        StandardCode = learnerEarnings.First().StandardCode
+                    },
+                    OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 };
 
-                foreach (var earningPerTransactionType in earningPerTransactionTypes)
+                foreach (var earningPerTransactionTypes in groupedEarningPerTransactionTypes)
                 {
-                    var earningPerPeriods = earningPerTransactionType.GroupBy(x => x.DeliveryPeriod);
+                    var earningPerPeriods = earningPerTransactionTypes.GroupBy(x => x.DeliveryPeriod);
 
                     var earningPeriods = new List<EarningPeriod>();
                     foreach (var earningPerPeriod in earningPerPeriods)
                     {
                         earningPeriods.Add(new EarningPeriod
                         {
-                            Period = new CollectionPeriodBuilder().WithSpecDate(earningPerPeriod.Key).Build().Period,
+                            Period = new CollectionPeriodBuilder().WithDate(earningPerPeriod.Key.ToDate()).Build().Period,
                             DataLockFailures = earningPerPeriod.Select(x => new DataLockFailure
                             {
+                                ApprenticeshipId = learnerEarnings.First().ApprenticeshipId,
                                 DataLockError = x.ErrorCode,
                                 ApprenticeshipPriceEpisodeIds = new List<long>()
                             }).ToList()
@@ -90,7 +93,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     earningFailedDataLockEvent.OnProgrammeEarnings.Add(new OnProgrammeEarning
                     {
-                        Type = (OnProgrammeEarningType)earningPerTransactionType.Key,
+                        Type = (OnProgrammeEarningType)earningPerTransactionTypes.Key,
                         Periods = earningPeriods.AsReadOnly()
                     });
                 }
@@ -105,7 +108,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             if (expectedEvent.CollectionPeriod.Period != actualEvent.CollectionPeriod.Period ||
                 expectedEvent.CollectionPeriod.AcademicYear != actualEvent.CollectionPeriod.AcademicYear ||
-                expectedEvent.Learner.Uln != actualEvent.Learner.Uln)
+                expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
+                expectedEvent.LearningAim.ProgrammeType != actualEvent.LearningAim.ProgrammeType ||
+                expectedEvent.LearningAim.StandardCode != actualEvent.LearningAim.StandardCode)
                 return false;
 
             if (!MatchOnProgrammeEarnings(expectedEvent as DataLockEvent, actualEvent as DataLockEvent))
@@ -160,8 +165,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var expectedDataLockFailure in expectedDataLockFailures)
             {
-                if (actualDataLockFailures.All(x => x.DataLockError != expectedDataLockFailure.DataLockError))
+                var actualDataLockFailure = actualDataLockFailures.FirstOrDefault(x => x.DataLockError == expectedDataLockFailure.DataLockError);
+
+                if (actualDataLockFailure?.ApprenticeshipId == null ||
+                    actualDataLockFailure.ApprenticeshipId.Value != expectedDataLockFailure.ApprenticeshipId ||
+                    actualDataLockFailure.ApprenticeshipPriceEpisodeIds == null ||
+                    !actualDataLockFailure.ApprenticeshipPriceEpisodeIds.Any())
                     return false;
+
             }
 
             return true;

@@ -275,7 +275,6 @@
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Steps\DataLockSteps.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
@@ -768,6 +767,26 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\DLOCK01 when no matching record found for the UKPRN_PV2-662.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DLOCK01 when no matching record found for the UKPRN_PV2-662.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\DLOCK02 when no matching record found for the ULN_PV2-663.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DLOCK02 when no matching record found for the ULN_PV2-663.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\DLOCK09 when no matching record found for the start date_PV2-668.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DLOCK09 when no matching record found for the start date_PV2-668.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\DLOCK12 when the employer pauses payments for a learner on a commitment_PV2-713.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DLOCK12 when the employer pauses payments for a learner on a commitment_PV2-713.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1497,6 +1516,22 @@
     <None Include="Tests\Learning Support Funding\PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\DLOCK01 when no matching record found for the UKPRN_PV2-662.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DLOCK01 when no matching record found for the UKPRN_PV2-662.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\DLOCK02 when no matching record found for the ULN_PV2-663.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DLOCK02 when no matching record found for the ULN_PV2-663.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\DLOCK09 when no matching record found for the start date_PV2-668.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DLOCK09 when no matching record found for the start date_PV2-668.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\DLOCK12 when the employer pauses payments for a learner on a commitment_PV2-713.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DLOCK12 when the employer pauses payments for a learner on a commitment_PV2-713.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

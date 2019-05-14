@@ -12,5 +12,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public string DeliveryPeriod { get; set; }
         public TransactionType TransactionType { get; set; }
         public DataLockErrorCode ErrorCode { get; set; }
+        public  int StandardCode { get; set; }
+        public int ProgrammeType { get; set; }
+
+        public long ApprenticeshipId { get; set; }
     }
 }
