@@ -1,3 +1,4 @@
+@ignore
 Feature: 5% Contribution from April 2019 PV2-906
 As a provider,
 I want a Levy learner, starting prior to Apr 2019, where learner takes a planned break and resumes in Apr 2019, and moves into co-funding on 10% contribution

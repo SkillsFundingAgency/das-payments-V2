@@ -1,3 +1,4 @@
+@ignore
 Feature: 5% Contribution from April 2019 PV2-895
 As a provider,
 I want a Non Levy learner, starting prior to Apr 2019, taking a planned break and resuming from Apr 2019, where completion payment remains at 10% contribution
