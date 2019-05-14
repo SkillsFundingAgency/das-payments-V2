@@ -9,8 +9,8 @@ Scenario Outline: 2 levy learners 2 employers 1 provider not enough levy PV2-268
 	And  the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 	And the following commitments exist
 		| Identifier     	| Employer   | Learner ID | priority | start date                | end date                     | agreed price |
-		| Apprentiiship 1	| employer 1 | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
-		| Apprentiiship 2	| employer 2 | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
+		| Apprenticeship 1	| employer 1 | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
+		| Apprenticeship 2	| employer 2 | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
 	And the provider previously submitted the following learner details
 		| Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
 		| learner a  | 01/Sep/Last Academic Year | 12 months        | 7500                 | 01/Sep/Last Academic Year           |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |

@@ -151,7 +151,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
-                    new ApprenticeshipPriceEpisodeModel {Id = 50},
+                    new ApprenticeshipPriceEpisodeModel {Id = 50, Removed =  true},
                     new ApprenticeshipPriceEpisodeModel {Id = 51},
                     new ApprenticeshipPriceEpisodeModel {Id = 52},
                     new ApprenticeshipPriceEpisodeModel {Id = 53},
@@ -201,7 +201,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                   .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
             result.MatchedPriceEpisode.Should().NotBeNull();
-            result.MatchedPriceEpisode.Id.Should().Be(51);
+            result.MatchedPriceEpisode.Id.Should().Be(52);
         }
 
         [Test]
@@ -275,7 +275,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
             dataLockValidationModel.Apprenticeship = new ApprenticeshipModel
             {
-                Id =  100,
+                Id = 100,
                 ApprenticeshipPriceEpisodes = apprenticeshipPriceEpisodes
             };
             startDateValidator
@@ -312,7 +312,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             result.MatchedPriceEpisode.Should().BeNull();
             result.DataLockFailures.Should().HaveCount(3);
             result.DataLockFailures.All(x => x.ApprenticeshipId == 100).Should().BeTrue();
-            result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_09 && x.ApprenticeshipPriceEpisodeIds.All( o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
+            result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_09 && x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
             result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_07 && x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
             result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_12 && x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
         }
