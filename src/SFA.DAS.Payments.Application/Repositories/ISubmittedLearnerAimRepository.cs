@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.Application.Repositories
                 where 
                     [AcademicYear] = @academicYear 
                     and [CollectionPeriod] = @period 
-                    and [IlrSubmissionDateTime] < @newIlrSubmissionDate",
+                    and [IlrSubmissionDateTime] <= @newIlrSubmissionDate",
                 cancellationToken,
                 new {academicYear, period, newIlrSubmissionDate}).ConfigureAwait(false);
         }
