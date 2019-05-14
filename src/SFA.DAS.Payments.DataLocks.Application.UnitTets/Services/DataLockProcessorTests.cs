@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .Setup(x => x.ValidatePeriods(apprenticeships[0].Uln,
                                                 earningEvent.PriceEpisodes,
                                                 earningEvent.OnProgrammeEarnings[0],
-                                                apprenticeships))
+                                                apprenticeships, TODO))
                 .Returns(() => 
                     (new List<EarningPeriod> {earningEvent.OnProgrammeEarnings.FirstOrDefault()?.Periods.FirstOrDefault()}, 
                     new List<EarningPeriod>()
@@ -150,7 +150,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                  .Setup(x => x.ValidatePeriods(apprenticeships[0].Uln, 
                     It.IsAny<List<PriceEpisode>>(),
                     It.IsAny<OnProgrammeEarning>(),
-                    It.IsAny<List<ApprenticeshipModel>>()))
+                    It.IsAny<List<ApprenticeshipModel>>(), TODO))
                 .Returns(() => (new List<EarningPeriod>
                 {
                    testEarningEvent.OnProgrammeEarnings[0].Periods[0]

@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             foreach (var onProgrammeEarning in earningEvent.OnProgrammeEarnings)
             {
-                var validationResult = onProgrammePeriodsValidationProcessor.ValidatePeriods(earningEvent.Learner.Uln, earningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln);
+                var validationResult = onProgrammePeriodsValidationProcessor.ValidatePeriods(earningEvent.Learner.Uln, earningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln, earningEvent.LearningAim);
 
                 if (validationResult.ValidPeriods.Any())
                 {

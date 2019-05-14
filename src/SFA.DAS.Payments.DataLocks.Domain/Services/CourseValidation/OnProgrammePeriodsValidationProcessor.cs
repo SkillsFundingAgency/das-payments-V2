@@ -17,7 +17,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             this.courseValidationProcessor = courseValidationProcessor ?? throw new ArgumentNullException(nameof(courseValidationProcessor));
         }
 
-        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long uln, List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning, List<ApprenticeshipModel> apprenticeships)
+        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long uln,
+            List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning,
+            List<ApprenticeshipModel> apprenticeships, LearningAim aim)
         {
             var validPeriods = new List<EarningPeriod>();
             var invalidPeriods = new List<EarningPeriod>();
@@ -37,7 +39,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                         EarningPeriod = period,
                         Apprenticeship = apprenticeship,
                         PriceEpisode = priceEpisodes.SingleOrDefault(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
-                                       ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}")
+                                       ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}"),
+                        Aim = aim,
                     };
 
                     var validationResult = courseValidationProcessor.ValidateCourse(validationModel);

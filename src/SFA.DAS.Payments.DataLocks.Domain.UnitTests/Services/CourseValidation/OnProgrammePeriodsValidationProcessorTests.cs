@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
 
-            var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes, earning, apprenticeships);
+            var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes, earning, apprenticeships, null);
             periods.ValidPeriods.Count.Should().Be(1);
             periods.ValidPeriods.All(p => p.ApprenticeshipPriceEpisodeId == 90).Should().Be(true);
         }
@@ -109,7 +109,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
 
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,
-                earning, apprenticeships);
+                earning, apprenticeships, null);
             periods.ValidPeriods.Count.Should().Be(2);
             periods.ValidPeriods.Any(p =>  p.ApprenticeshipPriceEpisodeId == 90 && p.AccountId == 21).Should().Be(true);
             periods.ValidPeriods.Any(p =>  p.ApprenticeshipPriceEpisodeId == 96 && p.AccountId == 22).Should().Be(true);
@@ -131,7 +131,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
 
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,
-                earning, apprenticeships);
+                earning, apprenticeships, null);
             periods.InValidPeriods.Count.Should().Be(1);
             periods.InValidPeriods.All(p => p.DataLockFailures[0].DataLockError == DataLockErrorCode.DLOCK_03).Should().BeTrue();
         }
@@ -151,7 +151,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
 
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,
-                earning, apprenticeships);
+                earning, apprenticeships, null);
             periods.ValidPeriods.Count.Should().Be(1);
         }
     }
