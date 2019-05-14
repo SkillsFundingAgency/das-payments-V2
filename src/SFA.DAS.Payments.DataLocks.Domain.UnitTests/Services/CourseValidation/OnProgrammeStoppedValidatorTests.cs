@@ -23,10 +23,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
 
-        [Test]
-        public void WhenStopDateIsInAPriorPeriod_ThenDLOCK_10()
+        [TestCase("When stop date is in a prior period then produce DLOCK_10", 1, "2019/7/31")]
+        [TestCase("When stop date is mid-month then produce DLOCK_10", 1, "2019/8/20")]
+        [TestCase("When stop date is in the middle of period 6 then produce DLOCK_10", 6, "2020/1/20")]
+        [TestCase("When stop date is at the end of period 6 and we are testing period 7 then produce DLOCK_10", 7, "2020/1/31")]
+        public void ScenariosThatProduceDLOCK_10(string errorMessage, byte testPeriod, DateTime commitmentStopDate)
         {
-            period.Period = 1;
+            period.Period = testPeriod;
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier, },
@@ -41,7 +44,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             Id = 100,
                         },
                     },
-                    StopDate = new DateTime(2019,07,31), // Last day of 1819
+                    StopDate = commitmentStopDate,
                     Status = ApprenticeshipStatus.Stopped,
                 },
                 AcademicYear = 1920,
@@ -50,45 +53,19 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
             var validator = new OnProgrammeStoppedValidator();
             var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_10);
-            result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
+            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_10, errorMessage);
+            result.ApprenticeshipPriceEpisodes.Should().BeEmpty(errorMessage);
         }
 
-        [Test]
-        public void WhenStopDateIsMidMonth_ThenDLOCK_10()
-        {
-            period.Period = 1;
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier, },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 100,
-                        },
-                    },
-                    StopDate = new DateTime(2019, 08, 20), 
-                    Status = ApprenticeshipStatus.Stopped,
-                },
-                AcademicYear = 1920,
-                TransactionType = OnProgrammeEarningType.Learning,
-            };
 
-            var validator = new OnProgrammeStoppedValidator();
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_10);
-            result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
-        }
 
-        [Test]
-        public void WhenStopDateIsTheLastDayOfTheMonth_ThenNoDatalock()
+        [TestCase("When stop date is the last day of the month then no datalock", 1, "2019/8/31")]
+        [TestCase("When stop date occurs at the end of period 6 then no datalock", 6, "2020/1/31")]
+        [TestCase("When stop date occurs in the middle of period 6 and we are testing period 5 then no datalock", 5, "2020/1/31")]
+        [TestCase("When stop date is in a future period then no datalock", 1, "2020/8/31")]
+        public void ScenariosThatDoNotProduceDatalocks(string errorMessage, byte testPeriod, DateTime commitmentStopDate)
         {
-            period.Period = 1;
+            period.Period = testPeriod;
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
@@ -104,7 +81,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             Id = 100,
                         },
                     },
-                    StopDate = new DateTime(2019, 08, 31), 
+                    StopDate = commitmentStopDate, 
                 },
                 AcademicYear = 1920,
                 TransactionType = OnProgrammeEarningType.Learning,
@@ -112,167 +89,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
             var validator = new OnProgrammeStoppedValidator();
             var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
-            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
-        }
-
-        [Test]
-        public void WhenStopDateOccursInTheMiddleOfPeriod6_ThenDLOCK_10()
-        {
-            period.Period = 6;
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier, },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 100,
-                        },
-                    },
-                    StopDate = new DateTime(2020, 01, 20), 
-                    Status = ApprenticeshipStatus.Stopped,
-                },
-                AcademicYear = 1920,
-                TransactionType = OnProgrammeEarningType.Learning,
-            };
-
-            var validator = new OnProgrammeStoppedValidator();
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_10);
-            result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
-        }
-
-        [Test]
-        public void WhenStopDateOccursAtTheEndOfPeriod6AndWeAreTestingPeriod7_ThenDLOCK_10()
-        {
-            period.Period = 7;
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier, },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 100,
-                        },
-                    },
-                    StopDate = new DateTime(2020, 01, 31), 
-                    Status = ApprenticeshipStatus.Stopped,
-                },
-                AcademicYear = 1920,
-                TransactionType = OnProgrammeEarningType.Learning,
-            };
-
-            var validator = new OnProgrammeStoppedValidator();
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_10);
-            result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
-        }
-
-        [Test]
-        public void WhenStopDateOccursAtTheEndOfPeriod6_ThenNoDatalock()
-        {
-            period.Period = 6;
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    Status = ApprenticeshipStatus.Stopped,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 100,
-                        },
-                    },
-                    StopDate = new DateTime(2020, 01, 31), 
-                },
-                AcademicYear = 1920,
-                TransactionType = OnProgrammeEarningType.Learning,
-            };
-
-            var validator = new OnProgrammeStoppedValidator();
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
-            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
-        }
-
-        [Test]
-        public void WhenStopDateOccursInTheMiddleOfPeriod6AndWeAreTestingPeriod5_ThenNoDatalock()
-        {
-            period.Period = 5;
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    Status = ApprenticeshipStatus.Stopped,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 100,
-                        },
-                    },
-                    StopDate = new DateTime(2020, 01, 31), 
-                },
-                AcademicYear = 1920,
-                TransactionType = OnProgrammeEarningType.Learning,
-            };
-
-            var validator = new OnProgrammeStoppedValidator();
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
-            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
-        }
-
-        [Test]
-        public void WhenStopDateIsInAFuturePeriod_ThenNoDatalock()
-        {
-            period.Period = 1;
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    Status = ApprenticeshipStatus.Stopped,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 100,
-                        },
-                    },
-                    StopDate = new DateTime(2020, 08, 01), 
-                },
-                AcademicYear = 1920,
-                TransactionType = OnProgrammeEarningType.Learning,
-            };
-
-            var validator = new OnProgrammeStoppedValidator();
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
-            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
+            result.DataLockErrorCode.Should().BeNull(errorMessage);
+            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1, errorMessage);
+            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100, errorMessage);
         }
     }
 }
