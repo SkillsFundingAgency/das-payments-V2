@@ -200,6 +200,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             apprenticeshipPauseValidator
                   .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
+            result.DataLockFailures.Should().BeEmpty();
             result.MatchedPriceEpisode.Should().NotBeNull();
             result.MatchedPriceEpisode.Id.Should().Be(52);
         }
