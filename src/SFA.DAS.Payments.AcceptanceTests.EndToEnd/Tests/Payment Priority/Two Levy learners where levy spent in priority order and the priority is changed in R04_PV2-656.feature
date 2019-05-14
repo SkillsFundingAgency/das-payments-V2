@@ -6,8 +6,8 @@ Scenario Outline: Two levy learners, full levy available for one learner, partia
 Given the employer levy account balance in collection period  <Collection_Period> is <Levy_Balance>
 And the following commitments exist
 	| Identifier         | Learner ID | priority | start date                   | end date                  | agreed price |
-	| Apprentiiship 1    | learner a  | 1        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 7500         |
-	| Apprentiiship 2    | learner b  | 2        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |
+	| Apprenticeship 1    | learner a  | 1        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 7500         |
+	| Apprenticeship 2    | learner b  | 2        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |
 And the provider previously submitted the following learner details
 	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 	| learner a  | 01/Aug/Current Academic Year | 12 months        | 7500                 | 01/Aug/Current Academic Year        |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
