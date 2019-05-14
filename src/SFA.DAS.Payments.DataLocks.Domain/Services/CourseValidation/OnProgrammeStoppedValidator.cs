@@ -7,21 +7,21 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class OnProgStoppedValidator : BaseCourseValidator, ICourseValidator
+    public class OnProgrammeStoppedValidator : BaseCourseValidator, ICourseValidator
     {
         protected override DataLockErrorCode DataLockerErrorCode { get; } = DataLockErrorCode.DLOCK_10;
 
         protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(
             DataLockValidationModel dataLockValidationModel)
         {
-            // Only deal with Transactin Type 1
-            if (dataLockValidationModel.TransactionType != OnProgrammeEarningType.Learning)
+            // Only DLOCK_10 when apprenticeship is stopped
+            if (dataLockValidationModel.Apprenticeship.Status != ApprenticeshipStatus.Stopped)
             {
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }
 
-            // Only valid to DLOCK_10 when apprenticeship is stopped
-            if (dataLockValidationModel.Apprenticeship.Status != ApprenticeshipStatus.Stopped)
+            // Only deal with Transactin Type 1 (On Programme)
+            if (dataLockValidationModel.TransactionType != OnProgrammeEarningType.Learning)
             {
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }
