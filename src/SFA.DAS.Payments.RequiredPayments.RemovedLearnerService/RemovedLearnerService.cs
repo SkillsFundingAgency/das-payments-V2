@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RemovedLearnerService
 
         public async Task HandleIlrSubmittedEvent(short academicYear, byte collectionPeriod, DateTime ilrSubmissionDateTime)
         {
-            return;
+            
         }
     }
 }
