@@ -333,12 +333,14 @@
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
     <Compile Include="LearnerMutators\FM36Base.cs" />
+    <Compile Include="LearnerMutators\Framework403Learner.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_277.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_278.cs" />
     <Compile Include="LearnerMutators\IlrDcService.cs" />
     <Compile Include="LearnerMutators\LearnerMutatorFactory.cs" />
     <Compile Include="LearnerMutators\LearnerRequest.cs" />
     <Compile Include="LearnerMutators\Framework593Learner.cs" />
+    <Compile Include="LearnerMutators\NonLevy\FrameworkUplift\FM36_487.cs" />
     <Compile Include="Mapping\IlrProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
@@ -415,10 +417,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy Learner over funding band cap - PV2-529.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\Framework-and-disadvantaged-uplift-on-time-PV2-487.feature.cs">
+    <Compile Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-4871.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Framework-and-disadvantaged-uplift-on-time-PV2-487.feature</DependentUpon>
+      <DependentUpon>Framework-uplift-on-time-PV2-487.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Disadvantaged Uplift\Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1233,9 +1235,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy Learner over funding band cap - PV2-529.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Disadvantaged Uplift\Framework-and-disadvantaged-uplift-on-time-PV2-487.feature">
+    <None Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-487.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Framework-and-disadvantaged-uplift-on-time-PV2-487.feature.cs</LastGenOutput>
+      <LastGenOutput>Framework-uplift-on-time-PV2-4871.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantaged Uplift\Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
