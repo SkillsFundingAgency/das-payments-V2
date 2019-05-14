@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.Application.Repositories
                 using (var bulkCopy = new SqlBulkCopy(sqlConnection))
                 using (var reader = ObjectReader.Create(list))
                 {
-                    foreach (var columnMap in bulkCopyConfig.GetColumns)
+                    foreach (var columnMap in bulkCopyConfig.Columns)
                     {
                         bulkCopy.ColumnMappings.Add(columnMap.Key, columnMap.Value);
                     }

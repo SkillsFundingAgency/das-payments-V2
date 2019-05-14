@@ -6,10 +6,10 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
 {
     public class SubmittedLearnerAimBulkCopyConfiguration : IBulkCopyConfiguration<SubmittedLearnerAimModel>
     {
-        private static readonly IDictionary<string, string> Columns = typeof(SubmittedLearnerAimModel).GetProperties().ToDictionary(p => p.Name, p => p.Name);
+        private static readonly IDictionary<string, string> ColumnList = typeof(SubmittedLearnerAimModel).GetProperties().ToDictionary(p => p.Name, p => p.Name);
 
         public string TableName => "[Payments2].[SubmittedLearnerAim]";
 
-        public IDictionary<string, string> GetColumns => Columns;
+        public IDictionary<string, string> Columns => ColumnList;
     }
 }
