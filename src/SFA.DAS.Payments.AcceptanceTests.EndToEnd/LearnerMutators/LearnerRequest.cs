@@ -48,6 +48,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         public string SfaContributionPercentage { get; set; }
 
         public ContractType ContractType { get; set; }
+
+        public long EmployerContribution
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(SfaContributionPercentage) || !SfaContributionPercentage.Contains("%") || !int.TryParse(SfaContributionPercentage.Split('%')[0],
+                        out _))
+                {
+                    throw new InvalidCastException("SfaContributionPercentage is not in the format: xx% (e.g. 90%)");
+                }
+
+                var percentage = decimal.Parse((100 - int.Parse(SfaContributionPercentage.Split('%')[0])).ToString());
+
+                var employerContribution = decimal.Parse(TotalTrainingPrice.Value.ToString()) * (percentage / 100);
+
+                return decimal.ToInt64(employerContribution);
+            }
+        }
     }
 
     public static class LearnerRequestExtension

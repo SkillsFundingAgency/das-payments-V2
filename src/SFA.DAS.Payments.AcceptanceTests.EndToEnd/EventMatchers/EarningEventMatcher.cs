@@ -238,6 +238,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var expectedEventIncentiveEarnings = expectedEvent.IncentiveEarnings ?? new List<IncentiveEarning>();
             var actualEventIncentiveEarnings = actualEvent.IncentiveEarnings ?? new List<IncentiveEarning>();
 
+            // Remove any all 0 value records from the "last academic year"
+            foreach (var actualIncentiveEarning in actualEventIncentiveEarnings)
+            {
+                // assume 24 periods means 2 years of data
+                if (actualIncentiveEarning.Periods.Count() == 24)
+                {
+                    // assume the first 12 are the previous year (sequencing is taken care of outside of this).
+                    if (actualIncentiveEarning.Periods.Take(12).All(p => p.Amount == 0))
+                    {
+                        var secondYear = actualIncentiveEarning.Periods.Skip(12).Take(12);
+                        actualIncentiveEarning.Periods = new ReadOnlyCollection<EarningPeriod>(secondYear.ToList());
+                    }
+                }
+            }
+
             foreach (var expectedEarning in expectedEventIncentiveEarnings)
             {
                 var actualEarning = actualEventIncentiveEarnings.FirstOrDefault(a => a.Type == expectedEarning.Type);
