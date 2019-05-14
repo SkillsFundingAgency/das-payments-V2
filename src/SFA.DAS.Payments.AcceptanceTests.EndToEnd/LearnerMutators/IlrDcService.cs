@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -51,7 +52,7 @@
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
 
-            var learnerRequests = mapper.Map<IEnumerable<LearnerRequest>>(currentIlr);
+            var learnerRequests = mapper.Map<List<LearnerRequest>>(currentIlr);
             var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learnerRequests);
 
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
@@ -63,13 +64,13 @@
             await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
         }
 
-        private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<LearnerRequest> currentIlr)
+        private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, List<LearnerRequest> currentIlr)
         {
             XNamespace xsdns = tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
             var learners = xDoc.Descendants(xsdns + "Learner");
 
-            for (var i = 0; i < currentIlr.Count(); i++)
+            for (var i = 0; i < currentIlr.Count; i++)
             {
                 var request = currentIlr.Skip(i).Take(1).First();
                 var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerId);
