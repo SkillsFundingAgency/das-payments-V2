@@ -151,7 +151,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
-                    new ApprenticeshipPriceEpisodeModel {Id = 50},
+                    new ApprenticeshipPriceEpisodeModel {Id = 50, Removed =  true},
                     new ApprenticeshipPriceEpisodeModel {Id = 51},
                     new ApprenticeshipPriceEpisodeModel {Id = 52},
                     new ApprenticeshipPriceEpisodeModel {Id = 53},
@@ -201,7 +201,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                   .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
             result.MatchedPriceEpisode.Should().NotBeNull();
-            result.MatchedPriceEpisode.Id.Should().Be(51);
+            result.MatchedPriceEpisode.Id.Should().Be(52);
         }
 
         [Test]
