@@ -74,15 +74,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                 foreach (var earningPerTransactionTypes in groupedEarningPerTransactionTypes)
                 {
-                    var earningPerPeriods = earningPerTransactionTypes.GroupBy(x => x.DeliveryPeriod);
+                    var groupedEarningPerPeriods = earningPerTransactionTypes.GroupBy(x => x.DeliveryPeriod);
 
                     var earningPeriods = new List<EarningPeriod>();
-                    foreach (var earningPerPeriod in earningPerPeriods)
+                    foreach (var earningPerPeriods in groupedEarningPerPeriods)
                     {
                         earningPeriods.Add(new EarningPeriod
                         {
-                            Period = new CollectionPeriodBuilder().WithDate(earningPerPeriod.Key.ToDate()).Build().Period,
-                            DataLockFailures = earningPerPeriod.Select(x => new DataLockFailure
+                            PriceEpisodeIdentifier = earningPerPeriods.First().PriceEpisodeIdentifier,
+                            Period = new CollectionPeriodBuilder().WithDate(earningPerPeriods.Key.ToDate()).Build().Period,
+                            DataLockFailures = earningPerPeriods.Select(x => new DataLockFailure
                             {
                                 ApprenticeshipId = learnerEarnings.First().ApprenticeshipId,
                                 DataLockError = x.ErrorCode,
@@ -150,6 +151,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 var actualEarningPeriod = actualEarningPeriods.FirstOrDefault(x => x.Period == expectedEarningPeriod.Period);
                 if (actualEarningPeriod == null)
                     return false;
+
+                if (actualEarningPeriod.PriceEpisodeIdentifier != expectedEarningPeriod.PriceEpisodeIdentifier)
+                    return false;
+
 
                 if (!MatchDataLockFailures(actualEarningPeriod.DataLockFailures, expectedEarningPeriod.DataLockFailures))
                     return false;

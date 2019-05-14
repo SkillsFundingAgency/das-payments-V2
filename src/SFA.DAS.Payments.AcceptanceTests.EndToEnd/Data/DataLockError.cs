@@ -16,5 +16,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public int ProgrammeType { get; set; }
 
         public long ApprenticeshipId { get; set; }
+
+        public string PriceEpisodeIdentifier { get; set; }
     }
 }
