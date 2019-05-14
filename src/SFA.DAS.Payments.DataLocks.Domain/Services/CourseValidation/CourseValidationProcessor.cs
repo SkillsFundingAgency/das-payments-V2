@@ -23,22 +23,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             foreach (var courseValidator in courseValidators)
             {
                 var validatorResult = courseValidator.Validate(dataLockValidationModel);
-                var apprenticeshipPriceEpisodes = validatorResult.ApprenticeshipPriceEpisodes.Where(o => !o.Removed).ToList();
 
                 if (validatorResult.DataLockErrorCode.HasValue)
                 {
                     dataLockFailures.Add(new DataLockFailure
                     {
-                        DataLockError =  validatorResult.DataLockErrorCode.Value,
-                        ApprenticeshipPriceEpisodeIds = apprenticeshipPriceEpisodes.Select(x => x.Id).ToList()
+                        DataLockError = validatorResult.DataLockErrorCode.Value,
+                        ApprenticeshipPriceEpisodeIds = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList()
                     });
                 }
                 else
                 {
-                    validApprenticeshipPriceEpisodes.AddRange(apprenticeshipPriceEpisodes);
+                    var validPriceEpisodes = validatorResult.ApprenticeshipPriceEpisodes.Where(o => !o.Removed).ToList();
+                    validApprenticeshipPriceEpisodes.AddRange(validPriceEpisodes);
                 }
             }
-            
+
             var result = new CourseValidationResult
             {
                 DataLockFailures = dataLockFailures,

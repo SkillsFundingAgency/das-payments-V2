@@ -88,9 +88,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     )).Verifiable();
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
-            var actual = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
+            var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
 
-            var payableEarning = actual[0] as PayableEarningEvent;
+            dataLockEvents.Should().NotBeNull();
+            dataLockEvents.Should().HaveCount(1);
+
+            var payableEarning = dataLockEvents[0] as PayableEarningEvent;
             payableEarning.Should().NotBeNull();
             payableEarning.OnProgrammeEarnings.Count.Should().Be(1);
             payableEarning.OnProgrammeEarnings.First().Periods.Count.Should().Be(1);
@@ -108,9 +111,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }).Verifiable();
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
-            var actual = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
-
-            var nonPayableEarningEvent = actual[0] as EarningFailedDataLockMatching;
+            var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
+            dataLockEvents.Should().NotBeNull();
+            dataLockEvents.Should().HaveCount(1);
+            var nonPayableEarningEvent = dataLockEvents[0] as EarningFailedDataLockMatching;
             nonPayableEarningEvent.Should().NotBeNull();
             nonPayableEarningEvent.OnProgrammeEarnings
                 .SelectMany(x => x.Periods)

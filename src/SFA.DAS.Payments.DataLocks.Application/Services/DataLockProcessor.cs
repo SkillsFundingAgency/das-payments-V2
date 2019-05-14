@@ -52,17 +52,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 dataLockEvents.Add(payableEarningEvent);
             }
 
-            if (onProgrammeEarning.InValidOnProgEarnings.Any())
+            if (onProgrammeEarning.InvalidOnProgEarnings.Any())
             {
                 var earningFailedDataLockEvent = mapper.Map<EarningFailedDataLockMatching>(earningEvent);
-                earningFailedDataLockEvent.OnProgrammeEarnings = onProgrammeEarning.InValidOnProgEarnings;
+                earningFailedDataLockEvent.OnProgrammeEarnings = onProgrammeEarning.InvalidOnProgEarnings;
                 dataLockEvents.Add(earningFailedDataLockEvent);
             }
 
             return dataLockEvents;
         }
 
-        private (List<OnProgrammeEarning> ValidOnProgEarnings, List<OnProgrammeEarning> InValidOnProgEarnings) GetOnProgrammeEarnings(ApprenticeshipContractTypeEarningsEvent earningEvent, List<ApprenticeshipModel> apprenticeshipsForUln)
+        private (List<OnProgrammeEarning> ValidOnProgEarnings, List<OnProgrammeEarning> InvalidOnProgEarnings) GetOnProgrammeEarnings(ApprenticeshipContractTypeEarningsEvent earningEvent, List<ApprenticeshipModel> apprenticeshipsForUln)
         {
             var validOnProgEarnings = new List<OnProgrammeEarning>();
             var invalidOnProgEarnings = new List<OnProgrammeEarning>();
