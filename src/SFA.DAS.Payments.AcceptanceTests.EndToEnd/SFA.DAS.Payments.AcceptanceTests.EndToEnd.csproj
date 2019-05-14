@@ -417,7 +417,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy Learner over funding band cap - PV2-529.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-4871.feature.cs">
+    <Compile Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-487.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Framework-uplift-on-time-PV2-487.feature</DependentUpon>
@@ -1237,7 +1237,7 @@
     </None>
     <None Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-487.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Framework-uplift-on-time-PV2-4871.feature.cs</LastGenOutput>
+      <LastGenOutput>Framework-uplift-on-time-PV2-487.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantaged Uplift\Non-Levy-On Framework-Disadvantage Uplift 1-10-paid-PV2-435.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
