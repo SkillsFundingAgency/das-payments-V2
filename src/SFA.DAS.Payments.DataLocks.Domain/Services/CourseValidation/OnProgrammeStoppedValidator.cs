@@ -38,11 +38,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         
         private DateTime CensusDateForPeriod(int period, int academicYear)
         {
-            if (PeriodToDate.ContainsKey((period, academicYear)))
-            {
-                return PeriodToDate[(period, academicYear)];
-            }
-
             var calendarMonth = (period < 6) ? period + 7 : period - 5;
             var year = (academicYear % 100) + 2000; // the second part of the academic year in yyyy format
 
@@ -54,11 +49,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             var day = DateTime.DaysInMonth(year, calendarMonth);
             var periodDate = new DateTime(year, calendarMonth, day);
             
-            PeriodToDate.Add((period, academicYear), periodDate);
-            
             return periodDate;
         }
-
-        private static readonly Dictionary<(int period, int academicYear), DateTime> PeriodToDate = new Dictionary<(int, int), DateTime>();
     }
 }
