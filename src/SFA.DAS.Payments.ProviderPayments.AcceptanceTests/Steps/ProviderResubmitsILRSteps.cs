@@ -55,8 +55,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
             };
             Console.WriteLine($"Sending the ilr submission event: {receivedProviderEarningsEvent.ToJson()}");
-            await MessageSession.Send(receivedProviderEarningsEvent).ConfigureAwait(false);
-            await Task.Delay(Config.TimeToWaitForCacheClearance).ConfigureAwait(false); //TODO: Find out why immediate retries aren't working in the services.
+            await MessageSession.Request<int>(receivedProviderEarningsEvent).ConfigureAwait(false);
         }
 
         private PaymentModel CreatePayment(FundingSourcePayment fundingSourcePayment, long jobId, DateTime? ilrSubmissionDate = null)

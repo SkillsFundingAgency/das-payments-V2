@@ -36,6 +36,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                     $"Processing Ilr Submitted Event for Message: {message.ToJson()}.");
                 await handleIlrSubmissionService.Handle(message, CancellationToken.None);
                 logger.LogInfo($"Successfully processed Ilr Submitted Event: {message.ToJson()}");
+                await context.Reply(0).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
