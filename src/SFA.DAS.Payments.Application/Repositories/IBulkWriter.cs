@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using FastMember;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -53,7 +52,6 @@ namespace SFA.DAS.Payments.Application.Repositories
                 list.Add(item);
             }
 
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
             using (var sqlConnection = new SqlConnection(connectionString))
             {
                 await sqlConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -74,7 +72,6 @@ namespace SFA.DAS.Payments.Application.Repositories
                 }
 
                 logger.LogDebug($"Saved {list.Count} records of type {typeof(TEntity).Name}");
-                scope.Complete();
             }
         }
     }
