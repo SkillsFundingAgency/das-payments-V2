@@ -34,6 +34,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RemovedLearnerService\SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.csproj" />
   </ItemGroup>
