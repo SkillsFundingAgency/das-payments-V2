@@ -10,7 +10,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForActor<RemovedLearnerService>())
                 using (ServiceFabricContainerFactory.CreateContainerForActor<RequiredPaymentsService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
