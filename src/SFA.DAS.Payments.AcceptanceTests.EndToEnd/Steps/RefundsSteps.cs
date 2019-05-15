@@ -109,9 +109,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             Task verifyIlr() => WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier);
 
-            var featureNumber = this.featureNumber.Extract();
-
-            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber, verifyIlr);
+            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber.Extract(), verifyIlr);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]
