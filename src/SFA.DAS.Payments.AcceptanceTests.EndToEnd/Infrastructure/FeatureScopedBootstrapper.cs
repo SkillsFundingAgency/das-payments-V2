@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             Builder.RegisterType<IlrDcService>().As<IIlrService>().InstancePerLifetimeScope();
             Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
 
-            Builder.Register((c, p) => new RequiredPaymentsCacheCleaner(c.Resolve<IApprenticeshipKeyService>(), MessageSession)).AsSelf();
+            Builder.Register((c, p) => new RequiredPaymentsCacheCleaner(c.Resolve<IApprenticeshipKeyService>(), MessageSession, c.Resolve<TestsConfiguration>())).AsSelf();
             Builder.RegisterModule<AutoMapperModule>();
         }
 
