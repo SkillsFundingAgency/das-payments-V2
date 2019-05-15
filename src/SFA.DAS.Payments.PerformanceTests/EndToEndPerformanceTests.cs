@@ -18,8 +18,13 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
+using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
+using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 
 namespace SFA.DAS.Payments.PerformanceTests
 {
@@ -75,6 +80,11 @@ namespace SFA.DAS.Payments.PerformanceTests
                 var configHelper = c.Resolve<TestsConfiguration>();
                 return new PaymentsDataContext(configHelper.PaymentsConnectionString);
             }).As<IPaymentsDataContext>().InstancePerDependency();
+            Builder.Register((c, p) =>
+            {
+                var configHelper = c.Resolve<TestsConfiguration>();
+                return new JobsDataContext(configHelper.PaymentsConnectionString);
+            }).InstancePerDependency();
             DcHelper.AddDcConfig(Builder);
 
             Container = Builder.Build();
@@ -98,12 +108,18 @@ namespace SFA.DAS.Payments.PerformanceTests
                 Console.WriteLine($"Using delivery time of: {DeliveryTime:O}");
             }
 
-            var learnerId = 1;
+            var learnerId = 0;
             foreach (var session in sessions)
             {
                 session.Learners.Clear();
                 session.Learners.AddRange(Enumerable.Range(1, providerLearnerCount)
-                    .Select(i => session.GenerateLearner(learnerId++)));
+                    .Select(i => new Learner
+                    {
+                        Ukprn = session.Ukprn,
+                        Uln = ++learnerId,
+                        LearnRefNumber = learnerId.ToString(),
+                        Course = session.CourseFaker.Generate(1).FirstOrDefault()
+                    }));
                 ilrSubmissions.Add(SubmitIlr(session, collectionPeriod));
                 await Task.WhenAll(ilrSubmissions);
                 Console.WriteLine($"Finished sending Ukprn: {session.Ukprn}. Time: {DateTime.Now:O}");
@@ -118,28 +134,80 @@ namespace SFA.DAS.Payments.PerformanceTests
                 .Select(learner => CreateFM36Learner(session, learner))
                 .ToList();
             session.IlrSubmissionTime = DateTime.UtcNow;
-            foreach (var fm36Learner in ilrLearners)
+            //foreach (var fm36Learner in ilrLearners)
+            //{
+            //    var command = new ProcessLearnerCommand
+            //    {
+            //        Learner = fm36Learner,
+            //        CollectionPeriod = collectionPeriod,
+            //        CollectionYear = 1819,
+            //        Ukprn = session.Ukprn,
+            //        JobId = session.JobId,
+            //        IlrSubmissionDateTime = session.IlrSubmissionTime,
+            //        RequestTime = DateTimeOffset.UtcNow,
+            //        SubmissionDate = session.IlrSubmissionTime,
+            //    };
+            //    var sendOptions = new SendOptions();
+            //    if (DeliveryTime.HasValue)
+            //        sendOptions.DoNotDeliverBefore(DeliveryTime.Value);
+            //    await MessageSession.Send(command, sendOptions);
+            //    LearnerStartTimes.Add(fm36Learner.LearnRefNumber, DateTime.Now);
+            //    Console.WriteLine($"Sent learner.  Ukprn: {session.Ukprn}, Learner: {fm36Learner.LearnRefNumber}, Time: {DateTime.Now:o}");
+            //}
+
+            var startTime = DateTimeOffset.UtcNow;
+            var sendOptions = new SendOptions();
+            if (DeliveryTime.HasValue)
             {
-                var command = new ProcessLearnerCommand
-                {
-                    Learner = fm36Learner,
-                    CollectionPeriod = collectionPeriod,
-                    CollectionYear = 1819,
-                    Ukprn = session.Ukprn,
-                    JobId = session.JobId,
-                    IlrSubmissionDateTime = session.IlrSubmissionTime,
-                    RequestTime = DateTimeOffset.UtcNow,
-                    SubmissionDate = session.IlrSubmissionTime,
-                };
-                var sendOptions = new SendOptions();
-                if (DeliveryTime.HasValue)
-                    sendOptions.DoNotDeliverBefore(DeliveryTime.Value);
-                await MessageSession.Send(command, sendOptions);
-                LearnerStartTimes.Add(fm36Learner.LearnRefNumber, DateTime.Now);
-                Console.WriteLine($"Sent learner.  Ukprn: {session.Ukprn}, Learner: {fm36Learner.LearnRefNumber}, Time: {DateTime.Now:o}");
+                sendOptions.DoNotDeliverBefore(DeliveryTime.Value);
+                startTime = DeliveryTime.Value;
             }
-            var dcHelper = Container.Resolve<DcHelper>();
-            await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, 1819, (byte)collectionPeriod, session.JobId);
+
+            var commands = ilrLearners.Select(learner => new ProcessLearnerCommand
+            {
+                JobId = session.JobId,
+                CollectionPeriod = collectionPeriod,
+                CollectionYear = 1819,
+                IlrSubmissionDateTime = session.IlrSubmissionTime,
+                SubmissionDate = session.IlrSubmissionTime,
+                Ukprn = session.Ukprn,
+                Learner = learner
+            })
+                .ToList();
+            var generatedMessages = commands.Select(command => new GeneratedMessage
+            {
+                StartTime = command.RequestTime,
+                MessageName = command.GetType().FullName,
+                MessageId = command.CommandId
+            }).ToList();
+            await CreateJob(session, startTime, generatedMessages, (byte)collectionPeriod, JobType.EarningsJob).ConfigureAwait(false);
+            //var startedJob = new RecordStartedProcessingEarningsJob
+            //{
+            //    JobId = session.JobId,
+            //    CollectionPeriod = (byte)collectionPeriod,
+            //    CollectionYear = 1819,
+            //    StartTime = startTime,
+            //    Ukprn = session.Ukprn,
+            //    IlrSubmissionTime = session.IlrSubmissionTime,
+            //    GeneratedMessages = commands.Select(command => new GeneratedMessage
+            //    {
+            //        StartTime = command.RequestTime,
+            //        MessageName = command.GetType().FullName,
+            //        MessageId = command.CommandId
+            //    }).ToList()
+            //};
+            //Console.WriteLine($"Sending job started message: {startedJob.ToJson()}");
+            //await MessageSession.Send(startedJob, sendOptions).ConfigureAwait(false);
+            foreach (var processLearnerCommand in commands)
+            {
+                await MessageSession.Send(processLearnerCommand, sendOptions).ConfigureAwait(false);
+                Console.WriteLine($"sent process learner command. Uln: {processLearnerCommand.Learner.ULN}");
+            }
+
+            //var dcHelper = Container.Resolve<DcHelper>();
+            ////await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, 1819, (byte)collectionPeriod, session.JobId);
+            //await dcHelper.SendLearnerCommands(ilrLearners, session.Ukprn, 1819, (byte) collectionPeriod,
+            //    session.JobId,session.IlrSubmissionTime);
         }
 
         [OneTimeTearDown]
@@ -147,5 +215,36 @@ namespace SFA.DAS.Payments.PerformanceTests
         {
 
         }
+
+        public async Task CreateJob(TestSession session,  DateTimeOffset startTime, List<GeneratedMessage> generatedMessages, byte collectionPeriod, JobType jobType = JobType.ComponentAcceptanceTestEarningsJob)
+        {
+            var job = new JobModel
+            {
+                CollectionPeriod = collectionPeriod,
+                AcademicYear = 1819,
+                StartTime = startTime,
+                Ukprn = session.Ukprn,
+                DcJobId = session.JobId,
+                IlrSubmissionTime = session.IlrSubmissionTime,
+                JobType = JobType.ComponentAcceptanceTestEarningsJob,
+                LearnerCount = generatedMessages.Count,
+                Status = JobStatus.InProgress
+            };
+            var dataContext = Container.Resolve<JobsDataContext>();
+            dataContext.Jobs.Add(job);
+            await dataContext.SaveChangesAsync();
+            Console.WriteLine($"Saved new test job to database. Job Id: {job.Id}");
+            dataContext.JobSteps.AddRange(generatedMessages.Select(msg => new JobStepModel
+            {
+                JobId = job.Id,
+                StartTime = msg.StartTime,
+                MessageName = msg.MessageName,
+                MessageId = msg.MessageId,
+                Status = JobStepStatus.Queued
+            }));
+            await dataContext.SaveChangesAsync();
+            Console.WriteLine($"Finished creating job and generated messages. Job id: {job.Id}, Test DC Job id: {job.DcJobId}");
+        }
+
     }
 }

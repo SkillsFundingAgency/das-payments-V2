@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         
         public List<Employer> Employers { get; }
         private readonly Random random;
-        private readonly Faker<Course> courseFaker;
+        public Faker<Course> CourseFaker { get; }
         
         public List<Provider> Providers { get; }
         public Provider Provider => GetProviderByIdentifier("Test Provider");
@@ -51,8 +51,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             _ukprnService = ukprnService;
 
-            courseFaker = new Faker<Course>();
-            courseFaker
+            CourseFaker = new Faker<Course>();
+            CourseFaker
                 .RuleFor(course => course.AimSeqNumber, faker => faker.Random.Short(1))
                 .RuleFor(course => course.FrameworkCode, faker => faker.Random.Short(1))
                 .RuleFor(course => course.FundingLineType, faker => faker.Name.JobDescriptor()?? "FundingLine")
@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 Ukprn = ukprn,
                 Uln = uln,
                 LearnRefNumber = GenerateId().ToString(),
-                Course = courseFaker.Generate(1).FirstOrDefault()
+                Course = CourseFaker.Generate(1).FirstOrDefault()
             };
         }
 
