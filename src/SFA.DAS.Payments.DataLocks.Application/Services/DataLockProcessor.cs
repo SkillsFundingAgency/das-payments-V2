@@ -45,24 +45,24 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
             var onProgrammeEarning = GetOnProgrammeEarnings(earningEvent, apprenticeshipsForUln);
 
-            if (onProgrammeEarning.ValidOnProgEarnings.Any())
+            if (onProgrammeEarning.validOnProgEarnings.Any())
             {
                 var payableEarningEvent = mapper.Map<PayableEarningEvent>(earningEvent);
-                payableEarningEvent.OnProgrammeEarnings = onProgrammeEarning.ValidOnProgEarnings;
+                payableEarningEvent.OnProgrammeEarnings = onProgrammeEarning.validOnProgEarnings;
                 dataLockEvents.Add(payableEarningEvent);
             }
 
-            if (onProgrammeEarning.InvalidOnProgEarnings.Any())
+            if (onProgrammeEarning.invalidOnProgEarnings.Any())
             {
                 var earningFailedDataLockEvent = mapper.Map<EarningFailedDataLockMatching>(earningEvent);
-                earningFailedDataLockEvent.OnProgrammeEarnings = onProgrammeEarning.InvalidOnProgEarnings;
+                earningFailedDataLockEvent.OnProgrammeEarnings = onProgrammeEarning.invalidOnProgEarnings;
                 dataLockEvents.Add(earningFailedDataLockEvent);
             }
 
             return dataLockEvents;
         }
 
-        private (List<OnProgrammeEarning> ValidOnProgEarnings, List<OnProgrammeEarning> InvalidOnProgEarnings) GetOnProgrammeEarnings(ApprenticeshipContractTypeEarningsEvent earningEvent, List<ApprenticeshipModel> apprenticeshipsForUln)
+        private (List<OnProgrammeEarning> validOnProgEarnings, List<OnProgrammeEarning> invalidOnProgEarnings) GetOnProgrammeEarnings(ApprenticeshipContractTypeEarningsEvent earningEvent, List<ApprenticeshipModel> apprenticeshipsForUln)
         {
             var validOnProgEarnings = new List<OnProgrammeEarning>();
             var invalidOnProgEarnings = new List<OnProgrammeEarning>();

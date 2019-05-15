@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 JobId = provider.JobId > 0 ? provider.JobId : testSession.JobId
             };
 
-            await messageSession.Send(startedEvent).ConfigureAwait(false);
+            await messageSession.Request<int>(startedEvent).ConfigureAwait(false);
         }
     }
 }
