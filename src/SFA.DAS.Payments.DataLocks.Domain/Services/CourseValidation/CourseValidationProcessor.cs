@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 {
                     dataLockFailures.Add(new DataLockFailure
                     {
+                        ApprenticeshipId = dataLockValidationModel.Apprenticeship.Id,
                         DataLockError = validatorResult.DataLockErrorCode.Value,
                         ApprenticeshipPriceEpisodeIds = allApprenticeshipPriceEpisodeIds
                     });

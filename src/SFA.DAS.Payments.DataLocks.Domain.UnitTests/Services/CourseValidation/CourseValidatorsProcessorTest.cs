@@ -312,6 +312,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             result.Should().NotBeNull();
             result.MatchedPriceEpisode.Should().BeNull();
             result.DataLockFailures.Should().HaveCount(3);
+            result.DataLockFailures.All(x => x.ApprenticeshipId == 100).Should().BeTrue();
             result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_09 && x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
             result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_07 && x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
             result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_12 && x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
