@@ -9,7 +9,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
     [TestFixture]
-    public class FrameworkCodeValidatorTests
+    public class PathwayCodeValidatorTests
     {
         private const string PriceEpisodeIdentifier = "pe-1";
         private EarningPeriod period;
@@ -22,9 +22,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 Period = 1,
             };
         }
-
+        
         [Test]
-        public void WhenFrameworkCodeMatches_ThenNoDatalock()
+        public void WhenPathwayCodeMatches_ThenNoDatalock()
         {
             var validation = new DataLockValidationModel
             {
@@ -40,15 +40,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             Id = 100
                         }
                     },
-                    FrameworkCode = 123,
+                    PathwayCode = 123,
                 },
                 Aim = new LearningAim
                 {
-                    FrameworkCode = 123,
+                    PathwayCode = 123,
                 },
             };
 
-            var validator = new FrameworkCodeValidator();
+            var validator = new PathwayCodeValidator();
             var result = validator.Validate(validation);
             result.DataLockErrorCode.Should().BeNull();
             result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
         [Test]
-        public void WhenFrameworkCodeDoesNotMatch_ThenDLOCK_04()
+        public void WhenPathwayCodeDoesNotMatch_ThenDLOCK_06()
         {
             var validation = new DataLockValidationModel
             {
@@ -72,17 +72,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             Id = 100
                         }
                     },
-                    FrameworkCode = 123,
+                    PathwayCode = 123,
                 },
                 Aim = new LearningAim
                 {
-                    FrameworkCode = 124,
+                    PathwayCode = 124,
                 },
             };
 
-            var validator = new FrameworkCodeValidator();
+            var validator = new PathwayCodeValidator();
             var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_04);
+            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_06);
             result.ApprenticeshipPriceEpisodes.Should().HaveCount(0);
         }
     }
