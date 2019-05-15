@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
                     var fullListOfTransactionTypes = aimEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
                     var onProgEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsOnProgType).ToList();
-                    var incentiveEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsIncentiveType).ToList();
+                    var incentiveEarnings = fullListOfTransactionTypes.Where(type => EnumHelper.IsIncentiveType(type, false)).ToList();
 
                     if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
                     {

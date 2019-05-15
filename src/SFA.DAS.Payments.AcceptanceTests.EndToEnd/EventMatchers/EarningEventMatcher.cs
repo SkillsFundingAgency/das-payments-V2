@@ -105,10 +105,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
                     var fullListOfTransactionTypes = aimEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
                     var onProgEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsOnProgType).ToList();
-                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsFunctionalSkillType).ToList();
-                    var incentiveEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsIncentiveType).ToList();
+                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsFunctionalSkillType(t, aimSpec.IsMainAim)).ToList();
+                    var incentiveEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsIncentiveType(t, aimSpec.IsMainAim)).ToList();
 
-                    if (aimSpec.AimReference != "ZPROG001")
+                    if (!aimSpec.IsMainAim)
                     {
                         incentiveEarnings.Remove(TransactionType.LearningSupport);
                     }
@@ -117,7 +117,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         functionalSkillEarnings.Remove(TransactionType.LearningSupport);
                     }
 
-                    if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
+                    if (aimSpec.IsMainAim && onProgEarnings.Any())
                     {
                         var onProgEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
                         onProgEarning.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
@@ -137,7 +137,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         result.Add(onProgEarning);
                     }
 
-                    if (aimSpec.AimReference != "ZPROG001" && functionalSkillEarnings.Any())
+                    if (!aimSpec.IsMainAim && functionalSkillEarnings.Any())
                     {
                         var functionalSkillEarning = new FunctionalSkillEarningsEvent
                         {
@@ -160,7 +160,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         result.Add(functionalSkillEarning);
                     }
 
-                    if (aimSpec.AimReference != "ZPROG001" && incentiveEarnings.Any())
+                    if (!aimSpec.IsMainAim && incentiveEarnings.Any())
                     {
                         var incentiveEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
                         incentiveEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning

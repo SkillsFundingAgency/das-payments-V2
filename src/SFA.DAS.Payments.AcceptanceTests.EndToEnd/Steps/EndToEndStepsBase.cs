@@ -327,7 +327,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 learner.LearningDeliveries.Add(learningDelivery);
 
-                if (aim.AimReference == "ZPROG001")
+                if (aim.IsMainAim)
                 {
                     learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
                 }
@@ -451,18 +451,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         newValues = currentValues;
                     }
 
-                    if (newValues.AttributeName == "PriceEpisodeSFAContribPct" && aim.AimReference == "ZPROG001")
+                    if (newValues.AttributeName == "PriceEpisodeSFAContribPct" && aim.IsMainAim)
                     {
                         currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
                     else if ((EnumHelper.IsOnProgType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) ||
-                        EnumHelper.IsIncentiveType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName))) &&
-                        aim.AimReference == "ZPROG001")
+                        EnumHelper.IsIncentiveType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName), true)) &&
+                        aim.IsMainAim)
                     {
                         currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
-                    else if (EnumHelper.IsFunctionalSkillType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) &&
-                             aim.AimReference != "ZPROG001")
+                    else if (EnumHelper.IsFunctionalSkillType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName), false) &&
+                             !aim.IsMainAim)
                     {
                         currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
@@ -539,19 +539,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             return aimPeriodisedValues;
-        }
-
-        private static IEnumerable<string> FunctionalSkillsAttributes()
-        {
-            yield return TransactionType.OnProgrammeMathsAndEnglish.ToAttributeName();
-            yield return TransactionType.BalancingMathsAndEnglish.ToAttributeName();
-        }
-
-        private static IEnumerable<string> OnProgrammeAttributes()
-        {
-            yield return TransactionType.Learning.ToAttributeName();
-            yield return TransactionType.Completion.ToAttributeName();
-            yield return TransactionType.Balancing.ToAttributeName();
         }
 
         private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
