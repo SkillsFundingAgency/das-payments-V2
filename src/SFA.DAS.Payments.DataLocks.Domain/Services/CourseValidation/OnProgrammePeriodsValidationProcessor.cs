@@ -8,15 +8,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public interface IOnProgrammePeriodsValidationProcessor
-    {
-        (List<ValidOnProgrammePeriod> ValidPeriods, List<InvalidOnProgrammePeriod> InValidPeriods) ValidatePeriods(
-            long uln, List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning,
-            List<ApprenticeshipModel> apprenticeships);
-    }
-
-
-    public class OnProgrammePeriodsValidationProcessor: IOnProgrammePeriodsValidationProcessor
+    public class OnProgrammePeriodsValidationProcessor : IOnProgrammePeriodsValidationProcessor
     {
         private readonly ICourseValidationProcessor courseValidationProcessor;
 
@@ -25,19 +17,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             this.courseValidationProcessor = courseValidationProcessor ?? throw new ArgumentNullException(nameof(courseValidationProcessor));
         }
 
-        public (List<ValidOnProgrammePeriod> ValidPeriods, List<InvalidOnProgrammePeriod> InValidPeriods) ValidatePeriods(long uln, List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning, List<ApprenticeshipModel> apprenticeships)
+        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long uln, List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning, List<ApprenticeshipModel> apprenticeships)
         {
-            var validPeriods = new List<ValidOnProgrammePeriod>();
-            var invalidPeriods = new List<InvalidOnProgrammePeriod>();
+            var validPeriods = new List<EarningPeriod>();
+            var invalidPeriods = new List<EarningPeriod>();
             foreach (var period in onProgrammeEarning.Periods)
             {
                 if (period.Amount == decimal.Zero)
                 {
-                    
-                    validPeriods.Add(new ValidOnProgrammePeriod
-                    {
-                        Period = period
-                    });
+                    validPeriods.Add(period);
                     continue;
                 }
 
@@ -49,40 +37,41 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                         EarningPeriod = period,
                         Apprenticeship = apprenticeship,
                         PriceEpisode = priceEpisodes.SingleOrDefault(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
-                                       ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}")
+                                       ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}"),
+                        TransactionType = onProgrammeEarning.Type,
                     };
 
                     var validationResult = courseValidationProcessor.ValidateCourse(validationModel);
-                    if (validationResult.DataLockErrors.Any())
-                        invalidPeriods.Add(new InvalidOnProgrammePeriod
-                        {
-                            DataLockErrors = validationResult.DataLockErrors,
-                            Apprenticeship = apprenticeship,
-                            Period = period
-                        });
+
+                    var newEarningPeriod = CreateEarningPeriod(period);
+                    if (validationResult.DataLockFailures.Any())
+                    {
+                        newEarningPeriod.DataLockFailures = validationResult.DataLockFailures;
+                        invalidPeriods.Add(newEarningPeriod);
+                    }
                     else
                     {
-                        var validPeriod = new ValidOnProgrammePeriod
-                        {
-                            ApprenticeshipPriceEpisodeId = validationResult.MatchedPriceEpisode.Id,
-                            Apprenticeship = apprenticeship,
-                            Period = new EarningPeriod
-                            {
-                                Period = period.Period,
-                                Amount = period.Amount,
-                                PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
-                                SfaContributionPercentage = period.SfaContributionPercentage,
-                                AccountId = apprenticeship.AccountId,
-                                ApprenticeshipId = apprenticeship.Id,
-                                ApprenticeshipPriceEpisodeId = validationResult.MatchedPriceEpisode.Id,
-                                Priority = apprenticeship.Priority
-                            }
-                        };
-                        validPeriods.Add(validPeriod);
+                        newEarningPeriod.AccountId = apprenticeship.AccountId;
+                        newEarningPeriod.ApprenticeshipId = apprenticeship.Id;
+                        newEarningPeriod.ApprenticeshipPriceEpisodeId = validationResult.MatchedPriceEpisode.Id;
+                        newEarningPeriod.Priority = apprenticeship.Priority;
+                        validPeriods.Add(newEarningPeriod);
                     }
                 }
             }
             return (validPeriods, invalidPeriods);
         }
+
+        private EarningPeriod CreateEarningPeriod(EarningPeriod period)
+        {
+            return new EarningPeriod
+            {
+                Period = period.Period,
+                Amount = period.Amount,
+                PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
+                SfaContributionPercentage = period.SfaContributionPercentage
+            };
+        }
+
     }
 }

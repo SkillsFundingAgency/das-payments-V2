@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
@@ -15,23 +17,48 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
         public CourseValidationResult ValidateCourse(DataLockValidationModel dataLockValidationModel)
         {
-            var validationResults = new List<ValidationResult>();
+            var dataLockFailures = new List<DataLockFailure>();
+            var invalidApprenticeshipPriceEpisodeIds = new List<long>();
+
+            var allApprenticeshipPriceEpisodeIds = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
+                .Select(x => x.Id).ToList();
+
+
             foreach (var courseValidator in courseValidators)
             {
                 var validatorResult = courseValidator.Validate(dataLockValidationModel);
-                validationResults.Add(validatorResult);
-            }
-            var result = new CourseValidationResult
-            {
-                DataLockErrors = validationResults
-                    .Where(validationResult => validationResult.DataLockErrorCode.HasValue)
-                    .Select(validationResult => validationResult.DataLockErrorCode.Value)
-                    .ToList(),
-                MatchedPriceEpisode = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
-                    .Where(ape => !ape.Removed)
-                    .FirstOrDefault(ape => validationResults.All(validationResult => validationResult.ApprenticeshipPriceEpisodes.Any(resultApe => resultApe.Id == ape.Id))  )
-            };
 
+                if (validatorResult.DataLockErrorCode.HasValue)
+                {
+                    dataLockFailures.Add(new DataLockFailure
+                    {
+                        DataLockError = validatorResult.DataLockErrorCode.Value,
+                        ApprenticeshipPriceEpisodeIds = allApprenticeshipPriceEpisodeIds
+                    });
+                }
+                else
+                {
+                    var validApprenticeshipPriceEpisodeIds = validatorResult.ApprenticeshipPriceEpisodes
+                        .Where(o => !o.Removed)
+                        .Select(x => x.Id)
+                        .ToList();
+
+                    invalidApprenticeshipPriceEpisodeIds.AddRange(allApprenticeshipPriceEpisodeIds.Except(validApprenticeshipPriceEpisodeIds));
+                }
+            }
+
+            var result = new CourseValidationResult();
+
+            if (dataLockFailures.Any())
+            {
+                result.DataLockFailures = dataLockFailures;
+            }
+            else
+            {
+                result.MatchedPriceEpisode = dataLockValidationModel.Apprenticeship
+                        .ApprenticeshipPriceEpisodes.FirstOrDefault(x =>!x.Removed && !invalidApprenticeshipPriceEpisodeIds.Contains(x.Id));
+            }
+            
             return result;
         }
     }

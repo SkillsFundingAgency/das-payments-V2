@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
@@ -11,7 +12,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
         protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(DataLockValidationModel dataLockValidationModel)
         {
-           
             return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes.Where(o => !o.Removed)?.ToList();
         }
 
@@ -19,6 +19,5 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         {
             return apprenticeshipStatus == ApprenticeshipStatus.Paused;
         }
-
     }
 }
