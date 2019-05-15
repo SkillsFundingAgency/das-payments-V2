@@ -578,6 +578,106 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-543- Levy learner with English and Maths submits first ILR in R08.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-870 - Non Levy learner starts April19 at 5 percent contribution, 3mth learning with 90 day incentive.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-870 - Non Levy learner starts April19 at 5 percent contribution, 3mth learning with 90 day incentive.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-874 - Non Levy learner starts April19 at 5 percent contribution changes to ACT1 with co-funding in May.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-874 - Non Levy learner starts April19 at 5 percent contribution changes to ACT1 with co-funding in May.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-893 - Non Levy learner starts Jan19 continues learning beyond Apr 2019 at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-893 - Non Levy learner starts Jan19 continues learning beyond Apr 2019 at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-898 - Non-Levy Learner previously on 10 percent contribution but moves to 5 percent later.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-898 - Non-Levy Learner previously on 10 percent contribution but moves to 5 percent later.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-900 - Non-Levy Learner changes pathway code remains on 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-900 - Non-Levy Learner changes pathway code remains on 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-901 - Non Levy learner starts Jan19 employer changes from small to large employer in Apr19.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-901 - Non Levy learner starts Jan19 employer changes from small to large employer in Apr19.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-902 - Non Levy learner starts Apr18 completes learning and starts new course in Apr19, second learning on 5 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-902 - Non Levy learner starts Apr18 completes learning and starts new course in Apr19, second learning on 5 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-909 - Non Levy learner starts Jan19 takes a planned break and resumes in Apr19 on Levy co-funding.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-909 - Non Levy learner starts Jan19 takes a planned break and resumes in Apr19 on Levy co-funding.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-871 - Levy learner starts April19 with co-funding at 5 percent contribution as not enough Levy in account.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-871 - Levy learner starts April19 with co-funding at 5 percent contribution as not enough Levy in account.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-873 - Levy learner starts April19 with co-funding at 5 percent contribution changes to ACT2 in May_V2.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-873 - Levy learner starts April19 with co-funding at 5 percent contribution changes to ACT2 in May_V2.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-892 - Levy learner starts Jan19 moves into co-funding at 10 percent contribution in May 19.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-892 - Levy learner starts Jan19 moves into co-funding at 10 percent contribution in May 19.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-894 - Non Levy learner starts Apr18 completes Apr19, completion paid at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-894 - Non Levy learner starts Apr18 completes Apr19, completion paid at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-895 - Non Levy learner starts Nov18 takes a planned break and resumes Apr19, remains at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-895 - Non Levy learner starts Nov18 takes a planned break and resumes Apr19, remains at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-896 - Non Levy learner starts Aug18 changes Employer Apr19, stays on same course and price, remains at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-896 - Non Levy learner starts Aug18 changes Employer Apr19, stays on same course and price, remains at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-897 - Non Levy learner starts Aug18 changes Provider Apr19, stays on same course and price, remains at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-897 - Non Levy learner starts Aug18 changes Provider Apr19, stays on same course and price, remains at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-905 - Levy learner starts Apr18 completes learning,starts new course in Apr19, on co-funding of 5pc.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-905 - Levy learner starts Apr18 completes learning,starts new course in Apr19, on co-funding of 5pc.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-906 - Levy learner starts Nov18 takes planned break and resumes in Apr19, moves into co-funding on 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-906 - Levy learner starts Nov18 takes planned break and resumes in Apr19, moves into co-funding on 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-908 - Levy learner starts Jan19 changes Provider and changes to Non Levy in Apr19, remains on 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-908 - Levy learner starts Jan19 changes Provider and changes to Non Levy in Apr19, remains on 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-915 -Non Levy learner starts Jan19 changes from Standard to Framework course in Apr19, moves to 5 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-915 -Non Levy learner starts Jan19 changes from Standard to Framework course in Apr19, moves to 5 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-916 - Non Levy learner starts Jan19 changes from one Standard to another Standard course in Apr19,moves to 5 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-916 - Non Levy learner starts Jan19 changes from one Standard to another Standard course in Apr19,moves to 5 percent contribution.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1393,6 +1493,86 @@
     <None Include="Tests\English and Maths\PV2-543- Levy learner with English and Maths submits first ILR in R08.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-543- Levy learner with English and Maths submits first ILR in R08.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-870 - Non Levy learner starts April19 at 5 percent contribution, 3mth learning with 90 day incentive.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-870 - Non Levy learner starts April19 at 5 percent contribution, 3mth learning with 90 day incentive.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-874 - Non Levy learner starts April19 at 5 percent contribution changes to ACT1 with co-funding in May.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-874 - Non Levy learner starts April19 at 5 percent contribution changes to ACT1 with co-funding in May.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-893 - Non Levy learner starts Jan19 continues learning beyond Apr 2019 at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-893 - Non Levy learner starts Jan19 continues learning beyond Apr 2019 at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-898 - Non-Levy Learner previously on 10 percent contribution but moves to 5 percent later.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-898 - Non-Levy Learner previously on 10 percent contribution but moves to 5 percent later.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-900 - Non-Levy Learner changes pathway code remains on 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-900 - Non-Levy Learner changes pathway code remains on 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-901 - Non Levy learner starts Jan19 employer changes from small to large employer in Apr19.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-901 - Non Levy learner starts Jan19 employer changes from small to large employer in Apr19.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-902 - Non Levy learner starts Apr18 completes learning and starts new course in Apr19, second learning on 5 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-902 - Non Levy learner starts Apr18 completes learning and starts new course in Apr19, second learning on 5 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-909 - Non Levy learner starts Jan19 takes a planned break and resumes in Apr19 on Levy co-funding.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-909 - Non Levy learner starts Jan19 takes a planned break and resumes in Apr19 on Levy co-funding.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-871 - Levy learner starts April19 with co-funding at 5 percent contribution as not enough Levy in account.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-871 - Levy learner starts April19 with co-funding at 5 percent contribution as not enough Levy in account.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-873 - Levy learner starts April19 with co-funding at 5 percent contribution changes to ACT2 in May_V2.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-873 - Levy learner starts April19 with co-funding at 5 percent contribution changes to ACT2 in May_V2.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-892 - Levy learner starts Jan19 moves into co-funding at 10 percent contribution in May 19.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-892 - Levy learner starts Jan19 moves into co-funding at 10 percent contribution in May 19.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-894 - Non Levy learner starts Apr18 completes Apr19, completion paid at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-894 - Non Levy learner starts Apr18 completes Apr19, completion paid at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-895 - Non Levy learner starts Nov18 takes a planned break and resumes Apr19, remains at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-895 - Non Levy learner starts Nov18 takes a planned break and resumes Apr19, remains at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-896 - Non Levy learner starts Aug18 changes Employer Apr19, stays on same course and price, remains at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-896 - Non Levy learner starts Aug18 changes Employer Apr19, stays on same course and price, remains at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-897 - Non Levy learner starts Aug18 changes Provider Apr19, stays on same course and price, remains at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-897 - Non Levy learner starts Aug18 changes Provider Apr19, stays on same course and price, remains at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-905 - Levy learner starts Apr18 completes learning,starts new course in Apr19, on co-funding of 5pc.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-905 - Levy learner starts Apr18 completes learning,starts new course in Apr19, on co-funding of 5pc.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-906 - Levy learner starts Nov18 takes planned break and resumes in Apr19, moves into co-funding on 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-906 - Levy learner starts Nov18 takes planned break and resumes in Apr19, moves into co-funding on 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-908 - Levy learner starts Jan19 changes Provider and changes to Non Levy in Apr19, remains on 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-908 - Levy learner starts Jan19 changes Provider and changes to Non Levy in Apr19, remains on 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-915 -Non Levy learner starts Jan19 changes from Standard to Framework course in Apr19, moves to 5 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-915 -Non Levy learner starts Jan19 changes from Standard to Framework course in Apr19, moves to 5 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-916 - Non Levy learner starts Jan19 changes from one Standard to another Standard course in Apr19,moves to 5 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-916 - Non Levy learner starts Jan19 changes from one Standard to another Standard course in Apr19,moves to 5 percent contribution.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
