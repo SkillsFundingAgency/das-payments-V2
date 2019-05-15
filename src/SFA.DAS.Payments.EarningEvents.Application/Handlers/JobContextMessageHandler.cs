@@ -15,8 +15,11 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
@@ -30,14 +33,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IEndpointInstanceFactory factory;
         private readonly IEarningsJobClientFactory jobClientFactory;
         private readonly ITelemetry telemetry;
+        private readonly IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter;
+        private readonly ISubmittedLearnerAimBuilder submittedLearnerAimBuilder;
+        private readonly ISubmittedLearnerAimRepository submittedLearnerAimRepository;
 
         public JobContextMessageHandler(IPaymentLogger logger,
             IFileService azureFileService,
             IJsonSerializationService serializationService,
             IEndpointInstanceFactory factory,
             IEarningsJobClientFactory jobClientFactory,
-            ITelemetry telemetry
-            )
+            ITelemetry telemetry, 
+            IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter, 
+            ISubmittedLearnerAimBuilder submittedLearnerAimBuilder, ISubmittedLearnerAimRepository submittedLearnerAimRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
@@ -45,6 +52,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
             this.jobClientFactory = jobClientFactory ?? throw new ArgumentNullException(nameof(jobClientFactory));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+            this.submittedAimWriter = submittedAimWriter;
+            this.submittedLearnerAimBuilder = submittedLearnerAimBuilder;
+            this.submittedLearnerAimRepository = submittedLearnerAimRepository;
         }
 
 
@@ -57,6 +67,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 {
                     var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
                     var fm36Output = await GetFm36Global(message, collectionPeriod, cancellationToken).ConfigureAwait(false);
+                    await ClearSubmittedLearnerAims(collectionPeriod, fm36Output.Year, message.SubmissionDateTimeUtc, fm36Output.UKPRN, cancellationToken).ConfigureAwait(false);
                     var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, cancellationToken).ConfigureAwait(false);
                     await SendReceivedEarningsEvent(message.JobId, message.SubmissionDateTimeUtc, fm36Output.Year, collectionPeriod, fm36Output.UKPRN).ConfigureAwait(false);
 
@@ -82,6 +93,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 logger.LogError("Error while handling EarningService event", ex);
                 throw;
             }
+        }
+
+        private async Task ClearSubmittedLearnerAims(int period, string academicYear, DateTime newIlrSubmissionDateTime, long ukprn, CancellationToken cancellationToken)
+        {
+            logger.LogDebug($"Deleting aims for UKPRN {ukprn} {academicYear}-{period} submitted before {newIlrSubmissionDateTime}");
+
+            var records = await submittedLearnerAimRepository.DeletePreviouslySubmittedAims((byte)period, short.Parse(academicYear), newIlrSubmissionDateTime, cancellationToken).ConfigureAwait(false);
+
+            logger.LogInfo($"Deleted {records} aims for UKPRN {ukprn} {academicYear}-{period} submitted before {newIlrSubmissionDateTime}");
         }
 
         private async Task SendReceivedEarningsEvent(long jobId, DateTime ilrSubmissionDateTime, string academicYear, int collectionPeriod, long ukprn)
@@ -151,8 +171,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             var startTime = DateTimeOffset.UtcNow;
             var commands = fm36Output
                 .Learners
-                .Select(learner => Build(learner, message.JobId,
-                    message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), collectionPeriod, fm36Output.UKPRN))
+                .Select(learner => Build(learner, message.JobId, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), collectionPeriod, fm36Output.UKPRN))
                 .ToList();
 
             var jobStatusClient = jobClientFactory.Create();
@@ -174,9 +193,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         return stopwatch.ElapsedMilliseconds;
                     }
 
-                    await endpointInstance.SendLocal(learnerCommand);
-                    logger.LogVerbose(
-                        $"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
+                    await endpointInstance.SendLocal(learnerCommand).ConfigureAwait(false);
+
+                    var aims = submittedLearnerAimBuilder.Build(learnerCommand);
+                    await Task.WhenAll(aims.Select(aim => submittedAimWriter.Write(aim, cancellationToken))).ConfigureAwait(false);
+
+                    logger.LogVerbose($"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
                 }
                 catch (Exception ex)
                 {
@@ -184,6 +206,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     throw;
                 }
             }
+
+            await submittedAimWriter.Flush(cancellationToken).ConfigureAwait(false);
+
             stopwatch.Stop();
             logger.LogDebug($"Took {stopwatch.ElapsedMilliseconds}ms to send {commands.Count} Process Learner Commands for Job: {message.JobId}");
             return stopwatch.ElapsedMilliseconds;

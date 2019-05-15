@@ -6,13 +6,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public class EarningEventBuilderBase
     {
-        protected static List<IntermediateLearningAim> InitialLearnerTransform(ProcessLearnerCommand learnerSubmission, bool mainAim)
+        protected static List<IntermediateLearningAim> InitialLearnerTransform(ProcessLearnerCommand learnerSubmission, bool? mainAim)
         {
             var results = new List<IntermediateLearningAim>();
 
             foreach (var learningDelivery in learnerSubmission.Learner.LearningDeliveries)
             {
-                if (mainAim != learningDelivery.IsMainAim())
+                if (mainAim.HasValue && mainAim.Value != learningDelivery.IsMainAim())
                     continue;
 
                 var priceEpisodes = learnerSubmission.Learner.PriceEpisodes
