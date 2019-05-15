@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         public static void AddRoutingConfig()
         {
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<IRequiredPaymentEvent>());
+            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<IPeriodisedRequiredPaymentEvent>());
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(ApprenticeshipContractType2EarningEvent), EndpointNames.RequiredPayments);
