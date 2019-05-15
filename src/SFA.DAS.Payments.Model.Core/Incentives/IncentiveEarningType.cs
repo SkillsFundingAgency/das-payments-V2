@@ -11,6 +11,7 @@
         Balancing16To18FrameworkUplift = 10,
         FirstDisadvantagePayment = 11,
         SecondDisadvantagePayment = 12,
-        LearningSupport = 15
+        LearningSupport = 15,
+        CareLeaverApprenticePayment = 16,
     }
 }
