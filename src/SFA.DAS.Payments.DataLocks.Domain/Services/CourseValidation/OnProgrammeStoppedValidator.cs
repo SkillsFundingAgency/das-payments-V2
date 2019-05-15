@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }
 
-            var censusDate = CensusDateForPeriod(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
+            var censusDate = LastDayOfMonthForPeriod(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
 
             if (dataLockValidationModel.Apprenticeship.StopDate >= censusDate)
             {
@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             return new List<ApprenticeshipPriceEpisodeModel>();
         }
         
-        private DateTime CensusDateForPeriod(int period, int academicYear)
+        private DateTime LastDayOfMonthForPeriod(int period, int academicYear)
         {
             var calendarMonth = (period < 6) ? period + 7 : period - 5;
             var year = (academicYear % 100) + 2000; // the second part of the academic year in yyyy format
