@@ -47,16 +47,18 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 }
             }
 
-            var result = new CourseValidationResult
-            {
-                DataLockFailures = dataLockFailures,
-                MatchedPriceEpisode = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes.
-                    FirstOrDefault(x => 
-                        !dataLockFailures.SelectMany(o => o.ApprenticeshipPriceEpisodeIds).Contains(x.Id) &&
-                        !x.Removed &&
-                        !invalidApprenticeshipPriceEpisodeIds.Contains(x.Id))
-            };
+            var result = new CourseValidationResult();
 
+            if (dataLockFailures.Any())
+            {
+                result.DataLockFailures = dataLockFailures;
+            }
+            else
+            {
+                result.MatchedPriceEpisode = dataLockValidationModel.Apprenticeship
+                        .ApprenticeshipPriceEpisodes.FirstOrDefault(x =>!x.Removed && !invalidApprenticeshipPriceEpisodeIds.Contains(x.Id));
+            }
+            
             return result;
         }
     }
