@@ -1,7 +1,12 @@
-Feature: PV2-450 Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27% most deprived, undertaking apprenticeship standard -Disadvantage Uplift is not paid
+Feature: PV2-449 Payment for a DAS learner, lives in a disadvantaged postocde area - 21-27% most deprived, undertaking apprenticeship standard -Disadvantage Uplift is not paid
 		As a provider,
 		I want a levy learner living in a Disadvantaged Postcode area (21-27% most deprived) to undertake an Apprenticeship Standard course
 		So that I am not paid the Disadvantage Uplift payment.
+
+#DC Integration
+#| home postcode deprivation |
+#| 21-27%                     |
+
 Scenario Outline: Levy learner, on standard, Disadvantage Uplift 21-27% not paid PV2-449
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
