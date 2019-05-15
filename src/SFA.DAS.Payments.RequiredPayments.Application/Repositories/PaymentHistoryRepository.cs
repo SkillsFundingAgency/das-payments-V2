@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
@@ -71,6 +72,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 .Select(payment => payment.Amount)
                 .DefaultIfEmpty(0)
                 .SumAsync(cancellationToken);
+        }
+
+        public Task<List<IdentifiedRemovedLearningAim>> IdentifyRemovedLearnerAims(short academicYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }
