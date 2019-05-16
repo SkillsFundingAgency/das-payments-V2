@@ -263,7 +263,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return list;
         }
 
-        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId, DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount, FundingSourceType fundingSourceType, long ukprn, long? accountId)
+        private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId,
+            DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount,
+            FundingSourceType fundingSourceType, long ukprn, long? accountId)
         {
             return new PaymentModel
             {
@@ -271,10 +273,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(),
                 Ukprn = ukprn,
                 JobId = jobId,
-                SfaContributionPercentage = sfaContributionPercentage ?? (learnerTraining.SfaContributionPercentage).ToPercent(),
+                SfaContributionPercentage =
+                    sfaContributionPercentage ?? (learnerTraining.SfaContributionPercentage).ToPercent(),
                 TransactionType = providerPayment.TransactionType,
                 ContractType = learnerTraining.ContractType,
-                PriceEpisodeIdentifier = "pe-1",
+                PriceEpisodeIdentifier = learnerTraining.AimReference == "ZPROG001" ? "pe-1" : string.Empty,
                 FundingSource = fundingSourceType,
                 LearningAimPathwayCode = learnerTraining.PathwayCode,
                 LearnerReferenceNumber = TestSession.GetLearner(ukprn, learnerTraining.LearnerId).LearnRefNumber,
@@ -338,11 +341,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 learner.LearningDeliveries.Add(learningDelivery);
 
-                if (aim.AimReference == "ZPROG001")
+                if (aim.IsMainAim)
                 {
                     learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
                 }
-                else // maths & english doesn't use price episodes
+                else // maths & english & Learning support don't use price episodes
                 {
                     learningDelivery.LearningDeliveryPeriodisedValues = SetPeriodisedValues<LearningDeliveryPeriodisedValues>(aim, earnings);
                 }
@@ -462,18 +465,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         newValues = currentValues;
                     }
 
-                    if (newValues.AttributeName == "PriceEpisodeSFAContribPct" && aim.AimReference == "ZPROG001")
+                    if (newValues.AttributeName == "PriceEpisodeSFAContribPct" && aim.IsMainAim)
                     {
                         currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
                     else if ((EnumHelper.IsOnProgType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) ||
-                        EnumHelper.IsIncentiveType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName))) &&
-                        aim.AimReference == "ZPROG001")
+                        EnumHelper.IsIncentiveType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName), true)) &&
+                        aim.IsMainAim)
                     {
                         currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
-                    else if (EnumHelper.IsFunctionalSkillType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) &&
-                             aim.AimReference != "ZPROG001")
+                    else if (EnumHelper.IsFunctionalSkillType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName), false) &&
+                             !aim.IsMainAim)
                     {
                         currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
@@ -531,10 +534,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var period = earning.DeliveryCalendarPeriod;
                 foreach (var earningValue in earning.Values)
                 {
-                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningValue.Key.ToAttributeName());
+                    var earningKey = earningValue.Key.ToAttributeName();
+
+                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
                     if (periodisedValues == null)
                     {
-                        periodisedValues = new T { AttributeName = earningValue.Key.ToAttributeName() };
+                        periodisedValues = new T { AttributeName = earningKey };
                         aimPeriodisedValues.Add(periodisedValues);
                     }
 

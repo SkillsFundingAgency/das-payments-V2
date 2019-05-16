@@ -18,13 +18,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             return OnProgTypes.Contains(type);
         }
 
-        public static bool IsIncentiveType(TransactionType type)
+        public static bool IsIncentiveType(TransactionType type, bool isMainAim)
         {
+            if (!isMainAim)
+            {
+                if (type == TransactionType.LearningSupport)
+                    return false;
+            }
+
             return IncentiveTypes.Contains(type);
         }
 
-        public static bool IsFunctionalSkillType(TransactionType type)
+        public static bool IsFunctionalSkillType(TransactionType type, bool isMainAim)
         {
+            if (isMainAim)
+            {
+                if (type == TransactionType.LearningSupport)
+                    return false;
+            }
+
             return FunctionalSkillTypes.Contains(type);
         }
 
