@@ -9,8 +9,8 @@ Scenario Outline: Levy learner change to standard at the end of a month along wi
 
 	And the following commitments exist
 		| Identifier      | standard code | start date                   | end date                  | agreed price | effective from               | effective to                 |
-		| Apprentiiship 1 | 51            | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |
-		| Apprentiiship 2 | 52            | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 5625         | 03/Nov/Current Academic Year |                              |
+		| Apprenticeship 1 | 51            | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |
+		| Apprenticeship 2 | 52            | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 5625         | 03/Nov/Current Academic Year |                              |
 
 	And the following aims
 		| Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Programme Type | Standard Code | Funding Line Type             | Completion Status |

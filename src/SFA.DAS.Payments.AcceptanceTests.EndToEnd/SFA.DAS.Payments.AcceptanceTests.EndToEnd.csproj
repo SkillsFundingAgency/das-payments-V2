@@ -136,6 +136,9 @@
     <Reference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus, Version=9.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Azure.Transports.WindowsAzureServiceBus.9.0.3\lib\net46\NServiceBus.Azure.Transports.WindowsAzureServiceBus.dll</HintPath>
     </Reference>
+    <Reference Include="NServiceBus.Callbacks, Version=3.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Callbacks.3.0.0\lib\net452\NServiceBus.Callbacks.dll</HintPath>
+    </Reference>
     <Reference Include="NServiceBus.Core, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.7.1.5\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
@@ -436,6 +439,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -486,10 +494,40 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy learner changes to Levy employer Levy available PV2-366.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\One Levy learner changes employer break in learning at the end of a month and return at the start of a later month_PV2-370.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes employer break in learning at the end of a month and return at the start of a later month_PV2-370.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\One Levy learner changes employer with change to price at mid month ILR submitted earlier - PV2-365.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes employer with change to price at mid month ILR submitted earlier - PV2-365.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\One Levy learner changes employer,incentive earned in transfer month, ILR transfer is before the commitment changes_PV2-374.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes employer,incentive earned in transfer month, ILR transfer is before the commitment changes_PV2-374.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs">
       <AutoGen>True</AutoGen>
@@ -540,6 +578,106 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-543- Levy learner with English and Maths submits first ILR in R08.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-870 - Non Levy learner starts April19 at 5 percent contribution, 3mth learning with 90 day incentive.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-870 - Non Levy learner starts April19 at 5 percent contribution, 3mth learning with 90 day incentive.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-874 - Non Levy learner starts April19 at 5 percent contribution changes to ACT1 with co-funding in May.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-874 - Non Levy learner starts April19 at 5 percent contribution changes to ACT1 with co-funding in May.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-893 - Non Levy learner starts Jan19 continues learning beyond Apr 2019 at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-893 - Non Levy learner starts Jan19 continues learning beyond Apr 2019 at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-898 - Non-Levy Learner previously on 10 percent contribution but moves to 5 percent later.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-898 - Non-Levy Learner previously on 10 percent contribution but moves to 5 percent later.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-900 - Non-Levy Learner changes pathway code remains on 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-900 - Non-Levy Learner changes pathway code remains on 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-901 - Non Levy learner starts Jan19 employer changes from small to large employer in Apr19.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-901 - Non Levy learner starts Jan19 employer changes from small to large employer in Apr19.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-902 - Non Levy learner starts Apr18 completes learning and starts new course in Apr19, second learning on 5 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-902 - Non Levy learner starts Apr18 completes learning and starts new course in Apr19, second learning on 5 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-909 - Non Levy learner starts Jan19 takes a planned break and resumes in Apr19 on Levy co-funding.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-909 - Non Levy learner starts Jan19 takes a planned break and resumes in Apr19 on Levy co-funding.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-871 - Levy learner starts April19 with co-funding at 5 percent contribution as not enough Levy in account.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-871 - Levy learner starts April19 with co-funding at 5 percent contribution as not enough Levy in account.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-873 - Levy learner starts April19 with co-funding at 5 percent contribution changes to ACT2 in May_V2.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-873 - Levy learner starts April19 with co-funding at 5 percent contribution changes to ACT2 in May_V2.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-892 - Levy learner starts Jan19 moves into co-funding at 10 percent contribution in May 19.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-892 - Levy learner starts Jan19 moves into co-funding at 10 percent contribution in May 19.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-894 - Non Levy learner starts Apr18 completes Apr19, completion paid at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-894 - Non Levy learner starts Apr18 completes Apr19, completion paid at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-895 - Non Levy learner starts Nov18 takes a planned break and resumes Apr19, remains at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-895 - Non Levy learner starts Nov18 takes a planned break and resumes Apr19, remains at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-896 - Non Levy learner starts Aug18 changes Employer Apr19, stays on same course and price, remains at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-896 - Non Levy learner starts Aug18 changes Employer Apr19, stays on same course and price, remains at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-897 - Non Levy learner starts Aug18 changes Provider Apr19, stays on same course and price, remains at 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-897 - Non Levy learner starts Aug18 changes Provider Apr19, stays on same course and price, remains at 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-905 - Levy learner starts Apr18 completes learning,starts new course in Apr19, on co-funding of 5pc.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-905 - Levy learner starts Apr18 completes learning,starts new course in Apr19, on co-funding of 5pc.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-906 - Levy learner starts Nov18 takes planned break and resumes in Apr19, moves into co-funding on 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-906 - Levy learner starts Nov18 takes planned break and resumes in Apr19, moves into co-funding on 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-908 - Levy learner starts Jan19 changes Provider and changes to Non Levy in Apr19, remains on 10 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-908 - Levy learner starts Jan19 changes Provider and changes to Non Levy in Apr19, remains on 10 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-915 -Non Levy learner starts Jan19 changes from Standard to Framework course in Apr19, moves to 5 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-915 -Non Levy learner starts Jan19 changes from Standard to Framework course in Apr19, moves to 5 percent contribution.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Five Percent Funding\PV2-916 - Non Levy learner starts Jan19 changes from one Standard to another Standard course in Apr19,moves to 5 percent contribution.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-916 - Non Levy learner starts Jan19 changes from one Standard to another Standard course in Apr19,moves to 5 percent contribution.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1021,6 +1159,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes earlier than new commitment_PV2-322.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Levy learner changes provider but remains with the same employer and ILR changes earlier than new commitment_PV2-322.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1235,6 +1383,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Employer Change of Circumstances\16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs</LastGenOutput>
@@ -1275,9 +1427,33 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes employer with change to negotiated price at the mid of month- PV2-363.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\One Levy learner changes employer break in learning at the end of a month and return at the start of a later month_PV2-370.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes employer break in learning at the end of a month and return at the start of a later month_PV2-370.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\One Levy learner changes employer with change to price at mid month ILR submitted earlier - PV2-365.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes employer with change to price at mid month ILR submitted earlier - PV2-365.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\One Levy learner changes employer,incentive earned in transfer month, ILR transfer is before the commitment changes_PV2-374.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes employer,incentive earned in transfer month, ILR transfer is before the commitment changes_PV2-374.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1318,6 +1494,86 @@
     <None Include="Tests\English and Maths\PV2-543- Levy learner with English and Maths submits first ILR in R08.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-543- Levy learner with English and Maths submits first ILR in R08.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-870 - Non Levy learner starts April19 at 5 percent contribution, 3mth learning with 90 day incentive.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-870 - Non Levy learner starts April19 at 5 percent contribution, 3mth learning with 90 day incentive.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-874 - Non Levy learner starts April19 at 5 percent contribution changes to ACT1 with co-funding in May.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-874 - Non Levy learner starts April19 at 5 percent contribution changes to ACT1 with co-funding in May.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-893 - Non Levy learner starts Jan19 continues learning beyond Apr 2019 at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-893 - Non Levy learner starts Jan19 continues learning beyond Apr 2019 at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-898 - Non-Levy Learner previously on 10 percent contribution but moves to 5 percent later.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-898 - Non-Levy Learner previously on 10 percent contribution but moves to 5 percent later.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-900 - Non-Levy Learner changes pathway code remains on 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-900 - Non-Levy Learner changes pathway code remains on 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-901 - Non Levy learner starts Jan19 employer changes from small to large employer in Apr19.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-901 - Non Levy learner starts Jan19 employer changes from small to large employer in Apr19.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-902 - Non Levy learner starts Apr18 completes learning and starts new course in Apr19, second learning on 5 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-902 - Non Levy learner starts Apr18 completes learning and starts new course in Apr19, second learning on 5 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-909 - Non Levy learner starts Jan19 takes a planned break and resumes in Apr19 on Levy co-funding.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-909 - Non Levy learner starts Jan19 takes a planned break and resumes in Apr19 on Levy co-funding.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-871 - Levy learner starts April19 with co-funding at 5 percent contribution as not enough Levy in account.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-871 - Levy learner starts April19 with co-funding at 5 percent contribution as not enough Levy in account.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-873 - Levy learner starts April19 with co-funding at 5 percent contribution changes to ACT2 in May_V2.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-873 - Levy learner starts April19 with co-funding at 5 percent contribution changes to ACT2 in May_V2.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-892 - Levy learner starts Jan19 moves into co-funding at 10 percent contribution in May 19.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-892 - Levy learner starts Jan19 moves into co-funding at 10 percent contribution in May 19.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-894 - Non Levy learner starts Apr18 completes Apr19, completion paid at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-894 - Non Levy learner starts Apr18 completes Apr19, completion paid at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-895 - Non Levy learner starts Nov18 takes a planned break and resumes Apr19, remains at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-895 - Non Levy learner starts Nov18 takes a planned break and resumes Apr19, remains at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-896 - Non Levy learner starts Aug18 changes Employer Apr19, stays on same course and price, remains at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-896 - Non Levy learner starts Aug18 changes Employer Apr19, stays on same course and price, remains at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-897 - Non Levy learner starts Aug18 changes Provider Apr19, stays on same course and price, remains at 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-897 - Non Levy learner starts Aug18 changes Provider Apr19, stays on same course and price, remains at 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-905 - Levy learner starts Apr18 completes learning,starts new course in Apr19, on co-funding of 5pc.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-905 - Levy learner starts Apr18 completes learning,starts new course in Apr19, on co-funding of 5pc.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-906 - Levy learner starts Nov18 takes planned break and resumes in Apr19, moves into co-funding on 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-906 - Levy learner starts Nov18 takes planned break and resumes in Apr19, moves into co-funding on 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-908 - Levy learner starts Jan19 changes Provider and changes to Non Levy in Apr19, remains on 10 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-908 - Levy learner starts Jan19 changes Provider and changes to Non Levy in Apr19, remains on 10 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-915 -Non Levy learner starts Jan19 changes from Standard to Framework course in Apr19, moves to 5 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-915 -Non Levy learner starts Jan19 changes from Standard to Framework course in Apr19, moves to 5 percent contribution.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Five Percent Funding\PV2-916 - Non Levy learner starts Jan19 changes from one Standard to another Standard course in Apr19,moves to 5 percent contribution.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-916 - Non Levy learner starts Jan19 changes from one Standard to another Standard course in Apr19,moves to 5 percent contribution.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Framework Uplift\PV2-571 - Levy Learner framework uplift payments finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1702,6 +1958,14 @@
     <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes earlier than new commitment_PV2-322.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy learner changes provider but remains with the same employer and ILR changes earlier than new commitment_PV2-322.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer ILR changes after commitment-PV2-320.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

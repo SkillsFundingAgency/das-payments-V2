@@ -117,9 +117,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following commitments exist")]
-        [Given(@"the Commitment details are changed as follows")]
         [Given(@"the following apprenticeships exist")]
-        public async Task GivenTheFollowingCommitmentsExist(Table table)
+        [Given(@"the Commitment details are changed as follows")]
+        [Given(@"the Apprenticeship details are changed as follows")]
+        [Given(@"the following apprenticeships exist")]
+        public async Task GivenTheFollowingApprenticeshipsExist(Table table)
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
             {

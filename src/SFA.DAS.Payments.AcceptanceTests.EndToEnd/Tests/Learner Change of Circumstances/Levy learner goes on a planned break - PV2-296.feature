@@ -5,7 +5,7 @@
 @ignore
 Scenario Outline: One Levy learner, goes on a planned break which is recorded in ILR  PV2-296
 
-Given the employer levy account balance in collection period <Collection_Period> is 17000
+Given the employer levy account balance in collection period R02/Current Academic Year is 17000
 
 And the following apprenticeships exist
 	| start date                   | end date                  | agreed price | status |
@@ -17,8 +17,8 @@ And the apprenticeships status changes as follows
 	| R06/Current Academic Year | Active |
 
 And the provider previously submitted the following learner details
-    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Standard Code | Programme Type | Aim Reference | Funding Line Type                                  | SFA Contribution Percentage |
-    | 01/Sep/Current Academic Year | 12 months        | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Next Academic Year             | 2 months        | planned break     | Act1          | 1                   | 55            | 25             | ZPROG001      | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
+    | 01/Sep/Current Academic Year | 12 months        | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Next Academic Year             | 2 months        | planned break     | Act1          | 1                   | ZPROG001      | 55            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 And the following earnings had been generated for the learner
     | Delivery Period           | On-Programme | Completion | Balancing |
@@ -45,9 +45,9 @@ And the Provider now changes the Learner details as follows
 	| 03/Jan/Current Academic Year | 10 months        | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          | continuing        | Act1          | 1                   | 55            | 25             |ZPROG001      | 16-18 Apprenticeship (From May 2017) Levy Contract | 
 
 And price details as follows
-    | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage | 
-    | 1st price details | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          | 90%                         | 
-    | 2nd price details | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          | 90%                         | 
+    | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage |
+    | pe-1             | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          | 90%                         |
+    | pe-2             | 12000                | 03/Jan/Current Academic Year        | 3000                   | 03/Jan/Current Academic Year          | 90%                         |
 
 When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
@@ -107,6 +107,7 @@ Examples:
         | R10/Current Academic Year |
         | R11/Current Academic Year |
         | R12/Current Academic Year |
+
 
  #Scenario: Apprentice goes on a planned break midway through the learning episode and this is notified through the ILR
  #       Given the following commitments exist on 03/12/2018:

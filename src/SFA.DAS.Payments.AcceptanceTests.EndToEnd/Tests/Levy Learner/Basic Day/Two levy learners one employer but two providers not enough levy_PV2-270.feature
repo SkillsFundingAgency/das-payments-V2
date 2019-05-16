@@ -10,8 +10,8 @@ Scenario Outline: Two levy learners, one employer but two providers and not enou
 		| learner b  | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
    	And the following commitments exist
 		| Identifier        | Provider   | Learner ID | priority | start date                | end date                     | agreed price |
-		| Apprentiiship 1   | provider a | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
-		| Apprentiiship 2   | provider b | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
+		| Apprenticeship 1   | provider a | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
+		| Apprenticeship 2   | provider b | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
 	   And the following earnings had been generated for the learner for "provider a"
         | Learner ID | Delivery Period        | On-Programme | Completion | Balancing |
         | learner a  | Aug/Last Academic Year | 0            | 0          | 0         |
