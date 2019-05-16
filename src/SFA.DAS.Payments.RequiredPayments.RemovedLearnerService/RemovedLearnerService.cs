@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RemovedLearnerService
             ukprn = actorId.GetLongId();
         }
 
-        public async Task<IList<IdentifiedRemovedLearningAim>> HandleIlrSubmittedEvent(short academicYear, byte collectionPeriod, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken)
+        public async Task<IList<IdentifiedRemovedLearningAim>> HandleReceivedProviderEarningsEvent(short academicYear, byte collectionPeriod, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken)
         {
             return await removedLearnerAimIdentificationService.IdentifyRemovedLearnerAims(academicYear, collectionPeriod, ukprn, cancellationToken).ConfigureAwait(false);
         }

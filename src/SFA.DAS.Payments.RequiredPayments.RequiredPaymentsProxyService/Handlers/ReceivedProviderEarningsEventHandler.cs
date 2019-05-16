@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
@@ -26,9 +27,14 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
             var actorId = new ActorId(message.Ukprn);
             var actor = proxyFactory.CreateActorProxy<IRemovedLearnerService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RemovedLearnerServiceActorService"), actorId);
-            await actor.HandleIlrSubmittedEvent(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.IlrSubmissionDateTime).ConfigureAwait(false);
+            var removedAims = await actor.HandleReceivedProviderEarningsEvent(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.IlrSubmissionDateTime, CancellationToken.None).ConfigureAwait(false);
 
-            paymentLogger.LogInfo($"Finished processing ReceivedProviderEarningsEvent, UKPRN: {message.Ukprn}, JobId: {message.JobId}, Period: {message.CollectionPeriod}, ILR: {message.IlrSubmissionDateTime}");
+            foreach (var removedAim in removedAims)
+            {
+                await context.Publish(removedAim).ConfigureAwait(false);
+            }
+
+            paymentLogger.LogInfo($"Finished processing ReceivedProviderEarningsEvent, published {removedAims.Count} aims. UKPRN: {message.Ukprn}, JobId: {message.JobId}, Period: {message.CollectionPeriod}, ILR: {message.IlrSubmissionDateTime}");
         }
     }
 }
