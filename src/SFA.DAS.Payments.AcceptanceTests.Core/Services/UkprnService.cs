@@ -23,19 +23,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
                     GetValue(0)).Value.ToString();
 
             Provider provider = null;
-            using (var mutex = new Mutex(true, $"Global\\{{{appGuid}}}"))
+            using (var mutex = new Mutex(false, $"Global\\{{{appGuid}}}"))
             {
-                if (!mutex.WaitOne(3))
+                if (mutex.WaitOne(TimeSpan.FromMinutes(1)))
+                {
+
+                    provider = LeastRecentlyUsed();
+                    provider.Use();
+                    SaveChanges();
+                    ClearPaymentsData(provider);
+                    mutex.ReleaseMutex();
+                }
+                else
                 {
                     throw new ApplicationException("Unable to obtain a Ukprn due to a locked Mutex");
                 }
-
-                provider = LeastRecentlyUsed();
-                provider.Use();
-                SaveChanges();
             }
-
-            ClearPaymentsData(provider);
 
             return provider.Ukprn;
         }
