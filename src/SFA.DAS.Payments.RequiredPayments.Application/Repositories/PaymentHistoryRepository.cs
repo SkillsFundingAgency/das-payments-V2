@@ -77,7 +77,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 
         public async Task<List<IdentifiedRemovedLearningAim>> IdentifyRemovedLearnerAims(short academicYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken)
         {
-            return await dataContext.Payment
+            // TODO: this doesn't generate EXCEPT SQL statement, instead it fetches all records and does except locally
+
+            var result = await dataContext.Payment
                 .Where(p => p.CollectionPeriod.AcademicYear == academicYear &&
                             p.Ukprn == ukprn)
                 .GroupBy(p => new
@@ -105,7 +107,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                         p.LearningAimStandardCode
                     })
                 )
-                .Select(p => new IdentifiedRemovedLearningAim
+                .ToListAsync(cancellationToken).ConfigureAwait(false);
+
+                var result2 = result.Select(p => new IdentifiedRemovedLearningAim
                 {
                     CollectionPeriod = new CollectionPeriod {AcademicYear = academicYear, Period = collectionPeriod},
                     Ukprn = ukprn,
@@ -125,7 +129,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                         ProgrammeType = p.LearningAimProgrammeType
                     }
                 })
-                .ToListAsync(cancellationToken);
+                .ToList();
+
+            return result2;
         }
     }
 }
