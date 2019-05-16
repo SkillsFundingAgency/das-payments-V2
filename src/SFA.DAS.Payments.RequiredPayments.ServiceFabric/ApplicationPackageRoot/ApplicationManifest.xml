@@ -14,6 +14,9 @@
     <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
+    <Parameter Name="RemovedLearnerServiceActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="RemovedLearnerServiceActorService_MinReplicaSetSize" DefaultValue="1" />
+    <Parameter Name="RemovedLearnerServiceActorService_TargetReplicaSetSize" DefaultValue="1" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -79,6 +82,11 @@
     <Service Name="RequiredPaymentsServiceActorService" GeneratedIdRef="79cd0ba9-bb5a-45f9-92bc-300ca0ae2395|Volatile">
       <StatefulService ServiceTypeName="RequiredPaymentsServiceActorServiceType" TargetReplicaSetSize="[RequiredPaymentsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[RequiredPaymentsServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[RequiredPaymentsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
+    </Service>
+    <Service Name="RemovedLearnerServiceActorService" GeneratedIdRef="4a9ebe68-8edd-4d50-8c7e-a7e1d1d3fc09|None">
+      <StatefulService ServiceTypeName="RemovedLearnerServiceActorServiceType" TargetReplicaSetSize="[RemovedLearnerServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[RemovedLearnerServiceActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[RemovedLearnerServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
     </Service>
   </DefaultServices>
