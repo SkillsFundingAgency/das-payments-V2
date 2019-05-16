@@ -17,8 +17,8 @@ Scenario Outline: Non-levy learner taking single level 2 aim, prior funding adju
 		| Maths or English | 50093186      | 06/Aug/Last Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        |
 	And price details as follows		
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | pe-1             | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 90%                         |
-        |                  | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 100%                        |
+        | pe-1             | 15000                | 06/Aug/Last Academic Year           |                        |                                       | Act2          | 1                   | 90%                         |
+        |                  | 0                    | 06/Aug/Last Academic Year           |                        |                                       | Act2          | 2                   | 100%                        |
 	And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier |
 		# pe-1
@@ -46,7 +46,7 @@ Scenario Outline: Non-levy learner taking single level 2 aim, prior funding adju
         | Apr/Last Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          |
         | May/Last Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          |
         | Jun/Last Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          |
-        | Jul/Last Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          ||
+        | Jul/Last Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          |
 
     And the following provider payments had been generated
         | Collection Period      | Delivery Period        | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type           |
@@ -80,8 +80,8 @@ Scenario Outline: Non-levy learner taking single level 2 aim, prior funding adju
 		| Maths or English | 50093186      | 06/Aug/Last Academic Year | 12 months        | 12 months       | 2                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | completed         |
 	And price details are changed as follows		
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | pe-2             | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 90%                         |
-        |                  | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 100%                        |
+        | pe-2             | 15000                | 06/Aug/Last Academic Year           |                        |                                       | Act2          | 1                   | 90%                         |
+        |                  | 0                    | 06/Aug/Last Academic Year           |                        |                                       | Act2          | 2                   | 100%                        |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then no learner earnings should be generated
 	And no provider payments will be recorded
