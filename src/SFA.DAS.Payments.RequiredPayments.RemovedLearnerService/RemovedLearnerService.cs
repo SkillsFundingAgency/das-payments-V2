@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
-using Microsoft.ServiceFabric.Actors.Client;
+using SFA.DAS.Payments.RequiredPayments.Application;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces;
 
 namespace SFA.DAS.Payments.RequiredPayments.RemovedLearnerService
@@ -13,16 +13,18 @@ namespace SFA.DAS.Payments.RequiredPayments.RemovedLearnerService
     [StatePersistence(StatePersistence.None)]
     internal class RemovedLearnerService : Actor, IRemovedLearnerService
     {
-        private long ukprn;
+        private readonly long ukprn;
+        private readonly IRemovedLearnerAimIdentificationService removedLearnerAimIdentificationService;
 
-        public RemovedLearnerService(ActorService actorService, ActorId actorId) : base(actorService, actorId)
+        public RemovedLearnerService(ActorService actorService, ActorId actorId, IRemovedLearnerAimIdentificationService removedLearnerAimIdentificationService) : base(actorService, actorId)
         {
+            this.removedLearnerAimIdentificationService = removedLearnerAimIdentificationService;
             ukprn = actorId.GetLongId();
         }
 
-        public async Task HandleIlrSubmittedEvent(short academicYear, byte collectionPeriod, DateTime ilrSubmissionDateTime)
+        public async Task<IList<IdentifiedRemovedLearningAim>> HandleIlrSubmittedEvent(short academicYear, byte collectionPeriod, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken)
         {
-            
+            return await removedLearnerAimIdentificationService.IdentifyRemovedLearnerAims(academicYear, collectionPeriod, ukprn, cancellationToken).ConfigureAwait(false);
         }
     }
 }

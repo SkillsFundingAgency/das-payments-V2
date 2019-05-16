@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -74,9 +75,57 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 .SumAsync(cancellationToken);
         }
 
-        public Task<List<IdentifiedRemovedLearningAim>> IdentifyRemovedLearnerAims(short academicYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken)
+        public async Task<List<IdentifiedRemovedLearningAim>> IdentifyRemovedLearnerAims(short academicYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await dataContext.Payment
+                .Where(p => p.CollectionPeriod.AcademicYear == academicYear &&
+                            p.Ukprn == ukprn)
+                .GroupBy(p => new
+                {
+                    p.LearnerReferenceNumber,
+                    p.LearnerUln,
+                    p.LearningAimReference,
+                    p.LearningAimFrameworkCode,
+                    p.LearningAimPathwayCode,
+                    p.LearningAimProgrammeType,
+                    p.LearningAimStandardCode
+                })
+                .Select(p => p.Key)
+                .Except(dataContext.SubmittedLearnerAim.Where(a => a.CollectionPeriod == collectionPeriod &&
+                                                                   a.AcademicYear == academicYear &&
+                                                                   a.Ukprn == ukprn)
+                    .Select(p => new
+                    {
+                        p.LearnerReferenceNumber,
+                        p.LearnerUln,
+                        p.LearningAimReference,
+                        p.LearningAimFrameworkCode,
+                        p.LearningAimPathwayCode,
+                        p.LearningAimProgrammeType,
+                        p.LearningAimStandardCode
+                    })
+                )
+                .Select(p => new IdentifiedRemovedLearningAim
+                {
+                    CollectionPeriod = new CollectionPeriod {AcademicYear = academicYear, Period = collectionPeriod},
+                    Ukprn = ukprn,
+                    EventId = Guid.NewGuid(),
+                    EventTime = DateTimeOffset.UtcNow,
+                    Learner = new Learner
+                    {
+                        ReferenceNumber = p.LearnerReferenceNumber,
+                        Uln = p.LearnerUln
+                    },
+                    LearningAim = new LearningAim
+                    {
+                        FrameworkCode = p.LearningAimFrameworkCode,
+                        Reference = p.LearningAimReference,
+                        PathwayCode = p.LearningAimPathwayCode,
+                        StandardCode = p.LearningAimStandardCode,
+                        ProgrammeType = p.LearningAimProgrammeType
+                    }
+                })
+                .ToListAsync(cancellationToken);
         }
     }
 }
