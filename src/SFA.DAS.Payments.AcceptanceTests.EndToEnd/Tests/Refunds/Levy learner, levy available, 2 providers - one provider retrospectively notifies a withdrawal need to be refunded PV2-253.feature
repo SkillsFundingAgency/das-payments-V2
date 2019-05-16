@@ -10,8 +10,8 @@ Given the employer levy account balance in collection period R06/Current Academi
 
 And the following commitments exist 
   | Identifier        | Learner ID | Provider   | start date                   | end date                     | status | agreed price |
-  | Apprentiiship 1   | learner a  | provider a | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 5625         |
-  | Apprentiiship 2   | learner b  | provider b | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 11250        |
+  | Apprenticeship 1   | learner a  | provider a | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 5625         |
+  | Apprenticeship 2   | learner b  | provider b | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 11250        |
 
 And the "provider a" previously submitted the following learner details
 	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
