@@ -81,6 +81,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "19+ Apprenticeship (From May 2017) Levy Contract":
                 case "19+ Apprenticeship Non-Levy Contract (procured)":
                 case "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)":
+                case "19-24 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)":
                     return 21;
                 default:
                     throw new ArgumentException("A valid funding line type is required.", nameof(fundingLineType));

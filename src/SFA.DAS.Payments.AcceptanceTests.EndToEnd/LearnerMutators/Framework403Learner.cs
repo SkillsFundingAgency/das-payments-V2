@@ -71,10 +71,6 @@
             learner.ULNSpecified = true;
             learner.LearningDelivery[1].LearnAimRef = "60005105";
 
-            var appFinRecord = learner.LearningDelivery[0].AppFinRecord
-                .Single(af => af.AFinType == LearnDelAppFinType.PMR.ToString());
-            //appFinRecord.AFinAmount = 
-            
             MutateHE(learner);
         }
     }

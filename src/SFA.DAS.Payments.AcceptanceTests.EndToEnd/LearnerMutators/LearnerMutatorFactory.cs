@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using DCT.TestDataGenerator.Functor;
     using NonLevy.BasicDay;
+    using NonLevy.SmallEmployer;
 
     public class LearnerMutatorFactory
     {
@@ -30,6 +31,8 @@
                     return new FM36_277(learnerRequests);
                 case "278":
                     return new FM36_278(learnerRequests);
+                case "328":
+                    return new FM36_328(learnerRequests);
                 default:
                     throw new ArgumentException("A valid feature number is required.", nameof(featureNumber));
             }
