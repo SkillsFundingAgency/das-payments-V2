@@ -71,10 +71,23 @@
             learner.ULNSpecified = true;
             learner.LearningDelivery[1].LearnAimRef = "60005105";
 
-            var appFinRecord = learner.LearningDelivery[0].AppFinRecord
-                .Single(af => af.AFinType == LearnDelAppFinType.PMR.ToString());
-            //appFinRecord.AFinAmount = 
-            
+            switch (request.SmallEmployer)
+            {
+                case "SEM1":
+                {
+                    var les1 = learner.LearnerEmploymentStatus[0];
+                    var lesm1 = les1.EmploymentStatusMonitoring.ToList();
+                    lesm1.Add(new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                    {
+                        ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
+                        ESMCode = (int) EmploymentStatusMonitoringCode.SmallEmployer,
+                        ESMCodeSpecified = true
+                    });
+                    learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = lesm1.ToArray();
+                    break;
+                }
+            }
+
             MutateHE(learner);
         }
     }

@@ -136,8 +136,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.ProgrammeType = ilrLearner.ProgrammeType;
                 learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
                 learner.Course.PathwayCode = ilrLearner.PathwayCode;
+                learner.SmallEmployer = ilrLearner.SmallEmployer;
                 ilrLearner.Uln = ilrLearner.Uln != default(long) ? ilrLearner.Uln : learner.Uln;
-                //if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln;
+                //if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln
 
             });
         }
