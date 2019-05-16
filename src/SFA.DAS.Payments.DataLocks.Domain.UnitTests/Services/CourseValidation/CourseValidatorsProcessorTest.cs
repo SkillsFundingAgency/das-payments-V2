@@ -67,9 +67,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             startDateValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult());
-           negotiatedPriceValidator
-                .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult());
+            negotiatedPriceValidator
+                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
+                 .Returns(() => new ValidationResult());
             apprenticeshipPauseValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult());
@@ -78,10 +78,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             courseValidator.ValidateCourse(dataLockValidationModel);
             startDateValidator
                 .Verify(x => x.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
-           negotiatedPriceValidator
-                .Verify(x => x.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
-           apprenticeshipPauseValidator
-                .Verify(x => x.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+            negotiatedPriceValidator
+                 .Verify(x => x.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+            apprenticeshipPauseValidator
+                 .Verify(x => x.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
         }
 
         [Test]
@@ -107,25 +107,25 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             new ApprenticeshipPriceEpisodeModel{Id = 52}
                     }
                 });
-           negotiatedPriceValidator
-                .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
+            negotiatedPriceValidator
+                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
+                 .Returns(() => new ValidationResult
+                 {
+                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                     {
                             new ApprenticeshipPriceEpisodeModel{Id = 52}
-                    }
-                });
-           apprenticeshipPauseValidator
-                .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
+                     }
+                 });
+            apprenticeshipPauseValidator
+                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
+                 .Returns(() => new ValidationResult
+                 {
+                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                     {
                             new ApprenticeshipPriceEpisodeModel{Id = 52}
-                    }
-                });
-           var courseValidator = mocker.Create<CourseValidationProcessor>();
+                     }
+                 });
+            var courseValidator = mocker.Create<CourseValidationProcessor>();
             courseValidator.ValidateCourse(dataLockValidationModel);
             startDateValidator
                 .Verify(validator => validator.Validate(It.Is<DataLockValidationModel>(model =>
@@ -151,7 +151,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
-                    new ApprenticeshipPriceEpisodeModel {Id = 50},
+                    new ApprenticeshipPriceEpisodeModel {Id = 50, Removed =  true},
                     new ApprenticeshipPriceEpisodeModel {Id = 51},
                     new ApprenticeshipPriceEpisodeModel {Id = 52},
                     new ApprenticeshipPriceEpisodeModel {Id = 53},
@@ -168,39 +168,39 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel{Id = 52}
                     }
                 });
-           negotiatedPriceValidator
-                .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
+            negotiatedPriceValidator
+                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
+                 .Returns(() => new ValidationResult
+                 {
+                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                     {
                         new ApprenticeshipPriceEpisodeModel{Id = 52},
                         new ApprenticeshipPriceEpisodeModel{Id = 53},
-                    }
-                });
-           apprenticeshipPauseValidator
-                .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
+                     }
+                 });
+            apprenticeshipPauseValidator
+                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
+                 .Returns(() => new ValidationResult
+                 {
+                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                     {
                         new ApprenticeshipPriceEpisodeModel{Id = 52},
                         new ApprenticeshipPriceEpisodeModel{Id = 54}
-                    }
-                });
-            var courseValidator = mocker.Create<CourseValidationProcessor>();
+                     }
+                 });
+            var courseValidator = new CourseValidationProcessor(courseValidators);
             var result = courseValidator.ValidateCourse(dataLockValidationModel);
 
             startDateValidator
              .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-           negotiatedPriceValidator
-                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+            negotiatedPriceValidator
+                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-           apprenticeshipPauseValidator
-                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+            apprenticeshipPauseValidator
+                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-
+            result.DataLockFailures.Should().BeEmpty();
             result.MatchedPriceEpisode.Should().NotBeNull();
             result.MatchedPriceEpisode.Id.Should().Be(52);
         }
@@ -223,40 +223,42 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
-                    DataLockErrorCode = DataLockErrorCode.DLOCK_07,
+                    DataLockErrorCode = DataLockErrorCode.DLOCK_09,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                     }
                 });
-           negotiatedPriceValidator
-                .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
+            negotiatedPriceValidator
+                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
+                 .Returns(() => new ValidationResult
+                 {
+                     DataLockErrorCode = DataLockErrorCode.DLOCK_07,
+                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                     {
                         new ApprenticeshipPriceEpisodeModel{Id = 52},
-                    }
-                });
-           apprenticeshipPauseValidator
-                .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
+                     }
+                 });
+            apprenticeshipPauseValidator
+                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
+                 .Returns(() => new ValidationResult
+                 {
+                     DataLockErrorCode = DataLockErrorCode.DLOCK_12,
+                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                     {
                         new ApprenticeshipPriceEpisodeModel{Id = 52},
-                    }
-                });
-            var courseValidator = mocker.Create<CourseValidationProcessor>();
+                     }
+                 });
+            var courseValidator = new CourseValidationProcessor(courseValidators);
             var result = courseValidator.ValidateCourse(dataLockValidationModel);
 
             startDateValidator
                .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-           negotiatedPriceValidator
-                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+            negotiatedPriceValidator
+                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-           apprenticeshipPauseValidator
-                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+            apprenticeshipPauseValidator
+                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
             result.MatchedPriceEpisode.Should().BeNull();
         }
@@ -264,60 +266,55 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void ReturnsAllDataLockFailures()
         {
+            var apprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+            {
+                new ApprenticeshipPriceEpisodeModel {Id = 50},
+                new ApprenticeshipPriceEpisodeModel {Id = 51},
+                new ApprenticeshipPriceEpisodeModel {Id = 52},
+                new ApprenticeshipPriceEpisodeModel {Id = 53}
+            };
+
             dataLockValidationModel.Apprenticeship = new ApprenticeshipModel
             {
-                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                {
-                    new ApprenticeshipPriceEpisodeModel {Id = 50},
-                    new ApprenticeshipPriceEpisodeModel {Id = 51},
-                    new ApprenticeshipPriceEpisodeModel {Id = 52},
-                    new ApprenticeshipPriceEpisodeModel {Id = 53},
-                    new ApprenticeshipPriceEpisodeModel {Id = 54},
-                }
+                Id = 100,
+                ApprenticeshipPriceEpisodes = apprenticeshipPriceEpisodes
             };
             startDateValidator
                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
                 .Returns(() => new ValidationResult
                 {
-                    DataLockErrorCode = DataLockErrorCode.DLOCK_07,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                    }
+                    DataLockErrorCode = DataLockErrorCode.DLOCK_09
                 });
-           negotiatedPriceValidator
-                .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel{Id = 52},
-                    }
-                });
-           apprenticeshipPauseValidator
-                .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new ValidationResult
-                {
-                    DataLockErrorCode = DataLockErrorCode.DLOCK_12,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                    }
-                });
+            negotiatedPriceValidator
+                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
+                 .Returns(() => new ValidationResult
+                 {
+                     DataLockErrorCode = DataLockErrorCode.DLOCK_07
+                 });
+            apprenticeshipPauseValidator
+                 .Setup(validator => validator.Validate(It.IsAny<DataLockValidationModel>()))
+                 .Returns(() => new ValidationResult
+                 {
+                     DataLockErrorCode = DataLockErrorCode.DLOCK_12
+                 });
             var courseValidator = mocker.Create<CourseValidationProcessor>();
             var result = courseValidator.ValidateCourse(dataLockValidationModel);
 
             startDateValidator
              .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-           negotiatedPriceValidator
-                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+            negotiatedPriceValidator
+                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-           apprenticeshipPauseValidator
-                 .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
+            apprenticeshipPauseValidator
+                  .Verify(validator => validator.Validate(It.IsAny<DataLockValidationModel>()), Times.Once);
 
-
-            result.DataLockErrors.Should().Contain(DataLockErrorCode.DLOCK_07);
-            result.DataLockErrors.Should().Contain(DataLockErrorCode.DLOCK_12);
-            result.DataLockErrors.Should().HaveCount(2);
+            result.Should().NotBeNull();
+            result.MatchedPriceEpisode.Should().BeNull();
+            result.DataLockFailures.Should().HaveCount(3);
+            result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_09 && x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
+            result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_07 && x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
+            result.DataLockFailures.Any(x => x.DataLockError == DataLockErrorCode.DLOCK_12 && x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o))).Should().BeTrue();
         }
     }
 }
