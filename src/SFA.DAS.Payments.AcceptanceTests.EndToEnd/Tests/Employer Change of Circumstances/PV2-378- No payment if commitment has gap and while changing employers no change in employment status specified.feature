@@ -59,7 +59,7 @@ Scenario Outline: Levy Learner, no payment if commitment has gap while changing 
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
         | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
         | R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
-        | R03/Current Academic Year | Oct/Current Academic Year | 900          | 0          | 0         | 2nd price details        |
+        | R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         | 2nd price details        |
         | R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         | 3rd price details        |
         | R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         | 3rd price details        |
 	And only the following provider payments will be recorded

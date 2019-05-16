@@ -19,6 +19,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         protected Mock<IPaymentDueProcessor> paymentsDueService;
         protected List<Payment> paymentHistory;
 
+        private const string PriceEpisodeIdentifier = "pe-1";
 
         [SetUp]
         public void Setup()
@@ -45,6 +46,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 var testEarning = new Earning
                 {
                     SfaContributionPercentage = 0,
+                    PriceEpisodeIdentifier = PriceEpisodeIdentifier
                 };
                 var expectedAmount = 50;
                 
@@ -63,6 +65,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 var testEarning = new Earning
                 {
                     SfaContributionPercentage = expectedSfaContribution,
+                    PriceEpisodeIdentifier = PriceEpisodeIdentifier
                 };
                 
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
@@ -81,6 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 {
                     EarningType = expectedEarningType,
                     SfaContributionPercentage = 0,
+                    PriceEpisodeIdentifier = PriceEpisodeIdentifier
                 };
 
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
@@ -93,7 +97,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             [Test]
             public void AndThereIsNoSfaContributionPercentage_ThenAnExceptionIsThrown()
             {
-                var testEarning = new Earning();
+                var testEarning = new Earning
+                {
+                    PriceEpisodeIdentifier = PriceEpisodeIdentifier
+                };
 
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
 
@@ -124,7 +131,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             [Test]
             public void ThenRefundIsCreated()
             {
-                var testEarning = new Earning();
+                var testEarning = new Earning
+                {
+                    PriceEpisodeIdentifier = PriceEpisodeIdentifier
+                };
                 var expectedRefundPayments = new List<RequiredPayment>();
 
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(-50);
