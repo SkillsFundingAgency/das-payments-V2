@@ -10,14 +10,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache
         private readonly IActorStateManagerProvider actorStateManagerProvider;
         private IActorStateManager stateManager;
         
-        public IActorStateManager StateManager {
-            get
-            {
-                if (stateManager == null)
-                    stateManager = actorStateManagerProvider.Current;
-                return stateManager;
-            }
-        }
+        public IActorStateManager StateManager  => stateManager ?? (stateManager = actorStateManagerProvider.Current);
+        
 
         public ReliableCollectionCache(IActorStateManagerProvider actorStateManagerProvider)
         {

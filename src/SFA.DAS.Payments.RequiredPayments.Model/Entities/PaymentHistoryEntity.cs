@@ -17,6 +17,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         public decimal Amount { get; set; }
         public FundingSourceType FundingSource { get; set; }
         public decimal SfaContributionPercentage { get; set; }
+        public long? AccountId { get; set; }
+        public ContractType ContractType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? PlannedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }

@@ -22,59 +22,39 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 
         public async Task<List<PaymentHistoryEntity>> GetPaymentHistory(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var payments = await dataContext.Payment
+            return await dataContext.Payment
                 .Where(payment => apprenticeshipKey.Ukprn == payment.Ukprn &&
                             apprenticeshipKey.FrameworkCode == payment.LearningAimFrameworkCode &&
                             apprenticeshipKey.LearnAimRef == payment.LearningAimReference &&
                             apprenticeshipKey.LearnerReferenceNumber == payment.LearnerReferenceNumber &&
                             apprenticeshipKey.PathwayCode == payment.LearningAimPathwayCode &&
                             (int)apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
-                            apprenticeshipKey.StandardCode == payment.LearningAimStandardCode)
-                .Select(payment => new
+                            apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
+                            apprenticeshipKey.AcademicYear == payment.CollectionPeriod.AcademicYear)
+                .Select(payment => new PaymentHistoryEntity
                 {
                     ExternalId = payment.EventId,
-                    payment.Ukprn,
-                    payment.LearnerReferenceNumber,
-                    payment.LearningAimReference,
-                    payment.TransactionType,
-                    payment.PriceEpisodeIdentifier,
-                    payment.DeliveryPeriod,
-                    payment.CollectionPeriod,
-                    payment.Amount,
-                    payment.FundingSource,
-                    payment.SfaContributionPercentage,
-                    payment.StartDate,
-                    payment.PlannedEndDate,
-                    payment.ActualEndDate,
-                    payment.CompletionStatus,
-                    payment.CompletionAmount,
-                    payment.InstalmentAmount,
-                    payment.NumberOfInstalments
+                    AccountId = payment.AccountId,
+                    ContractType = payment.ContractType,
+                    Ukprn = payment.Ukprn,
+                    LearnerReferenceNumber = payment.LearnerReferenceNumber,
+                    LearnAimReference = payment.LearningAimReference,
+                    TransactionType = (int)payment.TransactionType,
+                    PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
+                    DeliveryPeriod = payment.DeliveryPeriod,
+                    CollectionPeriod = payment.CollectionPeriod,
+                    Amount = payment.Amount,
+                    FundingSource = payment.FundingSource,
+                    SfaContributionPercentage = payment.SfaContributionPercentage,
+                    StartDate = payment.StartDate,
+                    PlannedEndDate = payment.PlannedEndDate,
+                    ActualEndDate = payment.ActualEndDate,
+                    CompletionStatus = payment.CompletionStatus,
+                    CompletionAmount = payment.CompletionAmount,
+                    InstalmentAmount = payment.InstalmentAmount,
+                    NumberOfInstalments = payment.NumberOfInstalments
                 })
-                .ToListAsync(cancellationToken);
-
-            return payments.Select(payment => new PaymentHistoryEntity
-            {
-                ExternalId = payment.ExternalId,
-                Ukprn = payment.Ukprn,
-                LearnerReferenceNumber = payment.LearnerReferenceNumber,
-                LearnAimReference = payment.LearningAimReference,
-                TransactionType = (int)payment.TransactionType,
-                PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
-                DeliveryPeriod = payment.DeliveryPeriod,
-                CollectionPeriod = payment.CollectionPeriod,
-                Amount = payment.Amount,
-                FundingSource = payment.FundingSource,
-                SfaContributionPercentage = payment.SfaContributionPercentage,
-                StartDate = payment.StartDate,
-                PlannedEndDate = payment.PlannedEndDate,
-                ActualEndDate = payment.ActualEndDate,
-                CompletionStatus = payment.CompletionStatus,
-                CompletionAmount = payment.CompletionAmount,
-                InstalmentAmount = payment.InstalmentAmount,
-                NumberOfInstalments = payment.NumberOfInstalments
-            })
-            .ToList();
+            .ToListAsync(cancellationToken);
         }
 
         public async Task<decimal> GetEmployerCoInvestedPaymentHistoryTotal(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
