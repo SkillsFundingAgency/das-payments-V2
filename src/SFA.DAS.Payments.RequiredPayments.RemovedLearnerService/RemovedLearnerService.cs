@@ -11,7 +11,7 @@ using SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces;
 namespace SFA.DAS.Payments.RequiredPayments.RemovedLearnerService
 {
     [StatePersistence(StatePersistence.None)]
-    internal class RemovedLearnerService : Actor, IRemovedLearnerService
+    public class RemovedLearnerService : Actor, IRemovedLearnerService
     {
         private readonly long ukprn;
         private readonly IRemovedLearnerAimIdentificationService removedLearnerAimIdentificationService;
