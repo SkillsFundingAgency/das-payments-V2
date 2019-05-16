@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -51,7 +52,7 @@
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
 
-            var learnerRequests = mapper.Map<IEnumerable<LearnerRequest>>(currentIlr);
+            var learnerRequests = mapper.Map<IEnumerable<LearnerRequest>>(currentIlr).ToImmutableList();
             var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learnerRequests);
 
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
