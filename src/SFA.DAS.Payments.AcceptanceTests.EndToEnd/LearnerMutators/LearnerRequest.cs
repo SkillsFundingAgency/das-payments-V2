@@ -49,6 +49,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         public ContractType ContractType { get; set; }
 
+        public string SmallEmployer { get; set; }
+
         public long EmployerContribution
         {
             get

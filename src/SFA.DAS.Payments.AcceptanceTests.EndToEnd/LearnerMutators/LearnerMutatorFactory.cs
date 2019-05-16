@@ -26,6 +26,7 @@
                 case "615":
                     return new Framework593Learner(learnerRequests, featureNumber);
                 case "487":
+                case "326":
                     return new Framework403Learner(learnerRequests, featureNumber);
                 case "277":
                     return new FM36_277(learnerRequests);

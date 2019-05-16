@@ -1,13 +1,12 @@
-﻿#@supports_dc_e2e
-Feature:  Non-levy learner 16-18 employed with a small employer at start fully funded PV2-326
+﻿Feature:  Non-levy learner 16-18 employed with a small employer at start fully funded PV2-326
 	As a provider,
 	I want a non-levy learner, 1 learner aged 16-18, employed with a small employer at start, is fully funded for on programme and completion payments, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.
 Scenario: Non-levy learner 16-18 employed with a small employer at start fully funded PV2-326
 	# 100% contribution for small employer from start
 	Given the provider previously submitted the following learner details
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 100%                        |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                                     | SFA Contribution Percentage | Small Employer |
+		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 403            | 2              | 1            | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 100%                        | SEM1           |
     And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive | OnProgramme16To18FrameworkUplift |
         | Aug/Last Academic Year | 500          | 0          | 0         | 0                            | 0                            | 120                              |
@@ -51,8 +50,8 @@ Scenario: Non-levy learner 16-18 employed with a small employer at start fully f
         | R04/Last Academic Year | Nov/Last Academic Year | 0                      | 0                           | 500                       | First16To18EmployerIncentive     |
         | R04/Last Academic Year | Nov/Last Academic Year | 0                      | 0                           | 500                       | First16To18ProviderIncentive     |
     But the Provider now changes the Learner details as follows
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 100%                        |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                                     | SFA Contribution Percentage | Small Employer |
+		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           |                        |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 403            | 2              | 1            | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 100%                        | SEM1           |
 	When the amended ILR file is re-submitted for the learners in collection period R01/Current Academic Year
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Second16To18EmployerIncentive | Second16To18ProviderIncentive | Completion16To18FrameworkUplift |
@@ -84,3 +83,10 @@ Scenario: Non-levy learner 16-18 employed with a small employer at start fully f
 		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 500                       | Second16To18ProviderIncentive   |
 		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 360                       | Completion16To18FrameworkUplift |
 
+# DC Integration
+#	And the employment status in the ILR is
+#        | Employer   | Employment Status  | Employment Status Applies | Small Employer |
+#        | employer 1 | in paid employment | 05/Aug/Last Academic Year | SEM1           |
+
+#Learner Type                 | 
+#16-18 programme only non-DAS |
