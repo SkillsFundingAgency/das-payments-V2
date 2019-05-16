@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<EarningEvent> GetExpectedEvents()
         {
             var result = new List<EarningEvent>();
-            var learnerIds = earningSpecs.Where(e => e.Ukprn == provider.Ukprn)?.Select(e => e.LearnerId).Distinct().ToList();
+            var learnerIds = earningSpecs.Where(e => e.Ukprn == provider.Ukprn).Select(e => e.LearnerId).Distinct().ToList();
 
             foreach (var learnerId in learnerIds)
             {
@@ -107,15 +107,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var onProgEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsOnProgType).ToList();
                     var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsFunctionalSkillType(t, aimSpec.IsMainAim)).ToList();
                     var incentiveEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsIncentiveType(t, aimSpec.IsMainAim)).ToList();
-
-                    if (!aimSpec.IsMainAim)
-                    {
-                        incentiveEarnings.Remove(TransactionType.LearningSupport);
-                    }
-                    else
-                    {
-                        functionalSkillEarnings.Remove(TransactionType.LearningSupport);
-                    }
 
                     if (aimSpec.IsMainAim && onProgEarnings.Any())
                     {
