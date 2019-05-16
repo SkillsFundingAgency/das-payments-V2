@@ -77,39 +77,63 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 
         public async Task<List<IdentifiedRemovedLearningAim>> IdentifyRemovedLearnerAims(short academicYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken)
         {
-            // TODO: this doesn't generate EXCEPT SQL statement, instead it fetches all records and does except locally
+            var aims = await dataContext.SubmittedLearnerAim.FromSql($@"
+                select
+                    newid() Id,
+                    {ukprn} Ukprn,
+                    {collectionPeriod} CollectionPeriod,
+                    {academicYear} AcademicYear,
+                    getutcdate() IlrSubmissionDateTime,
+                    {ukprn} JobId,
+                    LearnerReferenceNumber,
+                    LearnerUln,
+                    LearningAimReference,
+                    LearningAimFrameworkCode,
+                    LearningAimPathwayCode,
+                    LearningAimProgrammeType,
+                    LearningAimStandardCode
+                from (
+                    select
+                        LearnerReferenceNumber,
+                        LearnerUln,
+                        LearningAimReference,
+                        LearningAimFrameworkCode,
+                        LearningAimPathwayCode,
+                        LearningAimProgrammeType,
+                        LearningAimStandardCode
+                    from
+                        [Payments2].[Payment]
+                    where
+					    AcademicYear = {academicYear}
+                        and Ukprn = {ukprn}
+                    except
+				    select
+					    LearnerReferenceNumber,
+					    LearnerUln,
+					    LearningAimReference,
+					    LearningAimFrameworkCode,
+					    LearningAimPathwayCode,
+					    LearningAimProgrammeType,
+					    LearningAimStandardCode
+				    from
+					    [Payments2].[Payment]
+				    where
+					    AcademicYear = {academicYear}
+					    and Ukprn = {ukprn}
+					    and CollectionPeriod = {collectionPeriod}
+                ) as a
+                group by
+                    LearnerReferenceNumber,
+                    LearnerUln,
+                    LearningAimReference,
+                    LearningAimFrameworkCode,
+                    LearningAimPathwayCode,
+                    LearningAimProgrammeType,
+                    LearningAimStandardCode
+"
+            ).AsNoTracking().ToListAsync(cancellationToken).ConfigureAwait(false);
 
-            var result = await dataContext.Payment
-                .Where(p => p.CollectionPeriod.AcademicYear == academicYear &&
-                            p.Ukprn == ukprn)
-                .GroupBy(p => new
-                {
-                    p.LearnerReferenceNumber,
-                    p.LearnerUln,
-                    p.LearningAimReference,
-                    p.LearningAimFrameworkCode,
-                    p.LearningAimPathwayCode,
-                    p.LearningAimProgrammeType,
-                    p.LearningAimStandardCode
-                })
-                .Select(p => p.Key)
-                .Except(dataContext.SubmittedLearnerAim.Where(a => a.CollectionPeriod == collectionPeriod &&
-                                                                   a.AcademicYear == academicYear &&
-                                                                   a.Ukprn == ukprn)
-                    .Select(p => new
-                    {
-                        p.LearnerReferenceNumber,
-                        p.LearnerUln,
-                        p.LearningAimReference,
-                        p.LearningAimFrameworkCode,
-                        p.LearningAimPathwayCode,
-                        p.LearningAimProgrammeType,
-                        p.LearningAimStandardCode
-                    })
-                )
-                .ToListAsync(cancellationToken).ConfigureAwait(false);
-
-                var result2 = result.Select(p => new IdentifiedRemovedLearningAim
+            return aims.Select(p => new IdentifiedRemovedLearningAim
                 {
                     CollectionPeriod = new CollectionPeriod {AcademicYear = academicYear, Period = collectionPeriod},
                     Ukprn = ukprn,
@@ -130,8 +154,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     }
                 })
                 .ToList();
-
-            return result2;
         }
     }
 }
