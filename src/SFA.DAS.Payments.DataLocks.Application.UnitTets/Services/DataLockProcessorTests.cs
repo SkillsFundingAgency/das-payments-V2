@@ -30,6 +30,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         private Mock<IOnProgrammePeriodsValidationProcessor> onProgValidationMock;
         private List<ApprenticeshipModel> apprenticeships;
         private const long Uln = 123;
+        private const int academicYear = 1819;
         private LearningAim aim;
         
         [OneTimeSetUp]
@@ -84,7 +85,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                                                 earningEvent.PriceEpisodes,
                                                 earningEvent.OnProgrammeEarnings[0],
                                                 apprenticeships,
-                                                aim))
+                                                aim,
+                                                academicYear))
                 .Returns(() => 
                     (new List<EarningPeriod> {earningEvent.OnProgrammeEarnings.FirstOrDefault()?.Periods.FirstOrDefault()}, 
                     new List<EarningPeriod>()
@@ -154,7 +156,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     It.IsAny<List<PriceEpisode>>(),
                     It.IsAny<OnProgrammeEarning>(),
                     It.IsAny<List<ApprenticeshipModel>>(),
-                    aim))
+                    aim,
+                    academicYear))
                 .Returns(() => (new List<EarningPeriod>
                 {
                    testEarningEvent.OnProgrammeEarnings[0].Periods[0]
@@ -201,7 +204,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var testEarningEvent = new ApprenticeshipContractType1EarningEvent
             {
                 Learner = new Learner { Uln = Uln, },
-                PriceEpisodes = new List<PriceEpisode>()
+                PriceEpisodes = new List<PriceEpisode>(),
+                CollectionYear =  academicYear
             };
             
             var earningPeriods = new List<EarningPeriod>();

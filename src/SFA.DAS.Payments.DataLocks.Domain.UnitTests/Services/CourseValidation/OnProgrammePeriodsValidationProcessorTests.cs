@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         private List<ApprenticeshipModel> apprenticeships;
         private List<DataLockFailure> dataLockFailures;
         private LearningAim aim;
+        private const int academicYear = 1819;
 
         [SetUp]
         public void SetUp()
@@ -85,7 +86,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
 
-            var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes, earning, apprenticeships, aim);
+            var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes, earning, apprenticeships, aim, academicYear);
             periods.ValidPeriods.Count.Should().Be(1);
             periods.ValidPeriods.All(p => p.ApprenticeshipPriceEpisodeId == 90).Should().Be(true);
         }
@@ -109,7 +110,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 96 } });
 
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,
-                earning, apprenticeships, aim);
+                earning, apprenticeships, aim, academicYear);
             periods.ValidPeriods.Count.Should().Be(2);
             periods.ValidPeriods.Any(p =>  p.ApprenticeshipPriceEpisodeId == 90 && p.AccountId == 21).Should().Be(true);
             periods.ValidPeriods.Any(p =>  p.ApprenticeshipPriceEpisodeId == 96 && p.AccountId == 22).Should().Be(true);
@@ -130,7 +131,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
 
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,
-                earning, apprenticeships, aim);
+                earning, apprenticeships, aim, academicYear);
             periods.InValidPeriods.Count.Should().Be(1);
             periods.InValidPeriods.All(p => p.DataLockFailures[0].DataLockError == DataLockErrorCode.DLOCK_03).Should().BeTrue();
         }
@@ -150,7 +151,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
 
             var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes,
-                earning, apprenticeships, aim);
+                earning, apprenticeships, aim, academicYear);
             periods.ValidPeriods.Count.Should().Be(1);
         }
     }
