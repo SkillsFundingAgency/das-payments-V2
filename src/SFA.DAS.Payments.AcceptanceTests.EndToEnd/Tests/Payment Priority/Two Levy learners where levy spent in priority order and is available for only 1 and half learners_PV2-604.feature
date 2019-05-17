@@ -4,11 +4,11 @@ I want 2 Levy learners, where levy is spent in priority order and there is only 
 So that I am accurately paid the apprenticeship amount by SFA  PV2-604
 
 Scenario Outline: Two levy learners, full levy available for one learner, partial levy available for the other PV2-604
-Given the employer levy account balance in collection period  <Collection Period> is <Levy Balance>
+Given the employer levy account balance in collection period <Collection_Period> is <Levy_Balance>
 And the following commitments exist
-	| Identifier         | Learner ID | priority | start date                   | end date                  | agreed price |
-	| Apprenticeship 1    | learner a  | 1        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |
-	| Apprenticeship 2    | learner b  | 2        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |
+	| Identifier       | Learner ID | priority | start date                   | end date                  | agreed price |Framework Code | Pathway Code | Programme Type |
+	| Apprenticeship 1 | learner a  | 1        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |593            | 1            | 20             |
+	| Apprenticeship 2 | learner b  | 2        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |593            | 1            | 20             |
 And the provider is providing training for the following learners
 	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
 	| learner a  | 01/Aug/Current Academic Year | 12 months        | 15000                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
@@ -120,19 +120,19 @@ And only the following provider payments will be generated
 	| learner b  | R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | 500           | Learning         |
 
 Examples: 
-    | Collection_Period         | Levy Balance |
-    | R01/Current Academic Year | 1500         |
-    | R02/Current Academic Year | 1500         |
-    | R03/Current Academic Year | 1500         |
-    | R04/Current Academic Year | 1500         |
-    | R05/Current Academic Year | 1500         |
-    | R06/Current Academic Year | 1500         |
-    | R07/Current Academic Year | 1500         |
-    | R08/Current Academic Year | 1500         |
-    | R09/Current Academic Year | 1500         |
-    | R10/Current Academic Year | 1500         |
-    | R11/Current Academic Year | 1500         |
-    | R12/Current Academic Year | 1500         |
+ | Collection_Period         | Levy_Balance |
+ | R01/Current Academic Year | 1500         |
+ | R02/Current Academic Year | 1500         |
+ | R03/Current Academic Year | 1500         |
+ | R04/Current Academic Year | 1500         |
+ | R05/Current Academic Year | 1500         |
+ | R06/Current Academic Year | 1500         |
+ | R07/Current Academic Year | 1500         |
+ | R08/Current Academic Year | 1500         |
+ | R09/Current Academic Year | 1500         |
+ | R10/Current Academic Year | 1500         |
+ | R11/Current Academic Year | 1500         |
+ | R12/Current Academic Year | 1500         |
 
 #Feature: Payment Priority
 #
