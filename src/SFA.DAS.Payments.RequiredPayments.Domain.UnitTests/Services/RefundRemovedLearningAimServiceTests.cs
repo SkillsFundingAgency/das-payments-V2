@@ -41,5 +41,43 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                                 payments.All(payment => payment.DeliveryPeriod == period))), Times.Once);
             }
         }
+
+        [Test]
+        public void Uses_PaymentsDueProcessor_To_Determine_Amounts_To_Be_Refunded()
+        {
+            mocker.Mock<IRefundService>().Setup(x => x.GetRefund(It.IsAny<decimal>(), It.IsAny<List<Payment>>()))
+                .Returns(new List<RequiredPayment>());
+
+            for (var i = 1; i <= 12; i++)
+            {
+                var paymentAmount = i * 10;
+                history.Add(new Payment
+                {
+                    DeliveryPeriod = (byte)i,
+                    SfaContributionPercentage = .9M,
+                    Amount = paymentAmount,
+                    PriceEpisodeIdentifier = "pe-1"
+                });
+                mocker.Mock<IPaymentDueProcessor>()
+                    .Setup(x =>
+                        x.CalculateRequiredPaymentAmount(It.Is<decimal>(amount => amount == 0),
+                        It.Is<List<Payment>>(payments => payments.All(p => p.Amount == paymentAmount))))
+                    .Returns(paymentAmount * -1);
+            }
+
+            history.AddRange(Enumerable.Range(1, 12).Select(period => new Payment { DeliveryPeriod = (byte)period, SfaContributionPercentage = .9M, Amount = period * 10, PriceEpisodeIdentifier = "pe-1" }));
+            var service = mocker.Create<RefundRemovedLearningAimService>();
+            var requiredPayments = service.RefundLearningAim(history);
+            for (var i = 1; i <= 12; i++)
+            {
+                var period = i;
+                mocker.Mock<IRefundService>()
+                    .Verify(
+                        x => x.GetRefund(It.Is<decimal>(amount => amount == period*-10),
+                            It.Is<List<Payment>>(payments =>
+                                payments.All(payment => payment.DeliveryPeriod == period))), Times.Once);
+            }
+
+        }
     }
 }
