@@ -42,7 +42,7 @@
 		| commitment Id | version Id | Learner ID | priority | start date                   | end date                     | agreed price | standard code | programme type |
 		| 1             | 2          | learner a  | 1        | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 1400         | 25            | 25             |
 
-    And  The Provider now changes the Learner details as follows
+    But the Provider now changes the Learner details as follows
 		| Start Date                   | Planned Duration | Actual Duration | Programme Type | Completion Status | SFA Contribution Percentage |
 		| 01/Aug/Current Academic Year | 12 months        | 12 months       | 25             | continuing        | 90%                         |
 
