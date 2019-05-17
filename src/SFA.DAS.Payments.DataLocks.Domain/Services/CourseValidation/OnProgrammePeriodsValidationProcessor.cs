@@ -40,6 +40,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                         Apprenticeship = apprenticeship,
                         PriceEpisode = priceEpisodes.SingleOrDefault(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
                                        ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}"),
+                        TransactionType = onProgrammeEarning.Type,
                         Aim = aim,
                     };
 
