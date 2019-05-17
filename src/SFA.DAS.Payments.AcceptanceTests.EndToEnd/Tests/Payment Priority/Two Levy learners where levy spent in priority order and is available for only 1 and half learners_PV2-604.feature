@@ -1,3 +1,4 @@
+@ignore
 Feature:Two levy learners, full levy available for one learner, partial levy available for the other PV2-604
 As a provider,
 I want 2 Levy learners, where levy is spent in priority order and there is only enough levy available for one and half learners
