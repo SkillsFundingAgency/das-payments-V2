@@ -10,6 +10,7 @@ using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 
+
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     [Binding]
@@ -316,7 +317,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     throw new Exception($"Can't find a matching apprenticeship for Identifier {dataLockError.Apprenticeship}");
                 }
-                dataLockError.ApprenticeshipId = apprenticeship.CommitmentId;
+                dataLockError.ApprenticeshipId = apprenticeship.ApprenticeshipId;
             }
 
             var matcher = new EarningFailedDataLockMatcher(TestSession.Provider, TestSession, CurrentCollectionPeriod, dataLockErrors);
