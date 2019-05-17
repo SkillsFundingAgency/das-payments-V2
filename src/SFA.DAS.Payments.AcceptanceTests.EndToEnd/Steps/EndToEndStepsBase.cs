@@ -409,7 +409,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             for (var i = 0; i < orderedPriceEpisodes.Count; i++)
             {
                 var currentPriceEpisode = priceEpisodesForAim[i];
-                var tnpStartDate =  orderedPriceEpisodes
+                var tnpStartDate = orderedPriceEpisodes
                     .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
                                 currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
                     .PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
@@ -590,7 +590,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     if ((tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId)) && learnerId != e.LearnerId)
                         return false;
 
-                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)  
+                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)
                         return false;
 
                     return true;
@@ -882,6 +882,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             }
                         }
                     }
+
+                   
+
                 }
             }
 

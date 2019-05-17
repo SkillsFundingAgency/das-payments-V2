@@ -303,5 +303,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WhenMonthEndIsTriggered().ConfigureAwait(false);
             await ThenNoProviderPaymentsWillBeGenerated(TestSession.Provider.Identifier).ConfigureAwait(false);
         }
+
+        [Then(@"the following data lock failures were generated")]
+        public async Task ThenOnlyTheFollowingNonPayableEarningsWillBeGenerated(Table table)
+        {
+            var dataLockErrors = table.CreateSet<DataLockError>().ToList();
+
+            foreach (var dataLockError in dataLockErrors)
+            {
+                var apprenticeship = Apprenticeships.FirstOrDefault(a => a.Identifier == dataLockError.Apprenticeship);
+                if (apprenticeship == null)
+                {
+                    throw new Exception($"Can't find a matching apprenticeship for Identifier {dataLockError.Apprenticeship}");
+                }
+                dataLockError.ApprenticeshipId = apprenticeship.CommitmentId;
+            }
+
+            var matcher = new EarningFailedDataLockMatcher(TestSession.Provider, TestSession, CurrentCollectionPeriod, dataLockErrors);
+            await WaitForIt(() => matcher.MatchPayments(), "DataLock Failed event check failure");
+        }
     }
 }
