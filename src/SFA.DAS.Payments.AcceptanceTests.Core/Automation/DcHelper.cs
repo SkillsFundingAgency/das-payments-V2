@@ -63,7 +63,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                         {JobContextMessageKey.FundingFm36Output, messagePointer},
                         {JobContextMessageKey.Filename, messagePointer},
                         {JobContextMessageKey.UkPrn, ukprn},
-                        {JobContextMessageKey.Username, "Bob"},
                         {JobContextMessageKey.Container, storageContainer },
                         {JobContextMessageKey.ReturnPeriod, collectionPeriod }
                     },
@@ -86,7 +85,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     }
                 };
 
-                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object>(), "Validation");
+                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object>(), "GenerateFM36Payments");
             }
             catch (Exception e)
             {
