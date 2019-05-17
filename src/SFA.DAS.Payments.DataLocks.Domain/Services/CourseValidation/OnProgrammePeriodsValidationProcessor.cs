@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
         public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long uln,
             List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning,
-            List<ApprenticeshipModel> apprenticeships, LearningAim aim)
+            List<ApprenticeshipModel> apprenticeships, LearningAim aim, int academicYear)
         {
             var validPeriods = new List<EarningPeriod>();
             var invalidPeriods = new List<EarningPeriod>();
@@ -42,6 +42,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                                        ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}"),
                         TransactionType = onProgrammeEarning.Type,
                         Aim = aim,
+                        AcademicYear = academicYear
                     };
 
                     var validationResult = courseValidationProcessor.ValidateCourse(validationModel);
