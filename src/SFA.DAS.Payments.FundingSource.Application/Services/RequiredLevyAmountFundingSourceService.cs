@@ -52,10 +52,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         public async Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent)
         {
             var keys = await GetKeys().ConfigureAwait(false);
-            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, paymentEvent.Learner.Uln, paymentEvent.EventId);
+            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, 
+                paymentEvent.Learner.Uln, paymentEvent.StartDate,IsTransfer(paymentEvent));
             keys.Add(key);
             await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
+        }
+
+        private bool IsTransfer(CalculatedRequiredLevyAmount paymentEvent)
+        {
+            return paymentEvent.TransferSenderAccountId.HasValue &&
+                   paymentEvent.AccountId != paymentEvent.TransferSenderAccountId;
         }
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId, long jobId)
