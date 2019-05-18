@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 .AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<RequiredLevyAmountFundingSourceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<SortableKeyGenerator>().AsImplementedInterfaces();
-
+            builder.RegisterType<LevyMessageRoutingService>().AsImplementedInterfaces();
 
             builder.Register(c => new CoInvestedFundingSourceService
             (
