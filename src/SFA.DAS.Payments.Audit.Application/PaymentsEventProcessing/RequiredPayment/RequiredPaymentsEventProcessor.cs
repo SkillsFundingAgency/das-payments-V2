@@ -8,10 +8,10 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPay
 {
     public interface IRequiredPaymentEventProcessor
     {
-        Task ProcessPaymentsEvent(RequiredPaymentEvent message);
+        Task ProcessPaymentsEvent(PeriodisedRequiredPaymentEvent message);
     }
 
-    public class RequiredPaymentEventProcessor : PaymentsEventProcessor<RequiredPaymentEvent, RequiredPaymentEventModel>, IRequiredPaymentEventProcessor
+    public class RequiredPaymentEventProcessor : PaymentsEventProcessor<PeriodisedRequiredPaymentEvent, RequiredPaymentEventModel>, IRequiredPaymentEventProcessor
     {
         public RequiredPaymentEventProcessor(IPaymentsEventModelCache<RequiredPaymentEventModel> cache, IMapper mapper) : base(cache, mapper)
         {

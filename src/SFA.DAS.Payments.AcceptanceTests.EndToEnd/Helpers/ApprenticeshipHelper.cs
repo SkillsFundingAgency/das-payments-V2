@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
         public static ApprenticeshipModel CreateApprenticeshipModel(Apprenticeship apprenticeshipSpec, TestSession testSession)
         {
-            if (apprenticeshipSpec.CommitmentId == default(long)) apprenticeshipSpec.CommitmentId = testSession.GenerateId();
+            if (apprenticeshipSpec.ApprenticeshipId == default(long)) apprenticeshipSpec.ApprenticeshipId = testSession.GenerateId();
 
             if (apprenticeshipSpec.Ukprn == default(long))
             {
@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
             var apprenticeshipModel = new ApprenticeshipModel
             {
-                Id = apprenticeshipSpec.CommitmentId,
+                Id = apprenticeshipSpec.ApprenticeshipId,
                 Ukprn = apprenticeshipSpec.Ukprn,
                 AccountId = apprenticeshipSpec.AccountId,
                 Uln = apprenticeshipSpec.Uln,
@@ -97,7 +97,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
             return new ApprenticeshipPriceEpisodeModel
             {
-                ApprenticeshipId = apprenticeshipSpec.CommitmentId,
+                ApprenticeshipId = apprenticeshipSpec.ApprenticeshipId,
                 Cost = apprenticeshipSpec.AgreedPrice,
                 StartDate = startDate,
                 EndDate = endDate

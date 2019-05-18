@@ -1,3 +1,4 @@
+@ignore
 Feature:Two levy learners, full levy available for one learner, partial levy available for the other PV2-604
 As a provider,
 I want 2 Levy learners, where levy is spent in priority order and there is only enough levy available for one and half learners
@@ -13,7 +14,7 @@ And the provider is providing training for the following learners
 	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
 	| learner a  | 01/Aug/Current Academic Year | 12 months        | 15000                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	| learner b  | 01/Aug/Current Academic Year | 12 months        | 15000                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
-When the ILR file is submitted for the learners for collection period <Collection_Period>
+When the ILR file is submitted for the learners for collection period <collection_Period>
 Then the following learner earnings should be generated
 	| Learner ID | Delivery Period           | On-Programme | Completion | Balancing |
 	| learner a  | Aug/Current Academic Year | 1000         | 0          | 0         |
