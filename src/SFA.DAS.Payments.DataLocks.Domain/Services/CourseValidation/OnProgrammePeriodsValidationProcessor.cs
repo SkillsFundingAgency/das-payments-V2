@@ -75,6 +75,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                                 AccountId = apprenticeship.AccountId,
                                 ApprenticeshipId = apprenticeship.Id,
                                 ApprenticeshipPriceEpisodeId = validationResult.MatchedPriceEpisode.Id,
+                                TransferSenderAccountId = apprenticeship.TransferSendingEmployerAccountId,
                                 Priority = apprenticeship.Priority
                             }
                         };
