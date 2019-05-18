@@ -183,6 +183,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             Assert.AreEqual(earningPeriod.Period, act1RequiredPayment.DeliveryPeriod);
             Assert.AreEqual(earningPeriod.AccountId, act1RequiredPayment.AccountId);
+            Assert.AreEqual(earningPeriod.TransferSenderAccountId, act1RequiredPayment.TransferSenderAccountId);
             Assert.AreEqual(earningPeriod.ApprenticeshipId, act1RequiredPayment.ApprenticeshipId);
             Assert.AreEqual(earningPeriod.ApprenticeshipPriceEpisodeId, act1RequiredPayment.ApprenticeshipPriceEpisodeId);
             //Assert.AreEqual(earningPeriod.AgreementId, act1RequiredPayment.AgreementId);

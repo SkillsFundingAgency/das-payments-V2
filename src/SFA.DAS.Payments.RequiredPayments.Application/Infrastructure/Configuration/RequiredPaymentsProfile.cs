@@ -42,7 +42,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
                 .Ignore(x => x.ContractType)
-                .ForMember(requiredPayment => requiredPayment.AccountId, opt => opt.Ignore())
+                .Ignore(x => x.AccountId)
+                .Ignore(x => x.TransferSenderAccountId)
                 .Ignore(x => x.StartDate)
                 .Ignore(x => x.PlannedEndDate)
                 .Ignore(x => x.ActualEndDate)
@@ -116,6 +117,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Include<EarningPeriod, CalculatedRequiredLevyAmount>()
                 .ForMember(requiredPayment => requiredPayment.DeliveryPeriod, opt => opt.MapFrom(period => period.Period))
                 .ForMember(requiredPayment => requiredPayment.AccountId, opt => opt.MapFrom(period => period.AccountId))
+                .ForMember(requiredPayment => requiredPayment.TransferSenderAccountId, opt => opt.MapFrom(period => period.TransferSenderAccountId))
                 .ForAllOtherMembers(opt => opt.Ignore())
                 ;
 
@@ -160,6 +162,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.CollectionPeriod)
                 .Ignore(x => x.ContractType)
                 .Ignore(x => x.AccountId)
+                .Ignore(x => x.TransferSenderAccountId)
                 .Ignore(x => x.StartDate)
                 .Ignore(x => x.PlannedEndDate)
                 .Ignore(x => x.ActualEndDate)
@@ -196,6 +199,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.AmountDue)
                 .Ignore(x => x.DeliveryPeriod)
                 .Ignore(x => x.AccountId)
+                .Ignore(x => x.TransferSenderAccountId)
                 .Ignore(x => x.ContractType)
                 .Ignore(x => x.JobId)
                 .Ignore(x => x.EventTime)
