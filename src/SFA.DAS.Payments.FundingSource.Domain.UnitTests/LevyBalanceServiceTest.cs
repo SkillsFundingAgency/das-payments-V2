@@ -109,5 +109,14 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             service.TryFundTransfer(-50).Should().Be(-50);
             service.TryFund(50).Should().Be(50);
         }
+
+        [Test]
+        public void Should_Debit_Transfer_Allowance_When_Levy_Balance_Is_Under_Allowance()
+        {
+            var service = new LevyBalanceService();
+            service.Initialise(50, 50);
+            service.TryFund(50).Should().Be(50);
+            service.TryFundTransfer(50).Should().Be(0);
+        }
     }
 }

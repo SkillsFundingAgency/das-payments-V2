@@ -9,9 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
-using SFA.DAS.Payments.FundingSource.Domain.Services;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
