@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
-using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Repositories
