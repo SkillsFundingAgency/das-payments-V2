@@ -178,6 +178,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             };
 
             var balance = 100m;
+            var transferAllowance = 50;
             var levyPayment = new LevyPayment { AmountDue = 55, Type = FundingSourceType.Levy };
             var employerCoInvestedPayment = new EmployerCoInvestedPayment { AmountDue = 44, Type = FundingSourceType.CoInvestedEmployer };
             var sfaCoInvestedPayment = new SfaCoInvestedPayment { AmountDue = 33, Type = FundingSourceType.CoInvestedSfa };
@@ -192,10 +193,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verifiable();
 
             levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None))
-                .ReturnsAsync(() => new LevyAccountModel { Balance = balance })
+                .ReturnsAsync(() => new LevyAccountModel { Balance = balance, TransferAllowance = transferAllowance })
                 .Verifiable();
 
-            levyBalanceServiceMock.Setup(s => s.Initialise(balance)).Verifiable();
+            levyBalanceServiceMock.Setup(s => s.Initialise(balance, transferAllowance)).Verifiable();
 
             processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments).Verifiable();
 
@@ -240,6 +241,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var fundingSourcePayment = new LevyPayment { AmountDue = 55, Type = FundingSourceType.CoInvestedEmployer };
 
             var balance = 100m;
+            var transferAllowance = 50;
 
             keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
                 .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
@@ -251,10 +253,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verifiable();
 
             levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None))
-                .ReturnsAsync(() => new LevyAccountModel { Balance = balance })
+                .ReturnsAsync(() => new LevyAccountModel { Balance = balance, TransferAllowance = transferAllowance })
                 .Verifiable();
 
-            levyBalanceServiceMock.Setup(s => s.Initialise(balance)).Verifiable();
+            levyBalanceServiceMock.Setup(s => s.Initialise(balance,transferAllowance)).Verifiable();
 
             processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => new[] { fundingSourcePayment }).Verifiable();
 

@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             keys.Sort();            
 
             var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
-            levyBalanceService.Initialise(levyAccount.Balance);
+            levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
             paymentLogger.LogDebug($"Processing {keys.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
 

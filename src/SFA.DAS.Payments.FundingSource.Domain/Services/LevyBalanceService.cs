@@ -4,18 +4,21 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
     public interface ILevyBalanceService
     {
-        void Initialise(decimal newBalance);
+        void Initialise(decimal newBalance, decimal transferAllowance);
         decimal TryFund(decimal requiredAmount);
+        decimal TryFundTransfer(decimal requiredAmount);
     }
 
     public class LevyBalanceService : ILevyBalanceService
     {
         private decimal balance;
+        private decimal transferAllowance;
         bool initialised;
 
-        public void Initialise(decimal newBalance)
+        public void Initialise(decimal newBalance, decimal transferAllowance)
         {
             balance = newBalance;
+            this.transferAllowance = Math.Min(transferAllowance, balance);
             initialised = true;
         }
 
@@ -29,6 +32,18 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             balance -= amountAvailable;
 
             return amountAvailable;
+        }
+
+        public decimal TryFundTransfer(decimal requiredAmount)
+        {
+            if (!initialised)
+                throw new ApplicationException("LevyBalanceService is not initialised");
+
+            var amountFunded = requiredAmount > 0 ? Math.Min(transferAllowance, requiredAmount) : requiredAmount;
+
+            balance -= amountFunded;
+            transferAllowance -= amountFunded;
+            return amountFunded;
         }
     }
 }
