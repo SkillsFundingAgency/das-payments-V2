@@ -1,19 +1,20 @@
+@ignore
 Feature:Two levy learners, full levy available for one learner, partial levy available for the other PV2-604
 As a provider,
 I want 2 Levy learners, where levy is spent in priority order and there is only enough levy available for one and half learners
 So that I am accurately paid the apprenticeship amount by SFA  PV2-604
 
 Scenario Outline: Two levy learners, full levy available for one learner, partial levy available for the other PV2-604
-Given the employer levy account balance in collection period  <Collection Period> is <Levy Balance>
+Given the employer levy account balance in collection period  <collection_Period> is <Levy Balance>
 And the following commitments exist
 	| Identifier         | Learner ID | priority | start date                   | end date                  | agreed price |
-	| Apprentiiship 1    | learner a  | 1        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |
-	| Apprentiiship 2    | learner b  | 2        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |
+	| Apprenticeship 1    | learner a  | 1        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |
+	| Apprenticeship 2    | learner b  | 2        | 01/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        |
 And the provider is providing training for the following learners
 	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
 	| learner a  | 01/Aug/Current Academic Year | 12 months        | 15000                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	| learner b  | 01/Aug/Current Academic Year | 12 months        | 15000                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
-When the ILR file is submitted for the learners for collection period <Collection_Period>
+When the ILR file is submitted for the learners for collection period <collection_Period>
 Then the following learner earnings should be generated
 	| Learner ID | Delivery Period           | On-Programme | Completion | Balancing |
 	| learner a  | Aug/Current Academic Year | 1000         | 0          | 0         |

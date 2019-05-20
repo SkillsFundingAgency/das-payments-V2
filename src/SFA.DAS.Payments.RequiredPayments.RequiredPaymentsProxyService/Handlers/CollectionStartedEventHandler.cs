@@ -33,6 +33,8 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
                 paymentLogger.LogVerbose($"Successfully processed CollectionStartedEvent event for Actor Id {actorId}");
             }
+
+            await context.Reply(0);
         }
     }
 }

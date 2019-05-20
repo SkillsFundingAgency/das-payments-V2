@@ -9,7 +9,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
 {
     public abstract class RequiredPaymentsMappingTests<TSource> : PeriodisedEventMappingTests<TSource, RequiredPaymentEventModel>
-        where TSource : RequiredPaymentEvent
+        where TSource : PeriodisedRequiredPaymentEvent
     {
         protected override void AddProfile(IMapperConfigurationExpression cfg)
         {
