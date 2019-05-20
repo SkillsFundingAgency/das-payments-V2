@@ -1919,7 +1919,6 @@
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
-      <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, no levy available, finishes on time PV2-262.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1952,10 +1951,6 @@
     <None Include="Tests\Non-Levy - Care Bursary\E2E - PV2-930 - Non-Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E - PV2-930 - Non-Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-Levy learner continuing 12 months earnings PV2-615.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
