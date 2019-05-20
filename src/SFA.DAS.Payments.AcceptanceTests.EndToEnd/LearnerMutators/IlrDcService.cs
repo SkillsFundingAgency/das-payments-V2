@@ -137,7 +137,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 SubmittedBy = "System",
                 CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
                 Period = collectionPeriod,
-                NotifyEmail = "SpecFlow@e2e.com",
+                NotifyEmail = "dcttestemail@gmail.com",
                 StorageReference = storageServiceConfig.ContainerName,
                 CollectionYear = collectionYear
             };
