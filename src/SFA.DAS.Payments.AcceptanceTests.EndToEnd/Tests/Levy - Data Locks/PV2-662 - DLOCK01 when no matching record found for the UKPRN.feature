@@ -17,24 +17,24 @@ Scenario: DLOCK01 - When no matching record found in an employer digital account
 		| pe-1              | 10000                | 01/May/Current Academic Year        | Act1           | 90%                         |
 	When the ILR file is submitted for the learners for the collection period R12/Current Academic Year by "provider a"
 	Then the following learner earnings should be generated for "provider a"	
-		| Delivery Period           | On-Programme | Completion | Balancing |
-		| Aug/Current Academic Year | 0            | 0          | 0         |
-		| Sep/Current Academic Year | 0            | 0          | 0         |
-		| Oct/Current Academic Year | 0            | 0          | 0         |
-		| Nov/Current Academic Year | 0            | 0          | 0         |
-		| Dec/Current Academic Year | 0            | 0          | 0         |
-		| Jan/Current Academic Year | 0            | 0          | 0         |
-		| Feb/Current Academic Year | 0            | 0          | 0         |
-		| Mar/Current Academic Year | 0            | 0          | 0         |
-		| Apr/Current Academic Year | 0            | 0          | 0         |
-		| May/Current Academic Year | 666.66667    | 0          | 0         |
-		| Jun/Current Academic Year | 666.66667    | 0          | 0         |
-		| Jul/Current Academic Year | 666.66667    | 0          | 0         |
-    And the following data lock failures were generated
-        | Apprenticeship    | Learner ID | Delivery Period           | Framework Code | Programme Type | Pathway Code | Transaction Type | Error Code | Price Episode Identifier |
-        | No Apprenticeship | learner a  | May/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_01   | pe-1                     |
-        | No Apprenticeship | learner a  | Jun/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_01   | pe-1                     |
-        | No Apprenticeship | learner a  | Jul/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_01   | pe-1                     |
+		| Delivery Period           | On-Programme | Completion | Balancing | Learner ID | Price Episode Identifier |
+		| Aug/Current Academic Year | 0            | 0          | 0         | learner a  | pe-1                     |
+		| Sep/Current Academic Year | 0            | 0          | 0         | learner a  | pe-1                     |
+		| Oct/Current Academic Year | 0            | 0          | 0         | learner a  | pe-1                     |
+		| Nov/Current Academic Year | 0            | 0          | 0         | learner a  | pe-1                     |
+		| Dec/Current Academic Year | 0            | 0          | 0         | learner a  | pe-1                     |
+		| Jan/Current Academic Year | 0            | 0          | 0         | learner a  | pe-1                     |
+		| Feb/Current Academic Year | 0            | 0          | 0         | learner a  | pe-1                     |
+		| Mar/Current Academic Year | 0            | 0          | 0         | learner a  | pe-1                     |
+		| Apr/Current Academic Year | 0            | 0          | 0         | learner a  | pe-1                     |
+		| May/Current Academic Year | 666.66667    | 0          | 0         | learner a  | pe-1                     |
+		| Jun/Current Academic Year | 666.66667    | 0          | 0         | learner a  | pe-1                     |
+		| Jul/Current Academic Year | 666.66667    | 0          | 0         | learner a  | pe-1                     |
+    And the following data lock failures were generated  for "provider a"	
+        | Apprenticeship | Learner ID | Delivery Period           | Framework Code | Programme Type | Pathway Code | Transaction Type | Error Code | Price Episode Identifier | 
+        |                | learner a  | May/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_01   | pe-1                     | 
+        |                | learner a  | Jun/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_01   | pe-1                     | 
+        |                | learner a  | Jul/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_01   | pe-1                     | 
 	And Month end is triggered
 	And no provider payments will be generated
 	And no provider payments will be recorded

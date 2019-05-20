@@ -14,9 +14,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public DataLockErrorCode ErrorCode { get; set; }
         public  int StandardCode { get; set; }
         public int ProgrammeType { get; set; }
-
-        public long ApprenticeshipId { get; set; }
+        public int FrameworkCode { get; set; }
+        public int PathwayCode { get; set; }
+        public long? ApprenticeshipId { get; set; }
 
         public string PriceEpisodeIdentifier { get; set; }
+
     }
 }

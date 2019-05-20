@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<EarningFailedDataLockMatching> GetExpectedEvents()
         {
             var earningFailedDataLockEvents = new List<EarningFailedDataLockMatching>();
-
+            
             var learnerIds = expectedDataLockErrorsSpec.Select(e => e.LearnerId).Distinct().ToList();
 
             foreach (var learnerId in learnerIds)
@@ -62,12 +62,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     Ukprn = provider.Ukprn,
                     Learner = new Model.Core.Learner
                     {
-                        Uln = learner.Uln
+                        Uln = learner.Uln,
                     },
                     LearningAim = new LearningAim
                     {
                         ProgrammeType = learnerEarnings.First().ProgrammeType, //May need to move to another Matcher
-                        StandardCode = learnerEarnings.First().StandardCode
+                        StandardCode = learnerEarnings.First().StandardCode,
+                        FrameworkCode = learnerEarnings.First().FrameworkCode,
+                        PathwayCode = learnerEarnings.First().PathwayCode
                     },
                     OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 };
@@ -111,7 +113,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedEvent.CollectionPeriod.AcademicYear != actualEvent.CollectionPeriod.AcademicYear ||
                 expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
                 expectedEvent.LearningAim.ProgrammeType != actualEvent.LearningAim.ProgrammeType ||
-                expectedEvent.LearningAim.StandardCode != actualEvent.LearningAim.StandardCode)
+                expectedEvent.LearningAim.StandardCode != actualEvent.LearningAim.StandardCode ||
+                expectedEvent.LearningAim.PathwayCode != actualEvent.LearningAim.PathwayCode ||
+                expectedEvent.LearningAim.FrameworkCode != actualEvent.LearningAim.FrameworkCode)
                 return false;
 
             if (!MatchOnProgrammeEarnings(expectedEvent as DataLockEvent, actualEvent as DataLockEvent))
@@ -172,13 +176,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             {
                 var actualDataLockFailure = actualDataLockFailures.FirstOrDefault(x => x.DataLockError == expectedDataLockFailure.DataLockError);
 
-                if (actualDataLockFailure?.ApprenticeshipId == null ||
-                    actualDataLockFailure.ApprenticeshipId.Value != expectedDataLockFailure.ApprenticeshipId ||
-                    actualDataLockFailure.ApprenticeshipPriceEpisodeIds == null ||
-                    !actualDataLockFailure.ApprenticeshipPriceEpisodeIds.Any())
-                    return false;
-
-            }
+                if (expectedDataLockFailure.DataLockError == DataLockErrorCode.DLOCK_01 ||
+                    expectedDataLockFailure.DataLockError == DataLockErrorCode.DLOCK_02)
+                {
+                    if (actualDataLockFailure?.ApprenticeshipId != null)
+                        return false;
+                }
+                else
+                {
+                    if (actualDataLockFailure?.ApprenticeshipId == null ||
+                        actualDataLockFailure.ApprenticeshipId.Value != expectedDataLockFailure.ApprenticeshipId ||
+                        actualDataLockFailure.ApprenticeshipPriceEpisodeIds == null ||
+                        !actualDataLockFailure.ApprenticeshipPriceEpisodeIds.Any())
+                        return false;
+                }
+           }
 
             return true;
         }
