@@ -67,22 +67,27 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<CalculatedRequiredCoInvestedAmount, FundingSourcePaymentEvent>()
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType));
 
+                cfg.CreateMap<CalculatedRequiredLevyAmount, RequiredPayment>();
+                cfg.CreateMap<CalculatedRequiredCoInvestedAmount, RequiredCoInvestedPayment>();
+
                 cfg.CreateMap<CalculatedRequiredIncentiveAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.Type))
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa));
-
-                cfg.CreateMap<CalculatedRequiredCoInvestedAmount, RequiredCoInvestedPayment>();
-                cfg.CreateMap<CalculatedRequiredLevyAmount, RequiredPayment>();
-                cfg.CreateMap<EmployerCoInvestedPayment, EmployerCoInvestedFundingSourcePaymentEvent>();
-                cfg.CreateMap<SfaCoInvestedPayment, SfaCoInvestedFundingSourcePaymentEvent>();
-                cfg.CreateMap<LevyPayment, LevyFundingSourcePaymentEvent>();
 
                 cfg.CreateMap<FundingSourcePayment, FundingSourcePaymentEvent>()
                     .Include<EmployerCoInvestedPayment, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .Include<SfaCoInvestedPayment, SfaCoInvestedFundingSourcePaymentEvent>()
                     .Include<LevyPayment, LevyFundingSourcePaymentEvent>()
+                    .Include<TransferPayment, TransferFundingSourcePaymentEvent>()
+                    .Include<UnableToFundTransferPayment, UnableToFundTransferFundingSourcePaymentEvent>()
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.FundingSourceType,
                         opt => opt.MapFrom(payment => payment.Type));
+
+                cfg.CreateMap<EmployerCoInvestedPayment, EmployerCoInvestedFundingSourcePaymentEvent>();
+                cfg.CreateMap<SfaCoInvestedPayment, SfaCoInvestedFundingSourcePaymentEvent>();
+                cfg.CreateMap<LevyPayment, LevyFundingSourcePaymentEvent>();
+                cfg.CreateMap<TransferPayment, TransferFundingSourcePaymentEvent>();
+                cfg.CreateMap<UnableToFundTransferPayment, UnableToFundTransferFundingSourcePaymentEvent>();
             });
         }
     }

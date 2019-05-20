@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             var keys = await GetKeys().ConfigureAwait(false);
             var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, 
-                paymentEvent.Learner.Uln, paymentEvent.StartDate,IsTransfer(paymentEvent));
+                paymentEvent.Learner.Uln, paymentEvent.StartDate, IsTransfer(paymentEvent));
             keys.Add(key);
             await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
@@ -84,7 +84,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 var requiredPayment = new RequiredPayment
                 {
                     SfaContributionPercentage = requiredPaymentEvent.Value.SfaContributionPercentage,
-                    AmountDue = requiredPaymentEvent.Value.AmountDue
+                    AmountDue = requiredPaymentEvent.Value.AmountDue,
+                    IsTransfer = employerAccountId == requiredPaymentEvent.Value.AccountId && requiredPaymentEvent.Value.TransferSenderAccountId.HasValue && requiredPaymentEvent.Value.TransferSenderAccountId != employerAccountId 
                 };
 
                 var fundingSourcePayments = processor.Process(requiredPayment);

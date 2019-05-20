@@ -286,5 +286,118 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 DateTime.MaxValue.ToString("yyyyMMddhhmm"), "-",
                 requiredPayment.Learner.Uln);
         }
+
+        [Test]
+        public async Task ProcessesTransferPayments()
+        {
+            // arrange
+            var keys = new List<string> { "1" };
+            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
+            {
+                EventId = Guid.NewGuid(),
+                AmountDue = 100,
+                SfaContributionPercentage = 11,
+                OnProgrammeEarningType = OnProgrammeEarningType.Completion,
+                Learner = new Learner(),
+                AccountId = 666,
+                TransferSenderAccountId = 2
+            };
+
+            var balance = 100m;
+            var transferAllowance = 50;
+            var transferPayment = new TransferPayment { AmountDue = 55, Type = FundingSourceType.Transfer };
+            var employerCoInvestedPayment = new EmployerCoInvestedPayment { AmountDue = 44, Type = FundingSourceType.CoInvestedEmployer };
+            var sfaCoInvestedPayment = new SfaCoInvestedPayment { AmountDue = 33, Type = FundingSourceType.CoInvestedSfa };
+            var allPayments = new FundingSourcePayment[] { transferPayment, employerCoInvestedPayment, sfaCoInvestedPayment };
+
+            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+                .Verifiable();
+
+            eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, requiredPaymentEvent))
+                .Verifiable();
+
+            levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None))
+                .ReturnsAsync(() => new LevyAccountModel { Balance = balance, TransferAllowance = transferAllowance })
+                .Verifiable();
+
+            levyBalanceServiceMock.Setup(s => s.Initialise(balance, transferAllowance)).Verifiable();
+
+            processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments).Verifiable();
+
+            eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+                .Returns(keys[0]);
+
+            // act
+            var fundingSourcePayments = await service.GetFundedPayments(666, 1);
+
+            // assert
+            fundingSourcePayments.Should().HaveCount(3);
+            fundingSourcePayments[0].Should().BeOfType<TransferFundingSourcePaymentEvent>();
+            fundingSourcePayments[1].Should().BeOfType<EmployerCoInvestedFundingSourcePaymentEvent>();
+            fundingSourcePayments[2].Should().BeOfType<SfaCoInvestedFundingSourcePaymentEvent>();
+
+            fundingSourcePayments[0].AmountDue.Should().Be(55);
+            fundingSourcePayments[1].AmountDue.Should().Be(44);
+            fundingSourcePayments[2].AmountDue.Should().Be(33);
+        }
+
+        [Test]
+        public async Task ProcessesUnableToFundTransferPayments()
+        {
+            // arrange
+            var keys = new List<string> { "1" };
+            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
+            {
+                EventId = Guid.NewGuid(),
+                AmountDue = 100,
+                SfaContributionPercentage = 11,
+                OnProgrammeEarningType = OnProgrammeEarningType.Completion,
+                Learner = new Learner(),
+                AccountId = 666,
+                TransferSenderAccountId = 2
+            };
+
+            var balance = 100m;
+            var transferAllowance = 50;
+            var transferPayment = new TransferPayment { AmountDue = 55, Type = FundingSourceType.Transfer };
+            var unableToFundTransferPayment = new UnableToFundTransferPayment { AmountDue = 44, Type = FundingSourceType.Transfer };
+            var allPayments = new FundingSourcePayment[] { transferPayment, unableToFundTransferPayment};
+
+            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+                .Verifiable();
+
+            eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, requiredPaymentEvent))
+                .Verifiable();
+
+            levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None))
+                .ReturnsAsync(() => new LevyAccountModel { Balance = balance, TransferAllowance = transferAllowance })
+                .Verifiable();
+
+            levyBalanceServiceMock.Setup(s => s.Initialise(balance, transferAllowance)).Verifiable();
+
+            processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments).Verifiable();
+
+            eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
+                .Returns(keys[0]);
+
+            // act
+            var fundingSourcePayments = await service.GetFundedPayments(666, 1);
+
+            // assert
+            fundingSourcePayments.Should().HaveCount(2);
+            fundingSourcePayments[0].Should().BeOfType<TransferFundingSourcePaymentEvent>();
+            fundingSourcePayments[1].Should().BeOfType<UnableToFundTransferFundingSourcePaymentEvent>();
+
+            fundingSourcePayments[0].AmountDue.Should().Be(55);
+            fundingSourcePayments[1].AmountDue.Should().Be(44);
+        }
     }
 }
