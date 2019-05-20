@@ -29,6 +29,7 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Application\SFA.DAS.Payments.RequiredPayments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Domain\SFA.DAS.Payments.RequiredPayments.Domain.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces\SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>

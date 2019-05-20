@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
-using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
@@ -17,12 +16,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             this.paymentDueProcessor = paymentDueProcessor ?? throw new ArgumentNullException(nameof(paymentDueProcessor));
         }
 
-        public List<RequiredPayment> RefundLearningAim(List<Payment> historicPayments)
+        public List<(byte deliveryPeriod, RequiredPayment payment)> RefundLearningAim(List<Payment> historicPayments)
         {
             return historicPayments
                 .GroupBy(payment => payment.DeliveryPeriod)
-                .Select(group => group.ToList())
-                .SelectMany(historicPaymentsPerPeriod => refundService.GetRefund(paymentDueProcessor.CalculateRequiredPaymentAmount(0, historicPaymentsPerPeriod), historicPaymentsPerPeriod))
+                .SelectMany(group =>
+                {
+                    var historicPaymentsPerPeriod = group.ToList();
+                    var payments = refundService.GetRefund(paymentDueProcessor.CalculateRequiredPaymentAmount(0, historicPaymentsPerPeriod), historicPaymentsPerPeriod);
+                    return payments.Select(payment => (group.Key, payment));
+                })
                 .ToList();
         }
     }

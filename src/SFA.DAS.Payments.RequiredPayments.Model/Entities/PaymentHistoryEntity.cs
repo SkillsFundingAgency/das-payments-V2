@@ -10,6 +10,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         public long Ukprn { get; set; }
         public string LearnerReferenceNumber { get; set; }
         public string LearnAimReference { get; set; }
+        public string LearningAimFundingLineType { get; set; }
         public int TransactionType { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
         public byte DeliveryPeriod { get; set; }

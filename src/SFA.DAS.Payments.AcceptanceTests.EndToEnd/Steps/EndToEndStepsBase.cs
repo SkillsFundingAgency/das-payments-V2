@@ -392,12 +392,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             for (var i = 0; i < orderedPriceEpisodes.Count; i++)
             {
                 var currentPriceEpisode = priceEpisodesForAim[i];
-                var tnpStartDate =  orderedPriceEpisodes
-                    .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
-                                currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
-                    .PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
-
-                currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
 
                 if (aim.ActualDurationAsTimespan.HasValue)
                 {
@@ -904,8 +898,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
             {
-                await RequiredPaymentsCacheCleaner.ClearCaches(provider, TestSession).ConfigureAwait(false);
-
+                await RequiredPaymentsCacheCleaner.ClearCaches(provider, TestSession, collectionPeriod.AcademicYear).ConfigureAwait(false);
                 ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn));
             }
 

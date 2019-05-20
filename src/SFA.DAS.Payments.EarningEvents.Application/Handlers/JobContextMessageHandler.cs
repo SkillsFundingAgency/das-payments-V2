@@ -99,7 +99,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         {
             logger.LogDebug($"Deleting aims for UKPRN {ukprn} {academicYear}-{period} submitted before {newIlrSubmissionDateTime}");
 
-            var records = await submittedLearnerAimRepository.DeletePreviouslySubmittedAims((byte)period, short.Parse(academicYear), newIlrSubmissionDateTime, cancellationToken).ConfigureAwait(false);
+            var records = await submittedLearnerAimRepository.DeletePreviouslySubmittedAims(ukprn, (byte)period, short.Parse(academicYear), newIlrSubmissionDateTime, cancellationToken).ConfigureAwait(false);
 
             logger.LogInfo($"Deleted {records} aims for UKPRN {ukprn} {academicYear}-{period} submitted before {newIlrSubmissionDateTime}");
         }
