@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(apprenticeshipKeyString);
         }
 
-        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling ApprenticeshipContractType2EarningEvent for {apprenticeshipKeyString}");
 
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }
         }
 
-        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling FunctionalSkillEarningsEvent for {apprenticeshipKeyString}");
 
@@ -87,7 +87,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }
         }
 
-        public async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandlePayableEarningEvent(PayableEarningEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandlePayableEarningEvent(PayableEarningEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling PayableEarningEvent for {apprenticeshipKeyString}");
 
@@ -101,7 +101,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }
         }
 
-        private void Log(ReadOnlyCollection<RequiredPaymentEvent> requiredPaymentEvents)
+        private void Log(ReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPaymentEvents)
         {
             var stats = requiredPaymentEvents.GroupBy(p => p.GetType()).Select(group => $"{group.Key.Name}: {group.Count()}");
             paymentLogger.LogDebug($"Created {requiredPaymentEvents.Count} required payment events for {apprenticeshipKeyString}. {string.Join(", ", stats)}");

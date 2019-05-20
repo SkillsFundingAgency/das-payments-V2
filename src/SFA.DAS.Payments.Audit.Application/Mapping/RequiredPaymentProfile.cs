@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
     {
         public RequiredPaymentProfile()
         {
-            CreateMap<RequiredPaymentEvent, RequiredPaymentEventModel>()
+            CreateMap<PeriodisedRequiredPaymentEvent, RequiredPaymentEventModel>()
                 .Include<CalculatedRequiredIncentiveAmount, RequiredPaymentEventModel>()
                 .Include<CalculatedRequiredCoInvestedAmount, RequiredPaymentEventModel>()
                 .Include<CalculatedRequiredLevyAmount, RequiredPaymentEventModel>()
