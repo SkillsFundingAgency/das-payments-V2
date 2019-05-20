@@ -35,6 +35,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.ContractType).HasColumnName(@"ContractType").IsRequired();
             builder.Property(x => x.TransactionType).HasColumnName(@"TransactionType").IsRequired();
             builder.Property(x => x.FundingSource).HasColumnName(@"FundingSource").IsRequired();
+            builder.Property(x => x.AccountId).HasColumnName(@"AccountId");
+            builder.Property(x => x.TransferSenderAccountId).HasColumnName(@"TransferSenderAccountId");
             builder.Property(x => x.IlrSubmissionDateTime).HasColumnName(@"IlrSubmissionDateTime").IsRequired();
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();

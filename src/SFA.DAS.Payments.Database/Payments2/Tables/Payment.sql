@@ -26,6 +26,7 @@
 	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	AgreementId NVARCHAR(255) NULL, 
 	[AccountId] BIGINT NULL , 
+	TransferSenderAccountId BIGINT NULL , 
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 	EarningsStartDate DATETIME NOT NULL,
 	EarningsPlannedEndDate DATETIME NULL,
