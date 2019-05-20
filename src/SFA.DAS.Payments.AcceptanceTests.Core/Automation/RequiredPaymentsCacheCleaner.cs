@@ -8,19 +8,15 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
-    using Infrastructure;
-
     public class RequiredPaymentsCacheCleaner
     {
         private readonly IApprenticeshipKeyService apprenticeshipKeyService;
         private readonly IMessageSession messageSession;
-        private readonly TestsConfiguration _configuration;
 
-        public RequiredPaymentsCacheCleaner(IApprenticeshipKeyService apprenticeshipKeyService, IMessageSession messageSession, TestsConfiguration configuration)
+        public RequiredPaymentsCacheCleaner(IApprenticeshipKeyService apprenticeshipKeyService, IMessageSession messageSession)
         {
             this.apprenticeshipKeyService = apprenticeshipKeyService;
             this.messageSession = messageSession;
-            _configuration = configuration;
         }
 
         public async Task ClearCaches(Provider provider, TestSession testSession)
@@ -66,14 +62,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 JobId = provider.JobId > 0 ? provider.JobId : testSession.JobId
             };
 
-            //if (_configuration.ValidateDcAndDasServices)
-            //{
-            //    await messageSession.Send(startedEvent).ConfigureAwait(false);
-            //}
-            //else
-            //{
-                await messageSession.Request<int>(startedEvent).ConfigureAwait(false);
-            //}
+            await messageSession.Request<int>(startedEvent).ConfigureAwait(false);
         }
     }
 }

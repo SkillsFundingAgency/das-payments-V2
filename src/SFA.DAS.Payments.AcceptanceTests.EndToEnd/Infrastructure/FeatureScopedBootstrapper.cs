@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
 
             Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
 
-            Builder.Register((c, p) => new RequiredPaymentsCacheCleaner(c.Resolve<IApprenticeshipKeyService>(), MessageSession, c.Resolve<TestsConfiguration>())).AsSelf();
+            Builder.Register((c, p) => new RequiredPaymentsCacheCleaner(c.Resolve<IApprenticeshipKeyService>(), MessageSession)).AsSelf();
             Builder.RegisterModule<AutoMapperModule>();
         }
 
