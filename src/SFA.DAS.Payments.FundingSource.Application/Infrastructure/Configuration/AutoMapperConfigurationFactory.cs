@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .ForMember(dest => dest.EventId, opt => opt.Ignore())
                     .ForMember(dest => dest.EventTime, opt => opt.Ignore())
                     .ForMember(dest => dest.RequiredPaymentEventId, opt => opt.MapFrom(source => source.EventId))
+                    .ForMember(dest => dest.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
                     .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
                     .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(src => src.PlannedEndDate))
                     .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(src => src.ActualEndDate))
@@ -33,8 +34,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                 cfg.CreateMap<CalculatedRequiredLevyAmount, LevyFundingSourcePaymentEvent>()
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.AgreementId, opt => opt.MapFrom(requiredPayment => requiredPayment.AgreementId));
 
+                cfg.CreateMap<CalculatedRequiredLevyAmount, TransferFundingSourcePaymentEvent>()
+                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.AgreementId, opt => opt.MapFrom(requiredPayment => requiredPayment.AgreementId));
+
                 cfg.CreateMap<CalculatedRequiredLevyAmount, FundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredLevyAmount, LevyFundingSourcePaymentEvent>()
+                    .Include<CalculatedRequiredLevyAmount, TransferFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredLevyAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredLevyAmount, SfaCoInvestedFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredLevyAmount, SfaFullyFundedFundingSourcePaymentEvent>()

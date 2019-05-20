@@ -72,6 +72,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 ;
 
             CreateMap<PayableEarningEvent, CompletionPaymentHeldBackEvent>()
+                .ForMember(x => x.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
                 ;
             CreateMap<ApprenticeshipContractType2EarningEvent, CompletionPaymentHeldBackEvent>()
@@ -80,6 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
 
             CreateMap<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredLevyAmount>()
+                .ForMember(x => x.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
                 ;
             CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
@@ -91,6 +93,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 ;
 
             CreateMap<PayableEarningEvent, CalculatedRequiredIncentiveAmount>()
+                .ForMember(x => x.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
                 ;
 
@@ -103,6 +106,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 ;
 
             CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
+                .ForMember(x => x.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
                 .ForMember(x => x.Priority, opt => opt.Ignore())
                 .ForMember(x => x.ApprenticeshipId, opt => opt.Ignore())
@@ -204,6 +208,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configura
                 .Ignore(x => x.JobId)
                 .Ignore(x => x.EventTime)
                 .Ignore(x => x.EventId)
+                .Ignore(x => x.EarningEventId)
                 .Ignore(x => x.Ukprn)
                 .Ignore(x => x.Learner)
                 .Ignore(x => x.LearningAim)
