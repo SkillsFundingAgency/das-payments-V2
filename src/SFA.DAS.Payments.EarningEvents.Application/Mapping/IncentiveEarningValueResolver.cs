@@ -36,6 +36,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     return "PriceEpisodeSecondDisadvantagePayment";
                 case IncentiveEarningType.LearningSupport:
                     return "PriceEpisodeLSFCash"; //TODO: Get definitive answer from Khush/David Young
+                case IncentiveEarningType.CareLeaverApprenticePayment:
+                    return "PriceEpisodeLearnerAdditionalPayment";
 
                 default :
                     throw new InvalidOperationException($"Cannot get FM36 attribute name for unknown incentive earning type: {incentiveEarningType}");
@@ -72,7 +74,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             IncentiveEarningType.Balancing16To18FrameworkUplift,
             IncentiveEarningType.FirstDisadvantagePayment,
             IncentiveEarningType.SecondDisadvantagePayment,
-            IncentiveEarningType.LearningSupport
+            IncentiveEarningType.LearningSupport,
+            IncentiveEarningType.CareLeaverApprenticePayment,
         };
 
         public List<IncentiveEarning> Resolve(IntermediateLearningAim source, ApprenticeshipContractTypeEarningsEvent destination, List<IncentiveEarning> destMember, ResolutionContext context)
