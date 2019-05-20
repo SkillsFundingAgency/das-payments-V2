@@ -8,8 +8,8 @@ Scenario Outline: Levy Learner-co-funded,sufficient employer contribution LDM co
 	Given the employer levy account balance in collection period <Collection_Period> is 0
 	
 	And the following commitments exist
-        | start date                | end date                     | agreed price | status |
-        | 01/Jun/Last Academic Year | 01/Jun/Current Academic Year | 9000         | active |
+        | start date                | end date                     | agreed price | status |  Framework Code | Pathway Code | Programme Type |
+        | 01/Jun/Last Academic Year | 01/Jun/Current Academic Year | 9000         | active |  593            | 1            | 20             |
 	
 	And the provider previously submitted the following learner details in collection period "<Collection_Period>"
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |

@@ -11,8 +11,8 @@ Feature: Levy learner, takes an English qualification that has a planned end dat
 Scenario Outline: Levy learner, Eng aim planned end date exceeds the actual end date of the programme aim and learning support is applicable to all learning PV2-803
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | start date                | end date                     | agreed price | status |
-        | 01/Aug/Last Academic Year | 01/Aug/Current Academic Year | 15000        | active |
+        | start date                | end date                     | agreed price | status |Framework Code | Pathway Code | Programme Type | 
+        | 01/Aug/Last Academic Year | 01/Aug/Current Academic Year | 15000        | active |593            | 1            | 20             | 
    And the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Reference | SFA Contribution Percentage | Funding Line Type         | Framework Code | Pathway Code | Programme Type |
 		| 06/Aug/Last Academic Year | 12 months        | 12000                | 06/Aug/Last Academic Year           | 3000                   | 06/Aug/Last Academic Year             |                 | continuing        | Act1          | ZPROG001      | 90%                         | 19-24 Apprenticeship Levy | 593            | 1            | 20             |

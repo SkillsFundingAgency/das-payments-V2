@@ -40,8 +40,8 @@ Scenario: Start date for the DAS-Learner is pushed back  within a Calendar month
 Given the employer levy account balance in collection period R06/Current Academic Year is 15000
 
 And the following commitments exist
-	| start date                   | end date                     | agreed price |
-	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9000         |
+	| start date                   | end date                     | agreed price | Standard Code | Programme Type |
+	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9000         | 25            | 25             |
 
 And the provider previously submitted the following learner details
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | framework code | programme type | pathway code | Funding Line Type                                  |

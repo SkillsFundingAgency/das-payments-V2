@@ -8,9 +8,9 @@ Scenario Outline: Levy Learner, started learning before Apr19, completes learnin
 Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 		
 	And the following apprenticeships exist
-		| Identifier       | Framework code | programme type | pathway code | agreed price | start date                   | end date                     | status    | effective from               |
-		| Apprenticeship a | 503            | 20             | 1            | 15000        | 01/Apr/Last Academic Year    | 01/Apr/Current Academic Year | completed | 01/Apr/Last Academic Year    |
-		| Apprenticeship b | 503            | 20             | 2            | 15000        | 02/Apr/Current Academic Year | 02/Apr/Next Academic Year    | active    | 02/Apr/Current Academic Year |
+		| Identifier       | Framework code | programme type | pathway code | agreed price | start date                   | end date                     | status    | effective from               |Framework Code | Pathway Code | Programme Type | 
+		| Apprenticeship a | 503            | 20             | 1            | 15000        | 01/Apr/Last Academic Year    | 01/Apr/Current Academic Year | completed | 01/Apr/Last Academic Year    |593            | 1            | 20             | 
+		| Apprenticeship b | 503            | 20             | 2            | 15000        | 02/Apr/Current Academic Year | 02/Apr/Next Academic Year    | active    | 02/Apr/Current Academic Year |593            | 1            | 20             | 
 	And the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 01/Apr/Last Academic Year | 12 months        | 15000                | 01/Apr/Current Academic Year        |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
