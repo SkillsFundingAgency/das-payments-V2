@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -34,10 +35,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 }
             };
 
-            repositoryMock.Setup(r => r.IdentifyRemovedLearnerAims(1, 2, 3, CancellationToken.None)).ReturnsAsync(expectedAims).Verifiable();
+            repositoryMock.Setup(r => r.IdentifyRemovedLearnerAims(1, 2, 3, DateTime.Today, CancellationToken.None)).ReturnsAsync(expectedAims).Verifiable();
 
             // act
-            var actualAims = await service.IdentifyRemovedLearnerAims(1, 2, 3, CancellationToken.None).ConfigureAwait(false);
+            var actualAims = await service.IdentifyRemovedLearnerAims(1, 2, 3, DateTime.Today, CancellationToken.None).ConfigureAwait(false);
 
             // assert
             actualAims.Should().BeSameAs(expectedAims);
