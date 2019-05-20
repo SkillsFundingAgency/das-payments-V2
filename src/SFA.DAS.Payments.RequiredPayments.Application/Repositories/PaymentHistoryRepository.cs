@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 .SumAsync(cancellationToken);
         }
 
-        public async Task<List<IdentifiedRemovedLearningAim>> IdentifyRemovedLearnerAims(short academicYear, byte collectionPeriod, long ukprn, CancellationToken cancellationToken)
+        public async Task<List<IdentifiedRemovedLearningAim>> IdentifyRemovedLearnerAims(short academicYear, byte collectionPeriod, long ukprn, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken)
         {
             var aims = await dataContext.SubmittedLearnerAim.FromSql($@"
                 select
@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     {ukprn} Ukprn,
                     {collectionPeriod} CollectionPeriod,
                     {academicYear} AcademicYear,
-                    getutcdate() IlrSubmissionDateTime,
+                    {ilrSubmissionDateTime} IlrSubmissionDateTime,
                     {ukprn} JobId,
                     LearnerReferenceNumber,
                     LearnerUln,
@@ -116,7 +116,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 					    LearningAimProgrammeType,
 					    LearningAimStandardCode
 				    from
-					    [Payments2].[Payment]
+					    [Payments2].[SubmittedLearnerAim]
 				    where
 					    AcademicYear = {academicYear}
 					    and Ukprn = {ukprn}
@@ -139,6 +139,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     Ukprn = ukprn,
                     EventId = Guid.NewGuid(),
                     EventTime = DateTimeOffset.UtcNow,
+                    IlrSubmissionDateTime = ilrSubmissionDateTime,
                     Learner = new Learner
                     {
                         ReferenceNumber = p.LearnerReferenceNumber,
