@@ -10,6 +10,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         {
             DataTable.Columns.AddRange(new[]
             {
+                new DataColumn("EarningEventId", typeof(Guid)),
                 new DataColumn("PriceEpisodeIdentifier"),
                 new DataColumn("ContractType"),
                 new DataColumn("TransactionType"),
@@ -32,6 +33,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         protected override DataRow CreateDataRow(T eventModel)
         {
             var dataRow = base.CreateDataRow(eventModel);
+            dataRow["EarningEventId"] = eventModel.EarningEventId;
             dataRow["PriceEpisodeIdentifier"] = eventModel.PriceEpisodeIdentifier ?? string.Empty;
             dataRow["ContractType"] = (byte)eventModel.ContractType;
             dataRow["TransactionType"] = (byte)eventModel.TransactionType;

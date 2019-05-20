@@ -5,6 +5,7 @@ namespace SFA.DAS.Payments.Audit.Model
 {
     public interface IPeriodisedPaymentsEventModel: IPaymentsEventModel
     {
+         Guid EarningEventId { get; set; }
          string PriceEpisodeIdentifier { get; set; }
          ContractType ContractType { get; set; }
          TransactionType TransactionType { get; set; }
@@ -19,6 +20,7 @@ namespace SFA.DAS.Payments.Audit.Model
     public abstract class PeriodisedPaymentsEventModel: PaymentsEventModel, IPeriodisedPaymentsEventModel
     {
         //public long Id { get; set; }
+        public Guid EarningEventId { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
         public ContractType ContractType { get; set; }
         public TransactionType TransactionType { get; set; }
