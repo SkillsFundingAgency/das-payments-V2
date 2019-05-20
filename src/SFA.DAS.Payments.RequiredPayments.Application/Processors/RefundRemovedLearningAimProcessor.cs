@@ -37,35 +37,45 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 .ConfigureAwait(false);
             if (!cacheItem.HasValue)
                 throw new InvalidOperationException("No payment history found in the cache.");
+
             var historicPayments = cacheItem.Value.Select(mapper.Map<PaymentHistoryEntity, Payment>).ToList();
             logger.LogDebug($"Got {historicPayments.Count} historic payments. Now generating refunds per transaction type.");
 
             var requiredPaymentEvents = historicPayments.GroupBy(historicPayment => historicPayment.TransactionType)
-                .SelectMany(group =>
-                    refundRemovedLearningAimService.RefundLearningAim(historicPayments)
-                        .Select(requiredPayment =>
-                        {
-                            logger.LogVerbose($"Now mapping the required payment to a PeriodisedRequiredPaymentEvent.");
-                            var requiredPaymentEvent =
-                                requiredPaymentEventFactory.Create(requiredPayment.EarningType, group.Key);
-                            mapper.Map(identifiedRemovedLearningAim, requiredPaymentEvent);
-                            mapper.Map(requiredPayment, requiredPaymentEvent);
-                            var historicPayment = cacheItem.Value.FirstOrDefault(payment =>
-                                payment.PriceEpisodeIdentifier == requiredPayment.PriceEpisodeIdentifier);
-                            mapper.Map(historicPayment, requiredPaymentEvent);
-                            if (historicPayment == null)
-                                throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {requiredPayment.PriceEpisodeIdentifier}.");
-                            logger.LogDebug($"Finished mapping ]");
-                            return requiredPaymentEvent;
-                        })
-                )
+                .SelectMany(group => CreateRefundPayments(identifiedRemovedLearningAim, historicPayments, group.Key, cacheItem))
                 .ToList();
+
             return requiredPaymentEvents.AsReadOnly();
         }
 
-        private List<RequiredPayment> RefundPayments(List<Payment> historicPayments)
+        private IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, List<Payment> historicPayments, int transactionType, ConditionalValue<PaymentHistoryEntity[]> cacheItem)
         {
-            return refundRemovedLearningAimService.RefundLearningAim(historicPayments);
+            var refundPaymentsAndPeriods = refundRemovedLearningAimService.RefundLearningAim(historicPayments);
+
+            return refundPaymentsAndPeriods
+                .Select(refund =>
+                {
+                    logger.LogVerbose("Now mapping the required payment to a PeriodisedRequiredPaymentEvent.");
+
+                    var historicPayment = cacheItem.Value.FirstOrDefault(payment =>
+                        payment.PriceEpisodeIdentifier == refund.payment.PriceEpisodeIdentifier &&
+                        payment.DeliveryPeriod == refund.deliveryPeriod);
+
+                    if (historicPayment == null)
+                        throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {refund.payment.PriceEpisodeIdentifier} for period {refund.deliveryPeriod}.");
+                    
+                    var requiredPaymentEvent = requiredPaymentEventFactory.Create(refund.payment.EarningType, transactionType);
+
+                    mapper.Map(refund.payment, requiredPaymentEvent);
+                    mapper.Map(historicPayment, requiredPaymentEvent);
+                    mapper.Map(identifiedRemovedLearningAim, requiredPaymentEvent);
+
+                    // funding line type is not part of removed aim, we need to use value from historic payment
+                    requiredPaymentEvent.LearningAim.FundingLineType = historicPayment.LearningAimFundingLineType;
+
+                    logger.LogDebug("Finished mapping");
+                    return requiredPaymentEvent;
+                }).ToList();
         }
     }
 }

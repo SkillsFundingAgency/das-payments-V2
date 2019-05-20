@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain
 {
     public interface IRefundRemovedLearningAimService
     {
-        List<RequiredPayment> RefundLearningAim(List<Payment> historicPayments);
+        List<(byte deliveryPeriod, RequiredPayment payment)> RefundLearningAim(List<Payment> historicPayments);
     }
 }
