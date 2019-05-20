@@ -1,9 +1,8 @@
-﻿
-Feature: DLOCK07(a) - When price is changed, then effective to is set on previous price episode - PV2-677
+﻿Feature: DLOCK07_A_When price is changed, then effective to is set on previous price episode - PV2-677
 		I want to be notified with a DLOCK07(a) when the price is changed, and the effective to is set on previous price episode
 		So that I can correct the data mis-match between the Commitment and ILR - PV2-677
 
-Scenario: DLOCK07(a) - When price is changed, then effective to is set on previous price episode - PV2-677
+Scenario: DLOCK07_A_When price is changed, then effective to is set on previous price episode - PV2-677
 	Given the employer levy account balance in collection period R12/Current Academic Year is 14000 
 	And the following commitments exist
  		| Identifier       | framework code | programme type | pathway code | agreed price | start date                   | end date                  | status | effective from               | effective to                 |
