@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
     public class SortableKeyGenerator : ISortableKeyGenerator
     {
-        public string Generate(decimal amountDue, int priority, long uln, DateTime startDate, bool isTransfer)
+        public string Generate(decimal amountDue, int priority, long uln, DateTime startDate, bool isTransfer, Guid eventId)
         {
             var paymentTypeOrder = amountDue < 0
                 ? "1"
@@ -19,7 +19,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
                 "-",
                 startDate.Date.ToString("s"),
                 "-",
-                uln);
+                uln.ToString("00000000000000000000"),
+                "-",
+                eventId.ToString("N"));
         }
     }
 }

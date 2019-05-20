@@ -12,20 +12,23 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
     {
         protected static ISortableKeyGenerator sut;
         private DateTime startDate;
+        protected static Guid eventId;
+
         [SetUp]
         public void Setup()
         {
             sut = new SortableKeyGenerator();
             startDate = DateTime.Now;
+            eventId = Guid.NewGuid();
         }
 
         [Test]
         public void ThenTheResultsShouldSortRefundsBeforePayments()
         {
             var keys = new List<string>();
-            var paymentKey = sut.Generate(1, 0, 0, startDate,false);
+            var paymentKey = sut.Generate(1, 0, 0, startDate, false, eventId);
             keys.Add(paymentKey);
-            var refundKey = sut.Generate(-100, 0, 0, startDate,false);
+            var refundKey = sut.Generate(-100, 0, 0, startDate, false, eventId);
             keys.Add(refundKey);
 
             keys.Sort();
@@ -37,9 +40,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public void ThenTheResultsShouldSortTransfersBeforePayments()
         {
             var keys = new List<string>();
-            var paymentKey = sut.Generate(1, 0, 0, startDate, false);
+            var paymentKey = sut.Generate(1, 0, 0, startDate, false, eventId);
             keys.Add(paymentKey);
-            var xferKey = sut.Generate(1, 0, 0, startDate, true);
+            var xferKey = sut.Generate(1, 0, 0, startDate, true, eventId);
             keys.Add(xferKey);
 
             keys.Sort();
@@ -51,9 +54,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public void ThenTheResultsShouldSortByrPriority()
         {
             var keys = new List<string>();
-            var expectedFirst = sut.Generate(1, 1, 0, startDate,false);
+            var expectedFirst = sut.Generate(1, 1, 0, startDate, false, eventId);
             keys.Add(expectedFirst);
-            var expectedSecond = sut.Generate(1, 2, 0, startDate,false);
+            var expectedSecond = sut.Generate(1, 2, 0, startDate, false, eventId);
             keys.Add(expectedSecond);
 
             keys.Sort();
@@ -66,9 +69,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public void ThenTheResultsShouldSortByDateAgreed()
         {
             var keys = new List<string>();
-            var expectedFirst = sut.Generate(1, 1, 0, startDate,false);
+            var expectedFirst = sut.Generate(1, 1, 0, startDate, false, eventId);
             keys.Add(expectedFirst);
-            var expectedSecond = sut.Generate(1, 1, 0, startDate.AddDays(1),false);
+            var expectedSecond = sut.Generate(1, 1, 0, startDate.AddDays(1), false, eventId);
             keys.Add(expectedSecond);
 
             keys.Sort();
@@ -81,9 +84,9 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public void ThenTheResultsShouldSortByUln()
         {
             var keys = new List<string>();
-            var expectedFirst = sut.Generate(1, 1, 10, startDate,false);
+            var expectedFirst = sut.Generate(1, 1, 10, startDate, false, eventId);
             keys.Add(expectedFirst);
-            var expectedSecond = sut.Generate(1, 1, 100, startDate,false);
+            var expectedSecond = sut.Generate(1, 1, 100, startDate, false, Guid.NewGuid());
             keys.Add(expectedSecond);
 
             keys.Sort();
@@ -93,15 +96,15 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         }
 
         [TestFixture]
-        public class AndAllEventsArePayments 
+        public class AndAllEventsArePayments
         {
             [Test]
             public void ThenTheResultsShouldSortByPriority()
             {
                 var keys = new List<string>();
-                var lowPriorityKey = sut.Generate(100, 2, 0, DateTime.Today, false);
+                var lowPriorityKey = sut.Generate(100, 2, 0, DateTime.Today, false, eventId);
                 keys.Add(lowPriorityKey);
-                var highPriorityKey = sut.Generate(1, 1, 0, DateTime.Today, false);
+                var highPriorityKey = sut.Generate(1, 1, 0, DateTime.Today, false, eventId);
                 keys.Add(highPriorityKey);
 
                 keys.Sort();
@@ -112,15 +115,15 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         }
 
         [TestFixture]
-        public class AndAllEventsAreRefunds 
+        public class AndAllEventsAreRefunds
         {
             [Test]
             public void ThenTheResultsShouldSortByPriority()
             {
                 var keys = new List<string>();
-                var lowPriorityKey = sut.Generate(-1, 2, 0, DateTime.Today, false);
+                var lowPriorityKey = sut.Generate(-1, 2, 0, DateTime.Today, false, eventId);
                 keys.Add(lowPriorityKey);
-                var highPriorityKey = sut.Generate(-100, 1, 0, DateTime.Today, false);
+                var highPriorityKey = sut.Generate(-100, 1, 0, DateTime.Today, false, eventId);
                 keys.Add(highPriorityKey);
 
                 keys.Sort();
