@@ -41,6 +41,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     Ukprn = payment.Ukprn,
                     LearnerReferenceNumber = payment.LearnerReferenceNumber,
                     LearnAimReference = payment.LearningAimReference,
+                    LearningAimFundingLineType = payment.LearningAimFundingLineType,
                     TransactionType = (int)payment.TransactionType,
                     PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
                     DeliveryPeriod = payment.DeliveryPeriod,
