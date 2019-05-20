@@ -31,6 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
             foreach (var removedAim in removedAims)
             {
+                removedAim.JobId = message.JobId;
                 await context.Publish(removedAim).ConfigureAwait(false);
             }
 
