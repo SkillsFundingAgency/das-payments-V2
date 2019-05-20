@@ -179,7 +179,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 if (expectedDataLockFailure.DataLockError == DataLockErrorCode.DLOCK_01 ||
                     expectedDataLockFailure.DataLockError == DataLockErrorCode.DLOCK_02)
                 {
-                    if (actualDataLockFailure?.ApprenticeshipId != null)
+                    if (actualDataLockFailure == null ||
+                        actualDataLockFailure.ApprenticeshipId != null)
                         return false;
                 }
                 else
