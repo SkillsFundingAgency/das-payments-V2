@@ -161,7 +161,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var learner = Learners.FirstOrDefault(x => x.LearnerIdentifier == learnerId);
             if (learner == null)
             {
-                if (String.IsNullOrWhiteSpace(learnerId) || learnerId.Equals(LearnerIdentifierA))
+                if (string.IsNullOrWhiteSpace(learnerId) || learnerId.Equals(LearnerIdentifierA))
                 {
                     return _ulnService.GenerateUln(Provider.Ukprn);
                 }
