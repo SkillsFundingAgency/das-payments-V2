@@ -1,4 +1,6 @@
 ﻿using System;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -165,6 +167,151 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             lesm[0].DateEmpStatApp = learner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
         }
 
+        protected void MutateCommon(MessageLearner learner, Learner learnerRequest)
+        {
+            learner.DateOfBirth =
+                learnerRequest.Aims.First().StartDate.ToDate()
+                    .AddYears(-learnerRequest.Aims.First().FundingLineType.ToLearnerAge());
+
+            var learnerLearningDeliveries = learner.LearningDelivery.ToList();
+
+            foreach (var aim in learnerRequest.Aims)
+            {
+                var delivery = learnerLearningDeliveries.SingleOrDefault(learnDelivery =>
+                    learnDelivery.AimSeqNumber == aim.AimSequenceNumber);
+
+                if (delivery == null)
+                {
+                    delivery = new MessageLearnerLearningDelivery();
+                    learnerLearningDeliveries.Add(delivery);
+                }
+
+                delivery.LearnAimRef = aim.AimReference;
+
+                delivery.LearnStartDate = aim.StartDate.ToDate();
+                delivery.LearnStartDateSpecified = true;
+
+                if (aim.PlannedDurationAsTimespan.HasValue)
+                {
+                    delivery.LearnPlanEndDate = delivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value);
+                    delivery.LearnPlanEndDateSpecified = true;
+                }
+
+                if (aim.ActualDurationAsTimespan.HasValue)
+                {
+                    delivery.LearnActEndDate = delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
+                    delivery.LearnActEndDateSpecified = true;
+                }
+
+                var ldfams =
+                    delivery.LearningDeliveryFAM.Where(s => s.LearnDelFAMType != LearnDelFAMType.ACT.ToString());
+                delivery.LearningDeliveryFAM = ldfams.ToArray();
+                var lfams = delivery.LearningDeliveryFAM.ToList();
+
+                foreach (var priceEpisode in aim.PriceEpisodes)
+                {
+                    lfams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
+                    {
+                        LearnDelFAMType = LearnDelFAMType.ACT.ToString(),
+                        LearnDelFAMCode = ((int) priceEpisode.ContractType).ToString(),
+                        LearnDelFAMDateFrom = delivery.LearnStartDate,
+                        LearnDelFAMDateFromSpecified = true,
+                        LearnDelFAMDateTo = delivery.LearnActEndDate,
+                        LearnDelFAMDateToSpecified = aim.ActualDurationAsTimespan.HasValue,
+                    });
+
+                    if (aim.CompletionStatus == CompletionStatus.Completed && aim.AimSequenceNumber == 1)
+                    {
+                        // change AppFin to PMR
+                        var appfin = new List<MessageLearnerLearningDeliveryAppFinRecord>();
+                        appfin.Add(new MessageLearnerLearningDeliveryAppFinRecord()
+                        {
+                            AFinAmount = CalculateEmployerContribution(priceEpisode.SfaContributionPercentage,
+                                priceEpisode.TotalTrainingPrice),
+                            AFinAmountSpecified = true,
+                            AFinType = LearnDelAppFinType.PMR.ToString(),
+                            AFinCode = (int) LearnDelAppFinCode.TrainingPayment,
+                            AFinCodeSpecified = true,
+                            AFinDate = delivery.LearnActEndDate.AddMonths(-1),
+                            AFinDateSpecified = true
+                        });
+
+                        delivery.AppFinRecord = appfin.ToArray();
+                    }
+
+                    if (aim.AimSequenceNumber == 1)
+                    {
+                        var appFinRecords = delivery.AppFinRecord.ToList();
+                        var tnp = appFinRecords.SingleOrDefault(a => a.AFinType == "TNP");
+                        if (tnp == null)
+                        {
+                            tnp = new MessageLearnerLearningDeliveryAppFinRecord()
+                            {
+                                AFinType = "TNP"
+                            };
+                            appFinRecords.Add(tnp);
+                        }
+
+                        tnp.AFinCode = (int) LearnDelAppFinCode.TotalTrainingPrice;
+                        tnp.AFinCodeSpecified = true;
+                        tnp.AFinAmount = Convert.ToInt32(priceEpisode.TotalTrainingPrice);
+                        tnp.AFinAmountSpecified = true;
+                        tnp.AFinDate = priceEpisode.TotalTrainingPriceEffectiveDate.ToDate();
+                        tnp.AFinDateSpecified = true;
+
+                        if (aim.ProgrammeType == StandardProgrammeType)
+                        {
+                            var pmr = appFinRecords.SingleOrDefault(a => a.AFinType == "PMR");
+                            if (pmr == null)
+                            {
+                                pmr = new MessageLearnerLearningDeliveryAppFinRecord()
+                                {
+                                    AFinType = "PMR"
+                                };
+                                appFinRecords.Add(pmr);
+                            }
+
+                            pmr.AFinCode = (int) LearnDelAppFinCode.TotalAssessmentPrice;
+                            pmr.AFinCodeSpecified = true;
+                            pmr.AFinAmount = Convert.ToInt32(priceEpisode.TotalAssessmentPrice);
+                            pmr.AFinAmountSpecified = true;
+                            pmr.AFinDate = priceEpisode.TotalAssessmentPriceEffectiveDate.ToDate();
+                            pmr.AFinDateSpecified = true;
+                        }
+
+                        delivery.AppFinRecord = appFinRecords.ToArray();
+                    }
+                }
+
+                delivery.LearningDeliveryFAM = lfams.ToArray();
+
+                delivery.ProgType = aim.ProgrammeType;
+                delivery.ProgTypeSpecified = true;
+
+                delivery.FworkCode = aim.FrameworkCode;
+                delivery.FworkCodeSpecified = true;
+
+                delivery.PwayCode = aim.PathwayCode;
+                delivery.PwayCodeSpecified = true;
+
+                delivery.CompStatus = (int) aim.CompletionStatus;
+                delivery.CompStatusSpecified = true;
+
+                if (aim.CompletionStatus == CompletionStatus.Completed)
+                {
+                    delivery.Outcome = (int) Outcome.Achieved;
+                    delivery.OutcomeSpecified = true;
+                }
+
+            }
+
+            learner.LearningDelivery = learnerLearningDeliveries.ToArray();
+
+            learner.LearnerEmploymentStatus[0].DateEmpStatApp =
+                learner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
+
+        }
+
         protected void MutateHE(MessageLearner learner)
         {
             var ldhe = new List<MessageLearnerLearningDeliveryLearningDeliveryHE>();
@@ -202,6 +349,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             });
 
             learner.LearningDelivery[1].LearningDeliveryHE = ldhe.ToArray();
+        }
+        private long CalculateEmployerContribution(string sfaContributionPercentage, decimal totalTrainingPrice)
+        {
+            if (string.IsNullOrWhiteSpace(sfaContributionPercentage) || !sfaContributionPercentage.Contains("%") || !int.TryParse(sfaContributionPercentage.Split('%')[0],
+                    out _))
+            {
+                throw new InvalidCastException("SfaContributionPercentage is not in the format: xx% (e.g. 90%)");
+            }
+
+            var percentage = decimal.Parse((100 - int.Parse(sfaContributionPercentage.Split('%')[0])).ToString());
+
+            var employerContribution = totalTrainingPrice * (percentage / 100);
+
+            return decimal.ToInt64(employerContribution);
         }
     }
 }

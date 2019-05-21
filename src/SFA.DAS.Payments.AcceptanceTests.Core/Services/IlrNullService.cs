@@ -8,6 +8,6 @@
 
     public class IlrNullService : IIlrService
     {
-        public async Task PublishLearnerRequest(List<Training> currentIlr, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr) => await verifyIlr();
+        public async Task PublishLearnerRequest(List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr) => await verifyIlr();
     }
 }

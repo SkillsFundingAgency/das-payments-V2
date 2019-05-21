@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
+﻿using DCT.TestDataGenerator.Functor;
+
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     using System;
     using System.Collections.Generic;
@@ -45,41 +47,65 @@
             this.dataContext = dataContext;
         }
 
-        public async Task PublishLearnerRequest(List<Training> currentIlr, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr)
+        public async Task PublishLearnerRequest(List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr)
         {
-            if (currentIlr?.Any() == false) return;
-
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
 
-            var learnerRequests = mapper.Map<IEnumerable<LearnerRequest>>(currentIlr).ToImmutableList();
-            var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learnerRequests);
+            ILearnerMultiMutator learnerMutator = null;
+            IEnumerable<LearnerRequest> learnerRequests = null;
+
+            if (currentIlr != null && currentIlr.Any())
+            {
+                learnerRequests = mapper.Map<IEnumerable<LearnerRequest>>(currentIlr).ToImmutableList();
+            }
+
+            learnerMutator = LearnerMutatorFactory.Create(featureNumber, learnerRequests, learners);
 
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
 
-            await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerRequests);
+            await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerRequests, learners);
 
             await verifyIlr();
 
             await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
         }
 
-        private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<LearnerRequest> currentIlr)
+        private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<LearnerRequest> currentIlr, IEnumerable<Learner> learners)
         {
             XNamespace xsdns = tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
-            var learners = xDoc.Descendants(xsdns + "Learner");
+            var learnerDescendants = xDoc.Descendants(xsdns + "Learner");
 
-            for (var i = 0; i < currentIlr.Count(); i++)
+            if (currentIlr != null)
             {
-                var request = currentIlr.Skip(i).Take(1).First();
-                var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerId);
-                var originalUln = testSessionLearner.Uln;
-                var learner = learners.Skip(i).Take(1).First();
-                testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
-                testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
+                for (var i = 0; i < currentIlr.Count(); i++)
+                {
+                    var request = currentIlr.Skip(i).Take(1).First();
+                    var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerId);
+                    var originalUln = testSessionLearner.Uln;
+                    var learner = learnerDescendants.Skip(i).Take(1).First();
+                    testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
+                    testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
 
-                await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln, testSessionLearner.LearnRefNumber);
+                    await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln,
+                        testSessionLearner.LearnRefNumber);
+                }
+            }
+            else
+            {
+                for (var i = 0; i < learners.Count(); i++)
+                {
+                    var request = learners.Skip(i).Take(1).First();
+                    var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerIdentifier);
+                    var originalUln = testSessionLearner.Uln;
+                    var learner = learnerDescendants.Skip(i).Take(1).First();
+                    testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
+                    testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
+
+                    await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln,
+                        testSessionLearner.LearnRefNumber);
+                }
             }
         }
 

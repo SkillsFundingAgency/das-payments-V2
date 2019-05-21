@@ -66,14 +66,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 JobId = provider.JobId > 0 ? provider.JobId : testSession.JobId
             };
 
-            if (_configuration.ValidateDcAndDasServices)
-            {
-                await messageSession.Send(startedEvent).ConfigureAwait(false);
-            }
-            else
-            {
+            //if (_configuration.ValidateDcAndDasServices)
+            //{
+            //    await messageSession.Send(startedEvent).ConfigureAwait(false);
+            //}
+            //else
+            //{
                 await messageSession.Request<int>(startedEvent).ConfigureAwait(false);
-            }
+            //}
         }
     }
 }

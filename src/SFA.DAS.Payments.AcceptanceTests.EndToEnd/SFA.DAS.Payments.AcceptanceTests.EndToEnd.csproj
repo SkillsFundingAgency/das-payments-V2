@@ -343,7 +343,6 @@
     <Compile Include="LearnerMutators\LearnerMutatorFactory.cs" />
     <Compile Include="LearnerMutators\LearnerRequest.cs" />
     <Compile Include="LearnerMutators\Framework593Learner.cs" />
-    <Compile Include="LearnerMutators\NonLevy\FrameworkUplift\FM36_487.cs" />
     <Compile Include="LearnerMutators\NonLevy\SmallEmployer\FM36_328.cs" />
     <Compile Include="Mapping\IlrProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -2180,6 +2179,7 @@
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="LearnerMutators\NonLevy\FrameworkUplift\" />
     <Folder Include="Tests\Disadvantage - Uplift\" />
     <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
   </ItemGroup>

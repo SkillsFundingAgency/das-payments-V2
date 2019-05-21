@@ -108,8 +108,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
             Task verifyIlr() => WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(collectionPeriodText, TestSession.Provider.Identifier);
-
-            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, collectionPeriodText, featureNumber.Extract(), verifyIlr);
+            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, TestSession.Learners, collectionPeriodText, featureNumber.Extract(), verifyIlr);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]

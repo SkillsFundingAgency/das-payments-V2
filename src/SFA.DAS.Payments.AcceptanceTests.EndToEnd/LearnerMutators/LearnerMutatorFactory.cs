@@ -5,10 +5,11 @@
     using DCT.TestDataGenerator.Functor;
     using NonLevy.BasicDay;
     using NonLevy.SmallEmployer;
+    using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
     public class LearnerMutatorFactory
     {
-        public static ILearnerMultiMutator Create(string featureNumber, IEnumerable<LearnerRequest> learnerRequests)
+        public static ILearnerMultiMutator Create(string featureNumber, IEnumerable<LearnerRequest> learnerRequests = null, IEnumerable<Learner> learners = null)
         {
             switch (featureNumber)
             {
@@ -25,6 +26,8 @@
                 case "427":
                 case "615":
                     return new Framework593Learner(learnerRequests, featureNumber);
+                case "485":
+                    return new Framework593Learner(learners, featureNumber);
                 case "487":
                 case "326":
                     return new Framework403Learner(learnerRequests, featureNumber);

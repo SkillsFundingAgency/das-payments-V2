@@ -940,7 +940,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
                 {
                     JobId = monthEndJobId,
-                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
+                    CollectionPeriod = new CollectionPeriod {AcademicYear = AcademicYear, Period = CollectionPeriod},
                     RequestTime = DateTime.Now,
                     SubmissionDate = submissionDate,
                     AccountId = employer.AccountId,
