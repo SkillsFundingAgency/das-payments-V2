@@ -18,13 +18,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             return OnProgTypes.Contains(type);
         }
 
-        public static bool IsIncentiveType(TransactionType type)
+        public static bool IsIncentiveType(TransactionType type, bool isMainAim)
         {
+            if (!isMainAim)
+            {
+                if (type == TransactionType.LearningSupport)
+                    return false;
+            }
+
             return IncentiveTypes.Contains(type);
         }
 
-        public static bool IsFunctionalSkillType(TransactionType type)
+        public static bool IsFunctionalSkillType(TransactionType type, bool isMainAim)
         {
+            if (isMainAim)
+            {
+                if (type == TransactionType.LearningSupport)
+                    return false;
+            }
+
             return FunctionalSkillTypes.Contains(type);
         }
 
@@ -88,6 +100,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                     return "MathEngOnProgPayment";
                 case TransactionType.BalancingMathsAndEnglish:
                     return "MathEngBalPayment";
+                case TransactionType.CareLeaverApprenticePayment:
+                    return "PriceEpisodeLearnerAdditionalPayment";
 
                 default:
                     throw new NotImplementedException($"Cannot get FM36 attribute name.  Unhandled transaction type: {transactionType}");
@@ -128,6 +142,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                     return TransactionType.OnProgrammeMathsAndEnglish;
                 case "MathEngBalPayment":
                     return TransactionType.BalancingMathsAndEnglish;
+                case "PriceEpisodeLearnerAdditionalPayment":
+                    return TransactionType.CareLeaverApprenticePayment;
 
                 default:
                     throw new NotImplementedException(

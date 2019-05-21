@@ -105,10 +105,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
                     var fullListOfTransactionTypes = aimEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
                     var onProgEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsOnProgType).ToList();
-                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsFunctionalSkillType).ToList();
-                    var incentiveEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsIncentiveType).ToList();
+                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsFunctionalSkillType(t, aimSpec.IsMainAim)).ToList();
+                    var incentiveEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsIncentiveType(t, aimSpec.IsMainAim)).ToList();
 
-                    if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
+                    if (aimSpec.IsMainAim && onProgEarnings.Any())
                     {
                         var contractTypeEarningsEvents  = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
 
@@ -127,7 +127,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         }
                     }
 
-                    if (aimSpec.AimReference != "ZPROG001" && functionalSkillEarnings.Any())
+                    if (!aimSpec.IsMainAim && functionalSkillEarnings.Any())
                     {
                         var functionalSkillEarning = new FunctionalSkillEarningsEvent
                         {
@@ -150,7 +150,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         result.Add(functionalSkillEarning);
                     }
 
-                    if (incentiveEarnings.Any())
+                    if (!aimSpec.IsMainAim && incentiveEarnings.Any())
                     {
                         var contractTypeIncentiveEarnings = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
 

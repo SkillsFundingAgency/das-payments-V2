@@ -13,7 +13,7 @@ using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
-    public class RequiredPaymentEventMatcher : BaseMatcher<RequiredPaymentEvent>
+    public class RequiredPaymentEventMatcher : BaseMatcher<PeriodisedRequiredPaymentEvent>
     {
         private readonly Provider provider;
         private readonly CollectionPeriod collectionPeriod;
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             this.currentPriceEpisodes = currentPriceEpisodes;
         }
 
-        protected override IList<RequiredPaymentEvent> GetActualEvents()
+        protected override IList<PeriodisedRequiredPaymentEvent> GetActualEvents()
         {
             var events = RequiredPaymentEventHandler.ReceivedEvents
                 .Where(e => e.Ukprn == provider.Ukprn && 
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             e.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                             e.JobId == provider.JobId).ToList();
 
-            var results = new List<RequiredPaymentEvent>();
+            var results = new List<PeriodisedRequiredPaymentEvent>();
 
             var aggregatedOnProgEvents = events
                 .Select(x => x as CalculatedRequiredOnProgrammeAmount)
@@ -98,9 +98,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return results;
         }
 
-        protected override IList<RequiredPaymentEvent> GetExpectedEvents()
+        protected override IList<PeriodisedRequiredPaymentEvent> GetExpectedEvents()
         {
-            var expectedPayments = new List<RequiredPaymentEvent>();
+            var expectedPayments = new List<PeriodisedRequiredPaymentEvent>();
 
             var paymentsToValidate =
                 paymentSpec
@@ -131,7 +131,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expectedPayments;
         }
 
-        private void AddOnProgPayment(Payment paymentToValidate, List<RequiredPaymentEvent> expectedPayments,
+        private void AddOnProgPayment(Payment paymentToValidate, List<PeriodisedRequiredPaymentEvent> expectedPayments,
             decimal amountDue, OnProgrammeEarningType type)
         {
             var paymentEvents = CreateContractTypeRequiredPaymentEvent(amountDue, type, paymentToValidate.PriceEpisodeIdentifier,
@@ -143,7 +143,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             }
         }
 
-        protected override bool Match(RequiredPaymentEvent expected, RequiredPaymentEvent actual)
+        protected override bool Match(PeriodisedRequiredPaymentEvent expected, PeriodisedRequiredPaymentEvent actual)
         {
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue &&

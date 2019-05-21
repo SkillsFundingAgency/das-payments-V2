@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
         {
         }
 
-        protected override async Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(FunctionalSkillEarningsEvent message, IRequiredPaymentsService actor)
+        protected override async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(FunctionalSkillEarningsEvent message, IRequiredPaymentsService actor)
         {
             return await actor.HandleFunctionalSkillEarningsEvent(message, CancellationToken.None).ConfigureAwait(false);
         }

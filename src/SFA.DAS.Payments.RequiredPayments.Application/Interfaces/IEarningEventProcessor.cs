@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application
     public interface IEarningEventProcessor<TEarningEvent>
         where TEarningEvent : IEarningEvent
     {
-        Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(
+        Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(
             TEarningEvent earningEvent,
             IDataCache<PaymentHistoryEntity[]> paymentHistoryCache,
             CancellationToken cancellationToken
