@@ -85,7 +85,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 {
                     SfaContributionPercentage = requiredPaymentEvent.Value.SfaContributionPercentage,
                     AmountDue = requiredPaymentEvent.Value.AmountDue,
-                    IsTransfer = employerAccountId == requiredPaymentEvent.Value.AccountId && requiredPaymentEvent.Value.TransferSenderAccountId.HasValue && requiredPaymentEvent.Value.TransferSenderAccountId != employerAccountId 
+                    IsTransfer = employerAccountId != requiredPaymentEvent.Value.AccountId 
+                                 && requiredPaymentEvent.Value.TransferSenderAccountId.HasValue 
+                                 && requiredPaymentEvent.Value.TransferSenderAccountId == employerAccountId 
                 };
 
                 var fundingSourcePayments = processor.Process(requiredPayment);

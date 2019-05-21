@@ -78,7 +78,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         }
 
                         // withdrawal but payments made during period active
-                        if (a.CompletionStatus == CompletionStatus.Withdrawn && providerPayment.LevyPayments >= 0M && providerPayment.SfaCoFundedPayments >= 0M && providerPayment.EmployerCoFundedPayments >= 0M && providerPayment.SfaFullyFundedPayments >= 0M)
+                        if (a.CompletionStatus == CompletionStatus.Withdrawn && 
+                            providerPayment.LevyPayments >= 0M && 
+                            providerPayment.SfaCoFundedPayments >= 0M && 
+                            providerPayment.EmployerCoFundedPayments >= 0M && 
+                            providerPayment.SfaFullyFundedPayments >= 0M)
                         {
                             return false;
                         }
@@ -151,6 +155,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     };
                     expectedPayments.Add(levyFunded);
                 }
+
+                if (providerPayment.TransferPayments != 0)
+                {
+                    var transferFunded = new TransferProviderPaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.TransferPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        AccountId = providerPayment.AccountId,
+                        LearningAim = new LearningAim { StandardCode = standardCode.Value }
+                    };
+                    expectedPayments.Add(transferFunded);
+                }
+
             }
 
             return expectedPayments;

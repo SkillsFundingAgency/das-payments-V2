@@ -52,6 +52,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             if (apprenticeshipSpec.AccountId == default(long))
                 apprenticeshipSpec.AccountId = testSession.GetEmployer(apprenticeshipSpec.Employer).AccountId;
 
+            if (apprenticeshipSpec.SenderAccountId == default(long))
+                apprenticeshipSpec.SenderAccountId = testSession.GetEmployer(apprenticeshipSpec.SendingEmployer).AccountId;
             if (apprenticeshipSpec.Uln == default(long))
             {
                 var learnerId = string.IsNullOrWhiteSpace(apprenticeshipSpec.Identifier)
@@ -67,6 +69,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 Id = apprenticeshipSpec.CommitmentId,
                 Ukprn = apprenticeshipSpec.Ukprn,
                 AccountId = apprenticeshipSpec.AccountId,
+                TransferSendingEmployerAccountId = apprenticeshipSpec.SenderAccountId,
                 Uln = apprenticeshipSpec.Uln,
                 FrameworkCode = apprenticeshipSpec.FrameworkCode,
                 ProgrammeType = apprenticeshipSpec.ProgrammeType,

@@ -76,6 +76,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var levyPayments = ToPaymentModel(paymentInfo, provider.Ukprn, FundingSourceType.Levy, paymentInfo.LevyPayments, provider.JobId, paymentInfo.AccountId);
                     expectedPayments.Add(levyPayments);
                 }
+
+                if (paymentInfo.TransferPayments != 0)
+                {
+                    var transferPayments = ToPaymentModel(paymentInfo, provider.Ukprn, FundingSourceType.Transfer, paymentInfo.TransferPayments, provider.JobId, paymentInfo.AccountId);
+                    expectedPayments.Add(transferPayments);
+                }
             }
             return expectedPayments;
         }

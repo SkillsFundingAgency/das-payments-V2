@@ -299,8 +299,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 SfaContributionPercentage = 11,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                 Learner = new Learner(),
-                AccountId = 666,
-                TransferSenderAccountId = 2
+                AccountId = 2,
+                TransferSenderAccountId = 666
             };
 
             var balance = 100m;
@@ -324,7 +324,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             levyBalanceServiceMock.Setup(s => s.Initialise(balance, transferAllowance)).Verifiable();
 
-            processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments).Verifiable();
+            processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments);
 
             eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
             keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
@@ -333,6 +333,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             // act
             var fundingSourcePayments = await service.GetFundedPayments(666, 1);
+
+            processorMock.Verify(p => p.Process(It.Is<RequiredPayment>(rp => rp.IsTransfer)),Times.Once);
 
             // assert
             fundingSourcePayments.Should().HaveCount(3);
