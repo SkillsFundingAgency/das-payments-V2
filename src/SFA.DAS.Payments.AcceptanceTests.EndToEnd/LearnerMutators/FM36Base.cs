@@ -1,15 +1,14 @@
 ﻿using System;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Tests.Core;
+using System.Collections.Generic;
+using System.Linq;
+using DCT.TestDataGenerator;
+using DCT.TestDataGenerator.Functor;
+using ESFA.DC.ILR.Model.Loose;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using DCT.TestDataGenerator;
-    using DCT.TestDataGenerator.Functor;
-    using ESFA.DC.ILR.Model.Loose;
-
     public abstract class FM36Base : ILearnerMultiMutator
     {
         private const int StandardProgrammeType = 25;
@@ -115,7 +114,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             if (learnerRequest.TotalAssessmentPriceEffectiveDate.HasValue && learnerRequest.TotalAssessmentPrice.HasValue && learnerRequest.ProgrammeType.HasValue && learnerRequest.ProgrammeType.Value == StandardProgrammeType)
             {
-                Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalAssessmentPrice, learnerRequest.TotalAssessmentPrice.Value, 1, "PMR", 1, 1, learnerRequest.TotalAssessmentPriceEffectiveDate);
+                DCT.TestDataGenerator.Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalAssessmentPrice, learnerRequest.TotalAssessmentPrice.Value, 1, "PMR", 1, 1, learnerRequest.TotalAssessmentPriceEffectiveDate);
             }
 
             foreach (var lds in learner.LearningDelivery)
