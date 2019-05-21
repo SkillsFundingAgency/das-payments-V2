@@ -39,7 +39,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             }).As<IPaymentsDataContext>().InstancePerLifetimeScope();
             DcHelper.AddDcConfig(Builder);
 
-            Builder.RegisterType<IlrDcService>().As<IIlrService>().InstancePerLifetimeScope();
+            Builder.RegisterType<IlrDcService>()
+                   .As<IIlrService>()
+                   .InstancePerLifetimeScope()
+                   .IfNotRegistered(typeof(IIlrService));
+
             Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
 
             Builder.Register((c, p) => new RequiredPaymentsCacheCleaner(c.Resolve<IApprenticeshipKeyService>(), MessageSession, c.Resolve<TestsConfiguration>())).AsSelf();
