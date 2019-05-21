@@ -79,7 +79,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
                 EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
                 AgreedOnDate = DateTime.UtcNow,
-
+                StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StopEffectiveFrom) ?
+                           default(DateTime?):
+                          apprenticeshipSpec.StopEffectiveFrom.ToDate()
             };
 
             return apprenticeshipModel;

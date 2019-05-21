@@ -12,8 +12,8 @@ Feature: Levy learner 19-24 is a care leaver employed with a small employer at s
 Scenario Outline: Levy learner 19-24 is a care leaver employed with a small employer at start fully funded PV2-348
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | start date                | end date                     | agreed price | framework code | programme type | pathway code |
-        | 06/Aug/Last Academic Year | 08/Aug/Current Academic Year | 7500         | 593            | 1              | 20           |
+        | start date                | end date                     | agreed price |Framework Code | Pathway Code | Programme Type |
+        | 06/Aug/Last Academic Year | 08/Aug/Current Academic Year | 7500         |593            | 1            | 20             |
 	# 100% contribution for small employer, 19-24 learner due to EEF4 code
 	And the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
