@@ -90,8 +90,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public long GenerateId(int maxValue = 1000000)
         {
-            //return _ukprnService.GenerateUkprn();
-
             var id = random.Next(maxValue);
             //TODO: make sure that the id isn't already in use.
             return id;
