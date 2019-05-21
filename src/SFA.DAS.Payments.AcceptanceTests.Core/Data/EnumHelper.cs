@@ -147,7 +147,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             }
             else
             {
-                if (priceEpisodes != null && priceEpisodes.Count > 1)
+                if (priceEpisodes != null && priceEpisodes.Count > 1 && priceEpisodes.All(x => x.ContractType != 0))
                 {
                     contractTypes = priceEpisodes.Select(x => x.ContractType).Distinct().ToList();
                 }

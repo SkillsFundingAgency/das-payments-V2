@@ -228,11 +228,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             // find first price episode with non-zero value for a period
             var period = earning.DeliveryCalendarPeriod;
-            return fm36Learner.PriceEpisodes
+
+            earning.PriceEpisodeIdentifier = fm36Learner.PriceEpisodes
                 .SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues
                     .Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
                                  pepv.AttributeName == transactionType.ToAttributeName()))?
                 .PriceEpisodeIdentifier;
+
+            return earning.PriceEpisodeIdentifier;
         }
 
         protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)

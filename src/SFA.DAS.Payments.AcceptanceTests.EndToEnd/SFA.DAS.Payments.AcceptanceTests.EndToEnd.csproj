@@ -503,11 +503,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1438,10 +1433,6 @@
     <None Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
