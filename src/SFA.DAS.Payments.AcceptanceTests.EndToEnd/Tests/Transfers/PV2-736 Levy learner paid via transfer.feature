@@ -11,8 +11,8 @@ Scenario Outline: Transfers - PV2-736 - Single Levy learner paid via transfer
 	#And a transfer agreement has been set up between employer 1 and employer 2
 
 	And the following apprenticeships exist
-		| employer of apprentice | employer paying for training | start date                   | end date                  | agreed price | standard code | status | effective from               |
-		| employer 1             | employer 2                   | 01/Aug/Current Academic Year | 06/Aug/Next Academic Year | 15000        | 50            | active | 01/Aug/Current Academic Year |
+		| Employer   | Sending Employer | Start Date                   | End Date                  | Agreed price | Standard Code | Status | effective from               |
+		| employer 1 | employer 2       | 01/Aug/Current Academic Year | 06/Aug/Next Academic Year | 15000        | 50            | active | 01/Aug/Current Academic Year |
 
     And the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |

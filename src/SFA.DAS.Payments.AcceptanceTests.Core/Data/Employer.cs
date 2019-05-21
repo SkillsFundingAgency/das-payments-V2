@@ -9,6 +9,6 @@
         public decimal Balance { get; set; }
         public long SequenceId { get; set; }
         public bool IsLevyPayer { get; set; }
-        public decimal TransferAllowance { get; set; }
+        public decimal TransferAllowance => Balance * .25M;
     }
 }
