@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<EarningEvent> GetExpectedEvents()
         {
             var result = new List<EarningEvent>();
-            var learnerIds = earningSpecs.Where(e => e.Ukprn == provider.Ukprn)?.Select(e => e.LearnerId).Distinct().ToList();
+            var learnerIds = earningSpecs.Where(e => e.Ukprn == provider.Ukprn).Select(e => e.LearnerId).Distinct().ToList();
 
             foreach (var learnerId in learnerIds)
             {
@@ -106,12 +106,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
                     var fullListOfTransactionTypes = aimEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
                     var onProgEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsOnProgType).ToList();
-                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsFunctionalSkillType).ToList();
-                    var incentiveEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsIncentiveType).ToList();
+                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsFunctionalSkillType(t, aimSpec.IsMainAim)).ToList();
+                    var incentiveEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsIncentiveType(t, aimSpec.IsMainAim)).ToList();
 
-                    if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
+                    if (aimSpec.IsMainAim && onProgEarnings.Any())
                     {
-                        var onProgEarning  = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
+                        var onProgEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
                         onProgEarning.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                         {
                             Type = (OnProgrammeEarningType) (int) tt,
@@ -125,11 +125,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         onProgEarning.JobId = provider.JobId;
                         onProgEarning.Learner = learner;
                         onProgEarning.LearningAim = learningAim;
-     
+
                         result.Add(onProgEarning);
                     }
 
-                    if (aimSpec.AimReference != "ZPROG001" && functionalSkillEarnings.Any())
+                    if (!aimSpec.IsMainAim && functionalSkillEarnings.Any())
                     {
                         var functionalSkillEarning = new FunctionalSkillEarningsEvent
                         {
@@ -152,7 +152,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         result.Add(functionalSkillEarning);
                     }
 
-                    if (incentiveEarnings.Any())
+                    if (!aimSpec.IsMainAim && incentiveEarnings.Any())
                     {
                         var incentiveEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
                         incentiveEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning

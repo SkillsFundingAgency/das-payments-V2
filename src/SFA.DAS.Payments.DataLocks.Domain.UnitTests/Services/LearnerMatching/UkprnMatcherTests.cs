@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
 {

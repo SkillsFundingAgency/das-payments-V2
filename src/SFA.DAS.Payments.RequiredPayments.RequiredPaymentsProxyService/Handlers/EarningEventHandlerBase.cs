@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
                 var actorId = new ActorId(key);
                 var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                IReadOnlyCollection<RequiredPaymentEvent> requiredPaymentEvent;
+                IReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPaymentEvent;
                 try
                 {
                     requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
@@ -85,6 +85,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             }
         }
 
-        protected abstract Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(T message, IRequiredPaymentsService actor);
+        protected abstract Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(T message, IRequiredPaymentsService actor);
     }
 }

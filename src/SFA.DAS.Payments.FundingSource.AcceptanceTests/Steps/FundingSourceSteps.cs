@@ -124,7 +124,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             return paymentEvent;
         }
 
-        private void MapCommon(RequiredPayment requiredPayment, RequiredPaymentEvent paymentEvent)
+        private void MapCommon(RequiredPayment requiredPayment, PeriodisedRequiredPaymentEvent paymentEvent)
         {
             paymentEvent.Learner = TestSession.Learner.ToLearner();
             paymentEvent.Ukprn = TestSession.Ukprn;
@@ -138,9 +138,9 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             paymentEvent.PriceEpisodeIdentifier = requiredPayment.PriceEpisodeIdentifier;
         }
 
-        private RequiredPaymentEvent CreateRequiredPaymentEvent(RequiredPayment requiredPayment)
+        private PeriodisedRequiredPaymentEvent CreateRequiredPaymentEvent(RequiredPayment requiredPayment)
         {
-            RequiredPaymentEvent paymentEvent;
+            PeriodisedRequiredPaymentEvent paymentEvent;
             switch (requiredPayment.Type)
             {
                 case TransactionType.Learning:
