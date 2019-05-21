@@ -13,12 +13,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
     public abstract class FM36Base : ILearnerMultiMutator
     {
         private const int StandardProgrammeType = 25;
-        private readonly string _featureNumber;
+        private readonly string featureNumber;
         protected ILearnerCreatorDataCache dataCache;
 
         protected FM36Base(string featureNumber)
         {
-            _featureNumber = featureNumber;
+            this.featureNumber = featureNumber;
         }
 
         public FilePreparationDateRequired FilePreparationDate()
@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         public string LearnerReferenceNumberStub()
         {
-            return $"fm36{_featureNumber}";
+            return $"fm36{featureNumber}";
         }
 
         protected void MutateCommon(MessageLearner learner, LearnerRequest learnerRequest)
