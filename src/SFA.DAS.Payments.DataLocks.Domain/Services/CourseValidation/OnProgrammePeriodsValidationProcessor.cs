@@ -46,12 +46,20 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     };
 
                     var validationResult = courseValidationProcessor.ValidateCourse(validationModel);
-
                     var newEarningPeriod = CreateEarningPeriod(period);
                     if (validationResult.DataLockFailures.Any())
                     {
-                        newEarningPeriod.DataLockFailures = validationResult.DataLockFailures;
-                        invalidPeriods.Add(newEarningPeriod);
+                        var invalidPeriod = invalidPeriods.FirstOrDefault(x => x.Period == period.Period);
+
+                        if (invalidPeriod == null)
+                        {
+                            newEarningPeriod.DataLockFailures = validationResult.DataLockFailures;
+                            invalidPeriods.Add(newEarningPeriod);
+                        }
+                        else
+                        {
+                            invalidPeriod.DataLockFailures.AddRange(validationResult.DataLockFailures);
+                        }
                     }
                     else
                     {
@@ -63,6 +71,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     }
                 }
             }
+            
             return (validPeriods, invalidPeriods);
         }
 
