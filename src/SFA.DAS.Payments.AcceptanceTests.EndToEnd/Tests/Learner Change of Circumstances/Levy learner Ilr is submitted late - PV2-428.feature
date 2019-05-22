@@ -39,8 +39,8 @@ Scenario: One levy learner, levy available, ILR submitted for the first time in 
 Given the employer levy account balance in collection period R13/Current Academic Year is 15000
 # New Commitment line
 And the following commitments exist
-    | start date                   | end date                  | agreed price |
-    | 01/Sep/Current Academic Year | 08/Sep/Next Academic Year | 15000        |
+    | start date                   | end date                  | agreed price | Standard Code | Programme Type | 
+    | 01/Sep/Current Academic Year | 08/Sep/Next Academic Year | 15000        | 50            | 25             | 
 
 And the provider is providing training for the following learners
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |

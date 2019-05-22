@@ -8,8 +8,8 @@ Scenario: Levy Learner-co-funded,insufficient employer contribution, completion 
 	Given the employer levy account balance in collection period R12/Current Academic Year is 0
 
 	And the following commitments exist
-        | start date                | end date                     | agreed price | status |
-        | 01/Jun/Last Academic Year | 01/Jun/Current Academic Year | 9000         | active |
+        | start date                | end date                     | agreed price | status | Framework Code | Pathway Code | Programme Type |
+        | 01/Jun/Last Academic Year | 01/Jun/Current Academic Year | 9000         | active | 593            | 1            | 20             |
 
 	# New field in the ILR line -  Employer Contribution
 	And the provider previously submitted the following learner details in collection period "R11/Current Academic Year"

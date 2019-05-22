@@ -6,8 +6,8 @@ Feature: Learner changes from a non-levy to levy employer, levy is available for
 Scenario Outline: Learner changes from a non-levy to levy employer, levy is available for the levy employer PV2-366
 	Given the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 	And the following commitments exist
-        | Employer   | start date                   | end date                  | agreed price | status | effective from               | effective to |
-        | employer 2 | 01/Apr/Current Academic Year | 01/Aug/Next Academic Year | 3500         | active | 01/Apr/Current Academic Year |              |
+        | Employer   | start date                   | end date                  | agreed price | status | effective from               | effective to | Standard Code | Programme Type | 
+        | employer 2 | 01/Apr/Current Academic Year | 01/Aug/Next Academic Year | 3500         | active | 01/Apr/Current Academic Year |              | 51            | 25             | 
 	And the provider previously submitted the following learner details
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage |
 		| 06/Aug/Current Academic Year | 12 months        | 5000                 | 06/Aug/Current Academic Year        | 1000                   | 06/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |

@@ -9,8 +9,8 @@ Scenario:  A levy learner in co-funding and provider retrospectively notifies of
 Given the employer levy account balance in collection period R06/Current Academic Year is 2500
 
 And the following commitments exist
-	| start date                   | end date                     | agreed price |
-	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 11250        |
+	| start date                   | end date                     | agreed price |Standard Code | Programme Type |
+	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 11250        |17            | 25             |
 
 And the provider previously submitted the following learner details
     | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
