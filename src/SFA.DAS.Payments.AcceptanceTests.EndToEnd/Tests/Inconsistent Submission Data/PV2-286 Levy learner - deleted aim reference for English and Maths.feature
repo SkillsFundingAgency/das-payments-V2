@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: Levy learner deletes aim reference for eng and maths aim and payments are reconciled - PV2-286
+﻿Feature: Levy learner deletes aim reference for eng and maths aim and payments are reconciled - PV2-286
 		As a provider,
 		I want a levy learner, where aim reference for English and Maths is deleted and payments are reconciled,
 		So that I am accurately paid my apprenticeship provision - PV2-286
