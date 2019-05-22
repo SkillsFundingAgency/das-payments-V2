@@ -6,9 +6,9 @@ Feature: Levy learner, and there is a change to the negotiated price which happe
 Scenario Outline: Levy learner changes to the agreed price during the month PV2-295
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-		| start date                   | end date                  | agreed price | effective from               | effective to                 |
-		| 01/Aug/Current Academic Year | 31/Aug/Next Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |
-		| 01/Aug/Current Academic Year | 31/Aug/Next Academic Year | 9375         | 01/Nov/Current Academic Year |                              |
+		| start date                   | end date                  | agreed price | effective from               | effective to                 |Standard Code | Programme Type | 
+		| 01/Aug/Current Academic Year | 31/Aug/Next Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |51            | 25             | 
+		| 01/Aug/Current Academic Year | 31/Aug/Next Academic Year | 9375         | 01/Nov/Current Academic Year |                              |51            | 25             | 
 
 	And the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assesment Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type         |

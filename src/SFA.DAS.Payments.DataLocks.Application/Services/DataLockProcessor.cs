@@ -37,8 +37,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Learner.Uln).ConfigureAwait(false);
             if (learnerMatchResult.DataLockErrorCode.HasValue)
             {
-                var earningFailedDataLockEvent = CreateFailedDataLockMatchingEarningEvent(earningEvent, learnerMatchResult.DataLockErrorCode.Value);
-                dataLockEvents.Add(earningFailedDataLockEvent);
+                dataLockEvents = CreateDataLockEvents(earningEvent, learnerMatchResult.DataLockErrorCode.Value);
                 return dataLockEvents;
             }
 
@@ -69,50 +68,75 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             foreach (var onProgrammeEarning in earningEvent.OnProgrammeEarnings)
             {
-                var validationResult = onProgrammePeriodsValidationProcessor.ValidatePeriods(earningEvent.Learner.Uln, earningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln);
+                var validationResult = onProgrammePeriodsValidationProcessor.ValidatePeriods(earningEvent.Learner.Uln, earningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln, earningEvent.LearningAim, earningEvent.CollectionYear);
 
                 if (validationResult.ValidPeriods.Any())
                 {
-                    validOnProgEarnings.Add(new OnProgrammeEarning
-                    {
-                        CensusDate = onProgrammeEarning.CensusDate,
-                        Type = onProgrammeEarning.Type,
-                        Periods = validationResult.ValidPeriods.AsReadOnly()
-                    });
+                    validOnProgEarnings.Add(CreateOnProgrammeEarning(onProgrammeEarning, validationResult.ValidPeriods));
                 }
 
                 if (validationResult.InValidPeriods.Any())
-                {
-                    invalidOnProgEarnings.Add(new OnProgrammeEarning
-                    {
-                        CensusDate = onProgrammeEarning.CensusDate,
-                        Type = onProgrammeEarning.Type,
-                        Periods = validationResult.InValidPeriods.AsReadOnly()
-                    });
+                {            
+                    invalidOnProgEarnings.Add(CreateOnProgrammeEarning(onProgrammeEarning, validationResult.InValidPeriods));
                 }
             }
 
             return (validOnProgEarnings, invalidOnProgEarnings);
         }
 
-        private EarningFailedDataLockMatching CreateFailedDataLockMatchingEarningEvent(ApprenticeshipContractType1EarningEvent earningEvent, DataLockErrorCode dataLockErrorCode)
+        private List<DataLockEvent> CreateDataLockEvents(ApprenticeshipContractType1EarningEvent earningEvent, DataLockErrorCode dataLockErrorCode)
         {
+            var dataLockEvents = new List<DataLockEvent>();
+
             var nonPayableEarning = mapper.Map<EarningFailedDataLockMatching>(earningEvent);
-            foreach (var onProgrammeEarning in nonPayableEarning.OnProgrammeEarnings)
+            var payableEarningEvent = mapper.Map<PayableEarningEvent>(earningEvent);
+
+            payableEarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>();
+            nonPayableEarning.OnProgrammeEarnings = new List<OnProgrammeEarning>();
+
+            foreach (var onProgrammeEarning in earningEvent.OnProgrammeEarnings)
             {
+                var validPeriods = new List<EarningPeriod>();
+                var invalidPeriods = new List<EarningPeriod>();
+
                 foreach (var period in onProgrammeEarning.Periods)
                 {
-                    period.DataLockFailures = new List<DataLockFailure>
+                    if (period.Amount == decimal.Zero)
                     {
-                        new DataLockFailure
+                        validPeriods.Add(period);
+                    }
+                    else
+                    {
+                        period.DataLockFailures = new List<DataLockFailure>
                         {
-                            DataLockError = dataLockErrorCode
-                        }
-                    };
+                            new DataLockFailure
+                            {
+                                DataLockError = dataLockErrorCode
+                            }
+                        };
+
+                        invalidPeriods.Add(period);
+                    }
                 }
+
+                if (invalidPeriods.Any()) nonPayableEarning.OnProgrammeEarnings.Add(CreateOnProgrammeEarning(onProgrammeEarning, invalidPeriods));
+                if (validPeriods.Any()) payableEarningEvent.OnProgrammeEarnings.Add(CreateOnProgrammeEarning(onProgrammeEarning, validPeriods));
             }
-            return nonPayableEarning;
+
+            if (nonPayableEarning.OnProgrammeEarnings.Any())dataLockEvents.Add(nonPayableEarning);
+            if (payableEarningEvent.OnProgrammeEarnings.Any()) dataLockEvents.Add(payableEarningEvent);
+
+            return dataLockEvents;
         }
 
+        private static OnProgrammeEarning CreateOnProgrammeEarning(OnProgrammeEarning onProgrammeEarning, List<EarningPeriod> periods)
+        {
+            return new OnProgrammeEarning
+            {
+                CensusDate = onProgrammeEarning.CensusDate,
+                Type = onProgrammeEarning.Type,
+                Periods = periods.AsReadOnly()
+            };
+        }
     }
 }
