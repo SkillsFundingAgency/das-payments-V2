@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public string Employer { get; set; }
         public string SendingEmployer { get; set; }
         public long AccountId { get; set; }
-        public long SenderAccountId { get; set; }
+        public long? SenderAccountId { get; set; }
         public string Provider { get; set; }
         public long Ukprn { get; set; }
 
