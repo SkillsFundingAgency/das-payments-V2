@@ -1,16 +1,16 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using DCT.TestDataGenerator;
-    using DCT.TestDataGenerator.Functor;
-    using ESFA.DC.ILR.Model.Loose;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DCT.TestDataGenerator;
+using DCT.TestDataGenerator.Functor;
+using ESFA.DC.ILR.Model.Loose;
 
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
+{
     public class Framework403Learner : FM36Base
     {
-        private readonly IEnumerable<LearnerRequest> _learnerRequests;
-        private GenerationOptions _options;
+        private readonly IEnumerable<LearnerRequest> learnerRequests;
+        private GenerationOptions options;
 
         public Framework403Learner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
         {
@@ -19,7 +19,7 @@
                 throw new ArgumentException("At least one learner is required.");
             }
 
-            _learnerRequests = learnerRequests;
+            this.learnerRequests = learnerRequests;
         }
 
         protected override IEnumerable<LearnerTypeMutator> CreateLearnerTypeMutators()
@@ -32,7 +32,7 @@
                 DoMutateOptions = MutateLearnerOptions
             });
 
-            if (_learnerRequests.Count() == 2)
+            if (learnerRequests.Count() == 2)
             {
                 list.Add(new LearnerTypeMutator()
                 {
@@ -47,20 +47,20 @@
 
         private void MutateLearnerOptions(GenerationOptions options)
         {
-            _options = options;
+            this.options = options;
             options.LD.IncludeHHS = true;
         }
 
         private void MutateLearner(MessageLearner learner, bool valid)
         {
-            var trainingRecord = _learnerRequests.First();
+            var trainingRecord = learnerRequests.First();
             MutateCommon(learner, trainingRecord);
             DoSpecificMutate(learner, trainingRecord);
         }
 
         private void MutateLearner2(MessageLearner learner, bool valid)
         {
-            var trainingRecord = _learnerRequests.Skip(1).First();
+            var trainingRecord = learnerRequests.Skip(1).First();
             MutateCommon(learner, trainingRecord);
             DoSpecificMutate(learner, trainingRecord);
         }

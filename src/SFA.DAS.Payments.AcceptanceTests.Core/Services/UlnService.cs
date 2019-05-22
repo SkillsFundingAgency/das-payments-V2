@@ -1,7 +1,7 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
-{
-    using System;
+﻿using System;
 
+namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
+{
     public class UlnService : IUlnService
     {
         public long GenerateUln(long index)

@@ -1,12 +1,12 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
-{
-    using System;
-    using System.Collections.Generic;
-    using DCT.TestDataGenerator.Functor;
-    using NonLevy.BasicDay;
-    using NonLevy.SmallEmployer;
-    using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+﻿using System;
+using System.Collections.Generic;
+using DCT.TestDataGenerator.Functor;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.SmallEmployer;
 
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
+{
     public class LearnerMutatorFactory
     {
         public static ILearnerMultiMutator Create(string featureNumber, IEnumerable<LearnerRequest> learnerRequests = null, IEnumerable<Learner> learners = null)

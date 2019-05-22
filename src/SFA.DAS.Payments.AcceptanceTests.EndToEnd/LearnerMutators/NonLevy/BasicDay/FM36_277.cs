@@ -1,12 +1,10 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
+using DCT.TestDataGenerator;
+using ESFA.DC.ILR.Model.Loose;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay
 {
-    using System.Collections.Generic;
-    using DCT.TestDataGenerator;
-    using ESFA.DC.ILR.Model.Loose;
-
     public class FM36_277 : Framework593Learner
     {
         public FM36_277(IEnumerable<LearnerRequest> learnerRequests) : base(learnerRequests, "277")
@@ -43,7 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
             if (appFinRecord == null)
             {
-                Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, 15000);
+                DCT.TestDataGenerator.Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, 15000);
 
                 appFinRecord =
                     ld.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());

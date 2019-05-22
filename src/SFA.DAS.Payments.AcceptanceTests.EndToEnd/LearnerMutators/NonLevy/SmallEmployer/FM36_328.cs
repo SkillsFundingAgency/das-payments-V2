@@ -1,13 +1,10 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.SmallEmployer
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using ESFA.DC.ILR.Model.Loose;
-    using DCT.TestDataGenerator;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DCT.TestDataGenerator;
+using ESFA.DC.ILR.Model.Loose;
 
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.SmallEmployer
+{
     public class FM36_328 : Framework403Learner
     {
         public FM36_328(IEnumerable<LearnerRequest> learnerRequests) : base(learnerRequests, "328")
@@ -29,7 +26,7 @@
             });
             learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = lesm1.ToArray();
 
-            Helpers.AddLearningDeliveryFAM(learner, LearnDelFAMType.EEF, LearnDelFAMCode.EEF_Apprenticeship_19);
+            DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(learner, LearnDelFAMType.EEF, LearnDelFAMCode.EEF_Apprenticeship_19);
 
             learner.LearningDelivery[0].AppFinRecord = learner.LearningDelivery[0].AppFinRecord
                 .Where(af => af.AFinType != LearnDelAppFinType.PMR.ToString()).ToArray();
