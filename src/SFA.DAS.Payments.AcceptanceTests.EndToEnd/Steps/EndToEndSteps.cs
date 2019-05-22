@@ -51,9 +51,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
-        public async Task GivenTheEmployerLevyAccountBalanceInCollectionPeriodRCurrentAcademicYearIs(string collectionPeriod, decimal levyAmount)
+        public Task GivenTheEmployerLevyAccountBalanceInCollectionPeriodRCurrentAcademicYearIs(string collectionPeriod, decimal levyAmount)
         {
-            await GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(
+            return GivenTheSpecificEmployerLevyAccountBalanceInCollectionPeriodIs(
                 TestSession.Employer.Identifier,
                 collectionPeriod,
                 levyAmount);
@@ -216,7 +216,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"the following learner earnings should be generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
-            await GeneratedAndValidateEarnings(table, TestSession.Provider);
+            await GeneratedAndValidateEarnings(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"the following learner earnings should be generated for ""(.*)""")]
@@ -235,7 +235,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"at month end only the following payments will be calculated")]
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculated(Table table)
         {
-            await ValidateRequiredPaymentsAtMonthEnd(table, TestSession.Provider);
+            await ValidateRequiredPaymentsAtMonthEnd(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"at month end only the following payments will be calculated for ""(.*)""")]
