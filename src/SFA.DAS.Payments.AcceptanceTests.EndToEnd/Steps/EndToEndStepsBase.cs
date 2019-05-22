@@ -570,6 +570,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var period = earning.DeliveryCalendarPeriod;
                 foreach (var earningValue in earning.Values)
                 {
+                    if (!aim.IsMainAim && earningValue.Key.IsMainAimTransactionType())
+                    {
+                        continue;
+                    }
+
                     var earningKey = earningValue.Key.ToAttributeName();
 
                     var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);

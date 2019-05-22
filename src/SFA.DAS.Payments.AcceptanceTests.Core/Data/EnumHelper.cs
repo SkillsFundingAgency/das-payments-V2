@@ -108,6 +108,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             }
         }
 
+        public static bool IsMainAimTransactionType(this TransactionType transactionType)
+        {
+            switch (transactionType)
+            {
+                case TransactionType.Learning:
+                case TransactionType.Completion:
+                case TransactionType.Balancing:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public static TransactionType ToTransactionTypeFromAttributeName(this string attributeName)
         {
             switch (attributeName)

@@ -167,7 +167,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.Type == actual.Type;
         }
 
-        private List<RequiredPaymentEvent> CreateContractTypeRequiredPaymentEvent(decimal amountDue,
+        private List<CalculatedRequiredOnProgrammeAmount> CreateContractTypeRequiredPaymentEvent(decimal amountDue,
             OnProgrammeEarningType onProgrammeEarningType, string priceEpisodeIdentifier, byte deliveryPeriod)
         {
             var contractTypes = EnumHelper.GetContractTypes(currentIlr, currentPriceEpisodes);
@@ -180,7 +180,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 contractTypes.Remove(contractTypes.FirstOrDefault(x => x != matchingPriceEpisode?.ContractType));
             }
 
-            var events = new List<RequiredPaymentEvent>();
+            var events = new List<CalculatedRequiredOnProgrammeAmount>();
 
             contractTypes.ForEach(c =>
             {
