@@ -174,9 +174,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 96 } });
 
             apprenticeships.FirstOrDefault().TransferSendingEmployerAccountId = 999;
-            var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes, earning, apprenticeships);
+            var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes, earning, apprenticeships, aim, academicYear);
             periods.ValidPeriods.Count.Should().Be(2);
-            periods.ValidPeriods.Any(p => p.Apprenticeship.Id == 1 && p.Period.TransferSenderAccountId == 999).Should().Be(true);
+            periods.ValidPeriods.Any(p => p.ApprenticeshipId == 1 && p.TransferSenderAccountId == 999).Should().Be(true);
         }
     }
 }
