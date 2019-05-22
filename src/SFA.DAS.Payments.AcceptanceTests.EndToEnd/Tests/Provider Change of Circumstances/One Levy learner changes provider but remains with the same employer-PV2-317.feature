@@ -9,9 +9,9 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 06/Aug/Current Academic Year | 12 months        | 6000                 | 06/Aug/Current Academic Year        | 1500                   | 06/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
     And the following commitments exist
-		| Identifier        | Provider   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          |
-		| Apprenticeship 1   | provider a | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 7500         | cancelled | 01/Aug/Current Academic Year | 04/Mar/Current Academic Year | 05/Mar/Current Academic Year |
-		| Apprenticeship 2   | provider b | 05/Mar/Current Academic Year | 01/Aug/Next Academic Year | 4500         | active    | 05/Mar/Current Academic Year |                              |                              |
+		| Identifier       | Provider   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          | Standard Code | Programme Type |
+		| Apprenticeship 1 | provider a | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 7500         | cancelled | 01/Aug/Current Academic Year | 04/Mar/Current Academic Year | 05/Mar/Current Academic Year | 51            | 25             |
+		| Apprenticeship 2 | provider b | 05/Mar/Current Academic Year | 01/Aug/Next Academic Year | 4500         | active    | 05/Mar/Current Academic Year |                              |                              | 51            | 25             |
 	And the following earnings had been generated for the learner for "provider a"
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 500          | 0          | 0         |

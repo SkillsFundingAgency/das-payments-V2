@@ -6,9 +6,9 @@ Feature: Two levy learners, levy available but for only one learner, levy spent 
 Scenario Outline: Two levy learners, levy available but for only one learner, levy spent in priority order PV2-603
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-		| Identifier           | Learner ID | priority | start date                   | end date                     | agreed price |
-		| Apprenticeship 1      | learner a  | 1        | 01/Aug/Current Academic Year | 08/Sep/Current Academic Year | 15000        |
-		| Apprenticeship 2      | learner b  | 2        | 01/Aug/Current Academic Year | 08/Sep/Current Academic Year | 15000        |
+		| Identifier           | Learner ID | priority | start date                   | end date                     | agreed price |	Framework Code | Pathway Code | Programme Type |
+		| Apprenticeship 1      | learner a  | 1        | 01/Aug/Current Academic Year | 08/Sep/Current Academic Year | 15000        |	403            | 1            | 2              |
+		| Apprenticeship 2      | learner b  | 2        | 01/Aug/Current Academic Year | 08/Sep/Current Academic Year | 15000        |	403            | 1            | 2              |
 	And the provider is providing training for the following learners
 		| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| learner a  | 01/Aug/Current Academic Year | 12 months        | 15000                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 403            | 1            | 2              | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |

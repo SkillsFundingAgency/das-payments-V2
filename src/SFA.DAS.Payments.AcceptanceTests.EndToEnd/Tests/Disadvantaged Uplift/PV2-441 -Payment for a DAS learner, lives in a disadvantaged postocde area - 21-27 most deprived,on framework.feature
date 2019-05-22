@@ -7,8 +7,8 @@ So that I am accurately paid the Disadvantage Uplift amount of £200 in 2 install
 
 Scenario Outline:Levy learner - on framework , Disadvantage Uplift 21-27% paid PV2-441
 Given the following commitments exist	
-	 | framework code | programme type | pathway code | agreed price | start date                | end date                     | status | effective from            |
-	 | 593            | 20             | 1            | 15000        | 01/Aug/Last Academic Year | 01/Aug/Current Academic Year | active | 01/Aug/Last Academic Year |
+	 | framework code | programme type | pathway code | agreed price | start date                | end date                     | status | effective from            | Framework Code | Programme Type | Pathway Code |
+	 | 593            | 20             | 1            | 15000        | 01/Aug/Last Academic Year | 01/Aug/Current Academic Year | active | 01/Aug/Last Academic Year | 593            | 20             | 1            |
 
 And the provider previously submitted the following learner details
 	| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                  | SFA Contribution Percentage |

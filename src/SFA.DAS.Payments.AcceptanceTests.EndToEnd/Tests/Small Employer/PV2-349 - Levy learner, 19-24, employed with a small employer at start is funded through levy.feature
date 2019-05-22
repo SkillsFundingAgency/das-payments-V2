@@ -49,8 +49,8 @@ Feature:  Levy learner 19-24 employed with a small employer at start is funded v
 Scenario Outline: Levy learner 19-24 employed with a small employer at start fully funded PV2-349
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | start date                | end date                     | agreed price | framework code | programme type | pathway code |
-        | 06/Aug/Last Academic Year | 08/Aug/Current Academic Year | 7500         | 593            | 1              | 20           |
+        | start date                | end date                     | agreed price | Framework Code | Pathway Code | Programme Type | 
+        | 06/Aug/Last Academic Year | 08/Aug/Current Academic Year | 7500         | 593            | 1            | 20             | 
 	And the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
