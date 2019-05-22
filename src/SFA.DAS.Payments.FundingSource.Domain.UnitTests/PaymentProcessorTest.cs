@@ -113,5 +113,20 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             payments.Count(p => p.Type == FundingSourceType.Transfer && p is TransferPayment && p.AmountDue == 40).Should().Be(1);
             payments.Count(p => p.Type == FundingSourceType.Transfer && p is UnableToFundTransferPayment && p.AmountDue == 10).Should().Be(1);
         }
+
+
+        [Test]
+        public void Should_Return_Refund_Transfer_Payment()
+        {
+            var requiredPayment = new RequiredPayment { AmountDue = -50, IsTransfer = true, SfaContributionPercentage = .95M };
+            mocker.GetMock<ITransferPaymentProcessor>()
+                .Setup(x => x.Process(requiredPayment))
+                .Returns(new[] { new TransferPayment { AmountDue = -50, Type = FundingSourceType.Transfer } });
+            var paymentProcessor = mocker.Resolve<PaymentProcessor>();
+            var payments = paymentProcessor.Process(requiredPayment);
+            payments.Count.Should().Be(1);
+            payments.Count(p => p.Type == FundingSourceType.Transfer && p is TransferPayment && p.AmountDue == -50).Should().Be(1);
+        }
+
     }
 }
