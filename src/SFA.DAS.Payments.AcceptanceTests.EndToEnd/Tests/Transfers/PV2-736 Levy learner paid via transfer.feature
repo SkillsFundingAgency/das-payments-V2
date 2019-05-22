@@ -1,4 +1,4 @@
-﻿Feature: Transfers - PV2-736 - Single Levy learner paid via transfer
+﻿Feature: Transfers - PV2-736 Single Levy learner paid via transfer
 	As a provider,
 	I want a Levy learner, where the employer receives a transfer from another employer to fund the learner
 	So that I am accurately paid the apprenticeship amount by SFA via a transfer - PV2-736
