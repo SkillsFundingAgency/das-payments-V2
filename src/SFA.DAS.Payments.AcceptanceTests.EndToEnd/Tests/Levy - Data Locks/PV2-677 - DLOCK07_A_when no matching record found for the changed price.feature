@@ -1,4 +1,5 @@
-﻿Feature: DLOCK07_A_When price is changed, then effective to is set on previous price episode - PV2-677
+﻿@ignore
+Feature: DLOCK07_A_When price is changed, then effective to is set on previous price episode - PV2-677
 		I want to be notified with a DLOCK07(a) when the price is changed, and the effective to is set on previous price episode
 		So that I can correct the data mis-match between the Commitment and ILR - PV2-677
 

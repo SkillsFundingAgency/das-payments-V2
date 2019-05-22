@@ -1,4 +1,5 @@
-﻿Feature: Data Lock - DLOCK10 - when the employer stops payments for a learner on a commitment PV2-711
+﻿@ignore
+Feature: Data Lock - DLOCK10 - when the employer stops payments for a learner on a commitment PV2-711
 		As a Provider,
 		I want to be notified with a DLOCK10 when Employer puts a stop on a learner's payment
 		So that I can take the correct action for that learner 
