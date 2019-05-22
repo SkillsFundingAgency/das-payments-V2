@@ -5,8 +5,8 @@ Feature: PV2-448 Payment for a DAS learner, lives in a disadvantaged postocde ar
 Scenario Outline: Levy learner, on standard, Disadvantage Uplift 11-20% not paid PV2-448
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-		| start date                   | end date                  | agreed price | standard code | status |
-		| 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 15000        | 50            | active |
+		| start date                   | end date                  | agreed price | standard code | status |Standard Code | Programme Type |
+		| 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 15000        | 50            | active |50            | 25             |
     And the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 06/Aug/Current Academic Year | 12 months        | 14000                | 06/Aug/Current Academic Year        | 1000                   | 06/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |

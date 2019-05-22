@@ -1,44 +1,3 @@
-#Feature:  Maths and English
-#
-#Scenario: Levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time 
-#
-#Given levy balance > agreed price for all months
-#		
-#And the following commitments exist:
-#		  | ULN       | start date | end date   | agreed price | status |
-#		  | learner a | 06/08/2018 | 08/08/2020 | 15000        | active |
-#
-#When an ILR file is submitted with the following data:
-#		  | ULN       | learner type             | agreed price | start date | planned end date | actual end date | completion status | aim type         |
-#		  | learner a | 19-24 programme only DAS | 15000        | 06/08/2018 | 08/08/2020       |                 | continuing        | programme        |
-#		  | learner a | 19-24 programme only DAS | 471          | 06/08/2018 | 08/08/2019       | 08/08/2019      | completed         | maths or english |
-#		  | learner a | 19-24 programme only DAS | 471          | 09/08/2019 | 08/08/2020       | 08/08/2020      | completed         | maths or english |
-#		  
-#	
-#Then the provider earnings and payments break down as follows:
-#		  | Type                                    | 08/18  | 09/18  | 10/18  | 11/18  | 12/18  | ... | 08/19  | 09/19  | ... | 07/20  | 08/20  |
-#		  | Provider Earned Total                   | 539.25 | 539.25 | 539.25 | 539.25 | 539.25 | ... | 539.25 | 539.25 | ... | 539.25 | 0      |
-#		  | Provider Earned from SFA           	    | 539.25 | 539.25 | 539.25 | 539.25 | 539.25 | ... | 539.25 | 539.25 | ... | 539.25 | 0      |
-#		  | Provider Earned from Employer           | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
-#		  | Provider Paid by SFA                    | 0      | 539.25 | 539.25 | 539.25 | 539.25 | ... | 539.25 | 539.25 | ... | 539.25 | 539.25 |
-#		  | Payment due from Employer               | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
-#		  | Levy account debited                    | 0      | 500    | 500    | 500    | 500    | ... | 500    | 500    | ... | 500    | 500    |
-#		  | SFA Levy employer budget                | 500    | 500    | 500    | 500    | 500    | ... | 500    | 500    | ... | 500    | 0      |
-#		  | SFA Levy co-funding budget              | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
-#		  | SFA non-levy co-funding budget          | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
-#		  | SFA non-Levy additional payments budget | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
-#		  | SFA levy additional payments budget     | 39.25  | 39.25  | 39.25  | 39.25  | 39.25  | ... | 39.25  | 39.25  | ... | 39.25  | 0      |
-#		  
-#
-#    And the transaction types for the payments are:
-#		  | Payment type                   | 09/18 | 10/18 | 11/18 | 12/18 | ... | 08/19 | 09/19 | ... | 07/20 | 08/20 |
-#		  | On-program                     | 500   | 500   | 500   | 500   | ... | 500   | 500   | ... | 500   | 500   |
-#		  | Completion                     | 0     | 0     | 0     | 0     | ... | 0     | 0     | ... | 0     | 0     |
-#		  | Balancing                      | 0     | 0     | 0     | 0     | ... | 0     | 0     | ... | 0     | 0     |
-#		  | English and maths on programme | 39.25 | 39.25 | 39.25 | 39.25 | ... | 39.25 | 39.25 | ... | 39.25 | 39.25 |
-#		  | English and maths Balancing    | 0     | 0     | 0     | 0     | ... | 0     | 0     | ... | 0     | 0     |
-
-
 Feature: Levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time - PV2-532
 		As a provider,
 		I want a Levy learner with English & Maths aim, where the learner takes and completes a single Level 1 aim, then progresses to and completes a single Level 2 aim
@@ -47,8 +6,8 @@ Feature: Levy learner taking single Level 1 aim, progressing to and completing s
 Scenario Outline: Levy learner taking single Level 1 aim progressing to and completing single Level 2 aim on time PV2-532
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | start date                | end date                  | agreed price | status |
-        | 06/Aug/Last Academic Year | 08/Aug/Next Academic Year | 15000        | active |
+        | start date                | end date                  | agreed price | status | Framework Code | Pathway Code | Programme Type |
+        | 06/Aug/Last Academic Year | 08/Aug/Next Academic Year | 15000        | active | 593            | 1            | 20             |
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
 		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 24 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
@@ -245,3 +204,48 @@ Examples:
         | R10/Current Academic Year | 5000         |
         | R11/Current Academic Year | 4500         |
         | R12/Current Academic Year | 4000         |
+
+
+
+
+
+
+#Feature:  Maths and English
+#
+#Scenario: Levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time 
+#
+#Given levy balance > agreed price for all months
+#		
+#And the following commitments exist:
+#		  | ULN       | start date | end date   | agreed price | status |
+#		  | learner a | 06/08/2018 | 08/08/2020 | 15000        | active |
+#
+#When an ILR file is submitted with the following data:
+#		  | ULN       | learner type             | agreed price | start date | planned end date | actual end date | completion status | aim type         |
+#		  | learner a | 19-24 programme only DAS | 15000        | 06/08/2018 | 08/08/2020       |                 | continuing        | programme        |
+#		  | learner a | 19-24 programme only DAS | 471          | 06/08/2018 | 08/08/2019       | 08/08/2019      | completed         | maths or english |
+#		  | learner a | 19-24 programme only DAS | 471          | 09/08/2019 | 08/08/2020       | 08/08/2020      | completed         | maths or english |
+#		  
+#	
+#Then the provider earnings and payments break down as follows:
+#		  | Type                                    | 08/18  | 09/18  | 10/18  | 11/18  | 12/18  | ... | 08/19  | 09/19  | ... | 07/20  | 08/20  |
+#		  | Provider Earned Total                   | 539.25 | 539.25 | 539.25 | 539.25 | 539.25 | ... | 539.25 | 539.25 | ... | 539.25 | 0      |
+#		  | Provider Earned from SFA           	    | 539.25 | 539.25 | 539.25 | 539.25 | 539.25 | ... | 539.25 | 539.25 | ... | 539.25 | 0      |
+#		  | Provider Earned from Employer           | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
+#		  | Provider Paid by SFA                    | 0      | 539.25 | 539.25 | 539.25 | 539.25 | ... | 539.25 | 539.25 | ... | 539.25 | 539.25 |
+#		  | Payment due from Employer               | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
+#		  | Levy account debited                    | 0      | 500    | 500    | 500    | 500    | ... | 500    | 500    | ... | 500    | 500    |
+#		  | SFA Levy employer budget                | 500    | 500    | 500    | 500    | 500    | ... | 500    | 500    | ... | 500    | 0      |
+#		  | SFA Levy co-funding budget              | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
+#		  | SFA non-levy co-funding budget          | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
+#		  | SFA non-Levy additional payments budget | 0      | 0      | 0      | 0      | 0      | ... | 0      | 0      | ... | 0      | 0      |
+#		  | SFA levy additional payments budget     | 39.25  | 39.25  | 39.25  | 39.25  | 39.25  | ... | 39.25  | 39.25  | ... | 39.25  | 0      |
+#		  
+#
+#    And the transaction types for the payments are:
+#		  | Payment type                   | 09/18 | 10/18 | 11/18 | 12/18 | ... | 08/19 | 09/19 | ... | 07/20 | 08/20 |
+#		  | On-program                     | 500   | 500   | 500   | 500   | ... | 500   | 500   | ... | 500   | 500   |
+#		  | Completion                     | 0     | 0     | 0     | 0     | ... | 0     | 0     | ... | 0     | 0     |
+#		  | Balancing                      | 0     | 0     | 0     | 0     | ... | 0     | 0     | ... | 0     | 0     |
+#		  | English and maths on programme | 39.25 | 39.25 | 39.25 | 39.25 | ... | 39.25 | 39.25 | ... | 39.25 | 39.25 |
+#		  | English and maths Balancing    | 0     | 0     | 0     | 0     | ... | 0     | 0     | ... | 0     | 0     |

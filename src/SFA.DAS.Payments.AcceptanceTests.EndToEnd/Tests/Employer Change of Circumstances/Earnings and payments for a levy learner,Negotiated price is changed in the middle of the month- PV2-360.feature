@@ -7,9 +7,9 @@ Scenario: Earnings and payments for a levy learner,Negotiated price is changed i
 Given the employer levy account balance in collection period R04/Current Academic Year is 13000
 
 And the following commitments exist 
-	| start date                   | end date                     | agreed price | effective from               | effective to                 |
-	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |
-	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9375         | 01/Nov/Current Academic Year |                              |
+	| start date                   | end date                     | agreed price | effective from               | effective to                 |Standard Code | Programme Type |
+	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |51            | 25             |
+	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9375         | 01/Nov/Current Academic Year |                              |51            | 25             |
 
 And the provider previously submitted the following learner details
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
