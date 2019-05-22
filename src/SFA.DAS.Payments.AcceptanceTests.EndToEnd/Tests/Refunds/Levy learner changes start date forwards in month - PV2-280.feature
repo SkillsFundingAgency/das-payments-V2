@@ -41,8 +41,8 @@ Scenario:  For a DAS-Learner, the start date of apprenticeship is moved forward 
 Given the employer levy account balance in collection period R06/Current Academic Year is 15000
 
 And the following commitments exist
-	| start date                   | end date                     | agreed price |
-	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9000         |
+	| start date                   | end date                     | agreed price | framework code | programme type | pathway code |
+	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9000         | 403            | 2              | 1            |
 
 And the provider previously submitted the following learner details
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | framework code | programme type | pathway code | Funding Line Type                                  |

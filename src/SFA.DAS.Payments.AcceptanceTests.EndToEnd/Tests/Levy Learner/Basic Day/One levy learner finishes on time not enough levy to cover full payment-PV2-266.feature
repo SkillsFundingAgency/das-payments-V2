@@ -4,8 +4,8 @@ Scenario Outline: One levy learner, not enough levy available to cover full paym
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 
 	And the following commitments exist
-        | start date                | end date                     | agreed price |
-        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
+        | start date                | end date                     | agreed price | Framework Code | Pathway Code | Programme Type |
+        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        | 593            | 1            | 20             |
 	And the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
 		| 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |

@@ -6,8 +6,8 @@ Feature: Levy learner, with a framework uplift, finishes early, Balancing paymen
 Scenario: A Levy learner with a framework uplift payments finishes early PV2-571
 	Given the employer levy account balance in collection period R10/Current Academic Year is 8750
 	And the following commitments exist
-		| start date                   | end date                  | agreed price |
-		| 06/Aug/Current Academic Year | 09/Aug/Next Academic Year | 8250         |
+		| start date                   | end date                  | agreed price |	 Framework Code | Pathway Code | Programme Type |
+		| 06/Aug/Current Academic Year | 09/Aug/Next Academic Year | 8250         |	 593            | 1            | 20             |
 	And the provider previously submitted the following learner details
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                 | SFA Contribution Percentage |
 		| 06/Aug/Current Academic Year | 12 months        | 8250                 | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract (non-procured) | 90%                         |

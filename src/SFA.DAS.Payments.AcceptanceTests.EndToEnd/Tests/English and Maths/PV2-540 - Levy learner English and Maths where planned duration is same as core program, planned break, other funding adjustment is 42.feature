@@ -57,8 +57,8 @@ Feature:  Levy learner with English & Maths and prior funding adjustment and pla
 Scenario Outline: Levy learner with English & Maths and prior funding adjustment and planned break in learning PV2-540
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | start date                   | end date                  | agreed price | status |
-        | 06/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        | active |
+        | start date                   | end date                  | agreed price | status |Framework Code | Pathway Code | Programme Type |
+        | 06/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        | active |593            | 1            | 20             |
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
 		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        | 5 months        | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | planned break     |

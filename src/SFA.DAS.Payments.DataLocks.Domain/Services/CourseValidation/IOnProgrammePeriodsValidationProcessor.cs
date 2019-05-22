@@ -7,8 +7,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
     public interface IOnProgrammePeriodsValidationProcessor
     {
-        (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(
-            long uln, List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning,
-            List<ApprenticeshipModel> apprenticeships);
+        (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long uln,
+            List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning,
+            List<ApprenticeshipModel> apprenticeships, LearningAim aim, int academicYear);
     }
 }

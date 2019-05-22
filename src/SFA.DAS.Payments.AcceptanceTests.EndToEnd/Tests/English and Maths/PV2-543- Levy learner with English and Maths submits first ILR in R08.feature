@@ -49,8 +49,8 @@ Feature: Levy learner with English & Maths submits first ILR in R08 - PV2-543
 Scenario Outline: Levy learner with English & Maths submits first ILR in R08 PV2-543
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | start date                   | end date                  | agreed price | status |
-        | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 9000         | active |
+        | start date                   | end date                  | agreed price | status |Framework Code | Pathway Code | Programme Type | 
+        | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 9000         | active |593            | 1            | 20             | 
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
 		| Programme        | ZPROG001      | 01/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |

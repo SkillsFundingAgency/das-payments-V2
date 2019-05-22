@@ -13,8 +13,8 @@ Scenario Outline: Levy Learner-in co-funding, insufficient employer contribution
 	Given the employer levy account balance in collection period <Collection_Period> is 0
 	
 	And the following commitments exist
-        | start date                | end date                     | agreed price | status |
-        | 01/Jun/Last Academic Year | 01/Jun/Current Academic Year | 9000         | active |
+        | start date                | end date                     | agreed price | status | Framework Code | Pathway Code | Programme Type |
+        | 01/Jun/Last Academic Year | 01/Jun/Current Academic Year | 9000         | active | 593            | 1            | 20             |
 	#Please note : New field added -LDM code
 	
 	# LDM 356

@@ -927,10 +927,80 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Levy - Data Locks\DLOCK09 when no matching record found for the start date_PV2-668.feature.cs">
+    <Compile Include="Tests\Levy - Data Locks\PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>DLOCK09 when no matching record found for the start date_PV2-668.feature</DependentUpon>
+      <DependentUpon>PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-663 - DLOCK02 when no matching record found for the ULN.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-663 - DLOCK02 when no matching record found for the ULN.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-664 - DLOCK03 when no matching record found for the standard code.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-664 - DLOCK03 when no matching record found for the standard code.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-665 - DLOCK04 when no matching record found for the framework code.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-665 - DLOCK04 when no matching record found for the framework code.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-666 - DLOCK05 when no matching record found for the programme type.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-666 - DLOCK05 when no matching record found for the programme type.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-667 - DLOCK07 when no matching record found for the agreed price.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-667 - DLOCK07 when no matching record found for the agreed price.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-668 - DLOCK09 when no matching record found for the start date.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-668 - DLOCK09 when no matching record found for the start date.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-670 - DLOCK04 + DLOCK05 when no matching record found for the framewrok code and prorgamme type.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-670 - DLOCK04 + DLOCK05 when no matching record found for the framewrok code and prorgamme type.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-671 - DLOCK04 + DLOCK05 + DLOCK06 when no matching record found for the framewrok code, prorgamme type, and pathway code.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-671 - DLOCK04 + DLOCK05 + DLOCK06 when no matching record found for the framewrok code, prorgamme type, and pathway code.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\Pv2-674 - DLOCK11 when employer is not a Levy payer.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pv2-674 - DLOCK11 when employer is not a Levy payer.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-676 - DLOCK08 when multiple matching record found for the agreed price.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-676 - DLOCK08 when multiple matching record found for the agreed price.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-677 - DLOCK07_A_when no matching record found for the changed price.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-677 - DLOCK07_A_when no matching record found for the changed price.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-678 - DLOCK06 when no matching record found for the pathway code.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-678 - DLOCK06 when no matching record found for the pathway code.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-711- DLOCK10 when the employer stops payments for a learner on a commitment.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-711- DLOCK10 when the employer stops payments for a learner on a commitment.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1815,9 +1885,65 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Levy - Data Locks\DLOCK09 when no matching record found for the start date_PV2-668.feature">
+    <None Include="Tests\Levy - Data Locks\PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>DLOCK09 when no matching record found for the start date_PV2-668.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-663 - DLOCK02 when no matching record found for the ULN.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-663 - DLOCK02 when no matching record found for the ULN.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-664 - DLOCK03 when no matching record found for the standard code.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-664 - DLOCK03 when no matching record found for the standard code.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-665 - DLOCK04 when no matching record found for the framework code.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-665 - DLOCK04 when no matching record found for the framework code.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-666 - DLOCK05 when no matching record found for the programme type.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-666 - DLOCK05 when no matching record found for the programme type.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-667 - DLOCK07 when no matching record found for the agreed price.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-667 - DLOCK07 when no matching record found for the agreed price.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-668 - DLOCK09 when no matching record found for the start date.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-668 - DLOCK09 when no matching record found for the start date.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-670 - DLOCK04 + DLOCK05 when no matching record found for the framewrok code and prorgamme type.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-670 - DLOCK04 + DLOCK05 when no matching record found for the framewrok code and prorgamme type.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-671 - DLOCK04 + DLOCK05 + DLOCK06 when no matching record found for the framewrok code, prorgamme type, and pathway code.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-671 - DLOCK04 + DLOCK05 + DLOCK06 when no matching record found for the framewrok code, prorgamme type, and pathway code.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\Pv2-674 - DLOCK11 when employer is not a Levy payer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Pv2-674 - DLOCK11 when employer is not a Levy payer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-676 - DLOCK08 when multiple matching record found for the agreed price.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-676 - DLOCK08 when multiple matching record found for the agreed price.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-677 - DLOCK07_A_when no matching record found for the changed price.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-677 - DLOCK07_A_when no matching record found for the changed price.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-678 - DLOCK06 when no matching record found for the pathway code.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-678 - DLOCK06 when no matching record found for the pathway code.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-711- DLOCK10 when the employer stops payments for a learner on a commitment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-711- DLOCK10 when the employer stops payments for a learner on a commitment.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

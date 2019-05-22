@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
         {
             var apprenticeship = await dataContext.Apprenticeship
                                      .Include(a => a.ApprenticeshipPriceEpisodes)
-                                     .FirstOrDefaultAsync(a => a.Id == apprenticeshipId) 
+                                     .FirstOrDefaultAsync(a => a.Id == apprenticeshipId)
                                  ?? throw new InvalidOperationException($"Apprenticeship not found: {apprenticeshipId}");
 
             apprenticeship.Status = status;
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             apprenticeship.ApprenticeshipPriceEpisodes.AddRange(priceEpisodes);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-        
+
         public static ApprenticeshipModel CreateApprenticeshipModel(Apprenticeship apprenticeshipSpec, TestSession testSession)
         {
             if (apprenticeshipSpec.ApprenticeshipId == default(long)) apprenticeshipSpec.ApprenticeshipId = testSession.GenerateId();
@@ -71,16 +71,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 AccountId = apprenticeshipSpec.AccountId,
                 TransferSendingEmployerAccountId = apprenticeshipSpec.SenderAccountId,
                 Uln = apprenticeshipSpec.Uln,
-                FrameworkCode = apprenticeshipSpec.FrameworkCode,
-                ProgrammeType = apprenticeshipSpec.ProgrammeType,
-                PathwayCode = apprenticeshipSpec.PathwayCode,
+                FrameworkCode = apprenticeshipSpec.FrameworkCode ?? 0, //TODO change when app bug is fixed
+                ProgrammeType = apprenticeshipSpec.ProgrammeType ?? 0,
+                PathwayCode = apprenticeshipSpec.PathwayCode ?? 0,
+                StandardCode = apprenticeshipSpec.StandardCode ?? 0,
+
                 Priority = apprenticeshipSpec.Priority,
                 Status = apprenticeshipSpec.Status.ToApprenticeshipPaymentStatus(),
                 LegalEntityName = "Test SFA",
                 EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
                 EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
                 AgreedOnDate = DateTime.UtcNow,
-                StandardCode = apprenticeshipSpec.StandardCode
+                StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StopEffectiveFrom) ?
+                           default(DateTime?):
+                          apprenticeshipSpec.StopEffectiveFrom.ToDate()
             };
 
             return apprenticeshipModel;

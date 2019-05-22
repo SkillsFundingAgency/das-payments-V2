@@ -9,9 +9,9 @@ Scenario Outline: Two levy learners, one employer but two providers and not enou
 		| Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
 		| learner b  | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
    	And the following commitments exist
-		| Identifier        | Provider   | Learner ID | priority | start date                | end date                     | agreed price |
-		| Apprenticeship 1   | provider a | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         |
-		| Apprenticeship 2   | provider b | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |
+		| Identifier       | Provider   | Learner ID | priority | start date                | end date                     | agreed price | Framework Code | Pathway Code | Programme Type |
+		| Apprenticeship 1 | provider a | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         | 593            | 1            | 20             |
+		| Apprenticeship 2 | provider b | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        | 593            | 1            | 20             |
 	   And the following earnings had been generated for the learner for "provider a"
         | Learner ID | Delivery Period        | On-Programme | Completion | Balancing |
         | learner a  | Aug/Last Academic Year | 0            | 0          | 0         |
