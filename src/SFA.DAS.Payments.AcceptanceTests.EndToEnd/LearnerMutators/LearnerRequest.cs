@@ -50,24 +50,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         public ContractType ContractType { get; set; }
 
         public string SmallEmployer { get; set; }
-
-        public long EmployerContribution
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(SfaContributionPercentage) || !SfaContributionPercentage.Contains("%") || !int.TryParse(SfaContributionPercentage.Split('%')[0],
-                        out _))
-                {
-                    throw new InvalidCastException("SfaContributionPercentage is not in the format: xx% (e.g. 90%)");
-                }
-
-                var percentage = decimal.Parse((100 - int.Parse(SfaContributionPercentage.Split('%')[0])).ToString());
-
-                var employerContribution = decimal.Parse(TotalTrainingPrice.Value.ToString()) * (percentage / 100);
-
-                return decimal.ToInt64(employerContribution);
-            }
-        }
     }
 
     public static class LearnerRequestExtension
@@ -88,6 +70,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 default:
                     throw new ArgumentException("A valid funding line type is required.", nameof(fundingLineType));
             }
+        }
+
+        public static long EmployerContribution(this LearnerRequest request)
+        {
+                if (string.IsNullOrWhiteSpace(request.SfaContributionPercentage) || !request.SfaContributionPercentage.Contains("%") || !int.TryParse(request.SfaContributionPercentage.Split('%')[0],
+                        out _))
+                {
+                    throw new InvalidCastException("SfaContributionPercentage is not in the format: xx% (e.g. 90%)");
+                }
+
+                var percentage = decimal.Parse((100 - int.Parse(request.SfaContributionPercentage.Split('%')[0])).ToString());
+
+                var employerContribution = decimal.Parse(request.TotalTrainingPrice.Value.ToString()) * (percentage / 100);
+
+                return decimal.ToInt64(employerContribution);
         }
     }
 }

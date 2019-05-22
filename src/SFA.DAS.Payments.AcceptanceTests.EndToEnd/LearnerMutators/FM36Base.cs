@@ -95,7 +95,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 var appfin = new List<MessageLearnerLearningDeliveryAppFinRecord>();
                 appfin.Add(new MessageLearnerLearningDeliveryAppFinRecord()
                 {
-                    AFinAmount = learnerRequest.EmployerContribution,
+                    AFinAmount = learnerRequest.EmployerContribution(),
                     AFinAmountSpecified = true,
                     AFinType = LearnDelAppFinType.PMR.ToString(),
                     AFinCode = (int)LearnDelAppFinCode.TrainingPayment,
