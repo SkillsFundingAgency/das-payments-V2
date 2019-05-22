@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(CalculatedRequiredLevyAmount))]
         public void AmountIsCorrect(Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var expectedAmount = 100;
 
             var requiredPayment = new RequiredPayment
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(CalculatedRequiredLevyAmount))]
         public void PriceEpisodeIdentifierIsCorrect(Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var expectedPriceEpisodeIdentifier = "peid";
 
             var requiredPayment = new RequiredPayment
@@ -92,7 +92,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(PayableEarningEvent), typeof(CompletionPaymentHeldBackEvent))]
         public void ContractTypeIsCorrectForPayableEarningEvent(Type earningEventType, Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var earningEvent = Activator.CreateInstance(earningEventType);
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
@@ -106,7 +106,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CompletionPaymentHeldBackEvent))]
         public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType, Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var earningEvent = Activator.CreateInstance(earningEventType);
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(CalculatedRequiredLevyAmount), ContractType.Act2)]
         public void ContractTypeIsCorrectForFunctionalSkills(Type requiredPaymentEventType, ContractType expectedContractType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var earningEvent = new FunctionalSkillEarningsEvent
             {
                 ContractType = expectedContractType,
@@ -137,7 +137,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             // arrange
             var payableEarning = CreatePayableEarning();
-            RequiredPaymentEvent requiredPayment = new CalculatedRequiredLevyAmount
+            PeriodisedRequiredPaymentEvent requiredPayment = new CalculatedRequiredLevyAmount
             {
                 SfaContributionPercentage = .9m,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion
@@ -172,7 +172,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 PriceEpisodeIdentifier = "123-01",
                 Amount = 1000000
             };
-            RequiredPaymentEvent requiredPayment = new CalculatedRequiredLevyAmount
+            var requiredPayment = new CalculatedRequiredLevyAmount
             {
                 SfaContributionPercentage = .9m,
                 OnProgrammeEarningType = OnProgrammeEarningType.Balancing
@@ -200,7 +200,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             // arrange
             var functionalSkillEarningsEvent = CreateFunctionalSkillEarningsEvent();
-            RequiredPaymentEvent requiredPayment = new CalculatedRequiredIncentiveAmount();
+            PeriodisedRequiredPaymentEvent requiredPayment = new CalculatedRequiredIncentiveAmount();
 
             // act
             mapper.Map(functionalSkillEarningsEvent, requiredPayment);
@@ -226,7 +226,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 NumberOfInstalments = 16
             };
 
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
 
             mapper.Map(priceEpisode, requiredPaymentEvent);
 
@@ -264,7 +264,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             payment.NumberOfInstalments.Should().Be((short)paymentHistoryEntity.NumberOfInstalments);
         }
 
-        private static void AssertCommonProperties(RequiredPaymentEvent requiredPayment, IEarningEvent earning)
+        private static void AssertCommonProperties(PeriodisedRequiredPaymentEvent requiredPayment, IEarningEvent earning)
         {
             Assert.AreNotSame(requiredPayment.Learner, earning.Learner);
             Assert.AreEqual(requiredPayment.Learner.Uln, earning.Learner.Uln);

@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
         {
             return new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<RequiredPaymentEvent, FundingSourcePaymentEvent>()
+                cfg.CreateMap<PeriodisedRequiredPaymentEvent, FundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredOnProgrammeAmount, FundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredIncentiveAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.EventId, opt => opt.Ignore())

@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.Model.Core
+﻿using System.Collections.Generic;
+
+namespace SFA.DAS.Payments.Model.Core
 {
     public class EarningPeriod
     {
@@ -11,5 +13,6 @@
         public long? ApprenticeshipPriceEpisodeId { get; set; }
         public long? TransferSenderAccountId { get; set; }
         public int? Priority { get; set; }
+        public List<DataLockFailure> DataLockFailures { get; set; }
     }
 }

@@ -252,16 +252,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Apprenticeship.cs" />
+    <Compile Include="Data\ApprenticeshipStatusPeriod.cs" />
     <Compile Include="Data\Earning.cs" />
+    <Compile Include="Data\DataLockError.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
+    <Compile Include="EventMatchers\EarningFailedDataLockMatcher.cs" />
     <Compile Include="EventMatchers\PayableEarningEventMatcher.cs" />
     <Compile Include="EventMatchers\EarningEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentModelMatcher.cs" />
     <Compile Include="EventMatchers\RequiredPaymentEventMatcher.cs" />
     <Compile Include="EventMatchers\ProviderPaymentEventMatcher.cs" />
     <Compile Include="Extensions\ApprenticeshipExtensions.cs" />
+    <Compile Include="Handlers\EarningFailedDataLockMatchingHandler.cs" />
     <Compile Include="Handlers\FundingSourcePaymentEventHandler.cs" />
     <Compile Include="Handlers\PayableEarningEventHandler.cs" />
     <Compile Include="Extensions\EmployerExtensions.cs" />
@@ -903,6 +907,31 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy - Care Bursary\E2E - PV2-918 - Levy learner in co-funding starts 1st day of month receives care leaver payment after 60 days.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-918 - Levy learner in co-funding starts 1st day of month receives care leaver payment after 60 days.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Care Bursary\E2E - PV2-923 - Levy learner in co-funding starts after 1st day of month receives care leaver payment after 60 days .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-923 - Levy learner in co-funding starts after 1st day of month receives care leaver payment after 60 days .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Care Bursary\E2E - PV2-929 - Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-929 - Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Care Bursary\E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\DLOCK09 when no matching record found for the start date_PV2-668.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DLOCK09 when no matching record found for the start date_PV2-668.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -957,6 +986,21 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy - Care Bursary\E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy - Care Bursary\E2E - PV2-927 - Non-Levy learner starts after 1st day of month receives care leaver payment after 60 days.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-927 - Non-Levy learner starts after 1st day of month receives care leaver payment after 60 days.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy - Care Bursary\E2E - PV2-930 - Non-Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-930 - Non-Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1755,6 +1799,26 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-806 - Non-Levy learner with learning support and maths and eng changes price during programme.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Levy - Care Bursary\E2E - PV2-918 - Levy learner in co-funding starts 1st day of month receives care leaver payment after 60 days.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-918 - Levy learner in co-funding starts 1st day of month receives care leaver payment after 60 days.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Care Bursary\E2E - PV2-923 - Levy learner in co-funding starts after 1st day of month receives care leaver payment after 60 days .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-923 - Levy learner in co-funding starts after 1st day of month receives care leaver payment after 60 days .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Care Bursary\E2E - PV2-929 - Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-929 - Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Care Bursary\E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\DLOCK09 when no matching record found for the start date_PV2-668.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DLOCK09 when no matching record found for the start date_PV2-668.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs</LastGenOutput>
@@ -1802,6 +1866,18 @@
     <None Include="Tests\Levy Learner\Basic Day\Two levy learners one employer but two providers not enough levy_PV2-270.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two levy learners one employer but two providers not enough levy_PV2-270.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy - Care Bursary\E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy - Care Bursary\E2E - PV2-927 - Non-Levy learner starts after 1st day of month receives care leaver payment after 60 days.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-927 - Non-Levy learner starts after 1st day of month receives care leaver payment after 60 days.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Non-Levy - Care Bursary\E2E - PV2-930 - Non-Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-930 - Non-Levy learner in co-funding receives care leaver payment but then withdraws resulted in refund.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2048,6 +2124,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
       <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Domain\SFA.DAS.Payments.DataLocks.Domain.csproj">
+      <Project>{88F8C227-EFFC-47C7-80A4-EC7854EC813E}</Project>
+      <Name>SFA.DAS.Payments.DataLocks.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj">
       <Project>{8CCB04EB-09DC-4E49-810F-5313D6A666BA}</Project>

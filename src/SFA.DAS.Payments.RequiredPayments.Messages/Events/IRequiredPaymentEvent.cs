@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
-    public interface IRequiredPaymentEvent : IPeriodisedPaymentEvent
+    public interface IRequiredPaymentEvent : IPaymentsEvent
     {
     }
 }

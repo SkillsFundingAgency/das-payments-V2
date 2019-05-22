@@ -50,6 +50,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 var months = int.Parse(duration.Replace("months", string.Empty));
                 return startDate.ToDate().AddMonths(months) - startDate.ToDate();
             }
+            else if (duration.Contains("month"))
+            {
+                var months = int.Parse(duration.Replace("month", string.Empty));
+                return startDate.ToDate().AddMonths(months) - startDate.ToDate();
+            }
             throw new Exception($"Could not parse duration: {duration}");
         }
 

@@ -6,13 +6,13 @@ using SFA.DAS.Payments.Messages.Core.Events;
 namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
     [KnownType("GetInheritors")]
-    public abstract class RequiredPaymentEvent : PeriodisedPaymentEvent, IRequiredPaymentEvent
+    public abstract class PeriodisedRequiredPaymentEvent : PeriodisedPaymentEvent, IPeriodisedRequiredPaymentEvent
     {
         private static Type[] inheritors;
         private static Type[] GetInheritors()
         {
-            return inheritors ?? (inheritors = typeof(RequiredPaymentEvent).Assembly.GetTypes()
-                       .Where(x => x.IsSubclassOf(typeof(RequiredPaymentEvent)))
+            return inheritors ?? (inheritors = typeof(PeriodisedRequiredPaymentEvent).Assembly.GetTypes()
+                       .Where(x => x.IsSubclassOf(typeof(PeriodisedRequiredPaymentEvent)))
                        .ToArray());
         }
     }
