@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Smal
 
             learner.LearningDelivery[1].LearnAimRef = "60005105";
 
-            MutateHE(learner);
+            MutateHigherEducation(learner);
         }
     }
 }

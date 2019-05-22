@@ -311,7 +311,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         }
 
-        protected void MutateHE(MessageLearner learner)
+        protected void MutateHigherEducation(MessageLearner learner)
         {
             var ldhe = new List<MessageLearnerLearningDeliveryLearningDeliveryHE>();
 

@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             learner.ULN = request.Uln;
             learner.ULNSpecified = true;
             learner.LearningDelivery[1].LearnAimRef = "00300545";
-            MutateHE(learner);
+            MutateHigherEducation(learner);
         }
 
         protected virtual void DoSpecificMutate(MessageLearner learner, Learner request)
@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             learner.ULN = request.Uln;
             learner.ULNSpecified = true;
             learner.LearningDelivery[1].LearnAimRef = "00300545";
-            MutateHE(learner);
+            MutateHigherEducation(learner);
         }
     }
 }

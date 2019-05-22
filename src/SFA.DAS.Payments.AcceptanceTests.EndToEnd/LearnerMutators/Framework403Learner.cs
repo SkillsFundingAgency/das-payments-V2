@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 }
             }
 
-            MutateHE(learner);
+            MutateHigherEducation(learner);
         }
     }
 }
