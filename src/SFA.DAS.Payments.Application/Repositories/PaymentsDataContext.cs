@@ -11,7 +11,8 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<PaymentModel> Payment { get; set; }
         public virtual DbSet<ApprenticeshipModel> Apprenticeship { get; protected set; }
         public virtual DbSet<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisode { get; protected set; }
-      
+        public virtual DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; protected set; }
+
         public PaymentsDataContext(string connectionString)
         {
             this.connectionString = connectionString;
@@ -25,6 +26,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new ApprenticeshipModelConfiguration());
             modelBuilder.ApplyConfiguration(new ApprenticeshipPriceEpisodeModelConfiguration());
             modelBuilder.ApplyConfiguration(new LevyAccountModelConfiguration());
+            modelBuilder.ApplyConfiguration(new SubmittedLearnerAimModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

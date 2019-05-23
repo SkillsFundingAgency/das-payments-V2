@@ -10,14 +10,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
     public class PayableEarningEventProcessor : ApprenticeshipContractTypeEarningEventProcessor<PayableEarningEvent>, IPayableEarningEventProcessor
     {
         public PayableEarningEventProcessor(
-            IPaymentKeyService paymentKeyService,
             IMapper mapper,
             IRequiredPaymentProcessor requiredPaymentProcessor,
             IHoldingBackCompletionPaymentService holdingBackCompletionPaymentService,
             IPaymentHistoryRepository paymentHistoryRepository,
             IApprenticeshipKeyProvider apprenticeshipKeyProvider
         ) : base(
-            paymentKeyService,
             mapper,
             requiredPaymentProcessor,
             holdingBackCompletionPaymentService,

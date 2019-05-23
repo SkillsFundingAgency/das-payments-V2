@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class PaymentDueProcessor : IPaymentDueProcessor
     {
-        public decimal CalculateRequiredPaymentAmount(decimal amountDue, IEnumerable<Payment> paymentHistory)
+        public decimal CalculateRequiredPaymentAmount(decimal amountDue, List<Payment> paymentHistory)
         {
             if (paymentHistory == null)
                 throw new ArgumentNullException(nameof(paymentHistory));
