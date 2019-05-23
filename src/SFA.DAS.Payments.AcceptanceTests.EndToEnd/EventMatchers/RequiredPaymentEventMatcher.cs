@@ -57,6 +57,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     x.OnProgrammeEarningType,
                     x.Learner.ReferenceNumber,
                     x.LearningAim.Reference,
+                    x.LearningAim.FrameworkCode,
                 });
             foreach (var aggregatedEvent in aggregatedOnProgEvents)
             {
@@ -68,7 +69,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
                     OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
-                    LearningAim = new LearningAim {Reference = aggregatedEvent.Key.Reference},
+                    LearningAim = new LearningAim {Reference = aggregatedEvent.Key.Reference, FrameworkCode = aggregatedEvent.Key.FrameworkCode},
                     Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber},
                 });
             }
@@ -82,6 +83,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     x.Type,
                     x.Learner.ReferenceNumber,
                     x.LearningAim.Reference,
+                    x.LearningAim.FrameworkCode,
                 });
             foreach (var aggregatedEvent in aggregatedIncentiveEvents)
             {
@@ -90,7 +92,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
                     Type = aggregatedEvent.Key.Type,
-                    LearningAim = new LearningAim { Reference = aggregatedEvent.Key.Reference},
+                    LearningAim = new LearningAim { Reference = aggregatedEvent.Key.Reference, FrameworkCode = aggregatedEvent.Key.FrameworkCode},
                     Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber },
                 });
             }
