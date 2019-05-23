@@ -324,20 +324,36 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"the following data lock failures were generated")]
         public async Task ThenOnlyTheFollowingNonPayableEarningsWillBeGenerated(Table table)
         {
+            await ValidateDataLockError(table, TestSession.Provider).ConfigureAwait(false);
+        }
+
+        [Then(@"the following data lock failures were generated  for ""(.*)""")]
+        public async Task ThenTheFollowingDataLockFailuresWereGeneratedForAsync(string providerIdentifier, Table table)
+        {
+            var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+            await ValidateDataLockError(table, provider).ConfigureAwait(false);
+        }
+       
+        private async Task ValidateDataLockError(Table table, Provider provider)
+        {
             var dataLockErrors = table.CreateSet<DataLockError>().ToList();
 
             foreach (var dataLockError in dataLockErrors)
             {
-                var apprenticeship = Apprenticeships.FirstOrDefault(a => a.Identifier == dataLockError.Apprenticeship);
-                if (apprenticeship == null)
-                {
-                    throw new Exception($"Can't find a matching apprenticeship for Identifier {dataLockError.Apprenticeship}");
-                }
+                if (string.IsNullOrWhiteSpace(dataLockError.Apprenticeship)) continue;
+
+                var apprenticeship = Apprenticeships.FirstOrDefault(a => a.Identifier == dataLockError.Apprenticeship) ??
+                                     throw new Exception($"Can't find a matching apprenticeship for Identifier {dataLockError.Apprenticeship}");
+
                 dataLockError.ApprenticeshipId = apprenticeship.ApprenticeshipId;
+
             }
 
-            var matcher = new EarningFailedDataLockMatcher(TestSession.Provider, TestSession, CurrentCollectionPeriod, dataLockErrors);
+            var matcher = new EarningFailedDataLockMatcher(provider, TestSession, CurrentCollectionPeriod, dataLockErrors);
             await WaitForIt(() => matcher.MatchPayments(), "DataLock Failed event check failure");
         }
+
+
+
     }
 }

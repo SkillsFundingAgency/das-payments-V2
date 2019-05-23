@@ -9,9 +9,9 @@ Scenario: One Levy learner, levy available, 2 providers - one provider retrospec
 Given the employer levy account balance in collection period R06/Current Academic Year is 0
 
 And the following commitments exist 
-  | Identifier        | Learner ID | Provider   | start date                   | end date                     | status | agreed price |
-  | Apprenticeship 1   | learner a  | provider a | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 5625         |
-  | Apprenticeship 2   | learner b  | provider b | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 11250        |
+  | Identifier       | Learner ID | Provider   | start date                   | end date                     | status | agreed price | Standard Code | Programme Type |
+  | Apprenticeship 1 | learner a  | provider a | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 5625         | 25            | 25             |
+  | Apprenticeship 2 | learner b  | provider b | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | active | 11250        | 25            | 25             |
 
 And the "provider a" previously submitted the following learner details
 	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |

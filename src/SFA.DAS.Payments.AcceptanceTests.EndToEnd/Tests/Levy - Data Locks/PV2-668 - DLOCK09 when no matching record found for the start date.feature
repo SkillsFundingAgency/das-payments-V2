@@ -2,7 +2,7 @@ Feature: DLOCK09 - When no matching record found in an employer digital account 
 I want to be notified with a DLOCK09 when no matching record found in an employer digital account for the start date
 So that I can correct the data mis-match between the Commitment and ILR 
 
-Scenario: DLOCK09 - When no matching record found in an employer digital account for the start date then datalock DLOCK_09 will be produced
+Scenario: DLOCK09 - When no matching record found in an employer digital account for the start date then datalock DLOCK_09 will be produced_PV2-668
     Given the employer levy account balance in collection period R12/Current Academic Year is 11000
     And the following commitments exist
         | Identifier       | standard code | programme type | start date                    | end date                  | status | agreed price | effective from                | effective to |

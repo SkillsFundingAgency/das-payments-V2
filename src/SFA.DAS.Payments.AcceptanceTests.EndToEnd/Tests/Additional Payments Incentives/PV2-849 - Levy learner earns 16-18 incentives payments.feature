@@ -1,45 +1,13 @@
-#Feature: Additional Payments Incentives
-#
-#Scenario: Payment for a 16-18 Levy learner, levy available, incentives earned
-#    
-#    Given levy balance > agreed price for all months
-#    
-#	And the following commitments exist:
-#        | ULN       | start date | end date   | agreed price | status |
-#        | learner a | 01/08/2018 | 01/08/2019 | 15000        | active |
-#
-#    When an ILR file is submitted with the following data:
-#        | ULN       | learner type             | agreed price | start date | planned end date | actual end date | completion status |
-#        | learner a | 16-18 programme only DAS | 15000        | 06/08/2018 | 08/08/2019       |                 | continuing        |
-#      
-#    Then the provider earnings and payments break down as follows:
-#        | Type                                | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 | ... | 08/19 | 09/19 |
-#        | Provider Earned Total               | 1000  | 1000  | 1000  | 2000  | 1000  | ... | 1000  | 0     |
-#        | Provider Paid by SFA                | 0     | 1000  | 1000  | 1000  | 2000  | ... | 1000  | 1000  |
-#        | Levy account debited                | 0     | 1000  | 1000  | 1000  | 1000  | ... | 1000  | 0     |
-#        | SFA Levy employer budget            | 1000  | 1000  | 1000  | 1000  | 1000  | ... | 0     | 0     |
-#        | SFA Levy co-funding budget          | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
-#        | SFA Levy additional payments budget | 0     | 0     | 0     | 1000  | 0     | ... | 1000  | 0     |
-#
-#    And the transaction types for the payments are:
-#        | Payment type             | 09/18 | 10/18 | 11/18 | 12/18 | ... | 08/19 | 09/19 |
-#        | On-program               | 1000  | 1000  | 1000  | 1000  | ... | 1000  | 0     |
-#        | Completion               | 0     | 0     | 0     | 0     | ... | 0     | 0     |
-#        | Balancing                | 0     | 0     | 0     | 0     | ... | 0     | 0     |
-#        | Employer 16-18 incentive | 0     | 0     | 0     | 500   | ... | 0     | 500   |
-#        | Provider 16-18 incentive | 0     | 0     | 0     | 500   | ... | 0     | 500   |
-
 Feature:  Additional Payments - Incentives PV2- 849
 		  As a Provider,
 		  I want a Levy learner, where the learner is a 16-18 year old learner and earns an incentive payment 
 		  So that I am accurately paid my apprenticeship provision
 
-
 Scenario: Levy learner 16-18 earns incentives PV2-849
 	Given the employer levy account balance in collection period R01/Last Academic Year is 16000
 	And the following commitments exist
-		| start date                | end date                     | agreed price | status |
-		| 06/Aug/Last Academic Year | 08/Aug/Current Academic Year | 15000        | active | 
+		| start date                | end date                     | agreed price | status | Standard Code | Programme Type |
+		| 06/Aug/Last Academic Year | 08/Aug/Current Academic Year | 15000        | active | 17            | 25             |
 	And the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 06/Aug/Last Academic Year | 12 months        | 12000                | 06/Aug/Last Academic Year           | 3000                   | 06/Aug/Last Academic Year             |                 | continuing        | Act1          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
@@ -105,4 +73,38 @@ Scenario: Levy learner 16-18 earns incentives PV2-849
 		| R01/Current Academic Year | Aug/Current Academic Year | 3000          | 0                         | Completion                      |
 		| R01/Current Academic Year | Aug/Current Academic Year | 0             | 500                       | Second16To18EmployerIncentive   |
 		| R01/Current Academic Year | Aug/Current Academic Year | 0             | 500                       | Second16To18ProviderIncentive   |
+
+
+
+		#Feature: Additional Payments Incentives
+#
+#Scenario: Payment for a 16-18 Levy learner, levy available, incentives earned
+#    
+#    Given levy balance > agreed price for all months
+#    
+#	And the following commitments exist:
+#        | ULN       | start date | end date   | agreed price | status |
+#        | learner a | 01/08/2018 | 01/08/2019 | 15000        | active |
+#
+#    When an ILR file is submitted with the following data:
+#        | ULN       | learner type             | agreed price | start date | planned end date | actual end date | completion status |
+#        | learner a | 16-18 programme only DAS | 15000        | 06/08/2018 | 08/08/2019       |                 | continuing        |
+#      
+#    Then the provider earnings and payments break down as follows:
+#        | Type                                | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 | ... | 08/19 | 09/19 |
+#        | Provider Earned Total               | 1000  | 1000  | 1000  | 2000  | 1000  | ... | 1000  | 0     |
+#        | Provider Paid by SFA                | 0     | 1000  | 1000  | 1000  | 2000  | ... | 1000  | 1000  |
+#        | Levy account debited                | 0     | 1000  | 1000  | 1000  | 1000  | ... | 1000  | 0     |
+#        | SFA Levy employer budget            | 1000  | 1000  | 1000  | 1000  | 1000  | ... | 0     | 0     |
+#        | SFA Levy co-funding budget          | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
+#        | SFA Levy additional payments budget | 0     | 0     | 0     | 1000  | 0     | ... | 1000  | 0     |
+#
+#    And the transaction types for the payments are:
+#        | Payment type             | 09/18 | 10/18 | 11/18 | 12/18 | ... | 08/19 | 09/19 |
+#        | On-program               | 1000  | 1000  | 1000  | 1000  | ... | 1000  | 0     |
+#        | Completion               | 0     | 0     | 0     | 0     | ... | 0     | 0     |
+#        | Balancing                | 0     | 0     | 0     | 0     | ... | 0     | 0     |
+#        | Employer 16-18 incentive | 0     | 0     | 0     | 500   | ... | 0     | 500   |
+#        | Provider 16-18 incentive | 0     | 0     | 0     | 500   | ... | 0     | 500   |
+
 		
