@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: Non-levy learner, changes aim reference for English/maths aims and payments are reconciled PV2-463
+﻿Feature: Non-levy learner, changes aim reference for English/maths aims and payments are reconciled PV2-463
 
 Scenario Outline: Non-levy learner provider changes aim reference for English/maths aims and payments are reconciled PV2-463
 	Given the following learners
