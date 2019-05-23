@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: DLOCK07_A_When price is changed, then effective to is set on previous price episode - PV2-677
+﻿Feature: DLOCK07_A_When price is changed, then effective to is set on previous price episode - PV2-677
 		I want to be notified with a DLOCK07(a) when the price is changed, and the effective to is set on previous price episode
 		So that I can correct the data mis-match between the Commitment and ILR - PV2-677
 
@@ -35,17 +34,17 @@ Scenario: DLOCK07_A_When price is changed, then effective to is set on previous 
 		| Apprenticeship   | Delivery Period           | Framework Code | Programme Type | Pathway Code | Transaction Type | Error Code | Price Episode Identifier |
 		| Apprenticeship a | Jul/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_07   | pe-2                     |
 	And at month end only the following payments will be calculated
-		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-		| R10/Current Academic Year | May/Current Academic Year | 666.66667     | Learning         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 666.66667     | Learning         |
+		| Collection Period         | Delivery Period           | On-Programme | Transaction Type |
+		| R12/Current Academic Year | May/Current Academic Year | 666.66667    | Learning         |
+		| R12/Current Academic Year | Jun/Current Academic Year | 666.66667    | Learning         |
 	And only the following provider payments will be recorded
 		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-		| R10/Current Academic Year | May/Current Academic Year | 666.66667     | Learning         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 666.66667     | Learning         |
+		| R12/Current Academic Year | May/Current Academic Year | 666.66667     | Learning         |
+		| R12/Current Academic Year | Jun/Current Academic Year | 666.66667     | Learning         |
 	And only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-		| R10/Current Academic Year | May/Current Academic Year | 666.66667     | Learning         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 666.66667     | Learning         |
+		| R12/Current Academic Year | May/Current Academic Year | 666.66667     | Learning         |
+		| R12/Current Academic Year | Jun/Current Academic Year | 666.66667     | Learning         |
 	
 
 
