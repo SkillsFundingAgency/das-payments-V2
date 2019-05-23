@@ -1,50 +1,3 @@
-#Feature:  Maths and English
-#	
-#Scenario: Levy learner, planned duration is same as programme (assumes both start and finish at same time) with Funding Adjustment for Prior Learning
-#	
-##	Tech Guide 102. If an adjustment is required due to prior learning, you must record data in the Funding adjustment for prior learning field on the ILR. 
-#		  
-#	Given levy balance > agreed price for all months
-#		
-#    And the following commitments exist:
-#		  | ULN       | start date | end date   | agreed price | status |
-#		  | learner a | 06/08/2018 | 08/08/2019 | 15000        | active |
-#
-#	When an ILR file is submitted with the following data:
-#		  | ULN       | learner type             | agreed price | start date | planned end date | actual end date | completion status | funding adjustment for prior learning | other funding adjustment | aim type         |
-#		  | learner a | 19-24 programme only DAS | 15000        | 06/08/2018 | 08/08/2019       |                 | continuing        | n/a                                   | n/a                      | programme        |
-#		  | learner a | 19-24 programme only DAS | 471          | 06/08/2018 | 08/08/2019       | 08/08/2019      | completed         | 75%                                   | n/a                      | maths or english |
-#				  	  
-##		  The English or maths aim is submitted with the same start and planned end date
-#      
-#    Then the provider earnings and payments break down as follows:
-#		  | Type                                    | 08/18   | 09/18   | 10/18   | 11/18   | 12/18   | ... | 07/19   | 08/19   |
-#		  | Provider Earned Total                   | 1029.44 | 1029.44 | 1029.44 | 1029.44 | 1029.44 | ... | 1029.44 | 0       |
-#		  | Provider Earned from SFA           	    | 1029.44 | 1029.44 | 1029.44 | 1029.44 | 1029.44 | ... | 1029.44 | 0       |
-#		  | Provider Earned from Employer           | 0       | 0       | 0       | 0       | 0       | ... | 0       | 0       |
-#		  | Provider Paid by SFA                    | 0       | 1029.44 | 1029.44 | 1029.44 | 1029.44 | ... | 1029.44 | 1029.44 |
-#		  | Payment due from Employer               | 0       | 0       | 0       | 0       | 0       | ... | 0       | 0       |
-#		  | Levy account debited                    | 0       | 1000    | 1000    | 1000    | 1000    | ... | 1000    | 1000    |
-#		  | SFA Levy employer budget                | 1000    | 1000    | 1000    | 1000    | 1000    | ... | 1000    | 0       |
-#		  | SFA non-Levy co-funding budget          | 0       | 0       | 0       | 0       | 0       | ... | 0       | 0       |
-#		  | SFA non-levy additional payments budget | 0       | 0       | 0       | 0       | 0       | ... | 0       | 0       |
-#		  | SFA levy additional payments budget     | 29.44   | 29.44   | 29.44   | 29.44   | 29.44   | ... | 29.44   | 0       |
-#		  
-#    And the transaction types for the payments are:
-#		  | Payment type                   | 09/18 | 10/18 | 11/18 | 12/18 | ... | 07/19 | 08/19 |
-#		  | On-program                     | 1000  | 1000  | 1000  | 1000  | ... | 1000  | 1000  |
-#		  | Completion                     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
-#		  | Balancing                      | 0     | 0     | 0     | 0     | ... | 0     | 0     |
-#		  | English and maths on programme | 29.44 | 29.44 | 29.44 | 29.44 | ... | 29.44 | 29.44 |
-#		  | English and maths Balancing    | 0     | 0     | 0     | 0     | ... | 0     | 0     |	
-
-
-
-# DC Integration 
-# 19-24 learner
-#| funding adjustment for prior learning | other funding adjustment |
-#| n/a                                   | n/a                      |
-#| 75%                                   | n/a                      |
 
 Feature: Levy learner with English & Maths and prior funding adjustment - PV2-535
 		As a provider,
@@ -54,8 +7,8 @@ Feature: Levy learner with English & Maths and prior funding adjustment - PV2-53
 Scenario Outline: Levy learner with English & Maths and prior funding adjustment PV2-535
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | start date                   | end date                  | agreed price | status |
-        | 06/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        | active |
+        | start date                   | end date                  | agreed price | status | Framework Code | Pathway Code | Programme Type |
+        | 06/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        | active | 593            | 1            | 20             |
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
 		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
@@ -174,3 +127,51 @@ Examples:
         | R10/Current Academic Year | 6500         |
         | R11/Current Academic Year | 5500         |
         | R12/Current Academic Year | 4500         |
+
+#Feature:  Maths and English
+#	
+#Scenario: Levy learner, planned duration is same as programme (assumes both start and finish at same time) with Funding Adjustment for Prior Learning
+#	
+##	Tech Guide 102. If an adjustment is required due to prior learning, you must record data in the Funding adjustment for prior learning field on the ILR. 
+#		  
+#	Given levy balance > agreed price for all months
+#		
+#    And the following commitments exist:
+#		  | ULN       | start date | end date   | agreed price | status |
+#		  | learner a | 06/08/2018 | 08/08/2019 | 15000        | active |
+#
+#	When an ILR file is submitted with the following data:
+#		  | ULN       | learner type             | agreed price | start date | planned end date | actual end date | completion status | funding adjustment for prior learning | other funding adjustment | aim type         |
+#		  | learner a | 19-24 programme only DAS | 15000        | 06/08/2018 | 08/08/2019       |                 | continuing        | n/a                                   | n/a                      | programme        |
+#		  | learner a | 19-24 programme only DAS | 471          | 06/08/2018 | 08/08/2019       | 08/08/2019      | completed         | 75%                                   | n/a                      | maths or english |
+#				  	  
+##		  The English or maths aim is submitted with the same start and planned end date
+#      
+#    Then the provider earnings and payments break down as follows:
+#		  | Type                                    | 08/18   | 09/18   | 10/18   | 11/18   | 12/18   | ... | 07/19   | 08/19   |
+#		  | Provider Earned Total                   | 1029.44 | 1029.44 | 1029.44 | 1029.44 | 1029.44 | ... | 1029.44 | 0       |
+#		  | Provider Earned from SFA           	    | 1029.44 | 1029.44 | 1029.44 | 1029.44 | 1029.44 | ... | 1029.44 | 0       |
+#		  | Provider Earned from Employer           | 0       | 0       | 0       | 0       | 0       | ... | 0       | 0       |
+#		  | Provider Paid by SFA                    | 0       | 1029.44 | 1029.44 | 1029.44 | 1029.44 | ... | 1029.44 | 1029.44 |
+#		  | Payment due from Employer               | 0       | 0       | 0       | 0       | 0       | ... | 0       | 0       |
+#		  | Levy account debited                    | 0       | 1000    | 1000    | 1000    | 1000    | ... | 1000    | 1000    |
+#		  | SFA Levy employer budget                | 1000    | 1000    | 1000    | 1000    | 1000    | ... | 1000    | 0       |
+#		  | SFA non-Levy co-funding budget          | 0       | 0       | 0       | 0       | 0       | ... | 0       | 0       |
+#		  | SFA non-levy additional payments budget | 0       | 0       | 0       | 0       | 0       | ... | 0       | 0       |
+#		  | SFA levy additional payments budget     | 29.44   | 29.44   | 29.44   | 29.44   | 29.44   | ... | 29.44   | 0       |
+#		  
+#    And the transaction types for the payments are:
+#		  | Payment type                   | 09/18 | 10/18 | 11/18 | 12/18 | ... | 07/19 | 08/19 |
+#		  | On-program                     | 1000  | 1000  | 1000  | 1000  | ... | 1000  | 1000  |
+#		  | Completion                     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
+#		  | Balancing                      | 0     | 0     | 0     | 0     | ... | 0     | 0     |
+#		  | English and maths on programme | 29.44 | 29.44 | 29.44 | 29.44 | ... | 29.44 | 29.44 |
+#		  | English and maths Balancing    | 0     | 0     | 0     | 0     | ... | 0     | 0     |	
+
+
+
+# DC Integration 
+# 19-24 learner
+#| funding adjustment for prior learning | other funding adjustment |
+#| n/a                                   | n/a                      |
+#| 75%                                   | n/a                      |

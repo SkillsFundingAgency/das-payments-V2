@@ -9,8 +9,8 @@ Scenario: Levy learner, price is changed and a negative amount is left to be pai
 Given the employer levy account balance in collection period R03/Current Academic Year is 15000
 
 And the following commitments exist
-	| start date                   | end date                  | agreed price | status | effective from               |
-	| 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 11250        | active | 01/Aug/Current Academic Year |
+	| start date                   | end date                  | agreed price | status | effective from               |	Standard Code | Programme Type |
+	| 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 11250        | active | 01/Aug/Current Academic Year |	51            | 25             |
 
 And the provider previously submitted the following learner details
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
