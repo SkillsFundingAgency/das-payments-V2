@@ -84,6 +84,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 EventId = Guid.NewGuid(),
                 Priority = 1,
                 Learner = new Learner(),
+                AccountId = 1
             };
 
             var key = GenerateSortableKey(requiredPaymentEvent);
@@ -147,6 +148,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 EventId = Guid.NewGuid(),
                 Priority = 4,
                 Learner = new Learner(),
+                AccountId = 1
             };
 
             var key = GenerateSortableKey(requiredPaymentEvent);

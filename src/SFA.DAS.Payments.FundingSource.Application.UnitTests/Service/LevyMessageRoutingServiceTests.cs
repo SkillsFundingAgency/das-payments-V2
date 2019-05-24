@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         {
             var service = mocker.Create<LevyMessageRoutingService>();
             Assert.Throws<InvalidOperationException>(() => service.GetDestinationAccountId(new CalculatedRequiredLevyAmount
-                { AccountId = null, TransferSenderAccountId = null }));
+                { AccountId = null, TransferSenderAccountId = 1 }));
         }
     }
 }

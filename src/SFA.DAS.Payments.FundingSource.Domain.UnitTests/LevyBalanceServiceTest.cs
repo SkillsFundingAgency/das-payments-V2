@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
 
@@ -117,6 +118,20 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             service.Initialise(50, 50);
             service.TryFund(50).Should().Be(50);
             service.TryFundTransfer(50).Should().Be(0);
+        }
+
+        [Test]
+        public void Should_Throw_If_Tries_To_Use_TryFundTransfer_If_Not_Intialised()
+        {
+            var service = new LevyBalanceService();
+            Assert.Throws<InvalidOperationException>(() => service.TryFundTransfer(50));
+        }
+
+        [Test]
+        public void Should_Throw_If_Tries_To_Use_TryFund_If_Not_Intialised()
+        {
+            var service = new LevyBalanceService();
+            Assert.Throws<InvalidOperationException>(() => service.TryFund(50));
         }
     }
 }

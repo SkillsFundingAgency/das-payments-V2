@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         public decimal TryFund(decimal requiredAmount)
         {
             if (!initialised)
-                throw new ApplicationException("LevyBalanceService is not initialised");
+                throw new InvalidOperationException("LevyBalanceService is not initialised");
 
             var amountAvailable = requiredAmount > 0 ? Math.Min(balance, requiredAmount) : requiredAmount;
 
@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
         public decimal TryFundTransfer(decimal requiredAmount)
         {
             if (!initialised)
-                throw new ApplicationException("LevyBalanceService is not initialised");
+                throw new InvalidOperationException("LevyBalanceService is not initialised");
 
             var amountFunded = requiredAmount > 0 ? Math.Min(transferAllowance, requiredAmount) : requiredAmount;
 
