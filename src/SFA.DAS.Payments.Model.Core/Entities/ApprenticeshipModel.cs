@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public DateTime? StopDate { get; set; }
         public int Priority { get; set; }
         public ApprenticeshipStatus Status { get; set; }
+        public bool IsLevyPayer { get; set; }
         public List<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisodes { get; set; }
     }
 }
