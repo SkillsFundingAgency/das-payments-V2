@@ -13,6 +13,5 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
         public LearningAim LearningAim { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
-        public decimal SfaContributionPercentage { get; set; }
     }
 }
