@@ -70,7 +70,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
                     OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
-                    LearningAim = new LearningAim {Reference = aggregatedEvent.Key.Reference, FrameworkCode = aggregatedEvent.Key.FrameworkCode, StandardCode = aggregatedEvent.Key.StandardCode},
+                    LearningAim = new LearningAim
+                    {
+                        Reference = aggregatedEvent.Key.Reference, 
+                        FrameworkCode = aggregatedEvent.Key.FrameworkCode, 
+                        StandardCode = aggregatedEvent.Key.StandardCode,
+                    },
                     Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber},
                 });
             }
@@ -94,7 +99,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
                     Type = aggregatedEvent.Key.Type,
-                    LearningAim = new LearningAim { Reference = aggregatedEvent.Key.Reference, FrameworkCode = aggregatedEvent.Key.FrameworkCode, StandardCode = aggregatedEvent.Key.StandardCode},
+                    LearningAim = new LearningAim
+                    {
+                        Reference = aggregatedEvent.Key.Reference, 
+                        FrameworkCode = aggregatedEvent.Key.FrameworkCode, 
+                        StandardCode = aggregatedEvent.Key.StandardCode,
+                    },
                     Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber },
                 });
             }
