@@ -13,6 +13,10 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 var configHelper = c.Resolve<IConfigurationHelper>();
                 return new PaymentsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
             }).As<IPaymentsDataContext>();
+
+            builder.RegisterType<SubmittedLearnerAimRepository>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
         }
     }
 }

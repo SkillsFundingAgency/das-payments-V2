@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain
 {
     public interface IPaymentDueProcessor
     {
-        decimal CalculateRequiredPaymentAmount(decimal amountDue, IEnumerable<Payment> paymentHistory);
+        decimal CalculateRequiredPaymentAmount(decimal amountDue, List<Payment> paymentHistory);
     }
 }

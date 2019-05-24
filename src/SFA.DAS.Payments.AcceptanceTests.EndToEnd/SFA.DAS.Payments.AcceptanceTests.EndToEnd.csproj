@@ -604,6 +604,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1640,6 +1645,10 @@
     <None Include="Tests\Employer Change of Circumstances\One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

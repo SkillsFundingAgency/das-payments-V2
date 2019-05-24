@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -16,11 +15,6 @@ using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
-using NServiceBus;
-using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
-using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -39,54 +33,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
         }
 
-        public async Task SendLearnerCommands(List<FM36Learner> learners, long ukprn, short collectionYear,
-            byte collectionPeriod, long jobId, DateTime ilrSubmissionTime)
-        {
-            try
-            {
-                var startTime = DateTimeOffset.UtcNow;
-                var commands = learners.Select(learner => new ProcessLearnerCommand
-                {
-                    JobId = jobId,
-                    CollectionPeriod = collectionPeriod,
-                    CollectionYear = collectionYear,
-                    IlrSubmissionDateTime = ilrSubmissionTime,
-                    SubmissionDate = ilrSubmissionTime,
-                    Ukprn = ukprn,
-                    Learner = learner
-                })
-                    .ToList();
-                var startedJob = new RecordStartedProcessingEarningsJob
-                {
-                    JobId = jobId,
-                    CollectionPeriod = collectionPeriod,
-                    CollectionYear = collectionYear,
-                    StartTime = startTime,
-                    Ukprn = ukprn,
-                    IlrSubmissionTime = ilrSubmissionTime,
-                    GeneratedMessages = commands.Select(command => new GeneratedMessage
-                    {
-                        StartTime = command.RequestTime,
-                        MessageName = command.GetType().FullName,
-                        MessageId = command.CommandId
-                    }).ToList()
-                };
-                Console.WriteLine($"Sending job started message: {startedJob.ToJson()}");
-                await TestSessionBase.MessageSession.Send(startedJob).ConfigureAwait(false);
-                foreach (var processLearnerCommand in commands)
-                {
-                    await TestSessionBase.MessageSession.Send(processLearnerCommand).ConfigureAwait(false);
-                    Console.WriteLine($"sent process learner command: {processLearnerCommand.ToJson()}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error sending the learner commands. Error: {ex.Message}");
-                Console.WriteLine(ex);
-                throw;
-            }
-        }
-
         public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, short collectionYear, byte collectionPeriod, long jobId)
         {
             try
@@ -100,7 +46,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 };
                 var json = serializationService.Serialize(ilrSubmission);
 
-                using (var stream = await azureFileService.OpenWriteStreamAsync(messagePointer, DcConfiguration.DcBlobStorageContainer, new CancellationToken()))
+                var storageContainer = DcConfiguration.DcBlobStorageContainer;
+                var subscriptionName = DcConfiguration.SubscriptionName;
+
+                using (var stream = await azureFileService.OpenWriteStreamAsync(messagePointer, storageContainer, new CancellationToken()))
                 using (var writer = new StreamWriter(stream))
                 {
                     await writer.WriteAsync(json);
@@ -112,11 +61,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     KeyValuePairs = new Dictionary<string, object>
                     {
                         {JobContextMessageKey.FundingFm36Output, messagePointer},
-                        {JobContextMessageKey.Filename, "blah blah"},
+                        {JobContextMessageKey.Filename, messagePointer},
                         {JobContextMessageKey.UkPrn, ukprn},
-                        {JobContextMessageKey.Username, "Bob"},
-                        {JobContextMessageKey.Container, DcConfiguration.DcBlobStorageContainer },
-                        {JobContextMessageKey.ReturnPeriod, collectionPeriod }
+                        {JobContextMessageKey.Container, storageContainer },
+                        {JobContextMessageKey.ReturnPeriod, collectionPeriod },
+                        {JobContextMessageKey.Username, "PV2-Automated" }
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
                     TopicPointer = 0,
@@ -124,7 +73,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     {
                         new TopicItemDto
                         {
-                            SubscriptionName = "Validation",
+                            SubscriptionName = subscriptionName,
                             Tasks = new List<TaskItemDto>
                             {
                                 new TaskItemDto
@@ -137,7 +86,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     }
                 };
 
-                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object>(), "Validation");
+                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object>{{"To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
             }
             catch (Exception e)
             {
@@ -174,6 +123,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 return new TopicPublishService<JobContextDto>(config, serialisationService);
             }).As<ITopicPublishService<JobContextDto>>();
         }
-
     }
 }
