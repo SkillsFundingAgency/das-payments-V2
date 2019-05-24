@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.FundingSource.Application.Extensions;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 
@@ -51,17 +52,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             var keys = await GetKeys().ConfigureAwait(false);
             var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, 
-                paymentEvent.Learner.Uln, paymentEvent.StartDate, IsTransfer(paymentEvent), paymentEvent.EventId);
+                paymentEvent.Learner.Uln, paymentEvent.StartDate, paymentEvent.IsTransfer(), paymentEvent.EventId);
             keys.Add(key);
             await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
         }
 
-        private bool IsTransfer(CalculatedRequiredLevyAmount paymentEvent)
-        {
-            return paymentEvent.TransferSenderAccountId.HasValue &&
-                   paymentEvent.AccountId != paymentEvent.TransferSenderAccountId;
-        }
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId, long jobId)
         {
