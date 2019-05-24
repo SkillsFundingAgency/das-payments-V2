@@ -10,14 +10,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         where TEarningEvent : IContractTypeEarningEvent
     {
         protected ApprenticeshipContractTypeEarningEventProcessor(
-            IPaymentKeyService paymentKeyService,
             IMapper mapper,
             IRequiredPaymentProcessor requiredPaymentProcessor,
             IHoldingBackCompletionPaymentService holdingBackCompletionPaymentService,
             IPaymentHistoryRepository paymentHistoryRepository,
             IApprenticeshipKeyProvider apprenticeshipKeyProvider
         ) : base(
-            paymentKeyService,
             mapper,
             requiredPaymentProcessor,
             holdingBackCompletionPaymentService,

@@ -10,5 +10,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         public int ProgrammeType { get; set; }
         public int StandardCode { get; set; }
         public string LearnAimRef { get; set; }
+        public short AcademicYear { get; set; }
     }
 }
