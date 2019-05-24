@@ -906,12 +906,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     learners.Add(learner);
                 }
             }
-            var dcHelper = Scope.Resolve<DcHelper>();
+            var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
                 provider.JobId);
-
-            var dcHelper = Scope.Resolve<IDcHelper>();
-            await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId, provider.IlrSubmissionTime);
 
             var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
                 TestSession, CurrentCollectionPeriod, learners);
