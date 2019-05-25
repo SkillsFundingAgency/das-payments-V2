@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: Provider earnings and payments where learner changes apprenticeship standard retrospectively and negotiated price remains the same, (remaining with the same employer and provider) PV2-526
+﻿Feature: Provider earnings and payments where learner changes apprenticeship standard retrospectively and negotiated price remains the same, (remaining with the same employer and provider) PV2-526
 		As a provider,
 		I want a non-levy learner, changes apprenticeship standard retrospectively and the negotiated price remains the same, generates refund
 		So that I am accurately paid my apprenticeship provision
@@ -47,29 +46,29 @@ Scenario Outline: Changes standard from the beginning and price remains same - P
         | Jun/Current Academic Year | 1000         | 0          | 0         |
         | Jul/Current Academic Year | 1000         | 0          | 0         |
     And only the following payments will be calculated
-		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-		| R03/Current Academic Year | Aug/Current Academic Year | -1000        | 0          | 0         |
-		| R03/Current Academic Year | Sep/Current Academic Year | -1000        | 0          | 0         |
-		| R03/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
-		| R03/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
-		| R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
-		| R04/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         |
-		| R05/Current Academic Year | Dec/Current Academic Year | 1000         | 0          | 0         |
-		| R06/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         |
-		| R07/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         |
-		| R08/Current Academic Year | Mar/Current Academic Year | 1000         | 0          | 0         |
-		| R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         |
-		| R10/Current Academic Year | May/Current Academic Year | 1000         | 0          | 0         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 1000         | 0          | 0         |
-		| R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         |
+		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Standard Code |
+		| R03/Current Academic Year | Aug/Current Academic Year | -1000        | 0          | 0         | 51            |
+		| R03/Current Academic Year | Sep/Current Academic Year | -1000        | 0          | 0         | 51            |
+		| R03/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R03/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R04/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R05/Current Academic Year | Dec/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R06/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R07/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R08/Current Academic Year | Mar/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R10/Current Academic Year | May/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R11/Current Academic Year | Jun/Current Academic Year | 1000         | 0          | 0         | 52            |
+		| R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         | 52            |
     And only the following provider payments will be recorded
-        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |Standard Code |
-        | R03/Current Academic Year | Aug/Current Academic Year | -900                   | -100                        | Learning         | 51           |
-        | R03/Current Academic Year | Sep/Current Academic Year | -900                   | -100                        | Learning         | 51           |
-        | R03/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         | 52           |
-        | R03/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         | 52           |
-        | R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         | 52           |
-        | R04/Current Academic Year | Nov/Current Academic Year | 900                    | 100                         | Learning         | 52           |
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Standard Code |
+        | R03/Current Academic Year | Aug/Current Academic Year | -900                   | -100                        | Learning         | 51            |
+        | R03/Current Academic Year | Sep/Current Academic Year | -900                   | -100                        | Learning         | 51            |
+        | R03/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         | 52            |
+        | R03/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         | 52            |
+        | R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         | 52            |
+        | R04/Current Academic Year | Nov/Current Academic Year | 900                    | 100                         | Learning         | 52            |
 	And at month end only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Standard Code |
 		| R03/Current Academic Year | Aug/Current Academic Year | -900                   | -100                        | Learning         | 51            |

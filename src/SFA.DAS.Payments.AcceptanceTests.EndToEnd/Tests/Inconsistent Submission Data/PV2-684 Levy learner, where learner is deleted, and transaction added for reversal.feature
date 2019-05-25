@@ -1,11 +1,10 @@
-﻿@ignore
-Feature: Inconsistent Submissions Data PV2-684
+﻿Feature: Inconsistent Submissions Data PV2-684
 
 Scenario: Levy learner a is deleted from ILR in 07/18, but Levy learner b is added to the 07/18 ILR PV2-684	
 	Given the employer levy account balance in collection period R12/Current Academic Year is 9000
 	And the following commitments exist
-        | Learner ID | start date                   | end date                  | agreed price |
-        | learner a  | 01/May/Current Academic Year | 01/May/Next Academic Year | 9000         |
+        | Identifier       | Learner ID | start date                   | end date                  | agreed price | Framework Code | Pathway Code | Programme Type |
+        | Apprenticeship 1 | learner a  | 01/May/Current Academic Year | 01/May/Next Academic Year | 9000         | 593            | 1            | 20             |
 	And the provider previously submitted the following learner details
 		| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| learner a  | 06/May/Current Academic Year | 12 months        | 9000                 | 06/May/Current Academic Year        | 0                      | 06/May/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
@@ -27,7 +26,10 @@ Scenario: Levy learner a is deleted from ILR in 07/18, but Levy learner b is add
         | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
         | learner a  | R10/Current Academic Year | May/Current Academic Year | 600           | Learning         |
         | learner a  | R11/Current Academic Year | Jun/Current Academic Year | 600           | Learning         |
-    But the Provider now changes the Learner details as follows
+    But the Commitment details are changed as follows
+        | Identifier       | Learner ID | start date                   | end date                  | agreed price | Framework Code | Pathway Code | Programme Type |
+        | Apprenticeship 2 | learner b  | 01/May/Current Academic Year | 01/May/Next Academic Year | 9000         | 593            | 1            | 20             |
+    And the Provider now changes the Learner details as follows
 		| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| learner b  | 06/May/Current Academic Year | 12 months        | 9000                 | 06/May/Current Academic Year        | 0                      | 06/May/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period R12/Current Academic Year
