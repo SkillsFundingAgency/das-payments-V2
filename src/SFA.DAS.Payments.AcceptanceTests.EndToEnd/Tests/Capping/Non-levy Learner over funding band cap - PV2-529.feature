@@ -47,21 +47,24 @@ Scenario Outline: Capping - Payment for Non-Levy learner with a negotiated price
 	And the following capping will apply to the price episodes
         | negotiated price | funding cap | previous funding paid | price above cap | effective price for SFA payments |
         | 18000            | 15000       | 0                     | 3000            | 15000                            |
+	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
+		| pe-1             | 15000                | 06/Aug/Current Academic Year        | 3000                   | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act2          |
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 1000         | 0          | 0         |
-        | Sep/Current Academic Year | 1000         | 0          | 0         |
-        | Oct/Current Academic Year | 1000         | 0          | 0         |
-        | Nov/Current Academic Year | 1000         | 0          | 0         |
-        | Dec/Current Academic Year | 1000         | 0          | 0         |
-        | Jan/Current Academic Year | 1000         | 0          | 0         |
-        | Feb/Current Academic Year | 1000         | 0          | 0         |
-        | Mar/Current Academic Year | 1000         | 0          | 0         |
-        | Apr/Current Academic Year | 1000         | 0          | 0         |
-        | May/Current Academic Year | 1000         | 0          | 0         |
-        | Jun/Current Academic Year | 1000         | 0          | 0         |
-        | Jul/Current Academic Year | 1000         | 0          | 0         |
+		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+		| Aug/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Oct/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Nov/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Dec/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
     And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
 		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
