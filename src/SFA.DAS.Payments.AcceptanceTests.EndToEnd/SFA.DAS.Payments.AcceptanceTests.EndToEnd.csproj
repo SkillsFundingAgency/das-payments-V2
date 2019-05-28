@@ -822,6 +822,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-288 Levy learner, start date moved forward, no payments refunded.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-339 Levy learner - change in aim sequence number.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-339 Levy learner - change in aim sequence number.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-426 Levy learner, changes standard, negotiated price remains the same.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1804,6 +1809,10 @@
     <None Include="Tests\Inconsistent Submission Data\PV2-288 Levy learner, start date moved forward, no payments refunded.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-288 Levy learner, start date moved forward, no payments refunded.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Inconsistent Submission Data\PV2-339 Levy learner - change in aim sequence number.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-339 Levy learner - change in aim sequence number.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Inconsistent Submission Data\PV2-426 Levy learner, changes standard, negotiated price remains the same.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
