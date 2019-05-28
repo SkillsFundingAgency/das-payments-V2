@@ -13,8 +13,9 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
 
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
             builder.Property(x => x.EventId).HasColumnName(@"EventId").IsRequired();
-            builder.Property(x => x.EventTime).HasColumnName(@"EventTime").IsRequired();
+            builder.Property(x => x.EarningEventId).HasColumnName(@"EarningEventId").IsRequired();
             builder.Property(x => x.FundingSourceEventId).HasColumnName(@"FundingSourceEventId").IsRequired();
+            builder.Property(x => x.EventTime).HasColumnName(@"EventTime").IsRequired();
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier");
             builder.Property(x => x.Amount).HasColumnName(@"Amount");
             builder.OwnsOne(p => p.CollectionPeriod, cp =>
@@ -35,6 +36,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.ContractType).HasColumnName(@"ContractType").IsRequired();
             builder.Property(x => x.TransactionType).HasColumnName(@"TransactionType").IsRequired();
             builder.Property(x => x.FundingSource).HasColumnName(@"FundingSource").IsRequired();
+            builder.Property(x => x.AccountId).HasColumnName(@"AccountId");
+            builder.Property(x => x.TransferSenderAccountId).HasColumnName(@"TransferSenderAccountId");
             builder.Property(x => x.IlrSubmissionDateTime).HasColumnName(@"IlrSubmissionDateTime").IsRequired();
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();

@@ -10,6 +10,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         {
             DataTable.Columns.AddRange(new[]
             {
+                new DataColumn("EarningEventId", typeof(Guid)),
                 new DataColumn("PriceEpisodeIdentifier"),
                 new DataColumn("ContractType"),
                 new DataColumn("TransactionType"),
@@ -18,6 +19,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("AgreementId"),
                 new DataColumn("SfaContributionPercentage"),
                 new DataColumn("AccountId"),
+                new DataColumn("TransferSenderAccountId"),
                 new DataColumn("EarningsStartDate",typeof(DateTime)),
                 new DataColumn("EarningsPlannedEndDate",typeof(DateTime)) {AllowDBNull = true},
                 new DataColumn("EarningsActualEndDate",typeof(DateTime)) {AllowDBNull = true},
@@ -31,6 +33,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         protected override DataRow CreateDataRow(T eventModel)
         {
             var dataRow = base.CreateDataRow(eventModel);
+            dataRow["EarningEventId"] = eventModel.EarningEventId;
             dataRow["PriceEpisodeIdentifier"] = eventModel.PriceEpisodeIdentifier ?? string.Empty;
             dataRow["ContractType"] = (byte)eventModel.ContractType;
             dataRow["TransactionType"] = (byte)eventModel.TransactionType;
@@ -39,6 +42,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["AgreementId"] = eventModel.AgreementId;
             dataRow["SfaContributionPercentage"] = eventModel.SfaContributionPercentage;
             dataRow["AccountId"] = eventModel.AccountId;
+            dataRow["TransferSenderAccountId"] = eventModel.TransferSenderAccountId;
             dataRow["EarningsStartDate"] = eventModel.StartDate;
             dataRow["EarningsCompletionStatus"] = eventModel.CompletionStatus;
             dataRow["EarningsCompletionAmount"] = eventModel.CompletionAmount;
