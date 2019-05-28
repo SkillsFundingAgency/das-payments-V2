@@ -5,6 +5,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
 {
     public interface IPeriodisedPaymentEvent : IPaymentsEvent
     {
+        Guid EarningEventId { get; }
         string PriceEpisodeIdentifier { get; }
         decimal AmountDue { get; }
         byte DeliveryPeriod { get; }
@@ -17,5 +18,6 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         decimal CompletionAmount { get; }
         decimal InstalmentAmount { get; }
         short NumberOfInstalments { get; }
+        
     }
 }

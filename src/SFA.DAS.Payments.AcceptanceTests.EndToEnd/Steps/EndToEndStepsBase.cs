@@ -260,6 +260,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn, providerPayment.AccountId);
                 list.Add(payment);
             }
+
+            if (providerPayment.TransferPayments > 0)
+            {
+                var payment = CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
+                    sfaContributionPercentage, providerPayment.TransferPayments, FundingSourceType.Transfer, ukprn, providerPayment.AccountId);
+                list.Add(payment);
+            }
             return list;
         }
 
@@ -930,6 +937,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task ValidateRequiredPaymentsAtMonthEnd(Table table, Provider provider)
         {
             await MatchRequiredPayments(table, provider);
+            await Task.Delay(TimeSpan.FromSeconds(1));
             await SendLevyMonthEnd();
         }
 
