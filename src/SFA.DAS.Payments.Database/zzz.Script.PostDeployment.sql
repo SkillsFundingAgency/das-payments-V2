@@ -138,10 +138,7 @@ GO
 
 /* ---- Well-known UKPRNs for DC integration testing ---- */
 with KnownUkprns as (
-	select '10000093' as Ukprn union
-	select '10000534' union
-	select '10000631' union
-	select '10000833' union
+	select '10000833' as Ukprn union
 	select '10001144' union
 	select '10001326' union
 	select '10001436' union
