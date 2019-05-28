@@ -5,10 +5,12 @@ namespace SFA.DAS.Payments.Messages.Core.Events
 {
     public abstract class PeriodisedPaymentEvent : PaymentsEvent, IPeriodisedPaymentEvent
     {
+        public Guid EarningEventId { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
         public decimal AmountDue { get; set; }
         public byte DeliveryPeriod { get; set; }
         public long? AccountId { get; set; }
+        public long? TransferSenderAccountId { get; set; }
         public ContractType ContractType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }

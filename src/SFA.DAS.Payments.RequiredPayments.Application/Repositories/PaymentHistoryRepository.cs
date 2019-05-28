@@ -37,6 +37,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 {
                     ExternalId = payment.EventId,
                     AccountId = payment.AccountId,
+                    TransferSenderAccountId = payment.TransferSenderAccountId,
                     ContractType = payment.ContractType,
                     Ukprn = payment.Ukprn,
                     LearnerReferenceNumber = payment.LearnerReferenceNumber,

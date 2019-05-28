@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.FundingSource.Application.Repositories;
+using SFA.DAS.Payments.FundingSource.Application.Extensions;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
-using SFA.DAS.Payments.FundingSource.Domain.Services;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
@@ -52,11 +51,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         public async Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent)
         {
             var keys = await GetKeys().ConfigureAwait(false);
-            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, paymentEvent.Learner.Uln, paymentEvent.EventId);
+            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, 
+                paymentEvent.Learner.Uln, paymentEvent.StartDate, paymentEvent.IsTransfer(), paymentEvent.EventId);
             keys.Add(key);
             await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
             await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
         }
+
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId, long jobId)
         {
@@ -69,7 +70,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             keys.Sort();            
 
             var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
-            levyBalanceService.Initialise(levyAccount.Balance);
+            levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
             paymentLogger.LogDebug($"Processing {keys.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
 
@@ -79,7 +80,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 var requiredPayment = new RequiredPayment
                 {
                     SfaContributionPercentage = requiredPaymentEvent.Value.SfaContributionPercentage,
-                    AmountDue = requiredPaymentEvent.Value.AmountDue
+                    AmountDue = requiredPaymentEvent.Value.AmountDue,
+                    IsTransfer = employerAccountId != requiredPaymentEvent.Value.AccountId 
+                                 && requiredPaymentEvent.Value.TransferSenderAccountId.HasValue 
+                                 && requiredPaymentEvent.Value.TransferSenderAccountId == employerAccountId 
                 };
 
                 var fundingSourcePayments = processor.Process(requiredPayment);

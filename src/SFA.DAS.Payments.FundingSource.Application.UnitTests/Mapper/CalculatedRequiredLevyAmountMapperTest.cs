@@ -176,6 +176,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             expectedEvent.SfaContributionPercentage = .9m;
             expectedEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1);
             expectedEvent.AccountId = 1000000;
+            expectedEvent.EarningEventId = requiredPaymentEvent.EarningEventId;
         }
     }
 }
