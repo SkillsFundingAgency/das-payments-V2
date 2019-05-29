@@ -37,8 +37,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
 
-        private readonly IUkprnService _ukprnService = new RandomUkprnService();
-        private readonly IUlnService _ulnService;
+        private readonly IUkprnService ukprnService = new RandomUkprnService();
+        private readonly IUlnService ulnService;
 
         public Employer GetEmployer(string identifier)
         {
@@ -57,8 +57,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public TestSession(IUkprnService ukprnService, IUlnService ulnService)
         {
-            _ukprnService = ukprnService;
-            _ulnService = ulnService;
+            this.ukprnService = ukprnService;
+            this.ulnService = ulnService;
 
             courseFaker = new Faker<Course>();
             courseFaker
@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             Providers = new List<Provider>();
             IlrSubmissionTime = Provider.IlrSubmissionTime;
-            Learners = new List<Learner> { GenerateLearner(Provider.Ukprn, _ulnService.GenerateUln(Provider.Ukprn)) };
+            Learners = new List<Learner> { GenerateLearner(Provider.Ukprn, this.ulnService.GenerateUln(Provider.Ukprn)) };
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
 
@@ -97,14 +97,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public void RegenerateUkprn()
         {
-            Provider.Ukprn = _ukprnService.GenerateUkprn();
+            Provider.Ukprn = ukprnService.GenerateUkprn();
         }
 
         private Provider GenerateProvider()
         {
             return new Provider
             {
-                Ukprn = _ukprnService.GenerateUkprn(),
+                Ukprn = ukprnService.GenerateUkprn(),
                 JobId = GenerateId(),
                 IlrSubmissionTime = DateTime.UtcNow
             };
@@ -132,7 +132,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Learner GenerateLearner(long ukprn, long? uniqueLearnerNumber = null)
         {
-            var uln = uniqueLearnerNumber ?? _ulnService.GenerateUln(Provider.Ukprn);
+            var uln = uniqueLearnerNumber ?? ulnService.GenerateUln(Provider.Ukprn);
             return new Learner
             {
                 Ukprn = ukprn,
@@ -163,11 +163,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             {
                 if (string.IsNullOrWhiteSpace(learnerId) || learnerId.Equals(LearnerIdentifierA))
                 {
-                    return _ulnService.GenerateUln(Provider.Ukprn);
+                    return ulnService.GenerateUln(Provider.Ukprn);
                 }
                 else
                 {
-                    return _ulnService.GenerateUln(Provider.Ukprn + (Provider.Ukprn - 10_000_000));
+                    return ulnService.GenerateUln(Provider.Ukprn + (Provider.Ukprn - 10_000_000));
                 }
             }
 
