@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
 
-        private readonly IUkprnService ukprnService = new RandomUkprnService();
+        private readonly IUkprnService ukprnService;
         private readonly IUlnService ulnService;
 
         public Employer GetEmployer(string identifier)
