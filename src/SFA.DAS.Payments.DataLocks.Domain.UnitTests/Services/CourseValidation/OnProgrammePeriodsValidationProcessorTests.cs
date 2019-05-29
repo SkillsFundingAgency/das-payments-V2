@@ -154,5 +154,29 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 earning, apprenticeships, aim, academicYear);
             periods.ValidPeriods.Count.Should().Be(1);
         }
+
+        [Test]
+        public void PopulatesTransferSenderAccountIdForMatchedApprenticeship()
+        {
+            var earning = new OnProgrammeEarning
+            {
+                Periods = new List<EarningPeriod> { new EarningPeriod
+                {
+                    Amount = 1,
+                    PriceEpisodeIdentifier = "pe-1",
+                } }.AsReadOnly()
+            };
+            mocker.Mock<ICourseValidationProcessor>()
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
+                .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
+            mocker.Mock<ICourseValidationProcessor>()
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
+                .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 96 } });
+
+            apprenticeships.FirstOrDefault().TransferSendingEmployerAccountId = 999;
+            var periods = mocker.Create<OnProgrammePeriodsValidationProcessor>().ValidatePeriods(1, priceEpisodes, earning, apprenticeships, aim, academicYear);
+            periods.ValidPeriods.Count.Should().Be(2);
+            periods.ValidPeriods.Any(p => p.ApprenticeshipId == 1 && p.TransferSenderAccountId == 999).Should().Be(true);
+        }
     }
 }

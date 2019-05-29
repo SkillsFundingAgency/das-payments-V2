@@ -25,6 +25,7 @@
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	[AccountId] BIGINT NULL , 
+	TransferSenderAccountId BIGINT NULL , 
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_RequiredPaymentEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 	EarningsStartDate DATETIME NOT NULL,
 	EarningsPlannedEndDate DATETIME NULL,

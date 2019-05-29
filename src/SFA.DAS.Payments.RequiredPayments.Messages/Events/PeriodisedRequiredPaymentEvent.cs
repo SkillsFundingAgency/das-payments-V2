@@ -9,7 +9,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
     public abstract class PeriodisedRequiredPaymentEvent : PeriodisedPaymentEvent, IPeriodisedRequiredPaymentEvent
     {
         private static Type[] inheritors;
-        public Guid EarningEventId { get; set; }
         private static Type[] GetInheritors()
         {
             return inheritors ?? (inheritors = typeof(PeriodisedRequiredPaymentEvent).Assembly.GetTypes()
