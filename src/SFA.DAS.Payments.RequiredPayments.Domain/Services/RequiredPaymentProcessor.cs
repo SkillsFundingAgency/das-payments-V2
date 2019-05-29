@@ -18,10 +18,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
-            var amount = string.IsNullOrWhiteSpace(earning.PriceEpisodeIdentifier) && earning.EarningType != EarningType.Incentive 
-                ? 0M
-                : paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, paymentHistory);
-            var result = new List<RequiredPayment>();
+             var result = new List<RequiredPayment>();
             if (earning.EarningType != EarningType.Incentive && earning.SfaContributionPercentage.HasValue)
                 result.AddRange(RefundPaymentsWithDifferentSfaContribution(earning.SfaContributionPercentage.Value, paymentHistory));
 
@@ -29,7 +26,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 .Where(p => earning.EarningType == EarningType.Incentive || !earning.SfaContributionPercentage.HasValue || p.SfaContributionPercentage == earning.SfaContributionPercentage)
                 .ToList();
 
-            var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, validPaymentHistory);
+            var amount = string.IsNullOrWhiteSpace(earning.PriceEpisodeIdentifier) && earning.EarningType != EarningType.Incentive
+                ? 0M
+                : paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, validPaymentHistory);
 
             if (amount < 0)
             {
