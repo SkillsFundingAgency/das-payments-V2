@@ -127,7 +127,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             {
                 ContractType = expectedContractType,
             };
-            
+
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.ContractType.Should().Be(expectedContractType);
         }
@@ -151,9 +151,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             var act1RequiredPayment = (CalculatedRequiredLevyAmount)requiredPayment;
 
-            Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId); 
+            Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId);
             Assert.AreEqual(.9m, act1RequiredPayment.SfaContributionPercentage);
             Assert.AreEqual(OnProgrammeEarningType.Completion, act1RequiredPayment.OnProgrammeEarningType);
+            Assert.AreEqual(payableEarning.EarningEventId, act1RequiredPayment.EarningEventId);
+            Assert.AreNotEqual(payableEarning.EventId, act1RequiredPayment.EarningEventId);
         }
 
         [Test]
@@ -183,6 +185,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             Assert.AreEqual(earningPeriod.Period, act1RequiredPayment.DeliveryPeriod);
             Assert.AreEqual(earningPeriod.AccountId, act1RequiredPayment.AccountId);
+            Assert.AreEqual(earningPeriod.TransferSenderAccountId, act1RequiredPayment.TransferSenderAccountId);
             Assert.AreEqual(earningPeriod.ApprenticeshipId, act1RequiredPayment.ApprenticeshipId);
             Assert.AreEqual(earningPeriod.ApprenticeshipPriceEpisodeId, act1RequiredPayment.ApprenticeshipPriceEpisodeId);
             //Assert.AreEqual(earningPeriod.AgreementId, act1RequiredPayment.AgreementId);
@@ -329,6 +332,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             return new PayableEarningEvent
             {
+                EventId = Guid.NewGuid(),
+                EarningEventId = Guid.NewGuid(),
                 AgreementId = "103",
                 CollectionYear = 1819,
                 Learner = new Learner { ReferenceNumber = "R", Uln = 10 },

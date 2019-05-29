@@ -1,17 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 {
-    public interface ILevyAccountRepository
-    {
-        Task<LevyAccountModel> GetLevyAccount(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken));
-    }
-
     public class LevyAccountRepository : ILevyAccountRepository
     {
         private readonly IPaymentsDataContext dataContext;
@@ -23,9 +20,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
         public async Task<LevyAccountModel> GetLevyAccount(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await dataContext.LevyAccount.AsNoTracking()
+            var levyAccounts = await dataContext.LevyAccount.AsNoTracking()
                 .Where(levyAccount => levyAccount.AccountId == employerAccountId)
-                .SingleAsync(cancellationToken).ConfigureAwait(false);
+                .ToListAsync(cancellationToken);
+
+            if (levyAccounts.Count > 1)
+                throw new InvalidOperationException($"Found multiple ({levyAccounts.Count}) levy accounts with the same account id: {employerAccountId}");
+
+            if (levyAccounts.Count == 0)
+                throw new InvalidOperationException($"Found no employer accounts for account id: {employerAccountId}");
+
+            return levyAccounts.First();
         }
     }
 }

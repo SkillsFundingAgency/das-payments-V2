@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .Include<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>()
                 .Include<SfaFullyFundedFundingSourcePaymentEvent, ProviderPaymentEventModel>()
                 .Include<LevyFundingSourcePaymentEvent, ProviderPaymentEventModel>()
+                .Include<TransferFundingSourcePaymentEvent, ProviderPaymentEventModel>()
                 .ForMember(dest => dest.EventId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
                 .ForMember(dest => dest.FundingSourceId, opt => opt.MapFrom(source => source.EventId))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -53,12 +54,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
             CreateMap<SfaFullyFundedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
             CreateMap<LevyFundingSourcePaymentEvent, ProviderPaymentEventModel>();
+            CreateMap<TransferFundingSourcePaymentEvent, ProviderPaymentEventModel>();
 
             CreateMap<PaymentModel, ProviderPaymentEvent>()
                 .Include<PaymentModel, EmployerCoInvestedProviderPaymentEvent>()
                 .Include<PaymentModel, SfaCoInvestedProviderPaymentEvent>()
                 .Include<PaymentModel, SfaFullyFundedProviderPaymentEvent>()
                 .Include<PaymentModel, LevyProviderPaymentEvent>()
+                .Include<PaymentModel, TransferProviderPaymentEvent>()
                 .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.EventId))
                 .ForMember(dest => dest.EventTime, opt => opt.ResolveUsing(src => DateTimeOffset.UtcNow))
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod))
@@ -93,18 +96,21 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<PaymentModel, SfaCoInvestedProviderPaymentEvent>();
             CreateMap<PaymentModel, SfaFullyFundedProviderPaymentEvent>();
             CreateMap<PaymentModel, LevyProviderPaymentEvent>();
-                
+            CreateMap<PaymentModel, TransferProviderPaymentEvent>();
+
             CreateMap<FundingSourcePaymentEvent, ProviderPaymentEvent>()
                 .Include<EmployerCoInvestedFundingSourcePaymentEvent, EmployerCoInvestedProviderPaymentEvent>()
                 .Include<SfaCoInvestedFundingSourcePaymentEvent, SfaCoInvestedProviderPaymentEvent>()
                 .Include<SfaFullyFundedFundingSourcePaymentEvent, SfaFullyFundedProviderPaymentEvent>()
                 .Include<LevyFundingSourcePaymentEvent, LevyProviderPaymentEvent>()
+                .Include<TransferFundingSourcePaymentEvent, TransferProviderPaymentEvent>()
                 .ForMember(dest => dest.EventId, opt => opt.Ignore());
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, EmployerCoInvestedProviderPaymentEvent>();
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, SfaCoInvestedProviderPaymentEvent>();
             CreateMap<SfaFullyFundedFundingSourcePaymentEvent, SfaFullyFundedProviderPaymentEvent>();
             CreateMap<LevyFundingSourcePaymentEvent, LevyProviderPaymentEvent>();
+            CreateMap<TransferFundingSourcePaymentEvent, TransferProviderPaymentEvent>();
         }
     }
 }
