@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces
     public interface ILevyFundedService : IActor
     {
         Task HandleRequiredPayment(CalculatedRequiredLevyAmount message);
-
+        Task UnableToFundTransfer(UnableToFundTransferFundingSourcePaymentEvent message);
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command);
     }
 }

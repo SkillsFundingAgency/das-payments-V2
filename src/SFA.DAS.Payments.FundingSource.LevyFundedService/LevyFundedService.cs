@@ -11,10 +11,8 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
-using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
-using SFA.DAS.Payments.FundingSource.Domain.Services;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
@@ -31,6 +29,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private IRequiredLevyAmountFundingSourceService fundingSourceService;
         private IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private IDataCache<List<string>> requiredPaymentKeys;
+        private IDataCache<bool> monthEndCache;
         private readonly ILifetimeScope lifetimeScope;
 
         public LevyFundedService(
@@ -49,11 +48,22 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         public async Task HandleRequiredPayment(CalculatedRequiredLevyAmount message)
         {
-            paymentLogger.LogVerbose($"Handling RequiredPayment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
-
             using (var operation = telemetry.StartOperation())
             {
+                paymentLogger.LogVerbose($"Handling RequiredPayment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
                 await fundingSourceService.AddRequiredPayment(message).ConfigureAwait(false);
+                paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
+                telemetry.StopOperation(operation);
+            }
+        }
+
+        public async Task UnableToFundTransfer(UnableToFundTransferFundingSourcePaymentEvent message)
+        {
+            using (var operation = telemetry.StartOperation())
+            {
+                paymentLogger.LogDebug($"Handling UnableToFundTransfer for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Receiver Account: {message.AccountId}, Sender Account: {message.TransferSenderAccountId}");
+                await fundingSourceService.ProcessReceiverTransferPayment(message).ConfigureAwait(false);
+                paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
                 telemetry.StopOperation(operation);
             }
         }
@@ -65,7 +75,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             {
                 using (var operation = telemetry.StartOperation())
                 {
-                    var fundingSourceEvents = await fundingSourceService.GetFundedPayments(command.AccountId, command.JobId);
+                    var fundingSourceEvents = await fundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
                     telemetry.StopOperation(operation);
                     return fundingSourceEvents;
                 }
@@ -79,8 +89,10 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         protected override async Task OnActivateAsync()
         {
+            //TODO: Use DI
             requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
             requiredPaymentKeys = new ReliableCollectionCache<List<string>>(StateManager);
+            monthEndCache = new ReliableCollectionCache<bool>(StateManager);
             fundingSourceService = new RequiredLevyAmountFundingSourceService(
                 lifetimeScope.Resolve<IPaymentProcessor>(),
                 lifetimeScope.Resolve<IMapper>(),
@@ -89,7 +101,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 lifetimeScope.Resolve<ILevyAccountRepository>(),
                 lifetimeScope.Resolve<ILevyBalanceService>(),
                 lifetimeScope.Resolve<IPaymentLogger>(),
-                lifetimeScope.Resolve<ISortableKeyGenerator>()
+                lifetimeScope.Resolve<ISortableKeyGenerator>(),
+                monthEndCache
             );
             await base.OnActivateAsync().ConfigureAwait(false);
         }

@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
     public interface IRequiredLevyAmountFundingSourceService
     {
         Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent);
-        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId, long jobId);
+        Task ProcessReceiverTransferPayment(UnableToFundTransferFundingSourcePaymentEvent message);
+        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId);
     }
 }
