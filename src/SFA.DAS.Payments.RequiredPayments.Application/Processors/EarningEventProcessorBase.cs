@@ -27,14 +27,22 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         private readonly IHoldingBackCompletionPaymentService completionPaymentService;
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
         private readonly IApprenticeshipKeyProvider apprenticeshipKeyProvider;
+        private readonly INegativeEarningService negativeEarningService;
 
-        protected EarningEventProcessorBase( IMapper mapper, IRequiredPaymentProcessor requiredPaymentProcessor, IHoldingBackCompletionPaymentService completionPaymentService, IPaymentHistoryRepository paymentHistoryRepository, IApprenticeshipKeyProvider apprenticeshipKeyProvider)
+        protected EarningEventProcessorBase(
+            IMapper mapper, 
+            IRequiredPaymentProcessor requiredPaymentProcessor, 
+            IHoldingBackCompletionPaymentService completionPaymentService, 
+            IPaymentHistoryRepository paymentHistoryRepository, 
+            IApprenticeshipKeyProvider apprenticeshipKeyProvider, 
+            INegativeEarningService negativeEarningService)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentProcessor = requiredPaymentProcessor ?? throw new ArgumentNullException(nameof(requiredPaymentProcessor));
             this.completionPaymentService = completionPaymentService;
             this.paymentHistoryRepository = paymentHistoryRepository;
             this.apprenticeshipKeyProvider = apprenticeshipKeyProvider;
+            this.negativeEarningService = negativeEarningService;
         }
 
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
@@ -61,23 +69,38 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 {
                     throw new InvalidOperationException("Non-zero amount with no Sfa Contribution");
                 }
-                var payments = academicYearPayments.Where(payment => payment.DeliveryPeriod == period.Period && payment.TransactionType == type).ToList();
 
-                var earning = new Earning
+                var payments = academicYearPayments.Where(payment => payment.DeliveryPeriod == period.Period &&
+                                                                     payment.TransactionType == type)
+                    .ToList();
+
+                List<RequiredPayment> requiredPayments;
+                var holdBackCompletionPayments = false;
+
+                if (period.Amount < 0 && 
+                    period.Amount < payments.Sum(x => x.Amount))
                 {
-                    Amount = period.Amount,
-                    SfaContributionPercentage = period.SfaContributionPercentage,
-                    EarningType = GetEarningType(type),
-                    PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
-                };
-                var requiredPayments = requiredPaymentProcessor.GetRequiredPayments(earning, payments);
+                    requiredPayments = negativeEarningService
+                        .ProcessNegativeEarning(period.Amount, academicYearPayments, period.Period);
+                }
+                else
+                {
+                    var earning = new Earning
+                    {
+                        Amount = period.Amount,
+                        SfaContributionPercentage = period.SfaContributionPercentage,
+                        EarningType = GetEarningType(type),
+                        PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
+                    };
+
+                    requiredPayments = requiredPaymentProcessor.GetRequiredPayments(earning, payments);
+                    holdBackCompletionPayments = await HoldBackCompletionPayments(earningEvent, earning, type, cancellationToken).ConfigureAwait(false);
+                }
 
                 if (requiredPayments.Sum(x => x.Amount) == 0)
                 {
                     continue;
                 }
-
-                var holdBackCompletionPayments = await HoldBackCompletionPayments(earningEvent, earning, type, cancellationToken).ConfigureAwait(false);
 
                 foreach (var requiredPayment in requiredPayments)
                 {
