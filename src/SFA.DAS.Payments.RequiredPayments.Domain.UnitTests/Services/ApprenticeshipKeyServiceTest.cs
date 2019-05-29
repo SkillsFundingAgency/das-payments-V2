@@ -18,9 +18,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var programmeType = 25;
             var standardCode = 5;
             var learnAimRef = "6";
-
+            short academicYear = 1819;
             // act
-            var key = new ApprenticeshipKeyService().GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef);
+            var key = new ApprenticeshipKeyService().GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear);
 
             // assert
             Assert.AreEqual(0, key.IndexOf("2", StringComparison.Ordinal), "UKPRN should go first");
@@ -30,6 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             Assert.Less(key.IndexOf("4", StringComparison.Ordinal), key.IndexOf("25", StringComparison.Ordinal), "ProgrammeType should be after PathwayCode");
             Assert.Less(key.IndexOf("25", StringComparison.Ordinal), key.IndexOf("5", StringComparison.Ordinal), "StandardCode should be after ProgrammeType");
             Assert.Less(key.IndexOf("5", StringComparison.Ordinal), key.IndexOf("6", StringComparison.Ordinal), "LearnAimRef should be after StandardCode");
+            Assert.Less(key.IndexOf("6", StringComparison.Ordinal), key.IndexOf("1819", StringComparison.Ordinal), "AcademicYear should be after LearnAimRef");
         }
 
 
@@ -44,9 +45,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var programmeType = 25;
             var standardCode = 5;
             var learnAimRef = "B";
+            short academicYear = 1819;
 
             // act
-            var key = new ApprenticeshipKeyService().GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef);
+            var key = new ApprenticeshipKeyService().GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear);
 
             // assert
             Assert.IsFalse(key.Contains("A"));
@@ -67,8 +69,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var programmeType = 25;
             var standardCode = 5;
             var learnAimRef = "6";
+            short academicYear = 1819;
             var service = new ApprenticeshipKeyService();
-            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef);
+            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear);
 
             // act
             var apprenticeshipKey = service.ParseApprenticeshipKey(key);
@@ -81,6 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             Assert.AreEqual(apprenticeshipKey.ProgrammeType, programmeType);
             Assert.AreEqual(apprenticeshipKey.StandardCode, standardCode);
             Assert.AreEqual(apprenticeshipKey.LearnAimRef, learnAimRef);
+            Assert.AreEqual(apprenticeshipKey.AcademicYear, academicYear);
         }
 
         [Test]
@@ -94,8 +98,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var programmeType = 25;
             var standardCode = 5;
             string learnAimRef = null;
+            short academicYear = 1819;
             var service = new ApprenticeshipKeyService();
-            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef);
+            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear);
 
             // act
             var apprenticeshipKey = service.ParseApprenticeshipKey(key);
@@ -108,6 +113,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             Assert.AreEqual(apprenticeshipKey.ProgrammeType, programmeType);
             Assert.AreEqual(apprenticeshipKey.StandardCode, standardCode);
             Assert.AreEqual(apprenticeshipKey.LearnAimRef, string.Empty);
+            Assert.AreEqual(apprenticeshipKey.AcademicYear, academicYear);
         }
     }
 }

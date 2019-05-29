@@ -243,7 +243,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001");
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 100,
+                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 1M,
                     providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId));
 
             if (providerPayment.EmployerCoFundedPayments > 0)
@@ -258,6 +258,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 var payment = CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
                     sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn, providerPayment.AccountId);
+                list.Add(payment);
+            }
+
+            if (providerPayment.TransferPayments > 0)
+            {
+                var payment = CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
+                    sfaContributionPercentage, providerPayment.TransferPayments, FundingSourceType.Transfer, ukprn, providerPayment.AccountId);
                 list.Add(payment);
             }
             return list;
@@ -631,7 +638,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     if ((tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId)) && learnerId != e.LearnerId)
                         return false;
 
-                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)
+                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)  
                         return false;
 
                     return true;
@@ -967,8 +974,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
             }
             var dcHelper = Scope.Resolve<DcHelper>();
-            await dcHelper.SendLearnerCommands(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
-                provider.JobId, provider.IlrSubmissionTime);
+            await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
+                provider.JobId);
 
             var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
                 TestSession, CurrentCollectionPeriod, learners);
@@ -991,8 +998,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
             {
-                await RequiredPaymentsCacheCleaner.ClearCaches(provider, TestSession).ConfigureAwait(false);
-                
+                await RequiredPaymentsCacheCleaner.ClearCaches(provider, TestSession, collectionPeriod.AcademicYear).ConfigureAwait(false);
                 ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn));
             }
 
@@ -1002,6 +1008,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task ValidateRequiredPaymentsAtMonthEnd(Table table, Provider provider)
         {
             await MatchRequiredPayments(table, provider);
+            await Task.Delay(TimeSpan.FromSeconds(1));
             await SendLevyMonthEnd();
         }
 

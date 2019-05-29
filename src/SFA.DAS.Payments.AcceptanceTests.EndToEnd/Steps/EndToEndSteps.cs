@@ -48,6 +48,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             SetCollectionPeriod(collectionPeriodText);
         }
 
+        [Given(@"the remaining transfer allowance for ""(.*)"" is (.*)")]
+        public async Task GivenTheRemainingTransferAllowanceForIs(string employerIdentifier, decimal remainingTransferAllowance)
+        {
+            var employer = TestSession.GetEmployer(employerIdentifier);
+            employer.TransferAllowance = remainingTransferAllowance;
+            await SaveLevyAccount(employer).ConfigureAwait(false);
+        }
+
+
         [Given(@"the employer levy account balance in collection period (.*) is (.*)")]
         public Task GivenTheEmployerLevyAccountBalanceInCollectionPeriodRCurrentAcademicYearIs(string collectionPeriod, decimal levyAmount)
         {

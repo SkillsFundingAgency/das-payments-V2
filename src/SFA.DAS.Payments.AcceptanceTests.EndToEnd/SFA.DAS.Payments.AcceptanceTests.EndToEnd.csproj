@@ -532,6 +532,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -816,6 +821,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-288 Levy learner, start date moved forward, no payments refunded.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-339 Levy learner - change in aim sequence number.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-339 Levy learner - change in aim sequence number.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-426 Levy learner, changes standard, negotiated price remains the same.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1352,6 +1362,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Transfers\PV2-736 Levy learner paid via transfer.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-736 Levy learner paid via transfer.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -1567,6 +1582,10 @@
     <None Include="Tests\Employer Change of Circumstances\One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner,Employer change and change to the Negotiated Cost earlier than expected_PV2-361.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1795,6 +1814,10 @@
     <None Include="Tests\Inconsistent Submission Data\PV2-288 Levy learner, start date moved forward, no payments refunded.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-288 Levy learner, start date moved forward, no payments refunded.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Inconsistent Submission Data\PV2-339 Levy learner - change in aim sequence number.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-339 Levy learner - change in aim sequence number.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Inconsistent Submission Data\PV2-426 Levy learner, changes standard, negotiated price remains the same.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2223,6 +2246,10 @@
     <None Include="Tests\Small Employer\PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\PV2-736 Levy learner paid via transfer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-736 Levy learner paid via transfer.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain
     public interface IApprenticeshipKeyService
     {
         string GenerateApprenticeshipKey(long ukprn, string learnerReferenceNumber, int frameworkCode, int pathwayCode,
-            int programmeType, int standardCode, string learnAimRef);
+            int programmeType, int standardCode, string learnAimRef, short academicYear);
         ApprenticeshipKey ParseApprenticeshipKey(string apprenticeshipKey);
     }
 }

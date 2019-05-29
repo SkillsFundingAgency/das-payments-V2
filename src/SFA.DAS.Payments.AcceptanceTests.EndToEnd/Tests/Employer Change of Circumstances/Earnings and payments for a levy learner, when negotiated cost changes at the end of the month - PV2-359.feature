@@ -1,3 +1,4 @@
+@ignore standard code changes here and the aim is regarded as removed from ILR but it is just a new aim added to ILR, the spec needs updating to new format where we can supply both aims
 Feature: Earnings and payments for a levy learner when the negotiated price changes at the end of the month PV2-359
 As a provider,
 I want earnings and payments for a levy learner, levy available, and there is a change to the Negotiated Cost which happens at the end of the month to be paid the correct amount
