@@ -67,7 +67,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             paymentLogger.LogInfo($"Initialising actor for provider {Id}");
 
             var providerApprenticeships = await apprenticeshipRepository.ApprenticeshipsForProvider(long.Parse(Id.ToString())).ConfigureAwait(false);
-
             var groupedApprenticeships = providerApprenticeships.ToLookup(x => x.Uln);
 
             foreach (var group in groupedApprenticeships)
@@ -75,7 +74,14 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 await this.apprenticeships.AddOrReplace(group.Key.ToString(), group.ToList()).ConfigureAwait(false);
             }
 
+            var providerDuplicateApprenticeships = await apprenticeshipRepository
+                .DuplicateApprenticeshipsForProvider(long.Parse(Id.ToString()))
+                .ConfigureAwait(false);
+
+            await this.apprenticeships.AddOrReplace(Id.ToString(), providerDuplicateApprenticeships).ConfigureAwait(false);
+
             paymentLogger.LogInfo($"Initialised actor for provider {Id}");
+
 
             await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
         }

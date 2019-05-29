@@ -23,7 +23,20 @@ namespace SFA.DAS.Payments.DataLocks.Application.Cache
 
         public async Task<List<ApprenticeshipModel>> GetLearnerApprenticeships(long uln)
         {
-            var apprenticeshipsCacheValue = await dataCache.TryGet(uln.ToString()).ConfigureAwait(false);
+            var apprenticeships = await GetApprenticeships(uln).ConfigureAwait(false);
+            return apprenticeships;
+        }
+
+        public async Task<List<ApprenticeshipModel>> GetDuplicateApprenticeships(long ukprn)
+        {
+            var apprenticeships = await GetApprenticeships(ukprn).ConfigureAwait(false);
+            return apprenticeships;
+        }
+
+
+        private async Task<List<ApprenticeshipModel>> GetApprenticeships(long key)
+        {
+            var apprenticeshipsCacheValue = await dataCache.TryGet(key.ToString()).ConfigureAwait(false);
             var apprenticeships = apprenticeshipsCacheValue.HasValue ? apprenticeshipsCacheValue.Value : new List<ApprenticeshipModel>();
             return apprenticeships;
         }

@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes.Where(o => !o.Removed)?.ToList();
         }
 
-        protected override bool FailedValidation(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
+        protected override bool FailedValidationAsync(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
         {
             return dataLockValidationModel.Apprenticeship.Status == ApprenticeshipStatus.Paused;
         }
