@@ -84,9 +84,11 @@ Scenario Outline: Non-levy learner completes maths and english early PV2-485
         | Jun/Current Academic Year | 0            | 0          | 0         | 0                          | 78.50                    | 2                   |                          |
         | Jul/Current Academic Year | 0            | 0          | 0         | 0                          | 0                        | 2                   |                          |
     And only the following payments will be calculated
-        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | BalancingMathsAndEnglish |
-        | R11/Current Academic Year | Jun/Current Academic Year | 1000         | 0          | 0         | 0                          | 78.50                    |
-        | R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        |
+        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | BalancingMathsAndEnglish | Price Episode Identifier |
+        | R11/Current Academic Year | Jun/Current Academic Year | 1000         | 0          | 0         | 0                          |                          | 1st price details        |
+        | R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         | 0                          | 0                        | 1st price details        |
+		| R11/Current Academic Year | Jun/Current Academic Year | 0            | 0          | 0         | 0                          | 78.50                    |                          |
+   
     And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type         |
         | R11/Current Academic Year | Jun/Current Academic Year | 900                    | 100                         | 0                         | Learning                 |
