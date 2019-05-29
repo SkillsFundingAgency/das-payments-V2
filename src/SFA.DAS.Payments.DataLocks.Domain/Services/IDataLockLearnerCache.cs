@@ -8,5 +8,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
     {
         Task<bool> HasLearnerRecords();
         Task<List<ApprenticeshipModel>> GetLearnerApprenticeships(long uln);
+        Task<List<ApprenticeshipModel>> GetDuplicateApprenticeships(long ukprn);
     }
 }

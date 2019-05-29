@@ -27,8 +27,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         protected override  bool FailedValidationAsync(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
         {
             var allDuplicateApprenticeships =  dataLockLearnerCache
-                .GetLearnerApprenticeships(dataLockValidationModel.Apprenticeship.Ukprn)
+                .GetDuplicateApprenticeships(dataLockValidationModel.Apprenticeship.Ukprn)
                 .Result;
+
+            if (!allDuplicateApprenticeships.Any())
+                return false;
 
             // Apprenticeship has a duplicate
             var duplicates = allDuplicateApprenticeships.Where(x => x.Uln == dataLockValidationModel.Uln && x.Id != dataLockValidationModel.Apprenticeship.Id).ToList();

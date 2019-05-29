@@ -31,31 +31,36 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            apprenticeships?.ForEach( x=> x.ApprenticeshipPriceEpisodes = x.ApprenticeshipPriceEpisodes?
-                                                                            .Where(o => !o.Removed)
-                                                                            .ToList());
+            RemoveNonActivePriceEpisodes(apprenticeships);
 
             return apprenticeships;
         }
 
         public async Task<List<ApprenticeshipModel>> DuplicateApprenticeshipsForProvider(long ukprn)
         {
-            var apprenticeshipDuplicates = await dataContext.ApprenticeshipDuplicate
-                .Include(x => x.Apprenticeship)
+            var apprenticeshipDuplicateIds = await dataContext.ApprenticeshipDuplicate
                 .Where(x => x.Ukprn == ukprn)
+                .Select(x => x.ApprenticeshipId)
                 .ToListAsync()
                 .ConfigureAwait(false);
 
-            foreach (var apprenticeshipDuplicate in apprenticeshipDuplicates)
-            {
-                apprenticeshipDuplicate.Apprenticeship.ApprenticeshipPriceEpisodes = await dataContext.ApprenticeshipPriceEpisode
-                    .Where(x => !x.Removed && x.ApprenticeshipId == apprenticeshipDuplicate.Apprenticeship.Id)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
-            }
+            var apprenticeships = await dataContext.Apprenticeship
+                 .Include(x => x.ApprenticeshipPriceEpisodes)
+                 .Where(x => apprenticeshipDuplicateIds.Contains(x.Id))
+                 .ToListAsync()
+                 .ConfigureAwait(false);
 
-            return apprenticeshipDuplicates.Select(x => x.Apprenticeship).ToList();
+            RemoveNonActivePriceEpisodes(apprenticeships);
+
+            return apprenticeships;
+
         }
 
+        private static void RemoveNonActivePriceEpisodes(List<ApprenticeshipModel> apprenticeships)
+        {
+            apprenticeships.ForEach(x => x.ApprenticeshipPriceEpisodes = x.ApprenticeshipPriceEpisodes?
+                .Where(o => !o.Removed)
+                .ToList());
+        }
     }
 }

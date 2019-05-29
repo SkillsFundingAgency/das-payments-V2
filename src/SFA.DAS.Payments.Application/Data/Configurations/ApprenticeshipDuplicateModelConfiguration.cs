@@ -12,10 +12,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.ToTable("ApprenticeshipDuplicate", "Payments2");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
-            builder.OwnsOne(p => p.Apprenticeship, a =>
-            {
-                a.Property(x => x.Id).HasColumnName(@"ApprenticeshipId").IsRequired();
-            });
+            builder.Property(x => x.ApprenticeshipId).HasColumnName(@"ApprenticeshipId").IsRequired();
             builder.Property(x => x.Uln).HasColumnName(@"Uln").IsRequired();
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();
         }
