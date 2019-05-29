@@ -99,7 +99,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public class AndAllEventsArePayments
         {
             [Test]
-            public new void ThenTheResultsShouldSortByPriority()
+            public void ThenTheResultsShouldSortByPriority()
             {
                 var keys = new List<string>();
                 var lowPriorityKey = sut.Generate(100, 2, 0, DateTime.Today, false, eventId);
@@ -118,7 +118,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests.GivenASortableKeyGener
         public class AndAllEventsAreRefunds
         {
             [Test]
-            public new void ThenTheResultsShouldSortByPriority()
+            public void ThenTheResultsShouldSortByPriority()
             {
                 var keys = new List<string>();
                 var lowPriorityKey = sut.Generate(-1, 2, 0, DateTime.Today, false, eventId);
