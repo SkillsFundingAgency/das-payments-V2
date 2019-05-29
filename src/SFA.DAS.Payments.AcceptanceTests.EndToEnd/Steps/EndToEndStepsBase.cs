@@ -416,13 +416,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             for (var i = 0; i < orderedPriceEpisodes.Count; i++)
             {
                 var currentPriceEpisode = priceEpisodesForAim[i];
-                //var tnpStartDate =  orderedPriceEpisodes
-                //    .First(x => x.PriceEpisodeValues.PriceEpisodeTotalTNPPrice ==
-                //                currentPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice)
-                //    .PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
-
-                //currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = tnpStartDate;
-
+              
                 if (aim.ActualDurationAsTimespan.HasValue)
                 {
                     currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
@@ -491,17 +485,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                 newValues.SetValue(p, amount);
                             }
                         }
-
-                        /*
-                        for (var p = 1; p < 13; p++)
-                        {
-                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod ||
-                                         (PeriodisedValuesForBalancingAndCompletion().Contains(currentValues.AttributeName) && p > episodeLastPeriod)
-                                ? currentValues.GetValue(p)
-                                : 0;
-                            newValues.SetValue(p, amount);
-                        }
-                        */
                     }
                     else // put everything as is for previous years
                     {
