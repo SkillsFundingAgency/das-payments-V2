@@ -33,7 +33,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Cache
             return apprenticeships;
         }
 
-
         private async Task<List<ApprenticeshipModel>> GetApprenticeships(long key)
         {
             var apprenticeshipsCacheValue = await dataCache.TryGet(key.ToString()).ConfigureAwait(false);
