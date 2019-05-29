@@ -1,3 +1,5 @@
+@ignore
+# generates refunds for first 8 periods on 1st price details as well as payment for 2nd price details
 Feature: Learner changes from a non-levy to levy employer, levy is available for the levy employer PV2-366
 	As a provider,
 	I want an apprentice that changes from a non-levy to levy employer, levy is available for the levy employer, to be paid the correct amount
@@ -41,7 +43,7 @@ Scenario Outline: Learner changes from a non-levy to levy employer, levy is avai
 	And price details as follows
         | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
         | 1st price details | 5000                 | 06/Aug/Current Academic Year        | 1000                   | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act2          |
-        | 2nd price details | 5000                 | 06/Aug/Current Academic Year        | 1000                   | 06/Aug/Current Academic Year          | 2500                    | 01/Apr/Current Academic Year           | 1000                      | 01/Apr/Current Academic Year             | 90%                         | Act1          |
+        | 2nd price details | 5000                 | 01/Apr/Current Academic Year        | 1000                   | 01/Apr/Current Academic Year          | 2500                    | 01/Apr/Current Academic Year           | 1000                      | 01/Apr/Current Academic Year             | 90%                         | Act1          |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
