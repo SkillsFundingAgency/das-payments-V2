@@ -53,6 +53,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             if (apprenticeshipSpec.AccountId == default(long))
                 apprenticeshipSpec.AccountId = employer.AccountId;
 
+            if (!string.IsNullOrEmpty(apprenticeshipSpec.SendingEmployer) && !apprenticeshipSpec.SenderAccountId.HasValue)
+                apprenticeshipSpec.SenderAccountId = testSession.GetEmployer(apprenticeshipSpec.SendingEmployer).AccountId;
+
             if (apprenticeshipSpec.Uln == default(long))
             {
                 var learnerId = string.IsNullOrWhiteSpace(apprenticeshipSpec.Identifier)
@@ -67,6 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 Id = apprenticeshipSpec.ApprenticeshipId,
                 Ukprn = apprenticeshipSpec.Ukprn,
                 AccountId = apprenticeshipSpec.AccountId,
+                TransferSendingEmployerAccountId = apprenticeshipSpec.SenderAccountId,
                 Uln = apprenticeshipSpec.Uln,
                 FrameworkCode = apprenticeshipSpec.FrameworkCode ?? 0, //TODO change when app bug is fixed
                 ProgrammeType = apprenticeshipSpec.ProgrammeType ?? 0,
