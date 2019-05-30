@@ -30,6 +30,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 
         private static long ComputeUln(long index)
         {
+            // this black magic is borrowed from TDG, don't touch it. It works.
+
             index += 990000000;
             string s = index.ToString();
             s = s.PadRight(9, '0');
