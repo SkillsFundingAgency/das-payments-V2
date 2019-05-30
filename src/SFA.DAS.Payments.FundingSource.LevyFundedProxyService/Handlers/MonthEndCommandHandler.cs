@@ -7,6 +7,8 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
@@ -30,11 +32,26 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
             using (var operation = telemetry.StartOperation())
             {
-                var actorId = new ActorId(command.AccountId);
-                var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
-                await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
-                telemetry.StopOperation(operation);
+                try
+                {
+                    var actorId = new ActorId(command.AccountId);
+                    var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
+                    var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
+                    foreach (var fundingSourcePaymentEvent in fundingSourceEvents)
+                    {
+                        if (fundingSourcePaymentEvent is ProcessUnableToFundTransferFundingSourcePayment)
+                            await context.SendLocal(fundingSourcePaymentEvent).ConfigureAwait(false);
+                        else
+                            await context.Publish(fundingSourcePaymentEvent).ConfigureAwait(false);
+                    }
+                    //await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
+                    telemetry.StopOperation(operation);
+                }
+                catch (Exception ex)
+                {
+                    paymentLogger.LogError($"Error performing month end for account: {command.AccountId}. Error: {ex}", ex);
+                    throw;
+                }
             }
         }
     }

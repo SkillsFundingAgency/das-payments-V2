@@ -4,5 +4,6 @@
     {
         public static readonly string MonthEndCacheKey = "MonthEndPaymentsProcessed";
         public static readonly string KeyListKey = "keys";
+        public static readonly string LevyBalanceKey = "EmployerLevyAccountBalance";
     }
 }

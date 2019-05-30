@@ -18,6 +18,7 @@ using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -42,6 +43,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private IRequiredLevyAmountFundingSourceService service;
         private MapperConfiguration mapperConfiguration;
         private Mock<IPaymentLogger> paymentLoggerMock;
+        private Mock<IDataCache<LevyAccountModel>> levyAccountCacheMock;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -57,6 +59,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             eventCacheMock = mocker.Mock<IDataCache<CalculatedRequiredLevyAmount>>();
             keyCacheMock = mocker.Mock<IDataCache<List<string>>>();
             monthEndCacheMock = mocker.Mock<IDataCache<bool>>();
+            levyAccountCacheMock = mocker.Mock<IDataCache<LevyAccountModel>>();
             levyAccountRepositoryMock = mocker.Mock<ILevyAccountRepository>();
             processorMock = mocker.Mock<IPaymentProcessor>();
             levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
@@ -68,6 +71,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             );
             monthEndCacheMock.Setup(x => x.AddOrReplace(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
+            levyAccountCacheMock.Setup(c => c.AddOrReplace(CacheKeys.LevyBalanceKey, It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            levyBalanceServiceMock.SetupGet(svc => svc.RemainingBalance).Returns(100);
+            levyBalanceServiceMock.SetupGet(svc => svc.RemainingTransferAllowance).Returns(50);
         }
 
         [TearDown]
@@ -78,6 +85,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             processorMock.Verify();
             levyAccountRepositoryMock.Verify();
             sortableKeysMock.Verify();
+            levyAccountCacheMock.Verify();
         }
 
         [Test]
@@ -200,7 +208,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verifiable();
 
             levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None))
-                .ReturnsAsync(() => new LevyAccountModel { Balance = balance, TransferAllowance = transferAllowance })
+                .ReturnsAsync(() => new LevyAccountModel { AccountId = 666, Balance = balance, TransferAllowance = transferAllowance })
                 .Verifiable();
 
             levyBalanceServiceMock.Setup(s => s.Initialise(balance, transferAllowance)).Verifiable();
@@ -211,6 +219,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
             sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<Guid>()))
                 .Returns(keys[0]);
+            levyAccountCacheMock.Setup(c => c.AddOrReplace(It.Is<string>(key => key.Equals(CacheKeys.LevyBalanceKey)), It.Is<LevyAccountModel>(model => model.AccountId == 666), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
 
             // act
             var fundingSourcePayments = await service.HandleMonthEnd(666, 1);
@@ -224,10 +235,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             fundingSourcePayments[0].AmountDue.Should().Be(55);
             fundingSourcePayments[1].AmountDue.Should().Be(44);
             fundingSourcePayments[2].AmountDue.Should().Be(33);
+
         }
 
         [Test]
-        public async Task TestRequiredPaymentsSorted()
+        public async Task TestMonthEndPaymentProcessing()
         {
             // arrange
             var keys = new List<string> { "1", "99", "4", "9" };
@@ -260,7 +272,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verifiable();
 
             levyAccountRepositoryMock.Setup(r => r.GetLevyAccount(666, CancellationToken.None))
-                .ReturnsAsync(() => new LevyAccountModel { Balance = balance, TransferAllowance = transferAllowance })
+                .ReturnsAsync(() => new LevyAccountModel { AccountId = 666, Balance = balance, TransferAllowance = transferAllowance })
                 .Verifiable();
 
             levyBalanceServiceMock.Setup(s => s.Initialise(balance, transferAllowance)).Verifiable();
@@ -277,6 +289,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
 
             keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            levyAccountCacheMock.Setup(c => c.AddOrReplace(CacheKeys.LevyBalanceKey, It.Is<LevyAccountModel>(model => model.AccountId == 666), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
 
             // act
             await service.HandleMonthEnd(666, 1);
@@ -403,7 +418,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             // assert
             fundingSourcePayments.Should().HaveCount(2);
             fundingSourcePayments[0].Should().BeOfType<TransferFundingSourcePaymentEvent>();
-            fundingSourcePayments[1].Should().BeOfType<UnableToFundTransferFundingSourcePaymentEvent>();
+            fundingSourcePayments[1].Should().BeOfType<ProcessUnableToFundTransferFundingSourcePayment>();
 
             fundingSourcePayments[0].AmountDue.Should().Be(55);
             fundingSourcePayments[1].AmountDue.Should().Be(44);
@@ -457,6 +472,95 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             // assert
             monthEndCacheMock.Verify(x => x.AddOrReplace(It.Is<string>(key => key.Equals(CacheKeys.MonthEndCacheKey)), It.Is<bool>(value => value), It.IsAny<CancellationToken>()));
+        }
+
+        [Test]
+        public async Task ShouldAddPaymentToCacheIfMonthEndNotStarted()
+        {
+            // arrange
+            var keys = new List<string> { "1", "2" };
+            var unableToFundEvent = new ProcessUnableToFundTransferFundingSourcePayment
+            {
+                EventId = Guid.NewGuid(),
+                Learner = new Learner(),
+                AccountId = 1,
+                AmountDue = 100
+            };
+
+            var sortableKey = "test_key";
+
+            eventCacheMock.Setup(c => c.Add(sortableKey, It.Is<CalculatedRequiredLevyAmount>(levyEvent => levyEvent.AmountDue == unableToFundEvent.AmountDue && levyEvent.EventId == unableToFundEvent.EventId), CancellationToken.None))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+            keyCacheMock.Setup(c => c.TryGet(CacheKeys.KeyListKey, CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+                .Verifiable();
+            keyCacheMock.Setup(c => c.AddOrReplace(CacheKeys.KeyListKey, It.Is<List<string>>(list => list.Count == 3 && list[2] == sortableKey), CancellationToken.None))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<Guid>()))
+                .Returns(sortableKey);
+            monthEndCacheMock.Setup(c => c.TryGet(It.Is<string>(key => key.Equals(CacheKeys.MonthEndCacheKey)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new ConditionalValue<bool>(false, false))
+                .Verifiable();
+
+            // act
+            await service.ProcessReceiverTransferPayment(unableToFundEvent);
+
+            // assert
+        }
+
+        [Test]
+        public async Task ShouldProcessPaymentIfMonthEndProcessed()
+        {
+            // arrange
+            var keys = new List<string> { "1" };
+            var unableToFundEvent = new ProcessUnableToFundTransferFundingSourcePayment
+            {
+                EventId = Guid.NewGuid(),
+                Learner = new Learner(),
+                AccountId = 666,
+                AmountDue = 100
+            };
+
+            var balance = 100m;
+            var transferAllowance = 50;
+            var levyPayment = new LevyPayment { AmountDue = 55, Type = FundingSourceType.Levy };
+            var employerCoInvestedPayment = new EmployerCoInvestedPayment { AmountDue = 44, Type = FundingSourceType.CoInvestedEmployer };
+            var sfaCoInvestedPayment = new SfaCoInvestedPayment { AmountDue = 33, Type = FundingSourceType.CoInvestedSfa };
+            var allPayments = new FundingSourcePayment[] { levyPayment, employerCoInvestedPayment, sfaCoInvestedPayment };
+
+            levyBalanceServiceMock.Setup(s => s.Initialise(balance, transferAllowance))
+                .Verifiable();
+
+            processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>()))
+                .Returns(() => allPayments)
+                .Verifiable();
+
+            monthEndCacheMock.Setup(c => c.TryGet(It.Is<string>(key => key.Equals(CacheKeys.MonthEndCacheKey)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new ConditionalValue<bool>(true, true))
+                .Verifiable();
+
+            levyAccountCacheMock.Setup(c => c.TryGet(CacheKeys.LevyBalanceKey, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new ConditionalValue<LevyAccountModel>(true, new LevyAccountModel { AccountId = 666, Balance = balance, TransferAllowance = transferAllowance }))
+                .Verifiable();
+
+            levyAccountCacheMock.Setup(c => c.AddOrReplace(CacheKeys.LevyBalanceKey,It.Is<LevyAccountModel>(model => model.AccountId == 666),   It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            // act
+            var fundingSourcePayments = await service.ProcessReceiverTransferPayment(unableToFundEvent);
+
+            // assert
+            fundingSourcePayments.Should().HaveCount(3);
+            fundingSourcePayments[0].Should().BeOfType<LevyFundingSourcePaymentEvent>();
+            fundingSourcePayments[1].Should().BeOfType<EmployerCoInvestedFundingSourcePaymentEvent>();
+            fundingSourcePayments[2].Should().BeOfType<SfaCoInvestedFundingSourcePaymentEvent>();
+
+            fundingSourcePayments[0].AmountDue.Should().Be(55);
+            fundingSourcePayments[1].AmountDue.Should().Be(44);
+            fundingSourcePayments[2].AmountDue.Should().Be(33);
         }
     }
 }

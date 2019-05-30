@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
@@ -6,11 +7,11 @@ using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 {
-    public class UnableToFundTransferFundingSourcePaymentEventHandler: IHandleMessages<UnableToFundTransferFundingSourcePaymentEvent>
+    public class UnableToFundTransferFundingSourcePaymentEventHandler: IHandleMessages<ProcessUnableToFundTransferFundingSourcePayment>
     {
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger logger;
@@ -24,9 +25,9 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
         }
 
-        public async Task Handle(UnableToFundTransferFundingSourcePaymentEvent message, IMessageHandlerContext context)
+        public async Task Handle(ProcessUnableToFundTransferFundingSourcePayment message, IMessageHandlerContext context)
         {
-            logger.LogInfo($"Processing UnableToFundTransferFundingSourcePaymentEvent event. Message Id: {message.EventId}, Learner: {message.Learner?.ReferenceNumber}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
+            logger.LogInfo($"Processing ProcessUnableToFundTransferFundingSourcePayment event. Message Id: {message.EventId}, Learner: {message.Learner?.ReferenceNumber}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
             ((ESFA.DC.Logging.ExecutionContext)executionContext).JobId = message.JobId.ToString();
 
             if (!message.AccountId.HasValue)
@@ -37,12 +38,13 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                 logger.LogDebug($"Sending message to actor: {message.AccountId.Value}.");
                 var actorId = new ActorId(message.AccountId.Value);
                 var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                await actor.UnableToFundTransfer(message).ConfigureAwait(false);
-                logger.LogInfo($"Successfully processed UnableToFundTransferFundingSourcePaymentEvent event for Actor Id {actorId}, Learner: {message.Learner?.ReferenceNumber}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
+                var fundingSourceEvents = await actor.UnableToFundTransfer(message).ConfigureAwait(false);
+                await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
+                logger.LogInfo($"Successfully processed ProcessUnableToFundTransferFundingSourcePayment event for Actor Id {actorId}, Learner: {message.Learner?.ReferenceNumber}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error while handling UnableToFundTransferFundingSourcePaymentEvent event. Error: {ex.Message}, Event Id: {message.EventId}, Learner: {message.Learner?.ReferenceNumber}, Job: {message.JobId}, UKPRN: {message.Ukprn}", ex);
+                logger.LogError($"Error while handling ProcessUnableToFundTransferFundingSourcePayment event. Error: {ex.Message}, Event Id: {message.EventId}, Learner: {message.Learner?.ReferenceNumber}, Job: {message.JobId}, UKPRN: {message.Ukprn}", ex);
                 throw;
             }
 

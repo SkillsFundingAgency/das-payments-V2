@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Remoting;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -18,7 +19,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces
     public interface ILevyFundedService : IActor
     {
         Task HandleRequiredPayment(CalculatedRequiredLevyAmount message);
-        Task UnableToFundTransfer(UnableToFundTransferFundingSourcePaymentEvent message);
+        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> UnableToFundTransfer(ProcessUnableToFundTransferFundingSourcePayment message);
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command);
     }
 }

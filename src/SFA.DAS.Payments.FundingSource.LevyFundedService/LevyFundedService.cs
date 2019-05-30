@@ -14,8 +14,10 @@ using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 
@@ -30,6 +32,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private IDataCache<List<string>> requiredPaymentKeys;
         private IDataCache<bool> monthEndCache;
+        private IDataCache<LevyAccountModel> levyAccountCache;
         private readonly ILifetimeScope lifetimeScope;
 
         public LevyFundedService(
@@ -37,12 +40,11 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             ActorId actorId,
             IPaymentLogger paymentLogger,
             ITelemetry telemetry,
-            IRequiredLevyAmountFundingSourceService fundingSourceService, ILifetimeScope lifetimeScope)
+            ILifetimeScope lifetimeScope)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
             this.telemetry = telemetry;
-            this.fundingSourceService = fundingSourceService;
             this.lifetimeScope = lifetimeScope;
         }
 
@@ -57,14 +59,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
         }
 
-        public async Task UnableToFundTransfer(UnableToFundTransferFundingSourcePaymentEvent message)
+        public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> UnableToFundTransfer(ProcessUnableToFundTransferFundingSourcePayment message)
         {
             using (var operation = telemetry.StartOperation())
             {
                 paymentLogger.LogDebug($"Handling UnableToFundTransfer for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Receiver Account: {message.AccountId}, Sender Account: {message.TransferSenderAccountId}");
-                await fundingSourceService.ProcessReceiverTransferPayment(message).ConfigureAwait(false);
+                var fundingSourcePayments = await fundingSourceService.ProcessReceiverTransferPayment(message).ConfigureAwait(false);
                 paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
                 telemetry.StopOperation(operation);
+                return fundingSourcePayments;
             }
         }
 
@@ -93,6 +96,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
             requiredPaymentKeys = new ReliableCollectionCache<List<string>>(StateManager);
             monthEndCache = new ReliableCollectionCache<bool>(StateManager);
+            levyAccountCache = new ReliableCollectionCache<LevyAccountModel>(StateManager);
             fundingSourceService = new RequiredLevyAmountFundingSourceService(
                 lifetimeScope.Resolve<IPaymentProcessor>(),
                 lifetimeScope.Resolve<IMapper>(),
@@ -102,7 +106,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 lifetimeScope.Resolve<ILevyBalanceService>(),
                 lifetimeScope.Resolve<IPaymentLogger>(),
                 lifetimeScope.Resolve<ISortableKeyGenerator>(),
-                monthEndCache
+                monthEndCache, 
+                levyAccountCache
             );
             await base.OnActivateAsync().ConfigureAwait(false);
         }
