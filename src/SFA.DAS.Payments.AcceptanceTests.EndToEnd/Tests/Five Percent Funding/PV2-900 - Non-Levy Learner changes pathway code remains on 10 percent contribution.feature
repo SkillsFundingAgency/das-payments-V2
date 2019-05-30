@@ -42,7 +42,7 @@ Feature: Non-Levy Learner changes pathway code remains on 10 percent contributio
 Scenario Outline: Non-Levy Learner previously on 10 percent contribution but moves to 5 percent later - PV2-900
 	Given the provider previously submitted the following learner details
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 03/Jan/Current Academic Year | 12 months        | 15000                | 03/Jan/Current Academic Year        | 0                      | 03/Jan/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| 03/Jan/Current Academic Year | 12 months        | 15000                | 03/Jan/Current Academic Year        | 0                      |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 0            | 0          | 0         |
@@ -64,23 +64,27 @@ Scenario Outline: Non-Levy Learner previously on 10 percent contribution but mov
         | R08/Current Academic Year | Mar/Current Academic Year | 900                    | 100                         | Learning         |
     But the Provider now changes the Learner details as follows
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 03/Jan/Current Academic Year | 12 months        | 15000                | 03/Jan/Current Academic Year        | 0                      | 03/Jan/Current Academic Year          | 3 months        | withdrawn         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
-		| 01/Apr/Current Academic Year | 12 months        | 15000                | 01/Apr/Current Academic Year        | 0                      | 01/Apr/Current Academic Year          |                 | continuing        | Act2          | 2                   | ZPROG001      | 593            | 2            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| 03/Jan/Current Academic Year | 12 months        | 15000                | 03/Jan/Current Academic Year        | 0                      |                                       | 3 months        | withdrawn         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| 01/Apr/Current Academic Year | 12 months        | 15000                | 01/Apr/Current Academic Year        | 0                      |                                       |                 | continuing        | Act2          | 2                   | ZPROG001      | 593            | 2            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+	And price details as follows
+        | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+        | pe-1             | 15000                | 03/Jan/Current Academic Year        |                        |                                       | 0                       |                                        |                           |                                          | 90%                         | Act2          | 1                   | 90%                         |
+        | pe-2             | 15000                | 01/Apr/Current Academic Year        |                        |                                       | 0                       |                                        |                           |                                          | 95%                         | Act2          | 2                   | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing |
-		| Aug/Current Academic Year | 0            | 0          | 0         |
-		| Sep/Current Academic Year | 0            | 0          | 0         |
-		| Oct/Current Academic Year | 0            | 0          | 0         |
-		| Nov/Current Academic Year | 0            | 0          | 0         |
-		| Dec/Current Academic Year | 0            | 0          | 0         |
-		| Jan/Current Academic Year | 1000         | 0          | 0         |
-		| Feb/Current Academic Year | 1000         | 0          | 0         |
-		| Mar/Current Academic Year | 1000         | 0          | 0         |
-		| Apr/Current Academic Year | 1000         | 0          | 0         |
-		| May/Current Academic Year | 1000         | 0          | 0         |
-		| Jun/Current Academic Year | 1000         | 0          | 0         |
-		| Jul/Current Academic Year | 1000         | 0          | 0         |
+		| Delivery Period           | On-Programme | Completion | Balancing | Aim Sequence Number | Price Episode Identifier |
+		| Aug/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
+		| Sep/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
+		| Oct/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
+		| Nov/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
+		| Dec/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
+		| Jan/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-1                     |
+		| Feb/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-1                     |
+		| Mar/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-1                     |
+		| Apr/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
+		| May/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
+		| Jun/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
+		| Jul/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
     And at month end only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | LearningSupport |
 		| R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         | 0               |
