@@ -12,7 +12,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Newtonsoft.Json;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using Earning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Earning;
 using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
@@ -28,6 +28,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly List<Training> currentIlr;
         private readonly IList<Earning> earningSpecs;
         private readonly IList<FM36Learner> learnerSpecs;
+
+        private static readonly TestsConfiguration Config = new TestsConfiguration();
 
         public EarningEventMatcher(Provider provider , List<Price> currentPriceEpisodes,List<Training> currentIlr, IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
         {
@@ -276,9 +278,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     expectedEarningPeriods[i].Period != actualEarningPeriods[i].Period)
                     return false;
 
-                //if (expectedEarningPeriods[i].Amount != 0 &&
-                //    expectedEarningPeriods[i].PriceEpisodeIdentifier != actualEarningPeriods[i].PriceEpisodeIdentifier)
-                //    return false;
+                if (!Config.ValidateDcAndDasServices)
+                {
+                    if (expectedEarningPeriods[i].Amount != 0 &&
+                        expectedEarningPeriods[i].PriceEpisodeIdentifier != actualEarningPeriods[i].PriceEpisodeIdentifier)
+                        return false;
+                }
             }
 
             return true;
