@@ -94,7 +94,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     };
 
                     requiredPayments = requiredPaymentProcessor.GetRequiredPayments(earning, payments);
-                    holdBackCompletionPayments = await HoldBackCompletionPayments(earningEvent, earning, type, cancellationToken).ConfigureAwait(false);
+                    if (requiredPayments.Count > 0)
+                    {
+                        holdBackCompletionPayments = await HoldBackCompletionPayments(earningEvent, earning, type, cancellationToken).ConfigureAwait(false);
+                    }
                 }
 
                 if (requiredPayments.Sum(x => x.Amount) == 0)

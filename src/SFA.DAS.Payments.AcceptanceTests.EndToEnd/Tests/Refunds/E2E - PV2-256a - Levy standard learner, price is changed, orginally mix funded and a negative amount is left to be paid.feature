@@ -76,38 +76,38 @@
 
     And the following provider payments had been generated 
 	    | Collection Period         | Delivery Period           | Levy Payments | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-        | R01/Current Academic Year | Aug/Current Academic Year | 750               | 0                      | 0                           | Learning         |
-        | R02/Current Academic Year | Sep/Current Academic Year | 375               | 337.5                  | 37.5                        | Learning         |
+	    | R01/Current Academic Year | Aug/Current Academic Year | 750           | 0                      | 0                           | Learning         |
+	    | R02/Current Academic Year | Sep/Current Academic Year | 375           | 337.5                  | 37.5                        | Learning         |
 
     But  the Commitment details are changed as follows
 		| Identifier       | Learner ID | start date                   | end date                     | agreed price | standard code | programme type | status |
 		| Apprenticeship a | learner a  | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 1400         | 25            | 25             | active |
 
     And the Provider now changes the Learner details as follows
-		| Start Date                   | Planned Duration | Actual Duration | Programme Type | Completion Status | SFA Contribution Percentage |
-		| 01/Aug/Current Academic Year | 12 months        | 12 months       | 25             | continuing        | 90%                         |
-
+		| Start Date                   | Planned Duration | Actual Duration | Programme Type | Completion Status | SFA Contribution Percentage | Contract Type | Aim Reference | standard code |Funding Line Type                                  | 
+		| 01/Aug/Current Academic Year | 12 months        | 12 months       | 25             | continuing        | 90%                         | Act1          | ZPROG001      | 25            |16-18 Apprenticeship (From May 2017) Levy Contract | 
+																																																
 	And price details as follows
-        | Price details     | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date |
-        | 1st price details | 9000                 | Aug/Current Academic Year           | 2250                  | Aug/Current Academic Year            |
-        | 2nd price details | 1200                 | Oct/Current Academic Year           | 200                   | Oct/Current Academic Year            |
+        | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | SFA Contribution Percentage |
+        | 1st price details | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             | Act1          | 90%                         |
+        | 2nd price details | 1200                 | Oct/Current Academic Year           | 200                    | Oct/Current Academic Year             | Act1          | 90%                         |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
 	Then the following learner earnings should be generated
-        | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 750          | 0          | 0         |
-        | Sep/Current Academic Year | 750          | 0          | 0         |
-        | Oct/Current Academic Year | -100         | 0          | 0         |
-        | Nov/Current Academic Year | 0            | 0          | 0         |
-        | Dec/Current Academic Year | 0            | 0          | 0         |
-        | Jan/Current Academic Year | 0            | 0          | 0         |
-        | Feb/Current Academic Year | 0            | 0          | 0         |
-        | Mar/Current Academic Year | 0            | 0          | 0         |
-        | Apr/Current Academic Year | 0            | 0          | 0         |
-        | May/Current Academic Year | 0            | 0          | 0         |
-        | Jun/Current Academic Year | 0            | 0          | 0         |
-        | Jul/Current Academic Year | 0            | 0          | 0         |
+        | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+        | Aug/Current Academic Year | 750          | 0          | 0         | pe-1                     |
+        | Sep/Current Academic Year | 750          | 0          | 0         | pe-1                     |
+        | Oct/Current Academic Year | -100         | 0          | 0         | pe-2                     |
+        | Nov/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Dec/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Jan/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Feb/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Mar/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Apr/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | May/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Jun/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Jul/Current Academic Year | 0            | 0          | 0         | pe-2                     |
 
 	
     And at month end only the following payments will be calculated
@@ -123,7 +123,8 @@
         | R03/Current Academic Year | Oct/Current Academic Year | -50           | -45                    | -5                          |
 
 Examples: 
-        | Collection_Period         | Levy_Balance |
-        | R01/Current Academic Year | 750          |
-        | R02/Current Academic Year | 375          |
-        | R03/Current Academic Year | 0            |
+        | Collection_Period         | Levy_Balance              |
+#       | R01/Current Academic Year | 750 |
+#       | R02/Current Academic Year | 375 |
+        | R03/Current Academic Year | 0                         |
+        | R04/Current Academic Year | 0                         |
