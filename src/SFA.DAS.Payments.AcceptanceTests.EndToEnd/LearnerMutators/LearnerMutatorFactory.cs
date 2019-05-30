@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "277":
                     return new Framework593LearnerWithdrawsAfterQualifyingPeriod(learnerRequests);
                 case "278":
-                    return new FM36_278(learnerRequests);
+                    return new Framework593LearnerWithdrawsAfterPlannedEndDate(learnerRequests);
                 case "328":
                     return new FM36_328(learnerRequests);
                 default:

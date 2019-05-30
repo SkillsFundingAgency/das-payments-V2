@@ -341,8 +341,8 @@
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
     <Compile Include="LearnerMutators\FM36Base.cs" />
     <Compile Include="LearnerMutators\Framework403Learner.cs" />
-    <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_277.cs" />
-    <Compile Include="LearnerMutators\NonLevy\BasicDay\FM36_278.cs" />
+    <Compile Include="LearnerMutators\NonLevy\BasicDay\Framework593LearnerWithdrawsAfterQualifyingPeriod.cs" />
+    <Compile Include="LearnerMutators\NonLevy\BasicDay\Framework593LearnerWithdrawsAfterPlannedEndDate.cs" />
     <Compile Include="LearnerMutators\IlrDcService.cs" />
     <Compile Include="LearnerMutators\LearnerMutatorFactory.cs" />
     <Compile Include="LearnerMutators\LearnerRequest.cs" />
