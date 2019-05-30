@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Net;
 using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure.IoC;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -20,7 +20,6 @@ using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
 {
-    using LearnerMutators;
 
     [Binding]
     public class FeatureScopedBootstrapper : TestSessionBase

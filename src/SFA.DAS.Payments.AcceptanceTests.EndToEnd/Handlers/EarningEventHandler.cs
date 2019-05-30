@@ -1,10 +1,10 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
-{
-    using System.Collections.Concurrent;
-    using System.Threading.Tasks;
-    using NServiceBus;
-    using SFA.DAS.Payments.EarningEvents.Messages.Events;
+﻿using System.Collections.Concurrent;
+using System.Threading.Tasks;
+using NServiceBus;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers
+{
     public class EarningEventHandler : IHandleMessages<EarningEvent>
     {
         public static ConcurrentBag<EarningEvent> ReceivedEvents { get; } = new ConcurrentBag<EarningEvent>();

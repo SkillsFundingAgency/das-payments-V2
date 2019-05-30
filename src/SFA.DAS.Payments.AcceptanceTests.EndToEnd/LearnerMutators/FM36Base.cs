@@ -349,6 +349,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             learner.LearningDelivery[1].LearningDeliveryHE = ldhe.ToArray();
         }
+
         private long CalculateEmployerContribution(string sfaContributionPercentage, decimal totalTrainingPrice)
         {
             if (string.IsNullOrWhiteSpace(sfaContributionPercentage) || !sfaContributionPercentage.Contains("%") || !int.TryParse(sfaContributionPercentage.Split('%')[0],
