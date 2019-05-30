@@ -164,6 +164,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 var testEarning = new Earning
                 {
+                    PriceEpisodeIdentifier = "pe-1",
                     SfaContributionPercentage = null,
                     Amount = 0
                 };
@@ -200,6 +201,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 var testEarning = new Earning
                 {
+                    PriceEpisodeIdentifier = "pe-1",
                     SfaContributionPercentage = .9M,
                 };
                 paymentHistory.Add(new Payment { SfaContributionPercentage = .9M });
@@ -245,6 +247,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 var testEarning = new Earning
                 {
+                    PriceEpisodeIdentifier = "pe-1",
                     SfaContributionPercentage = .9M,
                     Amount = 50,
                 };
@@ -279,6 +282,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 var testEarning = new Earning
                 {
+                    PriceEpisodeIdentifier = "pe-1",
                     SfaContributionPercentage = .9M,
                     Amount = 0,
                 };

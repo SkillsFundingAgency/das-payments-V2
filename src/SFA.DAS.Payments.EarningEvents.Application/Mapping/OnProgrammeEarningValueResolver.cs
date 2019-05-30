@@ -43,7 +43,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
 
                 var sourcePriceEpisodeIdentifier =
-                    source.PriceEpisodes[periodValues.IndexOf(periodValue)].PriceEpisodeIdentifier;
+                    periodValues.Length == 0
+                        ? string.Empty
+                        : source.PriceEpisodes[periodValues.IndexOf(periodValue)].PriceEpisodeIdentifier;
                 var priceEpisodeIdentifier = string.IsNullOrWhiteSpace(sourcePriceEpisodeIdentifier) && periodValue == 0
                     ? null
                     : sourcePriceEpisodeIdentifier;
