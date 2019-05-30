@@ -1,11 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
     public class UlnService : IUlnService
     {
+        private static readonly HashSet<long> usedIndices = new HashSet<long>();
+
         public long GenerateUln(long index)
         {
+            if (usedIndices.Contains(index))
+                index = index + (index - 10_000_000);
+            else
+                usedIndices.Add(index);
+
             int roundedIndex = RoundUpToMultipleOfTen(index);
             try
             {
