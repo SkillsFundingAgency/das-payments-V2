@@ -96,8 +96,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 
             Builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
 
-            Builder.RegisterType<CollectionManagementService>().As<ICollectionManagementService>().InstancePerLifetimeScope();
-
             EndpointConfiguration = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
             Builder.RegisterInstance(EndpointConfiguration)
                 .SingleInstance();
