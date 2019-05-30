@@ -1,4 +1,4 @@
-﻿@supports_dc_e2e
+﻿#@supports_dc_e2e currently blocked by PV2-1014
 Feature: Non-levy learner completes maths and english early PV2-485
 
 Scenario Outline: Non-levy learner completes maths and english early PV2-485
