@@ -150,13 +150,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             var retryPolicy = Policy
                 .Handle<JobStatusNotWaitingException>()
-                .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+                .WaitAndRetryAsync(7, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
             await retryPolicy.ExecuteAsync(async () =>
             {
                 var jobStatus = await jobService.GetJobStatus(jobId);
                 if (jobStatus != JobStatusType.Waiting)
-                    throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status");
+                    throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status. Current status id {jobStatus}");
             }
             );
 
