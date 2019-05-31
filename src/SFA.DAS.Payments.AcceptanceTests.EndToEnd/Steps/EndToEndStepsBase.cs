@@ -73,6 +73,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value);
         }
 
+        protected List<ApprenticeshipDuplicateModel> ApprenticeshipDuplicates
+        {
+            get => !Context.TryGetValue<List<ApprenticeshipDuplicateModel>>(out var apprenticeshipDuplicates) ? null : apprenticeshipDuplicates;
+            set => Set(value);
+        }
+
         protected List<Earning> PreviousEarnings
         {
             get => !Context.TryGetValue<List<Earning>>("previous_earnings", out var previousEarnings) ? null : previousEarnings;
@@ -175,6 +181,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task AddOrUpdateTestApprenticeships(List<Apprenticeship> apprenticeshipSpecs)
         {
             if (Apprenticeships == null) Apprenticeships = new List<Apprenticeship>();
+            if (ApprenticeshipDuplicates == null) ApprenticeshipDuplicates = new List<ApprenticeshipDuplicateModel>();
 
             var groupedApprenticeships = apprenticeshipSpecs
                 .GroupBy(a => a.Identifier)
@@ -187,8 +194,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     //use last apprenticeship to make sure it picks up the most recent status
                     specApprenticeship = group.Last();
-                    var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
-                    apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
+                    var apprenticeship =
+                        ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
+                    apprenticeship.ApprenticeshipPriceEpisodes =
+                        group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
                     await ApprenticeshipHelper.AddApprenticeship(apprenticeship, DataContext).ConfigureAwait(false);
                     specApprenticeship.ApprenticeshipId = apprenticeship.Id;
                     Apprenticeships.Add(specApprenticeship);
@@ -198,7 +207,35 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var priceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
                     var status = group.Last().Status?.ToApprenticeshipPaymentStatus() ??
                                  throw new InvalidOperationException($"last item not found: {group.Key}");
-                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.ApprenticeshipId,status, priceEpisodes, DataContext);
+                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.ApprenticeshipId, status,
+                        priceEpisodes, DataContext);
+                }
+            }
+
+            //check for duplicate apprenticeships
+            await HandleDuplicateApprenticeships();
+        }
+
+        private async Task HandleDuplicateApprenticeships()
+        {
+            var apprenticeshipsToCheck = Apprenticeships
+                .Where(o => ApprenticeshipDuplicates.All(x => o.ApprenticeshipId != x.ApprenticeshipId))
+                .ToList();
+
+            foreach (var apprenticeship in apprenticeshipsToCheck)
+            {
+                var duplicates = Apprenticeships
+                    .Where(x => x.Uln == apprenticeship.Uln && x.Ukprn != apprenticeship.Ukprn)
+                    .ToList();
+
+                foreach (var duplicate in duplicates)
+                {
+                    var duplicateApprenticeshipModel =
+                        ApprenticeshipHelper.CreateApprenticeshipDuplicateModel(apprenticeship.Ukprn, duplicate);
+                    await ApprenticeshipHelper.AddApprenticeshipDuplicate(duplicateApprenticeshipModel, DataContext)
+                        .ConfigureAwait(false);
+
+                    ApprenticeshipDuplicates.Add(duplicateApprenticeshipModel);
                 }
             }
         }
@@ -206,7 +243,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task UpdateApprenticeshipStatus(long apprenticeshipId, ApprenticeshipStatus status, string stoppedDateText)
         {
             var apprenticeship = await DataContext.Apprenticeship.FirstOrDefaultAsync(appr => appr.Id == apprenticeshipId);
-            if (apprenticeship==null)
+            if (apprenticeship == null)
                 throw new InvalidOperationException($"Apprenticeship '{apprenticeshipId}' not found.");
             apprenticeship.Status = status;
             if (!string.IsNullOrEmpty(stoppedDateText) && status == ApprenticeshipStatus.Stopped)
@@ -591,7 +628,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     if ((tableRow.TryGetValue("Learner ID", out var learnerId) || tableRow.TryGetValue("LearnerId", out learnerId)) && learnerId != e.LearnerId)
                         return false;
 
-                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)  
+                    if ((tableRow.TryGetValue("Price Episode Identifier", out var priceEpisodeId)) && priceEpisodeId != e.PriceEpisodeIdentifier)
                         return false;
 
                     return true;
@@ -884,7 +921,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         }
                     }
 
-                   
+
 
                 }
             }
