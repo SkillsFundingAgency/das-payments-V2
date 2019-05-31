@@ -135,3 +135,61 @@ GO
 
 RAISERROR('Completed',10,1) WITH NOWAIT;
 GO
+
+/* ---- Well-known UKPRNs for DC integration testing ---- */
+with KnownUkprns as (
+	select '10000833' as Ukprn union
+	select '10001144' union
+	select '10001326' union
+	select '10001436' union
+	select '10001548' union
+	select '10001971' union
+	select '10002005' union
+	select '10002815' union
+	select '10002843' union
+	select '10002919' union
+	select '10002935' union
+	select '10003538' union
+	select '10004180' union
+	select '10004760' union
+	select '10005583' union
+	select '10005926' union
+	select '10006432' union
+	select '10006519' union
+	select '10006574' union
+	select '10006847' union
+	select '10007419' union
+	select '10007635' union
+	select '10007643' union
+	select '10008227' union
+	select '10010178' union
+	select '10010939' union
+	select '10013222' union
+	select '10018361' union
+	select '10020395' union
+	select '10027518' union
+	select '10028120' union
+	select '10030102' union
+	select '10030571' union
+	select '10030758' union
+	select '10031093' union
+	select '10031408' union
+	select '10032250' union
+	select '10033904' union
+	select '10034279' union
+	select '10036176' union
+	select '10037830' union
+	select '10038872' union
+	select '10044985' union
+	select '10045119' union
+	select '10046078' union
+	select '10046354' union
+	select '10052903' union
+	select '10057010' union
+	select '10058123' union
+	select '10063506'
+	)
+insert into Payments2.TestingProvider (Ukprn)
+    select distinct Ukprn
+    from KnownUkprns t
+    where not exists (select 1 from Payments2.TestingProvider t2 where t2.Ukprn = t.Ukprn);

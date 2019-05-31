@@ -1,9 +1,9 @@
-﻿Feature: Non-levy learner - learning support OPP and completion payments - PV2-429
+﻿#@supports_dc_e2e
+Feature: Non-levy learner - learning support OPP and completion payments - PV2-429
 	In order to avoid silly mistakes
 	As a math idiot
 	I want to be told the sum of two numbers
 
-@mytag
 Scenario Outline: Non-levy learner - learning support, OPP and completion payments PV2-429
  # For DC integration
  # learning support code | learning support date from | learning support date to     |

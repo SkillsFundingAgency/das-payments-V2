@@ -1,4 +1,5 @@
-﻿Feature: Non-Levy Learner requires learning support - Standard - PV2-489
+﻿#@supports_dc_e2e
+Feature: Non-Levy Learner requires learning support - Standard - PV2-489
 	Non-DAS learner, doing an apprenticeship requires learning support
 
 Scenario Outline: Non-DAS learner,doing an apprenticeship standard,requires learning support

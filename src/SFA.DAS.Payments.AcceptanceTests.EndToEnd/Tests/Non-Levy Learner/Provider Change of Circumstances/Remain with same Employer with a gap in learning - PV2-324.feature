@@ -1,4 +1,5 @@
-﻿Feature: Remain with same Employer with a gap in learning - PV2-324
+﻿#@supports_dc_e2e
+Feature: Remain with same Employer with a gap in learning - PV2-324
 	As a provider,
 	I want a non-levy learner, changes provider but remains with the same employer and there is a gap, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.
