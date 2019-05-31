@@ -372,7 +372,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var priceEpisode in aim.PriceEpisodes)
             {
-                var id = CalculatePriceEpisodeIdentifier(priceEpisode, priceEpisodePrefix);
+                var id =  CalculatePriceEpisodeIdentifier(priceEpisode, priceEpisodePrefix);
 
                 var priceEpisodeStartDateAsDeliveryPeriod = new DeliveryPeriodBuilder()
                     .WithDate(priceEpisode.EpisodeEffectiveStartDate)

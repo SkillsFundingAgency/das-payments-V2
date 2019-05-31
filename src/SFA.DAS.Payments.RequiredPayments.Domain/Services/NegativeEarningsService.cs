@@ -9,6 +9,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class NegativeEarningsService : INegativeEarningService
     {
+        private readonly IRefundService refundService;
+
+        public NegativeEarningsService(IRefundService refundService)
+        {
+            this.refundService = refundService;
+        }
+
         public List<RequiredPayment> ProcessNegativeEarning(decimal amount, List<Payment> paymentHistory, int deliveryPeriod, string priceEpisodeIdentifier)
         {
             var results = new List<RequiredPayment>();
@@ -32,27 +39,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     continue;
                 }
 
-                var totalRefundPercent = amountLeftToFund / amountPaidInPeriod; // will be negative
-                totalRefundPercent = Math.Max(totalRefundPercent, -1);
+                var paymentsForPeriod = refundService.GetRefund(amountLeftToFund, paymentHistoryForPeriod);
 
-                var paymentsForPeriod = paymentHistoryForPeriod.GroupBy(x => new
-                    {
-                        SfaContributionPercentage = x.SfaContributionPercentage,
-                        EarningType = ToEarningType(x.FundingSource),
-                    })
-                    .Select(group =>
-                    {
-                        var amountForGroup = group.Sum(x => x.Amount);
-                        return new RequiredPayment
-                        {
-                            Amount = (amountForGroup * totalRefundPercent).AsRounded(),
-                            EarningType = group.Key.EarningType,
-                            SfaContributionPercentage = group.Key.SfaContributionPercentage,
-                            PriceEpisodeIdentifier = priceEpisodeIdentifier,
-                        };
-                    })
-                    .Where(x => x.Amount < 0)
-                    .ToList();
+                foreach (var requiredPayment in paymentsForPeriod)
+                {
+                    requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
+                }
 
                 amountLeftToFund -= paymentsForPeriod.Sum(x => x.Amount);
 

@@ -88,7 +88,7 @@
 		| 01/Aug/Current Academic Year | 12 months        | 12 months       | 25             | continuing        | 90%                         | Act1          | ZPROG001      | 25            |16-18 Apprenticeship (From May 2017) Levy Contract | 
 																																																
 	And price details as follows
-        | Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | SFA Contribution Percentage |
+        | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | SFA Contribution Percentage |
         | 1st price details | 9000                 | Aug/Current Academic Year           | 2250                   | Aug/Current Academic Year             | Act1          | 90%                         |
         | 2nd price details | 1200                 | Oct/Current Academic Year           | 200                    | Oct/Current Academic Year             | Act1          | 90%                         |
 
@@ -96,18 +96,18 @@
 
 	Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-        | Aug/Current Academic Year | 750          | 0          | 0         | 1st price details                     |
-        | Sep/Current Academic Year | 750          | 0          | 0         | 1st price details                    |
-        | Oct/Current Academic Year | -100         | 0          | 0         | 2nd price details                     |
-        | Nov/Current Academic Year | 0            | 0          | 0         | 2nd price details                     |
-        | Dec/Current Academic Year | 0            | 0          | 0         | 2nd price details                     |
-        | Jan/Current Academic Year | 0            | 0          | 0         | 2nd price details                     |
-        | Feb/Current Academic Year | 0            | 0          | 0         | 2nd price details                     |
-        | Mar/Current Academic Year | 0            | 0          | 0         | 2nd price details                     |
-        | Apr/Current Academic Year | 0            | 0          | 0         | 2nd price details                     |
-        | May/Current Academic Year | 0            | 0          | 0         | 2nd price details                     |
-        | Jun/Current Academic Year | 0            | 0          | 0         | 2nd price details                     |
-        | Jul/Current Academic Year | 0            | 0          | 0         | 2nd price details                     |
+        | Aug/Current Academic Year | 750          | 0          | 0         | 1st price details        |
+        | Sep/Current Academic Year | 750          | 0          | 0         | 1st price details        |
+        | Oct/Current Academic Year | -100         | 0          | 0         | 2nd price details        |
+        | Nov/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+        | Dec/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+        | Jan/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+        | Feb/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+        | Mar/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+        | Apr/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+        | May/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+        | Jun/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+        | Jul/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
 
 	
     And at month end only the following payments will be calculated
@@ -115,12 +115,12 @@
         | R03/Current Academic Year | Oct/Current Academic Year | -100         | 0          | 0         |
 
 	And only the following provider payments will be recorded 
-        | Collection Period         | Delivery Period           | Levy Payments | SFA Co-Funded Payments | Employer Co-Funded Payments |
-        | R03/Current Academic Year | Oct/Current Academic Year | -50           | -45                    | -5                          |
+        | Collection Period         | Delivery Period           | Levy Payments | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
+        | R03/Current Academic Year | Oct/Current Academic Year | -50           | -45                    | -5                          | Learning         |
 
 	And only the following provider payments will be generated
-        | Collection Period         | Delivery Period           | Levy Payments | SFA Co-Funded Payments | Employer Co-Funded Payments |
-        | R03/Current Academic Year | Oct/Current Academic Year | -50           | -45                    | -5                          |
+        | Collection Period         | Delivery Period           | Levy Payments | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
+        | R03/Current Academic Year | Oct/Current Academic Year | -50           | -45                    | -5                          | Learning         |
 
 Examples: 
         | Collection_Period         | Levy_Balance              |
