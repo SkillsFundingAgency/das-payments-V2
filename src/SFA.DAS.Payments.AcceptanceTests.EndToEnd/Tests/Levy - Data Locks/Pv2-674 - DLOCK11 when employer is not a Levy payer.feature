@@ -1,4 +1,3 @@
-@ignore
 Feature: DLOCK11 - When the employer is not a levy payer then datalock DLOCK_11 will be produced - PV2-674
 		As a Provider,
 		I want to be notified with a DLOCK11 when Employer is not a Levy payer
@@ -6,9 +5,6 @@ Feature: DLOCK11 - When the employer is not a levy payer then datalock DLOCK_11 
 
 Scenario: DLOCK11 - When the employer is not a levy payer then datalock DLOCK_11 will be produced - PV2-674
 	Given the employer IsLevyPayer flag is false
-	#Given the following employer exists
-	#	| Employer   | IsLevyPayer |
-	#	| employer a | false       |
 	And the following commitments exist
 		| Identifier       | framework code | programme type | pathway code | agreed price | start date                   | end date                  | status | effective from               |
 		| Apprenticeship a | 593            | 20             | 1            | 10000        | 01/May/Current Academic Year | 01/May/Next Academic Year | active | 01/May/Current Academic Year |				
@@ -41,6 +37,17 @@ Scenario: DLOCK11 - When the employer is not a levy payer then datalock DLOCK_11
 	And Month end is triggered
 	And no provider payments will be generated
 	And no provider payments will be recorded
+
+
+
+
+
+
+
+
+
+
+
 
 
 #Scenario: DLOCK11 - When employer is not a levy payer, DLOCK11 will be raised

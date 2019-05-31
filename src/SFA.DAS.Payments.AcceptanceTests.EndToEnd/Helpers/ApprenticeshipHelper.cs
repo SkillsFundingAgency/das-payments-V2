@@ -49,8 +49,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 }
             }
 
+            var employer = testSession.GetEmployer(apprenticeshipSpec.Employer);
             if (apprenticeshipSpec.AccountId == default(long))
-                apprenticeshipSpec.AccountId = testSession.GetEmployer(apprenticeshipSpec.Employer).AccountId;
+                apprenticeshipSpec.AccountId = employer.AccountId;
 
             if (!string.IsNullOrEmpty(apprenticeshipSpec.SendingEmployer) && !apprenticeshipSpec.SenderAccountId.HasValue)
                 apprenticeshipSpec.SenderAccountId = testSession.GetEmployer(apprenticeshipSpec.SendingEmployer).AccountId;
@@ -64,7 +65,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 apprenticeshipSpec.Uln = testSession.GetLearner(apprenticeshipSpec.Ukprn, learnerId).Uln;
             }
 
-
             var apprenticeshipModel = new ApprenticeshipModel
             {
                 Id = apprenticeshipSpec.ApprenticeshipId,
@@ -76,7 +76,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 ProgrammeType = apprenticeshipSpec.ProgrammeType ?? 0,
                 PathwayCode = apprenticeshipSpec.PathwayCode ?? 0,
                 StandardCode = apprenticeshipSpec.StandardCode ?? 0,
-
                 Priority = apprenticeshipSpec.Priority,
                 Status = apprenticeshipSpec.Status.ToApprenticeshipPaymentStatus(),
                 LegalEntityName = "Test SFA",
@@ -85,7 +84,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 AgreedOnDate = DateTime.UtcNow,
                 StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StopEffectiveFrom) ?
                            default(DateTime?):
-                          apprenticeshipSpec.StopEffectiveFrom.ToDate()
+                          apprenticeshipSpec.StopEffectiveFrom.ToDate(),
+                IsLevyPayer = employer.IsLevyPayer
             };
 
             return apprenticeshipModel;

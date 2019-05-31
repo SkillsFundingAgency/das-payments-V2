@@ -29,6 +29,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 .ToListAsync()
                 .ConfigureAwait(false);
 
+            apprenticeships?.ForEach( x=> x.ApprenticeshipPriceEpisodes = x.ApprenticeshipPriceEpisodes?
+                                                                            .Where(o => !o.Removed)
+                                                                            .ToList());
+
             return apprenticeships;
         }
     }

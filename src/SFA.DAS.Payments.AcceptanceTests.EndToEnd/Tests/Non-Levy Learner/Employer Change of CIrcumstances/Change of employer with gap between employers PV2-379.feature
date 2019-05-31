@@ -1,4 +1,5 @@
-﻿Feature: Non-levy learner changes employer and there is a gap - provider receives payment during the gap as they amend the ACT code and employment status code correctly
+﻿#@supports_dc_e2e
+Feature: Non-levy learner changes employer and there is a gap - provider receives payment during the gap as they amend the ACT code and employment status code correctly
  # And the employment status in the ILR is
  #       | Employer   | Employment Status      | Employment Status Applies    | Small Employer |
  #       | employer 1 | in paid employment     | 03/Aug/Current Academic Year |                |

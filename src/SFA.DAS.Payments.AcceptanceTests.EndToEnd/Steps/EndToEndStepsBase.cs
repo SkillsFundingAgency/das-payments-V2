@@ -41,13 +41,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             get => Get<bool>("new_feature");
             set => Set(value, "new_feature");
         }
+
         protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
 
         protected IPaymentsDataContext DataContext => Scope.Resolve<IPaymentsDataContext>();
 
         protected IMapper Mapper => Scope.Resolve<IMapper>();
 
-        protected DcHelper DcHelper => Get<DcHelper>();
+        protected IDcHelper DcHelper => Get<IDcHelper>();
 
         protected List<Price> CurrentPriceEpisodes
         {
@@ -99,7 +100,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var ilr = table.CreateSet<Training>().ToList();
             AddTestLearners(ilr, ukprn);
-            if (CurrentIlr == null) CurrentIlr = new List<Training>();
+
+            if (CurrentIlr == null) 
+                CurrentIlr = new List<Training>();
+
+            if (Config.ValidateDcAndDasServices)
+                CurrentIlr.Clear();
+
             CurrentIlr.AddRange(ilr);
         }
 
@@ -127,7 +134,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.ProgrammeType = ilrLearner.ProgrammeType;
                 learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
                 learner.Course.PathwayCode = ilrLearner.PathwayCode;
-                if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln;
+                learner.SmallEmployer = ilrLearner.SmallEmployer;
+                ilrLearner.Uln = ilrLearner.Uln != default(long) ? ilrLearner.Uln : learner.Uln;
+                //if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln
 
             });
         }
@@ -899,7 +908,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     learners.Add(learner);
                 }
             }
-            var dcHelper = Scope.Resolve<DcHelper>();
+            var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
                 provider.JobId);
 
@@ -949,7 +958,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
                 {
                     JobId = monthEndJobId,
-                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
+                    CollectionPeriod = new CollectionPeriod {AcademicYear = AcademicYear, Period = CollectionPeriod},
                     RequestTime = DateTime.Now,
                     SubmissionDate = submissionDate,
                     AccountId = employer.AccountId,
