@@ -858,6 +858,55 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        //protected async Task GeneratedAndValidateEarnings(Table table, Provider provider)
+        //{
+        //    var earnings = CreateEarnings(table, provider.Ukprn);
+        //    var learners = new List<FM36Learner>();
+        //    var providerCurrentIlrs = CurrentIlr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
+
+        //    if (providerCurrentIlrs != null)
+        //    {
+        //        foreach (var training in providerCurrentIlrs)
+        //        {
+        //            var aim = new Aim(training);
+        //            AddTestAims(new List<Aim> { aim }, provider.Ukprn);
+
+        //            if (CurrentPriceEpisodes != null)
+        //            {
+        //                foreach (var currentPriceEpisode in CurrentPriceEpisodes)
+        //                {
+        //                    if (currentPriceEpisode.AimSequenceNumber == 0 ||
+        //                        currentPriceEpisode.AimSequenceNumber == aim.AimSequenceNumber)
+        //                    {
+        //                        aim.PriceEpisodes.Add(currentPriceEpisode);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    // Learner -> Aims -> Price Episodes
+        //    foreach (var testSessionLearner in TestSession.Learners.Where(l => l.Ukprn == provider.Ukprn))
+        //    {
+        //        var learner = new FM36Learner { LearnRefNumber = testSessionLearner.LearnRefNumber };
+        //        var learnerEarnings = earnings.Where(e => e.LearnerId == testSessionLearner.LearnerIdentifier)
+        //            .ToList();
+
+        //        if (learnerEarnings.Any())
+        //        {
+        //            PopulateLearner(learner, testSessionLearner, learnerEarnings);
+        //            learners.Add(learner);
+        //        }
+        //    }
+        //    var dcHelper = Scope.Resolve<IDcHelper>();
+        //    await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
+        //        provider.JobId);
+
+        //    var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
+        //        TestSession, CurrentCollectionPeriod, learners);
+        //    await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
+        //}
+
         protected async Task GeneratedAndValidateEarnings(Table table, Provider provider)
         {
             var earnings = CreateEarnings(table, provider.Ukprn);
@@ -871,7 +920,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var aim = new Aim(training);
                     AddTestAims(new List<Aim> { aim }, provider.Ukprn);
 
-                    if (CurrentPriceEpisodes != null)
+                    if (CurrentPriceEpisodes == null)
+                    {
+                        aim.PriceEpisodes.Add(new Price
+                        {
+                            AimSequenceNumber = training.AimSequenceNumber,
+                            TotalAssessmentPrice = training.TotalAssessmentPrice,
+                            TotalTrainingPrice = training.TotalTrainingPrice,
+                            TotalTrainingPriceEffectiveDate = training.TotalTrainingPriceEffectiveDate,
+                            TotalAssessmentPriceEffectiveDate = training.TotalAssessmentPriceEffectiveDate,
+                            SfaContributionPercentage = training.SfaContributionPercentage,
+                            CompletionHoldBackExemptionCode = training.CompletionHoldBackExemptionCode,
+                            Pmr = training.Pmr,
+                        });
+                    }
+                    else
                     {
                         foreach (var currentPriceEpisode in CurrentPriceEpisodes)
                         {

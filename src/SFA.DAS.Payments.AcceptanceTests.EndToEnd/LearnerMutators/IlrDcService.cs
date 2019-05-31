@@ -59,13 +59,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 learners.AddRange(currentIlr.DistinctBy(ilr => ilr.LearnerId).Select(dist => new Learner()
                 {
                     Ukprn = dist.Ukprn, Uln = dist.Uln, LearnerIdentifier = dist.LearnerId,
-                    PostcodePrior = dist.PostcodePrior, SmallEmployer = dist.SmallEmployer,
-                    Aims = currentIlr.Any(ilr => ilr.LearnerId != null)
-                        ?
-                        currentIlr.Where(ilr => ilr.LearnerId == dist.LearnerId).Select(ilr => new Aim(ilr)).ToList()
-                        :
-                        currentIlr.Select(ilr => new Aim(ilr)).ToList()
+                    PostcodePrior = dist.PostcodePrior, SmallEmployer = dist.SmallEmployer
                 }));
+
+                foreach (var learner in learners)
+                {
+                    CreateAimsForIlrLearner(learner, currentIlr.SingleOrDefault(c=>c.LearnerId == learner.LearnerIdentifier));
+                }
             }
 
             var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learners);
@@ -77,6 +77,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             await verifyIlr();
 
             await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
+        }
+
+        private void CreateAimsForIlrLearner(Learner learner, Training currentIlr)
+        {
+            learner.Aims.Add(new Aim(currentIlr));
+            learner.Aims.First().PriceEpisodes.Add(new Price()
+            {
+                TotalTrainingPriceEffectiveDate = currentIlr.TotalTrainingPriceEffectiveDate,
+                TotalTrainingPrice = currentIlr.TotalTrainingPrice,
+                TotalAssessmentPriceEffectiveDate = currentIlr.TotalAssessmentPriceEffectiveDate,
+                TotalAssessmentPrice = currentIlr.TotalAssessmentPrice,
+                ContractType = currentIlr.ContractType,
+                AimSequenceNumber = currentIlr.AimSequenceNumber,
+                SfaContributionPercentage = currentIlr.SfaContributionPercentage,
+                CompletionHoldBackExemptionCode = currentIlr.CompletionHoldBackExemptionCode,
+                Pmr = currentIlr.Pmr
+            });
         }
 
         private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<Learner> learners)

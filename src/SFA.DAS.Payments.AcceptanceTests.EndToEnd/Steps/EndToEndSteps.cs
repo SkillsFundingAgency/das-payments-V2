@@ -191,6 +191,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var newPriceEpisodes = table.CreateSet<Price>().ToList();
             CurrentPriceEpisodes = newPriceEpisodes;
 
+            var learners = TestSession.Learners;
+
             if (TestSession.Learners.Any(x => x.Aims.Count > 0))
             {
                 foreach (var newPriceEpisode in newPriceEpisodes)
