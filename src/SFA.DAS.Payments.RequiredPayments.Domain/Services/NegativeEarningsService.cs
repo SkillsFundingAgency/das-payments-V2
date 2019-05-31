@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class NegativeEarningsService : INegativeEarningService
     {
-        public List<RequiredPayment> ProcessNegativeEarning(decimal amount, List<Payment> paymentHistory, int deliveryPeriod)
+        public List<RequiredPayment> ProcessNegativeEarning(decimal amount, List<Payment> paymentHistory, int deliveryPeriod, string priceEpisodeIdentifier)
         {
             var results = new List<RequiredPayment>();
             var amountLeftToFund = amount;
@@ -39,7 +39,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     {
                         SfaContributionPercentage = x.SfaContributionPercentage,
                         EarningType = ToEarningType(x.FundingSource),
-                        PriceEpisodeIdentifier = x.PriceEpisodeIdentifier,
                     })
                     .Select(group =>
                     {
@@ -49,7 +48,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                             Amount = (amountForGroup * totalRefundPercent).AsRounded(),
                             EarningType = group.Key.EarningType,
                             SfaContributionPercentage = group.Key.SfaContributionPercentage,
-                            PriceEpisodeIdentifier = group.Key.PriceEpisodeIdentifier,
+                            PriceEpisodeIdentifier = priceEpisodeIdentifier,
                         };
                     })
                     .Where(x => x.Amount < 0)

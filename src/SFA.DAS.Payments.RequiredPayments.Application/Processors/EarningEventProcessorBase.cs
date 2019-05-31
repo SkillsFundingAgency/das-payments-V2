@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     period.Amount < payments.Sum(x => x.Amount))
                 {
                     requiredPayments = negativeEarningService
-                        .ProcessNegativeEarning(period.Amount, academicYearPayments, period.Period);
+                        .ProcessNegativeEarning(period.Amount, academicYearPayments, period.Period, period.PriceEpisodeIdentifier);
                 }
                 else
                 {
