@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             this.dataContext = dataContext;
         }
 
-        public async Task PublishLearnerRequest(List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> verifyIlr)
+        public async Task PublishLearnerRequest(List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber)
         {
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
@@ -73,8 +73,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
 
             await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learners);
-
-            await verifyIlr();
 
             await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
         }
@@ -145,7 +143,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 SubmittedBy = "System",
                 CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
                 Period = collectionPeriod,
-                NotifyEmail = "SpecFlow@e2e.com",
+                NotifyEmail = "dcttestemail@gmail.com",
                 StorageReference = storageServiceConfig.ContainerName,
                 CollectionYear = collectionYear
             };
@@ -160,13 +158,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             var retryPolicy = Policy
                 .Handle<JobStatusNotWaitingException>()
-                .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+                .WaitAndRetryAsync(7, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
             await retryPolicy.ExecuteAsync(async () =>
             {
                 var jobStatus = await jobService.GetJobStatus(jobId);
                 if (jobStatus != JobStatusType.Waiting)
-                    throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status");
+                    throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status. Current status id {jobStatus}");
             }
             );
 

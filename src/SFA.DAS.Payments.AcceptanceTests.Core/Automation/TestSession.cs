@@ -1,9 +1,6 @@
 ﻿using Bogus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.Services;
-using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +11,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
     public class TestSession
     {
         private const string LearnerIdentifierA = "learner a";
-        private const string LearnerIdentifierB = "learner b";
         private const string TestEmployer = "test employer";
         private const string TestProvider = "Test Provider";
 
@@ -78,7 +74,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             Providers = new List<Provider>();
             IlrSubmissionTime = Provider.IlrSubmissionTime;
-            Learners = new List<Learner> { GenerateLearner(Provider.Ukprn, this.ulnService.GenerateUln(Provider.Ukprn)) };
+            Learners = new List<Learner>();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
 
@@ -130,13 +126,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
-        public Learner GenerateLearner(long ukprn, long? uniqueLearnerNumber = null)
+        public Learner GenerateLearner(long ukprn)
         {
-            var uln = uniqueLearnerNumber ?? ulnService.GenerateUln(Provider.Ukprn);
             return new Learner
             {
                 Ukprn = ukprn,
-                Uln = uln,
+                Uln = ulnService.GenerateUln(Provider.Ukprn),
                 LearnRefNumber = GenerateId().ToString(),
                 Course = courseFaker.Generate(1).FirstOrDefault()
             };
@@ -147,31 +142,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             var learner = Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier && l.Ukprn == ukprn);
             if (learner == null)
             {
-                var uln = GetUlnFromLearnerId(learnerIdentifier);
-                learner = GenerateLearner(ukprn, uln);
+                learner = GenerateLearner(ukprn);
                 learner.LearnerIdentifier = learnerIdentifier;
                 Learners.Add(learner);
             }
 
             return learner;
-        }
-
-        public long GetUlnFromLearnerId(string learnerId)
-        {
-            var learner = Learners.FirstOrDefault(x => x.LearnerIdentifier == learnerId);
-            if (learner == null)
-            {
-                if (string.IsNullOrWhiteSpace(learnerId) || learnerId.Equals(LearnerIdentifierA))
-                {
-                    return ulnService.GenerateUln(Provider.Ukprn);
-                }
-                else
-                {
-                    return ulnService.GenerateUln(Provider.Ukprn + (Provider.Ukprn - 10_000_000));
-                }
-            }
-
-            return learner.Uln;
         }
 
         public void CompleteScenario()

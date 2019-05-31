@@ -1,11 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
     public class UlnService : IUlnService
     {
+        private static readonly HashSet<long> usedIndices = new HashSet<long>();
+
         public long GenerateUln(long index)
         {
+            if (usedIndices.Contains(index))
+                index = index + (index - 10_000_000);
+            else
+                usedIndices.Add(index);
+
             int roundedIndex = RoundUpToMultipleOfTen(index);
             try
             {
@@ -30,6 +38,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 
         private static long ComputeUln(long index)
         {
+            // this black magic is borrowed from TDG, don't touch it. It works.
+
             index += 990000000;
             string s = index.ToString();
             s = s.PadRight(9, '0');

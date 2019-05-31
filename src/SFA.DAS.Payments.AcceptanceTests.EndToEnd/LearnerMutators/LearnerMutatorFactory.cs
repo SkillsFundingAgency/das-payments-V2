@@ -33,11 +33,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "326":
                     return new Framework403Learner(learners, featureNumber);
                 case "277":
-                    return new FM36_277(learners);
+                    return new Framework593LearnerWithdrawsAfterQualifyingPeriod(learners);
                 case "278":
-                    return new FM36_278(learners);
+                    return new Framework593LearnerWithdrawsAfterPlannedEndDate(learners);
                 case "328":
-                    return new FM36_328(learners);
+                    return new Framework403LearnerWithEHCPlanAndSmallEmployer(learners);
                 default:
                     throw new ArgumentException("A valid feature number is required.", nameof(featureNumber));
             }

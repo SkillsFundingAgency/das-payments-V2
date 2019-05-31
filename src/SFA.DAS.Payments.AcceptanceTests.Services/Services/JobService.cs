@@ -1,27 +1,27 @@
+using System;
+using System.Threading.Tasks;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.Jobs.Model.Enums;
+using ESFA.DC.JobStatus.Interface;
+using Newtonsoft.Json;
+using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
+using SFA.DAS.Payments.AcceptanceTests.Services.Dtos;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
+
 namespace SFA.DAS.Payments.AcceptanceTests.Services
 {
-    using ESFA.DC.Jobs.Model;
-    using ESFA.DC.Jobs.Model.Enums;
-    using ESFA.DC.JobStatus.Interface;
-    using Newtonsoft.Json;
-    using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
-    using SFA.DAS.Payments.AcceptanceTests.Services.Dtos;
-    using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
-    using System;
-    using System.Threading.Tasks;
-
     public class JobService : IJobService
     {
-        private readonly IBespokeHttpClient _httpClient;
+        private readonly IBespokeHttpClient httpClient;
 
         public JobService(IBespokeHttpClient httpClient)
         {
-            _httpClient = httpClient;
+            this.httpClient = httpClient;
         }
 
         public async Task<JobStatusType> GetJobStatus(long jobId)
         {
-            var data = await _httpClient.GetDataAsync($"job/{jobId}/status");
+            var data = await httpClient.GetDataAsync($"job/{jobId}/status");
             return JsonConvert.DeserializeObject<JobStatusType>(data);
         }
 
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
                 JobStatus = status,
                 NumberOfLearners =  0
             };
-            return await _httpClient.SendDataAsync("job/status", job);
+            return await httpClient.SendDataAsync("job/status", job);
         }
 
         public async Task<long> SubmitJob(SubmissionModel submissionMessage)
@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
                 CollectionYear = submissionMessage.CollectionYear
             };
 
-            var response = await _httpClient.SendDataAsync("job", job);
+            var response = await httpClient.SendDataAsync("job", job);
             long.TryParse(response, out var result);
 
             return result;
