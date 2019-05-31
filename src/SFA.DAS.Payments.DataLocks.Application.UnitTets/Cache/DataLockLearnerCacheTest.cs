@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Cache
                 .Returns(Task.FromResult(cacheApprenticeships));
 
             var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object);
-            var actual = await dataLockLearnerCache.GetDuplicateApprenticeships(100).ConfigureAwait(false);
+            var actual = await dataLockLearnerCache.GetDuplicateApprenticeships().ConfigureAwait(false);
             actual.Should().NotBeNull();
             actual.Should().HaveCount(1);
         }

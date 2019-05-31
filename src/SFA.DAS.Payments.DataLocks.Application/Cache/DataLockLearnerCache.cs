@@ -2,6 +2,7 @@
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Cache
@@ -23,17 +24,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.Cache
 
         public async Task<List<ApprenticeshipModel>> GetLearnerApprenticeships(long uln)
         {
-            var apprenticeships = await GetApprenticeships(uln).ConfigureAwait(false);
+            var apprenticeships = await GetApprenticeships(uln.ToString()).ConfigureAwait(false);
             return apprenticeships;
         }
 
-        public async Task<List<ApprenticeshipModel>> GetDuplicateApprenticeships(long ukprn)
+        public async Task<List<ApprenticeshipModel>> GetDuplicateApprenticeships()
         {
-            var apprenticeships = await GetApprenticeships(ukprn).ConfigureAwait(false);
+            var apprenticeships = await GetApprenticeships(CacheKeys.DuplicateApprenticeshipsKey).ConfigureAwait(false);
             return apprenticeships;
         }
 
-        private async Task<List<ApprenticeshipModel>> GetApprenticeships(long key)
+        private async Task<List<ApprenticeshipModel>> GetApprenticeships(string key)
         {
             var apprenticeshipsCacheValue = await dataCache.TryGet(key.ToString()).ConfigureAwait(false);
             var apprenticeships = apprenticeshipsCacheValue.HasValue ? apprenticeshipsCacheValue.Value : new List<ApprenticeshipModel>();

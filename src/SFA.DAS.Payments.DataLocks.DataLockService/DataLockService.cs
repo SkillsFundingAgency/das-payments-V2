@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.DataLockService.Interfaces;
+using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -78,7 +79,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 .DuplicateApprenticeshipsForProvider(long.Parse(Id.ToString()))
                 .ConfigureAwait(false);
 
-            await this.apprenticeships.AddOrReplace(Id.ToString(), providerDuplicateApprenticeships).ConfigureAwait(false);
+            await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerDuplicateApprenticeships).ConfigureAwait(false);
 
             paymentLogger.LogInfo($"Initialised actor for provider {Id}");
 
