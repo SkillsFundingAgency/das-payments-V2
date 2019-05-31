@@ -1,4 +1,5 @@
-﻿Feature: Change employer at end of month PV2-381
+﻿#@supports_dc_e2e
+Feature: Change employer at end of month PV2-381
 	As a provider,
 	I want earnings and payments for a non-levy learner, and there is a change to the Negotiated Cost which happens at the end of the month, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

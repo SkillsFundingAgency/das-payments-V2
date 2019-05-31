@@ -1,4 +1,5 @@
-﻿Feature: Remain with same Employer - PV2-325
+﻿#@supports_dc_e2e
+Feature: Remain with same Employer - PV2-325
 	As a provider,
 	I want a non-levy learner, that changes provider but remains with the same employer, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

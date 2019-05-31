@@ -1,4 +1,5 @@
-﻿Feature: Non-Levy Learner requires learning support - Framework - PV2-488
+﻿#@supports_dc_e2e
+Feature: Non-Levy Learner requires learning support - Framework - PV2-488
 	Non-DAS learner, doing an apprenticeship requires learning support
 
 Scenario Outline: Non-DAS learner doing an apprenticeship framework requires learning support

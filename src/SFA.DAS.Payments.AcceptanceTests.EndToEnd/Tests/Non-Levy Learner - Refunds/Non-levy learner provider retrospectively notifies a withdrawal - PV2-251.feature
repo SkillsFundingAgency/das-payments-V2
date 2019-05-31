@@ -1,4 +1,5 @@
-﻿Feature: Non-levy learner provider retrospectively notifies a withdrawal - PV2-251
+﻿#@supports_dc_e2e
+Feature: Non-levy learner provider retrospectively notifies a withdrawal - PV2-251
 	As a Provider
 	I would like TODO
 	So that TODO

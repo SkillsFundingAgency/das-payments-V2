@@ -1,4 +1,5 @@
-﻿Feature: Non-levy learner changes employer with change to negotiated price at mid of month PV2-382
+﻿#@supports_dc_e2e
+Feature: Non-levy learner changes employer with change to negotiated price at mid of month PV2-382
 #And the employment status in the ILR is
 #| Employer   | Employment Status  | Employment Status Applies    | Small Employer |
 #| employer 1 | in paid employment | 04/Aug/Current Academic Year |                |
