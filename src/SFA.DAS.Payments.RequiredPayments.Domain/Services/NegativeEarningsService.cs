@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             return results;
         }
 
-        EarningType ToEarningType(FundingSourceType fundingSource)
+        private EarningType ToEarningType(FundingSourceType fundingSource)
         {
             switch (fundingSource)
             {
