@@ -30,6 +30,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
         protected override  bool FailedValidationAsync(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
         {
+            var apprenticeshipActualStartDate = GetApprenticeshipActualStartDate(dataLockValidationModel.Apprenticeship);
+            var apprenticeshipActualEndDate = GetApprenticeshipEstimatedEndDate(dataLockValidationModel.Apprenticeship);
+
+            var earningPeriodDate = calculatePeriodStartAndEndDate
+                .GetPeriodDate(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
+
+            if (apprenticeshipActualStartDate >= earningPeriodDate.periodEndDate ||
+                apprenticeshipActualEndDate <= earningPeriodDate.periodStartDate)
+                return false;
+
             var allDuplicateApprenticeships =  dataLockLearnerCache
                 .GetDuplicateApprenticeships()
                 .Result;
@@ -38,32 +48,18 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 return false;
 
             // Apprenticeship has a duplicate
-            var duplicates = allDuplicateApprenticeships.Where(x => x.Uln == dataLockValidationModel.Uln && x.Id != dataLockValidationModel.Apprenticeship.Id).ToList();
+            var duplicates = allDuplicateApprenticeships
+                .Where(x => x.Uln == dataLockValidationModel.Apprenticeship.Uln &&
+                            x.Id != dataLockValidationModel.Apprenticeship.Id)
+                .ToList();
 
             if (!duplicates.Any())
                 return false;
             
-            var apprenticeshipActualStartDate = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
-                .Where(x => !x.Removed)
-                .OrderBy(x => x.StartDate).First().StartDate;
-
-            var apprenticeshipActualEndDate = dataLockValidationModel.Apprenticeship.StopDate?? DateTime.MaxValue;
-
-            var earningPeriodDate = calculatePeriodStartAndEndDate
-                    .GetPeriodDate(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
-
-            if (apprenticeshipActualStartDate >= earningPeriodDate.periodEndDate || 
-                apprenticeshipActualEndDate <= earningPeriodDate.periodStartDate)
-                return false;
-
             foreach (var duplicate in duplicates)
             {
-                var duplicateActualStartDate = duplicate.ApprenticeshipPriceEpisodes
-                    .Where(x => !x.Removed)
-                    .OrderBy(x => x.StartDate)
-                    .First().StartDate;
-
-                var duplicateActualEndDate = duplicate.StopDate ?? DateTime.MaxValue;
+                var duplicateActualStartDate = GetApprenticeshipActualStartDate(duplicate);
+                var duplicateActualEndDate = GetApprenticeshipEstimatedEndDate(duplicate);
 
                 if (duplicateActualStartDate >= earningPeriodDate.periodEndDate ||
                     duplicateActualEndDate <= earningPeriodDate.periodStartDate)
@@ -77,6 +73,20 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             }
             
             return false;
+        }
+
+        private static DateTime GetApprenticeshipEstimatedEndDate(ApprenticeshipModel apprenticeship)
+        {
+            return apprenticeship.StopDate ?? apprenticeship.EstimatedEndDate;
+        }
+
+        private static DateTime GetApprenticeshipActualStartDate(ApprenticeshipModel apprenticeship)
+        {
+            var apprenticeshipActualStartDate = apprenticeship.ApprenticeshipPriceEpisodes
+                .Where(x => !x.Removed)
+                .OrderBy(x => x.StartDate)
+                .First().StartDate;
+            return apprenticeshipActualStartDate;
         }
     }
 
