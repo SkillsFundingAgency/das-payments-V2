@@ -14,6 +14,7 @@
 	LearnerUln  BIGINT NOT NULL,
 	PriceEpisodeIdentifier NVARCHAR(50) NOT NULL,
     Amount DECIMAL(15,5) NOT NULL,
+	LearningAimStartDate DATETIME2 NULL,
 	LearningAimReference   NVARCHAR(8) NOT NULL,
 	LearningAimProgrammeType INT NOT NULL ,
 	LearningAimStandardCode INT NOT NULL,

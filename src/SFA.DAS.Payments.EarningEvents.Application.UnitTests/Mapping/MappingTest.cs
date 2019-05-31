@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         private FM36Learner fm36Learner;
         private ProcessLearnerCommand processLearnerCommand;
         private IntermediateLearningAim learningAim;
+        private DateTime LearningStartDate;
         
         [OneTimeSetUp]
         public void InitialiseMapper()
@@ -31,6 +32,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [SetUp]
         public void SetUp()
         {
+            LearningStartDate = DateTime.Today.AddMonths(-1);
             fm36Learner = new FM36Learner
             {
                 LearnRefNumber = "learner-a",
@@ -47,6 +49,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             ProgType = 300,
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
+                            LearnStartDate = LearningStartDate
                         }
                     },
                     new LearningDelivery
@@ -403,6 +406,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("ZPROG001");
+            earningEvent.LearningAim.StartDate.Should().Be(LearningStartDate);
         }
 
         [Test]

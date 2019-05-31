@@ -1,8 +1,11 @@
-﻿namespace SFA.DAS.Payments.Model.Core
+﻿using System;
+
+namespace SFA.DAS.Payments.Model.Core
 {
     public class LearningAim
     {
         public string Reference { get; set; }
+        public DateTime? StartDate { get; set; }
 
         public int ProgrammeType { get; set; }
 
