@@ -79,14 +79,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 for (var i = 0; i < currentIlr.Count(); i++)
                 {
                     var request = currentIlr.Skip(i).Take(1).First();
-                    var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerId);
-                    var originalUln = testSessionLearner.Uln;
                     var learner = learnerDescendants.Skip(i).Take(1).First();
-                    testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
-                    testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
-
-                    await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln,
-                        testSessionLearner.LearnRefNumber);
+                    await UpdateTestSessionLearner(request.LearnerId, learner, xsdns);
                 }
             }
             else
@@ -94,16 +88,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 for (var i = 0; i < learners.Count(); i++)
                 {
                     var request = learners.Skip(i).Take(1).First();
-                    var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerIdentifier);
-                    var originalUln = testSessionLearner.Uln;
                     var learner = learnerDescendants.Skip(i).Take(1).First();
-                    testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
-                    testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
-
-                    await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln,
-                        testSessionLearner.LearnRefNumber);
+                    await UpdateTestSessionLearner(request.LearnerIdentifier, learner, xsdns);
                 }
             }
+        }
+
+        private async Task UpdateTestSessionLearner(string learnerIdentifier, XElement learner, XNamespace xsdns)
+        {
+            var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, learnerIdentifier);
+            var originalUln = testSessionLearner.Uln;
+            testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
+            testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
+
+            await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln,
+                testSessionLearner.LearnRefNumber);
         }
 
         private async Task UpdatePaymentHistoryTables(long ukprn, long originalUln, long newUln, string learnRefNumber)
