@@ -18,7 +18,7 @@ using ESFA.DC.Serialization.Json;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
-    public class DcHelper
+    public class DcHelper : IDcHelper
     {
         private readonly IJsonSerializationService serializationService;
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;

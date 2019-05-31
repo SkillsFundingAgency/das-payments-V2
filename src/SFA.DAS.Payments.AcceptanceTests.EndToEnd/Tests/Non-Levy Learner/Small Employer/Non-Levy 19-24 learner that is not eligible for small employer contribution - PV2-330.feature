@@ -1,4 +1,5 @@
-﻿Feature: Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330
+﻿#@supports_dc_e2e
+Feature: Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330
 	As a provider,
 	I want a non-levy learner, 1 learner aged 19-24, employed with a small employer at start, is co-funded for on programme and completion payments (this apprentice does not have a Education Health Care plan and is not a care leaver), to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

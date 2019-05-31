@@ -1,4 +1,5 @@
-﻿Feature: Non-levy standard learner, payments made then price is changed retrospectively from beginning PV2-258
+﻿#@supports_dc_e2e
+Feature: Non-levy standard learner, payments made then price is changed retrospectively from beginning PV2-258
 
 As a provider,
 I want a non-levy learner, that when payments are made then price is changed retrospectively from beginning
