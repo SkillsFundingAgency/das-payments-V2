@@ -1,57 +1,50 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using DCT.TestDataGenerator;
 using ESFA.DC.ILR.Model.Loose;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay
 {
     public class FM36_278 : Framework593Learner
     {
-        public FM36_278(IEnumerable<LearnerRequest> learnerRequests) : base(learnerRequests, "278")
+        public FM36_278(IEnumerable<Learner> learnerRequests) : base(learnerRequests, "278")
         {
         }
 
-        protected override void DoSpecificMutate(MessageLearner learner, LearnerRequest learnerRequest)
+        protected override void DoSpecificMutate(MessageLearner messageLearner, Learner learner)
         {
-            base.DoSpecificMutate(learner, learnerRequest);
-            var ld = learner.LearningDelivery[0];
+            base.DoSpecificMutate(messageLearner, learner);
 
-            foreach (var lds in learner.LearningDelivery)
+            foreach (var messageLearnerLearningDelivery in messageLearner.LearningDelivery)
             {
-                lds.CompStatus = (int) CompStatus.Withdrawn;
-                lds.CompStatusSpecified = true;
+                var learnerLearningAim = learner.Aims.SingleOrDefault(l => l.AimReference== messageLearnerLearningDelivery.LearnAimRef);
+                if (learnerLearningAim == null)
+                {
+                    continue;
+                }
 
-                lds.Outcome = (int)Outcome.NoAchievement;
-                lds.OutcomeSpecified = true;
+                SetDeliveryAsWithdrawn(messageLearnerLearningDelivery, messageLearner.LearningDelivery.First().LearnPlanEndDate.AddMonths(1), learnerLearningAim);
 
-                lds.WithdrawReason = (int)WithDrawalReason.FinancialReasons;
-                lds.WithdrawReasonSpecified = true;
+                SetupLearningDeliveryFam(messageLearnerLearningDelivery, learnerLearningAim);
 
-                lds.LearnActEndDate = ld.LearnPlanEndDate.AddMonths(1);
-                lds.LearnActEndDateSpecified = true;
+                SetupAppFinRecord(messageLearner, messageLearnerLearningDelivery, learnerLearningAim);
             }
 
-            var ldfam = ld.LearningDeliveryFAM.Single(ldf => ldf.LearnDelFAMType == LearnDelFAMType.ACT.ToString());
+            messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp = messageLearner.LearningDelivery[0].LearnStartDate.AddDays(-2);
 
-            ldfam.LearnDelFAMDateTo = ld.LearnActEndDate;
-            ldfam.LearnDelFAMDateToSpecified = true;
-
-            var appFinRecord =
-                ld.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
-
-            if (appFinRecord == null)
-            {
-                DCT.TestDataGenerator.Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, 15000);
-
-                appFinRecord =
-                    ld.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
-            }
-
-            appFinRecord.AFinDate = ld.LearnStartDate;
-            appFinRecord.AFinDateSpecified = true;
-
-            var lesm = learner.LearnerEmploymentStatus.ToList();
-            lesm[0].DateEmpStatApp = learner.LearningDelivery[0].LearnStartDate.AddDays(-2);
+            var functionalSkillsLearningDelivery = messageLearner.LearningDelivery.Single(learningDelivery => learningDelivery.AimType == 3);
+            ProcessMessageLearnerForLearnerRequestOriginatingFromTrainingRecord(functionalSkillsLearningDelivery,
+                learner.Aims.First());
         }
+
+        private void SetDeliveryAsWithdrawn(MessageLearnerLearningDelivery delivery, DateTime actualEndDate, Aim learnerRequestAim)
+        {
+            base.SetDeliveryAsWithdrawn(delivery, learnerRequestAim);
+
+            delivery.LearnActEndDate = actualEndDate;
+            delivery.LearnActEndDateSpecified = true;
+        }
+       
     }
 }

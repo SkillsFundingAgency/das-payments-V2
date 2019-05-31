@@ -50,6 +50,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         public ContractType ContractType { get; set; }
 
         public string SmallEmployer { get; set; }
+
+        public string PostcodePrior { get; set; }
+
+        public long EmployerContribution => Convert.ToInt64(decimal.Parse(TotalTrainingPrice.Value.ToString()) * (SfaContributionPercentage.AsPercentage() / 100));
     }
 
     public static class LearnerRequestExtension
@@ -72,19 +76,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
-        public static long EmployerContribution(this LearnerRequest request)
+        public static int AsPercentage(this string sfaContributionPercentage)
         {
-                if (string.IsNullOrWhiteSpace(request.SfaContributionPercentage) || !request.SfaContributionPercentage.Contains("%") || !int.TryParse(request.SfaContributionPercentage.Split('%')[0],
-                        out _))
-                {
-                    throw new InvalidCastException("SfaContributionPercentage is not in the format: xx% (e.g. 90%)");
-                }
+            if (string.IsNullOrWhiteSpace(sfaContributionPercentage) ||
+                !sfaContributionPercentage.Contains("%") || !int.TryParse(
+                    sfaContributionPercentage.Split('%')[0],
+                    out _))
+            {
+                throw new InvalidCastException("SfaContributionPercentage is not in the format: xx% (e.g. 90%)");
+            }
 
-                var percentage = decimal.Parse((100 - int.Parse(request.SfaContributionPercentage.Split('%')[0])).ToString());
-
-                var employerContribution = decimal.Parse(request.TotalTrainingPrice.Value.ToString()) * (percentage / 100);
-
-                return decimal.ToInt64(employerContribution);
+            return
+                int.Parse((100 - int.Parse(sfaContributionPercentage.Split('%')[0])).ToString());
         }
+
     }
 }

@@ -5,24 +5,15 @@ using DCT.TestDataGenerator;
 using DCT.TestDataGenerator.Functor;
 using ESFA.DC.ILR.Model.Loose;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     public class Framework593Learner : FM36Base
     {
-        private readonly IEnumerable<LearnerRequest> learnerRequests;
         private readonly IEnumerable<Learner> learners;
+        private int LearnerIndex { get; set; }
         private GenerationOptions options;
-
-        public Framework593Learner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
-        {
-            if (learnerRequests == null || !learnerRequests.Any())
-            {
-                throw new ArgumentException("At least one learner is required.");
-            }
-
-            this.learnerRequests = learnerRequests;
-        }
 
         public Framework593Learner(IEnumerable<Learner> learners, string featureNumber) : base(featureNumber)
         {
@@ -44,7 +35,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 DoMutateOptions = MutateLearnerOptions
             });
 
-            if (learnerRequests?.Count() == 2|| learners?.Count() == 2)
+            // Need a better way of doing this.
+            if (learners?.Count() == 2)
             {
                 list.Add(new LearnerTypeMutator()
                 {
@@ -65,40 +57,77 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void MutateLearner(MessageLearner learner, bool valid)
         {
-            if (learnerRequests != null)
-            {
-                var trainingRecord = learnerRequests.First();
-                MutateCommon(learner, trainingRecord);
-                DoSpecificMutate(learner, trainingRecord);
-            }
-            else
-            {
-                var trainingRecord = learners.First();
-                MutateCommon(learner, trainingRecord);
-            }
+                MutateCommon(learner, learners.First());
+                DoSpecificMutate(learner, learners.First());
         }
 
         private void MutateLearner2(MessageLearner learner, bool valid)
         {
-            var trainingRecord = learnerRequests.Skip(1).First();
-            MutateCommon(learner, trainingRecord);
-            DoSpecificMutate(learner, trainingRecord);
+            MutateCommon(learner, learners.Skip(1).First());
+            DoSpecificMutate(learner, learners.Skip(1).First());
         }
 
-        protected virtual void DoSpecificMutate(MessageLearner learner, LearnerRequest request)
+        protected virtual void DoSpecificMutate(MessageLearner messageLearner, Learner learner)
         {
-            learner.ULN = request.Uln;
-            learner.ULNSpecified = true;
-            learner.LearningDelivery[1].LearnAimRef = "00300545";
-            MutateHigherEducation(learner);
+            messageLearner.ULN = learner.Uln;
+            messageLearner.ULNSpecified = true;
+
+            var functionalSkillsLearningDelivery = messageLearner.LearningDelivery.Single(ld => ld.AimType == 3);
+            functionalSkillsLearningDelivery.LearnAimRef = "00300545";
+            functionalSkillsLearningDelivery.FundModel = 36;
+            functionalSkillsLearningDelivery.ProgType = 20;
+            functionalSkillsLearningDelivery.FworkCode = 593;
+            functionalSkillsLearningDelivery.LearnStartDate =
+                messageLearner.LearningDelivery.Single(ld => ld.AimType == 1).LearnStartDate;
+
+            MutateHigherEducation(messageLearner);
         }
 
-        protected virtual void DoSpecificMutate(MessageLearner learner, Learner request)
+        protected virtual void SetDeliveryAsWithdrawn(MessageLearnerLearningDelivery delivery, Aim learnerRequestAim)
         {
-            learner.ULN = request.Uln;
-            learner.ULNSpecified = true;
-            learner.LearningDelivery[1].LearnAimRef = "00300545";
-            MutateHigherEducation(learner);
+            delivery.CompStatus = (int)CompletionStatus.Withdrawn;
+            delivery.CompStatusSpecified = true;
+            delivery.Outcome = (int)Outcome.NoAchievement;
+            delivery.OutcomeSpecified = true;
+            delivery.WithdrawReason = (int)WithDrawalReason.FinancialReasons;
+            delivery.WithdrawReasonSpecified = true;
+            if (learnerRequestAim.ActualDurationAsTimespan.HasValue)
+            {
+                delivery.LearnActEndDate =
+                    learnerRequestAim.StartDate.ToDate().Add(learnerRequestAim.ActualDurationAsTimespan.Value);
+
+                delivery.LearnActEndDateSpecified = true;
+            }
+        }
+
+        protected virtual void SetupLearningDeliveryFam(MessageLearnerLearningDelivery delivery, Aim learnerRequestAim)
+        {
+            var learningDeliveryFam = delivery.LearningDeliveryFAM.Single(ldf => ldf.LearnDelFAMType == LearnDelFAMType.ACT.ToString());
+
+            learningDeliveryFam.LearnDelFAMDateTo = delivery.LearnActEndDate;
+            learningDeliveryFam.LearnDelFAMDateToSpecified = true;
+        }
+
+        protected virtual void SetupAppFinRecord(MessageLearner messageLearner, MessageLearnerLearningDelivery delivery, Aim learnerRequestAim)
+        {
+            var appFinRecord =
+                delivery.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
+
+            if (appFinRecord == null)
+            {
+                DCT.TestDataGenerator.Helpers.AddAfninRecord(messageLearner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, 15000);
+
+                appFinRecord =
+                    delivery.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
+            }
+
+            appFinRecord.AFinDate = delivery.LearnStartDate;
+            appFinRecord.AFinDateSpecified = true;
+        }
+
+        protected virtual void ProcessMessageLearnerForLearnerRequestOriginatingFromTrainingRecord(MessageLearnerLearningDelivery functionalSkillsLearningDelivery, Aim aim)
+        {
+            SetDeliveryAsWithdrawn(functionalSkillsLearningDelivery, aim);
         }
     }
 }

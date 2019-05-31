@@ -24,6 +24,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             PathwayCode = training.PathwayCode;
             FundingLineType = training.FundingLineType;
             CompletionStatus = CompletionStatusFromString(training.CompletionStatus);
+            PriceEpisodes = new List<Price>(){new Price()
+            {
+                TotalTrainingPriceEffectiveDate = training.TotalTrainingPriceEffectiveDate,
+                TotalTrainingPrice = training.TotalTrainingPrice,
+                TotalAssessmentPriceEffectiveDate = training.TotalAssessmentPriceEffectiveDate,
+                TotalAssessmentPrice = training.TotalAssessmentPrice,
+                ContractType = training.ContractType,
+                AimSequenceNumber = training.AimSequenceNumber,
+                SfaContributionPercentage = training.SfaContributionPercentage,
+                CompletionHoldBackExemptionCode = training.CompletionHoldBackExemptionCode,
+                Pmr = training.Pmr
+            }};
         }
 
         CompletionStatus CompletionStatusFromString(string completionStatus)

@@ -137,6 +137,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
                 learner.Course.PathwayCode = ilrLearner.PathwayCode;
                 learner.SmallEmployer = ilrLearner.SmallEmployer;
+                learner.PostcodePrior = ilrLearner.PostcodePrior;
+
                 ilrLearner.Uln = ilrLearner.Uln != default(long) ? ilrLearner.Uln : learner.Uln;
                 //if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln
 
@@ -869,21 +871,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var aim = new Aim(training);
                     AddTestAims(new List<Aim> { aim }, provider.Ukprn);
 
-                    if (CurrentPriceEpisodes == null)
-                    {
-                        aim.PriceEpisodes.Add(new Price
-                        {
-                            AimSequenceNumber = training.AimSequenceNumber,
-                            TotalAssessmentPrice = training.TotalAssessmentPrice,
-                            TotalTrainingPrice = training.TotalTrainingPrice,
-                            TotalTrainingPriceEffectiveDate = training.TotalTrainingPriceEffectiveDate,
-                            TotalAssessmentPriceEffectiveDate = training.TotalAssessmentPriceEffectiveDate,
-                            SfaContributionPercentage = training.SfaContributionPercentage,
-                            CompletionHoldBackExemptionCode = training.CompletionHoldBackExemptionCode,
-                            Pmr = training.Pmr,
-                        });
-                    }
-                    else
+                    if (CurrentPriceEpisodes != null)
                     {
                         foreach (var currentPriceEpisode in CurrentPriceEpisodes)
                         {
@@ -894,9 +882,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             }
                         }
                     }
-
-                   
-
                 }
             }
 

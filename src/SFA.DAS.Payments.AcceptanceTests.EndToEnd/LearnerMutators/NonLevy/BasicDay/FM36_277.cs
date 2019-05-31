@@ -1,54 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DCT.TestDataGenerator;
 using ESFA.DC.ILR.Model.Loose;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay
 {
     public class FM36_277 : Framework593Learner
     {
-        public FM36_277(IEnumerable<LearnerRequest> learnerRequests) : base(learnerRequests, "277")
+        public FM36_277(IEnumerable<Learner> learners) : base(learners, "277")
         {
+                
         }
 
-        protected override void DoSpecificMutate(MessageLearner learner, LearnerRequest learnerRequest)
+        protected override void DoSpecificMutate(MessageLearner messageLearner, Learner learner)
         {
-            base.DoSpecificMutate(learner, learnerRequest);
-            var ld = learner.LearningDelivery[0];
+            base.DoSpecificMutate(messageLearner, learner);
 
-            foreach (var lds in learner.LearningDelivery)
+            foreach (var delivery in messageLearner.LearningDelivery)
             {
-                lds.Outcome = (int) Outcome.NoAchievement;
-                lds.OutcomeSpecified = true;
-                lds.WithdrawReason = (int) WithDrawalReason.FinancialReasons;
-                lds.WithdrawReasonSpecified = true;
-                if (learnerRequest.StartDate.HasValue && learnerRequest.ActualDurationInMonths.HasValue)
+                var learnerRequestAim = learner.Aims.SingleOrDefault(aim => aim.AimReference == delivery.LearnAimRef);
+                if (learnerRequestAim == null)
                 {
-                    lds.LearnActEndDate =
-                        learnerRequest.StartDate.Value.AddMonths(learnerRequest.ActualDurationInMonths.Value);
+                    continue;
                 }
 
-                lds.LearnActEndDateSpecified = true;
+                SetDeliveryAsWithdrawn(delivery, learnerRequestAim);
+
+                SetupLearningDeliveryFam(delivery, learnerRequestAim);
+
+                SetupAppFinRecord(messageLearner, delivery, learnerRequestAim);
             }
 
-            var ldfam = ld.LearningDeliveryFAM.Single(ldf => ldf.LearnDelFAMType == LearnDelFAMType.ACT.ToString());
-
-            ldfam.LearnDelFAMDateTo = ld.LearnActEndDate;
-            ldfam.LearnDelFAMDateToSpecified = true;
-
-            var appFinRecord =
-                ld.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
-
-            if (appFinRecord == null)
-            {
-                DCT.TestDataGenerator.Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(), (int)LearnDelAppFinCode.TotalTrainingPrice, 15000);
-
-                appFinRecord =
-                    ld.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
-            }
-
-            appFinRecord.AFinDate = ld.LearnStartDate;
-            appFinRecord.AFinDateSpecified = true;
+            var functionalSkillsLearningDelivery = messageLearner.LearningDelivery.Single(learningDelivery => learningDelivery.AimType == 3);
+            ProcessMessageLearnerForLearnerRequestOriginatingFromTrainingRecord(functionalSkillsLearningDelivery,
+                learner.Aims.First());
         }
+
     }
 }

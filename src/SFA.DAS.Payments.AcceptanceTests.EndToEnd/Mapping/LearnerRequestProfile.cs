@@ -8,9 +8,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Mapping
     using Payments.Tests.Core;
     using DCT.TestDataGenerator.Model;
 
-    public class IlrProfile : Profile
+    public class LearnerRequestProfile : Profile
     {
-        public IlrProfile()
+        public LearnerRequestProfile()
         {
             CreateMap<Training, LearnerRequest>()
                 .ForMember(x => x.StartDate, opt => opt.MapFrom(src => src.StartDate.ToDate()))
@@ -44,7 +44,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Mapping
                 .ForMember(x => x.ProgrammeType, opt => opt.MapFrom(src => src.ProgrammeType))
                 .ForMember(x => x.SfaContributionPercentage,
                     opt => opt.MapFrom(src => src.SfaContributionPercentage))
-                .ForMember(x => x.SmallEmployer, opt => opt.MapFrom(src => src.SmallEmployer));
+                .ForMember(x => x.SmallEmployer, opt => opt.MapFrom(src => src.SmallEmployer))
+                .ForMember(x => x.PostcodePrior, opt => opt.MapFrom(src => src.PostcodePrior));
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     public class LearnerMutatorFactory
     {
-        public static ILearnerMultiMutator Create(string featureNumber, IEnumerable<LearnerRequest> learnerRequests = null, IEnumerable<Learner> learners = null)
+        public static ILearnerMultiMutator Create(string featureNumber, IEnumerable<Learner> learners)
         {
             switch (featureNumber)
             {
@@ -24,19 +24,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "337":
                 case "402":
                 case "427":
+                case "435":
                 case "615":
-                    return new Framework593Learner(learnerRequests, featureNumber);
                 case "485":
+                case "387":
                     return new Framework593Learner(learners, featureNumber);
                 case "487":
                 case "326":
-                    return new Framework403Learner(learnerRequests, featureNumber);
+                    return new Framework403Learner(learners, featureNumber);
                 case "277":
-                    return new FM36_277(learnerRequests);
+                    return new FM36_277(learners);
                 case "278":
-                    return new FM36_278(learnerRequests);
+                    return new FM36_278(learners);
                 case "328":
-                    return new FM36_328(learnerRequests);
+                    return new FM36_328(learners);
                 default:
                     throw new ArgumentException("A valid feature number is required.", nameof(featureNumber));
             }
