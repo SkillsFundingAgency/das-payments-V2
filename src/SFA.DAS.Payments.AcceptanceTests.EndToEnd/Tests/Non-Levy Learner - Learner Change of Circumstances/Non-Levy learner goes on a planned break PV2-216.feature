@@ -1,4 +1,5 @@
 ﻿@ignore
+#@supports_dc_e2e
 Feature: Non-levy learner, goes on a planned break which is recorded in ILR PV2-216
 	As a provider,
 	I want a non-levy learner, goes on a planned break which is recorded in ILR, to be paid the correct amount

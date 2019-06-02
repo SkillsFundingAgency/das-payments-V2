@@ -3,6 +3,7 @@
 #| n/a                                   |
 #| 0%                                    |
 
+#@supports_dc_e2e
 Feature: Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391
 	As a provider,
 	I want a payment for a non-levy learner, planned duration is same as programme (assumes both start and finish at same time), to be paid the correct amount

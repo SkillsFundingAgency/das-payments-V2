@@ -1,4 +1,5 @@
-﻿Feature: Provider earnings and payments where apprenticeship requires english or maths above level 2 - completes on time. PV2-389
+﻿#@supports_dc_e2e
+Feature: Provider earnings and payments where apprenticeship requires english or maths above level 2 - completes on time. PV2-389
 
 Scenario Outline: Non-levy learner taking level 3 aim and completes on time so no more funding PV2-389
 	Given the following learners

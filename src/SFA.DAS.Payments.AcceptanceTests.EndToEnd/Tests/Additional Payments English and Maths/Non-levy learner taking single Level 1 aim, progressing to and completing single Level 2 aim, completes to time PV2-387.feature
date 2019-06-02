@@ -1,4 +1,5 @@
-﻿Feature: Non-levy learner, taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387
+﻿#@supports_dc_e2e
+Feature: Non-levy learner, taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387
 	As a provider,
 	I want a non-levy learner taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

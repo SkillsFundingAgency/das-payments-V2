@@ -1,8 +1,7 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.Services
-{
-    using Intefaces;
-    using System;
+﻿using System;
 
+namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
+{
     public class RandomUkprnService : IUkprnService
     {
         private const int MaximumUkprn = 1_000_000;

@@ -1,4 +1,5 @@
-﻿Feature: A non-levy learner with a framework uplift and 16-18 Additional Incentives finishes on time PV2-487
+﻿@supports_dc_e2e
+Feature: A non-levy learner with a framework uplift and 16-18 Additional Incentives finishes on time PV2-487
 
 #Scenario:A non-DAS learner, with a framework uplift and 16-18 Additional Incentive, finishes on time, Price is less than Funding Band Maximum of �9,000
 #    
@@ -36,7 +37,7 @@
 Scenario: A non-levy learner with a framework uplift and 16-18 Additional Incentives finishes on time PV2-487
 	Given the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 06/Aug/Last Academic Year | 12 months        | 8250                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| 06/Aug/Last Academic Year | 12 months        | 8250                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 403            | 1            | 2              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 	And the following earnings had been generated for the learner
 		| Delivery Period        | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive | OnProgramme16To18FrameworkUplift |
 		| Aug/Last Academic Year | 550          | 0          | 0         | 0                            | 0                            | 120                              |

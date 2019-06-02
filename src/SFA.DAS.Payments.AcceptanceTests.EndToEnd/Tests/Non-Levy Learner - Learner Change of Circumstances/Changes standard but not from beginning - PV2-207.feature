@@ -1,4 +1,5 @@
-﻿Feature: Provider earnings and payments where learner changes apprenticeship standard and negotiated price remains the same, (remaining with the same employer and provider)
+﻿#@supports_dc_e2e
+Feature: Provider earnings and payments where learner changes apprenticeship standard and negotiated price remains the same, (remaining with the same employer and provider)
 	As a provider,
 	I want a non-levy learner, changes apprenticeship standard and the negotiated price remains the same, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

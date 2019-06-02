@@ -1,4 +1,5 @@
-﻿Feature: Non-levy learner, learner moves start date forward, on prog payments and english/maths will be refunded PV2-465
+﻿#@supports_dc_e2e
+Feature: Non-levy learner, learner moves start date forward, on prog payments and english/maths will be refunded PV2-465
 
 Scenario Outline: Non-levy learner provider changes aim sequence numbers after payments have already occurred PV2-465
 	Given the following learners

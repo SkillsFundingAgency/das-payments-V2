@@ -4,7 +4,6 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -44,6 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var employer = TestSession.GetEmployer(employerIdentifier);
             employer.Balance = levyAmount;
+            employer.IsLevyPayer = true;
             await SaveLevyAccount(employer).ConfigureAwait(false);
             SetCollectionPeriod(collectionPeriodText);
         }
@@ -82,6 +82,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddNewIlr(table, TestSession.Ukprn);
         }
 
+        [Given(@"the provider ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" now changes the Learner details as follows")]
         public void GivenTheNowChangesTheLearnerDetailsAsFollows(string providerIdentifier, Table table)
@@ -162,6 +163,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 Console.WriteLine($"Updating status of apprenticeship. Identifier: {validStatus.Identifier}, apprenticeship id: {apprenticeship.ApprenticeshipId}, status: {validStatus.Status}");
                 await UpdateApprenticeshipStatus(apprenticeship.ApprenticeshipId, validStatus.Status, validStatus.StoppedDate);
             }
+        }
+
+        [Given(@"the employer IsLevyPayer flag is (.*)")]
+        public async Task GivenTheEmployerIsLevyPayerFlagIsFalse(bool isLevyFlag)
+        {
+            var employer = TestSession.Employer;
+            employer.IsLevyPayer = isLevyFlag;
+            await SaveLevyAccount(employer).ConfigureAwait(false);
         }
 
         [Given(@"price details as follows")]

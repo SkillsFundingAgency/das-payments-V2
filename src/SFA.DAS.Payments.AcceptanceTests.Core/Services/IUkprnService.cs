@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
+﻿namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
     public interface IUkprnService
     {
