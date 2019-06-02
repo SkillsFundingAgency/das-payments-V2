@@ -7,9 +7,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Castle.DynamicProxy.Generators;
 using FluentAssertions;
-using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Cache
 {
@@ -17,20 +15,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Cache
     public class DataLockLearnerCacheTest
     {
         private Mock<IActorDataCache<List<ApprenticeshipModel>>> dataCache;
-        private  Mock<IDataCache<bool>> providerHasApprenticeshipsCache;
 
         [Test]
         public async Task HasLearnerRecordsShouldReturnFalseIfCacheIsEmpty()
         {
             dataCache = new Mock<IActorDataCache<List<ApprenticeshipModel>>>();
-           
-            providerHasApprenticeshipsCache = new Mock<IDataCache<bool>>();
-            var hasApprenticeships = new ConditionalValue<bool>(false, false);
-            providerHasApprenticeshipsCache
-                .Setup(o => o.TryGet(CacheKeys.ProviderHasApprenticeshipsCacheKey, It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(hasApprenticeships));
-            
-            var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object, providerHasApprenticeshipsCache.Object);
+            dataCache.
+                Setup(o => o.IsEmpty(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(true));
+
+            var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object);
             var actual = await dataLockLearnerCache.HasLearnerRecords().ConfigureAwait(false);
             actual.Should().BeFalse();
         }
@@ -51,7 +45,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Cache
             dataCache.Setup(o => o.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                      .Returns(Task.FromResult(cacheApprenticeships));
 
-            var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object, providerHasApprenticeshipsCache.Object);
+            var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object);
             var actual = await dataLockLearnerCache.GetLearnerApprenticeships(100).ConfigureAwait(false);
             actual.Should().NotBeNull();
             actual.Should().HaveCount(1);
@@ -73,7 +67,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Cache
             dataCache.Setup(o => o.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(cacheApprenticeships));
 
-            var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object, providerHasApprenticeshipsCache.Object);
+            var dataLockLearnerCache = new DataLockLearnerCache(dataCache.Object);
             var actual = await dataLockLearnerCache.GetDuplicateApprenticeships().ConfigureAwait(false);
             actual.Should().NotBeNull();
             actual.Should().HaveCount(1);

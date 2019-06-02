@@ -23,7 +23,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         private readonly ActorId actorId;
         private readonly IPaymentLogger paymentLogger;
         private readonly IActorDataCache<List<ApprenticeshipModel>> apprenticeships;
-        private readonly IDataCache<bool> providerHasApprenticeshipsCache;
         private readonly IDataLockProcessor dataLockProcessor;
         private readonly IApprenticeshipRepository apprenticeshipRepository;
 
@@ -33,7 +32,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             IPaymentLogger paymentLogger,
             IApprenticeshipRepository apprenticeshipRepository,
             IActorDataCache<List<ApprenticeshipModel>> apprenticeships,
-            IDataCache<bool> providerHasApprenticeshipsCache,
             IDataLockProcessor dataLockProcessor)
             : base(actorService, actorId)
         {
@@ -42,7 +40,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             this.paymentLogger = paymentLogger;
             this.apprenticeshipRepository = apprenticeshipRepository;
             this.apprenticeships = apprenticeships;
-            this.providerHasApprenticeshipsCache = providerHasApprenticeshipsCache;
             this.dataLockProcessor = dataLockProcessor;
         }
 
@@ -86,10 +83,10 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                     .ConfigureAwait(false);
 
                 await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerDuplicateApprenticeships).ConfigureAwait(false);
-                await providerHasApprenticeshipsCache.AddOrReplace(CacheKeys.ProviderHasApprenticeshipsCacheKey, true).ConfigureAwait(false);
             }
 
             paymentLogger.LogInfo($"Initialised actor for provider {Id}");
+
 
             await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
         }

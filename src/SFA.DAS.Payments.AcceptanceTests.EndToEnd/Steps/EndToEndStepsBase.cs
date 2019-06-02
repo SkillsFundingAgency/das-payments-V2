@@ -227,11 +227,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private async Task HandleDuplicateApprenticeships()
         {
-            var apprenticeshipsToCheck = Apprenticeships
-                .Where(o => ApprenticeshipDuplicates.All(x => o.ApprenticeshipId != x.ApprenticeshipId))
-                .ToList();
-
-            foreach (var apprenticeship in apprenticeshipsToCheck)
+            foreach (var apprenticeship in Apprenticeships)
             {
                 var duplicates = Apprenticeships
                     .Where(x => x.Uln == apprenticeship.Uln)
