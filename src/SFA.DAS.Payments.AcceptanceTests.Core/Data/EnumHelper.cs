@@ -108,19 +108,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             }
         }
 
-        public static bool IsMainAimTransactionType(this TransactionType transactionType)
-        {
-            switch (transactionType)
-            {
-                case TransactionType.Learning:
-                case TransactionType.Completion:
-                case TransactionType.Balancing:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
         public static TransactionType ToTransactionTypeFromAttributeName(this string attributeName)
         {
             switch (attributeName)
@@ -166,21 +153,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public static List<ContractType> GetContractTypes(List<Training> currentIlr, List<Price> priceEpisodes)
         {
-            List<ContractType> contractTypes;
+            var contractTypes = priceEpisodes.Select(x => x.ContractType).Distinct().ToList();
 
             if (currentIlr == null || !currentIlr.Any())
             {
                 if (priceEpisodes == null) throw new Exception("No valid current Price Episodes found");
-
-                contractTypes = priceEpisodes.Select(x => x.ContractType).Distinct().ToList();
             }
             else
             {
-                if (priceEpisodes != null && priceEpisodes.Count > 1 && priceEpisodes.All(x => x.ContractType != 0))
-                {
-                    contractTypes = priceEpisodes.Select(x => x.ContractType).Distinct().ToList();
-                }
-                else
+                if (priceEpisodes == null || priceEpisodes.Count <= 1 || priceEpisodes.Any(x => x.ContractType == 0))
                 {
                     contractTypes = new List<ContractType>
                     {
@@ -190,24 +171,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             }
 
             return contractTypes;
-        }
-
-        public static ContractType GetContractType(List<Training> currentIlr, List<Price> priceEpisodes)
-        {
-            ContractType contractType;
-
-            if (currentIlr == null || !currentIlr.Any())
-            {
-                if (priceEpisodes == null) throw new Exception("No valid current Price Episodes found");
-
-                contractType = priceEpisodes.Last().ContractType;
-            }
-            else
-            {
-                contractType = currentIlr.Last().ContractType;
-            }
-
-            return contractType;
         }
     }
 }

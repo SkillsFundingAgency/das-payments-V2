@@ -560,7 +560,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var period = earning.DeliveryCalendarPeriod;
                 foreach (var earningValue in earning.Values)
                 {
-                    if (!aim.IsMainAim && earningValue.Key.IsMainAimTransactionType())
+                    if (!aim.IsMainAim && EnumHelper.IsOnProgType(earningValue.Key))
                     {
                         continue;
                     }
