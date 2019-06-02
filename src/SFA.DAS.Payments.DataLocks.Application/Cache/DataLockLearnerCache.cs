@@ -10,16 +10,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.Cache
     public class DataLockLearnerCache : IDataLockLearnerCache
     {
         private readonly IActorDataCache<List<ApprenticeshipModel>> dataCache;
+        private readonly IDataCache<bool> providerHasApprenticeshipsCache;
 
-        public DataLockLearnerCache(IActorDataCache<List<ApprenticeshipModel>> dataCache)
+        public DataLockLearnerCache(IActorDataCache<List<ApprenticeshipModel>> dataCache, IDataCache<bool> providerHasApprenticeshipsCache)
         {
             this.dataCache = dataCache;
+            this.providerHasApprenticeshipsCache = providerHasApprenticeshipsCache;
         }
 
         public async Task<bool> HasLearnerRecords()
         {
-            var isEmpty = await dataCache.IsEmpty().ConfigureAwait(false);
-            return !isEmpty;
+            var hasApprenticeships =  await providerHasApprenticeshipsCache.TryGet(CacheKeys.ProviderHasApprenticeshipsCacheKey).ConfigureAwait(false);
+            return hasApprenticeships.HasValue && hasApprenticeships.Value ;
         }
 
         public async Task<List<ApprenticeshipModel>> GetLearnerApprenticeships(long uln)

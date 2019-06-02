@@ -234,7 +234,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var apprenticeship in apprenticeshipsToCheck)
             {
                 var duplicates = Apprenticeships
-                    .Where(x => x.Uln == apprenticeship.Uln && x.Ukprn != apprenticeship.Ukprn)
+                    .Where(x => x.Uln == apprenticeship.Uln)
                     .ToList();
 
                 foreach (var duplicate in duplicates)

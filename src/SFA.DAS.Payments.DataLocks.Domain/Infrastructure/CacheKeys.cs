@@ -3,5 +3,7 @@
     public static class CacheKeys
     {
         public const string DuplicateApprenticeshipsKey = "duplicateApprenticeships";
+        public const string ProviderHasApprenticeshipsCacheKey = "providerApprenticeshipsLoaded";
+        
     }
 }
