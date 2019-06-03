@@ -73,13 +73,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             get => !Context.TryGetValue<List<Apprenticeship>>(out var apprenticeships) ? null : apprenticeships;
             set => Set(value);
         }
-
-        protected List<ApprenticeshipDuplicateModel> ApprenticeshipDuplicates
-        {
-            get => !Context.TryGetValue<List<ApprenticeshipDuplicateModel>>(out var apprenticeshipDuplicates) ? null : apprenticeshipDuplicates;
-            set => Set(value);
-        }
-
+        
         protected List<Earning> PreviousEarnings
         {
             get => !Context.TryGetValue<List<Earning>>("previous_earnings", out var previousEarnings) ? null : previousEarnings;
@@ -230,7 +224,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var apprenticeship in Apprenticeships)
             {
                 var duplicates = Apprenticeships
-                    .Where(x => x.Uln == apprenticeship.Uln)
+                    .Where(x => x.Uln == apprenticeship.Uln && 
+                                x.ApprenticeshipId != apprenticeship.ApprenticeshipId &&
+                                x.Ukprn != apprenticeship.Ukprn)
                     .ToList();
 
                 foreach (var duplicate in duplicates)
@@ -239,8 +235,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         ApprenticeshipHelper.CreateApprenticeshipDuplicateModel(apprenticeship.Ukprn, duplicate);
                     await ApprenticeshipHelper.AddApprenticeshipDuplicate(duplicateApprenticeshipModel, DataContext)
                         .ConfigureAwait(false);
-
-                    ApprenticeshipDuplicates.Add(duplicateApprenticeshipModel);
                 }
             }
         }
