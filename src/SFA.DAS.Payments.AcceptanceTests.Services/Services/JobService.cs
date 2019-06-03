@@ -77,7 +77,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
 
         public async Task<IEnumerable<long>> GetJobsByStatus(int ukprn, params int[] status)
         {
-            var data = await httpClient.GetDataAsync($"job/{ukprn}");
+            var data = await httpClient.GetDataAsync($"job/{ukprn}").ConfigureAwait(false);
             var jobList = JsonConvert.DeserializeObject<IEnumerable<FileUploadJob>>(data);
             return jobList.Where(x => status.Contains((int) x.Status)).Select(j => j.JobId);
         }
