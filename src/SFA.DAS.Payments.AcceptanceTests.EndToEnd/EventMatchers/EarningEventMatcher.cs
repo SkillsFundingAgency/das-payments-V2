@@ -179,27 +179,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         private List<EarningPeriod> GetEarningPeriods(List<Earning> aimEarningSpecs, Aim aimSpec, ApprenticeshipContractTypeEarningsEvent onProgEarning, TransactionType tt, FM36Learner fm36Learner)
         {
-            var matchingPriceEpisodeEarningPeriods = aimEarningSpecs
-                .Where(e => PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning))
+            return aimEarningSpecs
                 .Select(e => new EarningPeriod
                 {
-                    Amount = e.Values[tt],
+                    Amount = PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning)? e.Values[tt] : 0M,
                     Period = e.DeliveryCalendarPeriod,
                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                }).ToList();
-
-            var nonMatchingPriceEpisodeEarningPeriods = aimEarningSpecs
-                .Where(e => !PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning))
-                .Select(e => new EarningPeriod
-                {
-                    Amount = 0M,
-                    Period = e.DeliveryCalendarPeriod,
-                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                }).ToList();
-
-            matchingPriceEpisodeEarningPeriods.AddRange(nonMatchingPriceEpisodeEarningPeriods);
-
-            return matchingPriceEpisodeEarningPeriods.OrderBy(p => p.Period).ToList();
+                }).OrderBy(p => p.Period).ToList();
         }
 
         private static bool PriceEpisodeContractTypeMatchesAim(List<Price> priceEpisodes, string priceEpisodeIdentifier,
