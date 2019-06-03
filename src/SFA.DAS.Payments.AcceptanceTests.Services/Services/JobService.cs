@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
@@ -70,7 +72,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
 
         public async Task DeleteJob(long jobId)
         {
-            return await httpClient.DeleteAsync($"job/{jobId}");
+            await httpClient.DeleteAsync($"job/{jobId}");
+        }
+
+        public async Task<IEnumerable<long>> GetJobsByStatus(int ukprn, params int[] status)
+        {
+            var data = await httpClient.GetDataAsync($"job/{ukprn}");
+            var jobList = JsonConvert.DeserializeObject<IEnumerable<FileUploadJob>>(data);
+            return jobList.Where(x => status.Contains((int) x.Status)).Select(j => j.JobId);
         }
     }
 }
