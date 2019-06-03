@@ -153,15 +153,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public static List<ContractType> GetContractTypes(List<Training> currentIlr, List<Price> priceEpisodes)
         {
-            var contractTypes = priceEpisodes?.Select(x => x.ContractType).Distinct().ToList();
+            var contractTypes = priceEpisodes.Select(x => x.ContractType).Distinct().ToList();
 
-            if (currentIlr == null || !currentIlr.Any())
+            if (currentIlr != null && currentIlr.Any())
             {
-                if (priceEpisodes == null) throw new Exception("No valid current Price Episodes found");
-            }
-            else
-            {
-                if (priceEpisodes == null || priceEpisodes.Count <= 1 || priceEpisodes.Any(x => x.ContractType == 0))
+                if (priceEpisodes.Count <= 1)
                 {
                     contractTypes = new List<ContractType>
                     {
@@ -171,6 +167,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             }
 
             return contractTypes;
+        }
+
+        public static ContractType GetContractType(List<Training> currentIlr, List<Price> priceEpisodes)
+        {
+            ContractType contractType;
+
+            if (currentIlr == null || !currentIlr.Any())
+            {
+                if (priceEpisodes == null) throw new Exception("No valid current Price Episodes found");
+
+                contractType = priceEpisodes.Last().ContractType;
+            }
+            else
+            {
+                contractType = currentIlr.Last().ContractType;
+            }
+
+            return contractType;
         }
     }
 }

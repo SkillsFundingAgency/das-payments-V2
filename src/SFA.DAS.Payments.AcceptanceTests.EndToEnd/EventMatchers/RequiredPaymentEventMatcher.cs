@@ -150,13 +150,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private void AddOnProgPayment(Payment paymentToValidate, List<PeriodisedRequiredPaymentEvent> expectedPayments,
             decimal amountDue, OnProgrammeEarningType type)
         {
-            var paymentEvents = CreateContractTypeRequiredPaymentEvent(amountDue, type, paymentToValidate.PriceEpisodeIdentifier,
-                new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build());
-            
-            foreach (var requiredPaymentEvent in paymentEvents.Where(p => p.AmountDue != 0M))
-            {
-                expectedPayments.Add(requiredPaymentEvent);
-            }
+            var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build();
+            var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type, deliveryPeriod);
+
+            if (payment.AmountDue != 0)
+                expectedPayments.Add(payment);
         }
 
         protected override bool Match(PeriodisedRequiredPaymentEvent expected, PeriodisedRequiredPaymentEvent actual)
@@ -183,50 +181,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.Type == actual.Type;
         }
 
-        private List<CalculatedRequiredOnProgrammeAmount> CreateContractTypeRequiredPaymentEvent(decimal amountDue,
-            OnProgrammeEarningType onProgrammeEarningType, string priceEpisodeIdentifier, byte deliveryPeriod)
+        private PeriodisedRequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue, OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
         {
-            var contractTypes = EnumHelper.GetContractTypes(currentIlr, currentPriceEpisodes);
+            var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
 
-            if (contractTypes.Count > 1 && !string.IsNullOrWhiteSpace(priceEpisodeIdentifier))
+            switch (contractType)
             {
-                var matchingPriceEpisode =
-                    currentPriceEpisodes.FirstOrDefault(p => p.PriceEpisodeId == priceEpisodeIdentifier);
+                case ContractType.Act1:
+                    return new CalculatedRequiredLevyAmount
+                    {
+                        AmountDue = amountDue,
+                        OnProgrammeEarningType = onProgrammeEarningType,
+                        DeliveryPeriod = deliveryPeriod
+                    };
 
-                contractTypes.Remove(contractTypes.FirstOrDefault(x => x != matchingPriceEpisode?.ContractType));
+                case ContractType.Act2:
+                    return new CalculatedRequiredCoInvestedAmount
+                    {
+                        AmountDue = amountDue,
+                        OnProgrammeEarningType = onProgrammeEarningType,
+                        DeliveryPeriod = deliveryPeriod
+                    };
+
+                default:
+                    throw new InvalidOperationException("Cannot create the RequiredPaymentMatcher invalid contract type ");
             }
-
-            var events = new List<CalculatedRequiredOnProgrammeAmount>();
-
-            contractTypes.ForEach(c =>
-            {
-                switch (c)
-                {
-                    case ContractType.Act1:
-                        events.Add(new CalculatedRequiredLevyAmount
-                        {
-                            AmountDue = amountDue,
-                            OnProgrammeEarningType = onProgrammeEarningType,
-                            DeliveryPeriod = deliveryPeriod,
-                        });
-                        break;
-
-                    case ContractType.Act2:
-                        events.Add(new CalculatedRequiredCoInvestedAmount
-                        {
-                            AmountDue = amountDue,
-                            OnProgrammeEarningType = onProgrammeEarningType,
-                            DeliveryPeriod = deliveryPeriod,
-                        });
-                        break;
-
-                    default:
-                        throw new InvalidOperationException(
-                            "Cannot create the RequiredPaymentMatcher invalid contract type ");
-                }
-            });
-
-            return events;
         }
     }
 }
