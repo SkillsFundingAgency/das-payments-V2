@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         {
             var validation = new DataLockValidationModel
             {
-                PriceEpisode = new PriceEpisode { EffectiveTotalNegotiatedPriceStartDate = startDate, Identifier = priceEpisodeIdentifier },
+                PriceEpisode = new PriceEpisode { StartDate = startDate, Identifier = priceEpisodeIdentifier },
                 EarningPeriod = period,
                 Apprenticeship = new ApprenticeshipModel
                 {
@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         {
             var validation = new DataLockValidationModel
             {
-                PriceEpisode = new PriceEpisode { EffectiveTotalNegotiatedPriceStartDate = startDate, Identifier = priceEpisodeIdentifier },
+                PriceEpisode = new PriceEpisode { StartDate = startDate, EffectiveTotalNegotiatedPriceStartDate = startDate.AddYears(-1), Identifier = priceEpisodeIdentifier },
                 EarningPeriod = period,
                 Apprenticeship = new ApprenticeshipModel
                 {
