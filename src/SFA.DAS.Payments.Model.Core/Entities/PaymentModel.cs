@@ -17,7 +17,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public CollectionPeriod CollectionPeriod { get; set; }
         public byte DeliveryPeriod { get; set; }
         public string LearningAimReference { get; set; }
-        public DateTime? LearningAimStartDate { get; set; }
         public int LearningAimProgrammeType { get; set; }
         public int LearningAimStandardCode { get; set; }
         public int LearningAimFrameworkCode { get; set; }
@@ -38,5 +37,8 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public decimal CompletionAmount { get; set; }
         public decimal InstalmentAmount { get; set; }
         public short NumberOfInstalments { get; set; }
+        public long? ApprenticeshipId { get; set; }
+        public long? ApprenticeshipPriceEpisodeId { get; set; }
+
     }
 }

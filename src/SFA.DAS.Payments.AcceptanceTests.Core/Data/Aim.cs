@@ -24,6 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             PathwayCode = training.PathwayCode;
             FundingLineType = training.FundingLineType;
             CompletionStatus = CompletionStatusFromString(training.CompletionStatus);
+            
         }
 
         CompletionStatus CompletionStatusFromString(string completionStatus)

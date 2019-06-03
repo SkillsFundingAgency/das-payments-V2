@@ -9,6 +9,9 @@ using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 {
@@ -45,6 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 
                 AgreementId = "11",
                 ApprenticeshipId = 12,
+                ApprenticeshipPriceEpisodeId = 123,
                 Priority = 13,
                 EventId = Guid.NewGuid(),
                 AccountId = 1000000,
@@ -56,16 +60,21 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             autoMapper = mapperConfiguration.CreateMapper();
         }
 
+        protected void CompareCommonProperties(CalculatedRequiredLevyAmount source, FundingSourcePaymentEvent destination, List<string> propertiesToIgnore)
+        {
+            var sourceProperties = source.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            destination.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(propInfo =>
+                    !propertiesToIgnore.Contains(propInfo.Name)
+                    && sourceProperties.Any(sourceProp => sourceProp.Name.Equals(propInfo.Name)))
+                .ToList()
+                .ForEach(propInfo => propInfo.GetValue(destination).Should().Be(source.GetType().GetProperty(propInfo.Name).GetValue(source),$"{propInfo.Name} didn't match."));
+        }
+
         [Test]
         public void TestMapToLevyFundingSourcePaymentEvent()
         {
-            var expectedEvent = new LevyFundingSourcePaymentEvent
-            {
-                AgreementId = "11"
-            };
-
-            PopulateCommonProperties(expectedEvent);
-
             var actualEvent = new LevyFundingSourcePaymentEvent
             {
                 AmountDue = 55,
@@ -76,107 +85,63 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             autoMapper.Map(requiredPaymentEvent, actualEvent);
 
             // assert
-            actualEvent.EventTime.Should().NotBe(expectedEvent.EventTime);
-            actualEvent.EventId.Should().NotBe(expectedEvent.EventId);
-            actualEvent.EventTime = expectedEvent.EventTime;
-            actualEvent.EventId = expectedEvent.EventId;
-            actualEvent.Should().BeEquivalentTo(expectedEvent);
+            actualEvent.EventTime.Should().NotBe(requiredPaymentEvent.EventTime);
+            actualEvent.EventId.Should().NotBe(requiredPaymentEvent.EventId);
+            CompareCommonProperties(requiredPaymentEvent, actualEvent, new List<string> { "EventTime", "EventId", "AmountDue" });
         }
 
         [Test]
         public void TestMapToValidSfaCoInvestedFundingSourcePaymentEvent()
         {
-            var expectedEvent = new SfaCoInvestedFundingSourcePaymentEvent();
-            PopulateCommonProperties(expectedEvent);
-
-            var actualEvent = new LevyFundingSourcePaymentEvent
+            var actualEvent = new SfaCoInvestedFundingSourcePaymentEvent
             {
                 AmountDue = 55,
-                FundingSourceType = FundingSourceType.Levy
+                FundingSourceType = FundingSourceType.CoInvestedSfa
             };
 
             // act
             autoMapper.Map(requiredPaymentEvent, actualEvent);
 
             // assert
-            actualEvent.EventTime.Should().NotBe(expectedEvent.EventTime);
-            actualEvent.EventId.Should().NotBe(expectedEvent.EventId);
-            actualEvent.EventTime = expectedEvent.EventTime;
-            actualEvent.EventId = expectedEvent.EventId;
-            actualEvent.Should().BeEquivalentTo(expectedEvent);
+            actualEvent.EventTime.Should().NotBe(requiredPaymentEvent.EventTime);
+            actualEvent.EventId.Should().NotBe(requiredPaymentEvent.EventId);
+            CompareCommonProperties(requiredPaymentEvent, actualEvent, new List<string> { "EventTime", "EventId", "AmountDue" });
         }
 
         [Test]
         public void TestMapToValidEmployerCoInvestedFundingSourcePaymentEvent()
         {
-            var expectedEvent = new EmployerCoInvestedFundingSourcePaymentEvent();
-            PopulateCommonProperties(expectedEvent);
-
-            var actualEvent = new LevyFundingSourcePaymentEvent
+            var actualEvent = new EmployerCoInvestedFundingSourcePaymentEvent
             {
                 AmountDue = 55,
-                FundingSourceType = FundingSourceType.Levy
+                FundingSourceType = FundingSourceType.CoInvestedEmployer
             };
 
             // act
             autoMapper.Map(requiredPaymentEvent, actualEvent);
 
             // assert
-            actualEvent.EventTime.Should().NotBe(expectedEvent.EventTime);
-            actualEvent.EventId.Should().NotBe(expectedEvent.EventId);
-            actualEvent.EventTime = expectedEvent.EventTime;
-            actualEvent.EventId = expectedEvent.EventId;
-            actualEvent.Should().BeEquivalentTo(expectedEvent);
+            actualEvent.EventTime.Should().NotBe(requiredPaymentEvent.EventTime);
+            actualEvent.EventId.Should().NotBe(requiredPaymentEvent.EventId);
+            CompareCommonProperties(requiredPaymentEvent, actualEvent, new List<string> { "EventTime", "EventId", "AmountDue" });
         }
 
         [Test]
         public void TestMapToValidSfaFullyFundedFundingSourcePaymentEvent()
         {
-            var expectedEvent = new SfaFullyFundedFundingSourcePaymentEvent();
-            PopulateCommonProperties(expectedEvent);
-
-            var actualEvent = new LevyFundingSourcePaymentEvent
+            var actualEvent = new SfaFullyFundedFundingSourcePaymentEvent()
             {
                 AmountDue = 55,
-                FundingSourceType = FundingSourceType.Levy
+                FundingSourceType = FundingSourceType.FullyFundedSfa
             };
 
             // act
             autoMapper.Map(requiredPaymentEvent, actualEvent);
 
             // assert
-            actualEvent.EventTime.Should().NotBe(expectedEvent.EventTime);
-            actualEvent.EventId.Should().NotBe(expectedEvent.EventId);
-            actualEvent.EventTime = expectedEvent.EventTime;
-            actualEvent.EventId = expectedEvent.EventId;
-            actualEvent.Should().BeEquivalentTo(expectedEvent);
-        }
-
-        private void PopulateCommonProperties(FundingSourcePaymentEvent expectedEvent)
-        {
-            expectedEvent.FundingSourceType = FundingSourceType.Levy;
-            expectedEvent.Learner = new Learner
-            {
-                ReferenceNumber = "001",
-                Uln = 1234567890
-            };
-            expectedEvent.JobId = 1;
-            expectedEvent.ContractType = ContractType.Act1;
-            expectedEvent.Ukprn = 10000;
-            expectedEvent.AmountDue = 55;
-            expectedEvent.TransactionType = TransactionType.Learning;
-            expectedEvent.LearningAim = new LearningAim
-            {
-                FrameworkCode = 403
-            };
-            expectedEvent.DeliveryPeriod = 1;
-            expectedEvent.IlrSubmissionDateTime = DateTime.Today;
-            expectedEvent.RequiredPaymentEventId = requiredPaymentEvent.EventId;
-            expectedEvent.PriceEpisodeIdentifier = "1819-P01";
-            expectedEvent.SfaContributionPercentage = .9m;
-            expectedEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1);
-            expectedEvent.AccountId = 1000000;
-            expectedEvent.EarningEventId = requiredPaymentEvent.EarningEventId;
+            actualEvent.EventTime.Should().NotBe(requiredPaymentEvent.EventTime);
+            actualEvent.EventId.Should().NotBe(requiredPaymentEvent.EventId);
+            CompareCommonProperties(requiredPaymentEvent, actualEvent, new List<string> { "EventTime", "EventId", "AmountDue" });
         }
     }
 }

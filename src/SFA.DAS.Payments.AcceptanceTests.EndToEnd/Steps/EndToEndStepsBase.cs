@@ -393,8 +393,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 };
 
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = CalculateAimSequenceNumber(priceEpisode);
-                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = aim.StartDate.ToDate();
-                newPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = priceEpisode.EpisodeEffectiveStartDate;
+                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = priceEpisode.EpisodeEffectiveStartDate;
+                newPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = aim.StartDate.ToDate();
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType = CalculateContractType(priceEpisode);
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
                 newPriceEpisode.PriceEpisodeValues.TNP1 = priceEpisode.TotalTrainingPrice;
@@ -406,17 +406,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 // Default to max value so that not setting employer contribution won't fail tests 
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeCumulativePMRs = priceEpisode.Pmr ?? int.MaxValue;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeCompExemCode = priceEpisode.CompletionHoldBackExemptionCode;
-
+                
                 priceEpisodesForAim.Add(newPriceEpisode);
             }
 
             var orderedPriceEpisodes = priceEpisodesForAim
-                .OrderBy(x => x.PriceEpisodeValues.EpisodeEffectiveTNPStartDate)
+                .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
                 .ToList();
             for (var i = 0; i < orderedPriceEpisodes.Count; i++)
             {
                 var currentPriceEpisode = priceEpisodesForAim[i];
 
+                //TODO: Actual end date should only be populated if the course has finished
                 if (aim.ActualDurationAsTimespan.HasValue)
                 {
                     currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
@@ -426,7 +427,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (i + 1 < orderedPriceEpisodes.Count &&
                          orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.HasValue)
                 {
-                    var actualEndDate = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Value.AddDays(-1);
+                    var actualEndDate = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.AddDays(-1);
                     if (currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.HasValue)
                     {
                         if (actualEndDate < currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate)
@@ -441,7 +442,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
 
                 var episodeLastPeriod = LastOnProgPeriod(currentPriceEpisode);
-                var episodeStart = new CollectionPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Value).Build();
+                var episodeStart = new CollectionPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues.EpisodeStartDate.Value).Build();
 
                 foreach (var currentValues in aimPeriodisedValues)
                 {
@@ -870,6 +871,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             SfaContributionPercentage = training.SfaContributionPercentage,
                             CompletionHoldBackExemptionCode = training.CompletionHoldBackExemptionCode,
                             Pmr = training.Pmr,
+                            
                         });
                     }
                     else

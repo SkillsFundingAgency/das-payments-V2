@@ -11,6 +11,8 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         public byte DeliveryPeriod { get; set; }
         public long? AccountId { get; set; }
         public long? TransferSenderAccountId { get; set; }
+        public long? ApprenticeshipId { get; set; }
+        public long? ApprenticeshipPriceEpisodeId { get; set; }
         public ContractType ContractType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }

@@ -34,4 +34,7 @@
 	EarningsCompletionAmount DECIMAL (15,5),
 	EarningsInstalmentAmount DECIMAL (15,5),
 	EarningsNumberOfInstalments SMALLINT NOT NULL,
+    ApprenticeshipId BIGINT NULL,
+    ApprenticeshipPriceEpisodeId BIGINT NULL,
+
 )

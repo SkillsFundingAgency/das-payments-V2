@@ -43,11 +43,15 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
                 .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(source => source.PlannedEndDate))
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.Identifier))
-                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.EffectiveTotalNegotiatedPriceStartDate))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.StartDate))
+                .ForMember(dest => dest.EffectiveTotalNegotiatedPriceStartDate, opt => opt.MapFrom(source => source.EffectiveTotalNegotiatedPriceStartDate))
                 .ForMember(dest => dest.TotalNegotiatedPrice1, opt => opt.MapFrom(source => source.TotalNegotiatedPrice1))
                 .ForMember(dest => dest.TotalNegotiatedPrice2, opt => opt.MapFrom(source => source.TotalNegotiatedPrice2))
                 .ForMember(dest => dest.TotalNegotiatedPrice3, opt => opt.MapFrom(source => source.TotalNegotiatedPrice3))
-                .ForMember(dest => dest.TotalNegotiatedPrice4, opt => opt.MapFrom(source => source.TotalNegotiatedPrice4));
+                .ForMember(dest => dest.TotalNegotiatedPrice4, opt => opt.MapFrom(source => source.TotalNegotiatedPrice4))
+                .ForMember(dest => dest.CompletionHoldBackExemptionCode, opt => opt.MapFrom(source => source.CompletionHoldBackExemptionCode))
+                .ForMember(dest => dest.EmployerContribution, opt => opt.MapFrom(source => source.EmployerContribution))
+                ;
         }
     }
 }

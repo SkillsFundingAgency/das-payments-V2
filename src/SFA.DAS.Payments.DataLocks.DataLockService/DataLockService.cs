@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,12 +27,12 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         private readonly IApprenticeshipRepository apprenticeshipRepository;
 
         public DataLockService(
-            ActorService actorService, 
+            ActorService actorService,
             ActorId actorId,
-            IPaymentLogger paymentLogger, 
+            IPaymentLogger paymentLogger,
             IApprenticeshipRepository apprenticeshipRepository,
             IActorDataCache<List<ApprenticeshipModel>> apprenticeships,
-            IDataLockProcessor dataLockProcessor) 
+            IDataLockProcessor dataLockProcessor)
             : base(actorService, actorId)
         {
             this.actorService = actorService;
@@ -44,7 +45,16 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         public async Task<List<DataLockEvent>> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
-            return await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
+            try
+            {
+                return await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
+
+            }
+            catch (Exception e)
+            {
+                paymentLogger.LogError($"Error processing earnings. EventId: {message.EventId}, Learner: {message.Learner.ReferenceNumber}, Ukprn: {message.Ukprn}.  Error: {e.Message}",e);
+                throw;
+            }
         }
 
         public async Task Reset()

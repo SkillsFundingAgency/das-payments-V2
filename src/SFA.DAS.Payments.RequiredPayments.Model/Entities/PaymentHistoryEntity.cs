@@ -20,6 +20,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         public decimal SfaContributionPercentage { get; set; }
         public long? AccountId { get; set; }
         public long? TransferSenderAccountId { get; set; }
+        public long? ApprenticeshipId { get; set; }
+        public long? ApprenticeshipPriceEpisodeId { get; set; }
         public ContractType ContractType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? PlannedEndDate { get; set; }

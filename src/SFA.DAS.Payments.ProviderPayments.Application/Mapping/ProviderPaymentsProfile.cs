@@ -48,7 +48,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.CompletionStatus, opt => opt.MapFrom(source => source.CompletionStatus))
                 .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(source => source.CompletionAmount))
                 .ForMember(dest => dest.InstalmentAmount, opt => opt.MapFrom(source => source.InstalmentAmount))
-                .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments));
+                .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
+                .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(source => source.TransferSenderAccountId))
+                .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
+                .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodeId))
+                ;
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
@@ -84,6 +88,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => source.TransactionType))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(dest => dest.AccountId, opt => opt.MapFrom(source => source.AccountId))
+                .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(source => source.TransferSenderAccountId))
+                .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
+                .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodeId))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.StartDate))
                 .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(source => source.PlannedEndDate))
                 .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(source => source.ActualEndDate))

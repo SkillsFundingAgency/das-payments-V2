@@ -36,6 +36,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("PriceEpisodeIdentifier"),
                 new DataColumn("SfaContributionPercentage"),
                 new DataColumn("StartDate",typeof(DateTime)),
+                new DataColumn("EffectiveTotalNegotiatedPriceStartDate",typeof(DateTime)),
                 new DataColumn("PlannedEndDate",typeof(DateTime)),
                 new DataColumn("ActualEndDate",typeof(DateTime)) {AllowDBNull = true},
                 new DataColumn("TotalNegotiatedPrice1"),
@@ -46,6 +47,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("CompletionAmount"),
                 new DataColumn("InstalmentAmount"),
                 new DataColumn("NumberOfInstalments"),
+                new DataColumn("CompletionHoldBackExemptionCode"){AllowDBNull = true},
+                new DataColumn("EmployerContribution",typeof(decimal)){AllowDBNull = true},
             });
         }
 
@@ -78,6 +81,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["PriceEpisodeIdentifier"] = priceEpisodeModel.PriceEpisodeIdentifier ?? string.Empty;
             dataRow["SfaContributionPercentage"] = priceEpisodeModel.SfaContributionPercentage;
             dataRow["StartDate"] = priceEpisodeModel.StartDate;
+            dataRow["EffectiveTotalNegotiatedPriceStartDate"] = priceEpisodeModel.EffectiveTotalNegotiatedPriceStartDate;
             dataRow["PlannedEndDate"] = priceEpisodeModel.PlannedEndDate;
             dataRow["ActualEndDate"] = (object)ConvertMinDateToNull(priceEpisodeModel.ActualEndDate) ?? DBNull.Value;
             dataRow["TotalNegotiatedPrice1"] = priceEpisodeModel.TotalNegotiatedPrice1;
@@ -88,6 +92,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["CompletionAmount"] = priceEpisodeModel.CompletionAmount;
             dataRow["InstalmentAmount"] = priceEpisodeModel.InstalmentAmount;
             dataRow["NumberOfInstalments"] = priceEpisodeModel.NumberOfInstalments;
+            dataRow["CompletionHoldBackExemptionCode"] = priceEpisodeModel.CompletionHoldBackExemptionCode;
+            dataRow["EmployerContribution"] = priceEpisodeModel.EmployerContribution;
             return dataRow;
         }
 
@@ -95,8 +101,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         {
             return value.HasValue && value.Value == DateTime.MinValue ? null : value;
         }
-
-
 
         public override List<DataTable> GetDataTable(List<EarningEventModel> events)
         {

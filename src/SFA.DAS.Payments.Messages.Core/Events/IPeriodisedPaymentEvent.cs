@@ -18,6 +18,8 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         decimal CompletionAmount { get; }
         decimal InstalmentAmount { get; }
         short NumberOfInstalments { get; }
+        long? ApprenticeshipId { get; }
+        long? ApprenticeshipPriceEpisodeId { get; }
         
     }
 }

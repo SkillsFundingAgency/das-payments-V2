@@ -56,7 +56,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     CompletionStatus = payment.CompletionStatus,
                     CompletionAmount = payment.CompletionAmount,
                     InstalmentAmount = payment.InstalmentAmount,
-                    NumberOfInstalments = payment.NumberOfInstalments
+                    NumberOfInstalments = payment.NumberOfInstalments,
+                    ApprenticeshipId = payment.ApprenticeshipId,
+                    ApprenticeshipPriceEpisodeId = payment.ApprenticeshipPriceEpisodeId
                 })
             .ToListAsync(cancellationToken);
         }

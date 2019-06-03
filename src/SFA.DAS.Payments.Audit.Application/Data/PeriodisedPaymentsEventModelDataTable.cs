@@ -20,6 +20,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("SfaContributionPercentage"),
                 new DataColumn("AccountId"),
                 new DataColumn("TransferSenderAccountId"),
+                new DataColumn("ApprenticeshipId"),
+                new DataColumn("ApprenticeshipPriceEpisodeId"),
                 new DataColumn("EarningsStartDate",typeof(DateTime)),
                 new DataColumn("EarningsPlannedEndDate",typeof(DateTime)) {AllowDBNull = true},
                 new DataColumn("EarningsActualEndDate",typeof(DateTime)) {AllowDBNull = true},
@@ -43,6 +45,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["SfaContributionPercentage"] = eventModel.SfaContributionPercentage;
             dataRow["AccountId"] = eventModel.AccountId;
             dataRow["TransferSenderAccountId"] = eventModel.TransferSenderAccountId;
+            dataRow["ApprenticeshipId"] = eventModel.ApprenticeshipId;
+            dataRow["ApprenticeshipPriceEpisodeId"] = eventModel.ApprenticeshipPriceEpisodeId;
             dataRow["EarningsStartDate"] = eventModel.StartDate;
             dataRow["EarningsCompletionStatus"] = eventModel.CompletionStatus;
             dataRow["EarningsCompletionAmount"] = eventModel.CompletionAmount;

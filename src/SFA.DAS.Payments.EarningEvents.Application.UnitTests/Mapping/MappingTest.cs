@@ -283,7 +283,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.PriceEpisodes.Should().NotBeEmpty();
             earningEvent.PriceEpisodes.First().Identifier.Should().Be("pe-1");
-            earningEvent.PriceEpisodes.First().CourseStartDate.Should().Be(DateTime.Today.AddMonths(-12));
+            earningEvent.PriceEpisodes.First().StartDate.Should().Be(DateTime.Today.AddMonths(-12));
             earningEvent.PriceEpisodes.First().EffectiveTotalNegotiatedPriceStartDate.Should().Be(DateTime.Today.AddMonths(-11));
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice1.Should().Be(15000);
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice2.Should().Be(15000);
@@ -406,7 +406,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("ZPROG001");
-            earningEvent.LearningAim.StartDate.Should().Be(LearningStartDate);
         }
 
         [Test]
