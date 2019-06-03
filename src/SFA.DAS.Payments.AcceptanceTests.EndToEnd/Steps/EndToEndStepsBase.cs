@@ -184,8 +184,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task AddOrUpdateTestApprenticeships(List<Apprenticeship> apprenticeshipSpecs)
         {
             if (Apprenticeships == null) Apprenticeships = new List<Apprenticeship>();
-            if (ApprenticeshipDuplicates == null) ApprenticeshipDuplicates = new List<ApprenticeshipDuplicateModel>();
-
+         
             var groupedApprenticeships = apprenticeshipSpecs
                 .GroupBy(a => a.Identifier)
                 .ToList();
