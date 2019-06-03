@@ -1,72 +1,39 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DCT.TestDataGenerator;
 using ESFA.DC.ILR.Model.Loose;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay
 {
     public class Framework593LearnerWithdrawsAfterQualifyingPeriod : Framework593Learner
     {
-        public Framework593LearnerWithdrawsAfterQualifyingPeriod(IEnumerable<LearnerRequest> learnerRequests) : base(
-            learnerRequests, "277")
+        public Framework593LearnerWithdrawsAfterQualifyingPeriod(IEnumerable<Learner> learners) : base(
+            learners, "277")
         {
         }
 
-        protected override void DoSpecificMutate(MessageLearner learner, LearnerRequest learnerRequest)
+        protected override void DoSpecificMutate(MessageLearner messageLearner, Learner learner)
         {
-            base.DoSpecificMutate(learner, learnerRequest);
+            base.DoSpecificMutate(messageLearner, learner);
 
-            var learnerLearningDelivery = learner.LearningDelivery[0];
-
-            SetWithdrawalDetails(learner, learnerRequest);
-
-            SetLearningDeliveryFAMEndDate(learnerLearningDelivery);
-
-            UpdateFinancialRecord(learner, learnerLearningDelivery);
-        }
-
-        private void SetLearningDeliveryFAMEndDate(MessageLearnerLearningDelivery learningDelivery)
-        {
-            var learningDeliveryFam = learningDelivery.LearningDeliveryFAM.Single(ldf =>
-                ldf.LearnDelFAMType == LearnDelFAMType.ACT.ToString());
-
-            learningDeliveryFam.LearnDelFAMDateTo = learningDelivery.LearnActEndDate;
-            learningDeliveryFam.LearnDelFAMDateToSpecified = true;
-        }
-
-        private void SetWithdrawalDetails(MessageLearner learner, LearnerRequest learnerRequest)
-        {
-            foreach (var learningDelivery in learner.LearningDelivery)
+            foreach (var delivery in messageLearner.LearningDelivery)
             {
-                learningDelivery.Outcome = (int) Outcome.NoAchievement;
-                learningDelivery.OutcomeSpecified = true;
-                learningDelivery.WithdrawReason = (int) WithDrawalReason.FinancialReasons;
-                learningDelivery.WithdrawReasonSpecified = true;
-                if (learnerRequest.StartDate.HasValue && learnerRequest.ActualDurationInMonths.HasValue)
-                    learningDelivery.LearnActEndDate =
-                        learnerRequest.StartDate.Value.AddMonths(learnerRequest.ActualDurationInMonths.Value);
+                var learnerRequestAim = learner.Aims.SingleOrDefault(aim => aim.AimReference == delivery.LearnAimRef);
+                if (learnerRequestAim == null)
+                {
+                    continue;
+                }
 
-                learningDelivery.LearnActEndDateSpecified = true;
-            }
-        }
+                SetDeliveryAsWithdrawn(delivery, learnerRequestAim);
 
-        private void UpdateFinancialRecord(MessageLearner learner, MessageLearnerLearningDelivery learningDelivery)
-        {
-            var appFinRecord =
-                learningDelivery.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
+                SetupLearningDeliveryFam(delivery, learnerRequestAim);
 
-            if (appFinRecord == null)
-            {
-                DCT.TestDataGenerator.Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(),
-                    (int) LearnDelAppFinCode.TotalTrainingPrice, 15000);
-
-                appFinRecord =
-                    learningDelivery.AppFinRecord.SingleOrDefault(afr =>
-                        afr.AFinType == LearnDelAppFinType.TNP.ToString());
+                SetupAppFinRecord(messageLearner, delivery, learnerRequestAim);
             }
 
-            appFinRecord.AFinDate = learningDelivery.LearnStartDate;
-            appFinRecord.AFinDateSpecified = true;
+            var functionalSkillsLearningDelivery = messageLearner.LearningDelivery.Single(learningDelivery => learningDelivery.AimType == 3);
+            ProcessMessageLearnerForLearnerRequestOriginatingFromTrainingRecord(functionalSkillsLearningDelivery,
+                learner.Aims.First());
         }
     }
 }

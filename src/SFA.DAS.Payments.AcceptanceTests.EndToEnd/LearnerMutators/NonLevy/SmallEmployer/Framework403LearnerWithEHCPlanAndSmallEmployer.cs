@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Smal
 {
     public class Framework403LearnerWithEHCPlanAndSmallEmployer : Framework403Learner
     {
-        public FM36_328(IEnumerable<Learner> learnerRequests) : base(learnerRequests, "328")
+        public Framework403LearnerWithEHCPlanAndSmallEmployer(IEnumerable<Learner> learners) : base(learners, "328")
         {
         }
 
@@ -19,15 +19,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Smal
             // need to override the DOB for this test.
             messageLearner.DateOfBirth = messageLearner.LearningDelivery[0].LearnStartDate.AddYears(-21);
 
-            UpdateEmploymentStatus(learner);
+            UpdateEmploymentStatus(messageLearner);
 
             DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(messageLearner, LearnDelFAMType.EEF, LearnDelFAMCode.EEF_Apprenticeship_19);
 
-            RemovePMRRecord(learner);
+            RemovePMRRecord(messageLearner);
 
-            learner.LearningDelivery[1].LearnAimRef = "60005105";
+            messageLearner.LearningDelivery[1].LearnAimRef = "60005105";
 
-            MutateHigherEducation(learner);
+            MutateHigherEducation(messageLearner);
         }
 
         private void RemovePMRRecord(MessageLearner learner)

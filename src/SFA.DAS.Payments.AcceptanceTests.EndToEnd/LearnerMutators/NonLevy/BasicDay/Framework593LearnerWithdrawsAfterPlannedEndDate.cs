@@ -1,79 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using DCT.TestDataGenerator;
 using ESFA.DC.ILR.Model.Loose;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay
 {
     public class Framework593LearnerWithdrawsAfterPlannedEndDate : Framework593Learner
     {
-        public Framework593LearnerWithdrawsAfterPlannedEndDate(IEnumerable<LearnerRequest> learnerRequests) : base(learnerRequests, "278")
+        public Framework593LearnerWithdrawsAfterPlannedEndDate(IEnumerable<Learner> learners) : base(learners, "278")
         {
         }
 
-        protected override void DoSpecificMutate(MessageLearner learner, LearnerRequest learnerRequest)
+        protected override void DoSpecificMutate(MessageLearner messageLearner, Learner learner)
         {
-            base.DoSpecificMutate(learner, learnerRequest);
-            var learningDelivery = learner.LearningDelivery[0];
+            base.DoSpecificMutate(messageLearner, learner);
 
-            SetWithdrawalDetails(learner, learningDelivery);
-
-            SetLearningDeliveryFAMEndDate(learningDelivery);
-
-            UpdateFinancialRecord(learner, learningDelivery);
-
-            UpdateEmploymentStatus(learner);
-        }
-
-        private void UpdateEmploymentStatus(MessageLearner learner)
-        {
-            var lesm = learner.LearnerEmploymentStatus.ToList();
-            lesm[0].DateEmpStatApp = learner.LearningDelivery[0].LearnStartDate.AddDays(-2);
-        }
-
-        private void SetLearningDeliveryFAMEndDate(MessageLearnerLearningDelivery learningDelivery)
-        {
-            var ldfam = learningDelivery.LearningDeliveryFAM.Single(
-                ldf => ldf.LearnDelFAMType == LearnDelFAMType.ACT.ToString());
-
-            ldfam.LearnDelFAMDateTo = learningDelivery.LearnActEndDate;
-            ldfam.LearnDelFAMDateToSpecified = true;
-        }
-
-        private void UpdateFinancialRecord(MessageLearner learner, MessageLearnerLearningDelivery learnerLearningDelivery)
-        {
-            var appFinRecord =
-                learnerLearningDelivery.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
-
-            if (appFinRecord == null)
+            foreach (var messageLearnerLearningDelivery in messageLearner.LearningDelivery)
             {
-                DCT.TestDataGenerator.Helpers.AddAfninRecord(learner, LearnDelAppFinType.TNP.ToString(),
-                    (int) LearnDelAppFinCode.TotalTrainingPrice, 15000);
+                var learnerLearningAim = learner.Aims.SingleOrDefault(l => l.AimReference == messageLearnerLearningDelivery.LearnAimRef);
+                if (learnerLearningAim == null)
+                {
+                    continue;
+                }
 
-                appFinRecord =
-                    learnerLearningDelivery.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
+                SetDeliveryAsWithdrawn(messageLearnerLearningDelivery, messageLearner.LearningDelivery.First().LearnPlanEndDate.AddMonths(1), learnerLearningAim);
+
+                SetupLearningDeliveryFam(messageLearnerLearningDelivery, learnerLearningAim);
+
+                SetupAppFinRecord(messageLearner, messageLearnerLearningDelivery, learnerLearningAim);
             }
 
-            appFinRecord.AFinDate = learnerLearningDelivery.LearnStartDate;
-            appFinRecord.AFinDateSpecified = true;
+            messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp = messageLearner.LearningDelivery[0].LearnStartDate.AddDays(-2);
+
+            var functionalSkillsLearningDelivery = messageLearner.LearningDelivery.Single(learningDelivery => learningDelivery.AimType == 3);
+            ProcessMessageLearnerForLearnerRequestOriginatingFromTrainingRecord(functionalSkillsLearningDelivery,
+                learner.Aims.First());
         }
 
-        private void SetWithdrawalDetails(MessageLearner learner, MessageLearnerLearningDelivery learnerLearningDelivery)
+        private void SetDeliveryAsWithdrawn(MessageLearnerLearningDelivery delivery, DateTime actualEndDate, Aim learnerRequestAim)
         {
-            foreach (var learningDelivery in learner.LearningDelivery)
-            {
-                learningDelivery.CompStatus = (int) CompStatus.Withdrawn;
-                learningDelivery.CompStatusSpecified = true;
+            base.SetDeliveryAsWithdrawn(delivery, learnerRequestAim);
 
-                learningDelivery.Outcome = (int) Outcome.NoAchievement;
-                learningDelivery.OutcomeSpecified = true;
-
-                learningDelivery.WithdrawReason = (int) WithDrawalReason.FinancialReasons;
-                learningDelivery.WithdrawReasonSpecified = true;
-
-                learningDelivery.LearnActEndDate = learnerLearningDelivery.LearnPlanEndDate.AddMonths(1);
-                learningDelivery.LearnActEndDateSpecified = true;
-            }
+            delivery.LearnActEndDate = actualEndDate;
+            delivery.LearnActEndDateSpecified = true;
         }
     }
 }
