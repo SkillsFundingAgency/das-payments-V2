@@ -142,22 +142,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var jobId = await jobService.SubmitJob(submission);
 
             //TODO: Overriding JobId, but better implementation needed. Eg: calling GetProvider with proper Identifier when needed.
-            foreach (var provider in testSession.Providers)
+            foreach (var provider in testSession.Providers.Where(x => x.Ukprn == ukprn))
             {
                 provider.JobId = jobId;
             }
 
             var retryPolicy = Policy
-                .Handle<JobStatusNotWaitingException>()
-                .WaitAndRetryAsync(7, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+                .HandleResult<JobStatusType>(r => r != JobStatusType.Waiting)
+                .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-            await retryPolicy.ExecuteAsync(async () =>
+            var jobStatusResult = await retryPolicy.ExecuteAndCaptureAsync(async () => await jobService.GetJobStatus(jobId));
+            if (jobStatusResult.Outcome == OutcomeType.Failure)
             {
-                var jobStatus = await jobService.GetJobStatus(jobId);
-                if (jobStatus != JobStatusType.Waiting)
-                    throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status. Current status id {jobStatus}");
+                if (jobStatusResult.FinalHandledResult == JobStatusType.Ready)
+                {
+                    await jobService.DeleteJob(jobId);
+                    throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status. Current status: {jobStatusResult.FinalHandledResult}. " +
+                                                           $"Ukprn: {ukprn} is probably blocked by an old job that hasn't completed.");
+                }
+
+                throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status. Current status: {jobStatusResult.FinalHandledResult}");
             }
-            );
 
             await jobService.UpdateJobStatus(jobId, JobStatusType.Ready);
 

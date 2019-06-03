@@ -9,5 +9,7 @@
         Task<string> SendAsync(string url);
 
         Task<string> GetDataAsync(string url);
+
+        Task DeleteAsync(string url);
     }
 }

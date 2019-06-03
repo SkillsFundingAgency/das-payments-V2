@@ -67,5 +67,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
 
             return result;
         }
+
+        public async Task DeleteJob(long jobId)
+        {
+            return await httpClient.DeleteAsync($"job/{jobId}");
+        }
     }
 }

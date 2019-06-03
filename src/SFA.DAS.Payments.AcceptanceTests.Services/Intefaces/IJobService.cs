@@ -10,5 +10,7 @@
         Task<string> UpdateJobStatus(long jobId, JobStatusType status);
 
         Task<long> SubmitJob(SubmissionModel submissionMessage);
+
+        Task DeleteJob(long jobId);
     }
 }
