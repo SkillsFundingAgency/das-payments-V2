@@ -12,7 +12,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
     public class Framework593Learner : FM36Base
     {
         private readonly IEnumerable<Learner> learners;
-        private int LearnerIndex { get; set; }
         private GenerationOptions options;
 
         public Framework593Learner(IEnumerable<Learner> learners, string featureNumber) : base(featureNumber)

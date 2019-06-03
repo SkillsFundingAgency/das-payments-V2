@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
                     continue;
                 }
 
-                SetDeliveryAsWithdrawn(messageLearnerLearningDelivery, messageLearner.LearningDelivery.First().LearnPlanEndDate.AddMonths(1), learnerLearningAim);
+                SetDeliveryAsWithdrawn(messageLearnerLearningDelivery, learnerLearningAim);
 
                 SetupLearningDeliveryFam(messageLearnerLearningDelivery, learnerLearningAim);
 
@@ -36,14 +36,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
             var functionalSkillsLearningDelivery = messageLearner.LearningDelivery.Single(learningDelivery => learningDelivery.AimType == 3);
             ProcessMessageLearnerForLearnerRequestOriginatingFromTrainingRecord(functionalSkillsLearningDelivery,
                 learner.Aims.First());
-        }
-
-        private void SetDeliveryAsWithdrawn(MessageLearnerLearningDelivery delivery, DateTime actualEndDate, Aim learnerRequestAim)
-        {
-            base.SetDeliveryAsWithdrawn(delivery, learnerRequestAim);
-
-            delivery.LearnActEndDate = actualEndDate;
-            delivery.LearnActEndDateSpecified = true;
         }
     }
 }

@@ -56,7 +56,7 @@ Scenario Outline: A non-levy learner withdraws after planned end date
 
     But the Provider now changes the Learner details as follows
 		| ULN       | Priority | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   |
-		| learner a | 1        | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       | 12 months       | withdrawn         | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+		| learner a | 1        | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       | 15 months       | withdrawn         | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
     When the amended ILR file is re-submitted for the learners in collection period <collection_period>
     Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing |

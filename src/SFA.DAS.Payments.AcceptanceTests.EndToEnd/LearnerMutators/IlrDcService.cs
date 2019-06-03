@@ -79,8 +79,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void CreateAimsForIlrLearner(Learner learner, Training currentIlr)
         {
-            learner.Aims.Add(new Aim(currentIlr));
-            learner.Aims.First().PriceEpisodes.Add(new Price()
+            var aim = new Aim(currentIlr);
+            aim.PriceEpisodes.Add(new Price()
             {
                 TotalTrainingPriceEffectiveDate = currentIlr.TotalTrainingPriceEffectiveDate,
                 TotalTrainingPrice = currentIlr.TotalTrainingPrice,
@@ -92,6 +92,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 CompletionHoldBackExemptionCode = currentIlr.CompletionHoldBackExemptionCode,
                 Pmr = currentIlr.Pmr
             });
+
+            learner.Aims.Add(aim);
         }
 
         private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<Learner> learners)

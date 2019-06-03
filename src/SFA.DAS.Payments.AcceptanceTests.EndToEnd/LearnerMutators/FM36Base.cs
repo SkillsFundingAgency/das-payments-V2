@@ -195,7 +195,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             if (aim.ProgrammeType == StandardProgrammeType)
             {
-                AddNewPmrAppFinRecord(delivery, appFinRecords, priceEpisode);
+                AddNewPmrAppFinRecord(appFinRecords, priceEpisode);
             }
 
             delivery.AppFinRecord = appFinRecords.ToArray();
@@ -224,7 +224,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 tnp.AFinDateSpecified = true;
             }
         }
-        private void AddNewPmrAppFinRecord(MessageLearnerLearningDelivery delivery, List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
+        private void AddNewPmrAppFinRecord(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
         {
             var pmr = appFinRecords.SingleOrDefault(a => a.AFinType == "PMR");
             if (pmr == null)
