@@ -10,8 +10,6 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 {
@@ -60,16 +58,31 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             autoMapper = mapperConfiguration.CreateMapper();
         }
 
-        protected void CompareCommonProperties(CalculatedRequiredLevyAmount source, FundingSourcePaymentEvent destination, List<string> propertiesToIgnore)
+        protected void CompareCommonProperties(CalculatedRequiredLevyAmount source, FundingSourcePaymentEvent destination)
         {
-            var sourceProperties = source.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            destination.GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(propInfo =>
-                    !propertiesToIgnore.Contains(propInfo.Name)
-                    && sourceProperties.Any(sourceProp => sourceProp.Name.Equals(propInfo.Name)))
-                .ToList()
-                .ForEach(propInfo => propInfo.GetValue(destination).Should().Be(source.GetType().GetProperty(propInfo.Name).GetValue(source),$"{propInfo.Name} didn't match."));
+            destination.SfaContributionPercentage.Should().Be(source.SfaContributionPercentage);
+            destination.RequiredPaymentEventId.Should().Be(source.EventId);
+            destination.TransactionType.Should().Be((TransactionType) source.OnProgrammeEarningType);
+            destination.TransferSenderAccountId.Should().Be(source.TransferSenderAccountId);
+            destination.AccountId.Should().Be(source.AccountId);
+            destination.ApprenticeshipId.Should().Be(source.ApprenticeshipId);
+            destination.ApprenticeshipPriceEpisodeId.Should().Be(source.ApprenticeshipPriceEpisodeId);
+            destination.CollectionPeriod.AcademicYear.Should().Be(source.CollectionPeriod.AcademicYear);
+            destination.CollectionPeriod.Period.Should().Be(source.CollectionPeriod.Period);
+            destination.ContractType.Should().Be(source.ContractType);
+            destination.DeliveryPeriod.Should().Be(source.DeliveryPeriod);
+            destination.EarningEventId.Should().Be(source.EarningEventId);
+            destination.EventId.Should().NotBe(source.EventId);
+            destination.IlrSubmissionDateTime.Should().Be(source.IlrSubmissionDateTime);
+            destination.InstalmentAmount.Should().Be(source.InstalmentAmount);
+            destination.NumberOfInstalments.Should().Be(source.NumberOfInstalments);
+            destination.CompletionAmount.Should().Be(source.CompletionAmount);
+            destination.CompletionStatus.Should().Be(source.CompletionStatus);
+            destination.ActualEndDate.Should().Be(source.ActualEndDate);
+            destination.PlannedEndDate.Should().Be(source.PlannedEndDate);
+            destination.Learner.Should().BeEquivalentTo(source.Learner);
+            destination.LearningAim.Should().BeEquivalentTo(source.LearningAim);
+            destination.EventTime.Should().NotBe(source.EventTime);
         }
 
         [Test]
@@ -85,9 +98,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             autoMapper.Map(requiredPaymentEvent, actualEvent);
 
             // assert
-            actualEvent.EventTime.Should().NotBe(requiredPaymentEvent.EventTime);
-            actualEvent.EventId.Should().NotBe(requiredPaymentEvent.EventId);
-            CompareCommonProperties(requiredPaymentEvent, actualEvent, new List<string> { "EventTime", "EventId", "AmountDue" });
+            CompareCommonProperties(requiredPaymentEvent, actualEvent);
         }
 
         [Test]
@@ -103,9 +114,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             autoMapper.Map(requiredPaymentEvent, actualEvent);
 
             // assert
-            actualEvent.EventTime.Should().NotBe(requiredPaymentEvent.EventTime);
-            actualEvent.EventId.Should().NotBe(requiredPaymentEvent.EventId);
-            CompareCommonProperties(requiredPaymentEvent, actualEvent, new List<string> { "EventTime", "EventId", "AmountDue" });
+            CompareCommonProperties(requiredPaymentEvent, actualEvent);
         }
 
         [Test]
@@ -121,9 +130,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             autoMapper.Map(requiredPaymentEvent, actualEvent);
 
             // assert
-            actualEvent.EventTime.Should().NotBe(requiredPaymentEvent.EventTime);
-            actualEvent.EventId.Should().NotBe(requiredPaymentEvent.EventId);
-            CompareCommonProperties(requiredPaymentEvent, actualEvent, new List<string> { "EventTime", "EventId", "AmountDue" });
+            CompareCommonProperties(requiredPaymentEvent, actualEvent);
         }
 
         [Test]
@@ -139,9 +146,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             autoMapper.Map(requiredPaymentEvent, actualEvent);
 
             // assert
-            actualEvent.EventTime.Should().NotBe(requiredPaymentEvent.EventTime);
-            actualEvent.EventId.Should().NotBe(requiredPaymentEvent.EventId);
-            CompareCommonProperties(requiredPaymentEvent, actualEvent, new List<string> { "EventTime", "EventId", "AmountDue" });
+            CompareCommonProperties(requiredPaymentEvent, actualEvent);
         }
     }
 }
