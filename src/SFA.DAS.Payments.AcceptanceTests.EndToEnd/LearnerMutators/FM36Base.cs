@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             this.featureNumber = featureNumber;
         }
 
-        public FilePreparationDateRequired FilePreparationDate()
+        public virtual FilePreparationDateRequired FilePreparationDate()
         {
             return FilePreparationDateRequired.July;
         }
@@ -190,6 +190,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             delivery.LearnStartDate = aim.StartDate.ToDate();
             delivery.LearnStartDateSpecified = true;
+
+            if (!string.IsNullOrWhiteSpace(aim.OriginalStartDate))
+            {
+                delivery.OrigLearnStartDate = aim.OriginalStartDate.ToDate();
+                delivery.OrigLearnStartDateSpecified = true;
+            }
 
             if (aim.PlannedDurationAsTimespan.HasValue)
             {

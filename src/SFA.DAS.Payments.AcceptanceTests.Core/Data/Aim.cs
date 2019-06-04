@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.SqlServer.Server;
 using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
@@ -15,6 +16,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             LearnerId = training.LearnerId;
             AimReference = training.AimReference;
             StartDate = training.StartDate;
+            OriginalStartDate = training.OriginalStartDate;
             PlannedDuration = training.PlannedDuration;
             ActualDuration = training.ActualDuration;
             AimSequenceNumber = training.AimSequenceNumber;
@@ -47,6 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string LearnerId { get; set; }
         public string AimReference { get; set; }
         public string StartDate { get; set; }
+        public string OriginalStartDate { get; set; }
         public string PlannedDuration { get; set; }
         public TimeSpan? PlannedDurationAsTimespan => PlannedDuration.ToTimeSpan(StartDate);
         public string ActualDuration { get; set; }

@@ -1,9 +1,9 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -96,7 +96,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
+                var oldProvider = TestSession.Provider;
+                var learner = TestSession.GetLearner(oldProvider.Ukprn, null);
                 TestSession.RegenerateUkprn();
+                learner.Ukprn = TestSession.Ukprn;
                 AddNewIlr(table, TestSession.Ukprn);
             }
         }
