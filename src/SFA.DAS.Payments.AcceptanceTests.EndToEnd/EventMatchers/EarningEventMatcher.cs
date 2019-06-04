@@ -324,7 +324,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             var events = new List<ApprenticeshipContractTypeEarningsEvent>();
 
-            contractTypes.ForEach(c =>
+            contractTypes?.ForEach(c =>
             {
                 switch (c)
                 {

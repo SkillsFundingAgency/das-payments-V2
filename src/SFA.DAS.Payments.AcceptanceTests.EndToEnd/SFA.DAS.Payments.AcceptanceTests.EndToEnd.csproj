@@ -1165,7 +1165,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-Levy learner continuing 12 months earnings PV2-615.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature.cs">
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-2781.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy learner withdraws after planned end date PV2-278.feature</DependentUpon>

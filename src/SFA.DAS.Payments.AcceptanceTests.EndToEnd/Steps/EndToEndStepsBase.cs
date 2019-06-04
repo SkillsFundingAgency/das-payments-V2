@@ -897,8 +897,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private void SetProviderPaymentAccountId(List<Training> ilr, ProviderPayment expectedPayment)
         {
-            var contractType = EnumHelper.GetContractTypes(ilr, CurrentPriceEpisodes);
-            if (contractType.Any(x => x == ContractType.Act1))
+            var contractTypes = EnumHelper.GetContractTypes(ilr, CurrentPriceEpisodes);
+            if (contractTypes != null && contractTypes.Any(x => x == ContractType.Act1))
             {
                 expectedPayment.AccountId = string.IsNullOrWhiteSpace(expectedPayment.Employer)
                     ? TestSession.Employer.AccountId

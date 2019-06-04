@@ -1,4 +1,4 @@
-@ignore
+#@ignore
 # Issue with month 3. There isn't currently a way that we can have an earning of £1000 in R03 that becomes a required payment of £900.
 
 ## For DC integration
