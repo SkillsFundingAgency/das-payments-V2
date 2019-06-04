@@ -81,7 +81,7 @@
 
     But  the Commitment details are changed as follows
 		| Identifier       | Learner ID | start date                | end date                  | agreed price | standard code | programme type | status |
-		| Apprenticeship a | learner a  | Aug/Current Academic Year | Jul/Current Academic Year | 1400         | 25            | 25             | active |
+		| Apprenticeship a | learner a  | Aug/Current Academic Year | Jul/Current Academic Year | 1200         | 25            | 25             | active |
 
     And the Provider now changes the Learner details as follows
 		| Start Date                   | Planned Duration | Actual Duration | Programme Type | Completion Status | SFA Contribution Percentage | Contract Type | Aim Reference | standard code |Funding Line Type                                  | 
