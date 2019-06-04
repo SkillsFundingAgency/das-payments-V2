@@ -5,10 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Extensions;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
@@ -27,35 +29,76 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly ILevyBalanceService levyBalanceService;
         private readonly IPaymentLogger paymentLogger;
         private readonly ISortableKeyGenerator sortableKeys;
+        private readonly IDataCache<DateTime> submissionTimesCache;
 
         public RequiredLevyAmountFundingSourceService(
-            IPaymentProcessor processor, 
-            IMapper mapper, 
-            IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache, 
-            IDataCache<List<string>> requiredPaymentKeys, 
-            ILevyAccountRepository levyAccountRepository, 
-            ILevyBalanceService levyBalanceService, 
+            IPaymentProcessor processor,
+            IMapper mapper,
+            IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache,
+            IDataCache<List<string>> requiredPaymentKeys,
+            ILevyAccountRepository levyAccountRepository,
+            ILevyBalanceService levyBalanceService,
             IPaymentLogger paymentLogger,
-            ISortableKeyGenerator sortableKeys)
+            ISortableKeyGenerator sortableKeys,
+            IDataCache<DateTime> submissionTimesCache)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentsCache = requiredPaymentsCache ?? throw new ArgumentNullException(nameof(requiredPaymentsCache));
             this.requiredPaymentKeys = requiredPaymentKeys ?? throw new ArgumentNullException(nameof(requiredPaymentKeys));
             this.levyAccountRepository = levyAccountRepository ?? throw new ArgumentNullException(nameof(levyAccountRepository));
-            this.levyBalanceService = levyBalanceService;
-            this.paymentLogger = paymentLogger;
-            this.sortableKeys = sortableKeys;
+            this.levyBalanceService = levyBalanceService ?? throw new ArgumentNullException(nameof(levyBalanceService));
+            this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
+            this.sortableKeys = sortableKeys ?? throw new ArgumentNullException(nameof(sortableKeys));
+            this.submissionTimesCache = submissionTimesCache ?? throw new ArgumentNullException(nameof(submissionTimesCache));
         }
+
+        public async Task IlrSubmitted(ReceivedProviderEarningsEvent message)
+        {
+            var keys = await GetKeys().ConfigureAwait(false);
+            var cachedKeys = keys.ToList();
+            foreach (var key in cachedKeys)
+            {
+                var paymentCacheItem = await requiredPaymentsCache.TryGet(key, CancellationToken.None);
+                if (!paymentCacheItem.HasValue)
+                {
+                    paymentLogger.LogWarning($"Payment not found for key: {key}");
+                    continue;
+                }
+
+                var payment = paymentCacheItem.Value;
+                if (payment.Ukprn != message.Ukprn || payment.IlrSubmissionDateTime >= message.IlrSubmissionDateTime)
+                    continue;
+                await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
+                keys.Remove(key);
+            }
+            await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
+            await submissionTimesCache.AddOrReplace($"provider_{message.Ukprn}", message.IlrSubmissionDateTime).ConfigureAwait(false);
+        }
+
+        private static string GetSubmissionTimeKey(long ukprn) => $"provider_{ukprn}";
 
         public async Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent)
         {
+            var ilrSubmissionTimeCacheItem = await submissionTimesCache.TryGet(GetSubmissionTimeKey(paymentEvent.Ukprn), CancellationToken.None)
+                .ConfigureAwait(false);
+            if (!ilrSubmissionTimeCacheItem.HasValue)
+                await submissionTimesCache.AddOrReplace($"provider_{paymentEvent.Ukprn}", paymentEvent.IlrSubmissionDateTime, CancellationToken.None)
+                    .ConfigureAwait(false);
+            else
+            {
+                if (paymentEvent.IlrSubmissionDateTime < ilrSubmissionTimeCacheItem.Value)
+                {
+                    paymentLogger.LogWarning($"Received out of sequence payment.  Current submission time: {ilrSubmissionTimeCacheItem.Value}, payment submission time: {paymentEvent.IlrSubmissionDateTime}");
+                    return;
+                }
+            }
             var keys = await GetKeys().ConfigureAwait(false);
-            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority, 
+            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority,
                 paymentEvent.Learner.Uln, paymentEvent.StartDate, paymentEvent.IsTransfer(), paymentEvent.EventId);
             keys.Add(key);
-            await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
-            await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
+            await requiredPaymentsCache.Add(key, paymentEvent, CancellationToken.None).ConfigureAwait(false);
+            await requiredPaymentKeys.AddOrReplace(KeyListKey, keys, CancellationToken.None).ConfigureAwait(false);
         }
 
 
@@ -67,7 +110,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             if (keys.Count == 0)
                 return fundingSourceEvents.AsReadOnly();
 
-            keys.Sort();            
+            keys.Sort();
 
             var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
@@ -81,9 +124,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 {
                     SfaContributionPercentage = requiredPaymentEvent.Value.SfaContributionPercentage,
                     AmountDue = requiredPaymentEvent.Value.AmountDue,
-                    IsTransfer = employerAccountId != requiredPaymentEvent.Value.AccountId 
-                                 && requiredPaymentEvent.Value.TransferSenderAccountId.HasValue 
-                                 && requiredPaymentEvent.Value.TransferSenderAccountId == employerAccountId 
+                    IsTransfer = employerAccountId != requiredPaymentEvent.Value.AccountId
+                                 && requiredPaymentEvent.Value.TransferSenderAccountId.HasValue
+                                 && requiredPaymentEvent.Value.TransferSenderAccountId == employerAccountId
                 };
 
                 var fundingSourcePayments = processor.Process(requiredPayment);

@@ -10,6 +10,7 @@ using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Services;
@@ -31,6 +32,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private IRequiredLevyAmountFundingSourceService fundingSourceService;
         private IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private IDataCache<List<string>> requiredPaymentKeys;
+        private IDataCache<DateTime> submissionTimesCache;
         private readonly ILifetimeScope lifetimeScope;
 
         public LevyFundedService(
@@ -38,12 +40,11 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             ActorId actorId,
             IPaymentLogger paymentLogger,
             ITelemetry telemetry,
-            IRequiredLevyAmountFundingSourceService fundingSourceService, ILifetimeScope lifetimeScope)
+            ILifetimeScope lifetimeScope)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
             this.telemetry = telemetry;
-            this.fundingSourceService = fundingSourceService;
             this.lifetimeScope = lifetimeScope;
         }
 
@@ -54,6 +55,16 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             using (var operation = telemetry.StartOperation())
             {
                 await fundingSourceService.AddRequiredPayment(message).ConfigureAwait(false);
+                telemetry.StopOperation(operation);
+            }
+        }
+
+        public async Task HandleReceivedProviderEarnings(ReceivedProviderEarningsEvent message)
+        {
+            paymentLogger.LogDebug($"Handling Received Provider Earnings event for provider: {message.Ukprn}, submission time: {message.IlrSubmissionDateTime:s}");
+            using (var operation = telemetry.StartOperation())
+            {
+                await fundingSourceService.IlrSubmitted(message);
                 telemetry.StopOperation(operation);
             }
         }
@@ -81,6 +92,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         {
             requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
             requiredPaymentKeys = new ReliableCollectionCache<List<string>>(StateManager);
+            submissionTimesCache = new ReliableCollectionCache<DateTime>(StateManager);
             fundingSourceService = new RequiredLevyAmountFundingSourceService(
                 lifetimeScope.Resolve<IPaymentProcessor>(),
                 lifetimeScope.Resolve<IMapper>(),
@@ -89,7 +101,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 lifetimeScope.Resolve<ILevyAccountRepository>(),
                 lifetimeScope.Resolve<ILevyBalanceService>(),
                 lifetimeScope.Resolve<IPaymentLogger>(),
-                lifetimeScope.Resolve<ISortableKeyGenerator>()
+                lifetimeScope.Resolve<ISortableKeyGenerator>(),
+                submissionTimesCache
             );
             await base.OnActivateAsync().ConfigureAwait(false);
         }

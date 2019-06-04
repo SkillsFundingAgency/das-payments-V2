@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
@@ -33,6 +34,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private AutoMock mocker;
         private Mock<IDataCache<CalculatedRequiredLevyAmount>> eventCacheMock;
         private Mock<IDataCache<List<string>>> keyCacheMock;
+        private Mock<IDataCache<DateTime>> submissionTimesCacheMock;
         private Mock<ILevyAccountRepository> levyAccountRepositoryMock;
         private Mock<IPaymentProcessor> processorMock;
         private Mock<ILevyBalanceService> levyBalanceServiceMock;
@@ -54,11 +56,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             mocker = AutoMock.GetStrict();
             eventCacheMock = mocker.Mock<IDataCache<CalculatedRequiredLevyAmount>>();
             keyCacheMock = mocker.Mock<IDataCache<List<string>>>();
+            submissionTimesCacheMock = mocker.Mock<IDataCache<DateTime>>();
             levyAccountRepositoryMock = mocker.Mock<ILevyAccountRepository>();
             processorMock = mocker.Mock<IPaymentProcessor>();
             levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
             paymentLoggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
             sortableKeysMock = mocker.Mock<ISortableKeyGenerator>();
+            submissionTimesCacheMock.Setup(svc =>
+                svc.AddOrReplace(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            submissionTimesCacheMock.Setup(svc => svc.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<DateTime>(
+                    false, DateTime.Now));
             service = mocker.Create<RequiredLevyAmountFundingSourceService>(
                 new NamedParameter("mapper", mapper),
                 new NamedParameter("paymentLogger", paymentLoggerMock.Object)
@@ -99,6 +108,33 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             await service.AddRequiredPayment(requiredPaymentEvent);
 
             // assert
+        }
+
+
+        [Test]
+        public async Task DoesNotAddRequiredPaymentIfFromPreviousSubmission()
+        {
+            // arrange
+            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
+            {
+                EventId = Guid.NewGuid(),
+                Priority = 1,
+                Learner = new Learner(),
+                AccountId = 1,
+                IlrSubmissionDateTime = DateTime.Now.AddMinutes(-10)
+            };
+
+            var key = GenerateSortableKey(requiredPaymentEvent);
+
+            submissionTimesCacheMock.Setup(svc => svc.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<DateTime>(
+                    true, DateTime.Now));
+
+            // act
+            await service.AddRequiredPayment(requiredPaymentEvent);
+
+            // assert
+            eventCacheMock.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<CalculatedRequiredLevyAmount>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
@@ -258,7 +294,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .ReturnsAsync(() => new LevyAccountModel { Balance = balance, TransferAllowance = transferAllowance })
                 .Verifiable();
 
-            levyBalanceServiceMock.Setup(s => s.Initialise(balance,transferAllowance)).Verifiable();
+            levyBalanceServiceMock.Setup(s => s.Initialise(balance, transferAllowance)).Verifiable();
 
             processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => new[] { fundingSourcePayment }).Verifiable();
 
@@ -336,7 +372,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             // act
             var fundingSourcePayments = await service.GetFundedPayments(666, 1);
 
-            processorMock.Verify(p => p.Process(It.Is<RequiredPayment>(rp => rp.IsTransfer)),Times.Once);
+            processorMock.Verify(p => p.Process(It.Is<RequiredPayment>(rp => rp.IsTransfer)), Times.Once);
 
             // assert
             fundingSourcePayments.Should().HaveCount(3);
@@ -369,7 +405,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var transferAllowance = 50;
             var transferPayment = new TransferPayment { AmountDue = 55, Type = FundingSourceType.Transfer };
             var unableToFundTransferPayment = new UnableToFundTransferPayment { AmountDue = 44, Type = FundingSourceType.Transfer };
-            var allPayments = new FundingSourcePayment[] { transferPayment, unableToFundTransferPayment};
+            var allPayments = new FundingSourcePayment[] { transferPayment, unableToFundTransferPayment };
 
             keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
                 .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
@@ -402,6 +438,90 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             fundingSourcePayments[0].AmountDue.Should().Be(55);
             fundingSourcePayments[1].AmountDue.Should().Be(44);
+        }
+
+        [Test]
+        public async Task ClearsAllPaymentsFromPreviousSubmissions()
+        {
+            // arrange
+            var ilrSubmittedEvent = new ReceivedProviderEarningsEvent
+            {
+                Ukprn = 123,
+                IlrSubmissionDateTime = DateTime.Now,
+                JobId = 1,
+                CollectionPeriod = new CollectionPeriod
+                {
+                    AcademicYear = 1920,
+                    Period = 1
+                }
+            };
+
+            var keyOldSubmission1 = "1";
+            var keyOldSubmission2 = "2";
+            var keyCurrentSubmission = "3";
+
+            eventCacheMock.Setup(c => c.TryGet(keyOldSubmission1, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, new CalculatedRequiredLevyAmount { Ukprn = 123, IlrSubmissionDateTime = DateTime.Now.AddMinutes(-10) }))
+                .Verifiable();
+            eventCacheMock.Setup(c => c.TryGet(keyOldSubmission2, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, new CalculatedRequiredLevyAmount { Ukprn = 123, IlrSubmissionDateTime = DateTime.Now.AddMinutes(-10) }))
+                .Verifiable();
+            eventCacheMock.Setup(c => c.TryGet(keyCurrentSubmission, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, new CalculatedRequiredLevyAmount { Ukprn = 123, IlrSubmissionDateTime = ilrSubmittedEvent.IlrSubmissionDateTime }))
+                .Verifiable();
+
+            eventCacheMock.Setup(c => c.Clear(keyOldSubmission1, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+            eventCacheMock.Setup(c => c.Clear(keyOldSubmission2, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            keyCacheMock.Setup(c => c.TryGet("keys", It.IsAny<CancellationToken>())).ReturnsAsync(() => new ConditionalValue<List<string>>(true, new List<string> { keyOldSubmission1, keyOldSubmission2, keyCurrentSubmission })).Verifiable();
+            keyCacheMock.Setup(c => c.AddOrReplace("keys", It.Is<List<string>>(list => list.Count == 1 && list[0] == keyCurrentSubmission), CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+
+            await service.IlrSubmitted(ilrSubmittedEvent);
+
+            eventCacheMock.Verify(c => c.Clear(keyCurrentSubmission, It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+
+        [Test]
+        public async Task IgnoresPaymentsForDifferentProvider()
+        {
+            // arrange
+            var ilrSubmittedEvent = new ReceivedProviderEarningsEvent
+            {
+                Ukprn = 123,
+                IlrSubmissionDateTime = DateTime.Now,
+                JobId = 1,
+                CollectionPeriod = new CollectionPeriod
+                {
+                    AcademicYear = 1920,
+                    Period = 1
+                }
+            };
+
+            var keyOldSubmission1 = "1";
+            var keyOldSubmission2 = "2";
+            var keyCurrentSubmission = "3";
+
+            eventCacheMock.Setup(c => c.TryGet(keyOldSubmission1, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, new CalculatedRequiredLevyAmount { Ukprn = 456, IlrSubmissionDateTime = DateTime.Now.AddMinutes(-10) }))
+                .Verifiable();
+            eventCacheMock.Setup(c => c.TryGet(keyOldSubmission2, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, new CalculatedRequiredLevyAmount { Ukprn = 456, IlrSubmissionDateTime = DateTime.Now.AddMinutes(-10) }))
+                .Verifiable();
+            eventCacheMock.Setup(c => c.TryGet(keyCurrentSubmission, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, new CalculatedRequiredLevyAmount { Ukprn = 123, IlrSubmissionDateTime = ilrSubmittedEvent.IlrSubmissionDateTime }))
+                .Verifiable();
+
+            keyCacheMock.Setup(c => c.TryGet("keys", It.IsAny<CancellationToken>())).ReturnsAsync(() => new ConditionalValue<List<string>>(true, new List<string> { keyOldSubmission1, keyOldSubmission2, keyCurrentSubmission })).Verifiable();
+            keyCacheMock.Setup(c => c.AddOrReplace("keys", It.Is<List<string>>(list => list.Count == 3 ), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask).Verifiable();
+
+            await service.IlrSubmitted(ilrSubmittedEvent);
+
+            eventCacheMock.Verify(c => c.Clear( It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<SfaFullyFundedFundingSourcePaymentEventMapper>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<IncentiveRequiredPaymentProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyAccountRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ProviderRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<PaymentProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyPaymentProcessor>().As<ILevyPaymentProcessor>().InstancePerLifetimeScope();
             builder.RegisterType<TransferPaymentProcessor>().As<ITransferPaymentProcessor>().InstancePerLifetimeScope();
