@@ -19,34 +19,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Smal
             // need to override the DOB for this test.
             messageLearner.DateOfBirth = messageLearner.LearningDelivery[0].LearnStartDate.AddYears(-21);
 
-            UpdateEmploymentStatus(messageLearner);
-
             DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(messageLearner, LearnDelFAMType.EEF, LearnDelFAMCode.EEF_Apprenticeship_19);
 
-            RemovePMRRecord(messageLearner);
+            RemovePmrRecord(messageLearner);
 
             messageLearner.LearningDelivery[1].LearnAimRef = "60005105";
-
-            MutateHigherEducation(messageLearner);
-        }
-
-        private void RemovePMRRecord(MessageLearner learner)
-        {
-            learner.LearningDelivery[0].AppFinRecord = learner.LearningDelivery[0].AppFinRecord
-                .Where(af => af.AFinType != LearnDelAppFinType.PMR.ToString()).ToArray();
-        }
-
-        private void UpdateEmploymentStatus(MessageLearner learner)
-        {
-            var employmentStatusMonitoring = learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring.ToList();
-            employmentStatusMonitoring.Add(new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
-            {
-                ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
-                ESMCode = (int) EmploymentStatusMonitoringCode.SmallEmployer,
-                ESMCodeSpecified = true
-            });
-
-            learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = employmentStatusMonitoring.ToArray();
         }
     }
 }

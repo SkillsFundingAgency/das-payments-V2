@@ -26,9 +26,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
                 SetDeliveryAsWithdrawn(messageLearnerLearningDelivery, learnerLearningAim);
 
-                SetupLearningDeliveryFam(messageLearnerLearningDelivery, learnerLearningAim);
+                SetupLearningDeliveryActFam(messageLearnerLearningDelivery, learnerLearningAim);
 
-                SetupAppFinRecord(messageLearner, messageLearnerLearningDelivery, learnerLearningAim);
+                SetupTnpAppFinRecord(messageLearner, messageLearnerLearningDelivery, learnerLearningAim);
             }
 
             messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp = messageLearner.LearningDelivery[0].LearnStartDate.AddDays(-2);
