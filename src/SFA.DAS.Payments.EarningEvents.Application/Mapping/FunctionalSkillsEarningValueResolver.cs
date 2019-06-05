@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -47,7 +48,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 periods[i - 1] = new EarningPeriod
                 {
                     Period = i,
-                    Amount = periodValue,
+                    Amount = periodValue.AsRounded(),
                     SfaContributionPercentage = 1,
                 };
             }
