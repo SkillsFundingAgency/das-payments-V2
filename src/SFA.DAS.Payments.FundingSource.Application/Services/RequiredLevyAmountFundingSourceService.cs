@@ -106,13 +106,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
 
             var keys = await GetKeys().ConfigureAwait(false);
-            if (keys.Count == 0)
-            {
-                await monthEndCache.AddOrReplace(CacheKeys.MonthEndCacheKey, true, CancellationToken.None);
-                paymentLogger.LogInfo($"No payments recorded for employer: {employerAccountId}.");
-                return fundingSourceEvents.AsReadOnly();
-            }
-
             keys.Sort();
 
             var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
