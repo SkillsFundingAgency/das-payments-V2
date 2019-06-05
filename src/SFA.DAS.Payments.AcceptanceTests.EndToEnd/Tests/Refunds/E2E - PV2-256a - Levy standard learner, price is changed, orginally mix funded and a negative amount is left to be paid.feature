@@ -81,7 +81,7 @@
 
     But  the Commitment details are changed as follows
 		| Identifier       | Learner ID | start date                | end date                  | agreed price | standard code | programme type | status |
-		| Apprenticeship a | learner a  | Aug/Current Academic Year | Jul/Current Academic Year | 1200         | 25            | 25             | active |
+		| Apprenticeship a | learner a  | Aug/Current Academic Year | Jul/Current Academic Year | 1400         | 25            | 25             | active |
 
     And the Provider now changes the Learner details as follows
 		| Start Date                   | Planned Duration | Actual Duration | Programme Type | Completion Status | SFA Contribution Percentage | Contract Type | Aim Reference | standard code |Funding Line Type                                  | 
@@ -89,8 +89,8 @@
 																																																
 	And price details as follows
         | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Contract Type | SFA Contribution Percentage |
-        | 1st price details | 9000                 | Aug/Current Academic Year           | Act1          | 90%                         |
-        | 2nd price details | 1200                 | Oct/Current Academic Year           | Act1          | 90%                         |
+        | 1st price details | 11250                | Aug/Current Academic Year           | Act1          | 90%                         |
+        | 2nd price details | 1400                 | Oct/Current Academic Year           | Act1          | 90%                         |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
