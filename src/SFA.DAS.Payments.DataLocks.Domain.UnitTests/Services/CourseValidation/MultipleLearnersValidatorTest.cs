@@ -44,11 +44,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void WhenNoDuplicateApprenticeshipsReturnNoDataLockErrors()
         {
+            var startDateOfPeriod = new DateTime(2018, 8, 1);
+            var endDateOfPeriod= new DateTime(2018, 8, 31);
+
             var earningPeriod = new EarningPeriod {Period = 1};
 
             calculatePeriodStartAndEndDate
                 .Setup(x => x.GetPeriodDate(earningPeriod.Period, academicYear))
-                .Returns((DateTime.Parse("01 Aug 2018"), DateTime.Parse("31 Aug 2018")))
+                .Returns((startDateOfPeriod, endDateOfPeriod))
                 .Verifiable();
 
             dataLockLearnerCache
@@ -78,7 +81,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel
                         {
                             Id = 100,
-                            StartDate = DateTime.Parse("01 Aug 2018")
+                            StartDate =startDateOfPeriod
                         }
                     }
                 }
@@ -145,9 +148,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         {
             var earningPeriod = new EarningPeriod { Period = 5 };
 
+            var startDateOfPeriod = new DateTime(2018, 12, 1);
+            var endDateOfPeriod = new DateTime(2018, 12, 31);
+
             calculatePeriodStartAndEndDate
                 .Setup(x => x.GetPeriodDate(earningPeriod.Period, academicYear))
-                .Returns((DateTime.Parse("01 Dec 2018"), DateTime.Parse("31 Dec 2018")))
+                .Returns((startDateOfPeriod, endDateOfPeriod))
                 .Verifiable();
 
             dataLockLearnerCache

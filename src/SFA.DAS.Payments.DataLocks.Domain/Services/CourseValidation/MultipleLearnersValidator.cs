@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
         }
 
-        protected override  bool FailedValidationAsync(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
+        protected override  bool FailedValidation(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
         {
             var apprenticeshipActualStartDate = GetApprenticeshipActualStartDate(dataLockValidationModel.Apprenticeship);
             var apprenticeshipActualEndDate = GetApprenticeshipEstimatedEndDate(dataLockValidationModel.Apprenticeship);

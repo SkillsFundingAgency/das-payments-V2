@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
              var validApprenticeshipPriceEpisodes = GetValidApprenticeshipPriceEpisodes(dataLockValidationModel);
 
-            if (FailedValidationAsync( dataLockValidationModel, validApprenticeshipPriceEpisodes))
+            if (FailedValidation( dataLockValidationModel, validApprenticeshipPriceEpisodes))
             {
                 result.DataLockErrorCode = DataLockerErrorCode;
             }
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             return result;
         }
 
-        protected virtual bool FailedValidationAsync(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
+        protected virtual bool FailedValidation(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
         {
             return !validApprenticeshipPriceEpisodes.Any();
         }
