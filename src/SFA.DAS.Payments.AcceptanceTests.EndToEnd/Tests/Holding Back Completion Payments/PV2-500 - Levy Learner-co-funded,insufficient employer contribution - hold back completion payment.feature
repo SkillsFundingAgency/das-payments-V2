@@ -41,8 +41,8 @@ Scenario Outline: Levy Learner-in co-funding no completion payment made as not e
 		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         | 719                   |
 
 	And price details as follows
-		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-		| pe-1             | 9000                 | 01/Jun/Last Academic Year           | 0                      | 01/Jun/Last Academic Year             | 0                       |                                        | 0                         |                                          | Act1          | 1                   | 90%                         |
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage | Employer Contribution |
+		| pe-1             | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             | 0                       |                                        | 0                         |                                          | Act1          | 1                   | 90%                         | 719                   |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
 	Then the following learner earnings should be generated
