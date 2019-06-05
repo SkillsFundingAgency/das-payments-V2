@@ -1175,7 +1175,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-3351.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-336.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Non-Levy Learner Finishes Late PV2-336.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-3361.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner Finishes Late PV2-336.feature</DependentUpon>
