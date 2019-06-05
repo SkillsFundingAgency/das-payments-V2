@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             if (!string.IsNullOrWhiteSpace(learnerRequest.PostcodePrior))
             {
-                learner.Postcode = learnerRequest.PostcodePrior;
+                learner.PostcodePrior = learnerRequest.PostcodePrior;
             }
 
             var learnerLearningDeliveries = learner.LearningDelivery.ToList();
