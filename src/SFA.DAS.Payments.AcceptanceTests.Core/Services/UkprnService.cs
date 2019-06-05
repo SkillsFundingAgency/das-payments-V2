@@ -3,16 +3,20 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using ESFA.DC.JobStatus.Interface;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.TestModels;
-
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
     internal class UkprnService : DbContext, IUkprnService
     {
-        public UkprnService(DbContextOptions<UkprnService> options) : base(options)
+        private readonly IJobService jobService;
+
+        public UkprnService(DbContextOptions<UkprnService> options, IJobService jobService) : base(options)
         {
+            this.jobService = jobService;
         }
 
         public int GenerateUkprn()
@@ -27,10 +31,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
             {
                 if (mutex.WaitOne(TimeSpan.FromMinutes(1)))
                 {
+                    provider = GetProvider();
+                    // check job queue for ukprn - looking for status 2 or 3 which will block queue
+                    var blockedList = jobService.GetJobsByStatus(provider.Ukprn, 2, 3).Result;
+                    if (blockedList.Any())
+                    {
+                        provider = GetProvider();
+                    }
 
-                    provider = LeastRecentlyUsed();
-                    provider.Use();
-                    SaveChanges();
                     ClearPaymentsData(provider);
                     mutex.ReleaseMutex();
                 }
@@ -41,6 +49,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
             }
 
             return provider.Ukprn;
+        }
+
+        private Provider GetProvider()
+        {
+            Provider provider;
+            provider = LeastRecentlyUsed();
+            provider.Use();
+            SaveChanges();
+            return provider;
         }
 
         private Provider LeastRecentlyUsed() =>

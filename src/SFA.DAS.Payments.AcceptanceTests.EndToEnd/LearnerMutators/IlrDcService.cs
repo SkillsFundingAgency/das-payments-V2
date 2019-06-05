@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,6 +21,7 @@ using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using MoreLinq;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -51,58 +51,69 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
 
-            ILearnerMultiMutator learnerMutator = null;
-            IEnumerable<LearnerRequest> learnerRequests = null;
-
             if (currentIlr != null && currentIlr.Any())
             {
-                learnerRequests = mapper.Map<IEnumerable<LearnerRequest>>(currentIlr).ToImmutableList();
+                // convert to TestSession.Learners
+                learners = new List<Learner>();
+
+                learners.AddRange(currentIlr.DistinctBy(ilr => ilr.LearnerId).Select(dist => new Learner()
+                {
+                    Ukprn = dist.Ukprn, Uln = dist.Uln, LearnerIdentifier = dist.LearnerId,
+                    PostcodePrior = dist.PostcodePrior, SmallEmployer = dist.SmallEmployer
+                }));
+
+                foreach (var learner in learners)
+                {
+                    CreateAimsForIlrLearner(learner, currentIlr.SingleOrDefault(c=>c.LearnerId == learner.LearnerIdentifier));
+                }
             }
 
-            learnerMutator = LearnerMutatorFactory.Create(featureNumber, learnerRequests, learners);
+            var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learners);
 
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
 
-            await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learnerRequests, learners);
+            await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learners);
 
             await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
         }
 
-        private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<LearnerRequest> currentIlr, IEnumerable<Learner> learners)
+        private void CreateAimsForIlrLearner(Learner learner, Training currentIlr)
+        {
+            var aim = new Aim(currentIlr);
+            aim.PriceEpisodes.Add(new Price()
+            {
+                TotalTrainingPriceEffectiveDate = currentIlr.TotalTrainingPriceEffectiveDate,
+                TotalTrainingPrice = currentIlr.TotalTrainingPrice,
+                TotalAssessmentPriceEffectiveDate = currentIlr.TotalAssessmentPriceEffectiveDate,
+                TotalAssessmentPrice = currentIlr.TotalAssessmentPrice,
+                ContractType = currentIlr.ContractType,
+                AimSequenceNumber = currentIlr.AimSequenceNumber,
+                SfaContributionPercentage = currentIlr.SfaContributionPercentage,
+                CompletionHoldBackExemptionCode = currentIlr.CompletionHoldBackExemptionCode,
+                Pmr = currentIlr.Pmr
+            });
+
+            learner.Aims.Add(aim);
+        }
+
+        private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<Learner> learners)
         {
             XNamespace xsdns = tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
             var learnerDescendants = xDoc.Descendants(xsdns + "Learner");
 
-            if (currentIlr != null)
+            for (var i = 0; i < learners.Count(); i++)
             {
-                for (var i = 0; i < currentIlr.Count(); i++)
-                {
-                    var request = currentIlr.Skip(i).Take(1).First();
-                    var learner = learnerDescendants.Skip(i).Take(1).First();
-                    await UpdateTestSessionLearner(request.LearnerId, learner, xsdns);
-                }
-            }
-            else
-            {
-                for (var i = 0; i < learners.Count(); i++)
-                {
-                    var request = learners.Skip(i).Take(1).First();
-                    var learner = learnerDescendants.Skip(i).Take(1).First();
-                    await UpdateTestSessionLearner(request.LearnerIdentifier, learner, xsdns);
-                }
-            }
-        }
+                var request = learners.Skip(i).Take(1).First();
+                var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerIdentifier);
+                var originalUln = testSessionLearner.Uln;
+                var learner = learnerDescendants.Skip(i).Take(1).First();
+                testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
+                testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
 
-        private async Task UpdateTestSessionLearner(string learnerIdentifier, XElement learner, XNamespace xsdns)
-        {
-            var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, learnerIdentifier);
-            var originalUln = testSessionLearner.Uln;
-            testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
-            testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
-
-            await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln,
-                testSessionLearner.LearnRefNumber);
+                await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln,
+                    testSessionLearner.LearnRefNumber);
+            }
         }
 
         private async Task UpdatePaymentHistoryTables(long ukprn, long originalUln, long newUln, string learnRefNumber)
@@ -142,22 +153,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var jobId = await jobService.SubmitJob(submission);
 
             //TODO: Overriding JobId, but better implementation needed. Eg: calling GetProvider with proper Identifier when needed.
-            foreach (var provider in testSession.Providers)
+            foreach (var provider in testSession.Providers.Where(x => x.Ukprn == ukprn))
             {
                 provider.JobId = jobId;
             }
 
             var retryPolicy = Policy
-                .Handle<JobStatusNotWaitingException>()
-                .WaitAndRetryAsync(7, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+                .HandleResult<JobStatusType>(r => r != JobStatusType.Waiting)
+                .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-            await retryPolicy.ExecuteAsync(async () =>
+            var jobStatusResult = await retryPolicy.ExecuteAndCaptureAsync(async () => await jobService.GetJobStatus(jobId));
+            if (jobStatusResult.Outcome == OutcomeType.Failure)
             {
-                var jobStatus = await jobService.GetJobStatus(jobId);
-                if (jobStatus != JobStatusType.Waiting)
-                    throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status. Current status id {jobStatus}");
+                if (jobStatusResult.FinalHandledResult == JobStatusType.Ready)
+                {
+                    await jobService.DeleteJob(jobId);
+                    throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status. Current status: {jobStatusResult.FinalHandledResult}. " +
+                                                           $"Ukprn: {ukprn} is probably blocked by an old job that hasn't completed.");
+                }
+
+                throw new JobStatusNotWaitingException($"JobId:{jobId} is not yet in a Waiting Status. Current status: {jobStatusResult.FinalHandledResult}");
             }
-            );
 
             await jobService.UpdateJobStatus(jobId, JobStatusType.Ready);
 
