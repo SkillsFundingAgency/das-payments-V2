@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Core", "SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj", "{F6E38368-C397-488B-B041-D3E8423C1CE1}"
 EndProject
@@ -209,9 +209,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.AcceptanceTests.Services", "SFA.DAS.Payments.AcceptanceTests.Services\SFA.DAS.Payments.AcceptanceTests.Services.csproj", "{C367DA42-6ED6-4028-B754-F39148F5D2C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService", "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService\SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.csproj", "{3E0A8CEB-C94D-4B47-83D3-ABE646385C86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService", "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService\SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.csproj", "{3E0A8CEB-C94D-4B47-83D3-ABE646385C86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces", "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces\SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces.csproj", "{2D2930BB-77E7-4AA1-B18C-BD3E072894F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces", "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces\SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces.csproj", "{2D2930BB-77E7-4AA1-B18C-BD3E072894F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.DataLocks.ApprovalsService", "SFA.DAS.Payments.DataLocks.ApprovalsService\SFA.DAS.Payments.DataLocks.ApprovalsService.csproj", "{B85480D3-6B5D-4EF8-85AD-4333353212CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -951,6 +953,14 @@ Global
 		{2D2930BB-77E7-4AA1-B18C-BD3E072894F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2D2930BB-77E7-4AA1-B18C-BD3E072894F5}.Release|x64.ActiveCfg = Release|Any CPU
 		{2D2930BB-77E7-4AA1-B18C-BD3E072894F5}.Release|x64.Build.0 = Release|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Debug|x64.Build.0 = Debug|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Release|x64.ActiveCfg = Release|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1046,6 +1056,7 @@ Global
 		{C367DA42-6ED6-4028-B754-F39148F5D2C8} = {6B05550F-FBCB-47A1-856D-1A333A0CEDEC}
 		{3E0A8CEB-C94D-4B47-83D3-ABE646385C86} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{2D2930BB-77E7-4AA1-B18C-BD3E072894F5} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
