@@ -1,22 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Fabric;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.DataLocks.ApprovalsService
 {
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
     /// </summary>
-    internal sealed class ApprovalsService : StatelessService
+    public class ApprovalsService : StatelessService
     {
-        public ApprovalsService(StatelessServiceContext context)
-            : base(context)
-        { }
+        private readonly ILifetimeScope lifetimeScope;
+        private readonly IPaymentLogger logger;
+
+        public ApprovalsService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger logger) : base(context)
+        {
+            this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         /// <summary>
         /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
@@ -24,7 +31,12 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            return new ServiceInstanceListener[0];
+            logger.LogInfo("Creating Service Instance Listeners For ApprovalsService");
+
+            return new List<ServiceInstanceListener>
+            {
+                new ServiceInstanceListener(context =>lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
+            };
         }
 
         /// <summary>

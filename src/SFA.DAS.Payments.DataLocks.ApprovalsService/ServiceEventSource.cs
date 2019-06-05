@@ -9,7 +9,7 @@ using Microsoft.ServiceFabric.Services.Runtime;
 
 namespace SFA.DAS.Payments.DataLocks.ApprovalsService
 {
-    [EventSource(Name = "MyCompany-SFA.DAS.Payments.DataLocks.ServiceFabric-SFA.DAS.Payments.DataLocks.ApprovalsService")]
+    [EventSource(Name = "SFA.DAS-SFA.DAS.Payments.DataLocks.ServiceFabric-SFA.DAS.Payments.DataLocks.ApprovalsService")]
 internal sealed class ServiceEventSource : EventSource
 {
     public static readonly ServiceEventSource Current = new ServiceEventSource();
