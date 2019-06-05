@@ -7,6 +7,7 @@ using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.DataLocks.ApprovalsService
@@ -35,7 +36,8 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService
 
             return new List<ServiceInstanceListener>
             {
-                new ServiceInstanceListener(context =>lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
+                new ServiceInstanceListener(context =>lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>(),"dc_listener"),
+                new ServiceInstanceListener(context => lifetimeScope.Resolve<IDasStatelessEndpointCommunicationListener>(),"das_listener")
             };
         }
 

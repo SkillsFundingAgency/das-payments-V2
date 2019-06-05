@@ -1,26 +1,30 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core
+namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
 {
+    public interface IDasStatelessEndpointCommunicationListener : IStatelessEndpointCommunicationListener { }
 
-    public class StatelessEndpointCommunicationListener : IStatelessEndpointCommunicationListener
+    public class DasStatelessEndpointCommunicationListener : IDasStatelessEndpointCommunicationListener
     {
-        private readonly IEndpointInstanceFactory endpointInstanceFactory;
+        private readonly EndpointConfiguration endpointConfiguration;
         private readonly IApplicationConfiguration config;
         private readonly IPaymentLogger logger;
+        private readonly ILifetimeScope lifetimeScope;
         private IEndpointInstance endpointInstance;
 
-        public StatelessEndpointCommunicationListener(IEndpointInstanceFactory endpointInstanceFactory, IApplicationConfiguration config, IPaymentLogger logger)
+        public DasStatelessEndpointCommunicationListener(EndpointConfiguration endpointConfiguration, IApplicationConfiguration config, IPaymentLogger logger, ILifetimeScope lifetimeScope)
         {
-            this.endpointInstanceFactory = endpointInstanceFactory ?? throw new ArgumentNullException(nameof(endpointInstanceFactory));
+            this.endpointConfiguration = endpointConfiguration ?? throw new ArgumentNullException(nameof(endpointConfiguration));
             this.config = config ?? throw new ArgumentNullException(nameof(config));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
         }
 
         /// <summary>
@@ -33,9 +37,13 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             try
             {
                 logger.LogDebug($"Opening endpoint: {config.EndpointName}");
-                endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+                if (endpointInstance == null)
+                {
+                    endpointConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(lifetimeScope));
+                    endpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
+                }
                 logger.LogInfo($"Finished opening endpoint listener: {config.EndpointName}");
-                return config.EndpointName;
+                return "das endpoint comms listener";
             }
             catch (Exception e)
             {
