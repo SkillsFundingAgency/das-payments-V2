@@ -135,6 +135,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.FrameworkCode = ilrLearner.FrameworkCode;
                 learner.Course.PathwayCode = ilrLearner.PathwayCode;
                 learner.SmallEmployer = ilrLearner.SmallEmployer;
+                learner.PostcodePrior = ilrLearner.PostcodePrior;
+
                 ilrLearner.Uln = ilrLearner.Uln != default(long) ? ilrLearner.Uln : learner.Uln;
                 //if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln
 
@@ -182,6 +184,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         protected async Task AddOrUpdateTestApprenticeships(List<Apprenticeship> apprenticeshipSpecs)
+
         {
             if (Apprenticeships == null) Apprenticeships = new List<Apprenticeship>();
          
@@ -918,9 +921,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             }
                         }
                     }
-
-
-
                 }
             }
 
