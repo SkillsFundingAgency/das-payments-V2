@@ -35,7 +35,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 {
                     var validationModel = new DataLockValidationModel
                     {
-                        Uln = uln,
                         EarningPeriod = period,
                         Apprenticeship = apprenticeship,
                         PriceEpisode = priceEpisodes.SingleOrDefault(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))

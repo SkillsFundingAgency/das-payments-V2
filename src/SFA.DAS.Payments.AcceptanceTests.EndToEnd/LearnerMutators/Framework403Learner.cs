@@ -1,94 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using DCT.TestDataGenerator;
-using DCT.TestDataGenerator.Functor;
 using ESFA.DC.ILR.Model.Loose;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     public class Framework403Learner : FM36Base
     {
-        private readonly IEnumerable<LearnerRequest> learnerRequests;
-        private GenerationOptions options;
-
-        public Framework403Learner(IEnumerable<LearnerRequest> learnerRequests, string featureNumber) : base(featureNumber)
+        public Framework403Learner(IEnumerable<Learner> learners, string featureNumber) : base(learners, featureNumber)
         {
-            if (learnerRequests == null || !learnerRequests.Any())
-            {
-                throw new ArgumentException("At least one learner is required.");
-            }
-
-            this.learnerRequests = learnerRequests;
         }
 
-        protected override IEnumerable<LearnerTypeMutator> CreateLearnerTypeMutators()
+        protected override void DoSpecificMutate(MessageLearner messageLearner, Learner learner)
         {
-            var list = new List<LearnerTypeMutator>();
-            list.Add(new LearnerTypeMutator()
-            {
-                LearnerType = LearnerTypeRequired.Apprenticeships,
-                DoMutateLearner = MutateLearner,
-                DoMutateOptions = MutateLearnerOptions
-            });
-
-            if (learnerRequests.Count() == 2)
-            {
-                list.Add(new LearnerTypeMutator()
-                {
-                    LearnerType = LearnerTypeRequired.Apprenticeships,
-                    DoMutateLearner = MutateLearner2,
-                    DoMutateOptions = MutateLearnerOptions
-                });
-            }
-
-            return list;
-        }
-
-        private void MutateLearnerOptions(GenerationOptions options)
-        {
-            this.options = options;
-            options.LD.IncludeHHS = true;
-        }
-
-        private void MutateLearner(MessageLearner learner, bool valid)
-        {
-            var trainingRecord = learnerRequests.First();
-            MutateCommon(learner, trainingRecord);
-            DoSpecificMutate(learner, trainingRecord);
-        }
-
-        private void MutateLearner2(MessageLearner learner, bool valid)
-        {
-            var trainingRecord = learnerRequests.Skip(1).First();
-            MutateCommon(learner, trainingRecord);
-            DoSpecificMutate(learner, trainingRecord);
-        }
-
-        protected virtual void DoSpecificMutate(MessageLearner learner, LearnerRequest request)
-        {
-            learner.ULN = request.Uln;
-            learner.ULNSpecified = true;
-            learner.LearningDelivery[1].LearnAimRef = "60005105";
-
-            switch (request.SmallEmployer)
-            {
-                case "SEM1":
-                {
-                    var les1 = learner.LearnerEmploymentStatus[0];
-                    var lesm1 = les1.EmploymentStatusMonitoring.ToList();
-                    lesm1.Add(new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
-                    {
-                        ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
-                        ESMCode = (int) EmploymentStatusMonitoringCode.SmallEmployer,
-                        ESMCodeSpecified = true
-                    });
-                    learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = lesm1.ToArray();
-                    break;
-                }
-            }
-
-            MutateHigherEducation(learner);
+            var functionalSkillsLearningDelivery = messageLearner.LearningDelivery.Single(ld => ld.AimType == 3);
+            functionalSkillsLearningDelivery.LearnAimRef = "60005105";
+            functionalSkillsLearningDelivery.FundModel = 36;
+            functionalSkillsLearningDelivery.ProgType = 2;
+            functionalSkillsLearningDelivery.FworkCode = 403;
+            functionalSkillsLearningDelivery.LearnStartDate =
+                messageLearner.LearningDelivery.Single(ld => ld.AimType == 1).LearnStartDate;
         }
     }
 }
