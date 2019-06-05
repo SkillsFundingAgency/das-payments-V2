@@ -561,8 +561,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             completion.Periods.Where(p => p.Period == 12).Single().Amount.Should().Be(1500);
         }
 
-        [Test]
-        public void TestRoundsFm36EOnProgEarningPeriodAmountCorrectly()
+        [TestCase(100.00000900002, 100.00001)]
+        [TestCase(100.00000444444, 100.00000)]
+        [TestCase(100.00000555555, 100.00001)]
+        public void TestRoundsFm36EOnProgEarningPeriodAmountCorrectly(decimal fm36Earning, decimal expectedEarning)
         {
             fm36Learner.PriceEpisodes.Clear();
 
@@ -586,7 +588,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     new PriceEpisodePeriodisedValues
                     {
                         AttributeName = "PriceEpisodeOnProgPayment",
-                        Period1 = 500.00000900000m,
+                        Period1 = fm36Earning,
                         Period2 = 0,
                         Period3 = 0,
                         Period4 = 0,
@@ -613,7 +615,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         Period9 = 0,
                         Period10 = 0,
                         Period11 = 0,
-                        Period12 = 1000.00000900000m,
+                        Period12 = fm36Earning
                     },
                     new PriceEpisodePeriodisedValues
                     {
@@ -629,7 +631,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         Period9 = 0,
                         Period10 = 0,
                         Period11 = 0,
-                        Period12 = 500.00000900000m,
+                        Period12 = fm36Earning
                     }
                 }
             });
@@ -642,19 +644,21 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
 
             var learning = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Learning);
             learning.Periods.Should().HaveCount(12);
-            learning.Periods[0].Amount.Should().Be(500.00001m);
+            learning.Periods[0].Amount.Should().Be(expectedEarning);
 
             var completion = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Completion);
             completion.Periods.Should().HaveCount(12);
-            completion.Periods[11].Amount.Should().Be(1000.00001m);
+            completion.Periods[11].Amount.Should().Be(expectedEarning);
 
             var balancing = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Balancing);
             balancing.Periods.Should().HaveCount(12);
-            balancing.Periods[11].Amount.Should().Be(500.00001m);
+            balancing.Periods[11].Amount.Should().Be(expectedEarning);
         }
 
-        [Test]
-        public void TestRoundsIncentivesFm36EarningPeriodAmountCorrectly()
+        [TestCase(100.00000900002, 100.00001)]
+        [TestCase(100.00000444444, 100.00000)]
+        [TestCase(100.00000555555, 100.00001)]
+        public void TestRoundsIncentivesFm36EarningPeriodAmountCorrectly(decimal fm36Earning, decimal expectedEarning)
         {
             fm36Learner.PriceEpisodes.Clear();
 
@@ -667,8 +671,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     PriceEpisodePlannedEndDate = DateTime.Today.AddMonths(-6),
                     PriceEpisodeActualEndDate = DateTime.Today.AddMonths(-6),
                     PriceEpisodePlannedInstalments = 6,
-                    PriceEpisodeCompletionElement = 1500,
-                    PriceEpisodeInstalmentValue = 500,
                     TNP1 = 7500,
                     TNP2 = 7500,
                     PriceEpisodeCompleted = true,
@@ -678,7 +680,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     new PriceEpisodePeriodisedValues
                     {
                         AttributeName = "PriceEpisodeOnProgPayment",
-                        Period1 = 500.00000900000m,
+                        Period1 = fm36Earning,
                         Period2 = 0,
                         Period3 = 0,
                         Period4 = 0,
@@ -705,7 +707,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         Period9 = 0,
                         Period10 = 0,
                         Period11 = 0,
-                        Period12 = 1000.00000900000m,
+                        Period12 = fm36Earning
                     },
                     new PriceEpisodePeriodisedValues
                     {
@@ -721,7 +723,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         Period9 = 0,
                         Period10 = 0,
                         Period11 = 0,
-                        Period12 = 500.00000900000m,
+                        Period12 = fm36Earning
                     }
                 }
             });
@@ -730,7 +732,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             fm36Learner.PriceEpisodes.First().PriceEpisodePeriodisedValues.Add(new PriceEpisodePeriodisedValues
             {
                 AttributeName = incentiveTypes[0],
-                Period1 = 100.00000900000m,
+                Period1 = fm36Earning,
                 Period2 = 0,
                 Period3 = 0,
                 Period4 = 0,
@@ -749,11 +751,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var incentive = earningEvent.IncentiveEarnings.FirstOrDefault(earnings => MapIncentiveType(earnings.Type).Equals(incentiveTypes[0]));
             incentive.Should().NotBeNull();
             incentive.Periods.Should().HaveCount(12);
-            incentive.Periods[0].Amount.Should().Be(100.00001m);
+            incentive.Periods[0].Amount.Should().Be(expectedEarning);
         }
 
-        [Test]
-        public void TestRoundsFunctionalSkillsFm36EarningPeriodAmountCorrectly()
+        [TestCase(100.00000900002, 100.00001)]
+        [TestCase(100.00000444444, 100.00000)]
+        [TestCase(100.00000555555, 100.00001)]
+        public void TestRoundsFunctionalSkillsFm36EarningPeriodAmountCorrectly(decimal fm36Earning, decimal expectedEarning)
         {
             fm36Learner.LearningDeliveries.Clear();
             fm36Learner.LearningDeliveries.AddRange(new List<LearningDelivery>
@@ -776,7 +780,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         new LearningDeliveryPeriodisedValues
                         {
                             AttributeName = "MathEngOnProgPayment",
-                            Period1 = 100.00000900000m,
+                            Period1 = fm36Earning,
                             Period2 = 0,
                             Period3 = 0,
                             Period4 = 0,
@@ -792,7 +796,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         new LearningDeliveryPeriodisedValues
                         {
                             AttributeName = "MathEngBalPayment",
-                            Period1 = 100.00000900000m,
+                            Period1 = fm36Earning,
                             Period2 = 0,
                             Period3 = 0,
                             Period4 = 0,
@@ -808,7 +812,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         new LearningDeliveryPeriodisedValues
                         {
                             AttributeName = "PriceEpisodeLSFCash",
-                            Period1 = 100.00000900000m,
+                            Period1 = fm36Earning,
                             Period2 = 0,
                             Period3 = 0,
                             Period4 = 0,
@@ -831,15 +835,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
 
             var balancing = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.BalancingMathsAndEnglish).ToArray();
             balancing.Should().HaveCount(1);
-            balancing[0].Periods[0].Amount.Should().Be(100.00001m);
+            balancing[0].Periods[0].Amount.Should().Be(expectedEarning);
 
             var onProg = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).ToArray();
             onProg.Should().HaveCount(1);
-            onProg[0].Periods[0].Amount.Should().Be(100.00001m);
+            onProg[0].Periods[0].Amount.Should().Be(expectedEarning);
 
             var learningSupport = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.LearningSupport).ToArray();
             learningSupport.Should().HaveCount(1);
-            learningSupport[0].Periods[0].Amount.Should().Be(100.00001m);
+            learningSupport[0].Periods[0].Amount.Should().Be(expectedEarning);
 
         }
 
