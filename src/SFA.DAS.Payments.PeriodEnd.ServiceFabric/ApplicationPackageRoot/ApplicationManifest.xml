@@ -1,14 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ApplicationManifest ApplicationTypeName="SFA.DAS.Payments.PeriodEnd.ServiceFabricType"
-                     ApplicationTypeVersion="1.0.0"
-                     xmlns="http://schemas.microsoft.com/2011/01/fabric"
-                     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.PeriodEnd.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.PeriodEnd.TestEndpoint_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SFA.DAS.Payments.PeriodEnd.TestEndpoint_InstanceCount" DefaultValue="-1" />
   </Parameters>
-
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.PeriodEnd.TestEndpointPkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
@@ -17,7 +12,6 @@
     </EnvironmentOverrides>
   </ServiceManifestImport>
   <DefaultServices>
-
     <Service Name="SFA.DAS.Payments.PeriodEnd.TestEndpoint" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.PeriodEnd.TestEndpointType" InstanceCount="[SFA.DAS.Payments.PeriodEnd.TestEndpoint_InstanceCount]">
         <SingletonPartition />

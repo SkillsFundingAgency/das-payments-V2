@@ -2,24 +2,26 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Models;
 
 namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Controllers
 {
-    public class HomeController : Controller
+    public class TestEndPointController : Controller
     {
         public IActionResult Index()
         {
             return View();
         }
-
-        public IActionResult Privacy()
+        
+        [HttpPost("")]
+        public  IActionResult SendPeriodEnd( SendPeriodEndRequest requestModel)
         {
-            return View();
+            return RedirectToAction(nameof(Index));
         }
-
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

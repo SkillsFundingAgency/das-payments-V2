@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/TestEndPoint/Error");
             }
 
             app.UseStaticFiles();
@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=TestEndPoint}/{action=Index}/{id?}");
             });
         }
     }
