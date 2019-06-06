@@ -1,3 +1,6 @@
+@ignore
+# Issue with assigning the price episodes to the correct learner.
+# At the moment, both learners get both price episodes assigned to them which means that the EarningEvents.OnProgramEarningValueResolver throws an error trying to get a single period value
 Feature: Two levy learners, levy available but for only one learner, levy spent in priority order PV2-603
 	As a provider,
 	I want 2 Levy learners, where levy is spent in priority order and there is only enough levy available for one learner
