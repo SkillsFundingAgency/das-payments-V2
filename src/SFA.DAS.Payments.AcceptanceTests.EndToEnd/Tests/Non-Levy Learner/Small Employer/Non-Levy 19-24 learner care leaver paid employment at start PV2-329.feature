@@ -1,4 +1,6 @@
-﻿#@supports_dc_e2e
+﻿@ignore
+# issue with KeyNotFoundException - can't find academic year when populating learner price episodes
+#@supports_dc_e2e
 Feature:  Non-levy learner 19-24 is a care leaver employed with a small employer at start fully funded PV2-329
 	As a provider,
 	I want a non-levy learner, 1 learner aged 19-24 that is a care leaver, in paid employment at start, is fully funded for on programme and completion payments, to be paid the correct amount
@@ -58,7 +60,7 @@ Scenario: Non-levy learner 19-24 is a care leaver employed with a small employer
 		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19-24 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 100%                        |
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
-		| pe-1             | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
+		| pe-1             | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 0                       |                                        | 0                         |                                          | 100%                        | Act2          | 1                   |
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Second16To18EmployerIncentive | Second16To18ProviderIncentive | Completion16To18FrameworkUplift | Price Episode Identifier |
 		| Aug/Current Academic Year | 0            | 1500       | 0         | 500                           | 500                           | 360                             | pe-1                     |
