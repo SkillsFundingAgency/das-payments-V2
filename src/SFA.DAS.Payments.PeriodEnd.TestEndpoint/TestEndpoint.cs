@@ -14,10 +14,8 @@ using Microsoft.ServiceFabric.Data;
 
 namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint
 {
-    /// <summary>
-    /// The FabricRuntime creates an instance of this class for each service type instance. 
-    /// </summary>
-    internal sealed class TestEndpoint : StatelessService
+
+    public class TestEndpoint : StatelessService
     {
         public TestEndpoint(StatelessServiceContext context)
             : base(context)

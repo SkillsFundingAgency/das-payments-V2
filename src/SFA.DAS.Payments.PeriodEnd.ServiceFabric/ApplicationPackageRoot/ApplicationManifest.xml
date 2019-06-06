@@ -3,10 +3,37 @@
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.PeriodEnd.TestEndpoint_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="SFA.DAS.Payments.PeriodEnd.TestEndpoint_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="StorageConnectionString" DefaultValue="" />
+    <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="LoggingConnectionString" DefaultValue="" />
+    <Parameter Name="PaymentsConnectionString" DefaultValue="" />
+    <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
+    <Parameter Name="TestEndpoint_EndpointName" DefaultValue="" />
+    <Parameter Name="TestEndpoint_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.PeriodEnd.TestEndpointPkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[TestEndpoint_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[TestEndpoint_FailedMessagesQueue]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[SFA.DAS.Payments.PeriodEnd.TestEndpoint_ASPNETCORE_ENVIRONMENT]" />
     </EnvironmentOverrides>
