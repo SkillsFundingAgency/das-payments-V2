@@ -1,4 +1,7 @@
-﻿@supports_dc_e2e
+﻿@ignore
+# Issue with assigning the price episodes to the correct learner.
+# At the moment, both learners get both price episodes assigned to them which means that the EarningEvents.OnProgramEarningValueResolver throws an error trying to get a single period value
+@supports_dc_e2e
 Feature: Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199
 
 Scenario Outline: Two non-LEVY learners, one learner finishes early, one finishes late PV2-199
