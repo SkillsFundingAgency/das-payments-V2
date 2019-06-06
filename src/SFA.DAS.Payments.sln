@@ -217,7 +217,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PeriodMonthEnd", "PeriodMon
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.PeriodEnd.ServiceFabric", "SFA.DAS.Payments.PeriodEnd.ServiceFabric\SFA.DAS.Payments.PeriodEnd.ServiceFabric.sfproj", "{F8DBAFE9-D07D-4DD4-A639-E4D6075FD44F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.PeriodEnd.TestEndpoint", "SFA.DAS.Payments.PeriodEnd.TestEndpoint\SFA.DAS.Payments.PeriodEnd.TestEndpoint.csproj", "{29860907-9028-4F45-880B-634E72713806}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PeriodEnd.TestEndpoint", "SFA.DAS.Payments.PeriodEnd.TestEndpoint\SFA.DAS.Payments.PeriodEnd.TestEndpoint.csproj", "{29860907-9028-4F45-880B-634E72713806}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -958,6 +958,8 @@ Global
 		{2D2930BB-77E7-4AA1-B18C-BD3E072894F5}.Release|x64.ActiveCfg = Release|Any CPU
 		{2D2930BB-77E7-4AA1-B18C-BD3E072894F5}.Release|x64.Build.0 = Release|Any CPU
 		{F8DBAFE9-D07D-4DD4-A639-E4D6075FD44F}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F8DBAFE9-D07D-4DD4-A639-E4D6075FD44F}.Debug|Any CPU.Build.0 = Debug|x64
+		{F8DBAFE9-D07D-4DD4-A639-E4D6075FD44F}.Debug|Any CPU.Deploy.0 = Debug|x64
 		{F8DBAFE9-D07D-4DD4-A639-E4D6075FD44F}.Debug|x64.ActiveCfg = Debug|x64
 		{F8DBAFE9-D07D-4DD4-A639-E4D6075FD44F}.Debug|x64.Build.0 = Debug|x64
 		{F8DBAFE9-D07D-4DD4-A639-E4D6075FD44F}.Debug|x64.Deploy.0 = Debug|x64

@@ -2,7 +2,5 @@
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.PeriodEnd.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.PeriodEnd.TestEndpoint_InstanceCount" Value="-1" />
-    <Parameter Name="SFA.DAS.Payments.PeriodEnd.TestEndpoint_InstanceCount" Value="-1" />
-    <Parameter Name="SFA.DAS.Payments.PeriodEnd.TestEndpoint_InstanceCount" Value="-1" />
   </Parameters>
 </Application>
