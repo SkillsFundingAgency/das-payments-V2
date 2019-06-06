@@ -75,6 +75,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             {
                                 PriceEpisodeAimSeqNumber = 1,
                                 PriceEpisodeContractType = "Levy Contract",
+                                EpisodeStartDate = DateTime.Today,
                             },
                             PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                             {

@@ -776,9 +776,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 PriceEpisodeIdentifier = "pe-1",
                 PriceEpisodeValues = new PriceEpisodeValues
                 {
-                    EpisodeStartDate = DateTime.Today.AddMonths(-12),
-                    PriceEpisodePlannedEndDate = DateTime.Today.AddMonths(-6),
-                    PriceEpisodeActualEndDate = DateTime.Today.AddMonths(-6),
+                    EpisodeStartDate = currentYearStart,
+                    PriceEpisodePlannedEndDate = currentYearStart.AddMonths(6),
+                    PriceEpisodeActualEndDate = currentYearStart.AddMonths(6),
                     PriceEpisodePlannedInstalments = 6,
                     PriceEpisodeCompletionElement = 1500,
                     PriceEpisodeInstalmentValue = 500,
@@ -870,9 +870,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 PriceEpisodeIdentifier = "pe-1",
                 PriceEpisodeValues = new PriceEpisodeValues
                 {
-                    EpisodeStartDate = DateTime.Today.AddMonths(-12),
-                    PriceEpisodePlannedEndDate = DateTime.Today.AddMonths(-6),
-                    PriceEpisodeActualEndDate = DateTime.Today.AddMonths(-6),
+                    EpisodeStartDate = currentYearStart,
+                    PriceEpisodePlannedEndDate = currentYearStart.AddMonths(6),
+                    PriceEpisodeActualEndDate = currentYearStart.AddMonths(6),
                     PriceEpisodePlannedInstalments = 6,
                     TNP1 = 7500,
                     TNP2 = 7500,
