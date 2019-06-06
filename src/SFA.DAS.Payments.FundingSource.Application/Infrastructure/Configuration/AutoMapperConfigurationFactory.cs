@@ -1,7 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography.X509Certificates;
+using AutoMapper;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuration
@@ -84,7 +87,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<SfaCoInvestedPayment, SfaCoInvestedFundingSourcePaymentEvent>()
                     .Include<LevyPayment, LevyFundingSourcePaymentEvent>()
                     .Include<TransferPayment, TransferFundingSourcePaymentEvent>()
-                    .Include<UnableToFundTransferPayment, UnableToFundTransferFundingSourcePaymentEvent>()
+                    .Include<UnableToFundTransferPayment, ProcessUnableToFundTransferFundingSourcePayment>()
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.FundingSourceType,
                         opt => opt.MapFrom(payment => payment.Type));
 
@@ -92,7 +95,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                 cfg.CreateMap<SfaCoInvestedPayment, SfaCoInvestedFundingSourcePaymentEvent>();
                 cfg.CreateMap<LevyPayment, LevyFundingSourcePaymentEvent>();
                 cfg.CreateMap<TransferPayment, TransferFundingSourcePaymentEvent>();
-                cfg.CreateMap<UnableToFundTransferPayment, UnableToFundTransferFundingSourcePaymentEvent>();
+                cfg.CreateMap<UnableToFundTransferPayment, ProcessUnableToFundTransferFundingSourcePayment>();
+
+                cfg.CreateMap<ProcessUnableToFundTransferFundingSourcePayment, CalculatedRequiredLevyAmount>()
+                    .ForMember(dest => dest.OnProgrammeEarningType, opt => opt.MapFrom(source => (OnProgrammeEarningType)source.TransactionType))
+                    .ForMember(dest => dest.Priority, opt => opt.Ignore())
+                    .ForMember(dest => dest.ApprenticeshipId, opt => opt.Ignore())
+                    .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.Ignore())
+                    .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
+                    ;
+
+                cfg.CreateMap<LevyAccountModel, LevyAccountModel>();
+
             });
         }
     }
