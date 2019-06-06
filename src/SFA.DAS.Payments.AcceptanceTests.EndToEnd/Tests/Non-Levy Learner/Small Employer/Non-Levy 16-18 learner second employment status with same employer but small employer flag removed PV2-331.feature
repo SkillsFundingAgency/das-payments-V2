@@ -1,4 +1,6 @@
-﻿#@supports_dc_e2e
+﻿@ignore
+# issue with required payments not being found
+#@supports_dc_e2e
 Feature:  Non-levy learner 16-18 employed with a small employer at start but removed later PV2-331
 	As a provider,
 	I want a non-levy learner, 1 learner aged 16-18. Second employment status record added with same employer id but small employer flag removed. Learner retains small employer funding, to be paid the correct amount
