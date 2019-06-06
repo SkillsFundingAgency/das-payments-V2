@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.DataLockService.Interfaces;
+using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -26,12 +27,12 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         private readonly IApprenticeshipRepository apprenticeshipRepository;
 
         public DataLockService(
-            ActorService actorService, 
+            ActorService actorService,
             ActorId actorId,
-            IPaymentLogger paymentLogger, 
+            IPaymentLogger paymentLogger,
             IApprenticeshipRepository apprenticeshipRepository,
             IActorDataCache<List<ApprenticeshipModel>> apprenticeships,
-            IDataLockProcessor dataLockProcessor) 
+            IDataLockProcessor dataLockProcessor)
             : base(actorService, actorId)
         {
             this.actorService = actorService;
@@ -68,14 +69,24 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
             var providerApprenticeships = await apprenticeshipRepository.ApprenticeshipsForProvider(long.Parse(Id.ToString())).ConfigureAwait(false);
 
-            var groupedApprenticeships = providerApprenticeships.ToLookup(x => x.Uln);
-
-            foreach (var group in groupedApprenticeships)
+            if (providerApprenticeships.Any())
             {
-                await this.apprenticeships.AddOrReplace(group.Key.ToString(), group.ToList()).ConfigureAwait(false);
+                var groupedApprenticeships = providerApprenticeships.ToLookup(x => x.Uln);
+
+                foreach (var group in groupedApprenticeships)
+                {
+                    await this.apprenticeships.AddOrReplace(group.Key.ToString(), group.ToList()).ConfigureAwait(false);
+                }
+
+                var providerDuplicateApprenticeships = await apprenticeshipRepository
+                    .DuplicateApprenticeshipsForProvider(long.Parse(Id.ToString()))
+                    .ConfigureAwait(false);
+
+                await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerDuplicateApprenticeships).ConfigureAwait(false);
             }
 
             paymentLogger.LogInfo($"Initialised actor for provider {Id}");
+
 
             await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
         }

@@ -16,8 +16,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public ContractType ContractType { get; set; }
         public int AimSequenceNumber { get; set; }
         public string FundingLineType { get; set; }
+
         [TableAliases("SFA[ ]?Contribution[ ]?Percentage")]
-        public string SfaContributionPercentage { get; set; }
+        public string SfaContributionPercentage
+        {
+            get;
+            set;
+        }
         public decimal ResidualTrainingPrice { get; set; }
         public decimal ResidualAssessmentPrice { get; set; }
         public string ResidualTrainingPriceEffectiveDate { get; set; }
