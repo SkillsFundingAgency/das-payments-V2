@@ -404,8 +404,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodeValues = new PriceEpisodeValues(),
                 };
 
+                // price episodes cannot span across academic year boundary
+                var episodeStartDate = aim.StartDate.ToDate();
+                var academicYearStart = new DateTime(AcademicYear / 100 + 2000, 8, 1);
+                if (episodeStartDate < academicYearStart) episodeStartDate = academicYearStart;
+
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = CalculateAimSequenceNumber(priceEpisode);
-                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = aim.StartDate.ToDate();
+                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = episodeStartDate;
                 newPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = priceEpisode.EpisodeEffectiveStartDate;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType = CalculateContractType(priceEpisode);
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
