@@ -33,7 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.TestEndpoint\SFA.DAS.Payments.PeriodEnd.TestEndpoint.csproj">
-      <ServiceLaunchUrl>https://{MachineName}:{ServicePort}/api/values</ServiceLaunchUrl>
+      <ServiceLaunchUrl>http://{MachineName}:{ServicePort}/</ServiceLaunchUrl>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
