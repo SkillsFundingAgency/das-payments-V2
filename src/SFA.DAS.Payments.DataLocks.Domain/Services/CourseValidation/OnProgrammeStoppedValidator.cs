@@ -9,6 +9,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
     public class OnProgrammeStoppedValidator : BaseCourseValidator, ICourseValidator
     {
+        private readonly ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate;
+
+        public OnProgrammeStoppedValidator(ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate)
+        {
+            this.calculatePeriodStartAndEndDate = calculatePeriodStartAndEndDate;
+        }
+
         protected override DataLockErrorCode DataLockerErrorCode { get; } = DataLockErrorCode.DLOCK_10;
 
         protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(
@@ -26,9 +33,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }
 
-            var censusDate = LastDayOfMonthForPeriod(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
+            var periodDate = calculatePeriodStartAndEndDate.GetPeriodDate(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
 
-            if (dataLockValidationModel.Apprenticeship.StopDate >= censusDate)
+            if (dataLockValidationModel.Apprenticeship.StopDate >= periodDate.periodEndDate)
             {
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }
@@ -36,20 +43,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             return new List<ApprenticeshipPriceEpisodeModel>();
         }
         
-        private DateTime LastDayOfMonthForPeriod(int period, int academicYear)
-        {
-            var calendarMonth = (period < 6) ? period + 7 : period - 5;
-            var year = (academicYear % 100) + 2000; // the second part of the academic year in yyyy format
-
-            if (period < 6)
-            {
-                year--;
-            }
-
-            var day = DateTime.DaysInMonth(year, calendarMonth);
-            var periodDate = new DateTime(year, calendarMonth, day);
-            
-            return periodDate;
-        }
+     
     }
 }
