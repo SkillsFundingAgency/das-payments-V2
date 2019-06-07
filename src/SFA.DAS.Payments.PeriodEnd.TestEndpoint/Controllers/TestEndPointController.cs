@@ -16,7 +16,8 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Controllers
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
         private readonly IBuildMonthEndPaymentEvent buildMonthEndPaymentEvent;
 
-        public TestEndPointController(IEndpointInstanceFactory endpointInstanceFactory, IBuildMonthEndPaymentEvent buildMonthEndPaymentEvent)
+        public TestEndPointController(IEndpointInstanceFactory endpointInstanceFactory, 
+            IBuildMonthEndPaymentEvent buildMonthEndPaymentEvent)
         {
             this.endpointInstanceFactory = endpointInstanceFactory;
             this.buildMonthEndPaymentEvent = buildMonthEndPaymentEvent;
@@ -38,15 +39,15 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Controllers
             
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
             await endpointInstance.Publish(processProviderMonthEndCommand).ConfigureAwait(false);
+            await endpointInstance.Send(processProviderMonthEndCommand).ConfigureAwait(false);
             await endpointInstance.Publish(collectionStartMessage).ConfigureAwait(false);
 
-            return RedirectToAction(nameof(Index));
+            ViewBag.Message = "Month end event successfully sent";
+
+            return View("Index");
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+
+     
     }
 }

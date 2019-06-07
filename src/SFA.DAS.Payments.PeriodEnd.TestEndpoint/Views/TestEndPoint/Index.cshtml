@@ -10,10 +10,18 @@
         <h3 class="mb-0">Period End Form</h3>
     </div>
     <div class="card-body">
+
+        @if (!string.IsNullOrWhiteSpace(ViewBag?.Message))
+        {
+            <div class="alert alert-success" role="alert">
+                @ViewBag.Message
+            </div>
+        }
+
         <form class="form" role="form" autocomplete="off" asp-action="SendPeriodEnd" asp-controller="TestEndPoint">
             <div class="form-group">
                 <label asp-for="Ukprn">Ukprn</label>
-                <input type="number" asp-for="Ukprn" class="form-control" required >
+                <input type="number" asp-for="Ukprn" class="form-control" required>
                 <div class="invalid-feedback">Please enter ukprn</div>
             </div>
             <div class="form-group">
