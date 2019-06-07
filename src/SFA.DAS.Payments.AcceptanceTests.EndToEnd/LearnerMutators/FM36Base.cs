@@ -1,12 +1,12 @@
 ﻿using System;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.Tests.Core;
 using System.Collections.Generic;
 using System.Linq;
 using DCT.TestDataGenerator;
 using DCT.TestDataGenerator.Functor;
 using ESFA.DC.ILR.Model.Loose;
 using MoreLinq;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
     {
         private const int StandardProgrammeType = 25;
         private const int StandardProgrammeEPADuration = 8;
+        private const string ProgrammeAim = "ZPROG001";
         private readonly string featureNumber;
         protected ILearnerCreatorDataCache dataCache;
 
@@ -52,11 +53,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 list.Add(new LearnerTypeMutator()
                 {
                     LearnerType = LearnerTypeRequired.Apprenticeships,
-                    DoMutateLearner = (messageLearner, valid) => { 
+                    DoMutateLearner = (messageLearner, valid) =>
+                    {
                         MutateCommon(messageLearner, learner);
                         DoSpecificMutate(messageLearner, learner);
                     },
-                    DoMutateOptions = options => options.LD.IncludeHHS = true
+                    DoMutateOptions = options => DoMutateOptions(options, learner)
                 });
             }
 
@@ -75,6 +77,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         protected abstract void DoSpecificMutate(MessageLearner messageLearner, Learner learner);
 
+        protected void DoMutateOptions(GenerationOptions options, Learner learner)
+        {
+            options.LD.IncludeHHS = true;
+            options.LD.GenerateMultipleLDs = Math.Max(1, learner.Aims.Count(a => !a.IsMainAim));
+        }
+
         protected void MutateCommon(MessageLearner learner, Learner learnerRequest)
         {
             learner.DateOfBirth =
@@ -88,10 +96,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             var learnerLearningDeliveries = learner.LearningDelivery.ToList();
 
-            foreach (var aim in learnerRequest.Aims)
-            {
-                MutateAimForLearner(aim, learnerLearningDeliveries, learnerRequest.Aims.Count());
-            }
+            MutateAimForLearner(learnerRequest.Aims, learnerLearningDeliveries, learnerRequest.Aims.Count());
 
             learner.LearningDelivery = learnerLearningDeliveries.ToArray();
 
@@ -101,18 +106,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             switch (learnerRequest.SmallEmployer)
             {
                 case "SEM1":
-                {
-                    var les1 = learner.LearnerEmploymentStatus[0];
-                    var lesm1 = les1.EmploymentStatusMonitoring.ToList();
-                    lesm1.Add(new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
                     {
-                        ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
-                        ESMCode = (int)EmploymentStatusMonitoringCode.SmallEmployer,
-                        ESMCodeSpecified = true
-                    });
-                    learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = lesm1.ToArray();
-                    break;
-                }
+                        var les1 = learner.LearnerEmploymentStatus[0];
+                        var lesm1 = les1.EmploymentStatusMonitoring.ToList();
+                        lesm1.Add(new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                        {
+                            ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
+                            ESMCode = (int)EmploymentStatusMonitoringCode.SmallEmployer,
+                            ESMCodeSpecified = true
+                        });
+                        learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = lesm1.ToArray();
+                        break;
+                    }
             }
 
             learner.ULN = learnerRequest.Uln;
@@ -173,31 +178,133 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         protected void RemovePmrRecord(MessageLearner learner)
         {
             var deliveries = learner.LearningDelivery.ToList().Where(ld => ld.AimType == 1);
-            deliveries.ForEach(d=>d.AppFinRecord = d.AppFinRecord.ToList().Where(af => af.AFinType != LearnDelAppFinType.PMR.ToString()).ToArray());
+            deliveries.ForEach(d => d.AppFinRecord = d.AppFinRecord.ToList().Where(af => af.AFinType != LearnDelAppFinType.PMR.ToString()).ToArray());
         }
 
-        private void MutateAimForLearner(Aim aim, List<MessageLearnerLearningDelivery> learnerLearningDeliveries, int numberOfAimsForLearner)
+        private void MutateAimForLearner(List<Aim> aims, List<MessageLearnerLearningDelivery> learnerLearningDeliveries, int numberOfAimsForLearner)
         {
-            var delivery = learnerLearningDeliveries.SingleOrDefault(learnDelivery =>
-                  learnDelivery.AimSeqNumber == aim.AimSequenceNumber);
 
-            if (delivery == null)
+            MutateMainAimForLearner(aims.Single(a => a.IsMainAim),
+                learnerLearningDeliveries.Single(ld => ld.LearnAimRef == ProgrammeAim));
+
+            MutateOtherAimsForLearner(aims.Where(a => !a.IsMainAim),
+                learnerLearningDeliveries.Where(ld => ld.LearnAimRef != ProgrammeAim));
+
+
+            //var delivery = learnerLearningDeliveries.SingleOrDefault(learnDelivery =>
+            //      learnDelivery.AimSeqNumber == aim.AimSequenceNumber);
+
+            //if (delivery == null)
+            //{
+            //    delivery = new MessageLearnerLearningDelivery();
+            //    learnerLearningDeliveries.Add(delivery);
+            //}
+
+            //delivery.LearnAimRef = aim.AimReference;
+
+            //delivery.LearnStartDate = aim.StartDate.ToDate();
+            //delivery.LearnStartDateSpecified = true;
+
+            //if (aim.PlannedDurationAsTimespan.HasValue)
+            //{
+            //    delivery.LearnPlanEndDate = delivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value);
+            //    delivery.LearnPlanEndDateSpecified = true;
+            //}
+
+            //if (aim.ActualDurationAsTimespan.HasValue)
+            //{
+            //    delivery.LearnActEndDate = delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
+            //    delivery.LearnActEndDateSpecified = true;
+            //}
+
+            //MutateLearningDeliveryFamsForLearner(delivery, aim);
+
+            //delivery.ProgType = aim.ProgrammeType;
+            //delivery.ProgTypeSpecified = true;
+
+            //delivery.FworkCode = aim.FrameworkCode;
+            //delivery.FworkCodeSpecified = true;
+
+            //delivery.PwayCode = aim.PathwayCode;
+            //delivery.PwayCodeSpecified = true;
+
+            //delivery.CompStatus = (int)aim.CompletionStatus;
+            //delivery.CompStatusSpecified = true;
+
+            //if (aim.CompletionStatus == CompletionStatus.Completed)
+            //{
+            //    delivery.Outcome = (int)Outcome.Achieved;
+            //    delivery.OutcomeSpecified = true;
+            //}
+
+            if (numberOfAimsForLearner == 1) // assume that this aim was created through the old style of Training records - in which case we need to setup the functionalskillsdelivery as well.
             {
-                delivery = new MessageLearnerLearningDelivery();
-                learnerLearningDeliveries.Add(delivery);
+                MutateAimType3ForLearnerFromTrainingRecord(learnerLearningDeliveries,
+                    learnerLearningDeliveries.Single(ld => ld.LearnAimRef == ProgrammeAim));
             }
+        }
 
-            delivery.LearnAimRef = aim.AimReference;
+        private void MutateOtherAimsForLearner(IEnumerable<Aim> otherAims, IEnumerable<MessageLearnerLearningDelivery> otherLearningDeliveries)
+        {
+            otherAims.OrderBy(x => x.AimSequenceNumber);
+            otherLearningDeliveries.OrderBy(x => x.AimSeqNumber);
+            for (var i = 0; i < otherAims.Count(); i++)
+            {
+                var otherLearningDelivery = otherLearningDeliveries.Skip(i).Take(1).Single();
+                var otherAim = otherAims.Skip(i).Take(1).Single();
+                otherLearningDelivery.LearnAimRef = otherAim.AimReference;
 
-            delivery.LearnStartDate = aim.StartDate.ToDate();
-            delivery.LearnStartDateSpecified = true;
+                otherLearningDelivery.LearnStartDate = otherAim.StartDate.ToDate();
+                otherLearningDelivery.LearnStartDateSpecified = true;
 
-            if (aim.PlannedDurationAsTimespan.HasValue)
+                if (otherAim.PlannedDurationAsTimespan.HasValue)
+                {
+                    otherLearningDelivery.LearnPlanEndDate = otherLearningDelivery.LearnStartDate.Add(otherAim.PlannedDurationAsTimespan.Value);
+                    otherLearningDelivery.LearnPlanEndDateSpecified = true;
+                }
+
+                if (otherAim.ActualDurationAsTimespan.HasValue)
+                {
+                    otherLearningDelivery.LearnActEndDate = otherLearningDelivery.LearnStartDate.Add(otherAim.ActualDurationAsTimespan.Value);
+                    otherLearningDelivery.LearnActEndDateSpecified = true;
+                }
+
+                MutateLearningDeliveryFamsForLearner(otherLearningDelivery, otherAim);
+
+                otherLearningDelivery.ProgType = otherAim.ProgrammeType;
+                otherLearningDelivery.ProgTypeSpecified = true;
+
+                otherLearningDelivery.FworkCode = otherAim.FrameworkCode;
+                otherLearningDelivery.FworkCodeSpecified = true;
+
+                otherLearningDelivery.PwayCode = otherAim.PathwayCode;
+                otherLearningDelivery.PwayCodeSpecified = true;
+
+                otherLearningDelivery.CompStatus = (int)otherAim.CompletionStatus;
+                otherLearningDelivery.CompStatusSpecified = true;
+
+                if (otherAim.CompletionStatus == CompletionStatus.Completed)
+                {
+                    otherLearningDelivery.Outcome = (int)Outcome.Achieved;
+                    otherLearningDelivery.OutcomeSpecified = true;
+                }
+            }
+        }
+
+
+        private void MutateMainAimForLearner(Aim mainAim, MessageLearnerLearningDelivery mainLearningDelivery)
+        {
+            mainLearningDelivery.LearnAimRef = mainAim.AimReference;
+
+            mainLearningDelivery.LearnStartDate = mainAim.StartDate.ToDate();
+            mainLearningDelivery.LearnStartDateSpecified = true;
+
+            if (mainAim.PlannedDurationAsTimespan.HasValue)
             {
                 if (aim.ProgrammeType == StandardProgrammeType)
                 {
-                    delivery.LearnPlanEndDate = delivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value).AddDays(StandardProgrammeEPADuration);
-                    delivery.LearnPlanEndDateSpecified = true;
+                mainLearningDelivery.LearnPlanEndDate = mainLearningDelivery.LearnStartDate.Add(mainAim.PlannedDurationAsTimespan.Value);
+                mainLearningDelivery.LearnPlanEndDateSpecified = true;
                 }
                 else
                 {
@@ -217,8 +324,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             MutateLearningDeliveryFamsForLearner(delivery, aim);
 
-            delivery.ProgType = aim.ProgrammeType;
-            delivery.ProgTypeSpecified = true;
+            mainLearningDelivery.ProgType = mainAim.ProgrammeType;
+            mainLearningDelivery.ProgTypeSpecified = true;
 
             if (aim.ProgrammeType == StandardProgrammeType)
             {
@@ -308,16 +415,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 LearnDelFAMDateToSpecified = aim.ActualDurationAsTimespan.HasValue,
             });
 
-            if (aim.CompletionStatus == CompletionStatus.Completed && aim.AimSequenceNumber == 1)
-            {
-                MutateDeliveryAppFinRecordToPMR(delivery, priceEpisode);
-            }
-
             if (aim.IsMainAim)
             {
                 MutateMainAim(delivery, aim, priceEpisode);
             }
         }
+
         private void MutateDeliveryAppFinRecordToPMR(MessageLearnerLearningDelivery delivery, Price priceEpisode)
         {
             var appFinRecords = new List<MessageLearnerLearningDeliveryAppFinRecord>();
@@ -338,6 +441,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void MutateMainAim(MessageLearnerLearningDelivery delivery, Aim aim, Price priceEpisode)
         {
+            if (aim.CompletionStatus == CompletionStatus.Completed)
+            {
+                MutateDeliveryAppFinRecordToPMR(delivery, priceEpisode);
+            }
+
             var appFinRecords = delivery.AppFinRecord.ToList();
 
             AddNewTnpAppFinRecordForTrainingPrice(appFinRecords, priceEpisode);
@@ -471,7 +579,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             });
 
             var functionalSkillsLearningDeliveries = learner.LearningDelivery.ToList().Where(ld => ld.AimType == 3);
-            functionalSkillsLearningDeliveries.ForEach(ld=>ld.LearningDeliveryHE = learningDeliveryHes.ToArray());
+            functionalSkillsLearningDeliveries.ForEach(ld => ld.LearningDeliveryHE = learningDeliveryHes.ToArray());
         }
 
     }
