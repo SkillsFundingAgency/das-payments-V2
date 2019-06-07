@@ -19,7 +19,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             await dataContext.Apprenticeship.AddAsync(apprenticeship).ConfigureAwait(false);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-
         public static async Task UpdateApprenticeship(long apprenticeshipId, ApprenticeshipStatus status, List<ApprenticeshipPriceEpisodeModel> priceEpisodes, IPaymentsDataContext dataContext)
         {
             var apprenticeship = await dataContext.Apprenticeship
@@ -83,7 +82,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
                 AgreedOnDate = DateTime.UtcNow,
                 StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StopEffectiveFrom) ?
-                           default(DateTime?):
+                           default(DateTime?) :
                           apprenticeshipSpec.StopEffectiveFrom.ToDate(),
                 IsLevyPayer = employer.IsLevyPayer
             };
@@ -110,5 +109,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             };
 
         }
+
+        public static ApprenticeshipDuplicateModel CreateApprenticeshipDuplicateModel(long ukprn, Apprenticeship apprenticeshipSpec)
+        {
+            var apprenticeshipModel = new ApprenticeshipDuplicateModel
+            {
+                Ukprn = ukprn,
+                Uln = apprenticeshipSpec.Uln,
+                ApprenticeshipId = apprenticeshipSpec.ApprenticeshipId
+            };
+
+            return apprenticeshipModel;
+        }
+
+        public static async Task AddApprenticeshipDuplicate(ApprenticeshipDuplicateModel apprenticeshipDuplicate, IPaymentsDataContext dataContext)
+        {
+            await dataContext.ApprenticeshipDuplicate.AddAsync(apprenticeshipDuplicate).ConfigureAwait(false);
+            await dataContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+
     }
+
+
 }

@@ -92,7 +92,9 @@
     <Build Include="Payments2\Tables\Payments2.Apprenticeship.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipPriceEpisode.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipStatus.sql" />
+    <Build Include="Payments2\Tables\Payments2.TestingProvider.sql" />
     <Build Include="Payments2\Tables\SubmittedLearnerAim.sql" />
+    <Build Include="Payments2\Tables\Payments2.ApprenticeshipDuplicate.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />

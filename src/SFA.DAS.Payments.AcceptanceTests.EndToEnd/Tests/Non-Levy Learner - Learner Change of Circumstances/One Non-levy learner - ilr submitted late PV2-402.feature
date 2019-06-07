@@ -1,12 +1,13 @@
-﻿Feature: One Non-levy learner - ilr submitted late PV2-402
+﻿@supports_dc_e2e
+Feature: One Non-levy learner - ilr submitted late PV2-402
 	As a provider,
 	I want an ILR submitted late for a non-DAS learner, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.
 
 Scenario Outline: ILR submitted late for a non-DAS learner several months after learning has started PV2-402
     Given the provider is providing training for the following learners
-        | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-        | 01/Sep/Current Academic Year | 12 months        | 15000                | 01/Sep/Current Academic Year        | 0                      | 01/Sep/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+        | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+        | 01/Sep/Current Academic Year | 12 months        | 15000                | 01/Sep/Current Academic Year        | 0                      | 01/Sep/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing |

@@ -4,7 +4,6 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -83,6 +82,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddNewIlr(table, TestSession.Ukprn);
         }
 
+        [Given(@"the provider ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" now changes the Learner details as follows")]
         public void GivenTheNowChangesTheLearnerDetailsAsFollows(string providerIdentifier, Table table)

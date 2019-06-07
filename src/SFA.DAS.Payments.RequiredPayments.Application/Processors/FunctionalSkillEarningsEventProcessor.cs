@@ -14,13 +14,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             IRequiredPaymentProcessor requiredPaymentProcessor,
             IHoldingBackCompletionPaymentService holdingBackCompletionPaymentService,
             IPaymentHistoryRepository paymentHistoryRepository,
-            IApprenticeshipKeyProvider apprenticeshipKeyProvider
+            IApprenticeshipKeyProvider apprenticeshipKeyProvider,
+            INegativeEarningService negativeEarningService
         ) : base(
             mapper,
             requiredPaymentProcessor,
             holdingBackCompletionPaymentService,
             paymentHistoryRepository,
-            apprenticeshipKeyProvider
+            apprenticeshipKeyProvider,
+            negativeEarningService
         )
         {
         }

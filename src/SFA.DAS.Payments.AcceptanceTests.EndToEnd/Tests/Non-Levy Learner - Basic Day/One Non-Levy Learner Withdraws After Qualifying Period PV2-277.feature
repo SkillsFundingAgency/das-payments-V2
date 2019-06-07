@@ -1,6 +1,6 @@
-﻿Feature: One Non-Levy Learner Withdraws After Qualifying Period PV2-277
+﻿@supports_dc_e2e
+Feature: One Non-Levy Learner Withdraws After Qualifying Period PV2-277
 
-@EndToEnd
 
 Scenario Outline: A non-levy learner withdraws after qualifying period
 	Given the provider is providing training for the following learners

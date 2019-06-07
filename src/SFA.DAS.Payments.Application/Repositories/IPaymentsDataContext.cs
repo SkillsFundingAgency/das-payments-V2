@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<ApprenticeshipModel> Apprenticeship { get; }
         DbSet<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisode { get; }
         DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; }
+        DbSet<ApprenticeshipDuplicateModel> ApprenticeshipDuplicate { get; }
         DatabaseFacade Database { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         int SaveChanges();
