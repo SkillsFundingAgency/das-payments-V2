@@ -1382,6 +1382,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy learner changes provider but remains with the same employer-PV2-317.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Refunds\E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2277,6 +2282,10 @@
     <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer-PV2-317.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
