@@ -15,18 +15,24 @@ using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using Microsoft.ServiceFabric.Data;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint
 {
     public class TestEndpoint : StatelessService
     {
+        private readonly IPaymentsDataContext paymentsDataContext;
         private readonly ILifetimeScope lifetimeScope;
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
         private IStatelessEndpointCommunicationListener listener;
 
-        public TestEndpoint(StatelessServiceContext context, ILifetimeScope lifetimeScope, IEndpointInstanceFactory endpointInstanceFactory) : base(context)
+        public TestEndpoint(StatelessServiceContext context, 
+            ILifetimeScope lifetimeScope, 
+            IPaymentsDataContext paymentsDataContext,
+            IEndpointInstanceFactory endpointInstanceFactory): base(context)
         {
+            this.paymentsDataContext = paymentsDataContext;
             this.lifetimeScope = lifetimeScope;
             this.endpointInstanceFactory = endpointInstanceFactory;
         }
@@ -44,6 +50,7 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint
                                     .ConfigureServices(services =>
                                     {
                                         services.AddSingleton<IEndpointInstanceFactory>(endpointInstanceFactory);
+                                        services.AddSingleton<IPaymentsDataContext>(paymentsDataContext);
                                         services.AddSingleton<StatelessServiceContext>(serviceContext);
                                     })
                                     .UseContentRoot(Directory.GetCurrentDirectory())

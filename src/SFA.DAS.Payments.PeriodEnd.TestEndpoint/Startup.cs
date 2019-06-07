@@ -11,7 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Application.Repositories;
+using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Application.Services;
 using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Controllers;
+using SFA.DAS.Payments.RequiredPayments.Domain;
+using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 
 namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint
 {
@@ -32,8 +36,10 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddScoped<IBuildMonthEndPaymentEvent, BuildMonthEndPaymentEvent>();
+            services.AddScoped<ITestEndPointRepository, TestEndPointRepository>();
+            services.AddScoped<IApprenticeshipKeyService, ApprenticeshipKeyService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Application.Repositories;
+using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Application.Services;
 using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Models;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 
@@ -12,10 +14,12 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Controllers
     public class TestEndPointController : Controller
     {
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
+        private readonly IBuildMonthEndPaymentEvent buildMonthEndPaymentEvent;
 
-        public TestEndPointController(IEndpointInstanceFactory endpointInstanceFactory)
+        public TestEndPointController(IEndpointInstanceFactory endpointInstanceFactory, IBuildMonthEndPaymentEvent buildMonthEndPaymentEvent)
         {
             this.endpointInstanceFactory = endpointInstanceFactory;
+            this.buildMonthEndPaymentEvent = buildMonthEndPaymentEvent;
         }
 
         public IActionResult Index()
@@ -26,20 +30,15 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Controllers
         [HttpPost()]
         public async Task<IActionResult> SendPeriodEnd(SendPeriodEndRequest requestModel)
         {
+            var processProviderMonthEndCommand = buildMonthEndPaymentEvent
+                .CreateProcessProviderMonthEndCommand(requestModel.Ukprn, requestModel.AcademicYear, requestModel.Period);
 
-            var monthEndMessage = new ProcessProviderMonthEndCommand
-            {
-                Ukprn = requestModel.Ukprn,
-                JobId = 300,
-                CollectionPeriod = new CollectionPeriod
-                {
-                    AcademicYear = requestModel.AcademicYear,
-                    Period = requestModel.Period
-                },
-            };
-
+            var collectionStartMessage = await buildMonthEndPaymentEvent
+                    .CreateCollectionStartedEvent(requestModel.Ukprn, requestModel.AcademicYear);
+            
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-            await endpointInstance.Publish(monthEndMessage).ConfigureAwait(false);
+            await endpointInstance.Publish(processProviderMonthEndCommand).ConfigureAwait(false);
+            await endpointInstance.Publish(collectionStartMessage).ConfigureAwait(false);
 
             return RedirectToAction(nameof(Index));
         }
