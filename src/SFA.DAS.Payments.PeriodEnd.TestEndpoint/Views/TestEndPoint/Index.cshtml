@@ -10,18 +10,23 @@
         <h3 class="mb-0">Period End Form</h3>
     </div>
     <div class="card-body">
-        <form class="form" role="form" autocomplete="off" asp-action="SendPeriodEnd" asp-controller="TestEndPoint"  >
+        <form class="form" role="form" autocomplete="off" asp-action="SendPeriodEnd" asp-controller="TestEndPoint">
             <div class="form-group">
-                <label asp-for="Ukprn" >Ukprn</label>
-                <input type="number" asp-for="Ukprn" class="form-control"  required="">
+                <label asp-for="Ukprn">Ukprn</label>
+                <input type="number" asp-for="Ukprn" class="form-control" required >
                 <div class="invalid-feedback">Please enter ukprn</div>
             </div>
             <div class="form-group">
-                <label asp-for="AcademicYear" >Academic Year</label>
-                <input type="number"asp-for="AcademicYear" class="form-control">
+                <label asp-for="AcademicYear">Academic Year</label>
+                <input type="number" asp-for="AcademicYear" class="form-control" required>
                 <div class="invalid-feedback">Please enter a academic year</div>
             </div>
-           
+            <div class="form-group">
+                <label asp-for="Period">Period </label>
+                <input type="number" asp-for="Period" class="form-control" required>
+                <div class="invalid-feedback">Please enter a Period</div>
+            </div>
+
             <input type="submit" class="btn btn-success btn-lg float-right" id="btnSend">
         </form>
     </div>
