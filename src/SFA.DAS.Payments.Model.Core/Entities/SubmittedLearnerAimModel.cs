@@ -4,7 +4,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
 {
     public class SubmittedLearnerAimModel
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public long Ukprn { get; set; }
         public string LearnerReferenceNumber { get; set; }
         public int LearningAimFrameworkCode { get; set; }
