@@ -431,7 +431,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 };
 
                 // price episodes cannot span across academic year boundary
-                var episodeStartDate = aim.StartDate.ToDate();
+                var episodeStartDate = priceEpisode.EpisodeEffectiveStartDate;
                 var academicYearStart = new DateTime(AcademicYear / 100 + 2000, 8, 1);
                 if (episodeStartDate < academicYearStart) episodeStartDate = academicYearStart;
 
