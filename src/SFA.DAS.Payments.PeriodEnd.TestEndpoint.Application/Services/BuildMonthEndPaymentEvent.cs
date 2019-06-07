@@ -56,8 +56,10 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Application.Services
                 CollectionPeriod = new CollectionPeriod
                 {
                     AcademicYear = academicYear,
-                    Period = period
+                    Period = period,
                 },
+                SubmissionDate = DateTime.UtcNow,
+                RequestTime = DateTimeOffset.UtcNow
             };
         }
         private long GenerateId(int maxValue = 1000000000)
