@@ -6,6 +6,7 @@ using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Application.Repositories;
 using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Application.Services;
+using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Infrastructure;
 using SFA.DAS.Payments.PeriodEnd.TestEndpoint.Models;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 
@@ -38,16 +39,15 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Controllers
                     .CreateCollectionStartedEvent(requestModel.Ukprn, requestModel.AcademicYear);
             
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-            await endpointInstance.Publish(processProviderMonthEndCommand).ConfigureAwait(false);
-            await endpointInstance.Send(processProviderMonthEndCommand).ConfigureAwait(false);
-            await endpointInstance.Publish(collectionStartMessage).ConfigureAwait(false);
+           await endpointInstance.Publish(collectionStartMessage).ConfigureAwait(false);
+
+           var options = new SendOptions();
+           options.SetDestination(EndpointNames.ProviderPayments);
+           await endpointInstance.Send(processProviderMonthEndCommand, options).ConfigureAwait(false);
 
             ViewBag.Message = "Month end event successfully sent";
 
             return View("Index");
         }
-
-
-     
     }
 }
