@@ -1,4 +1,5 @@
-﻿Feature: Non-levy Learner over funding band cap - PV2-529
+﻿@supports_dc_e2e
+Feature: Non-levy Learner over funding band cap - PV2-529
 	As a provider,
 	I want a Non-levy learner, where the negotiated total price for the learner is more than the maximum allowed for that funding band
 	So that I am only paid up to the maximum cap within that funding band by SFA
@@ -41,8 +42,8 @@
 #Feature: Payment for a non-DAS learner with a negotiated price above the funding band cap
 Scenario Outline: Capping - Payment for Non-Levy learner with a negotiated price above funding cap PV2-529
     Given the provider is providing training for the following learners
-		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage |
-		| 06/Aug/Current Academic Year | 12 months        | 18000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |
+		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+		| 06/Aug/Current Academic Year | 12 months        | 18000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	# New capping section
 	And the following capping will apply to the price episodes
         | negotiated price | funding cap | previous funding paid | price above cap | effective price for SFA payments |
