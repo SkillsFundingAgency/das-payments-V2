@@ -1442,15 +1442,45 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Transfers\E2E - PV2-740 - Single Levy learner paid partialy via transfer, own levy and co-funding.feature.cs">
+    <Compile Include="Tests\Transfers\PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>E2E - PV2-740 - Single Levy learner paid partialy via transfer, own levy and co-funding.feature</DependentUpon>
+      <DependentUpon>PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Transfers\PV2-736 Levy learner paid via transfer.feature.cs">
+    <Compile Include="Tests\Transfers\PV2-732 - Single Levy learner paid via transfer but withdraws refund to sender employer.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-736 Levy learner paid via transfer.feature</DependentUpon>
+      <DependentUpon>PV2-732 - Single Levy learner paid via transfer but withdraws refund to sender employer.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Transfers\PV2-733 - Two Levy learners paid via transfer but later one deleted sender gets refund.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-733 - Two Levy learners paid via transfer but later one deleted sender gets refund.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Transfers\PV2-737 - Levy learner no transfer fund availble.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-737 - Levy learner no transfer fund availble.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Transfers\PV2-738 - Levy learner paid partially via transfer.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-738 - Levy learner paid partially via transfer.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Transfers\PV2-739 - Levy learner paid partially via transfer, remaining co-funded.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-739 - Levy learner paid partially via transfer, remaining co-funded.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Transfers\PV2-740 - Single Levy learner paid partialy via transfer own levy and co-funding.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-740 - Single Levy learner paid partialy via transfer own levy and co-funding.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Transfers\PV2-736 - Levy learner paid via transfer.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-736 - Levy learner paid via transfer.feature</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -2336,13 +2366,37 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Transfers\E2E - PV2-740 - Single Levy learner paid partialy via transfer, own levy and co-funding.feature">
+    <None Include="Tests\Transfers\PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>E2E - PV2-740 - Single Levy learner paid partialy via transfer, own levy and co-funding.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Transfers\PV2-736 Levy learner paid via transfer.feature">
+    <None Include="Tests\Transfers\PV2-732 - Single Levy learner paid via transfer but withdraws refund to sender employer.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-736 Levy learner paid via transfer.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-732 - Single Levy learner paid via transfer but withdraws refund to sender employer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\PV2-733 - Two Levy learners paid via transfer but later one deleted sender gets refund.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-733 - Two Levy learners paid via transfer but later one deleted sender gets refund.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\PV2-737 - Levy learner no transfer fund availble.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-737 - Levy learner no transfer fund availble.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\PV2-738 - Levy learner paid partially via transfer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-738 - Levy learner paid partially via transfer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\PV2-739 - Levy learner paid partially via transfer, remaining co-funded.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-739 - Levy learner paid partially via transfer, remaining co-funded.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\PV2-740 - Single Levy learner paid partialy via transfer own levy and co-funding.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-740 - Single Levy learner paid partialy via transfer own levy and co-funding.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\PV2-736 - Levy learner paid via transfer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-736 - Levy learner paid via transfer.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
