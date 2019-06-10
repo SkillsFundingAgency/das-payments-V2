@@ -16,6 +16,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
     {
         public static async Task AddApprenticeship(ApprenticeshipModel apprenticeship, IPaymentsDataContext dataContext)
         {
+            var existingApprenticeship = await dataContext.Apprenticeship.FirstOrDefaultAsync(a => a.Id == apprenticeship.Id);
+            if (existingApprenticeship != null)
+                dataContext.Apprenticeship.Remove(existingApprenticeship);
             await dataContext.Apprenticeship.AddAsync(apprenticeship).ConfigureAwait(false);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
