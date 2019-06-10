@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Application.Repositories
             this.paymentsDataContext = paymentsDataContext;
         }
 
-        public async Task<List<SubmittedLearnerAimModel>> GetProviderLearnerAims(long ukprn, CancellationToken cancellationToken = default)
+        public async Task<List<SubmittedLearnerAimModel>> GetProviderLearnerAims(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
             var aims = await paymentsDataContext
                 .SubmittedLearnerAim
