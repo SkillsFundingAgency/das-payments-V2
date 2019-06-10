@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: Transfers - PV2-732 Single Levy learner paid via transfer but withdraws, refund to sender employer
+﻿Feature: Transfers - PV2-732 Single Levy learner paid via transfer but withdraws, refund to sender employer
 	As a provider,
 	I want a Levy learner, where the employer receives a transfer from another employer to fund the learner, and the learner then withdraws
 	So that I am not paid for the learner by SFA via a transfer - PV2-732

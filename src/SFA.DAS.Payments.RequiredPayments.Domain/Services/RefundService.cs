@@ -50,6 +50,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         {
             switch (fundingSource)
             {
+                case FundingSourceType.Transfer:
                 case FundingSourceType.Levy:
                     return EarningType.Levy;
                 case FundingSourceType.CoInvestedEmployer:
