@@ -8,14 +8,14 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 
     public class LevyBalanceService : ILevyBalanceService
     {
-        private decimal balance;
-        private decimal transferAllowance;
+        public decimal RemainingBalance { get; private set; }
+        public decimal RemainingTransferAllowance { get; private set; }
         bool initialised;
 
         public void Initialise(decimal newBalance, decimal transferAllowance)
         {
-            balance = newBalance;
-            this.transferAllowance = Math.Min(transferAllowance, balance);
+            RemainingBalance = newBalance;
+            this.RemainingTransferAllowance = Math.Min(transferAllowance, RemainingBalance);
             initialised = true;
         }
 
@@ -24,10 +24,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             if (!initialised)
                 throw new InvalidOperationException("LevyBalanceService is not initialised");
 
-            var amountAvailable = requiredAmount > 0 ? Math.Min(balance, requiredAmount) : requiredAmount;
+            var amountAvailable = requiredAmount > 0 ? Math.Min(RemainingBalance, requiredAmount) : requiredAmount;
 
-            balance -= amountAvailable;
-            transferAllowance = Math.Min(balance, transferAllowance);
+            RemainingBalance -= amountAvailable;
+            RemainingTransferAllowance = Math.Min(RemainingBalance, RemainingTransferAllowance);
             return amountAvailable;
         }
 
@@ -36,10 +36,10 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             if (!initialised)
                 throw new InvalidOperationException("LevyBalanceService is not initialised");
 
-            var amountFunded = requiredAmount > 0 ? Math.Min(transferAllowance, requiredAmount) : requiredAmount;
+            var amountFunded = requiredAmount > 0 ? Math.Min(RemainingTransferAllowance, requiredAmount) : requiredAmount;
 
-            balance -= amountFunded;
-            transferAllowance -= amountFunded;
+            RemainingBalance -= amountFunded;
+            RemainingTransferAllowance -= amountFunded;
             return amountFunded;
         }
     }
