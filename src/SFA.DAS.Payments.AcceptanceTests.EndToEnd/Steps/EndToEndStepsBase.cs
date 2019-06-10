@@ -410,7 +410,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             foreach (var priceEpisode in aim.PriceEpisodes)
             {
-                var id =  CalculatePriceEpisodeIdentifier(priceEpisode, priceEpisodePrefix);
+                var id = CalculatePriceEpisodeIdentifier(priceEpisode, priceEpisodePrefix);
 
                 var priceEpisodeStartDateAsDeliveryPeriod = new DeliveryPeriodBuilder()
                     .WithDate(priceEpisode.EpisodeEffectiveStartDate)
@@ -430,8 +430,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     PriceEpisodeValues = new PriceEpisodeValues(),
                 };
 
+                // price episodes cannot span across academic year boundary
+                var episodeStartDate = priceEpisode.EpisodeEffectiveStartDate;
+                var academicYearStart = new DateTime(AcademicYear / 100 + 2000, 8, 1);
+                if (episodeStartDate < academicYearStart) episodeStartDate = academicYearStart;
+
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = CalculateAimSequenceNumber(priceEpisode);
-                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = priceEpisode.EpisodeEffectiveStartDate;
+                newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = episodeStartDate;
                 newPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = priceEpisode.EpisodeEffectiveStartDate;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType = CalculateContractType(priceEpisode);
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType = priceEpisode.FundingLineType ?? aim.FundingLineType;
