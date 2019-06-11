@@ -274,3 +274,5 @@ App.Debug.config
 **/ApplicationParameters/Local.5Node.xml
 *.bak
 *.feature.cs
+
+src/SFA\.DAS\.Payments\.PeriodEnd\.TestEndpoint/appsettings\.Development\.json
