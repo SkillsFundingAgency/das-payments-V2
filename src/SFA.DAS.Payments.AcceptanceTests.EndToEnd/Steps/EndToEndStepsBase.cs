@@ -277,8 +277,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, List<Training> learnerTraining, long jobId, DateTime submissionTime, decimal? sfaContributionPercentage, long ukprn)
         {
-            var onProgTraining = learnerTraining.FirstOrDefault(t => t.AimReference == "ZPROG001" && t.LearnerId.Equals(providerPayment.LearnerId));
-            var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001" && t.LearnerId.Equals(providerPayment.LearnerId));
+            var onProgTraining = learnerTraining.FirstOrDefault(t => t.AimReference == "ZPROG001" && (string.IsNullOrWhiteSpace(t.LearnerId) || t.LearnerId.Equals(providerPayment.LearnerId)));
+            var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001" && (string.IsNullOrWhiteSpace(t.LearnerId) || t.LearnerId.Equals(providerPayment.LearnerId)));
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
                 list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 1M,
