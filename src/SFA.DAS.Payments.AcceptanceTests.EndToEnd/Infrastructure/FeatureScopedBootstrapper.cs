@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Net;
 using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure.IoC;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
@@ -19,6 +20,7 @@ using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
 {
+
     [Binding]
     public class FeatureScopedBootstrapper : TestSessionBase
     {
@@ -36,6 +38,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             }).As<IPaymentsDataContext>().InstancePerLifetimeScope();
             DcHelper.AddDcConfig(Builder);
 
+            Builder.RegisterType<IlrDcService>()
+                   .As<IIlrService>()
+                   .InstancePerLifetimeScope()
+                   .IfNotRegistered(typeof(IIlrService));
+
             Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
 
             Builder.Register((c, p) => new RequiredPaymentsCacheCleaner(c.Resolve<IApprenticeshipKeyService>(), MessageSession)).AsSelf();
@@ -46,7 +53,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
         public static void SetUpFeature(FeatureContext context)
         {
             SetUpTestSession(context);
-            var dcHelper = Container.Resolve<DcHelper>();
+            var dcHelper = Container.Resolve<IDcHelper>();
             context.Set(dcHelper);
         }
 
@@ -71,7 +78,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             routing.RouteToEndpoint(typeof(RecordStartedProcessingMonthEndJob).Assembly, EndpointNames.JobMonitoring);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
             transportConfig.Queues().LockDuration(TimeSpan.FromMinutes(5));
-            endpointConfiguration.MakeInstanceUniquelyAddressable(Config.AcceptanceTestsEndpointName);
+            endpointConfiguration.MakeInstanceUniquelyAddressable("reply");
             endpointConfiguration.EnableCallbacks();
         }
 

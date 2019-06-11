@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -12,12 +13,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public class FunctionalSkillsEarningValueResolver : IValueResolver<IntermediateLearningAim, FunctionalSkillEarningsEvent, ReadOnlyCollection<FunctionalSkillEarning>>
     {
-        private static readonly Dictionary<string, FunctionalSkillType> TypeMap = new Dictionary<string, FunctionalSkillType>
-        {
-            {"MathEngBalPayment", FunctionalSkillType.BalancingMathsAndEnglish},
-            {"MathEngOnProgPayment", FunctionalSkillType.OnProgrammeMathsAndEnglish},
-            {"LearnSuppFundCash", FunctionalSkillType.LearningSupport},
-        };
+        private static readonly Dictionary<string, FunctionalSkillType> TypeMap =
+            new Dictionary<string, FunctionalSkillType>
+            {
+                {"MathEngBalPayment", FunctionalSkillType.BalancingMathsAndEnglish},
+                {"MathEngOnProgPayment", FunctionalSkillType.OnProgrammeMathsAndEnglish},
+                {"PriceEpisodeLSFCash", FunctionalSkillType.LearningSupport},
+            };
 
         public ReadOnlyCollection<FunctionalSkillEarning> Resolve(IntermediateLearningAim source, FunctionalSkillEarningsEvent destination, ReadOnlyCollection<FunctionalSkillEarning> destMember, ResolutionContext context)
         {
@@ -46,7 +48,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 periods[i - 1] = new EarningPeriod
                 {
                     Period = i,
-                    Amount = periodValue,
+                    Amount = periodValue.AsRounded(),
                     SfaContributionPercentage = 1,
                 };
             }

@@ -1,4 +1,5 @@
-﻿Feature: Change standard and price but not from start - PV2-205
+﻿#@supports_dc_e2e
+Feature: Change standard and price but not from start - PV2-205
 	As a provider,
 	I want a non-levy learner, changes standard with change to negotiated price, to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

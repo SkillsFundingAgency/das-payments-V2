@@ -1,44 +1,4 @@
-#Feature:  Maths and English
-#
-#Background Info
-##It is permissible for a Level 2 apprentice to fail level 2 English & Maths, retake the learning, but complete the programme because they have already met the policy.
-#
-#Scenario: Levy learner, takes single level 2 aim, fails, retakes beyond programme end, completes to time
-#	Given levy balance > agreed price for all months
-#
-#	And the following commitments exist:
-#		  | ULN       | start date  	      | end date           | agreed price | status   |
-#		  | learner a | 06/08/2018            | 08/08/2019         | 15000        | active   |
-#	When an ILR file is submitted with the following data:
-#		  | ULN       | learner type             | agreed price | start date | planned end date | actual end date | completion status | restart indicator | aim type         |
-#		  | learner a | 19-24 programme only DAS | 15000        | 06/08/2018 | 08/08/2019       | 08/08/2019      | completed         | NO                | programme        |
-#		  | learner a | 19-24 programme only DAS | 471          | 06/08/2018 | 08/06/2019       | 08/05/2019      | withdrawn         | NO                | maths or english |
-#		  | learner a | 19-24 programme only DAS | 471          | 09/06/2019 | 08/06/2020       | 				  | continuing        | YES               | maths or english |
-#	
-#	Then the provider earnings and payments break down as follows:
-#		  | Type                                    | 08/18   | 09/18   | 10/18   | ... | 04/19   | 05/19   | 06/19   | 07/19   | 08/19   | 09/19   | ... | 05/20 | 06/20 |
-#		  | Provider Earned Total                   | 1047.10 | 1047.10 | 1047.10 | ... | 1047.10 | 1000    | 1039.25 | 1039.25 | 3039.25 | 39.25   | ... | 39.25 | 0     |
-#		  | Provider Earned from SFA           	    | 1047.10 | 1047.10 | 1047.10 | ... | 1047.10 | 1000    | 1039.25 | 1039.25 | 3039.25 | 39.25   | ... | 39.25 | 0     |
-#          | Provider Earned from Employer           | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
-#		  | Provider Paid by SFA                    | 0       | 1047.10 | 1047.10 | ... | 1047.10 | 1047.10 | 1000    | 1039.25 | 1039.25 | 3039.25 | ... | 39.25 | 39.25 |
-#		  | Payment due from Employer               | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
-#		  | Levy account debited                    | 0       | 1000    | 1000    | ... | 1000    | 1000    | 1000    | 1000    | 1000    | 3000    | ... | 0     | 0     |
-#		  | SFA Levy employer budget                | 1000    | 1000    | 1000    | ... | 1000    | 1000    | 1000    | 1000    | 3000    | 0       | ... | 0     | 0     |
-#		  | SFA levy co-funding budget              | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
-#		  | SFA non-levy co-funding budget          | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
-#		  | SFA non-Levy additional payments budget | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
-#		  | SFA levy additional payments budget     | 47.10   | 47.10   | 47.10   | ... | 47.10   | 0       | 39.25   | 39.25   | 39.25   | 39.25   | ... | 39.25 | 0     |
-#		 
-#	And the transaction types for the payments are:
-#		  | Payment type                   | 08/18 | 09/18 | 10/18 | ... | 05/19 | 06/19 | 07/19 | 08/19 | 09/19 | ... | 05/20 | 06/20 |
-#		  | On-program                     | 0     | 1000  | 1000  | ... | 1000  | 1000  | 1000  | 1000  | 0     | ... | 0     | 0     |
-#		  | Completion                     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 3000  | ... | 0     | 0     |
-#		  | Balancing                      | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
-#		  | English and maths on programme | 0     | 47.10 | 47.10 | ... | 47.10 | 0     | 39.25 | 39.25 | 39.25 | ... | 39.25 | 39.25 |
-#		  | English and maths Balancing    | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 	  
 
-# For DC integration
-# 3rd ILR line has restart indicator as YES
 
 Feature: Levy learner, takes single level 2 aim, fails, retakes beyond programme end, completes to time -  PV2-531
 		As a provider,
@@ -48,8 +8,8 @@ Feature: Levy learner, takes single level 2 aim, fails, retakes beyond programme
 Scenario Outline: Levy learner takes single level 2 aim, fails, retakes beyond programme end, completes to time PV2-531
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | start date                | end date                     | agreed price | status |
-        | 06/Aug/Last Academic Year | 08/Aug/Current Academic Year | 15000        | active |
+        | start date                | end date                     | agreed price | status | Framework Code | Pathway Code | Programme Type | 
+        | 06/Aug/Last Academic Year | 08/Aug/Current Academic Year | 15000        | active | 593            | 1            | 20             | 
 	# New columns - Restart Indicator
 	# Do we need it for payments service?
 	And the following aims
@@ -227,3 +187,47 @@ Examples:
         | R09/Current Academic Year | 500          |
         | R10/Current Academic Year | 500          |
         | R11/Current Academic Year | 500          |
+
+
+
+#Feature:  Maths and English
+#
+#Background Info
+##It is permissible for a Level 2 apprentice to fail level 2 English & Maths, retake the learning, but complete the programme because they have already met the policy.
+#
+#Scenario: Levy learner, takes single level 2 aim, fails, retakes beyond programme end, completes to time
+#	Given levy balance > agreed price for all months
+#
+#	And the following commitments exist:
+#		  | ULN       | start date  	      | end date           | agreed price | status   |
+#		  | learner a | 06/08/2018            | 08/08/2019         | 15000        | active   |
+#	When an ILR file is submitted with the following data:
+#		  | ULN       | learner type             | agreed price | start date | planned end date | actual end date | completion status | restart indicator | aim type         |
+#		  | learner a | 19-24 programme only DAS | 15000        | 06/08/2018 | 08/08/2019       | 08/08/2019      | completed         | NO                | programme        |
+#		  | learner a | 19-24 programme only DAS | 471          | 06/08/2018 | 08/06/2019       | 08/05/2019      | withdrawn         | NO                | maths or english |
+#		  | learner a | 19-24 programme only DAS | 471          | 09/06/2019 | 08/06/2020       | 				  | continuing        | YES               | maths or english |
+#	
+#	Then the provider earnings and payments break down as follows:
+#		  | Type                                    | 08/18   | 09/18   | 10/18   | ... | 04/19   | 05/19   | 06/19   | 07/19   | 08/19   | 09/19   | ... | 05/20 | 06/20 |
+#		  | Provider Earned Total                   | 1047.10 | 1047.10 | 1047.10 | ... | 1047.10 | 1000    | 1039.25 | 1039.25 | 3039.25 | 39.25   | ... | 39.25 | 0     |
+#		  | Provider Earned from SFA           	    | 1047.10 | 1047.10 | 1047.10 | ... | 1047.10 | 1000    | 1039.25 | 1039.25 | 3039.25 | 39.25   | ... | 39.25 | 0     |
+#          | Provider Earned from Employer           | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
+#		  | Provider Paid by SFA                    | 0       | 1047.10 | 1047.10 | ... | 1047.10 | 1047.10 | 1000    | 1039.25 | 1039.25 | 3039.25 | ... | 39.25 | 39.25 |
+#		  | Payment due from Employer               | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
+#		  | Levy account debited                    | 0       | 1000    | 1000    | ... | 1000    | 1000    | 1000    | 1000    | 1000    | 3000    | ... | 0     | 0     |
+#		  | SFA Levy employer budget                | 1000    | 1000    | 1000    | ... | 1000    | 1000    | 1000    | 1000    | 3000    | 0       | ... | 0     | 0     |
+#		  | SFA levy co-funding budget              | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
+#		  | SFA non-levy co-funding budget          | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
+#		  | SFA non-Levy additional payments budget | 0       | 0       | 0       | ... | 0       | 0       | 0       | 0       | 0       | 0       | ... | 0     | 0     |
+#		  | SFA levy additional payments budget     | 47.10   | 47.10   | 47.10   | ... | 47.10   | 0       | 39.25   | 39.25   | 39.25   | 39.25   | ... | 39.25 | 0     |
+#		 
+#	And the transaction types for the payments are:
+#		  | Payment type                   | 08/18 | 09/18 | 10/18 | ... | 05/19 | 06/19 | 07/19 | 08/19 | 09/19 | ... | 05/20 | 06/20 |
+#		  | On-program                     | 0     | 1000  | 1000  | ... | 1000  | 1000  | 1000  | 1000  | 0     | ... | 0     | 0     |
+#		  | Completion                     | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 3000  | ... | 0     | 0     |
+#		  | Balancing                      | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     |
+#		  | English and maths on programme | 0     | 47.10 | 47.10 | ... | 47.10 | 0     | 39.25 | 39.25 | 39.25 | ... | 39.25 | 39.25 |
+#		  | English and maths Balancing    | 0     | 0     | 0     | ... | 0     | 0     | 0     | 0     | 0     | ... | 0     | 0     | 	  
+
+# For DC integration
+# 3rd ILR line has restart indicator as YES

@@ -1,3 +1,4 @@
+@ignore the spec needs updating to new format where we can supply both aims
 Feature: 5% Contribution from April 2019 PV2-905
 As a provider,
 I want a Levy learner, starting prior to Apr 2019, where learner completes learning and starts a new course on new Pathway code in Apr 2019, and moves into co-funding on 5% contribution
@@ -8,12 +9,12 @@ Scenario Outline: Levy Learner, started learning before Apr19, completes learnin
 Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 		
 	And the following apprenticeships exist
-		| Framework code | programme type | pathway code | agreed price | start date                   | end date                     | status    | effective from               |
-		| 503            | 20             | 1            | 15000        | 01/Apr/Last Academic Year    | 01/Apr/Current Academic Year | completed | 01/Apr/Last Academic Year    |
-		| 503            | 20             | 2            | 15000        | 02/Apr/Current Academic Year | 02/Apr/Next Academic Year    | active    | 02/Apr/Current Academic Year |
+		| Identifier       | Framework code | programme type | pathway code | agreed price | start date                   | end date                     | status    | effective from               |
+		| Apprenticeship a | 403            | 2             | 1            | 15000        | 01/Apr/Last Academic Year    | 01/Apr/Current Academic Year | completed | 01/Apr/Last Academic Year    |
+		| Apprenticeship b | 403            | 2             | 2            | 15000        | 02/Apr/Current Academic Year | 02/Apr/Next Academic Year    | active    | 02/Apr/Current Academic Year |
 	And the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-		| 01/Apr/Last Academic Year | 12 months        | 15000                | 01/Apr/Current Academic Year        |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| 01/Apr/Last Academic Year | 12 months        | 15000                | 01/Apr/Current Academic Year        |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 403            | 1            | 2             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 	And the following earnings had been generated for the learner
 		| Delivery Period           | On-Programme | Completion | Balancing |
@@ -60,8 +61,8 @@ Given the employer levy account balance in collection period <Collection_Period>
 
 	But the Provider now changes the Learner details as follows
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 01/Apr/Last Academic Year    | 12 months        | 15000                | 01/Apr/Last Academic Year           |                        |                                       | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
-		| 02/Apr/Current Academic Year | 12 months        | 15000                | 02/Apr/Current Academic Year        |                        |                                       |                 | continuing        | Act1          | 2                   | ZPROG001      | 593            | 2            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 95%                         |
+		| 01/Apr/Last Academic Year    | 12 months        | 15000                | 01/Apr/Last Academic Year           |                        |                                       | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 403            | 1            | 2             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| 02/Apr/Current Academic Year | 12 months        | 15000                | 02/Apr/Current Academic Year        |                        |                                       |                 | continuing        | Act1          | 2                   | ZPROG001      | 403            | 2            | 2             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 95%                         |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated

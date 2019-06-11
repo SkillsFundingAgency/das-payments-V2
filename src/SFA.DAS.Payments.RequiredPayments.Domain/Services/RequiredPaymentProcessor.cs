@@ -1,32 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class RequiredPaymentProcessor : IRequiredPaymentProcessor
     {
-        private IPaymentDueProcessor paymentsDue;
-        private IRefundService refunds;
+        private readonly IPaymentDueProcessor paymentsDue;
+        private readonly IRefundService refundService;
 
-        public RequiredPaymentProcessor(IPaymentDueProcessor paymentsDue, IRefundService refunds)
+        public RequiredPaymentProcessor(IPaymentDueProcessor paymentsDue, IRefundService refundService)
         {
             this.paymentsDue = paymentsDue;
-            this.refunds = refunds;
+            this.refundService = refundService;
         }
 
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
-            var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, paymentHistory);
+            var result = new List<RequiredPayment>();
+            if (earning.EarningType != EarningType.Incentive && earning.SfaContributionPercentage.HasValue)
+                result.AddRange(RefundPaymentsWithDifferentSfaContribution(earning.SfaContributionPercentage.Value, paymentHistory));
+
+            var validPaymentHistory = paymentHistory
+                .Where(p => earning.EarningType == EarningType.Incentive || !earning.SfaContributionPercentage.HasValue || p.SfaContributionPercentage == earning.SfaContributionPercentage)
+                .ToList();
+
+            var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, validPaymentHistory);
 
             if (amount < 0)
             {
-                return refunds.GetRefund(amount, paymentHistory);
+                result.AddRange(refundService.GetRefund(amount, validPaymentHistory));
+                return result;
             }
 
             if (amount == 0)
             {
-                return new List<RequiredPayment>();
+                return result;
             }
 
             if (!earning.SfaContributionPercentage.HasValue)
@@ -34,16 +44,24 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 throw new ArgumentException("Trying to use a null SFA Contribution % for a positive earning");
             }
 
-            return new List<RequiredPayment>
+            result.Add(new RequiredPayment
             {
-                new RequiredPayment
-                {
-                    Amount = amount,
-                    EarningType = earning.EarningType,
-                    SfaContributionPercentage = earning.SfaContributionPercentage.Value,
-                    PriceEpisodeIdentifier = earning.PriceEpisodeIdentifier,
-                },
-            };
+                Amount = amount,
+                EarningType = earning.EarningType,
+                SfaContributionPercentage = earning.SfaContributionPercentage.Value,
+                PriceEpisodeIdentifier = earning.PriceEpisodeIdentifier,
+            });
+
+            return result;
+        }
+
+        private List<RequiredPayment> RefundPaymentsWithDifferentSfaContribution(decimal currentSfaContributionPercentage, List<Payment> paymentHistory)
+        {
+            return paymentHistory
+                .Where(payment => payment.SfaContributionPercentage != currentSfaContributionPercentage)
+                .GroupBy(payment => payment.SfaContributionPercentage)
+                .SelectMany(group => refundService.GetRefund(0, group.ToList()))
+                .ToList();
         }
     }
 }

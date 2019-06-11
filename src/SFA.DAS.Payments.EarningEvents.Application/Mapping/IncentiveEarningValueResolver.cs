@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Incentives;
+using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -36,18 +36,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     return "PriceEpisodeSecondDisadvantagePayment";
                 case IncentiveEarningType.LearningSupport:
                     return "PriceEpisodeLSFCash"; //TODO: Get definitive answer from Khush/David Young
+                case IncentiveEarningType.CareLeaverApprenticePayment:
+                    return "PriceEpisodeLearnerAdditionalPayment";
 
                 default :
                     throw new InvalidOperationException($"Cannot get FM36 attribute name for unknown incentive earning type: {incentiveEarningType}");
             }
         }
 
-        private IncentiveEarning CreateIncentiveEarning(FM36Learner source, IncentiveEarningType incentiveType)
+        private IncentiveEarning CreateIncentiveEarning(List<PriceEpisode> priceEpisodes, IncentiveEarningType incentiveType)
         {
             var result = new IncentiveEarning
             {
                 Type = incentiveType,
-                Periods = source.PriceEpisodes
+                Periods = priceEpisodes
                     .Where(priceEpisode => priceEpisode.PriceEpisodePeriodisedValues != null)
                     .SelectMany(priceEpisode => priceEpisode.PriceEpisodePeriodisedValues,
                         (priceEpisode, periodisedValues) => new { priceEpisode, periodisedValues })
@@ -72,14 +74,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             IncentiveEarningType.Balancing16To18FrameworkUplift,
             IncentiveEarningType.FirstDisadvantagePayment,
             IncentiveEarningType.SecondDisadvantagePayment,
-            IncentiveEarningType.LearningSupport
+            IncentiveEarningType.LearningSupport,
+            IncentiveEarningType.CareLeaverApprenticePayment,
         };
 
         public List<IncentiveEarning> Resolve(IntermediateLearningAim source, ApprenticeshipContractTypeEarningsEvent destination, List<IncentiveEarning> destMember, ResolutionContext context)
         {
-
             return IncentiveTypes
-                .Select(type => CreateIncentiveEarning(source.Learner, type))
+                .Select(type => CreateIncentiveEarning(source.PriceEpisodes, type))
                 .Where(earning => earning.Periods.Any())
                 .ToList();
         }

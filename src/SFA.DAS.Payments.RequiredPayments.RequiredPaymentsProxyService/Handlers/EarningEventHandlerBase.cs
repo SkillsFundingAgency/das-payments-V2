@@ -47,12 +47,13 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     message.LearningAim.PathwayCode,
                     message.LearningAim.ProgrammeType,
                     message.LearningAim.StandardCode,
-                    message.LearningAim.Reference
+                    message.LearningAim.Reference,
+                    message.CollectionPeriod.AcademicYear
                 );
 
                 var actorId = new ActorId(key);
                 var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                IReadOnlyCollection<RequiredPaymentEvent> requiredPaymentEvent;
+                IReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPaymentEvent;
                 try
                 {
                     requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
@@ -85,6 +86,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             }
         }
 
-        protected abstract Task<ReadOnlyCollection<RequiredPaymentEvent>> HandleEarningEvent(T message, IRequiredPaymentsService actor);
+        protected abstract Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(T message, IRequiredPaymentsService actor);
     }
 }

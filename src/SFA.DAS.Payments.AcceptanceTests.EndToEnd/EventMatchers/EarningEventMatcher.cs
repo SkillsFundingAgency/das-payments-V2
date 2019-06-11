@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using Earning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Earning;
 using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
@@ -27,6 +28,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly List<Training> currentIlr;
         private readonly IList<Earning> earningSpecs;
         private readonly IList<FM36Learner> learnerSpecs;
+
+        private static readonly TestsConfiguration Config = new TestsConfiguration();
 
         public EarningEventMatcher(Provider provider , List<Price> currentPriceEpisodes,List<Training> currentIlr, IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
         {
@@ -52,7 +55,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<EarningEvent> GetExpectedEvents()
         {
             var result = new List<EarningEvent>();
-            var learnerIds = earningSpecs.Where(e => e.Ukprn == provider.Ukprn)?.Select(e => e.LearnerId).Distinct().ToList();
+            var learnerIds = earningSpecs.Where(e => e.Ukprn == provider.Ukprn).Select(e => e.LearnerId).Distinct().ToList();
 
             foreach (var learnerId in learnerIds)
             {
@@ -105,12 +108,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
                     var fullListOfTransactionTypes = aimEarningSpecs.SelectMany(p => p.Values.Keys).Distinct().ToList();
                     var onProgEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsOnProgType).ToList();
-                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsFunctionalSkillType).ToList();
-                    var incentiveEarnings = fullListOfTransactionTypes.Where(EnumHelper.IsIncentiveType).ToList();
+                    var functionalSkillEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsFunctionalSkillType(t, aimSpec.IsMainAim)).ToList();
+                    var incentiveEarnings = fullListOfTransactionTypes.Where(t => EnumHelper.IsIncentiveType(t, aimSpec.IsMainAim)).ToList();
 
-                    if (aimSpec.AimReference == "ZPROG001" && onProgEarnings.Any())
+                    if (aimSpec.IsMainAim && onProgEarnings.Any())
                     {
-                        var onProgEarning  = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
+                        var onProgEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
                         onProgEarning.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                         {
                             Type = (OnProgrammeEarningType) (int) tt,
@@ -124,11 +127,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         onProgEarning.JobId = provider.JobId;
                         onProgEarning.Learner = learner;
                         onProgEarning.LearningAim = learningAim;
-     
+
                         result.Add(onProgEarning);
                     }
 
-                    if (aimSpec.AimReference != "ZPROG001" && functionalSkillEarnings.Any())
+                    if (!aimSpec.IsMainAim && functionalSkillEarnings.Any())
                     {
                         var functionalSkillEarning = new FunctionalSkillEarningsEvent
                         {
@@ -151,7 +154,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         result.Add(functionalSkillEarning);
                     }
 
-                    if (incentiveEarnings.Any())
+                    if (!aimSpec.IsMainAim && incentiveEarnings.Any())
                     {
                         var incentiveEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
                         incentiveEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
@@ -203,7 +206,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (expectedEvent.CollectionPeriod.Period != actualEvent.CollectionPeriod.Period ||
                 expectedEvent.CollectionPeriod.AcademicYear != actualEvent.CollectionPeriod.AcademicYear ||
                 expectedEvent.Learner.ReferenceNumber != actualEvent.Learner.ReferenceNumber ||
-                //expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
+                expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
                 expectedEvent.LearningAim.Reference != actualEvent.LearningAim.Reference ||
                 expectedEvent.LearningAim.FundingLineType != actualEvent.LearningAim.FundingLineType ||
                 expectedEvent.LearningAim.FrameworkCode != actualEvent.LearningAim.FrameworkCode ||
@@ -223,7 +226,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (expectedEvent == null)
                 return true;
 
-
             var expectedEventOnProgrammeEarnings = expectedEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
             var actualEventOnProgrammeEarnings = actualEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
 
@@ -237,6 +239,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             var expectedEventIncentiveEarnings = expectedEvent.IncentiveEarnings ?? new List<IncentiveEarning>();
             var actualEventIncentiveEarnings = actualEvent.IncentiveEarnings ?? new List<IncentiveEarning>();
+
+            // Remove any all 0 value records from the "last academic year"
+            foreach (var actualIncentiveEarning in actualEventIncentiveEarnings)
+            {
+                // assume 24 periods means 2 years of data
+                if (actualIncentiveEarning.Periods.Count() == 24)
+                {
+                    // assume the first 12 are the previous year (sequencing is taken care of outside of this).
+                    if (actualIncentiveEarning.Periods.Take(12).All(p => p.Amount == 0))
+                    {
+                        var secondYear = actualIncentiveEarning.Periods.Skip(12).Take(12);
+                        actualIncentiveEarning.Periods = new ReadOnlyCollection<EarningPeriod>(secondYear.ToList());
+                    }
+                }
+            }
 
             foreach (var expectedEarning in expectedEventIncentiveEarnings)
             {
@@ -261,9 +278,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     expectedEarningPeriods[i].Period != actualEarningPeriods[i].Period)
                     return false;
 
-                if (expectedEarningPeriods[i].Amount != 0 &&
-                    expectedEarningPeriods[i].PriceEpisodeIdentifier != actualEarningPeriods[i].PriceEpisodeIdentifier)
-                    return false;
+                if (!Config.ValidateDcAndDasServices)
+                {
+                    if (expectedEarningPeriods[i].Amount != 0 &&
+                        expectedEarningPeriods[i].PriceEpisodeIdentifier != actualEarningPeriods[i].PriceEpisodeIdentifier)
+                        return false;
+                }
             }
 
             return true;

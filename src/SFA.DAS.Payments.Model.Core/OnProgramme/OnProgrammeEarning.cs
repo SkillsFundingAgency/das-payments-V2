@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.Model.Core.OnProgramme
+﻿using System;
+
+namespace SFA.DAS.Payments.Model.Core.OnProgramme
 {
     public class OnProgrammeEarning : Earning
     {

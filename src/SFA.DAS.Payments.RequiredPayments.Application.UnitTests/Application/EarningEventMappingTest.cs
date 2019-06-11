@@ -12,7 +12,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
-using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.RequiredPayments.Application.Mapping;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(CalculatedRequiredLevyAmount))]
         public void AmountIsCorrect(Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var expectedAmount = 100;
 
             var requiredPayment = new RequiredPayment
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(CalculatedRequiredLevyAmount))]
         public void PriceEpisodeIdentifierIsCorrect(Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var expectedPriceEpisodeIdentifier = "peid";
 
             var requiredPayment = new RequiredPayment
@@ -92,7 +92,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(PayableEarningEvent), typeof(CompletionPaymentHeldBackEvent))]
         public void ContractTypeIsCorrectForPayableEarningEvent(Type earningEventType, Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var earningEvent = Activator.CreateInstance(earningEventType);
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
@@ -106,7 +106,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CompletionPaymentHeldBackEvent))]
         public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType, Type requiredPaymentEventType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var earningEvent = Activator.CreateInstance(earningEventType);
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
@@ -122,12 +122,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         [TestCase(typeof(CalculatedRequiredLevyAmount), ContractType.Act2)]
         public void ContractTypeIsCorrectForFunctionalSkills(Type requiredPaymentEventType, ContractType expectedContractType)
         {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
             var earningEvent = new FunctionalSkillEarningsEvent
             {
                 ContractType = expectedContractType,
             };
-            
+
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.ContractType.Should().Be(expectedContractType);
         }
@@ -137,7 +137,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             // arrange
             var payableEarning = CreatePayableEarning();
-            RequiredPaymentEvent requiredPayment = new CalculatedRequiredLevyAmount
+            PeriodisedRequiredPaymentEvent requiredPayment = new CalculatedRequiredLevyAmount
             {
                 SfaContributionPercentage = .9m,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion
@@ -151,9 +151,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             var act1RequiredPayment = (CalculatedRequiredLevyAmount)requiredPayment;
 
-            Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId); 
+            Assert.AreEqual(payableEarning.AgreementId, act1RequiredPayment.AgreementId);
             Assert.AreEqual(.9m, act1RequiredPayment.SfaContributionPercentage);
             Assert.AreEqual(OnProgrammeEarningType.Completion, act1RequiredPayment.OnProgrammeEarningType);
+            Assert.AreEqual(payableEarning.EarningEventId, act1RequiredPayment.EarningEventId);
+            Assert.AreNotEqual(payableEarning.EventId, act1RequiredPayment.EarningEventId);
         }
 
         [Test]
@@ -170,7 +172,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 PriceEpisodeIdentifier = "123-01",
                 Amount = 1000000
             };
-            RequiredPaymentEvent requiredPayment = new CalculatedRequiredLevyAmount
+            var requiredPayment = new CalculatedRequiredLevyAmount
             {
                 SfaContributionPercentage = .9m,
                 OnProgrammeEarningType = OnProgrammeEarningType.Balancing
@@ -183,6 +185,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
 
             Assert.AreEqual(earningPeriod.Period, act1RequiredPayment.DeliveryPeriod);
             Assert.AreEqual(earningPeriod.AccountId, act1RequiredPayment.AccountId);
+            Assert.AreEqual(earningPeriod.TransferSenderAccountId, act1RequiredPayment.TransferSenderAccountId);
             Assert.AreEqual(earningPeriod.ApprenticeshipId, act1RequiredPayment.ApprenticeshipId);
             Assert.AreEqual(earningPeriod.ApprenticeshipPriceEpisodeId, act1RequiredPayment.ApprenticeshipPriceEpisodeId);
             //Assert.AreEqual(earningPeriod.AgreementId, act1RequiredPayment.AgreementId);
@@ -197,7 +200,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             // arrange
             var functionalSkillEarningsEvent = CreateFunctionalSkillEarningsEvent();
-            RequiredPaymentEvent requiredPayment = new CalculatedRequiredIncentiveAmount();
+            PeriodisedRequiredPaymentEvent requiredPayment = new CalculatedRequiredIncentiveAmount();
 
             // act
             mapper.Map(functionalSkillEarningsEvent, requiredPayment);
@@ -223,7 +226,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
                 NumberOfInstalments = 16
             };
 
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as RequiredPaymentEvent;
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
 
             mapper.Map(priceEpisode, requiredPaymentEvent);
 
@@ -261,7 +264,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             payment.NumberOfInstalments.Should().Be((short)paymentHistoryEntity.NumberOfInstalments);
         }
 
-        private static void AssertCommonProperties(RequiredPaymentEvent requiredPayment, IEarningEvent earning)
+        private static void AssertCommonProperties(PeriodisedRequiredPaymentEvent requiredPayment, IEarningEvent earning)
         {
             Assert.AreNotSame(requiredPayment.Learner, earning.Learner);
             Assert.AreEqual(requiredPayment.Learner.Uln, earning.Learner.Uln);
@@ -329,6 +332,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
         {
             return new PayableEarningEvent
             {
+                EventId = Guid.NewGuid(),
+                EarningEventId = Guid.NewGuid(),
                 AgreementId = "103",
                 CollectionYear = 1819,
                 Learner = new Learner { ReferenceNumber = "R", Uln = 10 },

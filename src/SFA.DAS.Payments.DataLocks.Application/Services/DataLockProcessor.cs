@@ -12,6 +12,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
@@ -28,45 +30,113 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.onProgrammePeriodsValidationProcessor = onProgrammePeriodsValidationProcessor ?? throw new ArgumentNullException(nameof(onProgrammePeriodsValidationProcessor));
         }
 
-        public async Task<DataLockEvent> GetPaymentEvent(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<List<DataLockEvent>> GetPaymentEvents(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
         {
+            var dataLockEvents = new List<DataLockEvent>();
+
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Learner.Uln).ConfigureAwait(false);
             if (learnerMatchResult.DataLockErrorCode.HasValue)
             {
-                return CreateDataLockNonPayableEarningEvent(earningEvent, learnerMatchResult.DataLockErrorCode.Value);
+                dataLockEvents = CreateDataLockEvents(earningEvent, learnerMatchResult.DataLockErrorCode.Value);
+                return dataLockEvents;
             }
 
             var apprenticeshipsForUln = learnerMatchResult.Apprenticeships;
+            var onProgrammeEarning = GetOnProgrammeEarnings(earningEvent, apprenticeshipsForUln);
+
+            if (onProgrammeEarning.validOnProgEarnings.Any())
+            {
+                var payableEarningEvent = mapper.Map<PayableEarningEvent>(earningEvent);
+                payableEarningEvent.OnProgrammeEarnings = onProgrammeEarning.validOnProgEarnings;
+                dataLockEvents.Add(payableEarningEvent);
+            }
+
+            if (onProgrammeEarning.invalidOnProgEarnings.Any())
+            {
+                var earningFailedDataLockEvent = mapper.Map<EarningFailedDataLockMatching>(earningEvent);
+                earningFailedDataLockEvent.OnProgrammeEarnings = onProgrammeEarning.invalidOnProgEarnings;
+                dataLockEvents.Add(earningFailedDataLockEvent);
+            }
+
+            return dataLockEvents;
+        }
+
+        private (List<OnProgrammeEarning> validOnProgEarnings, List<OnProgrammeEarning> invalidOnProgEarnings) GetOnProgrammeEarnings(ApprenticeshipContractTypeEarningsEvent earningEvent, List<ApprenticeshipModel> apprenticeshipsForUln)
+        {
+            var validOnProgEarnings = new List<OnProgrammeEarning>();
+            var invalidOnProgEarnings = new List<OnProgrammeEarning>();
+
+            foreach (var onProgrammeEarning in earningEvent.OnProgrammeEarnings)
+            {
+                var validationResult = onProgrammePeriodsValidationProcessor.ValidatePeriods(earningEvent.Learner.Uln, earningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln, earningEvent.LearningAim, earningEvent.CollectionYear);
+
+                if (validationResult.ValidPeriods.Any())
+                {
+                    validOnProgEarnings.Add(CreateOnProgrammeEarning(onProgrammeEarning, validationResult.ValidPeriods));
+                }
+
+                if (validationResult.InValidPeriods.Any())
+                {            
+                    invalidOnProgEarnings.Add(CreateOnProgrammeEarning(onProgrammeEarning, validationResult.InValidPeriods));
+                }
+            }
+
+            return (validOnProgEarnings, invalidOnProgEarnings);
+        }
+
+        private List<DataLockEvent> CreateDataLockEvents(ApprenticeshipContractType1EarningEvent earningEvent, DataLockErrorCode dataLockErrorCode)
+        {
+            var dataLockEvents = new List<DataLockEvent>();
+
+            var nonPayableEarning = mapper.Map<EarningFailedDataLockMatching>(earningEvent);
             var payableEarningEvent = mapper.Map<PayableEarningEvent>(earningEvent);
 
-            FilterPayableEarningPeriods(payableEarningEvent, apprenticeshipsForUln);
-            return payableEarningEvent;
-        }
+            payableEarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>();
+            nonPayableEarning.OnProgrammeEarnings = new List<OnProgrammeEarning>();
 
-        //TODO: Signature needs to change to cope with non-payable earnings - PV2-835
-        private void FilterPayableEarningPeriods(PayableEarningEvent payableEarningEvent, List<ApprenticeshipModel> apprenticeshipsForUln)
-        {
-            foreach (var onProgrammeEarning in payableEarningEvent.OnProgrammeEarnings)
+            foreach (var onProgrammeEarning in earningEvent.OnProgrammeEarnings)
             {
-                var validationResult = onProgrammePeriodsValidationProcessor.ValidatePeriods(
-                    payableEarningEvent.Learner.Uln, payableEarningEvent.PriceEpisodes, onProgrammeEarning, apprenticeshipsForUln);
-                
-                onProgrammeEarning.Periods =
-                    validationResult.ValidPeriods.Select(valid => valid.Period).ToList().AsReadOnly();
-            }
-        }
+                var validPeriods = new List<EarningPeriod>();
+                var invalidPeriods = new List<EarningPeriod>();
 
-        //TODO: Create real NonPayableEarningEvent - PV2-835
-        private NonPayableEarningEvent CreateDataLockNonPayableEarningEvent(ApprenticeshipContractType1EarningEvent earningEvent, DataLockErrorCode dataLockErrorCode)
-        {
-            var nonPayableEarning = mapper.Map<NonPayableEarningEvent>(earningEvent);
-            nonPayableEarning.Errors = new ReadOnlyCollection<DataLockErrorCode>(
-                new[]
+                foreach (var period in onProgrammeEarning.Periods)
                 {
-                    dataLockErrorCode
-                });
-            return nonPayableEarning;
+                    if (period.Amount == decimal.Zero)
+                    {
+                        validPeriods.Add(period);
+                    }
+                    else
+                    {
+                        period.DataLockFailures = new List<DataLockFailure>
+                        {
+                            new DataLockFailure
+                            {
+                                DataLockError = dataLockErrorCode
+                            }
+                        };
+
+                        invalidPeriods.Add(period);
+                    }
+                }
+
+                if (invalidPeriods.Any()) nonPayableEarning.OnProgrammeEarnings.Add(CreateOnProgrammeEarning(onProgrammeEarning, invalidPeriods));
+                if (validPeriods.Any()) payableEarningEvent.OnProgrammeEarnings.Add(CreateOnProgrammeEarning(onProgrammeEarning, validPeriods));
+            }
+
+            if (nonPayableEarning.OnProgrammeEarnings.Any())dataLockEvents.Add(nonPayableEarning);
+            if (payableEarningEvent.OnProgrammeEarnings.Any()) dataLockEvents.Add(payableEarningEvent);
+
+            return dataLockEvents;
         }
 
+        private static OnProgrammeEarning CreateOnProgrammeEarning(OnProgrammeEarning onProgrammeEarning, List<EarningPeriod> periods)
+        {
+            return new OnProgrammeEarning
+            {
+                CensusDate = onProgrammeEarning.CensusDate,
+                Type = onProgrammeEarning.Type,
+                Periods = periods.AsReadOnly()
+            };
+        }
     }
 }

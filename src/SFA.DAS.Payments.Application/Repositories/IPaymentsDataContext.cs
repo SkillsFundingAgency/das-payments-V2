@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Repositories
@@ -11,6 +12,9 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<PaymentModel> Payment { get; }
         DbSet<ApprenticeshipModel> Apprenticeship { get; }
         DbSet<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisode { get; }
+        DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; }
+        DbSet<ApprenticeshipDuplicateModel> ApprenticeshipDuplicate { get; }
+        DatabaseFacade Database { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         int SaveChanges();
     }

@@ -1,5 +1,5 @@
 ﻿namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
-    public class CompletionPaymentHeldBackEvent : RequiredPaymentEvent
+    public class CompletionPaymentHeldBackEvent : PeriodisedRequiredPaymentEvent
     { }
 }
