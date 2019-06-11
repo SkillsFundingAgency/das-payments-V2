@@ -49,14 +49,12 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint
 
             var config = Configuration.GetSection("TestEndpointConfiguration").Get<TestEndpointConfiguration>();
 
+            services.AddSingleton< ITestEndpointConfiguration>(config);
             services.AddTransient<IPaymentsDataContext>(x => new PaymentsDataContext(config.PaymentsConnectionString));
-
-            var endpointConfig = BuildEndpointConfiguration(config);
-            services.AddTransient<IEndpointInstanceFactory>(x => new EndpointInstanceFactory(endpointConfig));
-
-            services.AddScoped<IBuildMonthEndPaymentEvent, BuildMonthEndPaymentEvent>();
-            services.AddScoped<ITestEndPointRepository, TestEndPointRepository>();
-            services.AddScoped<IApprenticeshipKeyService, ApprenticeshipKeyService>();
+            services.AddTransient<IEndpointInstanceFactory>(x => new EndpointInstanceFactory(BuildEndpointConfiguration(config)));
+            services.AddTransient<IBuildMonthEndPaymentEvent, BuildMonthEndPaymentEvent>();
+            services.AddTransient<ITestEndPointRepository, TestEndPointRepository>();
+            services.AddTransient<IApprenticeshipKeyService, ApprenticeshipKeyService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -16,12 +16,13 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Controllers
     {
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
         private readonly IBuildMonthEndPaymentEvent buildMonthEndPaymentEvent;
+        private readonly ITestEndpointConfiguration testEndpointConfiguration;
 
-        public TestEndPointController(IEndpointInstanceFactory endpointInstanceFactory, 
-            IBuildMonthEndPaymentEvent buildMonthEndPaymentEvent)
+        public TestEndPointController(IEndpointInstanceFactory endpointInstanceFactory, IBuildMonthEndPaymentEvent buildMonthEndPaymentEvent, ITestEndpointConfiguration testEndpointConfiguration)
         {
             this.endpointInstanceFactory = endpointInstanceFactory;
             this.buildMonthEndPaymentEvent = buildMonthEndPaymentEvent;
+            this.testEndpointConfiguration = testEndpointConfiguration;
         }
 
         public IActionResult Index()
@@ -41,9 +42,9 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Controllers
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
            await endpointInstance.Publish(collectionStartMessage).ConfigureAwait(false);
 
-           var options = new SendOptions();
-           options.SetDestination(EndpointNames.ProviderPayments);
-           await endpointInstance.Send(processProviderMonthEndCommand, options).ConfigureAwait(false);
+            var options = new SendOptions();
+            options.SetDestination(testEndpointConfiguration.ProviderPaymentsEndpointName);
+            await endpointInstance.Send(processProviderMonthEndCommand, options).ConfigureAwait(false);
 
             ViewBag.Message = "Month end event successfully sent";
 
