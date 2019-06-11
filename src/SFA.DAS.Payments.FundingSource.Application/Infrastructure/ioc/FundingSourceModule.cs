@@ -47,8 +47,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             )).As<ICoInvestedFundingSourceService>().InstancePerLifetimeScope();
 
             builder.RegisterServiceFabricSupport();
-
-            builder.RegisterServiceFabricSupport();
         }
     }
 }

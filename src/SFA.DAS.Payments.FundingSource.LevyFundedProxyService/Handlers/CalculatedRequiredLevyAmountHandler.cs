@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             executionContext.JobId = message.JobId.ToString();
 
             if(!message.AccountId.HasValue)
-               throw new ArgumentException($"Employer AccountId cannot be null {message.AccountId}");
+               throw new ArgumentException($"Employer AccountId cannot be null. Event id:  {message.EventId}");
 
             try
             {
