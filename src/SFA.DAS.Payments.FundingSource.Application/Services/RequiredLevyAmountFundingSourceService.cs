@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority,
                 paymentEvent.Learner.Uln, paymentEvent.StartDate, paymentEvent.IsTransfer(), paymentEvent.EventId);
             keys.Add(key);
-            await requiredPaymentsCache.Add(key, paymentEvent).ConfigureAwait(false);
+            await requiredPaymentsCache.AddOrReplace(key, paymentEvent).ConfigureAwait(false);
             await requiredPaymentKeys.AddOrReplace(CacheKeys.KeyListKey, keys).ConfigureAwait(false);
         }
 
