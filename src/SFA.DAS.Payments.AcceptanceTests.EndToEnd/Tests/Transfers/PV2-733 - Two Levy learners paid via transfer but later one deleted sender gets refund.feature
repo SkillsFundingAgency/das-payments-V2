@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: Transfers - PV2-733 Two Levy learners paid via transfer but later one deleted, sender gets refund
+﻿Feature: Transfers - PV2-733 Two Levy learners paid via transfer but later one deleted, sender gets refund
 	As a provider,
 	I want a Levy learner, where the employer receives a transfer from another employer to fund the learner, and 1 learner is then deleted
 	So that I am not paid for the deleted learner by SFA via a transfer - PV2-733
@@ -79,15 +78,15 @@ Scenario Outline: Transfers - Two Levy learners paid via transfer but later one 
         | learner b  | R12/Current Academic Year | May/Current Academic Year | -600         | 0          | 0         |
         | learner b  | R12/Current Academic Year | Jun/Current Academic Year | -600         | 0          | 0         |
 	And only the following provider payments will be recorded
-        | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer |
-        | learner a  | R12/Current Academic Year | Jul/Current Academic Year | 0             | 600               | Learning         | employer 1 | employer 2       |
-        | learner b  | R12/Current Academic Year | May/Current Academic Year | 0             | -600              | Learning         | employer 1 | employer 2       |
-        | learner b  | R12/Current Academic Year | Jun/Current Academic Year | 0             | -600              | Learning         | employer 1 | employer 2       |
+        | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer | Standard Code |
+        | learner a  | R12/Current Academic Year | Jul/Current Academic Year | 0             | 600               | Learning         | employer 1 | employer 2       | 50            |
+        | learner b  | R12/Current Academic Year | May/Current Academic Year | 0             | -600              | Learning         | employer 1 | employer 2       | 50            |
+        | learner b  | R12/Current Academic Year | Jun/Current Academic Year | 0             | -600              | Learning         | employer 1 | employer 2       | 50            |
 	And only the following provider payments will be generated
-        | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer |
-        | learner a  | R12/Current Academic Year | Jul/Current Academic Year | 0             | 600               | Learning         | employer 1 | employer 2       |
-        | learner b  | R12/Current Academic Year | May/Current Academic Year | 0             | -600              | Learning         | employer 1 | employer 2       |
-        | learner b  | R12/Current Academic Year | Jun/Current Academic Year | 0             | -600              | Learning         | employer 1 | employer 2       |
+        | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer | Standard Code |
+        | learner a  | R12/Current Academic Year | Jul/Current Academic Year | 0             | 600               | Learning         | employer 1 | employer 2       | 50            |
+        | learner b  | R12/Current Academic Year | May/Current Academic Year | 0             | -600              | Learning         | employer 1 | employer 2       | 50            |
+        | learner b  | R12/Current Academic Year | Jun/Current Academic Year | 0             | -600              | Learning         | employer 1 | employer 2       | 50            |
 
 Examples: 
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 | Employer 2 Remaining Transfer Allowance |
