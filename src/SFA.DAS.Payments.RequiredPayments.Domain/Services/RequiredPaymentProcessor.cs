@@ -26,9 +26,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 .Where(p => earning.EarningType == EarningType.Incentive || !earning.SfaContributionPercentage.HasValue || p.SfaContributionPercentage == earning.SfaContributionPercentage)
                 .ToList();
 
-            var amount = string.IsNullOrWhiteSpace(earning.PriceEpisodeIdentifier) && earning.EarningType != EarningType.Incentive
-                ? 0M
-                : paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, validPaymentHistory);
+            var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, validPaymentHistory);
 
             if (amount < 0)
             {
