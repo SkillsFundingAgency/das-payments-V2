@@ -6,9 +6,9 @@ using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.ProviderChange
 {
-    public class Framework593LearnerChangesProvider : Framework593Learner
+    public class Framework593LearnerRestarts : Framework593Learner
     {
-        public Framework593LearnerChangesProvider(IEnumerable<Learner> learnerRequests, string featureNumber) : base(learnerRequests, featureNumber)
+        public Framework593LearnerRestarts(IEnumerable<Learner> learnerRequests, string featureNumber) : base(learnerRequests, featureNumber)
         {
         }
 
