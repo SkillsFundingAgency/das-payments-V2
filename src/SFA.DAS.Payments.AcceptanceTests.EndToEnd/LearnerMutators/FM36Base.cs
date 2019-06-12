@@ -147,7 +147,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             learningDeliveryFam.LearnDelFAMDateToSpecified = true;
         }
 
-        protected void SetupTnpAppFinRecord(MessageLearner messageLearner, MessageLearnerLearningDelivery delivery, Aim learnerRequestAim)
+        protected void SetupTnpAppFinRecord(MessageLearner messageLearner, MessageLearnerLearningDelivery delivery)
         {
             var appFinRecord =
                 delivery.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
@@ -340,18 +340,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         {
             var appFinRecords = delivery.AppFinRecord.ToList();
 
-            AddNewTnpAppFinRecord(appFinRecords, priceEpisode);
+            AddNewTnpAppFinRecordForTrainingPrice(appFinRecords, priceEpisode);
 
             if (aim.ProgrammeType == StandardProgrammeType)
             {
                 AddNewPmrAppFinRecord(appFinRecords, priceEpisode);
+                AddTnpAppFinRecordForAssessmentPrice(appFinRecords, priceEpisode);
                 delivery.EPAOrgID = "EPA0022";
             }
 
             delivery.AppFinRecord = appFinRecords.ToArray();
         }
 
-        private void AddNewTnpAppFinRecord(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
+        private void AddNewTnpAppFinRecordForTrainingPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
         {
             var tnp = appFinRecords.SingleOrDefault(a => a.AFinType == "TNP");
             if (tnp == null)
@@ -393,18 +394,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             pmr.AFinAmountSpecified = true;
             pmr.AFinDate = priceEpisode.TotalAssessmentPriceEffectiveDate.ToDate();
             pmr.AFinDateSpecified = true;
+        }
 
+        private void AddTnpAppFinRecordForAssessmentPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
+        {
             var tnp = appFinRecords.SingleOrDefault(a =>
-                a.AFinType == LearnDelAppFinType.TNP.ToString() &&
-                a.AFinCode == (int) LearnDelAppFinCode.TotalAssessmentPrice);
+                                                        a.AFinType == LearnDelAppFinType.TNP.ToString() &&
+                                                        a.AFinCode == (int) LearnDelAppFinCode.TotalAssessmentPrice);
             if (tnp == null)
             {
                 tnp = new MessageLearnerLearningDeliveryAppFinRecord()
-                {
-                    AFinType = LearnDelAppFinType.TNP.ToString(),
-                    AFinCode = (int) LearnDelAppFinCode.TotalAssessmentPrice,
-                    AFinCodeSpecified = true
-                };
+                      {
+                          AFinType = LearnDelAppFinType.TNP.ToString(),
+                          AFinCode = (int) LearnDelAppFinCode.TotalAssessmentPrice,
+                          AFinCodeSpecified = true
+                      };
                 appFinRecords.Add(tnp);
             }
 
