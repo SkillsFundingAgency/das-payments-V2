@@ -22,7 +22,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public decimal Completion { get; set; }
         public decimal Balancing { get; set; }
         public IDictionary<IncentivePaymentType, decimal> IncentiveValues { get; set; } = new Dictionary<IncentivePaymentType, decimal>();
-
-        public string PriceEpisodeIdentifier { get; set; }
     }
 }
