@@ -3,6 +3,7 @@ using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FastMember;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -28,7 +29,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             {
                 Period = period,
                 PriceEpisodeIdentifier = priceEpisodeIdentifier,
-                Amount = periodValue ?? 0,
+                Amount = periodValue?.AsRounded() ?? 0,
                 SfaContributionPercentage = sfaContributionPercentage,
             });
         }

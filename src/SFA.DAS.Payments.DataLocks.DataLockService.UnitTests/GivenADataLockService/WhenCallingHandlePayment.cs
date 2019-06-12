@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
                 {
                     new PayableEarningEvent(),
                     new EarningFailedDataLockMatching()
-                } );
+                });
 
             var actuals = await new DataLockService(actorService, new ActorId(Guid.Empty), paymentLoggerMock,
                     commitmentRepositoryMock, dataCacheMock, dataLockProcessor.Object)

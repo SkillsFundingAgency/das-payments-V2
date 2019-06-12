@@ -1383,6 +1383,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy learner changes provider but remains with the same employer-PV2-317.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Refunds\E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1437,6 +1442,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Transfers\E2E - PV2-740 - Single Levy learner paid partialy via transfer, own levy and co-funding.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E - PV2-740 - Single Levy learner paid partialy via transfer, own levy and co-funding.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Transfers\PV2-736 Levy learner paid via transfer.feature.cs">
       <AutoGen>True</AutoGen>
@@ -2279,6 +2289,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Refunds\E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes start date forwards in month - PV2-280.feature.cs</LastGenOutput>
@@ -2322,6 +2336,10 @@
     <None Include="Tests\Small Employer\PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\E2E - PV2-740 - Single Levy learner paid partialy via transfer, own levy and co-funding.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E - PV2-740 - Single Levy learner paid partialy via transfer, own levy and co-funding.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Transfers\PV2-736 Levy learner paid via transfer.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
