@@ -43,20 +43,33 @@ Scenario Outline: Transfers - Single Levy learner paid via transfer but withdraw
 		| 06/May/Current Academic Year | 12 months        | 12000                | 06/May/Current Academic Year        | 3000                   | 06/May/Current Academic Year          | 0 months        | withdrawn         | Act1          | 1                   | ZPROG001      | 50            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
-	Then no learner earnings should be generated
+	Then the following learner earnings should be generated
+		| Delivery Period           | On-Programme | Completion | Balancing |
+		| Aug/Current Academic Year | 0            | 0          | 0         |
+		| Sep/Current Academic Year | 0            | 0          | 0         |
+		| Oct/Current Academic Year | 0            | 0          | 0         |
+		| Nov/Current Academic Year | 0            | 0          | 0         |
+		| Dec/Current Academic Year | 0            | 0          | 0         |
+		| Jan/Current Academic Year | 0            | 0          | 0         |
+		| Feb/Current Academic Year | 0            | 0          | 0         |
+		| Mar/Current Academic Year | 0            | 0          | 0         |
+		| Apr/Current Academic Year | 0            | 0          | 0         |
+		| May/Current Academic Year | 0            | 0          | 0         |
+		| Jun/Current Academic Year | 0            | 0          | 0         |
+		| Jul/Current Academic Year | 0            | 0          | 0         |
+
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R12/Current Academic Year | May/Current Academic Year | -1000        | 0          | 0         |
         | R12/Current Academic Year | Jun/Current Academic Year | -1000        | 0          | 0         |
 	And only the following provider payments will be recorded
-        | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer |
-        | R12/Current Academic Year | May/Current Academic Year | 0             | -1000             | Learning         | employer 1 | employer 2       |
-        | R12/Current Academic Year | Jun/Current Academic Year | 0             | -1000             | Learning         | employer 1 | employer 2       |
+        | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer |Standard Code |
+        | R12/Current Academic Year | May/Current Academic Year | 0             | -1000             | Learning         | employer 1 | employer 2       |50            |
+        | R12/Current Academic Year | Jun/Current Academic Year | 0             | -1000             | Learning         | employer 1 | employer 2       |50            |
 	And only the following provider payments will be generated
-        | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer |
-        | R12/Current Academic Year | May/Current Academic Year | 0             | -1000             | Learning         | employer 1 | employer 2       |
-        | R12/Current Academic Year | Jun/Current Academic Year | 0             | -1000             | Learning         | employer 1 | employer 2       |
-
+        | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer |Standard Code |
+        | R12/Current Academic Year | May/Current Academic Year | 0             | -1000             | Learning         | employer 1 | employer 2       |50            |
+        | R12/Current Academic Year | Jun/Current Academic Year | 0             | -1000             | Learning         | employer 1 | employer 2       |50            |
 Examples: 
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 | Employer 2 Remaining Transfer Allowance |
         | R12/Current Academic Year | 0                           | 60000                       | 0                                       |
