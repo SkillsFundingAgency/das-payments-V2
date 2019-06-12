@@ -13,8 +13,8 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner.Rules
                 var overlappingPriceEpisode = learner.PriceEpisodes
                     .Where(pe => pe != priceEpisode)
                     .FirstOrDefault(pe =>
-                        (priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate ?? priceEpisode.PriceEpisodeValues.PriceEpisodePlannedEndDate) > pe.PriceEpisodeValues?.EpisodeEffectiveTNPStartDate &&
-                        priceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate < (pe.PriceEpisodeValues.PriceEpisodeActualEndDate ?? pe.PriceEpisodeValues?.PriceEpisodePlannedEndDate));
+                        (priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate ?? priceEpisode.PriceEpisodeValues.PriceEpisodePlannedEndDate) > pe.PriceEpisodeValues?.EpisodeStartDate &&
+                        priceEpisode.PriceEpisodeValues.EpisodeStartDate < (pe.PriceEpisodeValues.PriceEpisodeActualEndDate ?? pe.PriceEpisodeValues?.PriceEpisodePlannedEndDate));
                 if (overlappingPriceEpisode != null)
                     return ValidationRuleResult.Failure($"Found overlapping price episodes.  Price Episode {priceEpisode.PriceEpisodeIdentifier} overlapped with price episode {overlappingPriceEpisode.PriceEpisodeIdentifier}.");
             }
