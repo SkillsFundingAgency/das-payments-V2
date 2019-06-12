@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Learner
                         PriceEpisodeIdentifier = "pe-1",
                         PriceEpisodeValues = new PriceEpisodeValues
                         {
-                            EpisodeEffectiveTNPStartDate = DateTime.Today.AddMonths(-2),
+                            EpisodeStartDate = DateTime.Today.AddMonths(-2),
                             PriceEpisodePlannedEndDate = DateTime.Today.AddDays(-30),
                             PriceEpisodeActualEndDate = DateTime.Today.AddDays(-30)
                         }
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests.Validation.Learner
                         PriceEpisodeIdentifier = "pe-2",
                         PriceEpisodeValues = new PriceEpisodeValues
                         {
-                            EpisodeEffectiveTNPStartDate = DateTime.Today.AddDays(-35),
+                            EpisodeStartDate = DateTime.Today.AddDays(-35),
                             PriceEpisodePlannedEndDate = DateTime.Today,
                         }
                     }
