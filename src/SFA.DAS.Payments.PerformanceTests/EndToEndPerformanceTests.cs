@@ -14,8 +14,6 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -130,27 +128,6 @@ namespace SFA.DAS.Payments.PerformanceTests
                 .Select(learner => CreateFM36Learner(session, learner))
                 .ToList();
             session.IlrSubmissionTime = DateTime.UtcNow;
-            //foreach (var fm36Learner in ilrLearners)
-            //{
-            //    var command = new ProcessLearnerCommand
-            //    {
-            //        Learner = fm36Learner,
-            //        CollectionPeriod = collectionPeriod,
-            //        CollectionYear = 1819,
-            //        Ukprn = session.Ukprn,
-            //        JobId = session.JobId,
-            //        IlrSubmissionDateTime = session.IlrSubmissionTime,
-            //        RequestTime = DateTimeOffset.UtcNow,
-            //        SubmissionDate = session.IlrSubmissionTime,
-            //    };
-            //    var sendOptions = new SendOptions();
-            //    if (DeliveryTime.HasValue)
-            //        sendOptions.DoNotDeliverBefore(DeliveryTime.Value);
-            //    await MessageSession.Send(command, sendOptions);
-            //    LearnerStartTimes.Add(fm36Learner.LearnRefNumber, DateTime.Now);
-            //    Console.WriteLine($"Sent learner.  Ukprn: {session.Ukprn}, Learner: {fm36Learner.LearnRefNumber}, Time: {DateTime.Now:o}");
-            //}
-
             var startTime = DateTimeOffset.UtcNow;
             var sendOptions = new SendOptions();
             if (DeliveryTime.HasValue)
@@ -177,33 +154,11 @@ namespace SFA.DAS.Payments.PerformanceTests
                 MessageId = command.CommandId
             }).ToList();
             await CreateJob(session, startTime, generatedMessages, (byte)collectionPeriod, JobType.EarningsJob).ConfigureAwait(false);
-            //var startedJob = new RecordStartedProcessingEarningsJob
-            //{
-            //    JobId = session.JobId,
-            //    CollectionPeriod = (byte)collectionPeriod,
-            //    CollectionYear = 1819,
-            //    StartTime = startTime,
-            //    Ukprn = session.Ukprn,
-            //    IlrSubmissionTime = session.IlrSubmissionTime,
-            //    GeneratedMessages = commands.Select(command => new GeneratedMessage
-            //    {
-            //        StartTime = command.RequestTime,
-            //        MessageName = command.GetType().FullName,
-            //        MessageId = command.CommandId
-            //    }).ToList()
-            //};
-            //Console.WriteLine($"Sending job started message: {startedJob.ToJson()}");
-            //await MessageSession.Send(startedJob, sendOptions).ConfigureAwait(false);
             foreach (var processLearnerCommand in commands)
             {
                 await MessageSession.Send(processLearnerCommand, sendOptions).ConfigureAwait(false);
                 Console.WriteLine($"sent process learner command. Uln: {processLearnerCommand.Learner.ULN}");
             }
-
-            //var dcHelper = Container.Resolve<DcHelper>();
-            ////await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, 1819, (byte)collectionPeriod, session.JobId);
-            //await dcHelper.SendLearnerCommands(ilrLearners, session.Ukprn, 1819, (byte) collectionPeriod,
-            //    session.JobId,session.IlrSubmissionTime);
         }
 
         [OneTimeTearDown]
