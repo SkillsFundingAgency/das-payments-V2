@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
         {
             try
             {
-                logger.LogInfo("PaymentsEventModelBatchService started");
+                logger.LogInfo($"PaymentsEventModelBatchService for {typeof(T).Name} started");
 
                 while (true)
                 {
@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             }
             catch (TaskCanceledException)
             {
-                logger.LogInfo("Cancellation requested, stopping service");
+                logger.LogInfo($"Cancellation requested, stopping PaymentsEventModelBatchService for {typeof(T).Name}");
             }
             catch (Exception ex)
             {
