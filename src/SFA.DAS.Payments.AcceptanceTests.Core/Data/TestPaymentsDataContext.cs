@@ -30,6 +30,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId in 
 	(select Id from Payments2.Apprenticeship where Ukprn = {0})
 
+delete from Payments2.ApprenticeshipDuplicate where Ukprn = {0}
+
 delete from Payments2.LevyAccount where AccountId in
 	(select AccountId from Payments2.Apprenticeship where Ukprn = {0})
 
