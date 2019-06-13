@@ -20,8 +20,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         private FM36Learner fm36Learner;
         private ProcessLearnerCommand processLearnerCommand;
         private IntermediateLearningAim learningAim;
-        private DateTime LearningStartDate;
-        
+        private DateTime learningStartDate;
         private DateTime currentYearStart = new DateTime(2018, 8, 1);
         private DateTime currentYearEnd = new DateTime(2019, 8, 1).AddSeconds(-1);
 
@@ -35,7 +34,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [SetUp]
         public void SetUp()
         {
-            LearningStartDate = DateTime.Today.AddMonths(-1);
+            learningStartDate = currentYearStart.AddMonths(-12);
             fm36Learner = new FM36Learner
             {
                 LearnRefNumber = "learner-a",
@@ -52,7 +51,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             ProgType = 300,
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
-                            LearnStartDate = LearningStartDate
+                            LearnStartDate = learningStartDate
                         }
                     },
                     new LearningDelivery
@@ -130,9 +129,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         {
                             PriceEpisodeAimSeqNumber = 1,
                             EpisodeStartDate = currentYearStart,
-                            EpisodeEffectiveTNPStartDate = currentYearStart.AddMonths(1), 
-                            PriceEpisodePlannedEndDate = DateTime.Today,
-                            PriceEpisodeActualEndDate = DateTime.Today,
+                            EpisodeEffectiveTNPStartDate = learningStartDate, 
+                            PriceEpisodePlannedEndDate = currentYearEnd,
+                            PriceEpisodeActualEndDate = null,
                             PriceEpisodePlannedInstalments = 12,
                             PriceEpisodeCompletionElement = 3000,
                             PriceEpisodeInstalmentValue = 1000,
@@ -286,8 +285,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.PriceEpisodes.Should().NotBeEmpty();
             earningEvent.PriceEpisodes.First().Identifier.Should().Be("pe-1");
-            earningEvent.PriceEpisodes.First().StartDate.Should().Be(DateTime.Today.AddMonths(-12));
-            earningEvent.PriceEpisodes.First().EffectiveTotalNegotiatedPriceStartDate.Should().Be(DateTime.Today.AddMonths(-11));
+            earningEvent.PriceEpisodes.First().StartDate.Should().Be(currentYearStart);
+            earningEvent.PriceEpisodes.First().EffectiveTotalNegotiatedPriceStartDate.Should().Be(learningStartDate);
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice1.Should().Be(15000);
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice2.Should().Be(15000);
             earningEvent.PriceEpisodes.First().CompletionAmount.Should().Be(3000);
