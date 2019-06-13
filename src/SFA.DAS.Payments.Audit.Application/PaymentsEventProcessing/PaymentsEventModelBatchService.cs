@@ -37,12 +37,27 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
         {
             try
             {
+                logger.LogInfo("PaymentsEventModelBatchService started");
+
                 while (true)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    await policy.ExecuteAsync(() => StorePayments(cancellationToken));
+
+                    try
+                    {
+                        await policy.ExecuteAsync(() => StorePayments(cancellationToken));
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError($"Error while storing batch. Error: {ex.Message}", ex);
+                    }
+
                     await Task.Delay(batchInterval, cancellationToken);
                 }
+            }
+            catch (TaskCanceledException)
+            {
+                logger.LogInfo("Cancellation requested, stopping service");
             }
             catch (Exception ex)
             {
@@ -52,7 +67,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
         public async Task StorePayments(CancellationToken cancellationToken)
         {
-            var processedCount = 0;
+            int processedCount;
             do
             {
                 using (var scope = batchScopeFactory.Create())
@@ -63,9 +78,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                         processedCount = await processor.Process(batchSize, cancellationToken);
                         await scope.Commit();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        logger.LogError($"Error processing batch of payments.  Error: {ex.Message}", ex);
                         scope.Abort();
                         throw;
                     }
