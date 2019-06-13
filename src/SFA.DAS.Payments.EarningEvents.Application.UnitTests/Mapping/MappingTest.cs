@@ -22,6 +22,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         private IntermediateLearningAim learningAim;
         private DateTime LearningStartDate;
         
+        private DateTime currentYearStart = new DateTime(2018, 8, 1);
+        private DateTime currentYearEnd = new DateTime(2019, 8, 1).AddSeconds(-1);
+
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
@@ -126,8 +129,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         PriceEpisodeValues = new PriceEpisodeValues
                         {
                             PriceEpisodeAimSeqNumber = 1,
-                            EpisodeStartDate = DateTime.Today.AddMonths(-12),
-                            EpisodeEffectiveTNPStartDate = DateTime.Today.AddMonths(-11),
+                            EpisodeStartDate = currentYearStart,
+                            EpisodeEffectiveTNPStartDate = currentYearStart.AddMonths(1), 
                             PriceEpisodePlannedEndDate = DateTime.Today,
                             PriceEpisodeActualEndDate = DateTime.Today,
                             PriceEpisodePlannedInstalments = 12,
@@ -192,7 +195,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             },
                         }
                     },
-
+                   
 
                 }
             };
@@ -422,7 +425,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             balancing.Should().HaveCount(1);
             balancing[0].Periods.Where(p => p.Amount == 0).Should().HaveCount(11);
             balancing[0].Periods.Where(p => p.Amount == 300).Should().HaveCount(1);
-
+            
             var onProg = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).ToArray();
             onProg.Should().HaveCount(1);
             onProg[0].Periods.Where(p => p.Amount == 100).Should().HaveCount(12);
@@ -443,9 +446,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 PriceEpisodeIdentifier = "pe-1",
                 PriceEpisodeValues = new PriceEpisodeValues
                 {
-                    EpisodeStartDate = DateTime.Today.AddMonths(-12),
-                    PriceEpisodePlannedEndDate = DateTime.Today.AddMonths(-6),
-                    PriceEpisodeActualEndDate = DateTime.Today.AddMonths(-6),
+                    EpisodeStartDate = currentYearStart,
+                    PriceEpisodePlannedEndDate = currentYearStart.AddMonths(6),
+                    PriceEpisodeActualEndDate = currentYearStart.AddMonths(6),
                     PriceEpisodePlannedInstalments = 6,
                     PriceEpisodeCompletionElement = 1500,
                     PriceEpisodeInstalmentValue = 500,
@@ -489,16 +492,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     },
                 }
             });
-
+            
             fm36Learner.PriceEpisodes.Add(new PriceEpisode
             {
                 PriceEpisodeIdentifier = "pe-2",
                 PriceEpisodeValues = new PriceEpisodeValues
                 {
 
-                    EpisodeStartDate = DateTime.Today.AddMonths(-5),
-                    PriceEpisodePlannedEndDate = DateTime.Today,
-                    PriceEpisodeActualEndDate = DateTime.Today,
+                    EpisodeStartDate = currentYearStart.AddMonths(7),
+                    PriceEpisodePlannedEndDate = currentYearEnd.Date,
+                    PriceEpisodeActualEndDate = currentYearEnd.Date,
                     PriceEpisodePlannedInstalments = 6,
                     PriceEpisodeCompletionElement = 1500,
                     PriceEpisodeInstalmentValue = 500,
@@ -561,7 +564,207 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             completion.Periods.Where(p => p.Period == 8).Single().PriceEpisodeIdentifier.Should().Be("pe-1");
             completion.Periods.Where(p => p.Period == 8).Single().Amount.Should().Be(1500);
             completion.Periods.Where(p => p.Period == 12).Single().PriceEpisodeIdentifier.Should().Be("pe-2");
-            completion.Periods.Where(p => p.Period == 12).Single().Amount.Should().Be(1500);
+            completion.Periods.Where(p => p.Period == 12).Single().Amount.Should().Be(1500);            
+        }
+
+        [Test]
+        public void TestOnlyCurrentYearPriceEpisodesGetCopied()
+        {
+            
+            var lastYearPriceEpisode = new PriceEpisode
+            {
+                PriceEpisodeIdentifier = "pe-last-year",
+                PriceEpisodeValues = new PriceEpisodeValues
+                {
+                    EpisodeStartDate = currentYearStart.AddYears(-1),
+                    PriceEpisodePlannedEndDate = currentYearStart.AddDays(-1),
+                    PriceEpisodeActualEndDate = currentYearStart.AddDays(-1),
+                    PriceEpisodePlannedInstalments = 6,
+                    PriceEpisodeCompletionElement = 1500,
+                    PriceEpisodeInstalmentValue = 500,
+                    TNP1 = 7500,
+                    TNP2 = 7500,
+                    PriceEpisodeCompleted = true,
+                },
+                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                {
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeOnProgPayment",
+                        Period1 = 0,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 0,
+                        Period8 = 0,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 500
+                    },
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeCompletionPayment",
+                        Period1 = 0,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 0,
+                        Period8 = 0,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 100
+                    },
+                }
+            };
+
+            var currentYearPriceEpisode = new PriceEpisode
+            {
+                PriceEpisodeIdentifier = "pe-current-year",
+                PriceEpisodeValues = new PriceEpisodeValues
+                {
+                    EpisodeStartDate = currentYearStart,
+                    PriceEpisodePlannedEndDate = currentYearStart.AddMonths(1),
+                    PriceEpisodeActualEndDate = currentYearStart.AddMonths(1),
+                    PriceEpisodePlannedInstalments = 6,
+                    PriceEpisodeCompletionElement = 1500,
+                    PriceEpisodeInstalmentValue = 500,
+                    TNP1 = 7500,
+                    TNP2 = 7500,
+                    PriceEpisodeCompleted = true,
+                },
+                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                {
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeOnProgPayment",
+                        Period1 = 0,
+                        Period2 = 500,
+                        Period3 = 500,
+                        Period4 = 500,
+                        Period5 = 500,
+                        Period6 = 500,
+                        Period7 = 500,
+                        Period8 = 500,
+                        Period9 = 500,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 0
+                    },
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeCompletionPayment",
+                        Period1 = 0,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 0,
+                        Period8 = 0,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 100,
+                        Period12 = 0
+                    },
+                }
+            };
+
+
+            var futureYearPriceEpisode = new PriceEpisode
+            {
+                PriceEpisodeIdentifier = "pe-next-year",
+                PriceEpisodeValues = new PriceEpisodeValues
+                {
+                    EpisodeStartDate = currentYearEnd.AddDays(1).Date,
+                    PriceEpisodePlannedEndDate = currentYearEnd.AddYears(1).Date,
+                    PriceEpisodePlannedInstalments = 6,
+                    PriceEpisodeCompletionElement = 1500,
+                    PriceEpisodeInstalmentValue = 500,
+                    TNP1 = 7500,
+                    TNP2 = 7500,
+                    PriceEpisodeCompleted = true,
+                },
+                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                {
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeOnProgPayment",
+                        Period1 = 500,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 0,
+                        Period8 = 0,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 0
+                    },
+                    new PriceEpisodePeriodisedValues
+                    {
+                        AttributeName = "PriceEpisodeCompletionPayment",
+                        Period1 = 100,
+                        Period2 = 0,
+                        Period3 = 0,
+                        Period4 = 0,
+                        Period5 = 0,
+                        Period6 = 0,
+                        Period7 = 0,
+                        Period8 = 0,
+                        Period9 = 0,
+                        Period10 = 0,
+                        Period11 = 0,
+                        Period12 = 0
+                    },
+                }
+            };
+
+            var incentiveTypes = GetIncentiveTypes();
+
+            foreach (var incentiveType in incentiveTypes)
+            {
+                var priceEpisodePeriodisedValues = new PriceEpisodePeriodisedValues
+                {
+                    AttributeName = incentiveType,
+                    Period1 = 1000,
+                    Period2 = 1000,
+                    Period3 = 1000,
+                    Period4 = 1000,
+                    Period5 = 1000,
+                    Period6 = 1000,
+                    Period7 = 1000,
+                    Period8 = 1000,
+                    Period9 = 1000,
+                    Period10 = 1000,
+                    Period11 = 1000,
+                    Period12 = 1000,
+                };
+
+                lastYearPriceEpisode.PriceEpisodePeriodisedValues.Add(priceEpisodePeriodisedValues);
+                currentYearPriceEpisode.PriceEpisodePeriodisedValues.Add(priceEpisodePeriodisedValues);
+                futureYearPriceEpisode.PriceEpisodePeriodisedValues.Add(priceEpisodePeriodisedValues);
+            }
+
+
+            fm36Learner.PriceEpisodes.Clear();
+            fm36Learner.PriceEpisodes.Add(lastYearPriceEpisode);
+            fm36Learner.PriceEpisodes.Add(currentYearPriceEpisode);
+            fm36Learner.PriceEpisodes.Add(futureYearPriceEpisode);
+
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
+
+            earningEvent.PriceEpisodes.Should().HaveCount(1);
+            earningEvent.PriceEpisodes[0].Identifier.Should().Be("pe-current-year");
+            earningEvent.IncentiveEarnings.All(i => i.Periods.Count == 12).Should().BeTrue();
         }
 
         [TestCase(100.00000900002, 100.00001)]
@@ -576,9 +779,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 PriceEpisodeIdentifier = "pe-1",
                 PriceEpisodeValues = new PriceEpisodeValues
                 {
-                    EpisodeStartDate = DateTime.Today.AddMonths(-12),
-                    PriceEpisodePlannedEndDate = DateTime.Today.AddMonths(-6),
-                    PriceEpisodeActualEndDate = DateTime.Today.AddMonths(-6),
+                    EpisodeStartDate = currentYearStart,
+                    PriceEpisodePlannedEndDate = currentYearStart.AddMonths(6),
+                    PriceEpisodeActualEndDate = currentYearStart.AddMonths(6),
                     PriceEpisodePlannedInstalments = 6,
                     PriceEpisodeCompletionElement = 1500,
                     PriceEpisodeInstalmentValue = 500,
@@ -670,9 +873,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 PriceEpisodeIdentifier = "pe-1",
                 PriceEpisodeValues = new PriceEpisodeValues
                 {
-                    EpisodeStartDate = DateTime.Today.AddMonths(-12),
-                    PriceEpisodePlannedEndDate = DateTime.Today.AddMonths(-6),
-                    PriceEpisodeActualEndDate = DateTime.Today.AddMonths(-6),
+                    EpisodeStartDate = currentYearStart,
+                    PriceEpisodePlannedEndDate = currentYearStart.AddMonths(6),
+                    PriceEpisodeActualEndDate = currentYearStart.AddMonths(6),
                     PriceEpisodePlannedInstalments = 6,
                     TNP1 = 7500,
                     TNP2 = 7500,
@@ -861,7 +1064,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             yield return "PriceEpisodeApplic1618FrameworkUpliftBalancing";
             yield return "PriceEpisodeFirstDisadvantagePayment";
             yield return "PriceEpisodeSecondDisadvantagePayment";
-            yield return "PriceEpisodeLSFCash";
+            yield return "PriceEpisodeLSFCash"; 
         }
 
         private static string MapIncentiveType(IncentiveEarningType incentiveType)
@@ -887,9 +1090,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 case IncentiveEarningType.SecondDisadvantagePayment:
                     return "PriceEpisodeSecondDisadvantagePayment";
                 case IncentiveEarningType.LearningSupport:
-                    return "PriceEpisodeLSFCash";
-                default:
-                    return string.Empty;
+                    return "PriceEpisodeLSFCash"; 
+                 default:
+                     return string.Empty;
             }
         }
     }
