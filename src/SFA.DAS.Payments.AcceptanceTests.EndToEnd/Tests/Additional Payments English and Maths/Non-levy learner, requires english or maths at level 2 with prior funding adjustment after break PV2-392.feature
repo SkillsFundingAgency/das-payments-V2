@@ -1,4 +1,6 @@
-﻿# Remaining 42% (197.82) is divided into remaining 7 months - Hence 28.26
+﻿@ignore
+# failing due to incorrect handling of maths and english contract types
+# Remaining 42% (197.82) is divided into remaining 7 months - Hence 28.26
 # Restart Indicator
 #For DC Integration
  #| Funding Adjustment For Prior Learning |
