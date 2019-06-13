@@ -23,11 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
                     continue;
                 }
 
-                SetDeliveryAsWithdrawn(messageLearnerLearningDelivery, learnerLearningAim);
-
-                SetupLearningDeliveryActFam(messageLearnerLearningDelivery, learnerLearningAim);
-
-                SetupTnpAppFinRecord(messageLearner, messageLearnerLearningDelivery);
+                SetupLearningDeliveryActFam(messageLearnerLearningDelivery);
             }
 
             messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp = messageLearner.LearningDelivery[0].LearnStartDate.AddDays(-2);
