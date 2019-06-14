@@ -351,6 +351,7 @@
     <Compile Include="LearnerMutators\LearnerExtensions.cs" />
     <Compile Include="LearnerMutators\Framework593Learner.cs" />
     <Compile Include="LearnerMutators\NonLevy\SmallEmployer\Framework403LearnerWithEHCPlanAndSmallEmployer.cs" />
+    <Compile Include="LearnerMutators\Standard57Learner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />

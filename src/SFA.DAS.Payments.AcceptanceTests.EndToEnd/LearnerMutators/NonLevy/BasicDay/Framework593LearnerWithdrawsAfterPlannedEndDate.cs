@@ -1,8 +1,7 @@
-﻿using System;
+﻿using ESFA.DC.ILR.Model.Loose;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR.Model.Loose;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay
 {
@@ -28,7 +27,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
                 SetupLearningDeliveryActFam(messageLearnerLearningDelivery, learnerLearningAim);
 
-                SetupTnpAppFinRecord(messageLearner, messageLearnerLearningDelivery, learnerLearningAim);
+                SetupTnpAppFinRecord(messageLearner, messageLearnerLearningDelivery);
             }
 
             messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp = messageLearner.LearningDelivery[0].LearnStartDate.AddDays(-2);
