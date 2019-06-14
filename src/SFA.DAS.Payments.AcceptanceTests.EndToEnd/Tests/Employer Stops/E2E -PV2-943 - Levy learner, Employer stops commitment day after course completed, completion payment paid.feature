@@ -85,7 +85,7 @@ Given the employer levy account balance in collection period <Collection_Period>
 		| 06/Aug/Last Academic Year | 12 months        | 15000                | 06/Aug/Last Academic Year           |                        |                                       | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
-		| pe-1             | 15000                | 01/Aug/Current Academic Year        | 0                   | | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
+		| pe-1             | 15000                | 06/Aug/Last Academic Year           | 0                      |                                       | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |

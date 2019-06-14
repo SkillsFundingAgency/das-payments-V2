@@ -71,13 +71,13 @@ Scenario Outline: Non-levy learner, requires english or maths at level 2 with pr
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
     Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier |
-        | Aug/Current Academic Year | 1000         | 0          | 0         | 28.26                      | 2                   | 4th price details        |
-        | Sep/Current Academic Year | 1000         | 0          | 0         | 28.26                      | 2                   | 4th price details        |
-        | Oct/Current Academic Year | 1000         | 0          | 0         | 28.26                      | 2                   | 4th price details        |
-        | Nov/Current Academic Year | 1000         | 0          | 0         | 28.26                      | 2                   | 4th price details        |
-        | Dec/Current Academic Year | 1000         | 0          | 0         | 28.26                      | 2                   | 4th price details        |
-        | Jan/Current Academic Year | 1000         | 0          | 0         | 28.26                      | 2                   | 4th price details        |
-        | Feb/Current Academic Year | 1000         | 0          | 0         | 28.26                      | 2                   | 4th price details        |
+        | Aug/Current Academic Year | 1000         | 0          | 0         | 0                          | 2                   | 4th price details        |
+        | Sep/Current Academic Year | 1000         | 0          | 0         | 0                          | 2                   | 4th price details        |
+        | Oct/Current Academic Year | 1000         | 0          | 0         | 0                          | 2                   | 4th price details        |
+        | Nov/Current Academic Year | 1000         | 0          | 0         | 0                          | 2                   | 4th price details        |
+        | Dec/Current Academic Year | 1000         | 0          | 0         | 0                          | 2                   | 4th price details        |
+        | Jan/Current Academic Year | 1000         | 0          | 0         | 0                          | 2                   | 4th price details        |
+        | Feb/Current Academic Year | 1000         | 0          | 0         | 0                          | 2                   | 4th price details        |
         | Mar/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | 4th price details        |
         | Apr/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | 4th price details        |
         | May/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | 4th price details        |

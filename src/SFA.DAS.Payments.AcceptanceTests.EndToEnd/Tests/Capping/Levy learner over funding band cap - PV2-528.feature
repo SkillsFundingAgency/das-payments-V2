@@ -44,8 +44,8 @@ Feature: Levy learner over funding band cap - PV2-528
 Scenario Outline: Capping - Payment for Levy learner with a negotiated price above funding cap PV2-528	
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-		| version Id | start date                   | end date                  | agreed price | standard code | status | effective from               | Standard Code | Programme Type |
-		| 1          | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 18000        | 50            | active | 01/Aug/Current Academic Year | 50            | 25             |
+		| version Id | start date                   | end date                  | agreed price | status | effective from               | Standard Code | Programme Type |
+		| 1          | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 18000        | active | 01/Aug/Current Academic Year | 50            | 25             |
     And the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 06/Aug/Current Academic Year | 12 months        | 18000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
@@ -55,7 +55,7 @@ Scenario Outline: Capping - Payment for Levy learner with a negotiated price abo
         | 18000            | 15000       | 0                     | 3000            | 15000                            |
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
-		| pe-1             | 15000                | 06/Aug/Current Academic Year        | 3000                   | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
+		| pe-1             | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |

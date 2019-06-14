@@ -1,4 +1,4 @@
-﻿@ignore
+﻿#@ignore
 #Feature: 5% Contribution from April 2019
 #
 #Scenario: Non Levy Learner, started learning before Apr19, changes Pathway code in Apr19, remains on 10% contribution
@@ -67,9 +67,9 @@ Scenario Outline: Non-Levy Learner previously on 10 percent contribution but mov
 		| 03/Jan/Current Academic Year | 12 months        | 15000                | 03/Jan/Current Academic Year        | 0                      |                                       | 3 months        | withdrawn         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 		| 01/Apr/Current Academic Year | 12 months        | 15000                | 01/Apr/Current Academic Year        | 0                      |                                       |                 | continuing        | Act2          | 2                   | ZPROG001      | 593            | 2            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 	And price details as follows
-        | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | pe-1             | 15000                | 03/Jan/Current Academic Year        |                        |                                       | 0                       |                                        |                           |                                          | 90%                         | Act2          | 1                   | 90%                         |
-        | pe-2             | 15000                | 01/Apr/Current Academic Year        |                        |                                       | 0                       |                                        |                           |                                          | 95%                         | Act2          | 2                   | 90%                         |
+        | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+        | pe-1             | 15000                | 03/Jan/Current Academic Year        |                        |                                       | 0                       |                                        |                           |                                          | Act2          | 1                   | 90%                         |
+        | pe-2             | 15000                | 01/Apr/Current Academic Year        |                        |                                       | 0                       |                                        |                           |                                          | Act2          | 2                   | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Aim Sequence Number | Price Episode Identifier |
