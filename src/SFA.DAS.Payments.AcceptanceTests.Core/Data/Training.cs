@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public int CompletionHoldBackExemptionCode { get; set; }
 
         public string SmallEmployer { get; set; }
-
+        public int? EefCode { get; set; }
         public string PostcodePrior { get; set; }
 
     }
