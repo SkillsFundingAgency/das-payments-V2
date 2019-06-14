@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             get => !Context.TryGetValue<List<Apprenticeship>>(out var apprenticeships) ? null : apprenticeships;
             set => Set(value);
         }
-        
+
         protected List<Earning> PreviousEarnings
         {
             get => !Context.TryGetValue<List<Earning>>("previous_earnings", out var previousEarnings) ? null : previousEarnings;
@@ -101,7 +101,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var ilr = table.CreateSet<Training>().ToList();
             AddTestLearners(ilr, ukprn);
 
-            if (CurrentIlr == null) 
+            if (CurrentIlr == null)
                 CurrentIlr = new List<Training>();
 
             if (Config.ValidateDcAndDasServices)
@@ -187,7 +187,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         {
             if (Apprenticeships == null) Apprenticeships = new List<Apprenticeship>();
-         
+
             var groupedApprenticeships = apprenticeshipSpecs
                 .GroupBy(a => a.Identifier)
                 .ToList();
@@ -226,7 +226,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var apprenticeship in Apprenticeships)
             {
                 var duplicates = Apprenticeships
-                    .Where(x => x.Uln == apprenticeship.Uln && 
+                    .Where(x => x.Uln == apprenticeship.Uln &&
                                 x.ApprenticeshipId != apprenticeship.ApprenticeshipId &&
                                 x.Ukprn != apprenticeship.Ukprn)
                     .ToList();
@@ -277,32 +277,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
         protected List<PaymentModel> CreatePayments(ProviderPayment providerPayment, List<Training> learnerTraining, long jobId, DateTime submissionTime, decimal? sfaContributionPercentage, long ukprn)
         {
-            var onProgTraining = learnerTraining.FirstOrDefault(t => t.AimReference == "ZPROG001");
-            var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001");
+            var onProgTraining = learnerTraining.FirstOrDefault(t => t.AimReference == "ZPROG001" && (string.IsNullOrWhiteSpace(t.LearnerId) || t.LearnerId.Equals(providerPayment.LearnerId)));
+            var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001" && (string.IsNullOrWhiteSpace(t.LearnerId) || t.LearnerId.Equals(providerPayment.LearnerId)));
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
                 list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 1M,
-                    providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId));
+                    providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
 
             if (providerPayment.EmployerCoFundedPayments > 0)
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
-                    sfaContributionPercentage, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer, ukprn, providerPayment.AccountId));
+                    sfaContributionPercentage, providerPayment.EmployerCoFundedPayments, FundingSourceType.CoInvestedEmployer, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
 
             if (providerPayment.SfaCoFundedPayments > 0)
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
-                    sfaContributionPercentage, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa, ukprn, providerPayment.AccountId));
+                    sfaContributionPercentage, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
 
             if (providerPayment.LevyPayments > 0)
             {
                 var payment = CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
-                    sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn, providerPayment.AccountId);
+                    sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId);
                 list.Add(payment);
             }
 
             if (providerPayment.TransferPayments > 0)
             {
                 var payment = CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
-                    sfaContributionPercentage, providerPayment.TransferPayments, FundingSourceType.Transfer, ukprn, providerPayment.AccountId);
+                    sfaContributionPercentage, providerPayment.TransferPayments, FundingSourceType.Transfer, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId);
                 list.Add(payment);
             }
             return list;
@@ -310,7 +310,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private PaymentModel CreatePaymentModel(ProviderPayment providerPayment, Training learnerTraining, long jobId,
             DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount,
-            FundingSourceType fundingSourceType, long ukprn, long? accountId)
+            FundingSourceType fundingSourceType, long ukprn, long? accountId, long? senderAccountId)
         {
             return new PaymentModel
             {
@@ -336,6 +336,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 LearningAimFrameworkCode = learnerTraining.FrameworkCode,
                 LearningAimProgrammeType = learnerTraining.ProgrammeType,
                 AccountId = accountId,
+                TransferSenderAccountId = senderAccountId,
                 StartDate = DateTime.UtcNow,
                 PlannedEndDate = DateTime.UtcNow,
                 ActualEndDate = DateTime.UtcNow,
@@ -935,10 +936,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (contractTypes != null && contractTypes.Any(x => x == ContractType.Act1))
             {
                 expectedPayment.AccountId = string.IsNullOrWhiteSpace(expectedPayment.Employer)
+                               ? TestSession.Employer.AccountId
+                               : expectedPayment.Employer.ToLowerInvariant() == "no employer"
+                                   ? default(long?)
+                                   : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+
+                expectedPayment.SendingAccountId = string.IsNullOrWhiteSpace(expectedPayment.SendingEmployer)
                     ? TestSession.Employer.AccountId
-                    : expectedPayment.Employer.ToLowerInvariant() == "no employer"
-                        ? default(long?)
-                        : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+                    : TestSession.GetEmployer(expectedPayment.SendingEmployer).AccountId;
             }
         }
 
@@ -1046,7 +1051,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
                 {
                     JobId = monthEndJobId,
-                    CollectionPeriod = new CollectionPeriod {AcademicYear = AcademicYear, Period = CollectionPeriod},
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod },
                     RequestTime = DateTime.Now,
                     SubmissionDate = submissionDate,
                     AccountId = employer.AccountId,
