@@ -19,9 +19,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Smal
             // need to override the DOB for this test.
             messageLearner.DateOfBirth = messageLearner.LearningDelivery[0].LearnStartDate.AddYears(-21);
 
-            var eefCode = (LearnDelFAMCode)learner.EefCode.GetValueOrDefault((int)LearnDelFAMCode.EEF_Apprenticeship_19);
-            DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(messageLearner, LearnDelFAMType.EEF, eefCode);
-
             RemovePmrRecord(messageLearner);
 
             messageLearner.LearningDelivery[1].LearnAimRef = "60005105";
