@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
     public abstract class FM36Base : ILearnerMultiMutator
     {
         private const int StandardProgrammeType = 25;
-        private const int StandardProgrammeEPADuration = 8;
+        private const int StandardProgrammeEpaDuration = 8;
         private const string ProgrammeAim = "ZPROG001";
         private readonly string featureNumber;
         protected ILearnerCreatorDataCache dataCache;
@@ -190,53 +190,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             MutateOtherAimsForLearner(aims.Where(a => !a.IsMainAim),
                 learnerLearningDeliveries.Where(ld => ld.LearnAimRef != ProgrammeAim));
 
-
-            //var delivery = learnerLearningDeliveries.SingleOrDefault(learnDelivery =>
-            //      learnDelivery.AimSeqNumber == aim.AimSequenceNumber);
-
-            //if (delivery == null)
-            //{
-            //    delivery = new MessageLearnerLearningDelivery();
-            //    learnerLearningDeliveries.Add(delivery);
-            //}
-
-            //delivery.LearnAimRef = aim.AimReference;
-
-            //delivery.LearnStartDate = aim.StartDate.ToDate();
-            //delivery.LearnStartDateSpecified = true;
-
-            //if (aim.PlannedDurationAsTimespan.HasValue)
-            //{
-            //    delivery.LearnPlanEndDate = delivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value);
-            //    delivery.LearnPlanEndDateSpecified = true;
-            //}
-
-            //if (aim.ActualDurationAsTimespan.HasValue)
-            //{
-            //    delivery.LearnActEndDate = delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
-            //    delivery.LearnActEndDateSpecified = true;
-            //}
-
-            //MutateLearningDeliveryFamsForLearner(delivery, aim);
-
-            //delivery.ProgType = aim.ProgrammeType;
-            //delivery.ProgTypeSpecified = true;
-
-            //delivery.FworkCode = aim.FrameworkCode;
-            //delivery.FworkCodeSpecified = true;
-
-            //delivery.PwayCode = aim.PathwayCode;
-            //delivery.PwayCodeSpecified = true;
-
-            //delivery.CompStatus = (int)aim.CompletionStatus;
-            //delivery.CompStatusSpecified = true;
-
-            //if (aim.CompletionStatus == CompletionStatus.Completed)
-            //{
-            //    delivery.Outcome = (int)Outcome.Achieved;
-            //    delivery.OutcomeSpecified = true;
-            //}
-
             if (numberOfAimsForLearner == 1) // assume that this aim was created through the old style of Training records - in which case we need to setup the functionalskillsdelivery as well.
             {
                 MutateAimType3ForLearnerFromTrainingRecord(learnerLearningDeliveries,
@@ -254,98 +207,81 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 var otherAim = otherAims.Skip(i).Take(1).Single();
                 otherLearningDelivery.LearnAimRef = otherAim.AimReference;
 
-                otherLearningDelivery.LearnStartDate = otherAim.StartDate.ToDate();
-                otherLearningDelivery.LearnStartDateSpecified = true;
+                var actualEndDate = MutateDates(otherAim, otherLearningDelivery);
 
-                if (otherAim.PlannedDurationAsTimespan.HasValue)
-                {
-                    otherLearningDelivery.LearnPlanEndDate = otherLearningDelivery.LearnStartDate.Add(otherAim.PlannedDurationAsTimespan.Value);
-                    otherLearningDelivery.LearnPlanEndDateSpecified = true;
-                }
-
-                if (otherAim.ActualDurationAsTimespan.HasValue)
-                {
-                    otherLearningDelivery.LearnActEndDate = otherLearningDelivery.LearnStartDate.Add(otherAim.ActualDurationAsTimespan.Value);
-                    otherLearningDelivery.LearnActEndDateSpecified = true;
-                }
+                MutateCompletionStatusForLearner(otherLearningDelivery, (int)otherAim.CompletionStatus, actualEndDate);
 
                 MutateLearningDeliveryFamsForLearner(otherLearningDelivery, otherAim);
 
-                otherLearningDelivery.ProgType = otherAim.ProgrammeType;
-                otherLearningDelivery.ProgTypeSpecified = true;
-
-                otherLearningDelivery.FworkCode = otherAim.FrameworkCode;
-                otherLearningDelivery.FworkCodeSpecified = true;
-
-                otherLearningDelivery.PwayCode = otherAim.PathwayCode;
-                otherLearningDelivery.PwayCodeSpecified = true;
-
-                otherLearningDelivery.CompStatus = (int)otherAim.CompletionStatus;
-                otherLearningDelivery.CompStatusSpecified = true;
-
-                if (otherAim.CompletionStatus == CompletionStatus.Completed)
-                {
-                    otherLearningDelivery.Outcome = (int)Outcome.Achieved;
-                    otherLearningDelivery.OutcomeSpecified = true;
-                }
+                MutateProgrammeCodes(otherAim, otherLearningDelivery);
             }
         }
-
 
         private void MutateMainAimForLearner(Aim mainAim, MessageLearnerLearningDelivery mainLearningDelivery)
         {
             mainLearningDelivery.LearnAimRef = mainAim.AimReference;
 
-            mainLearningDelivery.LearnStartDate = mainAim.StartDate.ToDate();
-            mainLearningDelivery.LearnStartDateSpecified = true;
+            var actualEndDate = MutateDates(mainAim, mainLearningDelivery);
 
-            if (mainAim.PlannedDurationAsTimespan.HasValue)
+            MutateCompletionStatusForLearner(mainLearningDelivery, (int)mainAim.CompletionStatus, actualEndDate);
+
+            MutateLearningDeliveryFamsForLearner(mainLearningDelivery, mainAim);
+
+            MutateProgrammeCodes(mainAim, mainLearningDelivery);
+        }
+
+        private DateTime? MutateDates(Aim aim, MessageLearnerLearningDelivery learningDelivery)
+        {
+            learningDelivery.LearnStartDate = aim.StartDate.ToDate();
+            learningDelivery.LearnStartDateSpecified = true;
+
+            if (aim.PlannedDurationAsTimespan.HasValue)
             {
                 if (aim.ProgrammeType == StandardProgrammeType)
                 {
-                mainLearningDelivery.LearnPlanEndDate = mainLearningDelivery.LearnStartDate.Add(mainAim.PlannedDurationAsTimespan.Value);
-                mainLearningDelivery.LearnPlanEndDateSpecified = true;
+                    learningDelivery.LearnPlanEndDate =
+                        learningDelivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value).AddDays(StandardProgrammeEpaDuration);
+                    learningDelivery.LearnPlanEndDateSpecified = true;
                 }
                 else
                 {
-                    delivery.LearnPlanEndDate = delivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value);
-                    delivery.LearnPlanEndDateSpecified = true;
+                    learningDelivery.LearnPlanEndDate = learningDelivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value);
+                    learningDelivery.LearnPlanEndDateSpecified = true;
                 }
             }
 
             DateTime? actualEndDate = null;
             if (aim.ActualDurationAsTimespan.HasValue)
             {
-                actualEndDate = aim.ProgrammeType == StandardProgrammeType ? delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value).AddDays(StandardProgrammeEPADuration) 
-                    : delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
+                actualEndDate = aim.ProgrammeType == StandardProgrammeType
+                                    ? learningDelivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value)
+                                                          .AddDays(StandardProgrammeEpaDuration)
+                                    : learningDelivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
             }
 
-            MutateCompletionStatusForLearner(delivery, (int)aim.CompletionStatus, actualEndDate);
 
-            MutateLearningDeliveryFamsForLearner(delivery, aim);
+            return actualEndDate;
+        }
 
+        private void MutateProgrammeCodes(Aim mainAim, MessageLearnerLearningDelivery mainLearningDelivery)
+        {
             mainLearningDelivery.ProgType = mainAim.ProgrammeType;
             mainLearningDelivery.ProgTypeSpecified = true;
 
-            if (aim.ProgrammeType == StandardProgrammeType)
+            if (mainAim.ProgrammeType == StandardProgrammeType)
             {
-                delivery.StdCode = aim.StandardCode;
-                delivery.StdCodeSpecified = true;
-                delivery.FworkCodeSpecified = false;
-                delivery.PwayCodeSpecified = false;
+                mainLearningDelivery.StdCode = mainAim.StandardCode;
+                mainLearningDelivery.StdCodeSpecified = true;
+                mainLearningDelivery.FworkCodeSpecified = false;
+                mainLearningDelivery.PwayCodeSpecified = false;
             }
             else
             {
-                delivery.FworkCode = aim.FrameworkCode;
-                delivery.FworkCodeSpecified = true;
+                mainLearningDelivery.FworkCode = mainAim.FrameworkCode;
+                mainLearningDelivery.FworkCodeSpecified = true;
 
-                delivery.PwayCode = aim.PathwayCode;
-                delivery.PwayCodeSpecified = true;
-            }
-
-            if (numberOfAimsForLearner == 1) // assume that this aim was created through the old style of Training records - in which case we need to setup the functionalskillsdelivery as well.
-            {
-                MutateAimType3ForLearnerFromTrainingRecord(learnerLearningDeliveries, delivery);
+                mainLearningDelivery.PwayCode = mainAim.PathwayCode;
+                mainLearningDelivery.PwayCodeSpecified = true;
             }
         }
 
@@ -354,7 +290,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             delivery.CompStatus = completionStatus;
             delivery.CompStatusSpecified = true;
 
-            if (actualEndDate.HasValue)
+            if (actualEndDate.HasValue && actualEndDate.Value != DateTime.MinValue)
             {
                 delivery.LearnActEndDate = actualEndDate.Value;
                 delivery.LearnActEndDateSpecified = true;
