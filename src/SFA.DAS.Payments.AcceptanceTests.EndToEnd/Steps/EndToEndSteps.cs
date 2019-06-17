@@ -4,6 +4,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -125,6 +126,48 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenPriceDetailsAreChangedAsFollows(Table table)
         {
             GivenPriceDetailsAsFollows(table);
+        }
+
+        [Given(@"the provider prority order is")]
+        public void GivenTheProviderPriorityOrder(Table table)
+        {
+            var priorities = table.CreateSet<ProviderPriority>()
+                .Select(x =>
+                {
+                    var period = new CollectionPeriodBuilder()
+                        .WithSpecDate(x.SpecCollectionPeriod)
+                        .Build();
+                    return new ProviderPriority
+                    {
+                        AcademicYear = period.AcademicYear,
+                        CollectionPeriod = period.Period,
+                        EmployerId = TestSession.GetEmployer(null).AccountId,
+                        Priority = x.Priority,
+                        Ukprn = TestSession.GetProviderByIdentifier(x.ProviderIdentifier).Ukprn,
+                    };
+                })
+                .Where(x => x.AcademicYear == CurrentCollectionPeriod.AcademicYear &&
+                            x.CollectionPeriod == CurrentCollectionPeriod.Period)
+                .Select(x => new EmployerProviderPriorityModel
+                {
+                    EmployerAccountId = x.EmployerId,
+                    Order = x.Priority,
+                    Ukprn = x.Ukprn,
+                })
+                .ToList();
+
+            if (priorities.Any())
+            {
+                var existingRecords = DataContext.EmployerProviderPriority.Where(x =>
+                    x.EmployerAccountId == priorities.First().EmployerAccountId);
+                foreach (var employerProviderPriorityModel in existingRecords)
+                {
+                    DataContext.EmployerProviderPriority.Remove(employerProviderPriorityModel);
+                }
+
+                DataContext.EmployerProviderPriority.AddRange(priorities);
+                DataContext.SaveChanges();
+            }
         }
 
         [Given(@"the following commitments exist")]

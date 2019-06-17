@@ -321,6 +321,7 @@
     <Compile Include="Data\DataLockError.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
+    <Compile Include="Data\ProviderPriority.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
     <Compile Include="EventMatchers\EarningFailedDataLockMatcher.cs" />
     <Compile Include="EventMatchers\PayableEarningEventMatcher.cs" />
