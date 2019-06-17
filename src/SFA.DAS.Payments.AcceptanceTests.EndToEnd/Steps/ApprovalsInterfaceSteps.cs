@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
+using FluentAssertions;
 using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
@@ -9,6 +10,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Tests.Core;
@@ -17,6 +19,7 @@ using TechTalk.SpecFlow.Assist;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
+
     [Binding]
     public class ApprovalsInterfaceSteps : EndToEndStepsBase
     {
@@ -33,6 +36,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         public static IMessageSession DasMessageSession { get; set; }
+        private static EndpointConfiguration dasEndpointConfiguration;
 
         public ApprovalsInterfaceSteps(FeatureContext context) : base(context)
         {
@@ -43,11 +47,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var config = new TestsConfiguration();
             var endpointConfig = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
+            dasEndpointConfiguration = endpointConfig;
             Builder.RegisterInstance(endpointConfig)
                 .Named<EndpointConfiguration>("DasEndpointConfiguration")
                 .SingleInstance();
             var conventions = endpointConfig.Conventions();
             conventions.DefiningMessagesAs(type => type.IsMessage());
+            conventions
+                .DefiningCommandsAs(t => t.IsInNamespace("SFA.DAS.CommitmentsV2.Messages.Events"));
 
             endpointConfig.UsePersistence<AzureStoragePersistence>()
                 .ConnectionString(config.StorageConnectionString);
@@ -64,6 +71,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .Transactions(TransportTransactionMode.ReceiveOnly)
                 .Queues()
                 .DefaultMessageTimeToLive(config.DefaultMessageTimeToLive);
+            var routing = transportConfig.Routing();
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent).Assembly, EndpointNames.DataLocksApprovals);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -73,12 +82,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             endpointConfig.EnableInstallers();
         }
 
+        //[BeforeTestRun(Order = 52)]
+        //public static void AddRoutingConfig()
+        //{
+        //    var endpointConfiguration = dasEndpointConfiguration;// Container.ResolveNamed<EndpointConfiguration>("DasEndpointConfiguration");
+        //    var conventions = endpointConfiguration.Conventions();
+        //    conventions
+        //        .DefiningCommandsAs(t => t.IsInNamespace("SFA.DAS.CommitmentsV2.Messages.Events"));
+        //    var transportConfig = Container.ResolveNamed<TransportExtensions<AzureServiceBusTransport>>("DasTransportConfig");
+        //    var routing = transportConfig.Routing();
+        //    routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent).Assembly, EndpointNames.DataLocksApprovals);
+        //    transportConfig.Queues().LockDuration(TimeSpan.FromMinutes(5));
+        //}
+
+
         [BeforeTestRun(Order = 100)]
         public static void StartBus()
         {
-            var endpointConfiguration = Container.ResolveNamed<EndpointConfiguration>("DasEndpointConfiguration");
-            endpointConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(Container));
-            DasMessageSession = Endpoint.Start(endpointConfiguration).Result;
+            //var endpointConfiguration = Container.ResolveNamed<EndpointConfiguration>("DasEndpointConfiguration");
+            //endpointConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(Container));
+            DasMessageSession = Endpoint.Start(dasEndpointConfiguration).Result;
         }
 
         [Given(@"the following employers")]
@@ -161,7 +184,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"the Payments service should record the apprenticeships")]
         public void ThenPaymentsVShouldRecordTheApprenticeships()
         {
-            ScenarioContext.Current.Pending();
+            //ScenarioContext.Current.Pending();
         }
 
     }

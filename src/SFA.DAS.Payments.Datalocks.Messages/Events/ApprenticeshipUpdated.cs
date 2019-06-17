@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.Model.Core.Entities
+namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {
-    public class ApprenticeshipModel
+    public class ApprenticeshipUpdated
     {
         public long Id { get; set; }
-        public long AccountId { get; set; }
+        public long EmployerAccountId { get; set; }
         public string AgreementId { get; set; }
         public DateTime AgreedOnDate { get; set; }
         public long Uln { get; set; }
@@ -20,14 +21,8 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public string LegalEntityName { get; set; }
         public long? TransferSendingEmployerAccountId { get; set; }
         public DateTime? StopDate { get; set; }
-        public int Priority { get; set; }
         public ApprenticeshipStatus Status { get; set; }
-        public bool IsLevyPayer { get; set; }
         public List<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisodes { get; set; }
-
-        public ApprenticeshipModel()
-        {
-            ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
-        }
+        public List<ApprenticeshipDuplicate> Duplicates { get; set; }
     }
 }
