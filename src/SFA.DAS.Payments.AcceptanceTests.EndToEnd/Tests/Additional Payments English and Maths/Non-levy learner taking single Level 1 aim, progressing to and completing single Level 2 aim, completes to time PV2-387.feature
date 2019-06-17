@@ -83,6 +83,19 @@ Scenario Outline: Non-levy learner taking single Level 1 aim, progressing to and
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier |
+		# Maths/Eng - Level 1
+		| Aug/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Sep/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Oct/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Nov/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Dec/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Jan/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Feb/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Mar/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Apr/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| May/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Jun/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
+		| Jul/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          |
 		# maths/eng - Level 2
 		| Aug/Current Academic Year | 0            | 0          | 0         | 39.25                      | 3                   |                          |
 		| Sep/Current Academic Year | 0            | 0          | 0         | 39.25                      | 3                   |                          |
