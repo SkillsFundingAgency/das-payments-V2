@@ -138,7 +138,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         protected void ProcessMessageLearnerForLearnerRequestOriginatingFromTrainingRecord(MessageLearnerLearningDelivery functionalSkillsLearningDelivery, Aim aim)
         {
-            SetStatusForAim(functionalSkillsLearningDelivery, aim.CompletionStatus);
 
             if (aim.ActualDurationAsTimespan.HasValue)
             {
@@ -147,7 +146,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
                 functionalSkillsLearningDelivery.LearnActEndDateSpecified = true;
             }
-        }
+
+            MutateCompletionStatusForLearner(functionalSkillsLearningDelivery, (int)aim.CompletionStatus, functionalSkillsLearningDelivery.LearnActEndDate);
+      }
 
         protected void RemovePmrRecord(MessageLearner learner)
         {
@@ -157,7 +158,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         protected void AddNewTnpAppFinRecordForTrainingPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
         {
-            var tnp = appFinRecords.Single(a => a.AFinType == LearnDelAppFinType.TNP.ToString() && a.AFinCode == (int)LearnDelAppFinCode.TotalTrainingPrice);
+            var tnp = appFinRecords.SingleOrDefault(a => a.AFinType == LearnDelAppFinType.TNP.ToString() && a.AFinCode == (int)LearnDelAppFinCode.TotalTrainingPrice);
 
             if (tnp == null)
             {
@@ -245,8 +246,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             DateTime? actualEndDate = null;
             if (aim.ActualDurationAsTimespan.HasValue)
             {
-                actualEndDate = aim.ProgrammeType == StandardProgrammeType ? delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value).AddDays(StandardProgrammeEPADuration) 
-                    : delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
+                actualEndDate = aim.ProgrammeType == StandardProgrammeType
+                                    ? delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value).AddDays(StandardProgrammeEpaDuration)
+                                    : delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
             }
 
             MutateCompletionStatusForLearner(delivery, (int)aim.CompletionStatus, actualEndDate);
@@ -272,7 +274,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 delivery.PwayCodeSpecified = true;
             }
 
-            SetStatusForAim(delivery, aim.CompletionStatus);
             if (numberOfAimsForLearner == 1) // assume that this aim was created through the old style of Training records - in which case we need to setup the functionalskillsdelivery as well.
             {
                 MutateAimType3ForLearnerFromTrainingRecord(learnerLearningDeliveries, delivery);
@@ -289,23 +290,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 delivery.LearnActEndDate = actualEndDate.Value;
                 delivery.LearnActEndDateSpecified = true;
             }
-        }
 
             switch (completionStatus)
             {
-                case CompletionStatus.Continuing:
+                case (int)CompletionStatus.Continuing:
                     delivery.OutcomeSpecified = false;
                     delivery.WithdrawReasonSpecified = false;
                     delivery.LearnActEndDateSpecified = false;
                     break;
 
-                case CompletionStatus.Completed:
+                case (int)CompletionStatus.Completed:
                     delivery.Outcome = (int)Outcome.Achieved;
                     delivery.OutcomeSpecified = true;
                     delivery.WithdrawReasonSpecified = false;
                     break;
 
-                case CompletionStatus.Withdrawn:
+                case (int)CompletionStatus.Withdrawn:
                     delivery.Outcome = (int) Outcome.NoAchievement;
                     delivery.OutcomeSpecified = true;
                     delivery.WithdrawReason = (int) WithDrawalReason.NotKnown;
@@ -447,6 +447,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         {
             var functionalSkillLearningDelivery = learnerLearningDeliveries.Single(learnDelivery =>
                 learnDelivery.AimType == 3);
+            functionalSkillLearningDelivery.LearnStartDate = delivery.LearnStartDate;
+            functionalSkillLearningDelivery.LearnPlanEndDate = delivery.LearnPlanEndDate;
 
             MutateCompletionStatusForLearner(functionalSkillLearningDelivery, (int) delivery.CompStatus, delivery.LearnActEndDate);
         }
