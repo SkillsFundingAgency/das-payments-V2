@@ -6,5 +6,7 @@
         public EarningType EarningType { get; set; }
         public decimal? SfaContributionPercentage { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
+        public long? AccountId { get; set; }
+        public long? TransferSenderAccountId { get; set; }
     }
 }

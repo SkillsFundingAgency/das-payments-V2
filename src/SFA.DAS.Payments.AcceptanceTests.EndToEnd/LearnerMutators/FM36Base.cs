@@ -242,19 +242,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 }
             }
 
+            DateTime? actualEndDate = null;
             if (aim.ActualDurationAsTimespan.HasValue)
             {
-                if (aim.ProgrammeType == StandardProgrammeType)
-                {
-                    delivery.LearnActEndDate = delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value).AddDays(StandardProgrammeEpaDuration);
-                    delivery.LearnActEndDateSpecified = true;
-                }
-                else
-                {
-                    delivery.LearnActEndDate = delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
-                    delivery.LearnActEndDateSpecified = true;
-                }
+                actualEndDate = aim.ProgrammeType == StandardProgrammeType ? delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value).AddDays(StandardProgrammeEPADuration) 
+                    : delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
             }
+
+            MutateCompletionStatusForLearner(delivery, (int)aim.CompletionStatus, actualEndDate);
 
             MutateLearningDeliveryFamsForLearner(delivery, aim);
 
@@ -278,17 +273,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
 
             SetStatusForAim(delivery, aim.CompletionStatus);
-
             if (numberOfAimsForLearner == 1) // assume that this aim was created through the old style of Training records - in which case we need to setup the functionalskillsdelivery as well.
             {
                 MutateAimType3ForLearnerFromTrainingRecord(learnerLearningDeliveries, delivery);
             }
         }
 
-        private void SetStatusForAim(MessageLearnerLearningDelivery delivery, CompletionStatus completionStatus)
+        private void MutateCompletionStatusForLearner(MessageLearnerLearningDelivery delivery, int completionStatus, DateTime? actualEndDate)
         {
-            delivery.CompStatus = (int)completionStatus;
+            delivery.CompStatus = completionStatus;
             delivery.CompStatusSpecified = true;
+
+            if (actualEndDate.HasValue)
+            {
+                delivery.LearnActEndDate = actualEndDate.Value;
+                delivery.LearnActEndDateSpecified = true;
+            }
+        }
 
             switch (completionStatus)
             {
@@ -447,15 +448,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var functionalSkillLearningDelivery = learnerLearningDeliveries.Single(learnDelivery =>
                 learnDelivery.AimType == 3);
 
-            if (delivery.CompStatus == (int)CompletionStatus.Completed)
-            {
-                functionalSkillLearningDelivery.CompStatus = (int)CompletionStatus.Completed;
-                functionalSkillLearningDelivery.CompStatusSpecified = true;
-                functionalSkillLearningDelivery.LearnActEndDate = delivery.LearnActEndDate;
-                functionalSkillLearningDelivery.LearnActEndDateSpecified = true;
-                functionalSkillLearningDelivery.Outcome = (int)Outcome.Achieved;
-                functionalSkillLearningDelivery.OutcomeSpecified = true;
-            }
+            MutateCompletionStatusForLearner(functionalSkillLearningDelivery, (int) delivery.CompStatus, delivery.LearnActEndDate);
         }
 
         private long CalculateEmployerContribution(string sfaContributionPercentage, decimal totalTrainingPrice)
