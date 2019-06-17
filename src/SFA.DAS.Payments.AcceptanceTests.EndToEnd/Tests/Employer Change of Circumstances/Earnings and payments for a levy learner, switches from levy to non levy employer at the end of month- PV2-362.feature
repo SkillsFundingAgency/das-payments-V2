@@ -1,3 +1,6 @@
+@ignore
+# issue in EndToEndStepsBase.SetProviderPaymentAccountId method. Should look at current ILR not all ILR's as ACT2 shouldn't expect an account Id. 
+# Failed on Provider payments model matcher as expects an account id on ACT2 payments
 Feature: Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362
 As a provider,
 I want earnings and payments for a levy learner, levy available, where a learner switches from levy to non-levy employer at the end of month, to be paid the correct amount

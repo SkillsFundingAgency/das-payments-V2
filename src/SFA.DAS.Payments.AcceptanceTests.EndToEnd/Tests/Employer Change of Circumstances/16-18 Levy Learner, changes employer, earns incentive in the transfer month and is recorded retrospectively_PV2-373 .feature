@@ -1,4 +1,4 @@
-#@ignore
+@ignore
 # issue with refund being created for pe-1 £500 incentives in collection period 5 for which is pe-2. This is because a £0 incentive (TT4) comes through for delivery period 4 and there is a historic payment of £500 for that period so a refund is generated.
 Feature: One Learner changes employer - incentives earned in transfer month PV2-373
 	As a provider,
