@@ -1,4 +1,5 @@
-﻿#@ignore
+﻿@ignore
+# creates refunds for pe-1 periods 6, 7, & 8
 #Feature: 5% Contribution from April 2019
 #
 #Scenario: Non Levy Learner, started learning before Apr19, changes Pathway code in Apr19, remains on 10% contribution
@@ -73,11 +74,11 @@ Scenario Outline: Non-Levy Learner previously on 10 percent contribution but mov
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Aim Sequence Number | Price Episode Identifier |
-		| Aug/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
-		| Sep/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
-		| Oct/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
-		| Nov/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
-		| Dec/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
+		| Aug/Current Academic Year | 0            | 0          | 0         | 2                   | pe-1                     |
+		| Sep/Current Academic Year | 0            | 0          | 0         | 2                   | pe-1                     |
+		| Oct/Current Academic Year | 0            | 0          | 0         | 2                   | pe-1                     |
+		| Nov/Current Academic Year | 0            | 0          | 0         | 2                   | pe-1                     |
+		| Dec/Current Academic Year | 0            | 0          | 0         | 2                   | pe-1                     |
 		| Jan/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-1                     |
 		| Feb/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-1                     |
 		| Mar/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-1                     |
