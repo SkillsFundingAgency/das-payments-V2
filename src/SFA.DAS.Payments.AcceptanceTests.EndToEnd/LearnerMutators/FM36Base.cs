@@ -144,7 +144,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
-        protected void SetupLearningDeliveryActFam(MessageLearnerLearningDelivery delivery, Aim learnerRequestAim)
+        protected void SetupLearningDeliveryActFam(MessageLearnerLearningDelivery delivery)
         {
             var learningDeliveryFam = delivery.LearningDeliveryFAM.Single(ldf => ldf.LearnDelFAMType == LearnDelFAMType.ACT.ToString());
 
@@ -217,17 +217,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
-        private void MutateMainAimForLearner(Aim mainAim, MessageLearnerLearningDelivery mainLearningDelivery)
+        private void MutateMainAimForLearner(Aim aim, MessageLearnerLearningDelivery learningDelivery)
         {
-            mainLearningDelivery.LearnAimRef = mainAim.AimReference;
+            learningDelivery.LearnAimRef = aim.AimReference;
 
-            var actualEndDate = MutateDates(mainAim, mainLearningDelivery);
+            var actualEndDate = MutateDates(aim, learningDelivery);
 
-            MutateCompletionStatusForLearner(mainLearningDelivery, (int)mainAim.CompletionStatus, actualEndDate);
+            MutateCompletionStatusForLearner(learningDelivery, (int)aim.CompletionStatus, actualEndDate);
 
-            MutateLearningDeliveryFamsForLearner(mainLearningDelivery, mainAim);
+            MutateLearningDeliveryFamsForLearner(learningDelivery, aim);
 
-            MutateProgrammeCodes(mainAim, mainLearningDelivery);
+            MutateProgrammeCodes(aim, learningDelivery);
         }
 
         private DateTime? MutateDates(Aim aim, MessageLearnerLearningDelivery learningDelivery)
@@ -263,25 +263,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             return actualEndDate;
         }
 
-        private void MutateProgrammeCodes(Aim mainAim, MessageLearnerLearningDelivery mainLearningDelivery)
+        private void MutateProgrammeCodes(Aim aim, MessageLearnerLearningDelivery learningDelivery)
         {
-            mainLearningDelivery.ProgType = mainAim.ProgrammeType;
-            mainLearningDelivery.ProgTypeSpecified = true;
+            learningDelivery.ProgType = aim.ProgrammeType;
+            learningDelivery.ProgTypeSpecified = true;
 
-            if (mainAim.ProgrammeType == StandardProgrammeType)
+            if (aim.ProgrammeType == StandardProgrammeType)
             {
-                mainLearningDelivery.StdCode = mainAim.StandardCode;
-                mainLearningDelivery.StdCodeSpecified = true;
-                mainLearningDelivery.FworkCodeSpecified = false;
-                mainLearningDelivery.PwayCodeSpecified = false;
+                learningDelivery.StdCode = aim.StandardCode;
+                learningDelivery.StdCodeSpecified = true;
+                learningDelivery.FworkCodeSpecified = false;
+                learningDelivery.PwayCodeSpecified = false;
             }
             else
             {
-                mainLearningDelivery.FworkCode = mainAim.FrameworkCode;
-                mainLearningDelivery.FworkCodeSpecified = true;
+                learningDelivery.FworkCode = aim.FrameworkCode;
+                learningDelivery.FworkCodeSpecified = true;
 
-                mainLearningDelivery.PwayCode = mainAim.PathwayCode;
-                mainLearningDelivery.PwayCodeSpecified = true;
+                learningDelivery.PwayCode = aim.PathwayCode;
+                learningDelivery.PwayCodeSpecified = true;
             }
         }
 
