@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             var learnerLearningDeliveries = learner.LearningDelivery.ToList();
 
-            MutateAimForLearner(learnerRequest.Aims, learnerLearningDeliveries, learnerRequest.Aims.Count());
+            MutateAimForLearner(learnerRequest.Aims, learnerLearningDeliveries, learnerRequest.Aims.Count);
 
             learner.LearningDelivery = learnerLearningDeliveries.ToArray();
 
@@ -199,21 +199,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void MutateOtherAimsForLearner(IEnumerable<Aim> otherAims, IEnumerable<MessageLearnerLearningDelivery> otherLearningDeliveries)
         {
-            otherAims.OrderBy(x => x.AimSequenceNumber);
-            otherLearningDeliveries.OrderBy(x => x.AimSeqNumber);
-            for (var i = 0; i < otherAims.Count(); i++)
+            var orderedAims = otherAims.OrderBy(x => x.AimSequenceNumber).ToList();
+            var orderedLearningDeliveries = otherLearningDeliveries.OrderBy(x => x.AimSeqNumber).ToList();
+            for (var i = 0; i < orderedAims.Count; i++)
             {
-                var otherLearningDelivery = otherLearningDeliveries.Skip(i).Take(1).Single();
-                var otherAim = otherAims.Skip(i).Take(1).Single();
+                var otherLearningDelivery = orderedLearningDeliveries[i];
+                var otherAim = orderedAims[i];
                 otherLearningDelivery.LearnAimRef = otherAim.AimReference;
 
-                var actualEndDate = MutateDates(otherAim, otherLearningDelivery);
+                var actualEndDate = SetLearningDeliveryDates(otherAim, otherLearningDelivery);
 
                 MutateCompletionStatusForLearner(otherLearningDelivery, (int)otherAim.CompletionStatus, actualEndDate);
 
                 MutateLearningDeliveryFamsForLearner(otherLearningDelivery, otherAim);
 
-                MutateProgrammeCodes(otherAim, otherLearningDelivery);
+                SetCourseCodes(otherAim, otherLearningDelivery);
             }
         }
 
@@ -221,16 +221,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         {
             learningDelivery.LearnAimRef = aim.AimReference;
 
-            var actualEndDate = MutateDates(aim, learningDelivery);
+            var actualEndDate = SetLearningDeliveryDates(aim, learningDelivery);
 
             MutateCompletionStatusForLearner(learningDelivery, (int)aim.CompletionStatus, actualEndDate);
 
             MutateLearningDeliveryFamsForLearner(learningDelivery, aim);
 
-            MutateProgrammeCodes(aim, learningDelivery);
+            SetCourseCodes(aim, learningDelivery);
         }
 
-        private DateTime? MutateDates(Aim aim, MessageLearnerLearningDelivery learningDelivery)
+        private DateTime? SetLearningDeliveryDates(Aim aim, MessageLearnerLearningDelivery learningDelivery)
         {
             learningDelivery.LearnStartDate = aim.StartDate.ToDate();
             learningDelivery.LearnStartDateSpecified = true;
@@ -263,7 +263,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             return actualEndDate;
         }
 
-        private void MutateProgrammeCodes(Aim aim, MessageLearnerLearningDelivery learningDelivery)
+        private void SetCourseCodes(Aim aim, MessageLearnerLearningDelivery learningDelivery)
         {
             learningDelivery.ProgType = aim.ProgrammeType;
             learningDelivery.ProgTypeSpecified = true;
