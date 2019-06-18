@@ -1,4 +1,4 @@
-﻿#@supports_dc_e2e
+﻿@supports_dc_e2e
 Feature: Change standard and price but not from start - PV2-205
 	As a provider,
 	I want a non-levy learner, changes standard with change to negotiated price, to be paid the correct amount
@@ -9,9 +9,9 @@ Scenario Outline: Non-Levy learner changes standard with accompanying change to 
         | Learner Reference Number | Uln |
         | na                       |     |
 	And the following aims
-		| Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Programme Type | Standard Code | Funding Line Type                                                   | Completion Status |
-		| ZPROG001      | 03/Aug/Current Academic Year | 12 months        | 3 months        | 1                   | 25             | 52            | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | withdrawn         |
-		| ZPROG001      | 12/Nov/Current Academic Year | 12 months        |                 | 3                   | 25             | 53            | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | continuing        |
+		| Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Programme Type | Standard Code | Funding Line Type                               | Completion Status |
+		| ZPROG001      | 03/Aug/Current Academic Year | 12 months        | 3 months        | 1                   | 25             | 52            | 19+ Apprenticeship Non-Levy Contract (procured) | withdrawn         |
+		| ZPROG001      | 12/Nov/Current Academic Year | 12 months        |                 | 3                   | 25             | 53            | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        |
 	And price details as follows		
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | pe-1             | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | Act2          | 1                   | 90%                         |
@@ -61,33 +61,33 @@ Scenario Outline: Non-Levy learner changes standard with accompanying change to 
 		| R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         |
 		| R12/Current Academic Year | Jul/Current Academic Year | 500          | 0          | 0         |
     And only the following provider payments will be recorded
-        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-        | R04/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
-        | R04/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         |
-        | R04/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         |
-        | R04/Current Academic Year | Nov/Current Academic Year | 450                    | 50                          | Learning         |
-        | R05/Current Academic Year | Dec/Current Academic Year | 450                    | 50                          | Learning         |
-        | R06/Current Academic Year | Jan/Current Academic Year | 450                    | 50                          | Learning         |
-        | R07/Current Academic Year | Feb/Current Academic Year | 450                    | 50                          | Learning         |
-        | R08/Current Academic Year | Mar/Current Academic Year | 450                    | 50                          | Learning         |
-        | R09/Current Academic Year | Apr/Current Academic Year | 450                    | 50                          | Learning         |
-        | R10/Current Academic Year | May/Current Academic Year | 450                    | 50                          | Learning         |
-        | R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         |
-        | R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | Learning         |
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Standard Code |
+        | R04/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         | 52            |
+        | R04/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         | 52            |
+        | R04/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         | 52            |
+        | R04/Current Academic Year | Nov/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+        | R05/Current Academic Year | Dec/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+        | R06/Current Academic Year | Jan/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+        | R07/Current Academic Year | Feb/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+        | R08/Current Academic Year | Mar/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+        | R09/Current Academic Year | Apr/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+        | R10/Current Academic Year | May/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+        | R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+        | R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | Learning         | 53            |
 	And at month end only the following provider payments will be generated
-		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-		| R04/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
-		| R04/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         |
-		| R04/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         |
-		| R04/Current Academic Year | Nov/Current Academic Year | 450                    | 50                          | Learning         |
-		| R05/Current Academic Year | Dec/Current Academic Year | 450                    | 50                          | Learning         |
-		| R06/Current Academic Year | Jan/Current Academic Year | 450                    | 50                          | Learning         |
-		| R07/Current Academic Year | Feb/Current Academic Year | 450                    | 50                          | Learning         |
-		| R08/Current Academic Year | Mar/Current Academic Year | 450                    | 50                          | Learning         |
-		| R09/Current Academic Year | Apr/Current Academic Year | 450                    | 50                          | Learning         |
-		| R10/Current Academic Year | May/Current Academic Year | 450                    | 50                          | Learning         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         |
-		| R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | Learning         |
+		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Standard Code |
+		| R04/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         | 52            |
+		| R04/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         | 52            |
+		| R04/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         | 52            |
+		| R04/Current Academic Year | Nov/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+		| R05/Current Academic Year | Dec/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+		| R06/Current Academic Year | Jan/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+		| R07/Current Academic Year | Feb/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+		| R08/Current Academic Year | Mar/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+		| R09/Current Academic Year | Apr/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+		| R10/Current Academic Year | May/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+		| R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         | 53            |
+		| R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | Learning         | 53            |
 	Examples:
 		| Collection_Period         |
 		| R04/Current Academic Year |
