@@ -1,8 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Threading;
 using Autofac;
 using AutoMapper;
 using Microsoft.ServiceFabric.Actors;
@@ -10,6 +11,7 @@ using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
@@ -33,19 +35,24 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private IDataCache<List<string>> requiredPaymentKeys;
         private IDataCache<bool> monthEndCache;
         private IDataCache<LevyAccountModel> levyAccountCache;
+        private IDataCache<List<EmployerProviderPriorityModel>> employerProviderPriorities;
+        private IActorDataCache<bool> actorCache;
         private readonly ILifetimeScope lifetimeScope;
-
+        private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
+        
         public LevyFundedService(
             ActorService actorService,
             ActorId actorId,
             IPaymentLogger paymentLogger,
             ITelemetry telemetry,
-            ILifetimeScope lifetimeScope)
+            ILifetimeScope lifetimeScope,
+            ILevyFundingSourceRepository levyFundingSourceRepository)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
             this.telemetry = telemetry;
             this.lifetimeScope = lifetimeScope;
+            this.levyFundingSourceRepository = levyFundingSourceRepository;
         }
 
         public async Task HandleRequiredPayment(CalculatedRequiredLevyAmount message)
@@ -111,6 +118,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         protected override async Task OnActivateAsync()
         {
             //TODO: Use DI
+            actorCache = new ActorReliableCollectionCache<bool>(StateManager);
+            employerProviderPriorities = new ReliableCollectionCache<List<EmployerProviderPriorityModel>>(StateManager);
             requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
             requiredPaymentKeys = new ReliableCollectionCache<List<string>>(StateManager);
             monthEndCache = new ReliableCollectionCache<bool>(StateManager);
@@ -120,14 +129,37 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 lifetimeScope.Resolve<IMapper>(),
                 requiredPaymentsCache,
                 requiredPaymentKeys,
-                lifetimeScope.Resolve<ILevyAccountRepository>(),
+                lifetimeScope.Resolve<ILevyFundingSourceRepository>(),
                 lifetimeScope.Resolve<ILevyBalanceService>(),
                 lifetimeScope.Resolve<IPaymentLogger>(),
                 lifetimeScope.Resolve<ISortableKeyGenerator>(),
                 monthEndCache,
                 levyAccountCache
             );
+
+            await Initialise().ConfigureAwait(false);
             await base.OnActivateAsync().ConfigureAwait(false);
+        }
+
+        private async Task Initialise()
+        {
+            if (await actorCache.IsInitialiseFlagIsSet().ConfigureAwait(false)) return;
+
+            paymentLogger.LogInfo($"Initialising actor for employer {Id.GetLongId()}");
+
+            var paymentPriorities = await levyFundingSourceRepository.GetPaymentPriorities(Id.GetLongId()).ConfigureAwait(false);
+            await employerProviderPriorities
+                    .AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities, default(CancellationToken))
+                    .ConfigureAwait(false);
+        
+            paymentLogger.LogInfo($"Initialised actor for employer {Id.GetLongId()}");
+            await actorCache.SetInitialiseFlag().ConfigureAwait(false);
+        }
+
+        public async Task Reset()
+        {
+            paymentLogger.LogInfo($"Resetting actor for employer {Id.GetLongId()}");
+            await actorCache.ResetInitialiseFlag().ConfigureAwait(false);
         }
 
     }

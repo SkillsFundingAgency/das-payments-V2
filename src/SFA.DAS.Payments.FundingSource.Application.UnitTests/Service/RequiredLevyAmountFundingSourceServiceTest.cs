@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<IDataCache<CalculatedRequiredLevyAmount>> eventCacheMock;
         private Mock<IDataCache<List<string>>> keyCacheMock;
         private Mock<IDataCache<bool>> monthEndCacheMock;
-        private Mock<ILevyAccountRepository> levyAccountRepositoryMock;
+        private Mock<ILevyFundingSourceRepository> levyAccountRepositoryMock;
         private Mock<IPaymentProcessor> processorMock;
         private Mock<ILevyBalanceService> levyBalanceServiceMock;
         private Mock<ISortableKeyGenerator> sortableKeysMock;
@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             keyCacheMock = mocker.Mock<IDataCache<List<string>>>();
             monthEndCacheMock = mocker.Mock<IDataCache<bool>>();
             levyAccountCacheMock = mocker.Mock<IDataCache<LevyAccountModel>>();
-            levyAccountRepositoryMock = mocker.Mock<ILevyAccountRepository>();
+            levyAccountRepositoryMock = mocker.Mock<ILevyFundingSourceRepository>();
             processorMock = mocker.Mock<IPaymentProcessor>();
             levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
             paymentLoggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
