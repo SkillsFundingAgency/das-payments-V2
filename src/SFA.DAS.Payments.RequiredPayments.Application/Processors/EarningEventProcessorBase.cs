@@ -91,6 +91,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         SfaContributionPercentage = period.SfaContributionPercentage,
                         EarningType = GetEarningType(type),
                         PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
+                        AccountId = period.AccountId,
+                        TransferSenderAccountId = period.TransferSenderAccountId
                     };
 
                     requiredPayments = requiredPaymentProcessor.GetRequiredPayments(earning, payments);
