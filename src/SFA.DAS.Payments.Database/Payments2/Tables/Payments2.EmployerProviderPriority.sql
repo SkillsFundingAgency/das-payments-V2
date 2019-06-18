@@ -5,3 +5,11 @@
 	Ukprn bigint not null,
 	[Order] int not null
 )
+GO
+
+
+CREATE INDEX [IX_EmployerProviderPriority_EmployerAccountId] ON [Payments2].[EmployerProviderPriority] 
+(
+  EmployerAccountId
+)
+GO

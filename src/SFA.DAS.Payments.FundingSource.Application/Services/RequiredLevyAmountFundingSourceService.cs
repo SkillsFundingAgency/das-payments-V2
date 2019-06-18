@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IMapper mapper;
         private readonly IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private readonly IDataCache<List<string>> requiredPaymentKeys;
-        private readonly ILevyAccountRepository levyAccountRepository;
+        private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
         private readonly ILevyBalanceService levyBalanceService;
         private readonly IPaymentLogger paymentLogger;
         private readonly ISortableKeyGenerator sortableKeys;
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             IMapper mapper,
             IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache,
             IDataCache<List<string>> requiredPaymentKeys,
-            ILevyAccountRepository levyAccountRepository,
+            ILevyFundingSourceRepository levyFundingSourceRepository,
             ILevyBalanceService levyBalanceService,
             IPaymentLogger paymentLogger,
             ISortableKeyGenerator sortableKeys,
@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentsCache = requiredPaymentsCache ?? throw new ArgumentNullException(nameof(requiredPaymentsCache));
             this.requiredPaymentKeys = requiredPaymentKeys ?? throw new ArgumentNullException(nameof(requiredPaymentKeys));
-            this.levyAccountRepository = levyAccountRepository ?? throw new ArgumentNullException(nameof(levyAccountRepository));
+            this.levyFundingSourceRepository = levyFundingSourceRepository ?? throw new ArgumentNullException(nameof(levyFundingSourceRepository));
             this.levyBalanceService = levyBalanceService ?? throw new ArgumentNullException(nameof(levyBalanceService));
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.sortableKeys = sortableKeys ?? throw new ArgumentNullException(nameof(sortableKeys));
@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var keys = await GetKeys().ConfigureAwait(false);
             keys.Sort();
 
-            var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
+            var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
             paymentLogger.LogDebug($"Processing {keys.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
