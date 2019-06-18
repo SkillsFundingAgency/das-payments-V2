@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 {
     class AddLevyAccountPriorities
     {
-        public static void ProcessTable(Table table, TestSession testSession, CollectionPeriod currentCollectionPeriod, PaymentsDataContext dataContext)
+        public static void ProcessTable(Table table, TestSession testSession, CollectionPeriod currentCollectionPeriod, IPaymentsDataContext dataContext)
         {
             var priorities = table.CreateSet<ProviderPriority>()
                 .Select(x =>
