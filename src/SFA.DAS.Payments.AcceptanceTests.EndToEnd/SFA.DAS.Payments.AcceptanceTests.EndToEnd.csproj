@@ -337,6 +337,7 @@
     <Compile Include="Handlers\RequiredPaymentEventHandler.cs" />
     <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
+    <Compile Include="Helpers\AddLevyAccountPriorities.cs" />
     <Compile Include="Helpers\ApprenticeshipHelper.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
