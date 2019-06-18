@@ -1,4 +1,3 @@
-@ignore
 Feature: One Levy learner changes provider earns incentive in the commitment transfer month and ILR transfer happens in a later month PV2-321
 	1 learner aged 16-18, levy available, changes provider, earns incentive payment in the commitment transfer month - and the ILR transfer happens in a later month 
 	As a provider,
@@ -44,11 +43,11 @@ Scenario Outline: One Levy learner changes provider earns incentive in the commi
 		| 12/Dec/Current Academic Year | 9 months         | 4000                 | 12/Dec/Current Academic Year        | 1625                   | 12/Dec/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	
 	And price details as follows
-		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-		| pe-1             | 6000                 | 06/Aug/Current Academic Year        | 1500                   | 06/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
-		| pe-2             | 4000                 | 12/Dec/Current Academic Year        | 1625                   | 12/Dec/Current Academic Year          | Act1          | 1                   | 90%                         |
-	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period> by "provider a"
-	When the ILR file is submitted for the learners for collection period <Collection_Period> by "provider b"
+		| Provider   | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+		| provider a | pe-1             | 6000                 | 06/Aug/Current Academic Year        | 1500                   | 06/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
+		| provider b | pe-2             | 4000                 | 12/Dec/Current Academic Year        | 1625                   | 12/Dec/Current Academic Year          | Act1          | 1                   | 90%                         |
+	When the amended ILR file is re-submitted for the learners in the collection period <Collection_Period> by "provider a"
+	When the ILR file is submitted for the learners for the collection period <Collection_Period> by "provider b"
 	Then the following learner earnings should be generated for "provider a"
         | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive | Price Episode Identifier |
         | Aug/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-1                     |
