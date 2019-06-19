@@ -16,6 +16,7 @@ using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
@@ -31,6 +32,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly ISortableKeyGenerator sortableKeys;
         private readonly IDataCache<bool> monthEndCache;
         private readonly IDataCache<LevyAccountModel> levyAccountCache;
+        private readonly IDataCache<List<EmployerProviderPriorityModel>> employerProviderPriorities;
 
         public RequiredLevyAmountFundingSourceService(
             IPaymentProcessor processor,
@@ -42,7 +44,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             IPaymentLogger paymentLogger,
             ISortableKeyGenerator sortableKeys,
             IDataCache<bool> monthEndCache,
-            IDataCache<LevyAccountModel> levyAccountCache)
+            IDataCache<LevyAccountModel> levyAccountCache,
+            IDataCache<List<EmployerProviderPriorityModel>> employerProviderPriorities)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -54,6 +57,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.sortableKeys = sortableKeys ?? throw new ArgumentNullException(nameof(sortableKeys));
             this.monthEndCache = monthEndCache ?? throw new ArgumentNullException(nameof(monthEndCache));
             this.levyAccountCache = levyAccountCache ?? throw new ArgumentNullException(nameof(levyAccountCache));
+            this.employerProviderPriorities = employerProviderPriorities;
         }
 
         public async Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent)
@@ -66,6 +70,31 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             await requiredPaymentKeys.AddOrReplace(CacheKeys.KeyListKey, keys).ConfigureAwait(false);
         }
 
+        public async Task StoreEmployerProviderPriority(EmployerChangedProviderPriority providerPriorityEvent)
+        {
+            int order = 1;
+            var paymentPriorities = new List<EmployerProviderPriorityModel>();
+            foreach (var providerUkprn in providerPriorityEvent.OrderedProviders)
+            {
+                paymentPriorities.Add(new EmployerProviderPriorityModel
+                {
+                    Ukprn = providerUkprn,
+                    EmployerAccountId = providerPriorityEvent.EmployerAccountId,
+                    Order = order
+                });
+
+                order++;
+            }
+
+            paymentLogger.LogDebug($"Adding EmployerProviderPriority to Database for Account Id {providerPriorityEvent.EmployerAccountId}");
+            await levyFundingSourceRepository.AddEmployerProviderPriorities(paymentPriorities);
+            paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Database for Account Id {providerPriorityEvent.EmployerAccountId}");
+
+            paymentLogger.LogDebug($"Adding EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
+            await employerProviderPriorities.AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities).ConfigureAwait(false);
+            paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
+        }
+        
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> ProcessReceiverTransferPayment(ProcessUnableToFundTransferFundingSourcePayment message)
         {
             if (!message.AccountId.HasValue)

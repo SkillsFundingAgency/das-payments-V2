@@ -11,6 +11,7 @@ using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
@@ -75,6 +76,26 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
         }
 
+        public async Task HandleEmployerProviderPriorityChange(EmployerChangedProviderPriority message)
+        {
+            try
+            {
+                using (var operation = telemetry.StartOperation())
+                {
+                    paymentLogger.LogDebug($"Storing EmployerChangedProviderPriority event for {Id},  Account Id: {message.EmployerAccountId}");
+                    await fundingSourceService.StoreEmployerProviderPriority(message).ConfigureAwait(false);
+                    paymentLogger.LogInfo($"Finished Storing EmployerChangedProviderPriority event for {Id},  Account Id: {message.EmployerAccountId}");
+                    telemetry.StopOperation(operation);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                paymentLogger.LogError($"Error while handling EmployerChangedProviderPriority event for {Id},  Account Id: {message.EmployerAccountId} Error:{ex.Message}", ex);
+                throw;
+            }
+        }
+
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> UnableToFundTransfer(ProcessUnableToFundTransferFundingSourcePayment message)
         {
             try
@@ -134,7 +155,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 lifetimeScope.Resolve<IPaymentLogger>(),
                 lifetimeScope.Resolve<ISortableKeyGenerator>(),
                 monthEndCache,
-                levyAccountCache
+                levyAccountCache,
+                employerProviderPriorities
             );
 
             await Initialise().ConfigureAwait(false);
