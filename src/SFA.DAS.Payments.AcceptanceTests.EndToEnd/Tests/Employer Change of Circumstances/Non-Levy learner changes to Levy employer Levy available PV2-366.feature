@@ -1,5 +1,3 @@
-#@ignore
-# generates refunds for first 8 periods on 1st price details as well as payment for 2nd price details
 Feature: Learner changes from a non-levy to levy employer, levy is available for the levy employer PV2-366
 	As a provider,
 	I want an apprentice that changes from a non-levy to levy employer, levy is available for the levy employer, to be paid the correct amount

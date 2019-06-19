@@ -1,6 +1,4 @@
-﻿@ignore
-# issue with earning events missing despite values appearing in the database
-#@supports_dc_e2e
+﻿#@supports_dc_e2e
 Feature: PV2-379 Non-levy learner changes employer and there is a gap - provider receives payment during the gap as they amend the ACT code and employment status code correctly
  # And the employment status in the ILR is
  #       | Employer   | Employment Status      | Employment Status Applies    | Small Employer |
@@ -19,8 +17,8 @@ Scenario Outline: Non-levy learner changes employer and there is a gap - provide
 	And price details as follows
 		| Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
 		| 1st price details | 15000                | 03/Aug/Current Academic Year        | 0                      | 03/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | Act2          | 1                   | 90%                         |
-		| 2nd price details | 15000                | 03/Aug/Current Academic Year        | 0                      | 03/Aug/Current Academic Year          | 5625                    | 03/Nov/Current Academic Year           | 0                         | 03/Nov/Current Academic Year             | Act2          | 1                   | 100%                        |
-		| 3rd price details | 15000                | 03/Aug/Current Academic Year        | 0                      | 03/Aug/Current Academic Year          | 5625                    | 03/Nov/Current Academic Year           | 0                         | 03/Nov/Current Academic Year             | Act2          | 1                   | 90%                         |
+		| 2nd price details | 15000                | 03/Oct/Current Academic Year        | 0                      | 03/Oct/Current Academic Year          | 5625                    | 03/Oct/Current Academic Year           | 0                         | 03/Oct/Current Academic Year             | Act2          | 1                   | 100%                        |
+		| 3rd price details | 15000                | 03/Nov/Current Academic Year        | 0                      | 03/Nov/Current Academic Year          | 5625                    | 03/Nov/Current Academic Year           | 0                         | 03/Nov/Current Academic Year             | Act2          | 1                   | 90%                         |
 	# SFA Contribution Percentage is moved to earnings table
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated

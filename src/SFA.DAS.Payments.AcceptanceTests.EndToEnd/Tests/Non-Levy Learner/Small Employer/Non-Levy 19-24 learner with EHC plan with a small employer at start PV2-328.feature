@@ -1,6 +1,4 @@
-﻿@ignore
-# issue with required payments not being found
-@supports_dc_e2e
+﻿@supports_dc_e2e
 Feature: Non-levy learner 19-24 with Education Health Care (EHC) plan, in paid employment with a small employer at start - PV2-328
 	As a provider,
 	I want 1 non-levy learner aged 19-24, with an Education Health Care (EHC) plan, In paid employment with a small employer at start, is fully funded for on programme and completion payments, to be paid the correct amount
@@ -57,7 +55,7 @@ Scenario: Non-levy learner 19-24 with Education Health Care (EHC) plan, in paid 
 		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 403            | 1            | 2              | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 100%                        |
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
-		| pe-1             | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
+		| pe-1             | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 0                       |                                        | 0                         |                                          | 100%                         | Act2          | 1                   |
 	When the amended ILR file is re-submitted for the learners in collection period R01/Current Academic Year
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Second16To18EmployerIncentive | Second16To18ProviderIncentive | Completion16To18FrameworkUplift | Price Episode Identifier |

@@ -500,9 +500,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         {
                             var earningRow = p - 1;
 
-                            var amount = (p >= episodeStart.Period && p <= episodeLastPeriod ||
-                                          (PeriodisedValuesForBalancingAndCompletion()
-                                               .Contains(currentValues.AttributeName) && p > episodeLastPeriod))
+                            var amount = p >= episodeStart.Period && p <= episodeLastPeriod ||
+                                         (PeriodisedValuesForBalancingAndCompletion()
+                                              .Contains(currentValues.AttributeName) ||
+                                          PeriodisedValuesForIncentives().Contains(currentValues.AttributeName)) &&
+                                         p > episodeLastPeriod
                                 ? currentValues.GetValue(p)
                                 : 0;
 
@@ -800,6 +802,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             yield return TransactionType.Completion16To18FrameworkUplift.ToAttributeName();
             yield return TransactionType.Completion.ToAttributeName();
             yield return TransactionType.Balancing.ToAttributeName();
+        }
+
+        private IEnumerable<string> PeriodisedValuesForIncentives()
+        {
+            yield return TransactionType.First16To18EmployerIncentive.ToAttributeName();
+            yield return TransactionType.First16To18ProviderIncentive.ToAttributeName();
+            yield return TransactionType.Second16To18EmployerIncentive.ToAttributeName();
+            yield return TransactionType.Second16To18ProviderIncentive.ToAttributeName();
+            yield return TransactionType.Second16To18ProviderIncentive.ToAttributeName();
+            yield return TransactionType.OnProgramme16To18FrameworkUplift.ToAttributeName();
+            yield return TransactionType.FirstDisadvantagePayment.ToAttributeName();
+            yield return TransactionType.SecondDisadvantagePayment.ToAttributeName();
+            yield return TransactionType.OnProgrammeMathsAndEnglish.ToAttributeName();
+            yield return TransactionType.LearningSupport.ToAttributeName();
+            yield return TransactionType.CareLeaverApprenticePayment.ToAttributeName();
         }
 
         protected List<Training> CreateTrainingFromLearners(long ukprn)

@@ -1,4 +1,4 @@
-﻿@ignore
+﻿#@ignore
 # issue with KeyNotFoundException - can't find academic year when populating learner price episodes
 #@supports_dc_e2e
 Feature:  Non-levy learner 19-24 is a care leaver employed with a small employer at start fully funded PV2-329
@@ -61,6 +61,7 @@ Scenario: Non-levy learner 19-24 is a care leaver employed with a small employer
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
 		| pe-1             | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 0                       |                                        | 0                         |                                          | 100%                        | Act2          | 1                   |
+	When the amended ILR file is re-submitted for the learners in collection period R01/Current Academic Year
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Second16To18EmployerIncentive | Second16To18ProviderIncentive | Completion16To18FrameworkUplift | Price Episode Identifier |
 		| Aug/Current Academic Year | 0            | 1500       | 0         | 500                           | 500                           | 360                             | pe-1                     |
