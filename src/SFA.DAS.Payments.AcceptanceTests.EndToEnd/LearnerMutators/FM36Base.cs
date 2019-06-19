@@ -152,8 +152,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         protected void RemovePmrRecord(MessageLearner learner)
         {
-            var deliveries = learner.LearningDelivery.ToList().Where(ld => ld.AimType == 1);
-            deliveries.ForEach(d=>d.AppFinRecord = d.AppFinRecord.ToList().Where(af => af.AFinType != LearnDelAppFinType.PMR.ToString()).ToArray());
+            var deliveries = learner.LearningDelivery.Where(ld => ld.AimType == 1).ToList();
+            deliveries.ForEach(d => d.AppFinRecord = d.AppFinRecord.Where(af => af.AFinType != LearnDelAppFinType.PMR.ToString()).ToArray());
         }
 
         protected void AddNewTnpAppFinRecordForTrainingPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
@@ -183,11 +183,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void SetComponentAimLearnAimReference(MessageLearner messageLearner)
         {
-            var mainAims = messageLearner.LearningDelivery.ToList().Where(aim => aim.AimType == 1);
-            var componentAims = messageLearner.LearningDelivery.ToList().Where(aim => aim.AimType == 3);
+            var mainAims = messageLearner.LearningDelivery.Where(aim => aim.AimType == 1).ToList();
+            var componentAims = messageLearner.LearningDelivery.Where(aim => aim.AimType == 3).ToList();
 
             // case for 205 only - this logic needs to be improved!
-            if (mainAims.Count() == 2 && componentAims.Count() == 1 && (mainAims.Any(a=>a.StdCode == 52) || mainAims.Any(a=>a.StdCode == 53)))
+            if (mainAims.Count == 2 && componentAims.Count == 1 && (mainAims.Any(a=>a.StdCode == 52) || mainAims.Any(a=>a.StdCode == 53)))
             {
                 componentAims.ForEach(ca=>ca.LearnAimRef = "60005105");
             }
@@ -199,11 +199,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void CorrectComponentAimStartAndEndDates(MessageLearner messageLearner)
         {
-            var mainAims = messageLearner.LearningDelivery.ToList().Where(aim => aim.AimType == 1);
-            var componentAims = messageLearner.LearningDelivery.ToList().Where(aim => aim.AimType == 3);
+            var mainAims = messageLearner.LearningDelivery.Where(aim => aim.AimType == 1).ToList();
+            var componentAims = messageLearner.LearningDelivery.Where(aim => aim.AimType == 3).ToList();
 
             // case for 205 only - this logic needs to be improved!
-            if (mainAims.Count() == 2 && componentAims.Count() == 1 && mainAims.First().StdCode == 51)
+            if (mainAims.Count == 2 && componentAims.Count == 1 && mainAims.First().StdCode == 51)
             {
                 componentAims.ForEach(ca =>
                 {
