@@ -14,6 +14,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
     {
         private const int StandardProgrammeType = 25;
         private const int StandardProgrammeEpaDuration = 8;
+        private const string EpaOrgId = "EPA0022";
+
         private readonly string featureNumber;
         protected ILearnerCreatorDataCache dataCache;
 
@@ -122,10 +124,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             messageLearner.ULNSpecified = true;
 
             MutateHigherEducation(messageLearner);
-
-            SetComponentAimLearnAimReference(messageLearner);
-
-            CorrectComponentAimStartAndEndDates(messageLearner);
         }
 
         protected void SetupLearningDeliveryActFam(MessageLearnerLearningDelivery delivery)
@@ -178,38 +176,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             {
                 tnp.AFinDate = priceEpisode.TotalTrainingPriceEffectiveDate.ToDate();
                 tnp.AFinDateSpecified = true;
-            }
-        }
-
-        private void SetComponentAimLearnAimReference(MessageLearner messageLearner)
-        {
-            var mainAims = messageLearner.LearningDelivery.Where(aim => aim.AimType == 1).ToList();
-            var componentAims = messageLearner.LearningDelivery.Where(aim => aim.AimType == 3).ToList();
-
-            // case for 205 only - this logic needs to be improved!
-            if (mainAims.Count == 2 && componentAims.Count == 1 && (mainAims.Any(a=>a.StdCode == 52) || mainAims.Any(a=>a.StdCode == 53)))
-            {
-                componentAims.ForEach(ca=>ca.LearnAimRef = "60005105");
-            }
-            else if (mainAims.First().StdCodeSpecified)
-            {
-                componentAims.ForEach(ca => ca.LearnAimRef = "00300545");
-            }
-        }
-
-        private void CorrectComponentAimStartAndEndDates(MessageLearner messageLearner)
-        {
-            var mainAims = messageLearner.LearningDelivery.Where(aim => aim.AimType == 1).ToList();
-            var componentAims = messageLearner.LearningDelivery.Where(aim => aim.AimType == 3).ToList();
-
-            // case for 205 only - this logic needs to be improved!
-            if (mainAims.Count == 2 && componentAims.Count == 1 && mainAims.First().StdCode == 51)
-            {
-                componentAims.ForEach(ca =>
-                {
-                    ca.LearnStartDate = mainAims.First().LearnStartDate;
-                    ca.LearnPlanEndDate = mainAims.Last().LearnPlanEndDate;
-                }); 
             }
         }
 
@@ -395,7 +361,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 }
 
                 AddTnpAppFinRecordForAssessmentPrice(appFinRecords, priceEpisode);
-                delivery.EPAOrgID = "EPA0022";
+                delivery.EPAOrgID = EpaOrgId;
             }
 
             delivery.AppFinRecord = appFinRecords.ToArray();
