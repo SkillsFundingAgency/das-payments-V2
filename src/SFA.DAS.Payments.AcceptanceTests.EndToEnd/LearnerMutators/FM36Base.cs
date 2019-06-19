@@ -247,7 +247,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             delivery.CompStatus = completionStatus;
             delivery.CompStatusSpecified = true;
 
-            if (actualEndDate.HasValue && actualEndDate.Value != DateTime.MinValue)
+            if (actualEndDate.HasValue && actualEndDate != DateTime.MinValue)
             {
                 delivery.LearnActEndDate = actualEndDate.Value;
                 delivery.LearnActEndDateSpecified = true;
