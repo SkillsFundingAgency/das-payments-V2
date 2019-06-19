@@ -8,7 +8,9 @@ using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
@@ -68,8 +70,8 @@ namespace SFA.DAS.Payments.PerformanceTests
             Builder.Register((c, p) =>
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
-                return new PaymentsDataContext(configHelper.PaymentsConnectionString);
-            }).As<IPaymentsDataContext>().InstancePerDependency();
+                return new TestPaymentsDataContext(configHelper.PaymentsConnectionString);
+            }).As<IPaymentsDataContext>().AsSelf().InstancePerDependency();
             DcHelper.AddDcConfig(Builder);
 
             Container = Builder.Build();
@@ -79,12 +81,12 @@ namespace SFA.DAS.Payments.PerformanceTests
         }
 
 
-        [TestCase(5, 100, 1)]
+        [TestCase(1, 1, 1)]
         public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerCount, int collectionPeriod)
         {
             Randomizer.Seed = new Random(8675309);
             var sessions = Enumerable.Range(1, providerCount)
-                .Select(i => new TestSession(ukprn: i))
+                .Select(i => new TestSession(new RandomUkprnService(Container.Resolve<TestPaymentsDataContext>()), new RandomUlnService()))
                 .ToList();
             var ilrSubmissions = new List<Task>();
             if (providerLearnerCount > 1)
