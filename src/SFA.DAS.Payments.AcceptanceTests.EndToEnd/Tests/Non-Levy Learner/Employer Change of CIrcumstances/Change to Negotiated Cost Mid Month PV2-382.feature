@@ -36,24 +36,24 @@ Scenario Outline: Non-levy learner changes employer with change to negotiated pr
 		| 04/Aug/Current Academic Year | 12 months        | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
 	# additional residual fields
 	And price details as follows
-		| Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
-		| 1st price details | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
-		| 2nd price details | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          | 5625                    | 10/Nov/Current Academic Year           | 0                         | 10/Nov/Current Academic Year             | 90%                         |
+		| Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number | 
+		| 1st price details | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   | 
+		| 2nd price details | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          | 5625                    | 10/Nov/Current Academic Year           | 0                         | 10/Nov/Current Academic Year             | 90%                         | Act2          | 1                   | 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing |
-		| Aug/Current Academic Year | 1000         | 0          | 0         |
-		| Sep/Current Academic Year | 1000         | 0          | 0         |
-		| Oct/Current Academic Year | 1000         | 0          | 0         |
-		| Nov/Current Academic Year | 500          | 0          | 0         |
-		| Dec/Current Academic Year | 500          | 0          | 0         |
-		| Jan/Current Academic Year | 500          | 0          | 0         |
-		| Feb/Current Academic Year | 500          | 0          | 0         |
-		| Mar/Current Academic Year | 500          | 0          | 0         |
-		| Apr/Current Academic Year | 500          | 0          | 0         |
-		| May/Current Academic Year | 500          | 0          | 0         |
-		| Jun/Current Academic Year | 500          | 0          | 0         |
-		| Jul/Current Academic Year | 500          | 0          | 0         |
+		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+		| Aug/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+		| Sep/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+		| Oct/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+		| Nov/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| Dec/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| Jan/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| Feb/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| Mar/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| Apr/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| May/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| Jun/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| Jul/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
 	And only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
 		| R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         |
