@@ -132,7 +132,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the provider prority order is")]
         public void GivenTheProviderPriorityOrder(Table table)
         {
-            
+            AddLevyAccountPriorities.ProcessTable(table, TestSession, CurrentCollectionPeriod, DataContext);
         }
 
         [Given(@"the following commitments exist")]
@@ -220,7 +220,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the following capping will apply to the price episodes")]
         public void GivenTheFollowingCappingWillApply(Table table)
         {
-            AddLevyAccountPriorities.ProcessTable(table, TestSession, CurrentCollectionPeriod, DataContext);
+           
         }
 
         [Then(@"the following learner earnings should be generated")]

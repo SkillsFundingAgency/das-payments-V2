@@ -80,10 +80,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         }
 
-        public TestSession(long? ukprn = null) : this(new RandomUkprnService(), new RandomUlnService())
-        {
-        }
-
         public long GenerateId(int maxValue = 1000000)
         {
             var id = random.Next(maxValue);
