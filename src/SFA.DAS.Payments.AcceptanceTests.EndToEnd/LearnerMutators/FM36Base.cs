@@ -104,7 +104,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             learner.ULNSpecified = true;
 
             MutateHigherEducation(learner);
-
         }
 
         private static void AddSmallEmployerInfo(MessageLearner learner, Learner learnerRequest)
@@ -176,10 +175,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             SetDeliveryAsWithdrawn(functionalSkillsLearningDelivery, aim);
         }
 
-        protected void RemovePmrRecord(MessageLearner learner)
+        protected void SetFrameworkComponentAimDetails(MessageLearner learner, string learnAimRef)
         {
-            var deliveries = learner.LearningDelivery.ToList().Where(ld => ld.AimType == 1);
-            deliveries.ForEach(d=>d.AppFinRecord = d.AppFinRecord.ToList().Where(af => af.AFinType != LearnDelAppFinType.PMR.ToString()).ToArray());
+            var programmeAim = learner.LearningDelivery.Single(ld => ld.AimType == 1);
+            var componentAim = learner.LearningDelivery.Single(ld => ld.AimType == 3);
+            componentAim.LearnAimRef = learnAimRef;
+            componentAim.FundModel = programmeAim.FundModel;
+            componentAim.ProgType = programmeAim.ProgType;
+            componentAim.FworkCode = programmeAim.FworkCode;
+            componentAim.LearnStartDate = programmeAim.LearnStartDate;
         }
 
         private void MutateAimForLearner(Aim aim, List<MessageLearnerLearningDelivery> learnerLearningDeliveries, int numberOfAimsForLearner)
