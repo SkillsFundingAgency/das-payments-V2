@@ -50,6 +50,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 EarningType = earning.EarningType,
                 SfaContributionPercentage = earning.SfaContributionPercentage.Value,
                 PriceEpisodeIdentifier = earning.PriceEpisodeIdentifier,
+                AccountId = earning.AccountId,
+                TransferSenderAccountId = earning.TransferSenderAccountId
             });
 
             return result;

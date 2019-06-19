@@ -92,14 +92,21 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandlePayableEarningEvent(PayableEarningEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling PayableEarningEvent for {apprenticeshipKeyString}");
-
-            using (var operation = telemetry.StartOperation())
+            try
             {
-                await Initialise().ConfigureAwait(false);
-                var requiredPaymentEvents = await payableEarningEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
-                Log(requiredPaymentEvents);
-                telemetry.StopOperation(operation);
-                return requiredPaymentEvents;
+                using (var operation = telemetry.StartOperation())
+                {
+                    await Initialise().ConfigureAwait(false);
+                    var requiredPaymentEvents = await payableEarningEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                    Log(requiredPaymentEvents);
+                    telemetry.StopOperation(operation);
+                    return requiredPaymentEvents;
+                }
+            }
+            catch (Exception e)
+            {
+                paymentLogger.LogError($"Error handling payable earning. Error: {e.Message}");
+                throw;
             }
         }
 
