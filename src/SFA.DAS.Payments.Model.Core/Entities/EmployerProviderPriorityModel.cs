@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.Payments.Model.Core.Entities
+﻿namespace SFA.DAS.Payments.Model.Core.Entities
 {
     public class EmployerProviderPriorityModel
     {

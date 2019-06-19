@@ -4,6 +4,8 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -127,6 +129,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             GivenPriceDetailsAsFollows(table);
         }
 
+        [Given(@"the provider prority order is")]
+        public void GivenTheProviderPriorityOrder(Table table)
+        {
+            
+        }
+
         [Given(@"the following commitments exist")]
         [Given(@"the following apprenticeships exist")]
         [Given(@"the Commitment details are changed as follows")]
@@ -212,7 +220,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the following capping will apply to the price episodes")]
         public void GivenTheFollowingCappingWillApply(Table table)
         {
-
+            AddLevyAccountPriorities.ProcessTable(table, TestSession, CurrentCollectionPeriod, DataContext);
         }
 
         [Then(@"the following learner earnings should be generated")]
