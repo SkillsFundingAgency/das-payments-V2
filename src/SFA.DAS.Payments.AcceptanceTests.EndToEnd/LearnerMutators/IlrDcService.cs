@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 learners.AddRange(currentIlr.DistinctBy(ilr => ilr.LearnerId).Select(dist => new Learner()
                 {
                     Ukprn = dist.Ukprn, Uln = dist.Uln, LearnerIdentifier = dist.LearnerId,
-                    PostcodePrior = dist.PostcodePrior, SmallEmployer = dist.SmallEmployer
+                    PostcodePrior = dist.PostcodePrior, SmallEmployer = dist.SmallEmployer, EefCode = dist.EefCode
                 }));
 
                 foreach (var learner in learners)
