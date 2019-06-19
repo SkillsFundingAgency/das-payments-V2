@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
     public abstract class FM36Base : ILearnerMultiMutator
     {
         private const int StandardProgrammeType = 25;
+        private const int StandardProgrammeEPADuration = 8;
         private readonly string featureNumber;
         protected ILearnerCreatorDataCache dataCache;
 
@@ -146,7 +147,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             learningDeliveryFam.LearnDelFAMDateToSpecified = true;
         }
 
-        protected void SetupTnpAppFinRecord(MessageLearner messageLearner, MessageLearnerLearningDelivery delivery, Aim learnerRequestAim)
+        protected void SetupTnpAppFinRecord(MessageLearner messageLearner, MessageLearnerLearningDelivery delivery)
         {
             var appFinRecord =
                 delivery.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
@@ -193,39 +194,81 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             if (aim.PlannedDurationAsTimespan.HasValue)
             {
-                delivery.LearnPlanEndDate = delivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value);
-                delivery.LearnPlanEndDateSpecified = true;
+                if (aim.ProgrammeType == StandardProgrammeType)
+                {
+                    delivery.LearnPlanEndDate = delivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value).AddDays(StandardProgrammeEPADuration);
+                    delivery.LearnPlanEndDateSpecified = true;
+                }
+                else
+                {
+                    delivery.LearnPlanEndDate = delivery.LearnStartDate.Add(aim.PlannedDurationAsTimespan.Value);
+                    delivery.LearnPlanEndDateSpecified = true;
+                }
             }
 
+            DateTime? actualEndDate = null;
             if (aim.ActualDurationAsTimespan.HasValue)
             {
-                delivery.LearnActEndDate = delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
-                delivery.LearnActEndDateSpecified = true;
+                actualEndDate = aim.ProgrammeType == StandardProgrammeType ? delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value).AddDays(StandardProgrammeEPADuration) 
+                    : delivery.LearnStartDate.Add(aim.ActualDurationAsTimespan.Value);
             }
+
+            MutateCompletionStatusForLearner(delivery, (int)aim.CompletionStatus, actualEndDate);
 
             MutateLearningDeliveryFamsForLearner(delivery, aim);
 
             delivery.ProgType = aim.ProgrammeType;
             delivery.ProgTypeSpecified = true;
 
-            delivery.FworkCode = aim.FrameworkCode;
-            delivery.FworkCodeSpecified = true;
-
-            delivery.PwayCode = aim.PathwayCode;
-            delivery.PwayCodeSpecified = true;
-
-            delivery.CompStatus = (int)aim.CompletionStatus;
-            delivery.CompStatusSpecified = true;
-
-            if (aim.CompletionStatus == CompletionStatus.Completed)
+            if (aim.ProgrammeType == StandardProgrammeType)
             {
-                delivery.Outcome = (int)Outcome.Achieved;
-                delivery.OutcomeSpecified = true;
+                delivery.StdCode = aim.StandardCode;
+                delivery.StdCodeSpecified = true;
+                delivery.FworkCodeSpecified = false;
+                delivery.PwayCodeSpecified = false;
+            }
+            else
+            {
+                delivery.FworkCode = aim.FrameworkCode;
+                delivery.FworkCodeSpecified = true;
+
+                delivery.PwayCode = aim.PathwayCode;
+                delivery.PwayCodeSpecified = true;
             }
 
             if (numberOfAimsForLearner == 1) // assume that this aim was created through the old style of Training records - in which case we need to setup the functionalskillsdelivery as well.
             {
                 MutateAimType3ForLearnerFromTrainingRecord(learnerLearningDeliveries, delivery);
+            }
+        }
+
+        private void MutateCompletionStatusForLearner(MessageLearnerLearningDelivery delivery, int completionStatus, DateTime? actualEndDate)
+        {
+            delivery.CompStatus = completionStatus;
+            delivery.CompStatusSpecified = true;
+
+            if (actualEndDate.HasValue && actualEndDate != DateTime.MinValue)
+            {
+                delivery.LearnActEndDate = actualEndDate.Value;
+                delivery.LearnActEndDateSpecified = true;
+            }
+
+            switch (completionStatus)
+            {
+                case (int) CompletionStatus.Completed:
+                    delivery.Outcome = (int) Outcome.Achieved;
+                    delivery.OutcomeSpecified = true;
+                    break;
+                case (int) CompletionStatus.Withdrawn:
+                    delivery.Outcome = (int) Outcome.NoAchievement;
+                    delivery.OutcomeSpecified = true;
+                    delivery.WithdrawReason = (int) WithDrawalReason.FinancialReasons;
+                    delivery.WithdrawReasonSpecified = true;
+                    break;
+                default:
+                {
+                    break;
+                }
             }
         }
 
@@ -297,17 +340,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         {
             var appFinRecords = delivery.AppFinRecord.ToList();
 
-            AddNewTnpAppFinRecord(delivery, appFinRecords, priceEpisode);
+            AddNewTnpAppFinRecordForTrainingPrice(appFinRecords, priceEpisode);
 
             if (aim.ProgrammeType == StandardProgrammeType)
             {
                 AddNewPmrAppFinRecord(appFinRecords, priceEpisode);
+                AddTnpAppFinRecordForAssessmentPrice(appFinRecords, priceEpisode);
+                delivery.EPAOrgID = "EPA0022";
             }
 
             delivery.AppFinRecord = appFinRecords.ToArray();
         }
 
-        private void AddNewTnpAppFinRecord(MessageLearnerLearningDelivery delivery, List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
+        private void AddNewTnpAppFinRecordForTrainingPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
         {
             var tnp = appFinRecords.SingleOrDefault(a => a.AFinType == "TNP");
             if (tnp == null)
@@ -330,19 +375,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 tnp.AFinDateSpecified = true;
             }
         }
+
         private void AddNewPmrAppFinRecord(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
         {
-            var pmr = appFinRecords.SingleOrDefault(a => a.AFinType == "PMR");
+            var pmr = appFinRecords.SingleOrDefault(a => a.AFinType == LearnDelAppFinType.PMR.ToString());
             if (pmr == null)
             {
                 pmr = new MessageLearnerLearningDeliveryAppFinRecord()
                 {
-                    AFinType = "PMR"
+                    AFinType = LearnDelAppFinType.PMR.ToString()
                 };
                 appFinRecords.Add(pmr);
             }
 
-            pmr.AFinCode = (int)LearnDelAppFinCode.TotalAssessmentPrice;
+            pmr.AFinCode = (int) LearnDelAppFinCode.TotalAssessmentPrice;
             pmr.AFinCodeSpecified = true;
             pmr.AFinAmount = Convert.ToInt32(priceEpisode.TotalAssessmentPrice);
             pmr.AFinAmountSpecified = true;
@@ -350,20 +396,34 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             pmr.AFinDateSpecified = true;
         }
 
+        private void AddTnpAppFinRecordForAssessmentPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
+        {
+            var tnp = appFinRecords.SingleOrDefault(a =>
+                                                        a.AFinType == LearnDelAppFinType.TNP.ToString() &&
+                                                        a.AFinCode == (int) LearnDelAppFinCode.TotalAssessmentPrice);
+            if (tnp == null)
+            {
+                tnp = new MessageLearnerLearningDeliveryAppFinRecord()
+                      {
+                          AFinType = LearnDelAppFinType.TNP.ToString(),
+                          AFinCode = (int) LearnDelAppFinCode.TotalAssessmentPrice,
+                          AFinCodeSpecified = true
+                      };
+                appFinRecords.Add(tnp);
+            }
+
+            tnp.AFinAmount = Convert.ToInt32(priceEpisode.TotalAssessmentPrice);
+            tnp.AFinAmountSpecified = true;
+            tnp.AFinDate = priceEpisode.TotalAssessmentPriceEffectiveDate.ToDate();
+            tnp.AFinDateSpecified = true;
+        }
+
         private void MutateAimType3ForLearnerFromTrainingRecord(List<MessageLearnerLearningDelivery> learnerLearningDeliveries, MessageLearnerLearningDelivery delivery)
         {
             var functionalSkillLearningDelivery = learnerLearningDeliveries.Single(learnDelivery =>
                 learnDelivery.AimType == 3);
 
-            if (delivery.CompStatus == (int)CompletionStatus.Completed)
-            {
-                functionalSkillLearningDelivery.CompStatus = (int)CompletionStatus.Completed;
-                functionalSkillLearningDelivery.CompStatusSpecified = true;
-                functionalSkillLearningDelivery.LearnActEndDate = delivery.LearnActEndDate;
-                functionalSkillLearningDelivery.LearnActEndDateSpecified = true;
-                functionalSkillLearningDelivery.Outcome = (int)Outcome.Achieved;
-                functionalSkillLearningDelivery.OutcomeSpecified = true;
-            }
+            MutateCompletionStatusForLearner(functionalSkillLearningDelivery, (int) delivery.CompStatus, delivery.LearnActEndDate);
         }
 
         private long CalculateEmployerContribution(string sfaContributionPercentage, decimal totalTrainingPrice)

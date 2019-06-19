@@ -17,7 +17,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
-namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
+namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Mapping
 {
     [TestFixture]
     public class EarningEventMappingTest
@@ -184,8 +184,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application
             var act1RequiredPayment = (CalculatedRequiredLevyAmount)requiredPayment;
 
             Assert.AreEqual(earningPeriod.Period, act1RequiredPayment.DeliveryPeriod);
-            Assert.AreEqual(earningPeriod.AccountId, act1RequiredPayment.AccountId);
-            Assert.AreEqual(earningPeriod.TransferSenderAccountId, act1RequiredPayment.TransferSenderAccountId);
             Assert.AreEqual(earningPeriod.ApprenticeshipId, act1RequiredPayment.ApprenticeshipId);
             Assert.AreEqual(earningPeriod.ApprenticeshipPriceEpisodeId, act1RequiredPayment.ApprenticeshipPriceEpisodeId);
             //Assert.AreEqual(earningPeriod.AgreementId, act1RequiredPayment.AgreementId);
