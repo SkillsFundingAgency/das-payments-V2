@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
@@ -44,6 +45,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private MapperConfiguration mapperConfiguration;
         private Mock<IPaymentLogger> paymentLoggerMock;
         private Mock<IDataCache<LevyAccountModel>> levyAccountCacheMock;
+        private Mock<IDataCache<List<EmployerProviderPriorityModel>>> employerProviderPrioritiesMock;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -65,6 +67,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
             paymentLoggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
             sortableKeysMock = mocker.Mock<ISortableKeyGenerator>();
+            employerProviderPrioritiesMock = mocker.Mock<IDataCache<List<EmployerProviderPriorityModel>>>();
             service = mocker.Create<RequiredLevyAmountFundingSourceService>(
                 new NamedParameter("mapper", mapper),
                 new NamedParameter("paymentLogger", paymentLoggerMock.Object)
@@ -86,6 +89,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             levyAccountRepositoryMock.Verify();
             sortableKeysMock.Verify();
             levyAccountCacheMock.Verify();
+            employerProviderPrioritiesMock.Verify();
         }
 
         [Test]
@@ -114,6 +118,35 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             // assert
         }
 
+        [Test]
+        public async Task TestStoreEmployerProviderPriority()
+        {
+            // arrange
+            var employerChangedProviderPriority = new EmployerChangedProviderPriority
+            {
+              EmployerAccountId = 1,
+              OrderedProviders =  new List<long> { 1,2,3}
+            };
+
+
+            levyAccountRepositoryMock
+                .Setup(x => x.AddEmployerProviderPriorities(
+                    It.Is<List<EmployerProviderPriorityModel>>(o => o.Count == 3 && o[0].EmployerAccountId ==1 && o[0].Order == 1 && o[0].Ukprn == 1), 
+                    CancellationToken.None))
+                .Returns(Task.CompletedTask).Verifiable();
+
+            employerProviderPrioritiesMock
+                 .Setup(x => x.AddOrReplace(CacheKeys.EmployerPaymentPriorities,
+                     It.Is<List<EmployerProviderPriorityModel>>(o => o.Count == 3 && o[0].EmployerAccountId == 1 && o[0].Order == 1 && o[0].Ukprn == 1),
+                     CancellationToken.None))
+                 .Returns(Task.CompletedTask).Verifiable();
+
+            // act
+            await service.StoreEmployerProviderPriority(employerChangedProviderPriority);
+
+            // assert in tear down
+        }
+        
         [Test]
         public async Task CorrectParametersPassedToSortableKeyService()
         {
