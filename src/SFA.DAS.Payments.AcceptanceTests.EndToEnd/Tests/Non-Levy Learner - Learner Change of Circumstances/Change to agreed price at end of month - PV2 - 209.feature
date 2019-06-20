@@ -1,5 +1,4 @@
-﻿#@ignore
-#@supports_dc_e2e
+﻿#@supports_dc_e2e
 Feature: Non-Levy learner, and there is a change to the negotiated price which happens at the end of the month - PV2-209
 	As a provider,
 	I want a non-levy learner, changes to the agreed price at the end of the month, to be paid the correct amount
