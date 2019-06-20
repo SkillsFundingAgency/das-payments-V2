@@ -1,7 +1,4 @@
-﻿@ignore
-# Issue with assigning the price episodes to the correct learner.
-# At the moment, both learners get both price episodes assigned to them which means that the EarningEvents.OnProgramEarningValueResolver throws an error trying to get a single period value
-Feature: Two Learners two employers one provider not enough levy - PV2-268
+﻿Feature: Two Learners two employers one provider not enough levy - PV2-268
 	As a provider,
 	I want 2 learners with 2 employers that have 1 provider and there is not enough levy to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.
@@ -77,9 +74,9 @@ Scenario Outline: 2 levy learners 2 employers 1 provider not enough levy PV2-268
 		| learner a  | 01/Sep/Last Academic Year | 12 months        | 7500                 | 01/Sep/Last Academic Year           |                        |                                       | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
 		| learner b  | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	And price details as follows		
-        | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | pe-1             | 7500                 | 01/Sep/Last Academic Year           |                        | 01/Sep/Last Academic Year             | Act1          | 1                   | 90%                         |
-        | pe-2             | 15000                | 01/Sep/Last Academic Year           |                        | 01/Sep/Last Academic Year             | Act1          | 1                   | 90%                         |
+		| Learner ID | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+		| learner a  | pe-1             | 7500                 | 01/Sep/Last Academic Year           |                        | 01/Sep/Last Academic Year             | Act1          | 1                   | 90%                         |
+		| learner b  | pe-2             | 15000                | 01/Sep/Last Academic Year           |                        | 01/Sep/Last Academic Year             | Act1          | 1                   | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Learner ID | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |

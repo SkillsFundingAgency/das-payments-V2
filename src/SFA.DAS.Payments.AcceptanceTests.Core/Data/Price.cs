@@ -44,5 +44,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 : ResidualTrainingPrice + ResidualAssessmentPrice;
 
         public string Provider { get; set; }
+
+        public string LearnerId { get; set; }
     }
 }

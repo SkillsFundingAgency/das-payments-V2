@@ -993,7 +993,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     }
                     else
                     {
-                        foreach (var currentPriceEpisode in CurrentPriceEpisodes.Where(p => string.IsNullOrWhiteSpace(p.Provider) || TestSession.GetProviderByIdentifier(p.Provider).Ukprn == provider.Ukprn))
+                        foreach (var currentPriceEpisode in CurrentPriceEpisodes.Where(p => (string.IsNullOrWhiteSpace(p.Provider) || TestSession.GetProviderByIdentifier(p.Provider).Ukprn == provider.Ukprn) 
+                                                                                            && (string.IsNullOrWhiteSpace(p.LearnerId) || p.LearnerId == aim.LearnerId)))
                         {
                             if (currentPriceEpisode.AimSequenceNumber == 0 ||
                                 currentPriceEpisode.AimSequenceNumber == aim.AimSequenceNumber)

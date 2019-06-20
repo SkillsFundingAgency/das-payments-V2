@@ -1,7 +1,4 @@
-﻿@ignore
-# Issue with assigning the price episodes to the correct learner.
-# At the moment, both learners get both price episodes assigned to them which means that the EarningEvents.OnProgramEarningValueResolver throws an error trying to get a single period value
-@supports_dc_e2e
+﻿@supports_dc_e2e
 Feature: Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199
 
 Scenario Outline: Two non-LEVY learners, one learner finishes early, one finishes late PV2-199
@@ -64,9 +61,9 @@ Scenario Outline: Two non-LEVY learners, one learner finishes early, one finishe
         | learner a  | 01/Sep/Last Academic Year | 15 months        | 9375                 | 01/Sep/Last Academic Year           |                        |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%						   |
         | learner b  | 08/Sep/Last Academic Year | 12 months        | 15000                | 08/Sep/Last Academic Year           |                        |                                       | 15 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%						   |
 	 And price details as follows
-		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
-		| pe-1             | 9375                 | 01/Sep/Last Academic Year           |                        |                                       | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
-		| pe-2             | 15000                | 08/Sep/Last Academic Year           |                        |                                       | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
+		| Learner ID | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
+		| learner a  | pe-1             | 9375                 | 01/Sep/Last Academic Year           |                        |                                       | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
+		| learner b  | pe-2             | 15000                | 08/Sep/Last Academic Year           |                        |                                       | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
     Then the following learner earnings should be generated
 		| Learner ID | Delivery Period           | On-Programme | Completion | Balancing | SFA Contribution Percentage | Price Episode Identifier |

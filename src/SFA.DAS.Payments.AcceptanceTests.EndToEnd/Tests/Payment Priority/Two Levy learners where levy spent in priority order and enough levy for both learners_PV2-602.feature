@@ -1,6 +1,4 @@
 @ignore
-# Issue with assigning the price episodes to the correct learner.
-# At the moment, both learners get both price episodes assigned to them which means that the EarningEvents.OnProgramEarningValueResolver throws an error trying to get a single period value
 Feature: Earnings and payments for two DAS learners, levy is spent in priority order and available for both learners PV2-602
 
 Scenario Outline:  Earnings and payments for two DAS learners, levy is spent in priority order and available for both learners PV2-602
