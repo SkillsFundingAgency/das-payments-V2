@@ -136,7 +136,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.Course.PathwayCode = ilrLearner.PathwayCode;
                 learner.SmallEmployer = ilrLearner.SmallEmployer;
                 learner.PostcodePrior = ilrLearner.PostcodePrior;
-                if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln;
+                if (ilrLearner.Uln != default(long))
+                {
+                    learner.Uln = ilrLearner.Uln;
+                }
+                else
+                {
+                    ilrLearner.Uln = learner.Uln;
+                }
             });
         }
 
