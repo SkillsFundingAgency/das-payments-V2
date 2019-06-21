@@ -104,27 +104,33 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp =
                 messageLearner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
 
-            switch (learner.SmallEmployer)
-            {
-                case "SEM1":
-                    {
-                        var les1 = messageLearner.LearnerEmploymentStatus[0];
-                        var lesm1 = les1.EmploymentStatusMonitoring.ToList();
-                        lesm1.Add(new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
-                        {
-                            ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
-                            ESMCode = (int)EmploymentStatusMonitoringCode.SmallEmployer,
-                            ESMCodeSpecified = true
-                        });
-                        messageLearner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = lesm1.ToArray();
-                        break;
-                    }
-            }
+            AddSmallEmployerInfo(learner, learnerRequest);
 
             messageLearner.ULN = learner.Uln;
             messageLearner.ULNSpecified = true;
 
             MutateHigherEducation(messageLearner);
+        }
+
+        private static void AddSmallEmployerInfo(MessageLearner learner, Learner learnerRequest)
+        {
+            if (learnerRequest.SmallEmployer != "SEM1") 
+                return;
+
+            var learnerEmploymentStatus = learner.LearnerEmploymentStatus[0];
+            var statusMonitorings = learnerEmploymentStatus.EmploymentStatusMonitoring.ToList();
+
+            statusMonitorings.Add(new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring
+            {
+                ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
+                ESMCode = (int) EmploymentStatusMonitoringCode.SmallEmployer,
+                ESMCodeSpecified = true
+            });
+
+            learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = statusMonitorings.ToArray();
+
+            var eefCode = (LearnDelFAMCode) learnerRequest.EefCode.GetValueOrDefault((int) LearnDelFAMCode.EEF_Apprenticeship_19);
+            DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(learner, LearnDelFAMType.EEF, eefCode);
         }
 
         private void MutateAimsForLearner(List<Aim> aims, List<MessageLearnerLearningDelivery> learnerLearningDeliveries)
