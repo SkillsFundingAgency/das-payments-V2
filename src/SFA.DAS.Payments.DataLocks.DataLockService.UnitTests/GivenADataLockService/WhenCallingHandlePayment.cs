@@ -13,6 +13,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -25,7 +26,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
     public class WhenCallingHandlePayment
     {
         private IMapper mapper;
-
+        
         [OneTimeSetUp]
         public void Initialise()
         {
@@ -62,7 +63,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
                 });
 
             var actuals = await new DataLockService(actorService, new ActorId(Guid.Empty), paymentLoggerMock,
-                    commitmentRepositoryMock, dataCacheMock, dataLockProcessor.Object)
+                    commitmentRepositoryMock, dataCacheMock, dataLockProcessor.Object, Mock.Of<IApprenticeshipUpdatedProcessor>())
                 .HandleEarning(testEarning, default(CancellationToken));
 
             actuals.Should().HaveCount(2);
