@@ -24,5 +24,11 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
         public ApprenticeshipStatus Status { get; set; }
         public List<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisodes { get; set; }
         public List<ApprenticeshipDuplicate> Duplicates { get; set; }
+
+        public ApprenticeshipUpdated()
+        {
+            ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
+            Duplicates= new List<ApprenticeshipDuplicate>();
+        }
     }
 }

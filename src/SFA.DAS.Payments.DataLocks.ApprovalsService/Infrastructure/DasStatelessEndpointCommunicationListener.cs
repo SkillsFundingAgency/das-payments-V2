@@ -6,6 +6,7 @@ using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.CommitmentsV2.Messages.Events;
+using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
@@ -100,6 +101,9 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
             endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior),
                 "Logs exceptions to the payments logger");
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton((IPaymentLogger)logger));
+            endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IContainerScopeFactory>()));
+            endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IEndpointInstanceFactory>()));
+            
             return endpointConfiguration;
 
         }

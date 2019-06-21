@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using NServiceBus;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -20,14 +22,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IPaymentLogger logger;
         private readonly IMapper mapper;
         private readonly IApprenticeshipService apprenticeshipService;
-        private readonly IMessageSession messageSession;
+        private readonly IEndpointInstanceFactory endpointInstanceFactory;
 
-        public ApprenticeshipProcessor(IPaymentLogger logger, IMapper mapper, IApprenticeshipService apprenticeshipService, IMessageSession messageSession )
+        public ApprenticeshipProcessor(IPaymentLogger logger, IMapper mapper, IApprenticeshipService apprenticeshipService, IEndpointInstanceFactory endpointInstanceFactory)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.apprenticeshipService = apprenticeshipService ?? throw new ArgumentNullException(nameof(apprenticeshipService));
-            this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
+            this.endpointInstanceFactory = endpointInstanceFactory ?? throw new ArgumentNullException(nameof(endpointInstanceFactory));
         }
 
         public async Task Process(ApprenticeshipCreatedEvent createdEvent)
@@ -36,9 +38,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 logger.LogDebug($"Now processing the apprenticeship created event. Apprenticeship id: {createdEvent.ApprenticeshipId}, employer account id: {createdEvent.AccountId}, Ukprn: {createdEvent.ProviderId}.");
                 var model = mapper.Map<ApprenticeshipModel>(createdEvent);
-                await apprenticeshipService.NewApprenticeship(model).ConfigureAwait(false);
+                var duplicates = await apprenticeshipService.NewApprenticeship(model).ConfigureAwait(false);
                 var updatedEvent = mapper.Map<ApprenticeshipUpdated>(model);
-                await messageSession.Publish(updatedEvent).ConfigureAwait(false);
+                updatedEvent.Duplicates = duplicates.Select(duplicate => new ApprenticeshipDuplicate { Ukprn = duplicate.Ukprn, ApprenticeshipId = duplicate.ApprenticeshipId }).ToList();
+                var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+                await endpointInstance.Publish(updatedEvent).ConfigureAwait(false);
                 logger.LogInfo($"Finished processing the apprenticeship created event. Apprenticeship id: {createdEvent.ApprenticeshipId}, employer account id: {createdEvent.AccountId}, Ukprn: {createdEvent.ProviderId}.");
             }
             catch (Exception ex)

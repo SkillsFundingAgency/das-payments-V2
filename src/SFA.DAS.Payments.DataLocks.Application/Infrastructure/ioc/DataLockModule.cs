@@ -6,6 +6,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System.Collections.Generic;
+using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 
@@ -27,6 +28,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<CourseValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CalculatePeriodStartAndEndDate>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<ApprenticeshipProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ApprenticeshipService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ApprenticeshipUpdatedProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

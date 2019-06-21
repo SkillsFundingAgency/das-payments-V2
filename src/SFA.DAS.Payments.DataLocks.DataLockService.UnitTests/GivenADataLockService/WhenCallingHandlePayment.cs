@@ -13,6 +13,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
