@@ -1,4 +1,4 @@
-﻿#@supports_dc_e2e
+﻿@supports_dc_e2e
 Feature: Non-Levy 19-24 learner that is not eligible for small employer contribution - PV2-330
 	As a provider,
 	I want a non-levy learner, 1 learner aged 19-24, employed with a small employer at start, is co-funded for on programme and completion payments (this apprentice does not have a Education Health Care plan and is not a care leaver), to be paid the correct amount
@@ -10,8 +10,8 @@ Scenario: Non-levy learner 19-24 not a care leaver or with EHC plan employed wit
 #       | Employer   | Employment Status  | Employment Status Applies | Small Employer |
 #       | employer 1 | in paid employment | 06/Aug/Last Academic Year | SEM1           |
 	Given the provider previously submitted the following learner details
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19-24 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   | SFA Contribution Percentage | Small Employer |
+		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 403            | 1            | 2              | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         | SEM1           |
     And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing |
         | Aug/Last Academic Year | 500          | 0          | 0         |
@@ -42,8 +42,8 @@ Scenario: Non-levy learner 19-24 not a care leaver or with EHC plan employed wit
         | R11/Last Academic Year | Jun/Last Academic Year | 450                    | 50                          | Learning         |
         | R12/Last Academic Year | Jul/Last Academic Year | 450                    | 50                          | Learning         |
     But the Provider now changes the Learner details as follows
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19-24 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   | SFA Contribution Percentage | Small Employer |
+		| 06/Aug/Last Academic Year | 12 months        | 7500                 | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 403            | 1            | 2              | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         | SEM1           |
 	When the amended ILR file is re-submitted for the learners in collection period R01/Current Academic Year
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing |

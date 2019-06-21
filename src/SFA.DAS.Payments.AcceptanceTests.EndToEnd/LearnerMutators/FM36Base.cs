@@ -129,8 +129,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = statusMonitorings.ToArray();
 
-            var eefCode = (LearnDelFAMCode) learnerRequest.EefCode.GetValueOrDefault((int) LearnDelFAMCode.EEF_Apprenticeship_19);
-            DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(learner, LearnDelFAMType.EEF, eefCode);
+            if (learnerRequest.EefCode.HasValue)
+            {
+                var eefCode = (LearnDelFAMCode) learnerRequest.EefCode.Value;
+                DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(learner, LearnDelFAMType.EEF, eefCode);
+            }
         }
 
         private void MutateAimsForLearner(List<Aim> aims, List<MessageLearnerLearningDelivery> learnerLearningDeliveries)
