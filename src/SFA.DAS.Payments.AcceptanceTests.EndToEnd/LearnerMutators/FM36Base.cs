@@ -104,12 +104,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp =
                 messageLearner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
 
-            AddSmallEmployerInfo(learner, learnerRequest);
+            AddSmallEmployerInfo(messageLearner, learner);
 
             messageLearner.ULN = learner.Uln;
             messageLearner.ULNSpecified = true;
 
-            MutateHigherEducation(learner);
+            MutateHigherEducation(messageLearner);
         }
 
         private static void AddSmallEmployerInfo(MessageLearner learner, Learner learnerRequest)
