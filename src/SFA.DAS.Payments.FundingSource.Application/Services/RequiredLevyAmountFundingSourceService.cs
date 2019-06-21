@@ -31,7 +31,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
         private readonly ILevyBalanceService levyBalanceService;
         private readonly IPaymentLogger paymentLogger;
-        private readonly ISortableKeyGenerator sortableKeys;
         private readonly IDataCache<bool> monthEndCache;
         private readonly IDataCache<LevyAccountModel> levyAccountCache;
         private readonly IDataCache<List<EmployerProviderPriorityModel>> employerProviderPriorities;
@@ -44,7 +43,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             IPaymentProcessor processor,
             IMapper mapper,
             IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache,
-            IDataCache<List<string>> requiredPaymentKeys,
             ILevyFundingSourceRepository levyFundingSourceRepository,
             ILevyBalanceService levyBalanceService,
             IPaymentLogger paymentLogger,
@@ -63,7 +61,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.levyFundingSourceRepository = levyFundingSourceRepository ?? throw new ArgumentNullException(nameof(levyFundingSourceRepository));
             this.levyBalanceService = levyBalanceService ?? throw new ArgumentNullException(nameof(levyBalanceService));
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
-            this.sortableKeys = sortableKeys ?? throw new ArgumentNullException(nameof(sortableKeys));
             this.monthEndCache = monthEndCache ?? throw new ArgumentNullException(nameof(monthEndCache));
             this.levyAccountCache = levyAccountCache ?? throw new ArgumentNullException(nameof(levyAccountCache));
             this.employerProviderPriorities = employerProviderPriorities ?? throw new ArgumentNullException(nameof(employerProviderPriorities));

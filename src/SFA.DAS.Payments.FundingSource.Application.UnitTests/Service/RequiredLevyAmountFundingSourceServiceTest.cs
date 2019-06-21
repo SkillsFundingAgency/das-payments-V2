@@ -36,17 +36,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
         private AutoMock mocker;
         private Mock<IDataCache<CalculatedRequiredLevyAmount>> eventCacheMock;
-        private Mock<IDataCache<List<string>>> keyCacheMock;
         private Mock<IDataCache<bool>> monthEndCacheMock;
         private Mock<ILevyFundingSourceRepository> levyAccountRepositoryMock;
         private Mock<IPaymentProcessor> processorMock;
         private Mock<ILevyBalanceService> levyBalanceServiceMock;
-        private Mock<ISortableKeyGenerator> sortableKeysMock;
         private IRequiredLevyAmountFundingSourceService service;
         private Mock<IGenerateSortedPaymentKeys> generateSortedPaymentKeysMock;
-
         private MapperConfiguration mapperConfiguration;
-        
         private Mock<IPaymentLogger> paymentLoggerMock;
         private Mock<IDataCache<LevyAccountModel>> levyAccountCacheMock;
         private Mock<IDataCache<List<EmployerProviderPriorityModel>>> employerProviderPrioritiesMock;
@@ -66,14 +62,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         {
             mocker = AutoMock.GetStrict();
             eventCacheMock = mocker.Mock<IDataCache<CalculatedRequiredLevyAmount>>();
-            keyCacheMock = mocker.Mock<IDataCache<List<string>>>();
             monthEndCacheMock = mocker.Mock<IDataCache<bool>>();
             levyAccountCacheMock = mocker.Mock<IDataCache<LevyAccountModel>>();
             levyAccountRepositoryMock = mocker.Mock<ILevyFundingSourceRepository>();
             processorMock = mocker.Mock<IPaymentProcessor>();
             levyBalanceServiceMock = mocker.Mock<ILevyBalanceService>();
             paymentLoggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
-            sortableKeysMock = mocker.Mock<ISortableKeyGenerator>();
             employerProviderPrioritiesMock = mocker.Mock<IDataCache<List<EmployerProviderPriorityModel>>>();
 
             refundSortKeysCacheMock = mocker.Mock<IDataCache<List<string>>>();
@@ -97,14 +91,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         public void TearDown()
         {
             eventCacheMock.Verify();
-            keyCacheMock.Verify();
             processorMock.Verify();
             levyAccountRepositoryMock.Verify();
-            sortableKeysMock.Verify();
             levyAccountCacheMock.Verify();
             employerProviderPrioritiesMock.Verify();
-
-
+            generateSortedPaymentKeysMock.Verify();
             refundSortKeysCacheMock.Verify();
             transferPaymentSortKeysCacheMock.Verify();
             requiredPaymentSortKeysCacheMock.Verify();
@@ -230,7 +221,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             // assert in teardown 
         }
-        
+
         [Test]
         public async Task TestStoreEmployerProviderPriority()
         {
@@ -259,27 +250,63 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             // assert in tear down
         }
-        
+
         [Test]
         public async Task TestRegisterSubsequentRequiredPayment()
         {
             // arrange
-            var keys = new List<string> { "1", "2" };
-            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
+            var eventId = Guid.NewGuid();
+            long expectedUln = 100;
+            long expectedUkprn = 100;
+
+            var keys = new List<RequiredPaymentSortKeyModel>
             {
-                EventId = Guid.NewGuid(),
-                Priority = 4,
-                Learner = new Learner(),
-                AccountId = 1
+                new RequiredPaymentSortKeyModel
+                {
+                    Ukprn = expectedUkprn,
+                    Uln = 1,
+                    Id = Guid.NewGuid().ToString(),
+                    StarDate = DateTime.Today
+                },
+                new RequiredPaymentSortKeyModel
+                {
+                    Ukprn = expectedUkprn,
+                    Uln = 2,
+                    Id = Guid.NewGuid().ToString(),
+                    StarDate = DateTime.Today
+                }
             };
 
-            var key = GenerateSortableKey(requiredPaymentEvent);
+            var requiredPaymentEvent = new CalculatedRequiredLevyAmount
+            {
+                Ukprn = expectedUkprn,
+                StartDate = DateTime.Today,
+                EventId = eventId,
+                Priority = 4,
+                Learner = new Learner
+                {
+                    Uln = expectedUln
+                },
+                AccountId = 1,
+            };
 
-            eventCacheMock.Setup(c => c.Add(key, requiredPaymentEvent, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
-            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None)).ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys)).Verifiable();
-            keyCacheMock.Setup(c => c.AddOrReplace("keys", It.Is<List<string>>(list => list.Count == 3 && list[2] == key), CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
-            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<Guid>()))
-                .Returns(key);
+            eventCacheMock.Setup(c => c.AddOrReplace(requiredPaymentEvent.EventId.ToString(), requiredPaymentEvent, CancellationToken.None))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            requiredPaymentSortKeysCacheMock
+                .Setup(c => c.TryGet(CacheKeys.RequiredPaymentKeyListKey, CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<RequiredPaymentSortKeyModel>>(true, keys))
+                .Verifiable();
+
+            requiredPaymentSortKeysCacheMock
+                .Setup(c =>
+                    c.AddOrReplace(CacheKeys.RequiredPaymentKeyListKey,
+                        It.Is<List<RequiredPaymentSortKeyModel>>(list => list.Count == 3 &&
+                                                                         list[2].Uln == expectedUln &&
+                                                                         list[2].Ukprn == expectedUkprn), CancellationToken.None))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
 
             // act
             await service.AddRequiredPayment(requiredPaymentEvent);
@@ -309,8 +336,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var sfaCoInvestedPayment = new SfaCoInvestedPayment { AmountDue = 33, Type = FundingSourceType.CoInvestedSfa };
             var allPayments = new FundingSourcePayment[] { levyPayment, employerCoInvestedPayment, sfaCoInvestedPayment };
 
-            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+            generateSortedPaymentKeysMock
+                .Setup(x => x.GeyKeys())
+                .ReturnsAsync(keys)
                 .Verifiable();
 
             eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None))
@@ -326,9 +354,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments).Verifiable();
 
             eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
-            keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
-            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<Guid>()))
-                .Returns(keys[0]);
+
+            refundSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RefundPaymentsKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            transferPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.SenderTransferKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            requiredPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RequiredPaymentKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+
             levyAccountCacheMock.Setup(c => c.AddOrReplace(It.Is<string>(key => key.Equals(CacheKeys.LevyBalanceKey)), It.Is<LevyAccountModel>(model => model.AccountId == 666), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
@@ -353,8 +383,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         {
             // arrange
             var keys = new List<string> { "1", "99", "4", "9" };
-            var expectedKeys = new Queue<string>(new[] { "1", "4", "9", "99" });
-            var expectedKeys2 = new Queue<string>(new[] { "1", "4", "9", "99" });
+            var expectedKeys = new Queue<string>(new[] { "1", "99", "4", "9" });
+            var expectedKeys2 = new Queue<string>(new[] { "1", "99", "4", "9" });
             var requiredPaymentEvent = new CalculatedRequiredLevyAmount
             {
                 EventId = Guid.NewGuid(),
@@ -372,8 +402,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var balance = 100m;
             var transferAllowance = 50;
 
-            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+            generateSortedPaymentKeysMock
+                .Setup(x => x.GeyKeys())
+                .ReturnsAsync(keys)
                 .Verifiable();
 
             eventCacheMock.Setup(c => c.TryGet(It.IsAny<string>(), CancellationToken.None))
@@ -387,18 +418,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             levyBalanceServiceMock.Setup(s => s.Initialise(balance, transferAllowance)).Verifiable();
 
-            processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => new[] { fundingSourcePayment }).Verifiable();
+            processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>()))
+                .Returns(() => new[] { fundingSourcePayment })
+                .Verifiable();
 
             eventCacheMock.Setup(c => c.Clear(It.IsAny<string>(), CancellationToken.None))
                 .Returns(Task.CompletedTask)
                 .Callback<string, CancellationToken>((k, c) => Assert.AreEqual(expectedKeys2.Dequeue(), k))
                 .Verifiable();
 
-            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<Guid>()))
-                .Returns(keys[0]);
+            refundSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RefundPaymentsKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            transferPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.SenderTransferKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            requiredPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RequiredPaymentKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
-
-            keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
             levyAccountCacheMock.Setup(c => c.AddOrReplace(CacheKeys.LevyBalanceKey, It.Is<LevyAccountModel>(model => model.AccountId == 666), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
@@ -409,14 +441,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             // assert
             Assert.AreEqual(0, expectedKeys.Count);
             Assert.AreEqual(0, expectedKeys2.Count);
-        }
-
-        private string GenerateSortableKey(CalculatedRequiredLevyAmount requiredPayment)
-        {
-            return string.Concat(requiredPayment.AmountDue < 0 ? "1" : "9", "-",
-                requiredPayment.Priority.ToString("000000"), "-",
-                DateTime.MaxValue.ToString("yyyyMMddhhmm"), "-",
-                requiredPayment.Learner.Uln);
         }
 
         [Test]
@@ -442,9 +466,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var sfaCoInvestedPayment = new SfaCoInvestedPayment { AmountDue = 33, Type = FundingSourceType.CoInvestedSfa };
             var allPayments = new FundingSourcePayment[] { transferPayment, employerCoInvestedPayment, sfaCoInvestedPayment };
 
-            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+            generateSortedPaymentKeysMock
+                .Setup(x => x.GeyKeys())
+                .ReturnsAsync(keys)
                 .Verifiable();
+
 
             eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None))
                 .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, requiredPaymentEvent))
@@ -459,9 +485,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments);
 
             eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
-            keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
-            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<Guid>()))
-                .Returns(keys[0]);
+
+            refundSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RefundPaymentsKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            transferPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.SenderTransferKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            requiredPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RequiredPaymentKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+
 
             // act
             var fundingSourcePayments = await service.HandleMonthEnd(666, 1);
@@ -501,8 +529,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var unableToFundTransferPayment = new UnableToFundTransferPayment { AmountDue = 44, Type = FundingSourceType.Transfer };
             var allPayments = new FundingSourcePayment[] { transferPayment, unableToFundTransferPayment };
 
-            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+            generateSortedPaymentKeysMock
+                .Setup(x => x.GeyKeys())
+                .ReturnsAsync(keys)
                 .Verifiable();
 
             eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None))
@@ -518,17 +547,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments).Verifiable();
 
             eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
-            keyCacheMock.Setup(c => c.Clear("keys", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
-
-
-
-
-
-
-
-            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<Guid>()))
-                .Returns(keys[0]);
+            refundSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RefundPaymentsKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            transferPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.SenderTransferKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            requiredPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RequiredPaymentKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
             // act
             var fundingSourcePayments = await service.HandleMonthEnd(666, 1);
@@ -541,7 +563,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             fundingSourcePayments[0].AmountDue.Should().Be(55);
             fundingSourcePayments[1].AmountDue.Should().Be(44);
         }
-
 
         [Test]
         public async Task ShouldSetMonthEndPaymentsProcessedFlag()
@@ -564,8 +585,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var sfaCoInvestedPayment = new SfaCoInvestedPayment { AmountDue = 33, Type = FundingSourceType.CoInvestedSfa };
             var allPayments = new FundingSourcePayment[] { levyPayment, employerCoInvestedPayment, sfaCoInvestedPayment };
 
-            keyCacheMock.Setup(c => c.TryGet("keys", CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
+            generateSortedPaymentKeysMock
+                .Setup(x => x.GeyKeys())
+                .ReturnsAsync(keys)
                 .Verifiable();
 
             eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None))
@@ -581,9 +603,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             processorMock.Setup(p => p.Process(It.IsAny<RequiredPayment>())).Returns(() => allPayments).Verifiable();
 
             eventCacheMock.Setup(c => c.Clear(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-            keyCacheMock.Setup(c => c.Clear(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<Guid>()))
-                .Returns(keys[0]);
+
+            refundSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RefundPaymentsKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            transferPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.SenderTransferKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+            requiredPaymentSortKeysCacheMock.Setup(c => c.Clear(CacheKeys.RequiredPaymentKeyListKey, CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+
 
             // act
             await service.HandleMonthEnd(666, 1);
@@ -596,28 +620,60 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         public async Task ShouldAddPaymentToCacheIfMonthEndNotStarted()
         {
             // arrange
-            var keys = new List<string> { "1", "2" };
+            const long expectedUln = 200;
+            const long expectedUkprn = 100;
+            var expectedEventId = Guid.NewGuid();
+
+            var keys = new List<RequiredPaymentSortKeyModel>
+            {
+                new RequiredPaymentSortKeyModel
+                {
+                    Ukprn = expectedUkprn,
+                    Uln = 1,
+                    Id = Guid.NewGuid().ToString(),
+                    StarDate = DateTime.Today
+                },
+                new RequiredPaymentSortKeyModel
+                {
+                    Ukprn = expectedUkprn,
+                    Uln = 2,
+                    Id = Guid.NewGuid().ToString(),
+                    StarDate = DateTime.Today
+                }
+            };
             var unableToFundEvent = new ProcessUnableToFundTransferFundingSourcePayment
             {
-                EventId = Guid.NewGuid(),
-                Learner = new Learner(),
+                Ukprn =  expectedUkprn,
+                EventId = expectedEventId,
                 AccountId = 1,
-                AmountDue = 100
+                AmountDue = 100,
+                StartDate = DateTime.Today,
+                Learner = new Learner
+                {
+                    Uln = expectedUln
+                },
             };
 
-            var sortableKey = "test_key";
+            eventCacheMock
+                .Setup(c => c.AddOrReplace(expectedEventId.ToString(), It.Is<CalculatedRequiredLevyAmount>(levyEvent => levyEvent.AmountDue == unableToFundEvent.AmountDue && levyEvent.EventId == expectedEventId), CancellationToken.None))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
 
-            eventCacheMock.Setup(c => c.Add(sortableKey, It.Is<CalculatedRequiredLevyAmount>(levyEvent => levyEvent.AmountDue == unableToFundEvent.AmountDue && levyEvent.EventId == unableToFundEvent.EventId), CancellationToken.None))
+            requiredPaymentSortKeysCacheMock
+                .Setup(c => c.TryGet(CacheKeys.RequiredPaymentKeyListKey, CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<RequiredPaymentSortKeyModel>>(true, keys))
+                .Verifiable();
+
+            requiredPaymentSortKeysCacheMock
+                .Setup(c =>
+                    c.AddOrReplace(CacheKeys.RequiredPaymentKeyListKey,
+                        It.Is<List<RequiredPaymentSortKeyModel>>(list => list.Count == 3 &&
+                                                                         list[2].Uln == expectedUln &&
+                                                                         list[2].Ukprn == expectedUkprn), CancellationToken.None))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
-            keyCacheMock.Setup(c => c.TryGet(CacheKeys.KeyListKey, CancellationToken.None))
-                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, keys))
-                .Verifiable();
-            keyCacheMock.Setup(c => c.AddOrReplace(CacheKeys.KeyListKey, It.Is<List<string>>(list => list.Count == 3 && list[2] == sortableKey), CancellationToken.None))
-                .Returns(Task.CompletedTask)
-                .Verifiable();
-            sortableKeysMock.Setup(x => x.Generate(It.IsAny<decimal>(), It.IsAny<int>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<bool>(), It.IsAny<Guid>()))
-                .Returns(sortableKey);
+
+
             monthEndCacheMock.Setup(c => c.TryGet(It.Is<string>(key => key.Equals(CacheKeys.MonthEndCacheKey)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => new ConditionalValue<bool>(false, false))
                 .Verifiable();
