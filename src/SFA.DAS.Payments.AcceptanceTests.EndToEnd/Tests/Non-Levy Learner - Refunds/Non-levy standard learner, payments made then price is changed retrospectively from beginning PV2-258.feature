@@ -1,5 +1,5 @@
-﻿#@supports_dc_e2e
-Feature: Non-levy standard learner, payments made then price is changed retrospectively from beginning PV2-258
+﻿@supports_dc_e2e
+Feature: Non-levy learner, payments made then price is changed retrospectively from beginning PV2-258
 
 As a provider,
 I want a non-levy learner, that when payments are made then price is changed retrospectively from beginning
@@ -9,8 +9,8 @@ Scenario Outline:  non-levy learner price changed retrospectively PV2-258
 Non-Levy standard learner, payments made then price is changed retrospectively from beginning
 
     Given the provider previously submitted the following learner details
-        | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | 1        | start of academic year | 12 months        | 11250                | Aug/Current Academic Year           | 0                      | Aug/Current Academic Year             | 12 months       | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               |
+        | 1        | start of academic year | 12 months        | 11250                | Aug/Current Academic Year           | 0                      | Aug/Current Academic Year             |                 | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 750          | 0          | 0         |
@@ -32,8 +32,8 @@ Non-Levy standard learner, payments made then price is changed retrospectively f
         | R02/Current Academic Year | Sep/Current Academic Year | 675                    | 75                          | Learning         |
 
     But the Provider now changes the Learner details as follows
-        | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | 1        | start of academic year | 12 months        | 10                   | Aug/Current Academic Year           | 0                      | Aug/Current Academic Year             | 12 months       | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
+        | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               |
+        | 1        | start of academic year | 12 months        | 10                   | Aug/Current Academic Year           | 0                      | Aug/Current Academic Year             |                 | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) |
    
   	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |

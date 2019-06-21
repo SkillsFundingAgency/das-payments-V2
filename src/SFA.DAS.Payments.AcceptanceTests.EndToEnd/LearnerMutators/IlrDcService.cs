@@ -6,22 +6,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using AutoMapper;
-using DCT.TestDataGenerator.Functor;
 using ESFA.DC.ILR.TestDataGenerator.Interfaces;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.JobStatus.Interface;
+using MoreLinq;
 using Polly;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.Services;
 using SFA.DAS.Payments.AcceptanceTests.Services.Exceptions;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
-using MoreLinq;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             this.dataContext = dataContext;
         }
 
-        public async Task PublishLearnerRequest(List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber)
+        public async Task PublishLearnerRequest(List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> clearCache)
         {
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
@@ -73,6 +73,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
 
             await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learners);
+
+            // this needs to be called here as the LearnRefNumber is updated to match the ILR in RefreshTestSessionLearnerFromIlr above
+            await clearCache();
 
             await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
         }
