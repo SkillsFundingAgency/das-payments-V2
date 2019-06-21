@@ -52,26 +52,26 @@
     <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1819.Model.Loose.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api.Config, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.Config.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api.Config, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.Config.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api.StorageService, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.StorageService.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api.StorageService, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.StorageService.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Data, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Data.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Data, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Data.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Functors, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Functors.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Functors, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Functors.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Generators, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Generators.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Generators, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Generators.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Interfaces, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Interfaces.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Interfaces, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.IO.AzureStorage, Version=0.1.15.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.IO.AzureStorage.0.1.15-beta0001\lib\netstandard2.0\ESFA.DC.IO.AzureStorage.dll</HintPath>
@@ -82,8 +82,8 @@
     <Reference Include="ESFA.DC.Jobs.Model, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Jobs.Model.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.1.12-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.5-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
