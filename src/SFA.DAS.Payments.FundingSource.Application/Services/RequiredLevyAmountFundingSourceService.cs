@@ -4,9 +4,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Design;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -46,7 +44,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             ILevyFundingSourceRepository levyFundingSourceRepository,
             ILevyBalanceService levyBalanceService,
             IPaymentLogger paymentLogger,
-            ISortableKeyGenerator sortableKeys,
             IDataCache<bool> monthEndCache,
             IDataCache<LevyAccountModel> levyAccountCache,
             IDataCache<List<EmployerProviderPriorityModel>> employerProviderPriorities,
@@ -235,7 +232,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             {
                 Id = paymentEvent.EventId.ToString(),
                 Uln = paymentEvent.Learner.Uln,
-                AgreedOnDate = paymentEvent.StartDate //ToDo get AgreedOnDate from Apprenticeship Model
+                AgreedOnDate = DateTime.MinValue //ToDo get AgreedOnDate from Apprenticeship Model
             };
 
             transferKeysList.Add(newTransferKey);
