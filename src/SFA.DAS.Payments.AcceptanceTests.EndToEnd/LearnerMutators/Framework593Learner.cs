@@ -5,7 +5,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
-    public class Framework593Learner : FM36Base
+    public class Framework593Learner : Fm36Base
     {
         public Framework593Learner(IEnumerable<Learner> learners, string featureNumber) : base(learners, featureNumber)
         {
@@ -24,7 +24,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             functionalSkillsLearningDelivery.LearnStartDate =
                 messageLearner.LearningDelivery.Single(ld => ld.AimType == 1).LearnStartDate;
         }
-
-      
     }
 }

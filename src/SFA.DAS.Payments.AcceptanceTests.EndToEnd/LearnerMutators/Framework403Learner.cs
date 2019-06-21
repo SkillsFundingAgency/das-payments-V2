@@ -5,7 +5,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
-    public class Framework403Learner : FM36Base
+    public class Framework403Learner : Fm36Base
     {
         public Framework403Learner(IEnumerable<Learner> learners, string featureNumber) : base(learners, featureNumber)
         {
