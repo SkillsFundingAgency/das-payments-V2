@@ -33,6 +33,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private readonly IPaymentLogger paymentLogger;
         private readonly ITelemetry telemetry;
         private IRequiredLevyAmountFundingSourceService fundingSourceService;
+        private IGenerateSortedPaymentKeys generateSortedPaymentKeys;
+
         private IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private IDataCache<bool> monthEndCache;
         private IDataCache<LevyAccountModel> levyAccountCache;
@@ -152,6 +154,13 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             transferPaymentSortKeysCache = new ReliableCollectionCache<List<TransferPaymentSortKeyModel>>(StateManager);
             requiredPaymentSortKeysCache = new ReliableCollectionCache<List<RequiredPaymentSortKeyModel>>(StateManager);
 
+            generateSortedPaymentKeys = new GenerateSortedPaymentKeys(
+                employerProviderPriorities,
+                refundSortKeysCache,
+                transferPaymentSortKeysCache,
+                requiredPaymentSortKeysCache
+            );
+
             fundingSourceService = new RequiredLevyAmountFundingSourceService(
                 lifetimeScope.Resolve<IPaymentProcessor>(),
                 lifetimeScope.Resolve<IMapper>(),
@@ -165,9 +174,9 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 refundSortKeysCache,
                 transferPaymentSortKeysCache,
                 requiredPaymentSortKeysCache,
-                lifetimeScope.Resolve<IGenerateSortedPaymentKeys>()
+                generateSortedPaymentKeys
             );
-
+            
             await Initialise().ConfigureAwait(false);
             await base.OnActivateAsync().ConfigureAwait(false);
         }
