@@ -109,7 +109,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             messageLearner.ULN = learner.Uln;
             messageLearner.ULNSpecified = true;
 
-            MutateHigherEducation(messageLearner);
+            MutateHigherEducation(learner);
         }
 
         private static void AddSmallEmployerInfo(MessageLearner learner, Learner learnerRequest)
@@ -174,6 +174,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
                 SetCourseCodes(aim, delivery);
             }
+        }
+        protected void SetFrameworkComponentAimDetails(MessageLearner learner, string learnAimRef)
+        {
+            var programmeAim = learner.LearningDelivery.Single(ld => ld.AimType == 1);
+            var componentAim = learner.LearningDelivery.Single(ld => ld.AimType == 3);
+            componentAim.LearnAimRef = learnAimRef;
+            componentAim.FundModel = programmeAim.FundModel;
+            componentAim.ProgType = programmeAim.ProgType;
+            componentAim.FworkCode = programmeAim.FworkCode;
+            componentAim.LearnStartDate = programmeAim.LearnStartDate;
         }
 
         private void MutateOtherAimsForLearner(IEnumerable<Aim> otherAims, IEnumerable<MessageLearnerLearningDelivery> otherLearningDeliveries)
