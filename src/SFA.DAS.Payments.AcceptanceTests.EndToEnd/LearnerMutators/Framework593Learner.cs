@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         protected override void DoSpecificMutate(MessageLearner messageLearner, Learner learner)
         {
-            SetFrameworkComponentAimDetails(messageLearner,"00300545");
+            SetFrameworkComponentAimDetails(messageLearner, learner,"00300545");
         }
     }
 }

@@ -178,11 +178,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 SetCourseCodes(aim, delivery);
             }
         }
-        protected void SetFrameworkComponentAimDetails(MessageLearner learner, string learnAimRef)
+        protected void SetFrameworkComponentAimDetails(MessageLearner messageLearner, Learner learner, string learnAimRef)
         {
-            var programmeAim = learner.LearningDelivery.Single(ld => ld.AimType == 1);
-            var componentAim = learner.LearningDelivery.Single(ld => ld.AimType == 3);
-            componentAim.LearnAimRef = learnAimRef;
+            var programmeAim = messageLearner.LearningDelivery.Single(ld => ld.AimType == 1);
+            var componentAim = messageLearner.LearningDelivery.First(ld => ld.AimType == 3);
+            componentAim.LearnAimRef = learner.Aims.Count == 1 ? learnAimRef : learner.Aims.First(x => !x.IsMainAim).AimReference;
             componentAim.FundModel = programmeAim.FundModel;
             componentAim.ProgType = programmeAim.ProgType;
             componentAim.FworkCode = programmeAim.FworkCode;
