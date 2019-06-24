@@ -7,7 +7,6 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
@@ -127,9 +126,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             await dataContext.ApprenticeshipDuplicate.AddAsync(apprenticeshipDuplicate).ConfigureAwait(false);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-
-
     }
-
-
 }
