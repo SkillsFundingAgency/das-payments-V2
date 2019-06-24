@@ -145,9 +145,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     return a.AimReference == "ZPROG001" && (a.CompletionStatus == CompletionStatus.Completed || a.CompletionStatus == CompletionStatus.Withdrawn);
                 });
 
-
-
-
                 standardCode = aim?.StandardCode ?? 0;
             }
 

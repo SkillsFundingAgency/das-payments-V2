@@ -30,9 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     SfaContributionPercentage = x.SfaContributionPercentage,
                     EarningType = ToEarningType(x.FundingSource),
                     PriceEpisodeIdentifier = x.PriceEpisodeIdentifier,
-                    AccountId = x.AccountId,
-                    TransferSenderAccountId = x.TransferSenderAccountId
-            })
+                })
                 .Select(group =>
                 {
                     var amountForGroup = group.Sum(x => x.Amount);
@@ -42,9 +40,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                         EarningType = group.Key.EarningType,
                         SfaContributionPercentage = group.Key.SfaContributionPercentage,
                         PriceEpisodeIdentifier = group.Key.PriceEpisodeIdentifier,
-                        AccountId = group.Key.AccountId,
-                        TransferSenderAccountId = group.Key.TransferSenderAccountId
-
                     };
                 })
                 .Where(x => x.Amount < 0)
@@ -55,7 +50,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         {
             switch (fundingSource)
             {
-                case FundingSourceType.Transfer:
                 case FundingSourceType.Levy:
                     return EarningType.Levy;
                 case FundingSourceType.CoInvestedEmployer:

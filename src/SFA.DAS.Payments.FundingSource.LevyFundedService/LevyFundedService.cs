@@ -49,42 +49,12 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         public async Task HandleRequiredPayment(CalculatedRequiredLevyAmount message)
         {
-            try
-            {
-                using (var operation = telemetry.StartOperation())
-                {
-                    paymentLogger.LogVerbose($"Handling RequiredPayment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
-                    await fundingSourceService.AddRequiredPayment(message).ConfigureAwait(false);
-                    paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
-                    telemetry.StopOperation(operation);
-                }
+            paymentLogger.LogVerbose($"Handling RequiredPayment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
 
-            }
-            catch (Exception e)
+            using (var operation = telemetry.StartOperation())
             {
-                paymentLogger.LogError($"Error handling required levy payment. Error:{e.Message}", e);
-                throw;
-            }
-        }
-
-        public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> UnableToFundTransfer(ProcessUnableToFundTransferFundingSourcePayment message)
-        {
-            try
-            {
-                using (var operation = telemetry.StartOperation())
-                {
-                    paymentLogger.LogDebug($"Handling UnableToFundTransfer for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Receiver Account: {message.AccountId}, Sender Account: {message.TransferSenderAccountId}");
-                    var fundingSourcePayments = await fundingSourceService.ProcessReceiverTransferPayment(message).ConfigureAwait(false);
-                    paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
-                    telemetry.StopOperation(operation);
-                    return fundingSourcePayments;
-                }
-
-            }
-            catch (Exception e)
-            {
-                paymentLogger.LogError($"Error handling unable to fund transfer. Error: {e.Message}", e);
-                throw;
+                await fundingSourceService.AddRequiredPayment(message).ConfigureAwait(false);
+                telemetry.StopOperation(operation);
             }
         }
 
@@ -119,9 +89,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 lifetimeScope.Resolve<ILevyAccountRepository>(),
                 lifetimeScope.Resolve<ILevyBalanceService>(),
                 lifetimeScope.Resolve<IPaymentLogger>(),
-                lifetimeScope.Resolve<ISortableKeyGenerator>(),
-                monthEndCache,
-                levyAccountCache
+                lifetimeScope.Resolve<ISortableKeyGenerator>()
             );
             await base.OnActivateAsync().ConfigureAwait(false);
         }
