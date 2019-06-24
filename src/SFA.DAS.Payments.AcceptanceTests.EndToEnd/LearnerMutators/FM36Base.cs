@@ -223,10 +223,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 delivery.OutcomeSpecified = true;
             }
 
+            if (aim.LearningSupportCode.HasValue)
+            {
+                AddLearningSupportFam(delivery, aim);
+            }
+
             if (numberOfAimsForLearner == 1) // assume that this aim was created through the old style of Training records - in which case we need to setup the functionalskillsdelivery as well.
             {
                 MutateAimType3ForLearnerFromTrainingRecord(learnerLearningDeliveries, delivery);
             }
+        }
+
+        private void AddLearningSupportFam(MessageLearnerLearningDelivery delivery, Aim aim)
+        {
+            var learningDeliveryFams = delivery.LearningDeliveryFAM.ToList();
+            learningDeliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
+            {
+                LearnDelFAMType = LearnDelFAMType.LSF.ToString(),
+                LearnDelFAMCode = aim.LearningSupportCode.Value.ToString(),
+                LearnDelFAMDateFrom = aim.LearningSupportDateFrom.ToDate(),
+                LearnDelFAMDateFromSpecified = true,
+                LearnDelFAMDateTo = aim.LearningSupportDateTo.ToDate(),
+                LearnDelFAMDateToSpecified = true
+            });
+
+            delivery.LearningDeliveryFAM = learningDeliveryFams.ToArray();
         }
 
         private void MutateLearningDeliveryFamsForLearner(MessageLearnerLearningDelivery delivery, Aim aim)
