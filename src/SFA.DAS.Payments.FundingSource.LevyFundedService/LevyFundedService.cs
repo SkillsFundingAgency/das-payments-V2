@@ -138,7 +138,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 lifetimeScope.Resolve<IPaymentLogger>(),
                 lifetimeScope.Resolve<ISortableKeyGenerator>(),
                 monthEndCache,
-                levyAccountCache
+                levyAccountCache,
                 submissionTimesCache
             );
             await base.OnActivateAsync().ConfigureAwait(false);

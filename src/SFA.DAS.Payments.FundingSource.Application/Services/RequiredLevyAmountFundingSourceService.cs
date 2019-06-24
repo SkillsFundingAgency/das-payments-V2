@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             IPaymentLogger paymentLogger,
             ISortableKeyGenerator sortableKeys,
             IDataCache<bool> monthEndCache,
-            IDataCache<LevyAccountModel> levyAccountCache)
+            IDataCache<LevyAccountModel> levyAccountCache,
             IDataCache<DateTime> submissionTimesCache)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
@@ -79,7 +79,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
                 keys.Remove(key);
             }
-            await requiredPaymentKeys.AddOrReplace(KeyListKey, keys).ConfigureAwait(false);
+            await requiredPaymentKeys.AddOrReplace(CacheKeys.KeyListKey, keys).ConfigureAwait(false);
             await submissionTimesCache.AddOrReplace($"provider_{message.Ukprn}", message.IlrSubmissionDateTime).ConfigureAwait(false);
         }
 
@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 paymentEvent.Learner.Uln, paymentEvent.StartDate, paymentEvent.IsTransfer(), paymentEvent.EventId);
             keys.Add(key);
             await requiredPaymentsCache.Add(key, paymentEvent, CancellationToken.None).ConfigureAwait(false);
-            await requiredPaymentKeys.AddOrReplace(KeyListKey, keys, CancellationToken.None).ConfigureAwait(false);
+            await requiredPaymentKeys.AddOrReplace(CacheKeys.KeyListKey, keys, CancellationToken.None).ConfigureAwait(false);
         }
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> ProcessReceiverTransferPayment(ProcessUnableToFundTransferFundingSourcePayment message)
