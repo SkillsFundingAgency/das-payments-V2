@@ -80,10 +80,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         }
 
-        public TestSession(long? ukprn = null) : this(new RandomUkprnService(), new RandomUlnService())
-        {
-        }
-
         public long GenerateId(int maxValue = 1000000)
         {
             var id = random.Next(maxValue);
@@ -126,12 +122,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
-        public Learner GenerateLearner(long ukprn)
+        public Learner GenerateLearner(long ukprn, long uln = 0)
         {
             return new Learner
             {
                 Ukprn = ukprn,
-                Uln = ulnService.GenerateUln(Provider.Ukprn),
+                Uln = uln != 0 ? uln : ulnService.GenerateUln(Provider.Ukprn),
                 LearnRefNumber = GenerateId().ToString(),
                 Course = courseFaker.Generate(1).FirstOrDefault()
             };
@@ -139,10 +135,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public Learner GetLearner(long ukprn, string learnerIdentifier)
         {
+            var learnerUln = Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier)?.Uln;
             var learner = Learners.FirstOrDefault(l => l.LearnerIdentifier == learnerIdentifier && l.Ukprn == ukprn);
+
             if (learner == null)
             {
-                learner = GenerateLearner(ukprn);
+                learner = GenerateLearner(ukprn, learnerUln?? 0);
                 learner.LearnerIdentifier = learnerIdentifier;
                 Learners.Add(learner);
             }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -10,6 +11,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
     {
         Task IlrSubmitted(ReceivedProviderEarningsEvent message);
         Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent);
-        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> GetFundedPayments(long employerAccountId, long jobId);
+        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> ProcessReceiverTransferPayment(ProcessUnableToFundTransferFundingSourcePayment message);
+        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId);
     }
 }
