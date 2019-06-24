@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DCT.TestDataGenerator.Functor;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.SmallEmployer;
 
@@ -29,7 +30,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "615":
                 case "485":
                 case "387":
+                case "437":
                 case "251":
+                case "258":
                     return new Framework593Learner(learners, featureNumber);
                 case "487":
                 case "326":

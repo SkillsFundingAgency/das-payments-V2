@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DCT.TestDataGenerator;
 using ESFA.DC.ILR.Model.Loose;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -16,8 +14,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         protected override void DoSpecificMutate(MessageLearner messageLearner, Learner learner)
         {
-            var functionalSkillsLearningDelivery = messageLearner.LearningDelivery.Single(ld => ld.AimType == 3);
-            functionalSkillsLearningDelivery.LearnAimRef = "00300545";
+            var functionalSkillsLearningDelivery = messageLearner.LearningDelivery.First(ld => ld.AimType == 3);
+            functionalSkillsLearningDelivery.LearnAimRef = learner.Aims.Count == 1
+                ? "00300545"
+                : learner.Aims.First(x => !x.IsMainAim).AimReference;
             functionalSkillsLearningDelivery.FundModel = 36;
             functionalSkillsLearningDelivery.ProgType = 20;
             functionalSkillsLearningDelivery.FworkCode = 593;
