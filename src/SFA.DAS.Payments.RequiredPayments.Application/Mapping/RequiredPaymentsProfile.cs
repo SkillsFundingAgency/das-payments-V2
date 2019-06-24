@@ -27,7 +27,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(payment => payment.CompletionStatus, opt => opt.Ignore())
                 .ForMember(payment => payment.CompletionAmount, opt => opt.MapFrom(episode => episode.CompletionAmount))
                 .ForMember(payment => payment.InstalmentAmount, opt => opt.MapFrom(episode => episode.InstalmentAmount))
-                .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments));
+                .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments))
+                .ForMember(payment => payment.AccountId, opt => opt.MapFrom(episode => episode.AccountId))
+                .ForMember(payment => payment.TransferSenderAccountId, opt => opt.MapFrom(episode => episode.TransferSenderAccountId))
+                ;
 
             // Earning event --> required payment event
             CreateMap<IEarningEvent, PeriodisedRequiredPaymentEvent>()
@@ -158,6 +161,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Include<RequiredPayment, CalculatedRequiredIncentiveAmount>()
                 .Include<RequiredPayment, CalculatedRequiredLevyAmount>()
                 .ForMember(x => x.AmountDue, opt => opt.MapFrom(x => x.Amount))
+                .ForMember(x => x.AccountId, opt => opt.MapFrom(x => x.AccountId))
+                .ForMember(x => x.TransferSenderAccountId, opt => opt.MapFrom(x => x.TransferSenderAccountId))
                 .Ignore(x => x.EarningEventId)
                 .Ignore(x => x.DeliveryPeriod)
                 .Ignore(x => x.JobId)
