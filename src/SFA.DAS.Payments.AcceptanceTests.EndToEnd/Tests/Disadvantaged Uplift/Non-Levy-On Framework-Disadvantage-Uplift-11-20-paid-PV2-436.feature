@@ -1,11 +1,11 @@
-#@supports_dc_e2e
+@supports_dc_e2e
 Feature: Non-levy learner - on framework , Disadvantage Uplift 11-20% paid-PV2-436
 
 Scenario Outline: Non-levy learner - on framework , Disadvantage Uplift 11-20% paid
 # Notes for DC team : In the ILR  use post codes having deprivation of 11-20% 
 	Given the provider previously submitted the following learner details
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 06/Aug/Last Academic Year | 12 months        | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 20             | 1            | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                                   | SFA Contribution Percentage | PostcodePrior |
+		| 06/Aug/Last Academic Year | 12 months        | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 20             | 1            | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         | CV11 5TE      |
     And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing | FirstDisadvantagePayment |
         | Aug/Last Academic Year | 1000         | 0          | 0         | 0                        |
@@ -37,8 +37,8 @@ Scenario Outline: Non-levy learner - on framework , Disadvantage Uplift 11-20% p
         | R04/Last Academic Year | Nov/Last Academic Year | 0                      | 0                           | 150                       | FirstDisadvantagePayment |
 
     But the Provider now changes the Learner details as follows
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 06/Aug/Last Academic Year | 12 months        | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 12 months       | continuing        | Act2          | 1                   | ZPROG001      | 593            | 20             | 1            | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                                   | SFA Contribution Percentage | PostcodePrior |
+		| 06/Aug/Last Academic Year | 12 months        | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 20             | 1            | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         | CV11 5TE      |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
