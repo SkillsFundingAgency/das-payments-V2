@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             GivenPriceDetailsAsFollows(table);
         }
 
-        [Given(@"the provider prority order is")]
+        [Given(@"the provider priority order is")]
         public void GivenTheProviderPriorityOrder(Table table)
         {
             AddLevyAccountPriorities.ProcessTable(table, TestSession, CurrentCollectionPeriod, DataContext);

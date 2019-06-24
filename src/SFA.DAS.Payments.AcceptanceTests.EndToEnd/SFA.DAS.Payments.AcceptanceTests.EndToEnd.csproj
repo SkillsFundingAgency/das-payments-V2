@@ -1090,6 +1090,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2080,6 +2100,22 @@
     <None Include="Tests\Levy - Data Locks\PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

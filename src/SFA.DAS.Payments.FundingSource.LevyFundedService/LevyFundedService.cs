@@ -20,6 +20,7 @@ using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
+using SFA.DAS.Payments.FundingSource.Model;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
@@ -32,11 +33,16 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private readonly IPaymentLogger paymentLogger;
         private readonly ITelemetry telemetry;
         private IRequiredLevyAmountFundingSourceService fundingSourceService;
+        private IGenerateSortedPaymentKeys generateSortedPaymentKeys;
+
         private IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
-        private IDataCache<List<string>> requiredPaymentKeys;
         private IDataCache<bool> monthEndCache;
         private IDataCache<LevyAccountModel> levyAccountCache;
         private IDataCache<List<EmployerProviderPriorityModel>> employerProviderPriorities;
+        private  IDataCache<List<string>> refundSortKeysCache;
+        private  IDataCache<List<TransferPaymentSortKeyModel>> transferPaymentSortKeysCache;
+        private  IDataCache<List<RequiredPaymentSortKeyModel>> requiredPaymentSortKeysCache;
+
         private IActorDataCache<bool> actorCache;
         private readonly ILifetimeScope lifetimeScope;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
@@ -142,23 +148,35 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             actorCache = new ActorReliableCollectionCache<bool>(StateManager);
             employerProviderPriorities = new ReliableCollectionCache<List<EmployerProviderPriorityModel>>(StateManager);
             requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
-            requiredPaymentKeys = new ReliableCollectionCache<List<string>>(StateManager);
             monthEndCache = new ReliableCollectionCache<bool>(StateManager);
             levyAccountCache = new ReliableCollectionCache<LevyAccountModel>(StateManager);
+            refundSortKeysCache = new ReliableCollectionCache<List<string>>(StateManager);
+            transferPaymentSortKeysCache = new ReliableCollectionCache<List<TransferPaymentSortKeyModel>>(StateManager);
+            requiredPaymentSortKeysCache = new ReliableCollectionCache<List<RequiredPaymentSortKeyModel>>(StateManager);
+
+            generateSortedPaymentKeys = new GenerateSortedPaymentKeys(
+                employerProviderPriorities,
+                refundSortKeysCache,
+                transferPaymentSortKeysCache,
+                requiredPaymentSortKeysCache
+            );
+
             fundingSourceService = new RequiredLevyAmountFundingSourceService(
                 lifetimeScope.Resolve<IPaymentProcessor>(),
                 lifetimeScope.Resolve<IMapper>(),
                 requiredPaymentsCache,
-                requiredPaymentKeys,
                 lifetimeScope.Resolve<ILevyFundingSourceRepository>(),
                 lifetimeScope.Resolve<ILevyBalanceService>(),
                 lifetimeScope.Resolve<IPaymentLogger>(),
-                lifetimeScope.Resolve<ISortableKeyGenerator>(),
                 monthEndCache,
                 levyAccountCache,
-                employerProviderPriorities
+                employerProviderPriorities,
+                refundSortKeysCache,
+                transferPaymentSortKeysCache,
+                requiredPaymentSortKeysCache,
+                generateSortedPaymentKeys
             );
-
+            
             await Initialise().ConfigureAwait(false);
             await base.OnActivateAsync().ConfigureAwait(false);
         }
