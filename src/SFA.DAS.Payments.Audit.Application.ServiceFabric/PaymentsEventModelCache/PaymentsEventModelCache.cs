@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
@@ -17,7 +18,10 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCac
         private readonly IReliableConcurrentQueue<T> queue;
         private readonly IPaymentLogger logger;
 
-        public PaymentsEventModelCache(IReliableStateManagerProvider reliableStateManagerProvider, IReliableStateManagerTransactionProvider transactionProvider, IPaymentLogger logger)
+        public PaymentsEventModelCache(
+            IReliableStateManagerProvider reliableStateManagerProvider, 
+            IReliableStateManagerTransactionProvider transactionProvider, 
+            IPaymentLogger logger)
         {
             this.transactionProvider = transactionProvider ?? throw new ArgumentNullException(nameof(transactionProvider));
             this.logger = logger;
@@ -26,6 +30,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCac
 
         public async Task AddPayment(T paymentsEventModel)
         {
+            logger.LogDebug($"Adding payment: {paymentsEventModel.EventId} Transaction: {transactionProvider.Current.TransactionId}");
             await queue.EnqueueAsync(transactionProvider.Current, paymentsEventModel, CancellationToken.None);
         }
 
@@ -45,6 +50,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCac
                     break; //no more items
                 }
             }
+            logger.LogDebug($"Removing payments: {string.Join(", ", list.Select(x => x.EventId))} Transaction: {transactionProvider.Current.TransactionId}");
             return list;
         }
     }
