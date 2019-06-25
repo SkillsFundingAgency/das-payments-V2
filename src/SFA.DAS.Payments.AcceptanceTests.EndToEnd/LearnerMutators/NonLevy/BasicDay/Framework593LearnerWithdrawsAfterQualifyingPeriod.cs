@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.Basi
 
                 SetDeliveryAsWithdrawn(delivery, learnerRequestAim);
 
-                SetupLearningDeliveryActFam(delivery, learnerRequestAim);
+                SetupLearningDeliveryActFam(delivery);
 
                 SetupTnpAppFinRecord(messageLearner, delivery);
             }
