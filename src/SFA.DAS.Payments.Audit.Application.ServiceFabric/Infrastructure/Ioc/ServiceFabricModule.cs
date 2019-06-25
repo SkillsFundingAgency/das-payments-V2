@@ -22,6 +22,8 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure.Ioc
                 .InstancePerLifetimeScope();
             builder.RegisterType<BatchScope>()
                 .As<IBatchScope>();
+            builder.RegisterType<BatchScopeFactory>()
+                .As<IBatchScopeFactory>();
         }
     }
 }
