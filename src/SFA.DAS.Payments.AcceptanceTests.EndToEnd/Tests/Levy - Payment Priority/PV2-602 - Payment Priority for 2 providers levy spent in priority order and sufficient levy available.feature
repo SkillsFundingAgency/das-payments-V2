@@ -1,4 +1,3 @@
-@ignore
 Feature: Payment Priority - Two DAS learners with different providers, levy is spent in priority order and available for both providers PV2-602
 		As an Employer,
 		I want 2 Levy learners with different providers, where levy is spent in priority order and there is enough levy available for both providers
@@ -14,9 +13,9 @@ Scenario Outline:  Two DAS learners with different providers, levy is spent in p
 		 | Apprenticeship 2 | provider b | learner b  | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        | 593            | 1            | 20             |
 
 	And the provider priority order is
-        | Provider   | Priority |
-        | provider a | 1        |
-        | provider b | 2        |
+        | Provider   | Priority |Collection_Period         |
+        | provider a | 1        |R01/Current Academic Year |
+        | provider b | 2        |R01/Current Academic Year |
 
 	And the "provider a" previously submitted the following learner details
 		| Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
@@ -92,8 +91,8 @@ Scenario Outline:  Two DAS learners with different providers, levy is spent in p
 		| Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
 		| learner b  | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
-	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period> by "provider a"
-	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period> by "provider b"
+	When the amended ILR file is re-submitted for the learners in the collection period <Collection_Period> by "provider a"
+	When the amended ILR file is re-submitted for the learners in the collection period <Collection_Period> by "provider b"
 
 	Then the following learner earnings should be generated for "provider a"
 		| Learner ID | Delivery Period           | On-Programme | Completion | Balancing |
