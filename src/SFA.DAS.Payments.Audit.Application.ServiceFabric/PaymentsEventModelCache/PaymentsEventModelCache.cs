@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCac
         {
             logger.LogDebug($"Adding payment: {paymentsEventModel.EventId} Transaction: {transactionProvider.Current.TransactionId}");
             await queue.EnqueueAsync(transactionProvider.Current, paymentsEventModel, CancellationToken.None);
+            logger.LogDebug($"Event {paymentsEventModel.EventId} of type {typeof(T)} added to cache. Transaction {transactionProvider.Current.TransactionId}.");
         }
 
         public async Task<List<T>> GetPayments(int batchSize)
@@ -43,7 +44,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCac
                 if (ret.HasValue)
                 {
                     list.Add(ret.Value);
-                    logger.LogDebug($"Event {ret.Value.EventId} of type {typeof(T)} removed from cache.");
+                    logger.LogDebug($"Event {ret.Value.EventId} of type {typeof(T)} removed from cache. Transaction {transactionProvider.Current.TransactionId}.");
                 }
                 else
                 {

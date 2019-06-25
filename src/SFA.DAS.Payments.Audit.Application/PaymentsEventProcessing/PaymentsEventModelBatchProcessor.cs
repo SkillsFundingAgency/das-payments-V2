@@ -72,7 +72,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                             foreach (DataRow tableRow in table.Rows)
                             {
                                 logger.LogVerbose($"Saving row to table: {bulkCopy.DestinationTableName}, Row: {ToLogString(tableRow)}");
-                                logger.LogDebug($"Saving payment {tableRow["EventId"]} to DB");
+                                if (table.Columns.Contains("FundingSourceEventId") && table.Columns.Contains("EventId"))
+                                    logger.LogDebug($"Saving payment EventId: {tableRow["EventId"]}, FundingSourceEventId: {tableRow["FundingSourceEventId"]} to {bulkCopy.DestinationTableName}");
                             }
 
                             foreach (DataColumn dataColumn in table.Columns)
