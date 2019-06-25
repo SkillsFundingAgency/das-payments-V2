@@ -130,9 +130,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the provider priority order is")]
-        public void GivenTheProviderPriorityOrder(Table table)
+        public async Task GivenTheProviderPriorityOrder(Table table)
         {
-            AddLevyAccountPriorities.ProcessTable(table, TestSession, CurrentCollectionPeriod, DataContext);
+           await AddLevyAccountPriorities(table, TestSession, CurrentCollectionPeriod, DataContext);
         }
 
         [Given(@"the following commitments exist")]

@@ -1,4 +1,3 @@
-@ignore
 Feature: Two providers levy for full one provider - partial levy for other,employer changes payment priority for provider - PV2-656
 
 As an Employer,
