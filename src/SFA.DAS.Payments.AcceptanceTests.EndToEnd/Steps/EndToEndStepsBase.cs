@@ -1016,5 +1016,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 p.MonthEndJobIdGenerated = true;
             });
         }
+
+        protected void AddEmploymentStatus(IEnumerable<EmploymentStatusMonitoring> employmentStatusMonitorings)
+        {
+            if (TestSession.AtLeastOneScenarioCompleted)
+            {
+                return;
+            }
+
+            var allEsmsPerLearner = employmentStatusMonitorings.GroupBy(a => a.LearnerId);
+
+            foreach (var learnerEsms in allEsmsPerLearner)
+            {
+                var learner = TestSession.Learners.FirstOrDefault(x => x.LearnerIdentifier == learnerEsms.Key && x.Ukprn == TestSession.Provider.Ukprn);
+                if (learner == null)
+                {
+                    throw new Exception("There is an employmentStatusMonitoring without a matching learner");
+                }
+
+                learner.EmploymentStatusMonitoring.Clear();
+
+                learner.EmploymentStatusMonitoring.AddRange(employmentStatusMonitorings);
+            }
+        }
     }
 }
