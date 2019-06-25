@@ -1058,6 +1058,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             OrderedProviders = priorities.OrderBy(x => x.Order).Select(p => p.Ukprn).ToList()
                         }).ConfigureAwait(false);
                     }
+
+                    await Task.Delay(2000);
                 }
                 else
                 {
