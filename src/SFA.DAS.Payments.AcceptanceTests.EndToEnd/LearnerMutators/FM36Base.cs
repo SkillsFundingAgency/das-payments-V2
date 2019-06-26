@@ -138,7 +138,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                                                                         new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring
                                                                         {
                                                                             ESMType = EmploymentStatusMonitoringType.EII.ToString(),
-                                                                            ESMCode = (int) EmploymentStatusMonitoringCode.EmploymentIntensity30Hours,
                                                                             ESMCodeSpecified = true
                                                                         },
                                                                         new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring
@@ -152,6 +151,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                         learnerEmploymentStatuses.Add(les);
                     }
 
+                    les.EmploymentStatusMonitoring.Single(x => x.ESMType == EmploymentStatusMonitoringType.EII.ToString()).ESMCode =
+                        (int) EmploymentStatusMonitoringCode.EmploymentIntensity30Hours;
                     les.EmpStat = esm.EmploymentStatus.ToEmpStatCode();
                     les.DateEmpStatApp = esm.EmploymentStatusApplies.ToDate();
                 }
