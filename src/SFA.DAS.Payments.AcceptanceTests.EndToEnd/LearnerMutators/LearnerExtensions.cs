@@ -22,18 +22,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
-        public static int AsPercentage(this string sfaContributionPercentage)
+        public static int? AsPercentage(this string sfaContributionPercentage)
         {
             if (string.IsNullOrWhiteSpace(sfaContributionPercentage) ||
                 !sfaContributionPercentage.Contains("%") || !int.TryParse(
                     sfaContributionPercentage.Split('%')[0],
                     out _))
             {
-                throw new InvalidCastException("SfaContributionPercentage is not in the format: xx% (e.g. 90%)");
+                return null;
             }
 
             return
-                int.Parse((100 - int.Parse(sfaContributionPercentage.Split('%')[0])).ToString());
+                int.Parse(sfaContributionPercentage.Split('%')[0]);
         }
 
     }

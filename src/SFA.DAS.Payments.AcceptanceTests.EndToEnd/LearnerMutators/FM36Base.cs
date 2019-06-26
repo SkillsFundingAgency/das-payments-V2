@@ -214,6 +214,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 MutateLearningDeliveryFamsForLearner(otherLearningDelivery, otherAim);
 
                 SetCourseCodes(otherAim, otherLearningDelivery);
+
+                SetPriorLearnFundingAdjustment(otherAim, otherLearningDelivery);
             }
         }
 
@@ -282,6 +284,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
                 learningDelivery.PwayCode = aim.PathwayCode;
                 learningDelivery.PwayCodeSpecified = true;
+            }
+        }
+        private void SetPriorLearnFundingAdjustment(Aim aim, MessageLearnerLearningDelivery learningDelivery)
+        {
+            var fundingAdjustmentForPriorLearning = aim.FundingAdjustmentForPriorLearning.AsPercentage();
+            if (fundingAdjustmentForPriorLearning.HasValue)
+            {
+                learningDelivery.PriorLearnFundAdj = fundingAdjustmentForPriorLearning.Value;
+                learningDelivery.PriorLearnFundAdjSpecified = true;
             }
         }
 
@@ -472,7 +483,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private long CalculateEmployerContribution(string sfaContributionPercentage, decimal totalTrainingPrice)
         {
-            var percentage = decimal.Parse((100 - sfaContributionPercentage.AsPercentage()).ToString());
+            var percentage = decimal.Parse(sfaContributionPercentage.AsPercentage().Value.ToString());
             var employerContribution = totalTrainingPrice * (percentage / 100);
 
             return decimal.ToInt64(employerContribution);
