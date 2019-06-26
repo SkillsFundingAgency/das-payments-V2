@@ -20,6 +20,7 @@ using NServiceBus.Features;
 using Polly;
 using Polly.Registry;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Services;
 using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
 using SFA.DAS.Payments.AcceptanceTests.Services.Configuration;
@@ -54,11 +55,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 
             if (config.ValidateDcAndDasServices)
             {
-                var ukprnDbOptions = new DbContextOptionsBuilder<UkprnService>()
-                    .UseSqlServer(config.PaymentsConnectionString)
-                    .Options;
-
-                Builder.RegisterInstance(ukprnDbOptions);
                 Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
                 Builder.RegisterType<UlnService>().As<IUlnService>().InstancePerLifetimeScope();
                 Builder.RegisterType<DcNullHelper>().As<IDcHelper>().InstancePerLifetimeScope();
@@ -70,6 +66,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 Builder.RegisterType<DcHelper>().As<IDcHelper>().InstancePerLifetimeScope();
                 Builder.RegisterType<RandomUlnService>().As<IUlnService>().InstancePerLifetimeScope();
             }
+
+            Builder.Register((c, p) =>
+            {
+                var configHelper = c.Resolve<TestsConfiguration>();
+                return new TestPaymentsDataContext(configHelper.PaymentsConnectionString);
+            }).As<TestPaymentsDataContext>().InstancePerLifetimeScope();
 
             Builder.Register(c => new TestSession(c.Resolve<IUkprnService>(), c.Resolve<IUlnService>())).InstancePerLifetimeScope();
 
