@@ -51,7 +51,11 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCac
                     break; //no more items
                 }
             }
-            logger.LogDebug($"Removing payments: {string.Join(", ", list.Select(x => x.EventId))} Transaction: {transactionProvider.Current.TransactionId}");
+
+            if (list.Any())
+            {
+                logger.LogDebug($"Removing payments: {string.Join(", ", list.Select(x => x.EventId))} Transaction: {transactionProvider.Current.TransactionId}");
+            }
             return list;
         }
     }
