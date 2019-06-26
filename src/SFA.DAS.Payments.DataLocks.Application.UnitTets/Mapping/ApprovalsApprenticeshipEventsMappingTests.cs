@@ -65,5 +65,63 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                 ape.StartDate == pe.FromDate && ape.Cost == pe.Cost && ape.EndDate == pe.ToDate)).Should().BeTrue();
 
         }
+
+        [Test]
+        public void Defaults_Programme_Type_To_25_For_Standards()
+        {
+            var approvalsEvent = new ApprenticeshipCreatedEvent
+            {
+                AccountId = 12345,
+                StartDate = DateTime.Today.AddMonths(-12),
+                AccountLegalEntityPublicHashedId = "1234567890",
+                AgreedOn = DateTime.Today.AddMonths(-13),
+                ApprenticeshipId = 12,
+                CreatedOn = DateTime.Today.AddMonths(-14),
+                EndDate = DateTime.Today.AddYears(1),
+                LegalEntityName = "Test Employer",
+                ProviderId = 1234,
+                TrainingCode = "52",
+                TrainingType = ProgrammeType.Standard,
+                TransferSenderId = 123456,
+                Uln = "123456",
+                PriceEpisodes = new PriceEpisode[]
+                {
+                    new PriceEpisode { FromDate = DateTime.Today.AddMonths(-12), Cost = 1000M, ToDate = DateTime.Today.AddDays(-1)},
+                    new PriceEpisode { FromDate = DateTime.Today, Cost = 1200M }
+                }
+            };
+            var model = Mapper.Map<ApprenticeshipModel>(approvalsEvent);
+            model.ProgrammeType.Should().Be(25);
+        }
+
+        [Test]
+        public void Parses_TrainingCode_Correctly_For_Frameworks()
+        {
+            var approvalsEvent = new ApprenticeshipCreatedEvent
+            {
+                AccountId = 12345,
+                StartDate = DateTime.Today.AddMonths(-12),
+                AccountLegalEntityPublicHashedId = "1234567890",
+                AgreedOn = DateTime.Today.AddMonths(-13),
+                ApprenticeshipId = 12,
+                CreatedOn = DateTime.Today.AddMonths(-14),
+                EndDate = DateTime.Today.AddYears(1),
+                LegalEntityName = "Test Employer",
+                ProviderId = 1234,
+                TrainingCode = "460-3-2",
+                TrainingType = ProgrammeType.Framework,
+                TransferSenderId = 123456,
+                Uln = "123456",
+                PriceEpisodes = new PriceEpisode[]
+                {
+                    new PriceEpisode { FromDate = DateTime.Today.AddMonths(-12), Cost = 1000M, ToDate = DateTime.Today.AddDays(-1)},
+                    new PriceEpisode { FromDate = DateTime.Today, Cost = 1200M }
+                }
+            };
+            var model = Mapper.Map<ApprenticeshipModel>(approvalsEvent);
+            model.ProgrammeType.Should().Be(3);
+            model.FrameworkCode.Should().Be(460);
+            model.PathwayCode.Should().Be(2);
+        }
     }
 }
