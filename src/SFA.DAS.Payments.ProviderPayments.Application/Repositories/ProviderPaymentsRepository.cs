@@ -7,12 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 {
     public class ProviderPaymentsRepository : IProviderPaymentsRepository
     {
         private readonly IPaymentsDataContext paymentsDataContext;
+        private readonly IPaymentLogger logger;
 
         public ProviderPaymentsRepository(IPaymentsDataContext paymentsDataContext)
         {
@@ -53,6 +55,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 
             paymentsDataContext.Payment.RemoveRange(oldSubmittedIlrPayments);
             await paymentsDataContext.SaveChangesAsync(cancellationToken);
+
+            logger.LogDebug($"Deleted {oldSubmittedIlrPayments.Count()} old payments. {string.Join(", ", oldSubmittedIlrPayments.Select(e => e.EventId))}");
         }
 
         public async Task SavePayment(PaymentModel paymentData, CancellationToken cancellationToken)
