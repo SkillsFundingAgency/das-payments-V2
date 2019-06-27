@@ -81,22 +81,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private List<EmploymentStatusMonitoring> CreateLearnerEmploymentStatusMonitoringFromTraining(Training previousIlr, Training currentIlr)
         {
-            if(string.IsNullOrWhiteSpace(previousIlr?.Employer))
-                return new List<EmploymentStatusMonitoring>();
-
-            var employmentStatusMonitoringList = new List<EmploymentStatusMonitoring>()
+            var employmentStatusMonitoringList = new List<EmploymentStatusMonitoring>();
+            if (!string.IsNullOrWhiteSpace(previousIlr?.Employer))
             {
-                new EmploymentStatusMonitoring()
-                    {
-                        LearnerId = previousIlr.LearnerId,
-                        EmploymentStatusApplies = previousIlr.EmploymentStatusApplies,
-                        EmploymentStatus = previousIlr.EmploymentStatus,
-                        Employer = previousIlr.Employer,
-                        SmallEmployer = previousIlr.SmallEmployer
-                    }
-            };
+                employmentStatusMonitoringList.Add(new EmploymentStatusMonitoring()
+                                                   {
+                                                       LearnerId = previousIlr.LearnerId,
+                                                       EmploymentStatusApplies = previousIlr.EmploymentStatusApplies,
+                                                       EmploymentStatus = previousIlr.EmploymentStatus,
+                                                       Employer = previousIlr.Employer,
+                                                       SmallEmployer = previousIlr.SmallEmployer
+                                                   });
+            }
 
-            if (previousIlr.EmploymentStatusApplies != currentIlr.EmploymentStatusApplies)
+            if (previousIlr?.EmploymentStatusApplies != currentIlr.EmploymentStatusApplies)
             {
                 employmentStatusMonitoringList.Add(new EmploymentStatusMonitoring()
                 {
