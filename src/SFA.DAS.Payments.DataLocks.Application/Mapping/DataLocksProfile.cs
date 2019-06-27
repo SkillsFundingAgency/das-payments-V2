@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.Uln))
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
                 .ForMember(dest => dest.Priority, opt => opt.Ignore())
-                .ForMember(dest => dest.IsLevyPayer, opt => opt.Ignore())
+                .ForMember(dest => dest.IsLevyPayer, opt => opt.UseValue(true))
                 .ForMember(dest => dest.StopDate, dest => dest.Ignore())
                 ;
 
