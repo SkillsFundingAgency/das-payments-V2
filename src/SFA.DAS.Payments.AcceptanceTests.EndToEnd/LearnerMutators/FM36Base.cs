@@ -113,7 +113,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void SetLearnerEmploymentStatus(MessageLearner messageLearner, Learner learner)
         {
-            if (learner.EmploymentStatusMonitoring.Count == 0)
+            if (learner.EmploymentStatusMonitoring == null || learner.EmploymentStatusMonitoring.Count == 0)
             {
                 messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp =
                     messageLearner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
@@ -462,8 +462,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     delivery.AppFinRecord.SingleOrDefault(afr => afr.AFinType == LearnDelAppFinType.TNP.ToString());
             }
 
-            appFinRecord.AFinDate = delivery.LearnStartDate;
-            appFinRecord.AFinDateSpecified = true;
+            if (appFinRecord != null)
+            {
+                appFinRecord.AFinDate = delivery.LearnStartDate;
+                appFinRecord.AFinDateSpecified = true;
+            }
         }
 
         private void MutatePriceEpisodeForFam(MessageLearnerLearningDelivery delivery, List<MessageLearnerLearningDeliveryLearningDeliveryFAM> listOfLearningDeliveryFams, Price priceEpisode, Aim aim)
