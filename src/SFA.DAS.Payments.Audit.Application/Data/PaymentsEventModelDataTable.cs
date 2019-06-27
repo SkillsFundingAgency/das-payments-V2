@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("Ukprn"),
                 new DataColumn("IlrSubmissionDateTime", typeof(DateTime)),
                 new DataColumn("JobId"),
-                new DataColumn("EventTime", typeof(DateTime))
+                new DataColumn("EventTime", typeof(DateTimeOffset))
             });
         }
 

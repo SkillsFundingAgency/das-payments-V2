@@ -55,8 +55,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 
             paymentsDataContext.Payment.RemoveRange(oldSubmittedIlrPayments);
             await paymentsDataContext.SaveChangesAsync(cancellationToken);
-
-            logger.LogDebug($"Deleted {oldSubmittedIlrPayments.Count()} old payments. {string.Join(", ", oldSubmittedIlrPayments.Select(e => e.EventId))}");
         }
 
         public async Task SavePayment(PaymentModel paymentData, CancellationToken cancellationToken)
