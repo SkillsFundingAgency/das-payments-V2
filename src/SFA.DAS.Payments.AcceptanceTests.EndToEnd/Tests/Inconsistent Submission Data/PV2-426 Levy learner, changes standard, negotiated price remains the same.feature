@@ -8,13 +8,15 @@
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 
 	And the following commitments exist
-	    | start date                   | end date                  | agreed price | standard code | programme type | status     |
-	    | 03/Aug/Current Academic Year | 01/Aug/Next Academic Year | 15000        | 51            | 25             | withdrawn  |
-	    | 03/Nov/Current Academic Year | 01/Nov/Next Academic Year | 15000        | 52            | 25             | continuing |
-
+	    | Identifier | start date                   | end date                  | agreed price | standard code | programme type | status     |
+	    | 1          | 03/Aug/Current Academic Year | 01/Aug/Next Academic Year | 15000        | 51            | 25             | withdrawn  |
+	    | 2          | 03/Nov/Current Academic Year | 01/Nov/Next Academic Year | 15000        | 52            | 25             | continuing |
+	And the following aims
+		| Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | standard code | programme type | Funding Line Type                                | Completion Status |
+		| ZPROG001      | 03/Aug/Current Academic Year | 12 months        |                 | 1                   | 51            | 25             | 19+ Apprenticeship (From May 2017) Levy Contract | continuing        |
 	And the provider previously submitted the following learner details
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
-		| 03/Aug/Current Academic Year | 12 months        | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 3 months        | withdrawn         | Act1          | 1                   | ZPROG001      | 51            | 25             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| 03/Aug/Current Academic Year | 12 months        | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 3 months        | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
@@ -35,44 +37,30 @@
         | R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         |
         | R02/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
         | R03/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |        
-    But aims details are changed as follows
-		| Aim Type  | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Standard Code | Programme Type | Funding Line Type                                | Completion Status |
-		| Programme | ZPROG001      | 03/Aug/Current Academic Year | 12 months        | 3 months        | 1                   | 51            | 25             | 19+ Apprenticeship (From May 2017) Levy Contract | withdrawn         |
-		| Programme | ZPROG001      | 03/Nov/Current Academic Year | 12 months        |                 | 2                   | 52            | 25             | 19+ Apprenticeship (From May 2017) Levy Contract | continuing        |
+	But the Provider now changes the Learner details as follows
+		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
+		| 03/Aug/Current Academic Year | 12 months        | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 3 months        | withdrawn         | Act1          | 1                   | ZPROG001      | 51            | 25             | 19+ Apprenticeship (From May 2017) Levy Contract   | 90%                         |
+		| 03/Nov/Current Academic Year | 12 months        | 12000                | 03/Nov/Current Academic Year        | 3000                   | 03/Nov/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	And price details as follows	
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | pe-1             | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
-        | pe-2             | 12000                | 03/Nov/Current Academic Year        | 3000                   | 03/Nov/Current Academic Year          | Act1          | 2                   | 90%                         |
+        | pe-2             | 12000                | 03/Nov/Current Academic Year        | 3000                   | 03/Nov/Current Academic Year          | Act1          | 1                   | 90%                         |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>	 
     Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing | Aim Sequence Number | Price Episode Identifier |
-		#p1
         | Aug/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
         | Sep/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
         | Oct/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
-        | Nov/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
-        | Dec/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
-        | Jan/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
-        | Feb/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
-        | Mar/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
-        | Apr/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
-        | May/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
-        | Jun/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
-        | Jul/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
-		#p2
-        | Aug/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
-        | Sep/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
-        | Oct/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
-        | Nov/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
-        | Dec/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
-        | Jan/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
-        | Feb/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
-        | Mar/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
-        | Apr/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
-        | May/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
-        | Jun/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
-        | Jul/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
+        | Nov/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+        | Dec/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+        | Jan/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+        | Feb/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+        | Mar/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+        | Apr/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+        | May/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+        | Jun/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+        | Jul/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
 
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
