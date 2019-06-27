@@ -1,12 +1,13 @@
-﻿Feature: Non-levy learner, provider deletes english/maths aim, earlier paymnts will be refunded PV2-464
+﻿@supports_dc_e2e
+Feature: Non-levy learner, provider deletes english/maths aim, earlier paymnts will be refunded PV2-464
 Scenario Outline: Non-levy learner provider deletes english/maths aim, earlier paymnts will be refunded PV2-464
     Given the following learners
-        | Learner Reference Number | Uln      |
-        | abc123                   | 12345678 |
+        | Learner Reference Number | 
+        | abc123                   | 
     And the following aims
-        | Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
-        | Maths or English | 12345         | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
-        | Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 2                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
+        | Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | Completion Status |
+        | Maths or English | 12345         | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        |
+        | Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        |
     And price details as follows    
         | Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | 1st price details | 0                    | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | Act2          | 1                   |                             |
@@ -33,8 +34,8 @@ Scenario Outline: Non-levy learner provider deletes english/maths aim, earlier p
         | R02/Current Academic Year | Sep/Current Academic Year | 0                      | 0                           | 39.25                     | OnProgrammeMathsAndEnglish |
     # Additional field Aim Type is just for readability and not used in the code
     But aims details are changed as follows
-        | Aim Type  | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type             | Completion Status |
-        | Programme | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 403            | 1            | 2              | 16-18 Apprenticeship Non-Levy | continuing        |
+        | Aim Type  | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | Completion Status |
+        | Programme | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        |
     # Note the order of Aim Sequence Number
     And price details are changed as follows        
         | Price Details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
