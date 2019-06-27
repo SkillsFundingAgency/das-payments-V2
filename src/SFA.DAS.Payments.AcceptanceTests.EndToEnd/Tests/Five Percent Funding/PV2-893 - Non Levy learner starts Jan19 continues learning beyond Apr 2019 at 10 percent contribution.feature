@@ -1,3 +1,4 @@
+@supports_dc_e2e
 Feature: 5% Contribution from April 2019 PV2-893
 As a provider,
 I want a Non Levy learner, starting in Jan 2019, at 10% contribution
