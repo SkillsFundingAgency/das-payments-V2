@@ -27,7 +27,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     public class IlrDcService : IIlrService
     {
-        private readonly IMapper mapper;
         private readonly ITdgService tdgService;
         private readonly TestSession testSession;
         private readonly IJobService jobService;
@@ -35,9 +34,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         private readonly IStreamableKeyValuePersistenceService storageService;
         private readonly IPaymentsDataContext dataContext;
 
-        public IlrDcService(IMapper mapper, ITdgService tdgService, TestSession testSession, IJobService jobService, IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IStreamableKeyValuePersistenceService storageService, IPaymentsDataContext dataContext)
+        public IlrDcService(ITdgService tdgService, TestSession testSession, IJobService jobService, IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IStreamableKeyValuePersistenceService storageService, IPaymentsDataContext dataContext)
         {
-            this.mapper = mapper;
             this.tdgService = tdgService;
             this.testSession = testSession;
             this.jobService = jobService;
@@ -60,7 +58,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 {
                     Ukprn = dist.Ukprn, Uln = dist.Uln, LearnerIdentifier = dist.LearnerId,
                     PostcodePrior = dist.PostcodePrior, EefCode = dist.EefCode,
-                    EmploymentStatusMonitoring = CreateLearnerEmploymentStatusMonitoringFromTraining(previousIlr.Single(p=>p.LearnerId == dist.LearnerId), dist)
+                    EmploymentStatusMonitoring = CreateLearnerEmploymentStatusMonitoringFromTraining(previousIlr?.Single(p=>p.LearnerId == dist.LearnerId), dist)
                 }));
 
                 foreach (var learner in learners)
@@ -83,6 +81,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private List<EmploymentStatusMonitoring> CreateLearnerEmploymentStatusMonitoringFromTraining(Training previousIlr, Training currentIlr)
         {
+            if(string.IsNullOrWhiteSpace(previousIlr?.Employer))
+                return new List<EmploymentStatusMonitoring>();
+
             var employmentStatusMonitoringList = new List<EmploymentStatusMonitoring>()
             {
                 new EmploymentStatusMonitoring()
