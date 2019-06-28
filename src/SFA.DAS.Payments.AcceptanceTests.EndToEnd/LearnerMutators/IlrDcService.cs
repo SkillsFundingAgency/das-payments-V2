@@ -82,13 +82,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         private List<EmploymentStatusMonitoring> CreateLearnerEmploymentStatusMonitoringFromTraining(Training previousIlr, Training currentIlr)
         {
             var employmentStatusMonitoringList = new List<EmploymentStatusMonitoring>();
-            if (!string.IsNullOrWhiteSpace(previousIlr?.Employer))
+            if (!string.IsNullOrWhiteSpace(previousIlr?.Employer) || !string.IsNullOrWhiteSpace(previousIlr?.SmallEmployer))
             {
                 employmentStatusMonitoringList.Add(new EmploymentStatusMonitoring()
                                                    {
                                                        LearnerId = previousIlr.LearnerId,
-                                                       EmploymentStatusApplies = previousIlr.EmploymentStatusApplies,
-                                                       EmploymentStatus = previousIlr.EmploymentStatus,
+                                                       EmploymentStatusApplies = !string.IsNullOrWhiteSpace(previousIlr.EmploymentStatusApplies) ? previousIlr.EmploymentStatusApplies : previousIlr.StartDate.ToDate().AddMonths(-6).ToString(),
+                                                       EmploymentStatus = !string.IsNullOrWhiteSpace(previousIlr.EmploymentStatus) ? previousIlr.EmploymentStatus : "in paid employment",
                                                        Employer = previousIlr.Employer,
                                                        SmallEmployer = previousIlr.SmallEmployer
                                                    });
