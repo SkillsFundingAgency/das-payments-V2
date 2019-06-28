@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         }},
                         new LearningDelivery
                         {
-                            AimSeqNumber = 1,
+                            AimSeqNumber = 2,
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "M&E",

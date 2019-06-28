@@ -14,9 +14,8 @@
     [CreationDate] DATETIMEOFFSET NOT NULL CONSTRAINT DF_SubmittedLearnerAim_CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
     [LearnerUln] BIGINT NOT NULL, 
     [JobId] BIGINT NOT NULL, 
-    [ContractType] TINYINT NOT NULL, 
 )
 
 GO
 
-CREATE INDEX [IX_SubmittedLearnerAim_ApprenticeshipKey] ON [Payments2].[SubmittedLearnerAim] ([Ukprn], [LearnerReferenceNumber], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimReference], [ContractType])
+CREATE INDEX [IX_SubmittedLearnerAim_ApprenticeshipKey] ON [Payments2].[SubmittedLearnerAim] ([Ukprn], [LearnerReferenceNumber], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimReference])

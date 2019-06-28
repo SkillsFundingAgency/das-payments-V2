@@ -1,5 +1,3 @@
-@ignore
-# failing due to incorrect handling of maths and english contract types
 
 
 Feature: Levy learner, takes single level 2 aim, fails, retakes beyond programme end, completes to time -  PV2-531

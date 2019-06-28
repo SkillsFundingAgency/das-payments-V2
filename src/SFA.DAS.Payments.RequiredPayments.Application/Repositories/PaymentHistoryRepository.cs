@@ -32,8 +32,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                             apprenticeshipKey.PathwayCode == payment.LearningAimPathwayCode &&
                             (int)apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
                             apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
-                            apprenticeshipKey.AcademicYear == payment.CollectionPeriod.AcademicYear &&
-                            apprenticeshipKey.ContractType == payment.ContractType)
+                            apprenticeshipKey.AcademicYear == payment.CollectionPeriod.AcademicYear)
                 .Select(payment => new PaymentHistoryEntity
                 {
                     ExternalId = payment.EventId,
@@ -72,8 +71,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                                   apprenticeshipKey.PathwayCode == payment.LearningAimPathwayCode &&
                                   apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
                                   apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
-                                  payment.FundingSource == FundingSourceType.CoInvestedEmployer &&
-                                  apprenticeshipKey.ContractType == payment.ContractType)
+                                  payment.FundingSource == FundingSourceType.CoInvestedEmployer)
                 .Select(payment => payment.Amount)
                 .DefaultIfEmpty(0)
                 .SumAsync(cancellationToken);
@@ -95,8 +93,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     LearningAimFrameworkCode,
                     LearningAimPathwayCode,
                     LearningAimProgrammeType,
-                    LearningAimStandardCode,
-                    ContractType
+                    LearningAimStandardCode
                 from (
                     select
                         LearnerReferenceNumber,
@@ -105,8 +102,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                         LearningAimFrameworkCode,
                         LearningAimPathwayCode,
                         LearningAimProgrammeType,
-                        LearningAimStandardCode,
-                        ContractType
+                        LearningAimStandardCode
                     from
                         [Payments2].[Payment]
                     where
@@ -120,8 +116,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 					    LearningAimFrameworkCode,
 					    LearningAimPathwayCode,
 					    LearningAimProgrammeType,
-					    LearningAimStandardCode,
-                        ContractType
+					    LearningAimStandardCode
 				    from
 					    [Payments2].[SubmittedLearnerAim]
 				    where
@@ -136,8 +131,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     LearningAimFrameworkCode,
                     LearningAimPathwayCode,
                     LearningAimProgrammeType,
-                    LearningAimStandardCode,
-                    ContractType
+                    LearningAimStandardCode
 "
             ).AsNoTracking().ToListAsync(cancellationToken).ConfigureAwait(false);
 
@@ -160,8 +154,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                         PathwayCode = p.LearningAimPathwayCode,
                         StandardCode = p.LearningAimStandardCode,
                         ProgrammeType = p.LearningAimProgrammeType
-                    },
-                    ContractType = p.ContractType
+                    }
                 })
                 .ToList();
         }

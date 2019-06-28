@@ -1,5 +1,3 @@
-@ignore
-# failing due to incorrect handling of maths and english contract types
 #Feature:  Maths and English	
 #
 #Scenario: Levy learner, provider submits first ILR in R08 showing ACT1 from the start of learning. Correct Maths or English refunds are processed

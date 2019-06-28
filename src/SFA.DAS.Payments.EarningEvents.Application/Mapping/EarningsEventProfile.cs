@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -66,7 +67,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(model => model.LearningAimProgrammeType, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.ProgType))
                 .ForMember(model => model.LearningAimStandardCode, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.StdCode))
                 .ForMember(model => model.LearningAimReference, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.LearnAimRef))
-                .ForMember(model => model.ContractType, opt => opt.MapFrom(aim => aim.ContractType))
                 .Ignore(model => model.Id)
                 ;
 

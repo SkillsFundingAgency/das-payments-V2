@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -16,7 +15,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public int CollectionPeriod { get; protected set; }
         public DateTime IlrSubmissionDateTime { get; protected set; }
         public long JobId { get; set; }
-        public ContractType ContractType { get; set; }
         
         public IntermediateLearningAim(
             ProcessLearnerCommand command, 

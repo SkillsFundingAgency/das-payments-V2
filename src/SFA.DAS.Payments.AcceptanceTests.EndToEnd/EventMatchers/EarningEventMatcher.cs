@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
-using SFA.DAS.Payments.Messages.Core.Events;
 using Earning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Earning;
 using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
@@ -80,6 +79,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         AimReference = learnerSpec.Course.LearnAimRef
                     });
 
+
                 IEnumerable<Aim> currentAims;
 
                 // AimPeriodMatcher doesn't support completed aims from the past, this is a workaround until imminent refactoring
@@ -113,21 +113,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (aimSpec.IsMainAim && onProgEarnings.Any())
                     {
-                        var contractTypeEarningsEvents  = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
-
-                        foreach (var onProgEarning in contractTypeEarningsEvents)
+                        var onProgEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
+                        onProgEarning.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
                         {
-                            onProgEarning.OnProgrammeEarnings = onProgEarnings.Select(tt => new OnProgrammeEarning
+                            Type = (OnProgrammeEarningType) (int) tt,
+                            Periods = aimEarningSpecs.Select(e => new EarningPeriod
                             {
-                                Type = (OnProgrammeEarningType)(int)tt,
-                                Periods = GetEarningPeriods(aimEarningSpecs, aimSpec, onProgEarning, tt, fm36Learner).AsReadOnly()
-                            }).ToList();
-                            onProgEarning.JobId = provider.JobId;
-                            onProgEarning.Learner = learner;
-                            onProgEarning.LearningAim = learningAim;
+                                Amount = e.Values[tt],
+                                Period = e.DeliveryCalendarPeriod,
+                                PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                            }).ToList().AsReadOnly()
+                        }).ToList();
+                        onProgEarning.JobId = provider.JobId;
+                        onProgEarning.Learner = learner;
+                        onProgEarning.LearningAim = learningAim;
 
-                            result.Add(onProgEarning);
-                        }
+                        result.Add(onProgEarning);
                     }
 
                     if (!aimSpec.IsMainAim && functionalSkillEarnings.Any())
@@ -155,54 +156,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (!aimSpec.IsMainAim && incentiveEarnings.Any())
                     {
-                        var contractTypeIncentiveEarnings = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
-
-                        foreach (var incentiveEarning in contractTypeIncentiveEarnings)
+                        var incentiveEarning = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
+                        incentiveEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
                         {
-                            incentiveEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
+                            Type = (IncentiveEarningType) (int) tt,
+                            Periods = aimEarningSpecs.Select(e => new EarningPeriod
                             {
-                                Type = (IncentiveEarningType)(int)tt,
-                                Periods = GetEarningPeriods(aimEarningSpecs, aimSpec, incentiveEarning, tt, fm36Learner).AsReadOnly(),
-                            }).ToList();
-                            incentiveEarning.JobId = provider.JobId;
-                            incentiveEarning.Learner = learner;
-                            incentiveEarning.LearningAim = learningAim;
-
-                            result.Add(incentiveEarning);
-                        }
+                                Amount = e.Values[tt],
+                                Period = e.DeliveryCalendarPeriod,
+                                PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                            }).ToList().AsReadOnly()
+                        }).ToList();
+                        incentiveEarning.JobId = provider.JobId;
+                        incentiveEarning.Learner = learner;
+                        incentiveEarning.LearningAim = learningAim;
+                  
+                        result.Add(incentiveEarning);
                     }
                 }
             }
 
             return result;
-        }
-
-        private List<EarningPeriod> GetEarningPeriods(List<Earning> aimEarningSpecs, Aim aimSpec, ApprenticeshipContractTypeEarningsEvent onProgEarning, TransactionType tt, FM36Learner fm36Learner)
-        {
-            return aimEarningSpecs
-                .Select(e => new EarningPeriod
-                {
-                    Amount = PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning)? e.Values[tt] : 0M,
-                    Period = e.DeliveryCalendarPeriod,
-                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                }).OrderBy(p => p.Period).ToList();
-        }
-
-        private static bool PriceEpisodeContractTypeMatchesAim(List<Price> priceEpisodes, string priceEpisodeIdentifier,
-            IEarningEvent onProgEarning)
-        {
-            var matchingPriceEpisode = priceEpisodes.FirstOrDefault(p =>
-                p.PriceEpisodeId == priceEpisodeIdentifier);
-
-            switch (onProgEarning)
-            {
-                case ApprenticeshipContractType1EarningEvent _:
-                    return matchingPriceEpisode?.ContractType == ContractType.Act1;
-                case ApprenticeshipContractType2EarningEvent _:
-                    return matchingPriceEpisode?.ContractType == ContractType.Act2;
-                default:
-                    return false;
-            }
         }
 
         private string FindPriceEpisodeIdentifier(decimal value, Earning earning, FM36Learner fm36Learner, TransactionType transactionType)
@@ -217,14 +191,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             // find first price episode with non-zero value for a period
             var period = earning.DeliveryCalendarPeriod;
-
-            earning.PriceEpisodeIdentifier = fm36Learner.PriceEpisodes
+            return fm36Learner.PriceEpisodes
                 .SingleOrDefault(pe => pe.PriceEpisodePeriodisedValues
                     .Any(pepv => pepv.GetValue(period).GetValueOrDefault(0) != 0 &&
                                  pepv.AttributeName == transactionType.ToAttributeName()))?
                 .PriceEpisodeIdentifier;
-
-            return earning.PriceEpisodeIdentifier;
         }
 
         protected override bool Match(EarningEvent expectedEvent, EarningEvent actualEvent)
@@ -318,37 +289,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return true;
         }
 
-        private List<ApprenticeshipContractTypeEarningsEvent> CreateContractTypeEarningsEventEarningEvent( long ukprn)
+        private ApprenticeshipContractTypeEarningsEvent CreateContractTypeEarningsEventEarningEvent( long ukprn)
         {
-            var contractTypes = EnumHelper.GetContractTypes(currentIlr, currentPriceEpisodes);
+            var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
 
-            var events = new List<ApprenticeshipContractTypeEarningsEvent>();
-
-            contractTypes?.ForEach(c =>
+            switch (contractType)
             {
-                switch (c)
-                {
-                    case ContractType.Act1:
-                        events.Add(new ApprenticeshipContractType1EarningEvent
-                        {
-                            CollectionPeriod = collectionPeriod,
-                            Ukprn = ukprn
-                        });
-                        break;
-                    case ContractType.Act2:
-                        events.Add(new ApprenticeshipContractType2EarningEvent
-                        {
-                            CollectionPeriod = collectionPeriod,
-                            Ukprn = ukprn
-                        });
-                        break;
-                    default:
-                        throw new InvalidOperationException(
-                            "Cannot create the EarningEventMatcher invalid contract type ");
-                }
-            });
+                case ContractType.Act1:
+                    return new ApprenticeshipContractType1EarningEvent
+                    {
+                        CollectionPeriod = collectionPeriod,
+                        Ukprn = ukprn
+                    };
 
-            return events;
+                case ContractType.Act2:
+                    return new ApprenticeshipContractType2EarningEvent
+                    {
+                        CollectionPeriod = collectionPeriod,
+                        Ukprn = ukprn
+                    };
+
+                default:
+                    throw new InvalidOperationException("Cannot create the EarningEventMatcher invalid contract type ");
+            }
+
         }
 
 

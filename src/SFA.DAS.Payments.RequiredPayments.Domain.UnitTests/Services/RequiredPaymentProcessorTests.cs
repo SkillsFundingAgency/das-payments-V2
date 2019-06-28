@@ -20,7 +20,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         protected List<Payment> paymentHistory;
         protected decimal expectedAmount;
 
-        private const string PriceEpisodeIdentifier = "pe-1";
 
         [SetUp]
         public void Setup()
@@ -51,7 +50,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 var testEarning = new Earning
                 {
                     SfaContributionPercentage = 0,
-                    PriceEpisodeIdentifier = PriceEpisodeIdentifier
                 };
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(expectedAmount);
 
@@ -68,7 +66,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 var testEarning = new Earning
                 {
                     SfaContributionPercentage = expectedSfaContribution,
-                    PriceEpisodeIdentifier = PriceEpisodeIdentifier
                 };
 
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
@@ -87,7 +84,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 {
                     EarningType = expectedEarningType,
                     SfaContributionPercentage = 0,
-                    PriceEpisodeIdentifier = PriceEpisodeIdentifier
                 };
 
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
@@ -100,10 +96,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             [Test]
             public void AndThereIsNoSfaContributionPercentage_ThenAnExceptionIsThrown()
             {
-                var testEarning = new Earning
-                {
-                    PriceEpisodeIdentifier = PriceEpisodeIdentifier
-                };
+                var testEarning = new Earning();
 
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(0, paymentHistory)).Returns(50);
 
@@ -164,7 +157,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 var testEarning = new Earning
                 {
-                    PriceEpisodeIdentifier = "pe-1",
                     SfaContributionPercentage = null,
                     Amount = 0
                 };
@@ -201,7 +193,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 var testEarning = new Earning
                 {
-                    PriceEpisodeIdentifier = "pe-1",
                     SfaContributionPercentage = .9M,
                 };
                 paymentHistory.Add(new Payment { SfaContributionPercentage = .9M });
@@ -247,7 +238,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 var testEarning = new Earning
                 {
-                    PriceEpisodeIdentifier = "pe-1",
                     SfaContributionPercentage = .9M,
                     Amount = 50,
                 };
@@ -282,7 +272,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 var testEarning = new Earning
                 {
-                    PriceEpisodeIdentifier = "pe-1",
                     SfaContributionPercentage = .9M,
                     Amount = 0,
                 };

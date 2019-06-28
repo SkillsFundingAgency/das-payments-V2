@@ -1,6 +1,5 @@
 ﻿using System;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
 {
@@ -14,6 +13,5 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
         public LearningAim LearningAim { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
-        public ContractType ContractType { get; set; }
     }
 }
