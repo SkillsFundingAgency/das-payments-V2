@@ -137,16 +137,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private MessageLearnerLearnerEmploymentStatus CreateEmploymentStatusMonitoring(EmploymentStatusMonitoring monitoring)
         {
-            return new MessageLearnerLearnerEmploymentStatus()
+            var messageLearnerLearnerEmploymentStatus = new MessageLearnerLearnerEmploymentStatus()
             {
                 EmpId = monitoring.Employer.ToEmployerAccountId(),
                 EmpIdSpecified = true,
                 EmpStatSpecified = true,
                 DateEmpStatAppSpecified = true,
+                DateEmpStatApp = DateTime.TryParse(monitoring.EmploymentStatusApplies, out var employmentStatusApplies) ? employmentStatusApplies : monitoring.EmploymentStatusApplies.ToDate(),
                 EmpStat = monitoring.EmploymentStatus.ToEmpStatCode(),
-                DateEmpStatApp = monitoring.EmploymentStatusApplies.ToDate(),
                 EmploymentStatusMonitoring = CreateEmploymentStatusMonitoringRecords(monitoring)
             };
+
+            return messageLearnerLearnerEmploymentStatus;
         }
 
         private MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring[] CreateEmploymentStatusMonitoringRecords(EmploymentStatusMonitoring esm)
