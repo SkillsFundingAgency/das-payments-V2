@@ -523,6 +523,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -538,15 +543,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature.cs">
+    <Compile Include="Tests\Employer Change of Circumstances\PV2-375 Learner changes employer and there is a gap between commitments - provider receives payment during the gap.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature</DependentUpon>
+      <DependentUpon>PV2-375 Learner changes employer and there is a gap between commitments - provider receives payment during the gap.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature.cs">
+    <Compile Include="Tests\Employer Change of Circumstances\PV2-621 Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature</DependentUpon>
+      <DependentUpon>PV2-621 Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature.cs">
       <AutoGen>True</AutoGen>
@@ -577,11 +582,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1632,6 +1632,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Employer Change of Circumstances\PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs</LastGenOutput>
@@ -1644,13 +1648,13 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Employer Change of Circumstances\Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature">
+    <None Include="Tests\Employer Change of Circumstances\PV2-375 Learner changes employer and there is a gap between commitments - provider receives payment during the gap.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-375 Learner changes employer and there is a gap between commitments - provider receives payment during the gap.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Employer Change of Circumstances\Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature">
+    <None Include="Tests\Employer Change of Circumstances\PV2-621 Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-621 Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1675,10 +1679,6 @@
     <None Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2166,7 +2166,7 @@
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner withdraws after planned end date PV2-2781.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-levy learner withdraws after planned end date PV2-278.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
