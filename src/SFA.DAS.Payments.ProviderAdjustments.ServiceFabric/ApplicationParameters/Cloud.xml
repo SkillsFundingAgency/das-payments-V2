@@ -2,5 +2,16 @@
 <Application Name="fabric:/SFA.DAS.Payments.ProviderAdjustments.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Parameters>
     <Parameter Name="SFA.DAS.Payments.ProviderAdjustments.Service_InstanceCount" Value="-1" />
+
+    <Parameter Name="DCServiceBusConnectionString" Value="__DCServiceBusConnectionString__" />
+    <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
+    <Parameter Name="DcStorageConnectionString" Value="__DcStorageConnectionString__" />
+    <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRW__" />
+
+    <Parameter Name="SubscriptionName" Value="__SubscriptionName__" />
+    <Parameter Name="JobStatusQueueName" Value="__JobStatusQueue__" />
+    <Parameter Name="TopicName" Value="__TopicName__" />
+    <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
   </Parameters>
 </Application>
