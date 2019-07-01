@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,7 +53,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                 return 0;
             }
 
-            logger.LogDebug($"Processing {batch.Count} records.");
+            logger.LogDebug($"Processing {batch.Count} records: {string.Join(", ", batch.Select(m => m.EventId))}");
+
             var data = dataTable.GetDataTable(batch);
             using (var sqlConnection = new SqlConnection(connectionString))
             using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
