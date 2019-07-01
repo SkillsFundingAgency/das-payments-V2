@@ -237,8 +237,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             if (!string.IsNullOrWhiteSpace(aim.OriginalStartDate))
             {
-                delivery.OrigLearnStartDate = aim.OriginalStartDate.ToDate();
-                delivery.OrigLearnStartDateSpecified = true;
+                learningDelivery.OrigLearnStartDate = aim.OriginalStartDate.ToDate();
+                learningDelivery.OrigLearnStartDateSpecified = true;
             }
 
             if (aim.PlannedDurationAsTimespan.HasValue)
