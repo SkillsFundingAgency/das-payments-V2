@@ -6,8 +6,8 @@ So that I am accurately paid the Disadvantage Uplift amount of £300 in 2 install
 #ILR entry: <PostcodePrior>OX17 1EZ</PostcodePrior>
 Scenario Outline:Levy learner - on framework , Disadvantage Uplift 11-20% paid PV2-440
 Given the following commitments exist	
-	 | framework code | programme type | pathway code | agreed price | start date                | end date                     | status | effective from            |Framework Code | Programme Type | Pathway Code |
-	 | 593            | 20             | 1            | 15000        | 01/Aug/Last Academic Year | 01/Aug/Current Academic Year | active | 01/Aug/Last Academic Year |593            | 20             | 1            |
+	 | framework code | programme type | pathway code | agreed price | start date                | end date                     | status | effective from            |
+	 | 593            | 20             | 1            | 15000        | 01/Aug/Last Academic Year | 01/Aug/Current Academic Year | active | 01/Aug/Last Academic Year |
 
 And the provider previously submitted the following learner details
 	| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                  | SFA Contribution Percentage |
@@ -46,21 +46,24 @@ And the following provider payments had been generated
 But the Provider now changes the Learner details as follows
 	| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Programme Type | Pathway Code | Funding Line Type                                  | SFA Contribution Percentage |
 	| 06/Aug/Last Academic Year | 12 months        | 15000                | 06/Aug/Last Academic Year           | 0                      |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 20             | 1            | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+And price details as follows
+	| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
+	| pe-1             | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
 When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 Then the following learner earnings should be generated
-	| Delivery Period           | On-Programme | Completion | Balancing | SecondDisadvantagePayment |
-	| Aug/Current Academic Year | 0            | 0          | 0         | 150                       |
-	| Sep/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| Oct/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| Nov/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| Dec/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| Jan/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| Feb/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| Mar/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| Apr/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| May/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| Jun/Current Academic Year | 0            | 0          | 0         | 0                         |
-	| Jul/Current Academic Year | 0            | 0          | 0         | 0                         |
+	| Delivery Period           | On-Programme | Completion | Balancing | SecondDisadvantagePayment | Price Episode Identifier |
+	| Aug/Current Academic Year | 0            | 0          | 0         | 150                       | pe-1                     |
+	| Sep/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     |
+	| Oct/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     | 
+	| Nov/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     | 
+	| Dec/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     | 
+	| Jan/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     |
+	| Feb/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     | 
+	| Mar/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     | 
+	| Apr/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     |
+	| May/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     | 
+	| Jun/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     | 
+	| Jul/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     |
 
 And at month end only the following payments will be calculated
 	| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | SecondDisadvantagePayment |
