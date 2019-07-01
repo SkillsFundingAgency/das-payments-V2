@@ -27,8 +27,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }
 
-            // Only deal with Transactin Type 1 (On Programme)
-            if (dataLockValidationModel.TransactionType != OnProgrammeEarningType.Learning)
+            // Only deal with Transaction Type 1 OnProgramme
+            if (dataLockValidationModel.TransactionType != TransactionType.Learning)
             {
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }

@@ -1,9 +1,10 @@
-﻿Feature: Data Lock - DLOCK10 - when the employer stops payments for a learner on a commitment PV2-711
+﻿@ignore
+Feature: Data Lock - DLOCK10 - when the employer stops payments for a learner on a commitment PV2-711
 		As a Provider,
 		I want to be notified with a DLOCK10 when Employer puts a stop on a learner's payment
 		So that I can take the correct action for that learner 
 
-Scenario Outline: DLOCK10 - when the employer stops payments for a learner on a commitmen PV2-711
+Scenario: DLOCK10 - when the employer stops payments for a learner on a commitmen PV2-711
 	Given the employer levy account balance in collection period R12/Current Academic Year is 11000
 	And the following apprenticeships exist
 		| Identifier       | framework code | programme type | pathway code | agreed price | start date                   | end date                  | status | effective from               | effective to                 |
@@ -17,7 +18,7 @@ Scenario Outline: DLOCK10 - when the employer stops payments for a learner on a 
     And price details as follows
 		| Price Episode Id  | Total Training Price | Total Training Price Effective Date | Contract Type  | SFA Contribution Percentage |
 		| pe-1              | 10000                | 01/Aug/Current Academic Year        | Act1           | 90%                         |	
-	When the ILR file is submitted for the learners for collection period <Collection_Period>
+	When the ILR file is submitted for the learners for collection period R12/Current Academic Year
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18EmployerIncentive | Second16To18ProviderIncentive | OnProgramme16To18FrameworkUplift | LearningSupport | FirstDisadvantagePayment | SecondDisadvantagePayment |  Price Episode Identifier |
 		| Aug/Current Academic Year | 666.66667    | 0          | 0         | 0                            | 0                            | 0                             | 0                             | 120                              | 150             | 0                        | 0                         |  pe-1                     |
@@ -35,41 +36,38 @@ Scenario Outline: DLOCK10 - when the employer stops payments for a learner on a 
 	And the following data lock failures were generated
 		| Apprenticeship   | Delivery Period           | Framework Code | Programme Type | Pathway Code | Transaction Type | Error Code | Price Episode Identifier |
 		| Apprenticeship a | Oct/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+		| Apprenticeship a | Nov/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+		| Apprenticeship a | Dec/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+		| Apprenticeship a | Jan/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+		| Apprenticeship a | Feb/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+		| Apprenticeship a | Mar/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+		| Apprenticeship a | Apr/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+		| Apprenticeship a | May/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+		| Apprenticeship a | Jun/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+		| Apprenticeship a | Jul/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_10   | pe-1                     |
+
     And at month end only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme |Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18EmployerIncentive | Second16To18ProviderIncentive | OnProgramme16To18FrameworkUplift | LearningSupport | FirstDisadvantagePayment | SecondDisadvantagePayment |
-		| R01/Current Academic Year | Aug/Current Academic Year | 666.66667    |0          | 0         | 0                            | 0                            | 0                             | 0                             | 120.00000                        | 150.00000       | 0                        | 0                         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 666.66667    |0          | 0         | 0                            | 0                            | 0                             | 0                             | 120.00000                        | 150.00000       | 0                        | 0                         |
+		| R12/Current Academic Year | Aug/Current Academic Year | 666.66667    |0          | 0         | 0                            | 0                            | 0                             | 0                             | 120.00000                        | 150.00000       | 0                        | 0                         |
+		| R12/Current Academic Year | Sep/Current Academic Year | 666.66667    |0          | 0         | 0                            | 0                            | 0                             | 0                             | 120.00000                        | 150.00000       | 0                        | 0                         |
 																			   
 	And only the following provider payments will be recorded
 		| Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type                 |
-		| R01/Current Academic Year | Aug/Current Academic Year | 666.66667     | 0                         | Learning                         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 666.66667     | 0                         | Learning                         |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0             | 120                       | OnProgramme16To18FrameworkUplift |
-		| R02/Current Academic Year | Sep/Current Academic Year | 0             | 120                       | OnProgramme16To18FrameworkUplift |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0             | 150                       | LearningSupport                  |
-		| R02/Current Academic Year | Sep/Current Academic Year | 0             | 150                       | LearningSupport                  |
+		| R12/Current Academic Year | Aug/Current Academic Year | 666.66667     | 0                         | Learning                         |
+		| R12/Current Academic Year | Sep/Current Academic Year | 666.66667     | 0                         | Learning                         |
+		| R12/Current Academic Year | Aug/Current Academic Year | 0             | 120                       | OnProgramme16To18FrameworkUplift |
+		| R12/Current Academic Year | Sep/Current Academic Year | 0             | 120                       | OnProgramme16To18FrameworkUplift |
+		| R12/Current Academic Year | Aug/Current Academic Year | 0             | 150                       | LearningSupport                  |
+		| R12/Current Academic Year | Sep/Current Academic Year | 0             | 150                       | LearningSupport                  |
 	And only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type                 |
-		| R01/Current Academic Year | Aug/Current Academic Year | 666.66667     | 0                         | Learning                         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 666.66667     | 0                         | Learning                         |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0             | 120                       | OnProgramme16To18FrameworkUplift |
-		| R02/Current Academic Year | Sep/Current Academic Year | 0             | 120                       | OnProgramme16To18FrameworkUplift |
-		| R01/Current Academic Year | Aug/Current Academic Year | 0             | 150                       | LearningSupport                  |
-		| R02/Current Academic Year | Sep/Current Academic Year | 0             | 150                       | LearningSupport                  |
-Examples:
-        | Collection_Period         |
-		| R01/Current Academic Year |
-		| R02/Current Academic Year |
-		| R03/Current Academic Year |
-		| R04/Current Academic Year |
-		| R05/Current Academic Year |
-		| R06/Current Academic Year |
-		| R07/Current Academic Year |
-		| R08/Current Academic Year |
-		| R09/Current Academic Year |
-		| R10/Current Academic Year |
-		| R11/Current Academic Year |
-		| R12/Current Academic Year |
+		| R12/Current Academic Year | Aug/Current Academic Year | 666.66667     | 0                         | Learning                         |
+		| R12/Current Academic Year | Sep/Current Academic Year | 666.66667     | 0                         | Learning                         |
+		| R12/Current Academic Year | Aug/Current Academic Year | 0             | 120                       | OnProgramme16To18FrameworkUplift |
+		| R12/Current Academic Year | Sep/Current Academic Year | 0             | 120                       | OnProgramme16To18FrameworkUplift |
+		| R12/Current Academic Year | Aug/Current Academic Year | 0             | 150                       | LearningSupport                  |
+		| R12/Current Academic Year | Sep/Current Academic Year | 0             | 150                       | LearningSupport                  |
+
 
 
 

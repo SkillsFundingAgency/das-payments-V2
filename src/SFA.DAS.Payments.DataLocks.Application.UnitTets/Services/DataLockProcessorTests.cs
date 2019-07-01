@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         private IMapper mapper;
         private ApprenticeshipContractType1EarningEvent earningEvent;
         private Mock<ILearnerMatcher> learnerMatcherMock;
-        private Mock<IOnProgrammePeriodsValidationProcessor> onProgValidationMock;
+        private Mock<IEarningPeriodsValidationProcessor> onProgValidationMock;
         private List<ApprenticeshipModel> apprenticeships;
         private const long Uln = 123;
         private const int AcademicYear = 1819;
@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             earningEvent.LearningAim = aim;
 
             learnerMatcherMock = new Mock<ILearnerMatcher>(MockBehavior.Strict);
-            onProgValidationMock = new Mock<IOnProgrammePeriodsValidationProcessor>(MockBehavior.Strict);
+            onProgValidationMock = new Mock<IEarningPeriodsValidationProcessor>(MockBehavior.Strict);
         }
 
         [Test]
@@ -84,7 +84,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             onProgValidationMock
                 .Setup(x => x.ValidatePeriods(apprenticeships[0].Uln,
                                                 earningEvent.PriceEpisodes,
-                                                earningEvent.OnProgrammeEarnings[0],
+                                                It.IsAny<List<EarningPeriod>>(),
+                                                (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                                                 apprenticeships,
                                                 aim,
                                                 AcademicYear))
@@ -185,7 +186,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             onProgValidationMock
                  .Setup(x => x.ValidatePeriods(apprenticeships[0].Uln,
                     It.IsAny<List<PriceEpisode>>(),
-                    It.IsAny<OnProgrammeEarning>(),
+                    It.IsAny<List<EarningPeriod>>(),
+                    It.IsAny<TransactionType>(),
                     It.IsAny<List<ApprenticeshipModel>>(),
                     aim,
                     AcademicYear))
@@ -257,7 +259,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             onProgValidationMock
                  .Setup(x => x.ValidatePeriods(apprenticeships[0].Uln,
                     It.IsAny<List<PriceEpisode>>(),
-                    It.IsAny<OnProgrammeEarning>(),
+                    It.IsAny<List<EarningPeriod>>(),
+                    It.IsAny<TransactionType>(),
                     It.IsAny<List<ApprenticeshipModel>>(),
                     aim,
                     AcademicYear))

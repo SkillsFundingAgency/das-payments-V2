@@ -33,18 +33,18 @@ Scenario Outline: DLOCK06 - When no matching record found in an employer digital
 		| Jul/Current Academic Year | 666.66667    | 0          | 0         | 0                            | 0                            | 500                           | 500                           | 120                              | 150             | 0                        | 300                       |  pe-1                     |
 	And the following data lock failures were generated
         | Apprenticeship   | Delivery Period           | Framework Code | Programme Type | Pathway Code | Transaction Type | Error Code | Price Episode Identifier |
-        | Apprenticeship a | Aug/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Sep/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Oct/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Nov/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Dec/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Jan/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Feb/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Mar/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Apr/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | May/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Jun/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
-		| Apprenticeship a | Jul/Current Academic Year | 593            | 20             | 1            | Learning         | DLOCK_06   | pe-1                     |
+        | Apprenticeship a | Aug/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Sep/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Oct/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Nov/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Dec/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Jan/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Feb/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Mar/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Apr/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | May/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Jun/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
+		| Apprenticeship a | Jul/Current Academic Year | 593            | 20             | 2          | Learning         | DLOCK_06   | pe-1                     |
 	And Month end is triggered
 	And no provider payments will be generated
 	And no provider payments will be recorded
