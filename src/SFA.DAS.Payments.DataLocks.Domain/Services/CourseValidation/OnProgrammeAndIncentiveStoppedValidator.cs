@@ -7,11 +7,11 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class OnProgrammeStoppedValidator : BaseCourseValidator, ICourseValidator
+    public class OnProgrammeAndIncentiveStoppedValidator : BaseCourseValidator, ICourseValidator
     {
         private readonly ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate;
 
-        public OnProgrammeStoppedValidator(ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate)
+        public OnProgrammeAndIncentiveStoppedValidator(ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate)
         {
             this.calculatePeriodStartAndEndDate = calculatePeriodStartAndEndDate;
         }
@@ -27,8 +27,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }
 
-            // Only deal with Transaction Type 1 OnProgramme
-            if (dataLockValidationModel.TransactionType != TransactionType.Learning)
+            // Only deal with Transaction Type 1 OnProgramme and incentives
+            if (dataLockValidationModel.TransactionType == TransactionType.Balancing ||
+                dataLockValidationModel.TransactionType == TransactionType.Completion )
             {
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }
