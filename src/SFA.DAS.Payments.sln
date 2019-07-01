@@ -213,7 +213,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces", "SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces\SFA.DAS.Payments.RequiredPayments.RemovedLearnerService.Interfaces.csproj", "{2D2930BB-77E7-4AA1-B18C-BD3E072894F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.DataLocks.DataLockStatusChangedService", "SFA.DAS.Payments.DataLocks.DataLockStatusChangedService\SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.csproj", "{63D92999-F026-4068-9C92-47C0235D978E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.DataLockStatusChangedService", "SFA.DAS.Payments.DataLocks.DataLockStatusChangedService\SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.csproj", "{63D92999-F026-4068-9C92-47C0235D978E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.DataLocks.Model", "SFA.DAS.Payments.DataLocks.Model\SFA.DAS.Payments.DataLocks.Model.csproj", "{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -961,6 +963,14 @@ Global
 		{63D92999-F026-4068-9C92-47C0235D978E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{63D92999-F026-4068-9C92-47C0235D978E}.Release|x64.ActiveCfg = Release|Any CPU
 		{63D92999-F026-4068-9C92-47C0235D978E}.Release|x64.Build.0 = Release|Any CPU
+		{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94}.Debug|x64.Build.0 = Debug|Any CPU
+		{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94}.Release|x64.ActiveCfg = Release|Any CPU
+		{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1057,6 +1067,7 @@ Global
 		{3E0A8CEB-C94D-4B47-83D3-ABE646385C86} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{2D2930BB-77E7-4AA1-B18C-BD3E072894F5} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{63D92999-F026-4068-9C92-47C0235D978E} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
+		{D2BC3016-DE7F-436F-8E48-A9EDB3F98C94} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
