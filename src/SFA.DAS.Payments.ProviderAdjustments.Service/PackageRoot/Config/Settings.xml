@@ -9,17 +9,19 @@
 
   <Section Name="ConnectionStringsSection">
     <Parameter Name="LoggingConnectionString" Value=""/>
-    <Parameter Name="DCServiceBusConnectionString" Value=""/>
+    <Parameter Name="ServiceBusConnectionString" Value=""/>
     <Parameter Name="DcStorageConnectionString" Value=""/>
     <Parameter Name="PaymentsConnectionString" Value=""/>
+    <Parameter Name="StorageConnectionString" Value=""/>
   </Section>
 
   <Section Name="Settings">
-    <Parameter Name="SubscriptionName" Value="" />
-    <Parameter Name="JobStatusQueueName" Value="" />
-    <Parameter Name="TopicName" Value="" />
+    
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="EndpointName" Value="" />
+    <Parameter Name="FailedMessagesQueue" Value="" />
+
   </Section>
 
 </Settings>
