@@ -17,5 +17,6 @@
 	TransferSendingEmployerAccountId BIGINT NULL,
 	StopDate Date NULL, 
     [Status] TINYINT NOT NULL,
-    [IsLevyPayer] BIT NOT NULL 
+    [IsLevyPayer] BIT NOT NULL, 
+    [ApprenticeshipEmployerType] TINYINT NOT NULL 
 )

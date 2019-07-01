@@ -20,6 +20,7 @@
 	LearningAimFrameworkCode INT NOT NULL,
 	LearningAimPathwayCode INT NOT NULL,
 	LearningAimFundingLineType NVARCHAR(100) NOT NULL,
+	LearningStartDate DATETIME2 NOT NULL,
 	ContractType TINYINT NOT NULL,
 	TransactionType TINYINT NOT NULL,
 	FundingSource TINYINT NOT NULL,
@@ -29,16 +30,17 @@
 	[AccountId] BIGINT NULL , 
 	TransferSenderAccountId BIGINT NULL , 
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
-	EarningsStartDate DATETIME NOT NULL,
-	EarningsPlannedEndDate DATETIME NULL,
-	EarningsActualEndDate DATETIME NULL,
+	EarningsStartDate DATETIME2 NOT NULL,
+	EarningsPlannedEndDate DATETIME2 NULL,
+	EarningsActualEndDate DATETIME2 NULL,
 	EarningsCompletionStatus TINYINT NOT NULL,
 	EarningsCompletionAmount DECIMAL (15,5),
 	EarningsInstalmentAmount DECIMAL (15,5),
 	EarningsNumberOfInstalments SMALLINT NOT NULL,
     ApprenticeshipId BIGINT NULL,
     ApprenticeshipPriceEpisodeId BIGINT NULL,
-
+	ApprenticeshipEmployerType TINYINT NULL,
+	ReportingAimFundingLineType NVARCHAR(100) NULL,
 );
 GO
 
