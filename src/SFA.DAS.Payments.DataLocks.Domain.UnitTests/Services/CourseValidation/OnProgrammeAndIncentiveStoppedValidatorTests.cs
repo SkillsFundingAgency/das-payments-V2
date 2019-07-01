@@ -13,7 +13,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
     [TestFixture]
-    public class OnProgrammeStoppedValidatorTests
+    public class OnProgrammeAndIncentiveStoppedValidatorTests
     {
         private const string PriceEpisodeIdentifier = "pe-1";
         private EarningPeriod period;
@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Returns((new DateTime(periodEndDate.Year, periodEndDate.Month, 1), periodEndDate))
                 .Verifiable();
 
-            var validator = new OnProgrammeStoppedValidator(calculatePeriodStartAndEndDate.Object);
+            var validator = new OnProgrammeAndIncentiveStoppedValidator(calculatePeriodStartAndEndDate.Object);
             var result = validator.Validate(validation);
             result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_10, errorMessage);
             result.ApprenticeshipPriceEpisodes.Should().BeEmpty(errorMessage);
@@ -106,15 +106,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Verifiable();
 
 
-            var validator = new OnProgrammeStoppedValidator(calculatePeriodStartAndEndDate.Object);
+            var validator = new OnProgrammeAndIncentiveStoppedValidator(calculatePeriodStartAndEndDate.Object);
             var result = validator.Validate(validation);
             result.DataLockErrorCode.Should().BeNull(errorMessage);
             result.ApprenticeshipPriceEpisodes.Should().HaveCount(1, errorMessage);
             result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100, errorMessage);
         }
 
-        [TestCase("When stop date is in the middle of period 6 and transaction type is not OnProgramme then no DLOCK_10", 6, "2020/1/20", "2020/1/31", TransactionType.First16To18ProviderIncentive)]
-        [TestCase("When stop date is at the end of period 6 , we are testing period 7 and transaction type is OnProgramme then no DLOCK_10", 7, "2020/1/31", "2020/2/29", TransactionType.LearningSupport)]
+        [TestCase("When stop date is in the middle of period 6 and transaction type is not Balancing then no DLOCK_10", 6, "2020/1/20", "2020/1/31", TransactionType.Balancing)]
+        [TestCase("When stop date is at the end of period 6 , we are testing period 7 and transaction type is Completion then no DLOCK_10", 7, "2020/1/31", "2020/2/29", TransactionType.Completion)]
         public void ScenariosThatDoNotProduceDatalocksBasedOnTransactionType(string errorMessage, byte testPeriod, DateTime commitmentStopDate, DateTime periodEndDate, TransactionType type)
         {
             period.Period = testPeriod;
@@ -139,7 +139,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 TransactionType = type
             };
 
-            var validator = new OnProgrammeStoppedValidator(calculatePeriodStartAndEndDate.Object);
+            var validator = new OnProgrammeAndIncentiveStoppedValidator(calculatePeriodStartAndEndDate.Object);
             var result = validator.Validate(validation);
             result.DataLockErrorCode.Should().BeNull(errorMessage);
             result.ApprenticeshipPriceEpisodes.Should().HaveCount(1, errorMessage);
