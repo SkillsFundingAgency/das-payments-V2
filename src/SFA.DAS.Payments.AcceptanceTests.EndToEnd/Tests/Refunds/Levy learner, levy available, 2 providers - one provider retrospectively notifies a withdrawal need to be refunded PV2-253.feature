@@ -1,4 +1,3 @@
-@ignore
 Feature: One Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253
 	As a provider,
 	I want a levy learner, where levy is available the provider retrospectively notifies a withdrawal and previously paid monthly instalments are refunded
@@ -75,38 +74,42 @@ And the "provider a" now changes the Learner details as follows
 	| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
 	| learner a  | 01/Aug/Current Academic Year | 12 months        | 5625                 | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 25            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
 	
+And price details as follows		
+    | Provider   | Learner ID | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+    | provider a | learner a  | pe-1             | 5625                 | 01/Aug/Current Academic Year        |                        | 01/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
+    | provider b | learner b  | pe-2             | 11250                | 01/Aug/Current Academic Year        |                        | 01/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
 When the amended ILR file is re-submitted for the learners in the collection period R06/Current Academic Year by "provider b"
 And the ILR file is submitted for the learners for the collection period R06/Current Academic Year by "provider a"
 	
 Then the following learner earnings should be generated for "provider a"
-    | Learner ID | Delivery Period           | On-Programme | Completion | Balancing |
-    | learner a  | Aug/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Sep/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Oct/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Nov/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Dec/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Jan/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Feb/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Mar/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Apr/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | May/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Jun/Current Academic Year | 375          | 0          | 0         |
-    | learner a  | Jul/Current Academic Year | 375          | 0          | 0         |
+    | Learner ID | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+    | learner a  | Aug/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Sep/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Oct/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Nov/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Dec/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Jan/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Feb/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Mar/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Apr/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | May/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Jun/Current Academic Year | 375          | 0          | 0         | pe-1                     |
+    | learner a  | Jul/Current Academic Year | 375          | 0          | 0         | pe-1                     |
 
 And the following learner earnings should be generated for "provider b"
-	| Learner ID | Delivery Period           | On-Programme | Completion | Balancing |
-	| learner b  | Aug/Current Academic Year | 750          | 0          | 0         |
-	| learner b  | Sep/Current Academic Year | 750          | 0          | 0         |
-	| learner b  | Oct/Current Academic Year | 750          | 0          | 0         |
-	| learner b  | Nov/Current Academic Year | 0            | 0          | 0         |
-	| learner b  | Dec/Current Academic Year | 0            | 0          | 0         |
-	| learner b  | Jan/Current Academic Year | 0            | 0          | 0         |
-	| learner b  | Feb/Current Academic Year | 0            | 0          | 0         |
-	| learner b  | Mar/Current Academic Year | 0            | 0          | 0         |
-	| learner b  | Apr/Current Academic Year | 0            | 0          | 0         |
-	| learner b  | May/Current Academic Year | 0            | 0          | 0         |
-	| learner b  | Jun/Current Academic Year | 0            | 0          | 0         |
-	| learner b  | Jul/Current Academic Year | 0            | 0          | 0         |
+	| Learner ID | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+	| learner b  | Aug/Current Academic Year | 750          | 0          | 0         | pe-2                     |
+	| learner b  | Sep/Current Academic Year | 750          | 0          | 0         | pe-2                     |
+	| learner b  | Oct/Current Academic Year | 750          | 0          | 0         | pe-2                     |
+	| learner b  | Nov/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+	| learner b  | Dec/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+	| learner b  | Jan/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+	| learner b  | Feb/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+	| learner b  | Mar/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+	| learner b  | Apr/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+	| learner b  | May/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+	| learner b  | Jun/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+	| learner b  | Jul/Current Academic Year | 0            | 0          | 0         | pe-2                     |
 
 And at month end only the following payments will be calculated for "provider a"
     | Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |

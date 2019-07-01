@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             await paymentCache.AddPayment(payment);
             stopwatch.Stop();
             telemetry.TrackDuration(GetType().FullName + ".ProcessPayment", stopwatch.Elapsed);
-            paymentLogger.LogInfo("Finished adding the payment to the cache.");
+            paymentLogger.LogInfo($"Finished adding the payment to the cache. EventId: {payment.EventId}, FundingSourceId: {payment.FundingSourceId}, UKPRN: {payment.Ukprn}");
         }
 
         private async Task<bool> IsCurrentProviderIlr(long jobId, long ukprn, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken)
