@@ -73,23 +73,26 @@ Scenario Outline: Levy learner in co-funding starts 1st day of month receives ca
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                 | SFA Contribution Percentage |
 		| 01/Aug/Current Academic Year | 12 months        | 7500                 | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract (non-procured) | 90%                         |
 
-	When the ILR file is submitted for the learners for collection period <Collection_Period>
+	And price details as follows		
+        | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+        | pe-1             | 7500                 | 01/Aug/Current Academic Year        |                        | 01/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
+    When the ILR file is submitted for the learners for collection period <Collection_Period>
 
 	# New column - CareLeaverApprenticePayment
 	Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing | CareLeaverApprenticePayment |
-		| Aug/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| Sep/Current Academic Year | 500          | 0          | 0         | 1000                        |
-		| Oct/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| Nov/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| Dec/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| Jan/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| Feb/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| Mar/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| Apr/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| May/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| Jun/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| Jul/Current Academic Year | 500          | 0          | 0         | 0                           |
+		| Delivery Period           | On-Programme | Completion | Balancing | CareLeaverApprenticePayment | Price Episode Identifier |
+		| Aug/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Sep/Current Academic Year | 500          | 0          | 0         | 1000                        | pe-1                     |
+		| Oct/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Nov/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Dec/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Jan/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Feb/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Mar/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Apr/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| May/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Jun/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Jul/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
 
 	And at month end only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | CareLeaverApprenticePayment |

@@ -1,3 +1,4 @@
+@ignore
 Feature: Earnings and payments for two DAS learners, levy is spent in priority order and available for both learners PV2-602
 
 Scenario Outline:  Earnings and payments for two DAS learners, levy is spent in priority order and available for both learners PV2-602
@@ -70,34 +71,38 @@ Scenario Outline:  Earnings and payments for two DAS learners, levy is spent in 
 		| learner a  | 01/Sep/Last Academic Year | 12 months        | 7500                 | 01/Sep/Last Academic Year           | 0                      | 01/Sep/Last Academic Year             | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 403            | 1            | 2              | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 		| learner b  | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           | 0                      | 01/Sep/Last Academic Year             | 12 months       | completed         | Act1          | 1                   | ZPROG001      | 403            | 1            | 2              | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
+	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
+		| pe-1             | 7500                 | 01/Sep/Last Academic Year           | 0                      | 01/Sep/Last Academic Year             | 0                       |                                        | 0                         |                                          | 90%                         | Act1          | 1                   |
+		| pe-2             | 15000                | 01/Sep/Last Academic Year           | 0                      | 01/Sep/Last Academic Year             | 0                       |                                        | 0                         |                                          | 90%                         | Act1          | 1                   |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
 	Then the following learner earnings should be generated 
-		| Learner ID | Delivery Period           | On-Programme | Completion | Balancing |
-		| learner a  | Aug/Current Academic Year | 500          | 0          | 0         |
-		| learner a  | Sep/Current Academic Year | 0            | 1500       | 0         |
-		| learner a  | Oct/Current Academic Year | 0            | 0          | 0         |
-		| learner a  | Nov/Current Academic Year | 0            | 0          | 0         |
-		| learner a  | Dec/Current Academic Year | 0            | 0          | 0         |
-		| learner a  | Jan/Current Academic Year | 0            | 0          | 0         |
-		| learner a  | Feb/Current Academic Year | 0            | 0          | 0         |
-		| learner a  | Mar/Current Academic Year | 0            | 0          | 0         |
-		| learner a  | Apr/Current Academic Year | 0            | 0          | 0         |
-		| learner a  | May/Current Academic Year | 0            | 0          | 0         |
-		| learner a  | Jun/Current Academic Year | 0            | 0          | 0         |
-		| learner a  | Jul/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Aug/Current Academic Year | 1000         | 0          | 0         |
-		| learner b  | Sep/Current Academic Year | 0            | 3000       | 0         |
-		| learner b  | Oct/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Nov/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Dec/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Jan/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Feb/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Mar/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Apr/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | May/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Jun/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Jul/Current Academic Year | 0            | 0          | 0         |
+		| Learner ID | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+		| learner a  | Aug/Current Academic Year | 500          | 0          | 0         | pe-1                     |
+		| learner a  | Sep/Current Academic Year | 0            | 1500       | 0         | pe-1                     |
+		| learner a  | Oct/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner a  | Nov/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner a  | Dec/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner a  | Jan/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner a  | Feb/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner a  | Mar/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner a  | Apr/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner a  | May/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner a  | Jun/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner a  | Jul/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | Aug/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
+		| learner b  | Sep/Current Academic Year | 0            | 3000       | 0         | pe-2                     |
+		| learner b  | Oct/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+		| learner b  | Nov/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+		| learner b  | Dec/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+		| learner b  | Jan/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+		| learner b  | Feb/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+		| learner b  | Mar/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+		| learner b  | Apr/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+		| learner b  | May/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+		| learner b  | Jun/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+		| learner b  | Jul/Current Academic Year | 0            | 0          | 0         | pe-2                     |
 
     And at month end only the following payments will be calculated 
         | Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
