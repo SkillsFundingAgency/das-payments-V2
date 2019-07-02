@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Autofac;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -37,6 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         public static IMessageSession DasMessageSession { get; set; }
         private static EndpointConfiguration dasEndpointConfiguration;
+        protected TestPaymentsDataContext TestDataContext => Scope.Resolve<TestPaymentsDataContext>();
 
         public ApprovalsInterfaceSteps(FeatureContext context) : base(context)
         {
@@ -82,25 +87,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             endpointConfig.EnableInstallers();
         }
 
-        //[BeforeTestRun(Order = 52)]
-        //public static void AddRoutingConfig()
-        //{
-        //    var endpointConfiguration = dasEndpointConfiguration;// Container.ResolveNamed<EndpointConfiguration>("DasEndpointConfiguration");
-        //    var conventions = endpointConfiguration.Conventions();
-        //    conventions
-        //        .DefiningCommandsAs(t => t.IsInNamespace("SFA.DAS.CommitmentsV2.Messages.Events"));
-        //    var transportConfig = Container.ResolveNamed<TransportExtensions<AzureServiceBusTransport>>("DasTransportConfig");
-        //    var routing = transportConfig.Routing();
-        //    routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent).Assembly, EndpointNames.DataLocksApprovals);
-        //    transportConfig.Queues().LockDuration(TimeSpan.FromMinutes(5));
-        //}
-
-
         [BeforeTestRun(Order = 100)]
         public static void StartBus()
         {
-            //var endpointConfiguration = Container.ResolveNamed<EndpointConfiguration>("DasEndpointConfiguration");
-            //endpointConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(Container));
             DasMessageSession = Endpoint.Start(dasEndpointConfiguration).Result;
         }
 
@@ -153,7 +142,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var provider = TestSession.GetProviderByIdentifier(approvalsApprenticeship.Provider);
                 if (provider == null)
                     Assert.Fail($"Failed to generate provider: {approvalsApprenticeship.Provider}");
-
+                var learner = TestSession.GetLearner(provider.Ukprn, approvalsApprenticeship.Learner) ?? throw new InvalidOperationException($"Failed to get learner for identifier: {approvalsApprenticeship.Learner}");
                 var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent
                 {
                     AccountId = employer.AccountId,
@@ -165,10 +154,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     CreatedOn = approvalsApprenticeship.CreatedOnDate.ToDate(),
                     LegalEntityName = employer.Name,
                     ProviderId = provider.Ukprn,
-                    TrainingType = ProgrammeType.Standard,
-                    TrainingCode = approvalsApprenticeship.StandardCode.ToString(),
+                    TrainingType = approvalsApprenticeship.StandardCode > 0 ? ProgrammeType.Standard : ProgrammeType.Framework,
+                    TrainingCode = approvalsApprenticeship.StandardCode > 0 ? approvalsApprenticeship.StandardCode.ToString() : $"{approvalsApprenticeship.FrameworkCode}-{approvalsApprenticeship.ProgrammeType}-{approvalsApprenticeship.PathwayCode}",
                     TransferSenderId = sendingEmployer?.AccountId,
-                    Uln = approvalsApprenticeship.Id.ToString(),
+                    Uln = learner.Uln.ToString(),
                     PriceEpisodes = approvalsApprenticeship.PriceEpisodes.Select(pp => new CommitmentsV2.Messages.Events.PriceEpisode
                     {
                         FromDate = pp.EffectiveFrom.ToDate(),
@@ -182,10 +171,57 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then(@"the Payments service should record the apprenticeships")]
-        public void ThenPaymentsVShouldRecordTheApprenticeships()
+        public async Task ThenPaymentsVShouldRecordTheApprenticeships()
         {
-            //ScenarioContext.Current.Pending();
+            await WaitForIt(async () =>
+            {
+                var apprenticeshipIds = ApprovalsApprenticeships.Select(apprenticeship => apprenticeship.Id).ToArray();
+                var savedApprenticeships = await TestDataContext.Apprenticeship
+                    .Include(apprenticeship => apprenticeship.ApprenticeshipPriceEpisodes)
+                    .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id)).ToListAsync();
+                var notFound = new List<ApprovalsApprenticeship>();
+                foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
+                {
+                    var employer = Employers.FirstOrDefault(e => e.Identifier == approvalsApprenticeship.Employer) ?? throw new InvalidOperationException($"Failed to find the employer: {approvalsApprenticeship.Employer}");
+                    var provider = TestSession.GetProviderByIdentifier(approvalsApprenticeship.Provider) ??
+                                   throw new InvalidOperationException($"Failed to find the provider: {approvalsApprenticeship.Provider}");
+                    var learner = TestSession.GetLearner(provider.Ukprn, approvalsApprenticeship.Learner) ?? throw new InvalidOperationException($"Failed to find the learner.  Ukrpn: {provider.Ukprn}");
+                    var savedApprenticeship = savedApprenticeships.FirstOrDefault(apprenticeship => approvalsApprenticeship.Id == apprenticeship.Id);
+                    if (savedApprenticeship == null)
+                    {
+                        Console.WriteLine($"Failed to find apprenticeship Id: {approvalsApprenticeship.Id}, Uln: {learner.Uln}.");
+                        notFound.Add(approvalsApprenticeship);
+                        continue;
+                    }
+
+                    if (MatchesTrainingCode(approvalsApprenticeship,savedApprenticeship) &&
+                        provider.Ukprn == savedApprenticeship.Ukprn &&
+                        employer.AccountId == savedApprenticeship.AccountId && 
+                        learner.Uln == savedApprenticeship.Uln)
+                    {
+                        Console.WriteLine($"Matched apprenticeship: {approvalsApprenticeship.Identifier}, leaner: {approvalsApprenticeship.Learner}, Employer: {approvalsApprenticeship.Employer}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to validate stored details for apprenticeship. Apprenticeship details: {approvalsApprenticeship.ToJson()}, saved details: {savedApprenticeship.ToJson()}.");
+                        notFound.Add(approvalsApprenticeship);
+                    }
+                }
+                if (!notFound.Any())
+                    return true;
+                notFound.ForEach(apprenticeship => Console.WriteLine($"Failed to find and/or validate apprenticeship: {apprenticeship.ToJson()}"));
+                return false;
+            },"Failed to find all the stored apprenticeships.");
         }
 
+        private static bool MatchesTrainingCode(ApprovalsApprenticeship approvalsApprenticeship, ApprenticeshipModel savedApprenticeship)
+        {
+            return approvalsApprenticeship.StandardCode > 0
+                ? approvalsApprenticeship.StandardCode == savedApprenticeship.StandardCode &&
+                  savedApprenticeship.ProgrammeType == 25
+                : approvalsApprenticeship.FrameworkCode == savedApprenticeship.FrameworkCode &&
+                  approvalsApprenticeship.PathwayCode == savedApprenticeship.PathwayCode &&
+                  approvalsApprenticeship.ProgrammeType == savedApprenticeship.ProgrammeType;
+        }
     }
 }
