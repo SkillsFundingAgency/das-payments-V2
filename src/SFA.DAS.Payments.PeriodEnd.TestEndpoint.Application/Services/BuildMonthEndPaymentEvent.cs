@@ -37,7 +37,8 @@ namespace SFA.DAS.Payments.PeriodEnd.TestEndpoint.Application.Services
                         aim.LearningAimProgrammeType,
                         aim.LearningAimStandardCode,
                         aim.LearningAimReference,
-                        academicYear))
+                        academicYear,
+                        aim.ContractType))
                 .ToList();
 
             return new CollectionStartedEvent
