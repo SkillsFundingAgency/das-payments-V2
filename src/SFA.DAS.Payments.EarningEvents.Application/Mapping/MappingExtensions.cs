@@ -12,10 +12,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     public static class MappingExtensions
     {
         private static readonly TypeAccessor PeriodAccessor = TypeAccessor.Create(typeof(PeriodisedAttribute));
+        private static readonly TypeAccessor PeriodTextAccessor = TypeAccessor.Create(typeof(LearningDeliveryPeriodisedTextValues));
 
         public static decimal? GetPeriodValue(this PeriodisedAttribute periodisedValues, int period)
         {
             return (decimal?)PeriodAccessor[periodisedValues, "Period" + period];
+        }
+
+        public static string GetPeriodTextValue(this LearningDeliveryPeriodisedTextValues periodisedValues, int period)
+        {
+            return PeriodTextAccessor[periodisedValues, "Period" + period].ToString();
         }
 
         public static bool IsMainAim(this LearningDelivery learningDelivery)
