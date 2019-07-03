@@ -43,37 +43,41 @@ Scenario Outline: Levy learner changes provider but remains with the same employ
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 05/Mar/Current Academic Year | 5 months         | 3000                 | 05/Mar/Current Academic Year        | 1500                   | 05/Mar/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
+	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+		| pe-1             | 6000                 | 06/Aug/Current Academic Year        | 1500                   | 06/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
+		| pe-2             | 3000                 | 06/Mar/Current Academic Year        | 1500                   | 05/Mar/Current Academic Year          | Act1          | 1                   | 90%                         |
 	When the amended ILR file is re-submitted for the learners in the collection period <Collection_Period> by "provider a"
 	When the ILR file is submitted for the learners for the collection period <Collection_Period> by "provider b"
 
 	Then the following learner earnings should be generated for "provider a"
-		| Delivery Period           | On-Programme | Completion | Balancing |
-		| Aug/Current Academic Year | 500          | 0          | 0         |
-		| Sep/Current Academic Year | 500          | 0          | 0         |
-		| Oct/Current Academic Year | 500          | 0          | 0         |
-		| Nov/Current Academic Year | 500          | 0          | 0         |
-		| Dec/Current Academic Year | 500          | 0          | 0         |
-		| Jan/Current Academic Year | 500          | 0          | 0         |
-		| Feb/Current Academic Year | 500          | 0          | 0         |
-		| Mar/Current Academic Year | 0            | 0          | 0         |
-		| Apr/Current Academic Year | 0            | 0          | 0         |
-		| May/Current Academic Year | 0            | 0          | 0         |
-		| Jun/Current Academic Year | 0            | 0          | 0         |
-		| Jul/Current Academic Year | 0            | 0          | 0         |
+		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+		| Aug/Current Academic Year | 500          | 0          | 0         | pe-1                     |
+		| Sep/Current Academic Year | 500          | 0          | 0         | pe-1                     |
+		| Oct/Current Academic Year | 500          | 0          | 0         | pe-1                     |
+		| Nov/Current Academic Year | 500          | 0          | 0         | pe-1                     |
+		| Dec/Current Academic Year | 500          | 0          | 0         | pe-1                     |
+		| Jan/Current Academic Year | 500          | 0          | 0         | pe-1                     |
+		| Feb/Current Academic Year | 500          | 0          | 0         | pe-1                     |
+		| Mar/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Apr/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| May/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Jun/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Jul/Current Academic Year | 0            | 0          | 0         | pe-1                     |
 	And the following learner earnings should be generated for "provider b"
-        | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 0            | 0          | 0         |
-        | Sep/Current Academic Year | 0            | 0          | 0         |
-        | Oct/Current Academic Year | 0            | 0          | 0         |
-        | Nov/Current Academic Year | 0            | 0          | 0         |
-        | Dec/Current Academic Year | 0            | 0          | 0         |
-        | Jan/Current Academic Year | 0            | 0          | 0         |
-        | Feb/Current Academic Year | 0            | 0          | 0         |
-        | Mar/Current Academic Year | 720          | 0          | 0         |
-        | Apr/Current Academic Year | 720          | 0          | 0         |
-        | May/Current Academic Year | 720          | 0          | 0         |
-        | Jun/Current Academic Year | 720          | 0          | 0         |
-        | Jul/Current Academic Year | 720          | 0          | 0         |
+        | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+        | Aug/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Sep/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Oct/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Nov/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Dec/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Jan/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Feb/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Mar/Current Academic Year | 720          | 0          | 0         | pe-2                     |
+        | Apr/Current Academic Year | 720          | 0          | 0         | pe-2                     |
+        | May/Current Academic Year | 720          | 0          | 0         | pe-2                     |
+        | Jun/Current Academic Year | 720          | 0          | 0         | pe-2                     |
+        | Jul/Current Academic Year | 720          | 0          | 0         | pe-2                     |
 
     And at month end no payments will be calculated for "provider a"
     And at month end only the following payments will be calculated for "provider b"
