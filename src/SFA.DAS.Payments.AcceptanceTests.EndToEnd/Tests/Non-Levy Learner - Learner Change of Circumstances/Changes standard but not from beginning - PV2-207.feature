@@ -1,4 +1,6 @@
-﻿#@supports_dc_e2e
+﻿@ignore
+# similar to PV2-526 - need to specify provider previously submitted learner details and price details
+#@supports_dc_e2e
 Feature: Provider earnings and payments where learner changes apprenticeship standard and negotiated price remains the same, (remaining with the same employer and provider)
 	As a provider,
 	I want a non-levy learner, changes apprenticeship standard and the negotiated price remains the same, to be paid the correct amount

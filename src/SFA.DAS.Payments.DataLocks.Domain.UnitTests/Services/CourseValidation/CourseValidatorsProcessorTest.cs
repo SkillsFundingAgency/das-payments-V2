@@ -36,11 +36,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             dataLockValidationModel = new DataLockValidationModel
             {
                 EarningPeriod = earningPeriod,
-                Uln = 100,
                 PriceEpisode = new PriceEpisode(),
                 Apprenticeship = new ApprenticeshipModel
                 {
                     Id = 1,
+                    Uln = 100,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                         new ApprenticeshipPriceEpisodeModel{ Id  = 99, ApprenticeshipId = 1, Cost = 100, StartDate = DateTime.Today}

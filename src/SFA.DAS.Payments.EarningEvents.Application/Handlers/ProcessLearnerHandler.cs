@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -34,7 +35,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 await context.Publish(earningEvent).ConfigureAwait(false);
             }
 
-            logger.LogInfo($"Finished handling ILR learner submission.Job: { message.JobId}, Ukprn: { message.Ukprn}, Collection year: { message.CollectionYear}, Learner: { message.Learner.LearnRefNumber}.");
+            var summary = string.Join(", ", processorResult.EarningEvents.GroupBy(e => e.GetType().Name).Select(g => $"{g.Key}: {g.Count()}"));
+
+            logger.LogInfo($"Finished handling ILR learner submission.Job: { message.JobId}, Ukprn: { message.Ukprn}, Collection year: { message.CollectionYear}, Learner: { message.Learner.LearnRefNumber}. Published events: {summary}");
         }
     }
 }

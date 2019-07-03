@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         }},
                         new LearningDelivery
                         {
-                            AimSeqNumber = 2,
+                            AimSeqNumber = 1,
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "M&E",
@@ -75,6 +75,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             {
                                 PriceEpisodeAimSeqNumber = 1,
                                 PriceEpisodeContractType = "Levy Contract",
+                                EpisodeStartDate = DateTime.Today,
                             },
                             PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                             {

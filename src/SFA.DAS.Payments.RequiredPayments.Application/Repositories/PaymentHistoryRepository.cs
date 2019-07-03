@@ -32,7 +32,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                             apprenticeshipKey.PathwayCode == payment.LearningAimPathwayCode &&
                             (int)apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
                             apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
-                            apprenticeshipKey.AcademicYear == payment.CollectionPeriod.AcademicYear)
+                            apprenticeshipKey.AcademicYear == payment.CollectionPeriod.AcademicYear &&
+                            apprenticeshipKey.ContractType == payment.ContractType)
                 .Select(payment => new PaymentHistoryEntity
                 {
                     ExternalId = payment.EventId,
@@ -56,7 +57,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     CompletionStatus = payment.CompletionStatus,
                     CompletionAmount = payment.CompletionAmount,
                     InstalmentAmount = payment.InstalmentAmount,
-                    NumberOfInstalments = payment.NumberOfInstalments
+                    NumberOfInstalments = payment.NumberOfInstalments,
                 })
             .ToListAsync(cancellationToken);
         }
@@ -71,7 +72,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                                   apprenticeshipKey.PathwayCode == payment.LearningAimPathwayCode &&
                                   apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
                                   apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
-                                  payment.FundingSource == FundingSourceType.CoInvestedEmployer)
+                                  payment.FundingSource == FundingSourceType.CoInvestedEmployer &&
+                                  apprenticeshipKey.ContractType == payment.ContractType)
                 .Select(payment => payment.Amount)
                 .DefaultIfEmpty(0)
                 .SumAsync(cancellationToken);
@@ -93,7 +95,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     LearningAimFrameworkCode,
                     LearningAimPathwayCode,
                     LearningAimProgrammeType,
-                    LearningAimStandardCode
+                    LearningAimStandardCode,
+                    ContractType
                 from (
                     select
                         LearnerReferenceNumber,
@@ -102,7 +105,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                         LearningAimFrameworkCode,
                         LearningAimPathwayCode,
                         LearningAimProgrammeType,
-                        LearningAimStandardCode
+                        LearningAimStandardCode,
+                        ContractType
                     from
                         [Payments2].[Payment]
                     where
@@ -116,7 +120,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 					    LearningAimFrameworkCode,
 					    LearningAimPathwayCode,
 					    LearningAimProgrammeType,
-					    LearningAimStandardCode
+					    LearningAimStandardCode,
+                        ContractType
 				    from
 					    [Payments2].[SubmittedLearnerAim]
 				    where
@@ -131,7 +136,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     LearningAimFrameworkCode,
                     LearningAimPathwayCode,
                     LearningAimProgrammeType,
-                    LearningAimStandardCode
+                    LearningAimStandardCode,
+                    ContractType
 "
             ).AsNoTracking().ToListAsync(cancellationToken).ConfigureAwait(false);
 
@@ -154,7 +160,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                         PathwayCode = p.LearningAimPathwayCode,
                         StandardCode = p.LearningAimStandardCode,
                         ProgrammeType = p.LearningAimProgrammeType
-                    }
+                    },
+                    ContractType = p.ContractType
                 })
                 .ToList();
         }

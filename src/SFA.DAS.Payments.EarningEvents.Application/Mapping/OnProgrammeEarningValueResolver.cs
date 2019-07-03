@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Internal;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -41,13 +42,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             {
                 var periodValues = allPeriods.Select(p => p.GetPeriodValue(i)).ToArray();
                 var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
+
                 var priceEpisodeIdentifier = periodValue == 0 ? null : source.PriceEpisodes[periodValues.IndexOf(periodValue)].PriceEpisodeIdentifier;
                 var sfaContributionPercentage = source.PriceEpisodes.CalculateSfaContributionPercentage(i, priceEpisodeIdentifier);
          
                 periods[i - 1] = new EarningPeriod
                 {
                     Period = i,
-                    Amount = periodValue,
+                    Amount = periodValue.AsRounded(),
                     PriceEpisodeIdentifier = priceEpisodeIdentifier,
                     SfaContributionPercentage = sfaContributionPercentage,
                 };

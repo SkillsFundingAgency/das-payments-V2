@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -15,6 +16,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public int CollectionPeriod { get; protected set; }
         public DateTime IlrSubmissionDateTime { get; protected set; }
         public long JobId { get; set; }
+        public ContractType ContractType { get; set; }
         
         public IntermediateLearningAim(
             ProcessLearnerCommand command, 
@@ -22,7 +24,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             LearningDelivery aim)
         {
             Aim = aim;
-            PriceEpisodes.AddRange(priceEpisodes);
+            PriceEpisodes.AddRange(FilterPriceEpisodes(priceEpisodes, command.CollectionYear));
             Learner = command.Learner;
             Ukprn = command.Ukprn;
             AcademicYear = command.CollectionYear;
@@ -43,12 +45,33 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         {
             Aim = aim;
             Learner = learner;
-            PriceEpisodes.AddRange(priceEpisodes);
+            PriceEpisodes.AddRange(FilterPriceEpisodes(priceEpisodes, collectionYear));
             Ukprn = ukprn;
             AcademicYear = collectionYear;
             CollectionPeriod = collectionPeriod;
             IlrSubmissionDateTime = ilrSubmissionDateTime;
             JobId = jobId;
+        }
+
+        private IEnumerable<PriceEpisode> FilterPriceEpisodes(IEnumerable<PriceEpisode> priceEpisodes, short currentAcademicYear)
+        {
+            var calendarYear = currentAcademicYear / 100 + 2000;
+            var yearStartDate = new DateTime(calendarYear, 8, 1);
+            var yearEndDate = yearStartDate.AddYears(1);
+            var currentYearPriceEpisodes = new List<PriceEpisode>();
+
+            foreach (var episode in priceEpisodes)
+            {
+                var episodeStartDate = episode.PriceEpisodeValues.EpisodeStartDate;
+
+                if (!episodeStartDate.HasValue)
+                    throw new ApplicationException($"Price episode {episode.PriceEpisodeIdentifier} has no EpisodeStartDate");
+
+                if (episodeStartDate.Value >= yearStartDate && episodeStartDate.Value < yearEndDate) 
+                    currentYearPriceEpisodes.Add(episode);
+            }
+
+            return currentYearPriceEpisodes;
         }
 
         public IntermediateLearningAim CopyReplacingPriceEpisodes(IEnumerable<PriceEpisode> priceEpisodes)

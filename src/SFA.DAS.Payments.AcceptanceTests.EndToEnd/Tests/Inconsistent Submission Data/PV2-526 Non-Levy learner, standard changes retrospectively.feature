@@ -8,20 +8,23 @@ Scenario Outline: Changes standard from the beginning and price remains same - P
 	Given the provider previously submitted the following learner details
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
 		| 01/Aug/Current Academic Year | 12 months        | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
-    And the following earnings had been generated for the learner
-        | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 1000         | 0          | 0         |
-        | Sep/Current Academic Year | 1000         | 0          | 0         |
-        | Oct/Current Academic Year | 1000         | 0          | 0         |
-        | Nov/Current Academic Year | 1000         | 0          | 0         |
-        | Dec/Current Academic Year | 1000         | 0          | 0         |
-        | Jan/Current Academic Year | 1000         | 0          | 0         |
-        | Feb/Current Academic Year | 1000         | 0          | 0         |
-        | Mar/Current Academic Year | 1000         | 0          | 0         |
-        | Apr/Current Academic Year | 1000         | 0          | 0         |
-        | May/Current Academic Year | 1000         | 0          | 0         |
-        | Jun/Current Academic Year | 1000         | 0          | 0         |
-        | Jul/Current Academic Year | 1000         | 0          | 0         |
+    And price details are changed as follows        
+        | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+        | 1st price details | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          | Act2          | 1                   | 90%                         |
+	And the following earnings had been generated for the learner
+        | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+        | Aug/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Sep/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Oct/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Nov/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Dec/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Jan/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Feb/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Mar/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Apr/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | May/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Jun/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Jul/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
     And the following provider payments had been generated
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
@@ -30,21 +33,24 @@ Scenario Outline: Changes standard from the beginning and price remains same - P
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
 		| 01/Aug/Current Academic Year | 12 months        | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 52            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 
+	And price details are changed as follows        
+        | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+        | 1st price details | 12000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          | Act2          | 1                   | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
     Then the following learner earnings should be generated
-        | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 1000         | 0          | 0         |
-        | Sep/Current Academic Year | 1000         | 0          | 0         |
-        | Oct/Current Academic Year | 1000         | 0          | 0         |
-        | Nov/Current Academic Year | 1000         | 0          | 0         |
-        | Dec/Current Academic Year | 1000         | 0          | 0         |
-        | Jan/Current Academic Year | 1000         | 0          | 0         |
-        | Feb/Current Academic Year | 1000         | 0          | 0         |
-        | Mar/Current Academic Year | 1000         | 0          | 0         |
-        | Apr/Current Academic Year | 1000         | 0          | 0         |
-        | May/Current Academic Year | 1000         | 0          | 0         |
-        | Jun/Current Academic Year | 1000         | 0          | 0         |
-        | Jul/Current Academic Year | 1000         | 0          | 0         |
+        | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+        | Aug/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Sep/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Oct/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Nov/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Dec/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Jan/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Feb/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Mar/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Apr/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | May/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Jun/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+        | Jul/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
     And only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Standard Code |
 		| R03/Current Academic Year | Aug/Current Academic Year | -1000        | 0          | 0         | 51            |

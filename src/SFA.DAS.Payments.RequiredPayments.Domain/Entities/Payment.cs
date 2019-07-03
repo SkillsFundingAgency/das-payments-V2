@@ -28,5 +28,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
         public decimal CompletionAmount { get; set; }
         public decimal InstalmentAmount { get; set; }
         public short NumberOfInstalments { get; set; }
+        public long? AccountId { get; set; }
+        public long? TransferSenderAccountId { get; set; }
     }
 }
