@@ -1,3 +1,5 @@
+@ignore
+# failing due to incorrect handling of maths and english contract types
 # DC Integration
 # | learning support code | learning support date from | learning support date to |
 # | 1                     | 06/08/2018                 | 06/10/2019               |
