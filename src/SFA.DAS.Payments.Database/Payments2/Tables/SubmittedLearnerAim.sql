@@ -10,7 +10,7 @@
     [LearningAimReference] NVARCHAR(8) NOT NULL, 
     [CollectionPeriod] TINYINT NOT NULL, 
     [AcademicYear] SMALLINT NOT NULL, 
-    [IlrSubmissionDateTime] DATETIME NOT NULL, 
+    [IlrSubmissionDateTime] DATETIME2 NOT NULL, 
     [CreationDate] DATETIMEOFFSET NOT NULL CONSTRAINT DF_SubmittedLearnerAim_CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
     [LearnerUln] BIGINT NOT NULL, 
     [JobId] BIGINT NOT NULL, 
