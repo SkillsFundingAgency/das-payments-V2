@@ -10,7 +10,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
@@ -87,14 +86,9 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
                 .ConnectionString(configHelper.GetConnectionString("DASServiceBusConnectionString"))
                 .Transactions(TransportTransactionMode.ReceiveOnly)
                 .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
-            //            EndpointConfigurationEvents
-            //                .OnConfiguringTransport(transport); //TODO: find AutoFac & NSB way to do this
             endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.EnableInstallers();
-            //          endpointConfiguration.Pipeline.Register(typeof(TelemetryHandlerBehaviour),
-            //              "Sends handler timing to telemetry service.");
-            //         endpointConfiguration.EnableCallbacks(makesRequests: false);
 
             if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
 
@@ -105,7 +99,6 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IEndpointInstanceFactory>()));
             
             return endpointConfiguration;
-
         }
     }
 }
