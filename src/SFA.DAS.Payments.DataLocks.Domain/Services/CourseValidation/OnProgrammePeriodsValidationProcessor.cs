@@ -67,6 +67,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                         newEarningPeriod.ApprenticeshipPriceEpisodeId = validationResult.MatchedPriceEpisode.Id;
                         newEarningPeriod.TransferSenderAccountId = apprenticeship.TransferSendingEmployerAccountId;
                         newEarningPeriod.Priority = apprenticeship.Priority;
+                        newEarningPeriod.AgreedOnDate = apprenticeship.AgreedOnDate;
                         validPeriods.Add(newEarningPeriod);
                     }
                 }
