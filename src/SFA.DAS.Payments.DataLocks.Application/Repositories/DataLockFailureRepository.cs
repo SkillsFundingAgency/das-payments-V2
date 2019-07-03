@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 {
@@ -15,11 +14,20 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             int programmeType,
             int standardCode,
             string learnAimRef,
-            short academicYear,
-            ContractType contractType,
-            byte period
+            short academicYear
         );
 
-        Task<List<DataLockFailureModel>> DeleteFailures(List<DataLockFailureModel> failures);
+        Task<List<DataLockFailureModel>> DeleteFailures(
+            long ukprn,
+            string learnerReferenceNumber,
+            int frameworkCode,
+            int pathwayCode,
+            int programmeType,
+            int standardCode,
+            string learnAimRef,
+            short academicYear,
+            byte period,
+            byte transactionType
+        );
     }
 }

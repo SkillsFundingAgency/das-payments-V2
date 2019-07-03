@@ -10,9 +10,10 @@
     [LearningAimPathwayCode] INT NOT NULL, 
     [AcademicYear] SMALLINT NOT NULL, 
     [DeliveryPeriod] TINYINT NOT NULL, 
-    [Errors] NVARCHAR(MAX) NOT NULL
+    [Errors] NVARCHAR(MAX) NOT NULL, 
+    [TransactionType] TINYINT NOT NULL
 )
 
 GO
 
-CREATE UNIQUE INDEX [IX_DataLockFailure_Key] ON [Payments2].[DataLockFailure] ([Ukprn], [LearnerReferenceNumber], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimReference], [LearningAimStandardCode], [AcademicYear], [DeliveryPeriod])
+CREATE UNIQUE INDEX [IX_DataLockFailure_Key] ON [Payments2].[DataLockFailure] ([Ukprn], [LearnerReferenceNumber], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimReference], [LearningAimStandardCode], [AcademicYear], [DeliveryPeriod], [TransactionType])

@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
     public interface IDataLockStatusService
     {
-        DataLockStatusChange GetStatusChange(DataLockFailure currentFailures, EarningPeriod newFailure);
+        DataLockStatusChange GetStatusChange(List<DataLockFailure> currentFailures, List<DataLockFailure> newFailure);
     }
 
     public enum DataLockStatusChange

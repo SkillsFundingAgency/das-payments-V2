@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Model.Entities
 {
@@ -16,6 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.Model.Entities
         public int LearningAimPathwayCode { get; set; }
         public short AcademicYear { get; set; }
         public byte DeliveryPeriod { get; set; }
+        public TransactionType TransactionType { get; set; }
         public List<DataLockFailure> Errors { get; set; }
     }
 }
