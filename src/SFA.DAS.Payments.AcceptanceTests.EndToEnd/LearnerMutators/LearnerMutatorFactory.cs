@@ -39,6 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "326":
                     return new Framework403Learner(learners, featureNumber);
                 case "443":
+                case "489":
                     return new Standard57Learner(learners, featureNumber);
                 case "277":
                     return new Framework593LearnerWithdrawsAfterQualifyingPeriod(learners);
