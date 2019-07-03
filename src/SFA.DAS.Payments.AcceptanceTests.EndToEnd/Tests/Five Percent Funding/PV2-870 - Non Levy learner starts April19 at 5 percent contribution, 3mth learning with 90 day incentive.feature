@@ -1,4 +1,3 @@
-@ignore
 #Feature: 5% Contribution from April 2019
 #
 #Scenario: Non Levy Learner, starts new learning April 2019, 5% contribution, basic day with 3months in learning, demonstrate incentive payments 90 days
@@ -38,23 +37,27 @@
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
 		| 06/Apr/Current Academic Year | 12 months        | 15000                | 06/Apr/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 95%                         |
 
+	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Aim Sequence Number | Contract Type |
+		| pe-1             | 15000                | 06/Apr/Current Academic Year        | 0                      |                                       | 0                       |                                        | 0                         |                                          | 95%                         | 1                   | Act2          |
+
    	When the ILR file is submitted for the learners for collection period <Collection_Period>
 
     Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18EmployerIncentive | Second16To18ProviderIncentive |
-		| Apr/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| May/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| Jun/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| Jul/Current Academic Year | 1000         | 0          | 0         | 500                          | 500                          | 0                             | 0                             |
-		| Aug/Next Academic Year    | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| Sep/Next Academic Year    | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| Oct/Next Academic Year    | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| Nov/Next Academic Year    | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| Dec/Next Academic Year    | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| Jan/Next Academic Year    | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| Feb/Next Academic Year    | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             |
-		| Mar/Next Academic Year    | 1000         | 0          | 0         | 0                            | 0                            | 500                           | 500                           |
-
+		| Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18EmployerIncentive | Second16To18ProviderIncentive | Price Episode Identifier |
+		| Aug/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Sep/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Oct/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Nov/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Dec/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Jan/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Feb/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Mar/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Apr/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| May/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Jun/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                            | 0                             | 0                             | pe-1                     |
+		| Jul/Current Academic Year | 1000         | 0          | 0         | 500                          | 500                          | 0                             | 0                             | pe-1                     |
+	
     And at month end only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive |
 		| R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         | 0                            | 0                            |
