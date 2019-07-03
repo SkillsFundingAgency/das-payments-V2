@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using Castle.Components.DictionaryAdapter;
@@ -25,7 +26,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         {
             // arrange
             var mockMapper = new Mock<IMapper>(MockBehavior.Strict);
-            var expectedResult = new FunctionalSkillEarningsEvent();
+            var expectedResult = new FunctionalSkillEarningsEvent
+            {
+                Earnings = new List<FunctionalSkillEarning>().AsReadOnly()
+            };
             mockMapper.Setup(m => m.Map<FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedResult).Verifiable();
             var builder = new FunctionalSkillEarningEventBuilder(mockMapper.Object);
             var learnerSubmission = new ProcessLearnerCommand
@@ -46,6 +50,25 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     AttributeName = "MathEngBalPayment",
                                     Period1 = 1,
                                     Period2 = 2
+                                }
+                            },
+                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
+                            {
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName = "LearnDelContType",
+                                    Period1 = "Levy Contract",
+                                    Period2 = "Levy Contract",
+                                    Period3 = "Levy Contract",
+                                    Period4 = "Levy Contract",
+                                    Period5 = "Levy Contract",
+                                    Period6 = "Levy Contract",
+                                    Period7 = "Levy Contract",
+                                    Period8 = "Levy Contract",
+                                    Period9 = "Levy Contract",
+                                    Period10 = "Levy Contract",
+                                    Period11 = "Levy Contract",
+                                    Period12 = "Levy Contract"
                                 }
                             }
                         }
@@ -229,7 +252,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     {
                         new LearningDelivery
                         {
-                            AimSeqNumber = 1,
+                            AimSeqNumber = 2,
                             LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "M&E"},
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
                             {

@@ -27,26 +27,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                var learningDeliveries = intermediateLearningAim.Learner.LearningDeliveries;
-
-                var periodisedTextValues = learningDeliveries.Where(x => x.LearningDeliveryPeriodisedTextValues != null)
-                    .SelectMany(x =>
-                        x.LearningDeliveryPeriodisedTextValues.Where(l => l.AttributeName == "LearnDelContType"));
-
                 const byte earningPeriods = 12;
+
+                var contractTypes = intermediateLearningAim.Learner.LearningDeliveries.GetContractTypesForLearningDeliveries();
 
                 var learnerWithSortedPriceEpisodes =
                     intermediateLearningAim.CopyReplacingPriceEpisodes(intermediateLearningAim.PriceEpisodes);
-
-                var contractTypes = new ContractType[earningPeriods];
-
-                for (byte i = 1; i <= earningPeriods; i++)
-                {
-                    var periodValues = periodisedTextValues.Select(p => p.GetPeriodTextValue(i)).ToArray();
-                    var periodValue = GetContractType(periodValues[0]);
-
-                    contractTypes[i - 1] = periodValue;
-                }
 
                 var functionalSkillEarning =
                     mapper.Map<FunctionalSkillEarningsEvent>(learnerWithSortedPriceEpisodes);
@@ -84,19 +70,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             }
 
             return results;
-        }
-
-        private static ContractType GetContractType(string contractType)
-        {
-            switch (contractType)
-            {
-                case "Levy Contract":
-                    return ContractType.Act1;
-                case "Non-Levy Contract":
-                    return ContractType.Act2;
-                default:
-                    throw new InvalidOperationException("unable to determine correct contract type");
-            }
         }
 
         private static Dictionary<FunctionalSkillType, string> MathsAndEnglishAttributes()
