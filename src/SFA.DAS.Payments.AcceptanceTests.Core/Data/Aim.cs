@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
@@ -24,6 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             PathwayCode = training.PathwayCode;
             FundingLineType = training.FundingLineType;
             CompletionStatus = CompletionStatusFromString(training.CompletionStatus);
+            ContractType = training.ContractType;
         }
 
         CompletionStatus CompletionStatusFromString(string completionStatus)
@@ -62,5 +64,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public int PathwayCode { get; set; }
 
         public bool IsMainAim => AimReference == "ZPROG001";
+
+        public ContractType ContractType { get; set; }
     }
 }
