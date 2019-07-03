@@ -233,7 +233,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task GivenCourseValidationDataLockIsReturnedForEarningWithIncentivesShouldCreateDataLockEventCorrectly()
+        public async Task CourseValidationDataLockForEarningWithIncentivesMapBothValidAndInvalidIncentivesAndOnprogEarningPeriods()
         {
             learnerMatcherMock
                 .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
