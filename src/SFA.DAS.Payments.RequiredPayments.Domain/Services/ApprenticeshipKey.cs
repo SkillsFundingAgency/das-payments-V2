@@ -1,4 +1,6 @@
 ﻿
+using SFA.DAS.Payments.Model.Core.Entities;
+
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class ApprenticeshipKey
@@ -11,5 +13,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         public int StandardCode { get; set; }
         public string LearnAimRef { get; set; }
         public short AcademicYear { get; set; }
+        public ContractType ContractType { get; set; }
     }
 }
