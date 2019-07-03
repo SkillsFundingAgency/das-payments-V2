@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Castle.Components.DictionaryAdapter;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
@@ -30,7 +31,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         new LearningDelivery {AimSeqNumber = 1, LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "ZPROG001"}},
                         new LearningDelivery
                         {
-                            AimSeqNumber = 2, 
+                            AimSeqNumber = 1, 
                             LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "M&E"},
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
                             {
@@ -49,6 +50,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         {
                             PriceEpisodeValues = new PriceEpisodeValues
                             {
+                                EpisodeStartDate = DateTime.Today,
                                 PriceEpisodeAimSeqNumber = 1,
                                 PriceEpisodeContractType = "Levy Contract",
                             },

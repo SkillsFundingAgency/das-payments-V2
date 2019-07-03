@@ -1,4 +1,3 @@
-@ignore
 Feature: One Levy learner changes provider earns incentive in the commitment transfer month and ILR transfer happens earlier than commitment PV2-322
 	1 learner aged 16-18, levy available, changes provider, earns incentive payment in the commitment transfer month - and the ILR transfer happens earlier than commitment
 	As a provider,
@@ -43,36 +42,40 @@ Scenario Outline: One Levy learner changes provider earns incentive in the commi
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 10/Nov/Current Academic Year | 9 months         | 4000                 | 10/Nov/Current Academic Year        | 1625                   | 10/Nov/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
-	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period> by "provider a"
-	When the ILR file is submitted for the learners for collection period <Collection_Period> by "provider b"
+	And price details as follows
+		| Provider   | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+		| provider a | pe-1             | 6000                 | 06/Aug/Current Academic Year        | 1500                   | 06/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
+		| provider b | pe-2             | 4000                 | 10/Nov/Current Academic Year        | 1625                   | 10/Nov/Current Academic Year          | Act1          | 1                   | 90%                         |
+	When the amended ILR file is re-submitted for the learners in the collection period <Collection_Period> by "provider a"
+	When the ILR file is submitted for the learners for the collection period <Collection_Period> by "provider b"
 	Then the following learner earnings should be generated for "provider a"
-        | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive |
-        | Aug/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Sep/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Oct/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Nov/Current Academic Year | 0            | 0          | 0         | 500                          | 500                          |
-        | Dec/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | Jan/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | Feb/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | Mar/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | Apr/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | May/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | Jun/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | Jul/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
+        | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive | Price Episode Identifier |
+        | Aug/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | Sep/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | Oct/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | Nov/Current Academic Year | 0            | 0          | 0         | 500                          | 500                          | pe-1                     |
+        | Dec/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | Jan/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | Feb/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | Mar/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | Apr/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | May/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | Jun/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-1                     |
+        | Jul/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-1                     |
 	And the following learner earnings should be generated for "provider b"
-        | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive |
-        | Aug/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | Sep/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | Oct/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            |
-        | Nov/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Dec/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Jan/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Feb/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Mar/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Apr/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | May/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Jun/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
-        | Jul/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            |
+        | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | First16To18ProviderIncentive | Price Episode Identifier |
+        | Aug/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Sep/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Oct/Current Academic Year | 0            | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Nov/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Dec/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Jan/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Feb/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Mar/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Apr/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | May/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Jun/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-2                     |
+        | Jul/Current Academic Year | 500          | 0          | 0         | 0                            | 0                            | pe-2                     |
 
     And at month end no payments will be calculated for "provider a"
 	And at month end no payments will be calculated for "provider b"
@@ -85,10 +88,10 @@ Scenario Outline: One Levy learner changes provider earns incentive in the commi
 	And no "provider b" payments will be generated
 Examples: 
         | Collection_Period         | Levy Balance |
-        | R01/Current Academic Year | 8000         |
-        | R02/Current Academic Year | 7500         |
-        | R03/Current Academic Year | 7000         |
-        | R04/Current Academic Year | 6500         |
+        #| R01/Current Academic Year | 8000         |
+        #| R02/Current Academic Year | 7500         |
+        #| R03/Current Academic Year | 7000         |
+        #| R04/Current Academic Year | 6500         |
         | R05/Current Academic Year | 6500         |
         | R06/Current Academic Year | 6500         |
         | R07/Current Academic Year | 6500         |
