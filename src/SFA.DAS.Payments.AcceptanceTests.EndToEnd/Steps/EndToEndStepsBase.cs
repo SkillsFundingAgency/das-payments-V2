@@ -572,7 +572,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (contractType == 0)
                     contractType = CurrentIlr[0].ContractType;
 
-                return contractType == ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
+                return contractType == ContractType.Act1 ? "Contract for services with the employer" : "Contract for services with the ESFA";
             }
 
             byte LastOnProgPeriod(PriceEpisode currentPriceEpisode)

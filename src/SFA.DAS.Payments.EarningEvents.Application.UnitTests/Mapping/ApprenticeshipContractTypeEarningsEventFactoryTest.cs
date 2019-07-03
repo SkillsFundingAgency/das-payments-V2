@@ -12,7 +12,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [TestCase(null, null)]
         [TestCase("weird string", null)]
         [TestCase("Non-Levy Contract", typeof(ApprenticeshipContractType2EarningEvent))]
+        [TestCase("Contract for services with the ESFA", typeof(ApprenticeshipContractType2EarningEvent))]
         [TestCase("Levy Contract", typeof(ApprenticeshipContractType1EarningEvent))]
+        [TestCase("Contract for services with the employer", typeof(ApprenticeshipContractType1EarningEvent))]
         public void TestFactoryCreatesCorrectContractTypeEvents(string contractType, Type expectedType)
         {
             // arrange
