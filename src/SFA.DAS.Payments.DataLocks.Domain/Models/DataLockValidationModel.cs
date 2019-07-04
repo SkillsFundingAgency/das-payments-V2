@@ -11,6 +11,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Models
         public ApprenticeshipModel Apprenticeship { get; set; }
         public LearningAim Aim { get; set; }
         public int AcademicYear { get; set; }
-        public OnProgrammeEarningType TransactionType { get; set; }
+        public TransactionType TransactionType { get; set; }
     }
 }

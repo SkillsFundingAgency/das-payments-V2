@@ -179,6 +179,33 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return result;
         }
 
+        private List<EarningPeriod> GetEarningPeriods(List<Earning> aimEarningSpecs, Aim aimSpec, ApprenticeshipContractTypeEarningsEvent onProgEarning, TransactionType tt, FM36Learner fm36Learner)
+        {
+            return aimEarningSpecs
+                .Select(e => new EarningPeriod
+                {
+                    Amount = PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning)? e.Values[tt] : 0M,
+                    Period = e.DeliveryCalendarPeriod,
+                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                }).OrderBy(p => p.Period).ToList();
+        }
+
+        private static bool PriceEpisodeContractTypeMatchesAim(List<Price> priceEpisodes, string priceEpisodeIdentifier, IEarningEvent onProgEarning)
+        {
+            var matchingPriceEpisode = priceEpisodes.FirstOrDefault(p =>
+                p.PriceEpisodeId == priceEpisodeIdentifier);
+
+            switch (onProgEarning)
+            {
+                case ApprenticeshipContractType1EarningEvent _:
+                    return matchingPriceEpisode?.ContractType == ContractType.Act1;
+                case ApprenticeshipContractType2EarningEvent _:
+                    return matchingPriceEpisode?.ContractType == ContractType.Act2;
+                default:
+                    return false;
+            }
+        }
+
         private string FindPriceEpisodeIdentifier(decimal value, Earning earning, FM36Learner fm36Learner, TransactionType transactionType)
         {
             // null for 0 values

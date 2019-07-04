@@ -1,3 +1,4 @@
+@ignore
 Feature: Two levy learners but only enough levy to fund one learner- PV2-264
 
 Scenario Outline: Two levy learners, levy available but for only one learner, both finished on time PV2-264
@@ -6,6 +7,7 @@ Scenario Outline: Two levy learners, levy available but for only one learner, bo
 		| Identifier       | Learner ID | priority | start date                | end date                     | agreed price | Framework Code | Pathway Code | Programme Type |
 		| Apprenticeship 1 | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         | 593            | 1            | 20             |
 		| Apprenticeship 2 | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        | 593            | 1            | 20             |
+	
 	And the provider previously submitted the following learner details
 		| Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
 		| learner a  | 01/Sep/Last Academic Year | 12 months        | 7500                 | 01/Sep/Last Academic Year           |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |

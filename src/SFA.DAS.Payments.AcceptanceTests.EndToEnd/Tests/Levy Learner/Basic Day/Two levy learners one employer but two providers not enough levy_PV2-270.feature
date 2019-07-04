@@ -12,7 +12,13 @@ Scenario Outline: Two levy learners, one employer but two providers and not enou
 		| Identifier       | Provider   | Learner ID | priority | start date                | end date                     | agreed price | Framework Code | Pathway Code | Programme Type |
 		| Apprenticeship 1 | provider a | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         | 593            | 1            | 20             |
 		| Apprenticeship 2 | provider b | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        | 593            | 1            | 20             |
-	   And the following earnings had been generated for the learner for "provider a"
+	
+	 And the provider priority order is
+        | Provider   | Priority | Collection_Period         |
+        | provider a | 1        | R01/Current Academic Year |
+        | provider b | 2        | R01/Current Academic Year |
+
+	And the following earnings had been generated for the learner for "provider a"
         | Learner ID | Delivery Period        | On-Programme | Completion | Balancing |
         | learner a  | Aug/Last Academic Year | 0            | 0          | 0         |
         | learner a  | Sep/Last Academic Year | 500          | 0          | 0         |
