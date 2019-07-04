@@ -1,4 +1,4 @@
-﻿using Microsoft.ServiceFabric.Data.Collections;
+using Microsoft.ServiceFabric.Data.Collections;
 using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Model;
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
             var state = await GetState();
 
             return await state
-                .ContainsKeyAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(2), cancellationToken)
+                .ContainsKeyAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(4), cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
         {
             var key = CreateKey(ukprn, academicYear, collectionPeriod);
             var state = await GetState();
-            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(2), cancellationToken).ConfigureAwait(false);
+            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(4), cancellationToken).ConfigureAwait(false);
             return value.Value;
         }
 
