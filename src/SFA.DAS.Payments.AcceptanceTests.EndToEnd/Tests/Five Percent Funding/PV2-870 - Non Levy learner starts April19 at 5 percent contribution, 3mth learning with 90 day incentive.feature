@@ -1,34 +1,3 @@
-#Feature: 5% Contribution from April 2019
-#
-#Scenario: Non Levy Learner, starts new learning April 2019, 5% contribution, basic day with 3months in learning, demonstrate incentive payments 90 days
-#    
-#	Given the apprenticeship funding band maximum is 15000
-#    
-#	When an ILR file is submitted with the following data:
-#		| ULN    | learner type                 | agreed price | start date  | planned end date | completion status | framework code | programme type | pathway code |
-#		| 123456 | 16-18 programme only non-DAS | 15000        | 06/04/2019  | 09/04/2020       | continuing        | 403            | 2              | 1            |
-#
-#    Then the provider earnings and payments break down as follows:
-#        | Type                                    | 04/19 | 05/19 | 06/19 | 07/19 | 08/19 |
-#        | Provider Earned Total                   | 1000  | 1000  | 1000  | 2000  | 1000  |
-#        | Provider Earned from SFA                | 950   | 950   | 950   | 1950  | 950   |
-#        | Provider Earned from Employer           | 50    | 50    | 50    | 50    | 50    |
-#        | Provider Paid by SFA                    | 0     | 950   | 950   | 950   | 1950  |
-#        | Payment due from Employer               | 0     | 50    | 50    | 50    | 50    |
-#        | Levy account debited                    | 0     | 0     | 0     | 0     | 0     |
-#        | SFA Levy employer budget                | 0     | 0     | 0     | 0     | 0     |
-#        | SFA Levy co-funding budget              | 0     | 0     | 0     | 0     | 0     |
-#		| SFA non-Levy co-funding budget          | 950   | 950   | 950   | 950   | 950   |
-#        | SFA non-Levy additional payments budget | 0     | 0     | 0     | 1000  | 0     |
-#
-#    And the transaction types for the payments are:
-#        | Payment type                 | 05/19 | 06/19 | 07/19 | 08/19 |
-#        | On-program                   | 950   | 950   | 950   | 950   |
-#        | Completion                   | 0     | 0     | 0     | 0     |
-#        | Balancing                    | 0     | 0     | 0     | 0     |
-#        | Employer 16-18 incentive     | 0     | 0     | 0     | 500   |
-#        | Provider 16-18 incentive     | 0     | 0     | 0     | 500   |
-        
  	Feature: 5% Contribution from April 2019 PV2-870
 
 	Scenario Outline: Non Levy Learner, starts new learning April 2019, 5% contribution, basic day with 3months in learning, demonstrate incentive payments 90 days PV2-870
@@ -89,4 +58,35 @@
 		| R10/Current Academic Year |
 		| R11/Current Academic Year |
 		| R12/Current Academic Year |
+        
+#Feature: 5% Contribution from April 2019
+#
+#Scenario: Non Levy Learner, starts new learning April 2019, 5% contribution, basic day with 3months in learning, demonstrate incentive payments 90 days
+#    
+#	Given the apprenticeship funding band maximum is 15000
+#    
+#	When an ILR file is submitted with the following data:
+#		| ULN    | learner type                 | agreed price | start date  | planned end date | completion status | framework code | programme type | pathway code |
+#		| 123456 | 16-18 programme only non-DAS | 15000        | 06/04/2019  | 09/04/2020       | continuing        | 403            | 2              | 1            |
+#
+#    Then the provider earnings and payments break down as follows:
+#        | Type                                    | 04/19 | 05/19 | 06/19 | 07/19 | 08/19 |
+#        | Provider Earned Total                   | 1000  | 1000  | 1000  | 2000  | 1000  |
+#        | Provider Earned from SFA                | 950   | 950   | 950   | 1950  | 950   |
+#        | Provider Earned from Employer           | 50    | 50    | 50    | 50    | 50    |
+#        | Provider Paid by SFA                    | 0     | 950   | 950   | 950   | 1950  |
+#        | Payment due from Employer               | 0     | 50    | 50    | 50    | 50    |
+#        | Levy account debited                    | 0     | 0     | 0     | 0     | 0     |
+#        | SFA Levy employer budget                | 0     | 0     | 0     | 0     | 0     |
+#        | SFA Levy co-funding budget              | 0     | 0     | 0     | 0     | 0     |
+#		| SFA non-Levy co-funding budget          | 950   | 950   | 950   | 950   | 950   |
+#        | SFA non-Levy additional payments budget | 0     | 0     | 0     | 1000  | 0     |
+#
+#    And the transaction types for the payments are:
+#        | Payment type                 | 05/19 | 06/19 | 07/19 | 08/19 |
+#        | On-program                   | 950   | 950   | 950   | 950   |
+#        | Completion                   | 0     | 0     | 0     | 0     |
+#        | Balancing                    | 0     | 0     | 0     | 0     |
+#        | Employer 16-18 incentive     | 0     | 0     | 0     | 500   |
+#        | Provider 16-18 incentive     | 0     | 0     | 0     | 500   |
         
