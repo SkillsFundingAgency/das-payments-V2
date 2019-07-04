@@ -11,11 +11,13 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -63,6 +65,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.EarningEvents);
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
+            routing.RouteToEndpoint(typeof(RecordStartedProcessingEarningsJob), EndpointNames.JobMonitoring);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -70,6 +73,16 @@ namespace SFA.DAS.Payments.PerformanceTests
                 ruleNameSanitizer: ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
             EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             EndpointConfiguration.EnableInstallers();
+            
+
+
+            Builder.RegisterType<EarningsJobClient>()
+                .As<IEarningsJobClient>()
+                .SingleInstance();
+
+            Builder.RegisterType<EarningsJobClientFactory>()
+                .As<IEarningsJobClientFactory>()
+                .SingleInstance();
 
             Builder.Register((c, p) =>
             {
@@ -82,15 +95,18 @@ namespace SFA.DAS.Payments.PerformanceTests
                 return new JobsDataContext(configHelper.PaymentsConnectionString);
             }).InstancePerDependency();
             DcHelper.AddDcConfig(Builder);
+            Builder.RegisterType<EndpointInstanceFactory>()
+                .As<IEndpointInstanceFactory>()
+                .SingleInstance();
 
             Container = Builder.Build();
             EndpointConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(Container));
-            MessageSession = await Endpoint.Start(EndpointConfiguration);
+            MessageSession = await Container.Resolve<IEndpointInstanceFactory>().GetEndpointInstance().ConfigureAwait(false);//    await Endpoint.Start(EndpointConfiguration);
             LearnerStartTimes = new Dictionary<string, DateTime>();
         }
 
 
-        [TestCase(1, 1, 1)]
+        [TestCase(1, 1001, 1)]
         public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerCount, int collectionPeriod)
         {
             Randomizer.Seed = new Random(8675309);
@@ -154,13 +170,32 @@ namespace SFA.DAS.Payments.PerformanceTests
                 StartTime = command.RequestTime,
                 MessageName = command.GetType().FullName,
                 MessageId = command.CommandId
-            }).ToList();
-            await CreateJob(session, startTime, generatedMessages, (byte)collectionPeriod, JobType.EarningsJob).ConfigureAwait(false);
-            foreach (var processLearnerCommand in commands)
-            {
-                await MessageSession.Send(processLearnerCommand, sendOptions).ConfigureAwait(false);
-                Console.WriteLine($"sent process learner command. Uln: {processLearnerCommand.Learner.ULN}");
-            }
+            }).ToList(); 
+            //await CreateJob(session, startTime, generatedMessages, (byte)collectionPeriod, JobType.EarningsJob).ConfigureAwait(false);
+            //var jobClient = Container.Resolve<IEarningsJobClient>();
+            //await jobClient.StartJob(session.JobId, session.Ukprn, session.IlrSubmissionTime, 1819,
+            //    (byte) collectionPeriod, generatedMessages, startTime);
+            //var jobMessage = new RecordStartedProcessingEarningsJob
+            //{
+            //    Ukprn = session.Ukprn,
+            //    CollectionPeriod = (byte)collectionPeriod,
+            //    GeneratedMessages = generatedMessages,
+            //    IlrSubmissionTime = session.IlrSubmissionTime,
+            //    JobId = session.JobId,
+            //    StartTime = startTime,
+            //    LearnerCount = generatedMessages.Count
+
+            //};
+
+
+            //foreach (var processLearnerCommand in commands)
+            //{
+            //    await MessageSession.Send(processLearnerCommand, sendOptions).ConfigureAwait(false);
+            //    Console.WriteLine($"sent process learner command. Uln: {processLearnerCommand.Learner.ULN}");
+            //}
+
+            var dcHelper = Container.Resolve<DcHelper>();
+            await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, 1819, (byte) collectionPeriod, session.JobId);
         }
 
         [OneTimeTearDown]

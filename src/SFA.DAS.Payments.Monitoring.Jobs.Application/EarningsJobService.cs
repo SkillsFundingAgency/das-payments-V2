@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 DcJobId = startedEvent.JobId,
                 IlrSubmissionTime = startedEvent.IlrSubmissionTime,
                 Status = JobStatus.InProgress,
-                LearnerCount = startedEvent.GeneratedMessages.Count
+                LearnerCount = startedEvent.LearnerCount
             };
             var jobSteps = startedEvent.GeneratedMessages.Select(msg => new JobStepModel
             {
@@ -73,7 +73,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             }
             SendTelemetry(startedEvent, jobDetails);
             logger.LogInfo($"Finished saving the job to the db.  Job id: {jobDetails.Id}, DC Job Id: {startedEvent.JobId}, Ukprn: {startedEvent.Ukprn}.");
-
         }
 
         private async Task SaveJobSteps(RecordStartedProcessingEarningsJob startedEvent, JobModel jobDetails)
