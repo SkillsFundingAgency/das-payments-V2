@@ -188,8 +188,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 }).OrderBy(p => p.Period).ToList();
         }
 
-        private static bool PriceEpisodeContractTypeMatchesAim(List<Price> priceEpisodes, string priceEpisodeIdentifier,
-            IEarningEvent onProgEarning)
+        private static bool PriceEpisodeContractTypeMatchesAim(List<Price> priceEpisodes, string priceEpisodeIdentifier, IEarningEvent onProgEarning)
         {
             var matchingPriceEpisode = priceEpisodes.FirstOrDefault(p =>
                 p.PriceEpisodeId == priceEpisodeIdentifier);
