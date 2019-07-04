@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         protected static void LogTestSession(SpecFlowContext context)
         {
             var testSession = context.Get<TestSession>();
-            Trace.WriteLine("Finished scenario with:\n" +
+            Console.WriteLine("Finished scenario with:\n" +
                               $"Ukprn: {testSession.Ukprn}\n" +
                               $"Job ID: {testSession.JobId}\n" +
                               $"Learners:\n" +

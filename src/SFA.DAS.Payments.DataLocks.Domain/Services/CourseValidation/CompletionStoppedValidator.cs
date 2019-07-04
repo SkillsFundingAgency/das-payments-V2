@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(
             DataLockValidationModel dataLockValidationModel)
         {
+
             // Only DLOCK_10 when apprenticeship is stopped
             if (dataLockValidationModel.Apprenticeship.Status != ApprenticeshipStatus.Stopped)
             {
@@ -20,8 +21,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             }
 
             // Only deal with Transactin Type 2 & 3 (Completion and balancing)
-            if (dataLockValidationModel.TransactionType != OnProgrammeEarningType.Completion &&
-                dataLockValidationModel.TransactionType != OnProgrammeEarningType.Balancing)
+            if (dataLockValidationModel.TransactionType != TransactionType.Completion &&
+                dataLockValidationModel.TransactionType != TransactionType.Balancing)
             {
                 return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
             }
