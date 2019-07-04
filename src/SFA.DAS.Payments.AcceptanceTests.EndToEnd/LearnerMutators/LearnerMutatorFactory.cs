@@ -33,14 +33,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "387":
                 case "437":
                 case "529":
+                case "394":
                 case "251":
                 case "258":
                     return new Framework593Learner(learners, featureNumber);
                 case "487":
                 case "326":
+                case "329":
+                case "330":
                     return new Framework403Learner(learners, featureNumber);
                 case "443":
-                    return new Standard57Learner(learners, featureNumber);
+                case "205":
+                case "207":
+                    return new StandardLearner(learners, featureNumber);
                 case "324":
                 case "325":
                     return new Framework593LearnerRestarts(learners, featureNumber);
@@ -49,7 +54,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "278":
                     return new Framework593LearnerWithdrawsAfterPlannedEndDate(learners);
                 case "328":
-                    return new Framework403LearnerWithEHCPlanAndSmallEmployer(learners);
+                    return new Framework403Learner19PlusWithEHCPlanAndSmallEmployer(learners, featureNumber);
                 default:
                     throw new ArgumentException("A valid feature number is required.", nameof(featureNumber));
             }
