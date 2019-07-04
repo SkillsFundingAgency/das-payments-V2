@@ -24,7 +24,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             functionalSkillsLearningDelivery.LearnStartDate =
                 messageLearner.LearningDelivery.Single(ld => ld.AimType == 1).LearnStartDate;
         }
-
-      
     }
 }
