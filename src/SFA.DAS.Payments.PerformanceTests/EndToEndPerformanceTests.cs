@@ -115,26 +115,26 @@ namespace SFA.DAS.Payments.PerformanceTests
                 .Select(learner => CreateFM36Learner(session, learner))
                 .ToList();
             session.IlrSubmissionTime = DateTime.UtcNow;
-            foreach (var fm36Learner in ilrLearners)
-            {
-                var command = new ProcessLearnerCommand
-                {
-                    Learner = fm36Learner,
-                    CollectionPeriod = collectionPeriod,
-                    CollectionYear = 1819,
-                    Ukprn = session.Ukprn,
-                    JobId = session.JobId,
-                    IlrSubmissionDateTime = session.IlrSubmissionTime,
-                    RequestTime = DateTimeOffset.UtcNow,
-                    SubmissionDate = session.IlrSubmissionTime,
-                };
-                var sendOptions = new SendOptions();
-                if (DeliveryTime.HasValue)
-                    sendOptions.DoNotDeliverBefore(DeliveryTime.Value);
-                await MessageSession.Send(command, sendOptions);
-                LearnerStartTimes.Add(fm36Learner.LearnRefNumber, DateTime.Now);
-                Console.WriteLine($"Sent learner.  Ukprn: {session.Ukprn}, Learner: {fm36Learner.LearnRefNumber}, Time: {DateTime.Now:o}");
-            }
+            //foreach (var fm36Learner in ilrLearners)
+            //{
+            //    var command = new ProcessLearnerCommand
+            //    {
+            //        Learner = fm36Learner,
+            //        CollectionPeriod = collectionPeriod,
+            //        CollectionYear = 1819,
+            //        Ukprn = session.Ukprn,
+            //        JobId = session.JobId,
+            //        IlrSubmissionDateTime = session.IlrSubmissionTime,
+            //        RequestTime = DateTimeOffset.UtcNow,
+            //        SubmissionDate = session.IlrSubmissionTime,
+            //    };
+            //    var sendOptions = new SendOptions();
+            //    if (DeliveryTime.HasValue)
+            //        sendOptions.DoNotDeliverBefore(DeliveryTime.Value);
+            //    await MessageSession.Send(command, sendOptions);
+            //    LearnerStartTimes.Add(fm36Learner.LearnRefNumber, DateTime.Now);
+            //    Console.WriteLine($"Sent learner.  Ukprn: {session.Ukprn}, Learner: {fm36Learner.LearnRefNumber}, Time: {DateTime.Now:o}");
+            //}
             var dcHelper = Container.Resolve<DcHelper>();
             await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, 1819, (byte)collectionPeriod, session.JobId);
         }
