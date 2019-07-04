@@ -592,7 +592,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private static string GetContractTypeDescription(ContractType contractType)
         {
-            return contractType == ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
+            return contractType == ContractType.Act1 ? "Contract for services with the employer" : "Contract for services with the ESFA";
         }
 
         private static List<T> SetPeriodisedValues<T>(Aim aim, IList<Earning> earnings) where T : PeriodisedAttribute, new()

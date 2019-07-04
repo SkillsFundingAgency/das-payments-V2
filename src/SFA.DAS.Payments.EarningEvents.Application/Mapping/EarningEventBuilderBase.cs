@@ -69,6 +69,19 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             });
 
             return results;
+        private static ContractType GetContractType(string priceEpisodeContractType)
+        {
+            switch (priceEpisodeContractType)
+            {
+                case ApprenticeshipContractTypeEarningsEventFactory.Act1:
+                case ApprenticeshipContractTypeEarningsEventFactory.ContractForServicesWithEmployer:
+                    return ContractType.Act1;
+                case ApprenticeshipContractTypeEarningsEventFactory.Act2:
+                case ApprenticeshipContractTypeEarningsEventFactory.ContractForServicesWithSfa:
+                    return ContractType.Act2;
+                default:
+                    throw new InvalidOperationException($"Invalid contract type {priceEpisodeContractType}");
+            }
         }
 
        
