@@ -1,4 +1,4 @@
-﻿#@supports_dc_e2e
+﻿@supports_dc_e2e
 Feature: One learner change of ULN - PV2-394
 	As a provider,
 	I want a non-Levy apprentice, provider changes ULN for an apprentice in the ILR after payments have already occurred, to be paid the correct amount
@@ -9,8 +9,8 @@ Feature: Non-Levy apprentice, provider changes ULN for an apprentice in the ILR 
 Scenario Outline: Non-levy learner provider changes ULN after payments have already occurred PV2-394
 	Given the provider previously submitted the following learner details
 		# Temp/old ULN
-        | ULN        | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-        | 11111111   | 06/Aug/Current Academic Year | 12 months        | 9000                 | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+        | ULN        | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+        | 9999999999 | 06/Aug/Current Academic Year | 12 months        | 9000                 | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 600          | 0          | 0         |
@@ -31,21 +31,24 @@ Scenario Outline: Non-levy learner provider changes ULN after payments have alre
         | R02/Current Academic Year | Sep/Current Academic Year | 540                    | 60                          | Learning         |
 	# New ULN
     But the Provider now changes the Learner's ULN to "22222222"
+	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+		| pe-1             | 9000                 | 06/Aug/Current Academic Year        |                        | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | Act2          | 1                   | 90%                         |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
     Then the following learner earnings should be generated
-        | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 600          | 0          | 0         |
-        | Sep/Current Academic Year | 600          | 0          | 0         |
-        | Oct/Current Academic Year | 600          | 0          | 0         |
-        | Nov/Current Academic Year | 600          | 0          | 0         |
-        | Dec/Current Academic Year | 600          | 0          | 0         |
-        | Jan/Current Academic Year | 600          | 0          | 0         |
-        | Feb/Current Academic Year | 600          | 0          | 0         |
-        | Mar/Current Academic Year | 600          | 0          | 0         |
-        | Apr/Current Academic Year | 600          | 0          | 0         |
-        | May/Current Academic Year | 600          | 0          | 0         |
-        | Jun/Current Academic Year | 600          | 0          | 0         |
-        | Jul/Current Academic Year | 600          | 0          | 0         |
+        | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+        | Aug/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Sep/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Oct/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Nov/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Dec/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Jan/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Feb/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Mar/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Apr/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | May/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Jun/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+        | Jul/Current Academic Year | 600          | 0          | 0         | pe-1                     |
     And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R03/Current Academic Year | Oct/Current Academic Year | 600          | 0          | 0         |
