@@ -32,6 +32,7 @@ using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -80,7 +81,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             get => !Context.TryGetValue<List<Earning>>("previous_earnings", out var previousEarnings) ? null : previousEarnings;
             set => Set(value, "previous_earnings");
         }
-
+        protected List<EmployerProviderPriorityModel> EmployerProviderPriorities
+        {
+            get => !Context.TryGetValue<List<EmployerProviderPriorityModel>>(out var employerProviderPriorities) ? null : employerProviderPriorities;
+            set => Set(value);
+        }
         public CollectionPeriod CurrentCollectionPeriod
         {
             get => Get<CollectionPeriod>("current_collection_period");
@@ -1138,5 +1143,60 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 p.MonthEndJobIdGenerated = true;
             });
         }
+
+        protected async Task AddLevyAccountPriorities(Table table, TestSession testSession, CollectionPeriod currentCollectionPeriod, IPaymentsDataContext dataContext)
+        {
+            if(EmployerProviderPriorities == null) EmployerProviderPriorities = new List<EmployerProviderPriorityModel>();
+
+            var priorities = table.CreateSet<ProviderPriority>()
+                .Select(x =>
+                {
+                    var period = new CollectionPeriodBuilder()
+                        .WithSpecDate(x.SpecCollectionPeriod)
+                        .Build();
+                    return new
+                    {
+                        AcademicYear = period.AcademicYear,
+                        CollectionPeriod = period.Period,
+                        Priority = x.Priority,
+                        Ukprn = testSession.GetProviderByIdentifier(x.ProviderIdentifier).Ukprn,
+                    };
+                })
+                .Where(x => x.AcademicYear == currentCollectionPeriod.AcademicYear &&
+                            x.CollectionPeriod == currentCollectionPeriod.Period)
+                .Select(x => new EmployerProviderPriorityModel
+                {
+                    EmployerAccountId = testSession.GetEmployer(null).AccountId,
+                    Order = x.Priority,
+                    Ukprn = x.Ukprn,
+                })
+                .ToList();
+
+            if (priorities.Any())
+            {
+                var existingRecords = EmployerProviderPriorities.Any(x => x.EmployerAccountId == priorities.First().EmployerAccountId);
+                if (existingRecords)
+                {
+                    foreach (var employerProviderPriorityModel in priorities)
+                    {
+                        await MessageSession.Send(new EmployerChangedProviderPriority
+                        {
+                            EmployerAccountId = priorities.First().EmployerAccountId,
+                            OrderedProviders = priorities.OrderBy(x => x.Order).Select(p => p.Ukprn).ToList()
+                        }).ConfigureAwait(false);
+                    }
+
+                    await Task.Delay(2000);
+                }
+                else
+                {
+                    dataContext.EmployerProviderPriority.AddRange(priorities);
+                    dataContext.SaveChanges();
+
+                    EmployerProviderPriorities.AddRange(priorities);
+                }
+            }
+        }
+
     }
 }
