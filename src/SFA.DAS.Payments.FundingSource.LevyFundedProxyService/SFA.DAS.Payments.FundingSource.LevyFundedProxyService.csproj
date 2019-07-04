@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Application\SFA.DAS.Payments.FundingSource.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces\SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages.Internal\SFA.DAS.Payments.FundingSource.Messages.Internal.csproj" />
