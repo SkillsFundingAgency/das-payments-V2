@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -46,14 +44,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return results;
         }
 
-        private static List<IntermediateLearningAim> GetMathsAndEnglishAim(ProcessLearnerCommand learnerSubmission,LearningDelivery learningDelivery)
+        private static List<IntermediateLearningAim> GetMathsAndEnglishAim(ProcessLearnerCommand learnerSubmission,
+            LearningDelivery learningDelivery)
         {
             var results = new List<IntermediateLearningAim>();
 
             var intermediateLearningAim =
                 new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery);
 
-            var contractTypes = intermediateLearningAim.Learner.LearningDeliveries.GetContractTypesForLearningDeliveries();
+            var contractTypes =
+                intermediateLearningAim.Learner.LearningDeliveries.GetContractTypesForLearningDeliveries();
 
             var distinctContractTypes = contractTypes.Distinct().ToList();
 
@@ -69,21 +69,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             });
 
             return results;
-        private static ContractType GetContractType(string priceEpisodeContractType)
-        {
-            switch (priceEpisodeContractType)
-            {
-                case ApprenticeshipContractTypeEarningsEventFactory.Act1:
-                case ApprenticeshipContractTypeEarningsEventFactory.ContractForServicesWithEmployer:
-                    return ContractType.Act1;
-                case ApprenticeshipContractTypeEarningsEventFactory.Act2:
-                case ApprenticeshipContractTypeEarningsEventFactory.ContractForServicesWithSfa:
-                    return ContractType.Act2;
-                default:
-                    throw new InvalidOperationException($"Invalid contract type {priceEpisodeContractType}");
-            }
         }
-
-       
     }
 }
