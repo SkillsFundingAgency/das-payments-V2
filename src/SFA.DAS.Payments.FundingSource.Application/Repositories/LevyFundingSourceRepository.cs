@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,11 +10,11 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 {
-    public class LevyAccountRepository : ILevyAccountRepository
+    public class LevyFundingSourceRepository : ILevyFundingSourceRepository
     {
         private readonly IPaymentsDataContext dataContext;
 
-        public LevyAccountRepository(IPaymentsDataContext dataContext)
+        public LevyFundingSourceRepository(IPaymentsDataContext dataContext)
         {
             this.dataContext = dataContext;
         }
@@ -32,5 +33,22 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
             return levyAccounts.First();
         }
+
+        public async Task<List<EmployerProviderPriorityModel>> GetPaymentPriorities(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var paymentPriorities = await dataContext.EmployerProviderPriority.AsNoTracking()
+                .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId)
+                .ToListAsync(cancellationToken);
+            
+            return paymentPriorities;
+        }
+
+        public async Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
+        {
+             await dataContext.EmployerProviderPriority
+                .AddRangeAsync(paymentPriorityModels, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
     }
 }
