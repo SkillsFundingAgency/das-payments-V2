@@ -1,9 +1,11 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -96,7 +98,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (!TestSession.AtLeastOneScenarioCompleted)
             {
+                var oldProvider = TestSession.Provider;
+                var learner = TestSession.GetLearner(oldProvider.Ukprn, null);
                 TestSession.RegenerateUkprn();
+                learner.Ukprn = TestSession.Ukprn;
                 AddNewIlr(table, TestSession.Ukprn);
             }
         }
@@ -125,6 +130,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenPriceDetailsAreChangedAsFollows(Table table)
         {
             GivenPriceDetailsAsFollows(table);
+        }
+
+        [Given(@"the provider priority order is")]
+        public async Task GivenTheProviderPriorityOrder(Table table)
+        {
+           await AddLevyAccountPriorities(table, TestSession, CurrentCollectionPeriod, DataContext);
         }
 
         [Given(@"the following commitments exist")]
@@ -212,7 +223,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the following capping will apply to the price episodes")]
         public void GivenTheFollowingCappingWillApply(Table table)
         {
-
+           
         }
 
         [Then(@"the following learner earnings should be generated")]
