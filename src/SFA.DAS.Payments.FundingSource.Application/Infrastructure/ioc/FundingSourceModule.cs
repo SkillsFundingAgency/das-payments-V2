@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<SfaFullyFundedPaymentProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<SfaFullyFundedFundingSourcePaymentEventMapper>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<IncentiveRequiredPaymentProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<LevyAccountRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<LevyFundingSourceRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<PaymentProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyPaymentProcessor>().As<ILevyPaymentProcessor>().InstancePerLifetimeScope();
             builder.RegisterType<TransferPaymentProcessor>().As<ITransferPaymentProcessor>().InstancePerLifetimeScope();
@@ -28,12 +28,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<EmployerCoInvestedPaymentProcessor>().As<IEmployerCoInvestedPaymentProcessor>().InstancePerLifetimeScope();
             builder.RegisterType<SfaCoInvestedPaymentProcessor>().As<ISfaCoInvestedPaymentProcessor>().InstancePerLifetimeScope();
             builder.RegisterType<LevyBalanceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<ReliableCollectionCache<CalculatedRequiredLevyAmount>>()
-                .AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<ReliableCollectionCache<List<string>>>()
-                .AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ReliableCollectionCache<CalculatedRequiredLevyAmount>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ReliableCollectionCache<List<string>>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<RequiredLevyAmountFundingSourceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<SortableKeyGenerator>().AsImplementedInterfaces();
             builder.RegisterType<LevyMessageRoutingService>().AsImplementedInterfaces();
 
             builder.Register(c => new CoInvestedFundingSourceService

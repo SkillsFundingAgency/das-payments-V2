@@ -11,7 +11,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
@@ -40,6 +43,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
             try
             {
+                var contractType = message is PayableEarningEvent ? ContractType.Act1 :
+                    message is ApprenticeshipContractType2EarningEvent ? ContractType.Act2 :
+                    message is FunctionalSkillEarningsEvent ? (message as FunctionalSkillEarningsEvent).ContractType :
+                    throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
+
                 var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
                     message.Ukprn,
                     message.Learner.ReferenceNumber,
@@ -48,7 +56,8 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                     message.LearningAim.ProgrammeType,
                     message.LearningAim.StandardCode,
                     message.LearningAim.Reference,
-                    message.CollectionPeriod.AcademicYear
+                    message.CollectionPeriod.AcademicYear,
+                    contractType
                 );
 
                 var actorId = new ActorId(key);
