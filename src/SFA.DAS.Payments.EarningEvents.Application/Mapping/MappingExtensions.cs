@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FastMember;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
@@ -12,10 +14,55 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     public static class MappingExtensions
     {
         private static readonly TypeAccessor PeriodAccessor = TypeAccessor.Create(typeof(PeriodisedAttribute));
+        private static readonly TypeAccessor PeriodTextAccessor = TypeAccessor.Create(typeof(LearningDeliveryPeriodisedTextValues));
 
         public static decimal? GetPeriodValue(this PeriodisedAttribute periodisedValues, int period)
         {
             return (decimal?)PeriodAccessor[periodisedValues, "Period" + period];
+        }
+
+        public static string GetPeriodTextValue(this LearningDeliveryPeriodisedTextValues periodisedValues, int period)
+        {
+            return PeriodTextAccessor[periodisedValues, "Period" + period].ToString();
+        }
+
+        public static ContractType[] GetContractTypesForLearningDeliveries(this List<LearningDelivery> learningDeliveries)
+        {
+            var periodisedTextValues = learningDeliveries.Where(x => x.LearningDeliveryPeriodisedTextValues != null)
+                .SelectMany(x =>
+                    x.LearningDeliveryPeriodisedTextValues.Where(l => l.AttributeName == "LearnDelContType"));
+
+            if (!periodisedTextValues.Any())
+            {
+                return new ContractType[0];
+            }
+
+            const byte earningPeriods = 12;
+
+            var contractTypes = new ContractType[earningPeriods];
+
+            for (byte i = 1; i <= earningPeriods; i++)
+            {
+                var periodValues = periodisedTextValues.Select(p => p.GetPeriodTextValue(i)).ToArray();
+                var periodValue = GetContractType(periodValues[0]);
+
+                contractTypes[i - 1] = periodValue;
+            }
+
+            return contractTypes;
+        }
+
+        public static ContractType GetContractType(string priceEpisodeContractType)
+        {
+            switch (priceEpisodeContractType)
+            {
+                case ApprenticeshipContractTypeEarningsEventFactory.Act1:
+                    return ContractType.Act1;
+                case ApprenticeshipContractTypeEarningsEventFactory.Act2:
+                    return ContractType.Act2;
+                default:
+                    throw new InvalidOperationException($"Invalid contract type {priceEpisodeContractType}");
+            }
         }
 
         public static bool IsMainAim(this LearningDelivery learningDelivery)

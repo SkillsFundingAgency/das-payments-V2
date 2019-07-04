@@ -1,6 +1,4 @@
-﻿@ignore
-# failing due to incorrect handling of maths and english contract types
-# Remaining 42% (197.82) is divided into remaining 7 months - Hence 28.26
+﻿# Remaining 42% (197.82) is divided into remaining 7 months - Hence 28.26
 # Restart Indicator
 #For DC Integration
  #| Funding Adjustment For Prior Learning |
@@ -23,31 +21,31 @@ Scenario Outline: Non-levy learner, requires english or maths at level 2 with pr
         |                   | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 1                   | 100%                        |
         | 2nd price details | 15000                | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 90%                         |
     And the following earnings had been generated for the learner
-        | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Price Episode Identifier |
-        | Aug/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Sep/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Oct/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Nov/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Dec/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Jan/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Feb/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Mar/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Apr/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | May/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Jun/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Jul/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        |
-        | Aug/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Sep/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Oct/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Nov/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Dec/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Jan/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Feb/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Mar/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Apr/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | May/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Jun/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
-        | Jul/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          |
+        | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Price Episode Identifier | Contract Type |
+        | Aug/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Sep/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Oct/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Nov/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Dec/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Jan/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Feb/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Mar/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Apr/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | May/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Jun/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Jul/Last Academic Year | 1000         | 0          | 0         | 0                          | 2nd price details        | Act2          |
+        | Aug/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Sep/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Oct/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Nov/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Dec/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Jan/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Feb/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Mar/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Apr/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | May/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Jun/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
+        | Jul/Last Academic Year | 0            | 0          | 0         | 39.25                      |                          | Act2          |
     And the following provider payments had been generated
         | Collection Period      | Delivery Period        | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type           |
         | R01/Last Academic Year | Aug/Last Academic Year | 900                    | 100                         | 0                         | Learning                   |

@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
+using Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -394,6 +395,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 else // maths & english & Learning support don't use price episodes
                 {
                     learningDelivery.LearningDeliveryPeriodisedValues = SetPeriodisedValues<LearningDeliveryPeriodisedValues>(aim, earnings);
+                    learningDelivery.LearningDeliveryPeriodisedTextValues = SetPeriodisedTextValues(aim, earnings);
                 }
             }
         }
@@ -572,7 +574,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (contractType == 0)
                     contractType = CurrentIlr[0].ContractType;
 
-                return contractType == ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
+                return GetContractTypeDescription(contractType);
             }
 
             byte LastOnProgPeriod(PriceEpisode currentPriceEpisode)
@@ -586,6 +588,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 return new DeliveryPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues
                     .PriceEpisodeActualEndDate.Value).BuildLastOnProgPeriod();
             }
+        }
+
+        private static string GetContractTypeDescription(ContractType contractType)
+        {
+            return contractType == ContractType.Act1 ? "Levy Contract" : "Non-Levy Contract";
         }
 
         private static List<T> SetPeriodisedValues<T>(Aim aim, IList<Earning> earnings) where T : PeriodisedAttribute, new()
@@ -632,6 +639,41 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return aimPeriodisedValues;
         }
 
+        private static List<LearningDeliveryPeriodisedTextValues> SetPeriodisedTextValues(Aim aim,
+            IList<Earning> earnings)
+        {
+            var aimPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>();
+            const string learningDeliveryContractType = "LearnDelContType";
+
+            foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
+                                                        e.AimSequenceNumber == aim.AimSequenceNumber))
+            {
+                var period = earning.DeliveryCalendarPeriod;
+                foreach (var earningValue in earning.Values)
+                {
+                    if (MathsAndEnglishTransactionTypes().Contains(earningValue.Key))
+                    {
+                        var contractType = GetContractTypeDescription(earning.ContractType);
+
+                        var contractTypePeriodisedValues =
+                            aimPeriodisedTextValues.SingleOrDefault(
+                                v => v.AttributeName == learningDeliveryContractType);
+
+                        if (contractTypePeriodisedValues == null)
+                        {
+                            contractTypePeriodisedValues = new LearningDeliveryPeriodisedTextValues
+                                {AttributeName = learningDeliveryContractType};
+                            aimPeriodisedTextValues.Add(contractTypePeriodisedValues);
+                        }
+
+                        SetPeriodTextValue(period, contractTypePeriodisedValues, contractType);
+                    }
+                }
+            }
+
+            return aimPeriodisedTextValues;
+        }
+
         private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
         {
             var episodeStartDate = priceEpisode.EpisodeEffectiveStartDate;
@@ -644,6 +686,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);
+        }
+
+        private static void SetPeriodTextValue(int period, LearningDeliveryPeriodisedTextValues periodisedValues, string value)
+        {
+            var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
+            periodProperty?.SetValue(periodisedValues, value);
         }
 
         protected static List<Earning> CreateEarnings(Table table, long ukprn)
@@ -817,6 +865,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             yield return TransactionType.OnProgrammeMathsAndEnglish.ToAttributeName();
             yield return TransactionType.LearningSupport.ToAttributeName();
             yield return TransactionType.CareLeaverApprenticePayment.ToAttributeName();
+        }
+
+        private static IEnumerable<TransactionType> MathsAndEnglishTransactionTypes()
+        {
+            yield return TransactionType.OnProgrammeMathsAndEnglish;
+            yield return TransactionType.BalancingMathsAndEnglish;
         }
 
         protected List<Training> CreateTrainingFromLearners(long ukprn)
