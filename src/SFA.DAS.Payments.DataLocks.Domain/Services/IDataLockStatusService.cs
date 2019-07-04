@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
     public interface IDataLockStatusService
     {
-        DataLockStatusChange GetStatusChange(List<DataLockFailure> currentFailures, List<DataLockFailure> newFailure);
+        DataLockStatusChange GetStatusChange(List<DataLockFailure> oldFailures, List<DataLockFailure> newFailures);
     }
 
     public enum DataLockStatusChange
