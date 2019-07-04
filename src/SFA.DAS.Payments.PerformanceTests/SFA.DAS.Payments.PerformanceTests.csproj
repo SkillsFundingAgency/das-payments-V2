@@ -45,6 +45,9 @@
     <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=0.1.320.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.0.1.320\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=2.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.8.1\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -235,6 +238,9 @@
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -295,6 +301,18 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
       <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj">
+      <Project>{66B42B94-B29B-48EA-9AB6-C96C11C1D9CE}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj">
+      <Project>{D9849B05-C642-48F7-AA6D-FA917257AE45}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj">
+      <Project>{9274ABB3-9F30-4320-A111-17BA07DBF568}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25b9dfa3-df0c-4c53-a991-1f3d3bb407a8}</Project>
