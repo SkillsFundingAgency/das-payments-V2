@@ -7,6 +7,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure.IoC;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
@@ -77,6 +78,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             routing.RouteToEndpoint(typeof(CollectionStartedEvent), EndpointNames.RequiredPayments);
             routing.RouteToEndpoint(typeof(RecordStartedProcessingMonthEndJob).Assembly, EndpointNames.JobMonitoring);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
+            routing.RouteToEndpoint(typeof(EmployerChangedProviderPriority).Assembly, EndpointNames.FundingSource);
             transportConfig.Queues().LockDuration(TimeSpan.FromMinutes(5));
             endpointConfiguration.MakeInstanceUniquelyAddressable("reply");
             endpointConfiguration.EnableCallbacks();
