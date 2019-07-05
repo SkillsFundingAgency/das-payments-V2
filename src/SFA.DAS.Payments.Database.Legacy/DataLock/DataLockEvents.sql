@@ -1,0 +1,27 @@
+﻿CREATE TABLE [DataLock].[DataLockEvents]
+(
+	Id							bigint				PRIMARY KEY IDENTITY(1,1),
+	DataLockEventId				uniqueidentifier	NOT NULL,
+	ProcessDateTime				datetime			NOT NULL,
+	IlrFileName					nvarchar(50)		NOT NULL,
+	SubmittedDateTime		    datetime			NOT NULL,
+	AcademicYear				varchar(4)    		NOT NULL,
+	UKPRN						bigint				NOT NULL,
+	ULN							bigint				NOT NULL,
+	LearnRefNumber				varchar(100)		NOT NULL,
+    AimSeqNumber				bigint				NOT NULL,
+	PriceEpisodeIdentifier		varchar(25)			NOT NULL,
+	CommitmentId				bigint				NOT NULL,
+	EmployerAccountId			bigint				NOT NULL,
+	EventSource					int					NOT NULL,
+	HasErrors					bit					NOT NULL,
+	IlrStartDate				date				NULL,
+	IlrStandardCode				bigint				NULL,
+	IlrProgrammeType			int					NULL,
+	IlrFrameworkCode			int					NULL,
+	IlrPathwayCode				int					NULL,
+	IlrTrainingPrice			decimal(12,5)		NULL,
+	IlrEndpointAssessorPrice	decimal(12,5)		NULL,
+	IlrPriceEffectiveFromDate	date				NULL,
+	IlrPriceEffectiveToDate		date				NULL
+)
