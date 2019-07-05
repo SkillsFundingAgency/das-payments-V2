@@ -233,6 +233,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddEmploymentStatus(table.CreateSet<EmploymentStatusMonitoring>());
         }
 
+        [Given(@"the employment status in the ILR is")]
+        [Given(@"the employment status in the ILR is now")]
+        public void GivenTheEmploymentStatusInTheIlr(Table table)
+        {
+            AddEmploymentStatus(table.CreateSet<EmploymentStatusMonitoring>());
+        }
+
         [Then(@"the following learner earnings should be generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
