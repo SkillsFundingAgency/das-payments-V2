@@ -6,6 +6,7 @@ using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.DataLocks.Model.Entities;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 
@@ -30,6 +31,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             var changedToFailed = new DataLockStatusChangedToFailed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<byte>>()};
             var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<byte>>()};
             var failureChanged = new DataLockFailureChanged {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<byte>>()};
+            var failuresToDelete = new List<long>();
+            var failuresToRecord = new List<DataLockFailureEntity>();
 
             var newFailuresGroupedByTypeAndPeriod = GetFailuresGroupedByTypeAndPeriod(dataLockEvent);
             
@@ -53,7 +56,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var transactionType = key.Item1;
                 var period = key.Item2;
 
-                var oldFailure = oldFailures.FirstOrDefault(f => f.TransactionType == transactionType && f.DeliveryPeriod == period)?.Errors;
+                var oldFailureEntity = oldFailures.FirstOrDefault(f => f.TransactionType == transactionType && f.DeliveryPeriod == period);
+                var oldFailure = oldFailureEntity?.Errors;
                 var newFailure = newFailuresGroupedByTypeAndPeriod.ContainsKey(key) ? newFailuresGroupedByTypeAndPeriod[key] : null;
 
                 var statusChange = dataLockStatusService.GetStatusChange(oldFailure, newFailure);
@@ -62,12 +66,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     case DataLockStatusChange.ChangedToFailed:
                         AddTypeAndPeriodToEvent(changedToFailed, transactionType, period);
+                        failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailure));
                         break;
                     case DataLockStatusChange.ChangedToPassed:
                         AddTypeAndPeriodToEvent(changedToPassed, transactionType, period);
+                        if (oldFailureEntity != null)
+                            failuresToDelete.Add(oldFailureEntity.Id);
                         break;
                     case DataLockStatusChange.FailureCodeChanged:
                         AddTypeAndPeriodToEvent(failureChanged, transactionType, period);
+                        failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailure));
+                        if (oldFailureEntity != null)
+                            failuresToDelete.Add(oldFailureEntity.Id);
                         break;
                 }
 
@@ -88,7 +98,29 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 mapper.Map(dataLockEvent, dataLockStatusChanged);
             }
 
+            await dataLockFailureRepository.ReplaceFailures(failuresToDelete, failuresToRecord).ConfigureAwait(false);
+
             return result;
+        }
+
+        private static DataLockFailureEntity CreateEntity(DataLockEvent dataLockEvent, TransactionType transactionType, byte deliveryPeriod, List<DataLockFailure> failures)
+        {
+            return new DataLockFailureEntity
+            {
+                Ukprn = dataLockEvent.Ukprn,
+                CollectionPeriod = dataLockEvent.CollectionPeriod.Period,
+                AcademicYear = dataLockEvent.CollectionYear,
+                TransactionType = transactionType,
+                DeliveryPeriod = deliveryPeriod,
+                LearnerReferenceNumber = dataLockEvent.Learner.ReferenceNumber,
+                LearnerUln = dataLockEvent.Learner.Uln,
+                LearningAimFrameworkCode = dataLockEvent.LearningAim.FrameworkCode,
+                LearningAimPathwayCode = dataLockEvent.LearningAim.PathwayCode,
+                LearningAimProgrammeType = dataLockEvent.LearningAim.ProgrammeType,
+                LearningAimReference = dataLockEvent.LearningAim.Reference,
+                LearningAimStandardCode = dataLockEvent.LearningAim.StandardCode,
+                Errors = failures
+            };
         }
 
         private static void AddTypeAndPeriodToEvent(DataLockStatusChanged changedToPassed, TransactionType transactionType, byte period)

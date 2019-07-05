@@ -10,6 +10,7 @@
     [LearningAimPathwayCode] INT NOT NULL, 
     [AcademicYear] SMALLINT NOT NULL, 
     [DeliveryPeriod] TINYINT NOT NULL, 
+    [CollectionPeriod] TINYINT NOT NULL, 
     [Errors] NVARCHAR(MAX) NOT NULL, 
     [TransactionType] TINYINT NOT NULL
 )
