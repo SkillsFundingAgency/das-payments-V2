@@ -9,7 +9,7 @@
 	TotalNegotiatedPrice3 DECIMAL(15,5) NULL,
 	TotalNegotiatedPrice4 DECIMAL(15,5) NULL,
 	StartDate DATETIME2 NOT NULL,
-	EffectiveTotalNegotiatedPriceStartDate DATETIME2 NOT NULL,
+	EffectiveTotalNegotiatedPriceStartDate DATETIME2 NULL,
 	PlannedEndDate DATETIME2 NOT NULL,
 	ActualEndDate DATETIME2 NULL,
 	NumberOfInstalments INT NOT NULL, 
