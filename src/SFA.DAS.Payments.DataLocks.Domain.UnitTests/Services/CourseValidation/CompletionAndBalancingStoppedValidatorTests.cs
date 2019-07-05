@@ -26,11 +26,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
 
-        [TestCase("Stop date from a prior period should produce DLOCK_10", OnProgrammeEarningType.Completion, "2020/07/01", "2019/07/31")]
-        [TestCase("Stop date from a prior period should produce DLOCK_10", OnProgrammeEarningType.Balancing, "2020/07/01", "2019/07/31")]
-        [TestCase("Stop date is before end date and should produce DLOCK_10", OnProgrammeEarningType.Completion, "2019/08/25", "2019/08/20")]
-        [TestCase("Stop date is before end date and should produce DLOCK_10", OnProgrammeEarningType.Balancing, "2019/08/25", "2019/08/20")]
-        public void ScenariosThatCreateDlockErrors(string errorMessage, OnProgrammeEarningType transactionType, DateTime ilrDate, DateTime commitmentDate)
+        [TestCase("Stop date from a prior period should produce DLOCK_10", TransactionType.Completion, "2020/07/01", "2019/07/31")]
+        [TestCase("Stop date from a prior period should produce DLOCK_10", TransactionType.Balancing, "2020/07/01", "2019/07/31")]
+        [TestCase("Stop date is before end date and should produce DLOCK_10", TransactionType.Completion, "2019/08/25", "2019/08/20")]
+        [TestCase("Stop date is before end date and should produce DLOCK_10", TransactionType.Balancing, "2019/08/25", "2019/08/20")]
+        public void ScenariosThatCreateDlockErrors(string errorMessage, TransactionType transactionType, DateTime ilrDate, DateTime commitmentDate)
         {
             var validation = new DataLockValidationModel
             {
@@ -64,13 +64,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
 
-        [TestCase("When commitment stop date is after the end date then no datalock expected", OnProgrammeEarningType.Completion, "2019/08/15", "2019/08/31")]
-        [TestCase("When commitment stop date is after the end date then no datalock expected", OnProgrammeEarningType.Balancing, "2019/08/15", "2019/08/31")]
-        [TestCase("When commitment stop date is the same as the end date then no datalock expected", OnProgrammeEarningType.Completion, "2019/08/15", "2019/08/15")]
-        [TestCase("When commitment stop date is the same as the end date then no datalock expected", OnProgrammeEarningType.Balancing, "2019/08/15", "2019/08/15")]
-        [TestCase("When commitment stop date is in a future period then no datalock expected", OnProgrammeEarningType.Completion, "2020/07/01", "2020/08/01")]
-        [TestCase("When commitment stop date is in a future period then no datalock expected", OnProgrammeEarningType.Balancing, "2020/07/01", "2020/08/01")]
-        public void ScenariosThatDoNotCreateDlockErrors(string errorMessage, OnProgrammeEarningType transactionType, DateTime ilrDate, DateTime commitmentDate)
+        [TestCase("When commitment stop date is after the end date then no datalock expected", TransactionType.Completion, "2019/08/15", "2019/08/31")]
+        [TestCase("When commitment stop date is after the end date then no datalock expected", TransactionType.Balancing, "2019/08/15", "2019/08/31")]
+        [TestCase("When commitment stop date is the same as the end date then no datalock expected", TransactionType.Completion, "2019/08/15", "2019/08/15")]
+        [TestCase("When commitment stop date is the same as the end date then no datalock expected", TransactionType.Balancing, "2019/08/15", "2019/08/15")]
+        [TestCase("When commitment stop date is in a future period then no datalock expected", TransactionType.Completion, "2020/07/01", "2020/08/01")]
+        [TestCase("When commitment stop date is in a future period then no datalock expected", TransactionType.Balancing, "2020/07/01", "2020/08/01")]
+        [TestCase("Stop date is before end date but transaction type is LearningSupport then no datalock expected", TransactionType.LearningSupport, "2019/08/25", "2019/08/20")]
+        [TestCase("Stop date is before end date, but transaction type is First16To18ProviderIncentive then no datalock expected", TransactionType.First16To18ProviderIncentive, "2019/08/25", "2019/08/20")]
+        public void ScenariosThatDoNotCreateDlockErrors(string errorMessage, TransactionType transactionType, DateTime ilrDate, DateTime commitmentDate)
         {
             var validation = new DataLockValidationModel
             {

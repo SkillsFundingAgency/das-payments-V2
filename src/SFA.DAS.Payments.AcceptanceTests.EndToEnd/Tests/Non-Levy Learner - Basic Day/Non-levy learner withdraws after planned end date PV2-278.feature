@@ -1,8 +1,8 @@
 ﻿@supports_dc_e2e
-Feature: A non-levy learner withdraws after planned end date PV2-278
+Feature:  PV2-278 A non-levy learner withdraws after planned end date
 
 
-Scenario Outline: A non-levy learner withdraws after planned end date
+Scenario Outline: PV2-278 A non-levy learner withdraws after planned end date
     Given the provider previously submitted the following learner details in collection period "R01/Last Academic Year"
 		| ULN       | Priority | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
 		| learner a | 1        | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
@@ -57,21 +57,24 @@ Scenario Outline: A non-levy learner withdraws after planned end date
     But the Provider now changes the Learner details as follows
 		| ULN       | Priority | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   |
 		| learner a | 1        | 01/Sep/Last Academic Year | 12 months        | 15000                | 01/Sep/Last Academic Year           |                        |                                       | 15 months       | withdrawn         | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) |
-    When the amended ILR file is re-submitted for the learners in collection period <collection_period>
+	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+		| pe-1             | 15000                | 01/Sep/Last Academic Year           |                        |                                       | 0                       |                                        | 0                         |                                          | Act2          | 1                   | 90%                         |
+	When the amended ILR file is re-submitted for the learners in collection period <collection_period>
     Then the following learner earnings should be generated
-        | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 1000         | 0          | 0         |
-        | Sep/Current Academic Year | 0            | 0          | 0         |
-        | Oct/Current Academic Year | 0            | 0          | 0         |
-        | Nov/Current Academic Year | 0            | 0          | 0         |
-        | Dec/Current Academic Year | 0            | 0          | 0         |
-        | Jan/Current Academic Year | 0            | 0          | 0         |
-        | Feb/Current Academic Year | 0            | 0          | 0         |
-        | Mar/Current Academic Year | 0            | 0          | 0         |
-        | Apr/Current Academic Year | 0            | 0          | 0         |
-        | May/Current Academic Year | 0            | 0          | 0         |
-        | Jun/Current Academic Year | 0            | 0          | 0         |
-        | Jul/Current Academic Year | 0            | 0          | 0         |
+        | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+        | Aug/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Sep/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Oct/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Nov/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Dec/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Jan/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Feb/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Mar/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Apr/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | May/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Jun/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Jul/Current Academic Year | 0            | 0          | 0         | pe-1                     |
 
 	And no provider payments will be recorded
 
