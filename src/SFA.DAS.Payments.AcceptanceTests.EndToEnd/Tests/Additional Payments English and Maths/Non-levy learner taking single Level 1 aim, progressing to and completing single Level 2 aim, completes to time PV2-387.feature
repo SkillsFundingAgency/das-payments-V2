@@ -1,4 +1,4 @@
-﻿@supports_dc_e2e
+﻿#@supports_dc_e2e
 @ignore
 # failing due to incorrect handling of maths and english contract types
 Feature: Non-levy learner, taking single Level 1 aim, progressing to and completing single Level 2 aim, completes to time PV2-387
