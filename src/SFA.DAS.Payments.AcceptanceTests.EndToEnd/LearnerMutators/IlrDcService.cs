@@ -81,6 +81,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private List<EmploymentStatusMonitoring> CreateLearnerEmploymentStatusMonitoringFromTraining(Training previousIlr, Training currentIlr)
         {
+            if (previousIlr.EmploymentStatusApplies == null)
+            {
+                return null;
+            }
+
             var employmentStatusMonitoringList = new List<EmploymentStatusMonitoring>();
             if (!string.IsNullOrWhiteSpace(previousIlr?.Employer) || !string.IsNullOrWhiteSpace(previousIlr?.SmallEmployer))
             {
