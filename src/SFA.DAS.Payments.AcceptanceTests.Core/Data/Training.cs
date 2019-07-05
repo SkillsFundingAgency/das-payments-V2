@@ -39,6 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string SmallEmployer { get; set; }
         public int? EefCode { get; set; }
         public string PostcodePrior { get; set; }
+        public string OriginalStartDate { get; set; }
         public string EmploymentStatus { get; set; }
         public string EmploymentStatusApplies { get; set; }
         public string Employer { get; set; }
