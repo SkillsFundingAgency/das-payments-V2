@@ -1,4 +1,5 @@
-﻿Feature: Non-levy Learner over funding band cap - PV2-529
+﻿@supports_dc_e2e
+Feature: Non-levy Learner over funding band cap - PV2-529
 	As a provider,
 	I want a Non-levy learner, where the negotiated total price for the learner is more than the maximum allowed for that funding band
 	So that I am only paid up to the maximum cap within that funding band by SFA
@@ -41,27 +42,30 @@
 #Feature: Payment for a non-DAS learner with a negotiated price above the funding band cap
 Scenario Outline: Capping - Payment for Non-Levy learner with a negotiated price above funding cap PV2-529
     Given the provider is providing training for the following learners
-		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage |
-		| 06/Aug/Current Academic Year | 12 months        | 18000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |
+		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+		| 06/Aug/Current Academic Year | 12 months        | 18000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	# New capping section
 	And the following capping will apply to the price episodes
         | negotiated price | funding cap | previous funding paid | price above cap | effective price for SFA payments |
         | 18000            | 15000       | 0                     | 3000            | 15000                            |
+	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
+		| pe-1             | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act2          |
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 1000         | 0          | 0         |
-        | Sep/Current Academic Year | 1000         | 0          | 0         |
-        | Oct/Current Academic Year | 1000         | 0          | 0         |
-        | Nov/Current Academic Year | 1000         | 0          | 0         |
-        | Dec/Current Academic Year | 1000         | 0          | 0         |
-        | Jan/Current Academic Year | 1000         | 0          | 0         |
-        | Feb/Current Academic Year | 1000         | 0          | 0         |
-        | Mar/Current Academic Year | 1000         | 0          | 0         |
-        | Apr/Current Academic Year | 1000         | 0          | 0         |
-        | May/Current Academic Year | 1000         | 0          | 0         |
-        | Jun/Current Academic Year | 1000         | 0          | 0         |
-        | Jul/Current Academic Year | 1000         | 0          | 0         |
+		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+		| Aug/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Oct/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Nov/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Dec/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
     And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
 		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
