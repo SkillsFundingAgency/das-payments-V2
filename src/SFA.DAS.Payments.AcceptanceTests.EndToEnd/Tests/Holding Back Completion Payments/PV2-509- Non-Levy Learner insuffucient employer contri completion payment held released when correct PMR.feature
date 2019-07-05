@@ -1,4 +1,5 @@
-﻿Feature:  Holding Back Completion Payments - PV2-509
+﻿@supports_dc_e2e
+Feature:  Holding Back Completion Payments - PV2-509
 	As a provider,
 	I want a Non levy learner, where the planned end date is the last day of month and the employer has paid their 10% co-investment for the on-program element for the first 12 months, but has not yet paid the employer completion payment element and the 13th month on program payment
 	So that I am accurately paid the completion payment by SFA
@@ -6,8 +7,8 @@
 Scenario: Non-Levy Learner,completion payment held back due to insufficient employer contribution - payment is released when sufficient contribution evidenced - PV2-509
 
 	Given the provider previously submitted the following learner details in collection period "R11/Current Academic Year"
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage | Employer Contribution |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         | 719                   |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage | Employer Contribution |
+		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           |                        |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         | 719                   |
 	
 	And the following earnings had been generated for the learner
 		| Delivery Period           | On-Programme | Completion | Balancing |
@@ -54,12 +55,12 @@ Scenario: Non-Levy Learner,completion payment held back due to insufficient empl
         | R11/Current Academic Year | May/Current Academic Year | 540                    | 60                          | Learning         |
 
 	And the following aims
-		| Aim Reference | Start Date                | Planned Duration | Actual Duration | Completion Status | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      |
-		| ZPROG001      | 01/Jun/Last Academic Year | 12 months        | 12 months       | completed         | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract |
+		| Aim Reference | Start Date                | Planned Duration | Actual Duration | Completion Status | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                               |
+		| ZPROG001      | 01/Jun/Last Academic Year | 12 months        | 12 months       | completed         | 1                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) |
 
 	And price details as follows		
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage | Employer Contribution |
-        | pe-1             | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | Act2          | 1                   | 90%                         | 720                   |
+        | pe-1             | 9000                 | 01/Jun/Last Academic Year           |                        |                                       | Act2          | 1                   | 90%                         | 720                   |
 
 	When the amended ILR file is re-submitted for the learners in collection period R12/Current Academic Year
 
