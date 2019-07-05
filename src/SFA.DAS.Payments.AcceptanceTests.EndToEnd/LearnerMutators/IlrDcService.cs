@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             this.dataContext = dataContext;
         }
 
-        public async Task PublishLearnerRequest(List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> clearCache)
+        public async Task PublishLearnerRequest(List<Training> previousIlr, List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> clearCache)
         {
             var collectionYear = collectionPeriodText.ToDate().Year;
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build().Period;
@@ -59,7 +59,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 learners.AddRange(currentIlr.DistinctBy(ilr => ilr.LearnerId).Select(dist => new Learner()
                 {
                     Ukprn = dist.Ukprn, Uln = dist.Uln, LearnerIdentifier = dist.LearnerId,
-                    PostcodePrior = dist.PostcodePrior, SmallEmployer = dist.SmallEmployer, EefCode = dist.EefCode
+                    PostcodePrior = dist.PostcodePrior, EefCode = dist.EefCode,
+                    EmploymentStatusMonitoring = CreateLearnerEmploymentStatusMonitoringFromTraining(previousIlr.Single(p=>p.LearnerId == dist.LearnerId), dist)
                 }));
 
                 foreach (var learner in learners)
@@ -78,6 +79,35 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             await clearCache();
 
             await StoreAndPublishIlrFile((int)testSession.Provider.Ukprn, ilrFileName: ilrFile.Key, ilrFile: ilrFile.Value, collectionYear: collectionYear, collectionPeriod: collectionPeriod);
+        }
+
+        private List<EmploymentStatusMonitoring> CreateLearnerEmploymentStatusMonitoringFromTraining(Training previousIlr, Training currentIlr)
+        {
+            var employmentStatusMonitoringList = new List<EmploymentStatusMonitoring>()
+            {
+                new EmploymentStatusMonitoring()
+                    {
+                        LearnerId = previousIlr.LearnerId,
+                        EmploymentStatusApplies = previousIlr.EmploymentStatusApplies,
+                        EmploymentStatus = previousIlr.EmploymentStatus,
+                        Employer = previousIlr.Employer,
+                        SmallEmployer = previousIlr.SmallEmployer
+                    }
+            };
+
+            if (previousIlr.EmploymentStatusApplies != currentIlr.EmploymentStatusApplies)
+            {
+                employmentStatusMonitoringList.Add(new EmploymentStatusMonitoring()
+                {
+                    LearnerId = currentIlr.LearnerId,
+                    EmploymentStatusApplies = currentIlr.EmploymentStatusApplies,
+                    EmploymentStatus = currentIlr.EmploymentStatus,
+                    Employer = currentIlr.Employer,
+                    SmallEmployer = currentIlr.SmallEmployer
+                });
+            }
+
+            return employmentStatusMonitoringList;
         }
 
         private void CreateAimsForIlrLearner(Learner learner, Training currentIlr)
