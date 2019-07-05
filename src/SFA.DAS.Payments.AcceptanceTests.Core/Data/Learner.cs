@@ -18,6 +18,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public int? EefCode { get; set; }
         public string PostcodePrior { get; set; }
 
+        public List<EmploymentStatusMonitoring> EmploymentStatusMonitoring { get; set; } = new List<EmploymentStatusMonitoring>();
+
         public override string ToString()
         {
             return $"Learn Ref Number: [ {LearnRefNumber} ]\tUln: [ {Uln} ]\t\tLearner Identifier: [ {LearnerIdentifier} ]";

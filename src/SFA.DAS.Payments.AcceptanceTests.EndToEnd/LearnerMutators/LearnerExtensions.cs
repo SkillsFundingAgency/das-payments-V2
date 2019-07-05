@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using DCT.TestDataGenerator;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -36,5 +37,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 int.Parse((100 - int.Parse(sfaContributionPercentage.Split('%')[0])).ToString());
         }
 
+        public static int ToEmpStatCode(this string employmentStatus)
+        {
+            switch (employmentStatus)
+            {
+                case "in paid employment":
+                    return (int) EmploymentStatus.PaidEmployment;
+                default:
+                    throw new ArgumentException("A valid employment status is required.", nameof(employmentStatus));
+            }
+        }
+
+        public static int ToEmployerAccountId(this string employer)
+        {
+            switch (employer)
+            {
+                case "employer 2":
+                    return 913703206;
+                default:
+                    return 154549452;
+            }
+        }
     }
 }

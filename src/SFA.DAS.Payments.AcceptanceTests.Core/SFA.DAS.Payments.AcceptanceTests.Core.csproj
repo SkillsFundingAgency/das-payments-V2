@@ -388,6 +388,7 @@
     <Compile Include="BindingsBase.cs" />
     <Compile Include="Data\Configurations\ProviderModelConfiguration.cs" />
     <Compile Include="Data\Employer.cs" />
+    <Compile Include="Data\EmploymentStatusMonitoring.cs" />
     <Compile Include="Data\EnumHelper.cs" />
     <Compile Include="Data\Aim.cs" />
     <Compile Include="Data\CompletionStatus.cs" />

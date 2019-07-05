@@ -101,8 +101,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             messageLearner.LearningDelivery = learnerLearningDeliveries.ToArray();
 
-            messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp =
-                messageLearner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
+            SetLearnerEmploymentStatus(messageLearner, learner);
 
             AddSmallEmployerInfo(messageLearner, learner);
 
@@ -112,12 +111,61 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             MutateHigherEducation(messageLearner);
         }
 
-        private static void AddSmallEmployerInfo(MessageLearner learner, Learner learnerRequest)
+        private void SetLearnerEmploymentStatus(MessageLearner messageLearner, Learner learner)
         {
-            if (learnerRequest.SmallEmployer != "SEM1") 
+            if (learner.EmploymentStatusMonitoring.Count == 0)
+            {
+                messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp =
+                    messageLearner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
+            }
+            else
+            {
+                var learnerEmploymentStatuses = messageLearner.LearnerEmploymentStatus.ToList();
+                for (int i = 0; i < learner.EmploymentStatusMonitoring.Count; i++)
+                {
+                    var esm = learner.EmploymentStatusMonitoring[i];
+                    var les = learnerEmploymentStatuses.Skip(i).Take(1).SingleOrDefault();
+                    if (les == null)
+                    {
+                        les = new MessageLearnerLearnerEmploymentStatus
+                                   {
+                                       EmpId = esm.Employer.ToEmployerAccountId(),
+                                       EmpIdSpecified = true,
+                                       EmpStatSpecified = true,
+                                       DateEmpStatAppSpecified = true,
+                                       EmploymentStatusMonitoring = new[]
+                                                                    {
+                                                                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring
+                                                                        {
+                                                                            ESMType = EmploymentStatusMonitoringType.EII.ToString(),
+                                                                            ESMCode = (int) EmploymentStatusMonitoringCode.EmploymentIntensity30Hours,
+                                                                            ESMCodeSpecified = true
+                                                                        },
+                                                                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring
+                                                                        {
+                                                                            ESMType = EmploymentStatusMonitoringType.LOE.ToString(),
+                                                                            ESMCode = (int)EmploymentStatusMonitoringCode.Employed12Plus,
+                                                                            ESMCodeSpecified = true
+                                                                        }
+                                                                    }
+                                   };
+                        learnerEmploymentStatuses.Add(les);
+                    }
+
+                    les.EmpStat = esm.EmploymentStatus.ToEmpStatCode();
+                    les.DateEmpStatApp = esm.EmploymentStatusApplies.ToDate();
+                }
+
+                messageLearner.LearnerEmploymentStatus = learnerEmploymentStatuses.ToArray();
+            }
+        }
+
+        private static void AddSmallEmployerInfo(MessageLearner messageLearner, Learner learner)
+        {
+            if (learner.SmallEmployer != "SEM1") 
                 return;
 
-            var learnerEmploymentStatus = learner.LearnerEmploymentStatus[0];
+            var learnerEmploymentStatus = messageLearner.LearnerEmploymentStatus[0];
             var statusMonitorings = learnerEmploymentStatus.EmploymentStatusMonitoring.ToList();
 
             statusMonitorings.Add(new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring
@@ -127,12 +175,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 ESMCodeSpecified = true
             });
 
-            learner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = statusMonitorings.ToArray();
+            messageLearner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = statusMonitorings.ToArray();
 
-            if (learnerRequest.EefCode.HasValue)
+            if (learner.EefCode.HasValue)
             {
-                var eefCode = (LearnDelFAMCode) learnerRequest.EefCode.Value;
-                DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(learner, LearnDelFAMType.EEF, eefCode);
+                var eefCode = (LearnDelFAMCode) learner.EefCode.Value;
+                DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(messageLearner, LearnDelFAMType.EEF, eefCode);
             }
         }
 
@@ -464,6 +512,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var appFinRecords = delivery.AppFinRecord?.ToList() ?? new List<MessageLearnerLearningDeliveryAppFinRecord>();
 
             AddNewTnpAppFinRecordForTrainingPrice(appFinRecords, priceEpisode);
+            AddNewTnpAppFinRecordForResidualTrainingPrice(appFinRecords, priceEpisode);
 
             if (aim.ProgrammeType == StandardProgrammeType)
             {
@@ -477,6 +526,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
 
             delivery.AppFinRecord = appFinRecords.ToArray();
+        }
+
+        private void AddNewTnpAppFinRecordForResidualTrainingPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
+        {
+            var tnp = appFinRecords.SingleOrDefault(a => a.AFinType == LearnDelAppFinType.TNP.ToString() && a.AFinCode == (int)LearnDelAppFinCode.ResidualTrainingPrice);
+
+            if (tnp == null)
+            {
+                tnp = new MessageLearnerLearningDeliveryAppFinRecord()
+                      {
+                          AFinType = LearnDelAppFinType.TNP.ToString(),
+                          AFinCode = (int)LearnDelAppFinCode.ResidualTrainingPrice,
+                          AFinCodeSpecified = true
+                      };
+                appFinRecords.Add(tnp);
+            }
+
+            tnp.AFinAmount = Convert.ToInt32(priceEpisode.ResidualTrainingPrice);
+            tnp.AFinAmountSpecified = true;
+
+            if (!string.IsNullOrWhiteSpace(priceEpisode.ResidualTrainingPriceEffectiveDate))
+            {
+                tnp.AFinDate = priceEpisode.ResidualTrainingPriceEffectiveDate.ToDate();
+                tnp.AFinDateSpecified = true;
+            }
         }
 
         private void AddNewPmrAppFinRecord(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
