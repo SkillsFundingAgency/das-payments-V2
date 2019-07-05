@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
@@ -17,12 +18,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IDataLockFailureRepository dataLockFailureRepository;
         private readonly IDataLockStatusService dataLockStatusService;
         private readonly IMapper mapper;
+        private readonly IPaymentLogger paymentLogger;
 
-        public DataLockEventProcessor(IDataLockFailureRepository dataLockFailureRepository, IDataLockStatusService dataLockStatusService, IMapper mapper)
+        public DataLockEventProcessor(IDataLockFailureRepository dataLockFailureRepository, IDataLockStatusService dataLockStatusService, IMapper mapper, IPaymentLogger paymentLogger)
         {
             this.dataLockFailureRepository = dataLockFailureRepository;
             this.dataLockStatusService = dataLockStatusService;
             this.mapper = mapper;
+            this.paymentLogger = paymentLogger;
         }
 
         public async Task<List<DataLockStatusChanged>> ProcessDataLockEvent(DataLockEvent dataLockEvent)
@@ -99,6 +102,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
 
             await dataLockFailureRepository.ReplaceFailures(failuresToDelete, failuresToRecord).ConfigureAwait(false);
+
+            paymentLogger.LogDebug($"Deleted {failuresToDelete.Count} old DL failures, created {failuresToRecord.Count} new for UKPRN {dataLockEvent.Ukprn} Learner Ref {dataLockEvent.Learner.ReferenceNumber} on R{dataLockEvent.CollectionPeriod.Period:00}");
 
             return result;
         }
