@@ -4,26 +4,31 @@ using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class OnProgrammePeriodsValidationProcessor : IOnProgrammePeriodsValidationProcessor
+    public class EarningPeriodsValidationProcessor : IEarningPeriodsValidationProcessor
     {
         private readonly ICourseValidationProcessor courseValidationProcessor;
 
-        public OnProgrammePeriodsValidationProcessor(ICourseValidationProcessor courseValidationProcessor)
+        public EarningPeriodsValidationProcessor(ICourseValidationProcessor courseValidationProcessor)
         {
             this.courseValidationProcessor = courseValidationProcessor ?? throw new ArgumentNullException(nameof(courseValidationProcessor));
         }
 
-        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long uln,
-            List<PriceEpisode> priceEpisodes, OnProgrammeEarning onProgrammeEarning,
-            List<ApprenticeshipModel> apprenticeships, LearningAim aim, int academicYear)
+        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(
+            long uln,
+            List<PriceEpisode> priceEpisodes,
+            List<EarningPeriod> periods,
+            TransactionType transactionType,
+            List<ApprenticeshipModel> apprenticeships,
+            LearningAim aim,
+            int academicYear)
         {
             var validPeriods = new List<EarningPeriod>();
             var invalidPeriods = new List<EarningPeriod>();
-            foreach (var period in onProgrammeEarning.Periods)
+
+            foreach (var period in periods)
             {
                 if (period.Amount == decimal.Zero)
                 {
@@ -38,8 +43,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                         EarningPeriod = period,
                         Apprenticeship = apprenticeship,
                         PriceEpisode = priceEpisodes.SingleOrDefault(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
-                                       ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {onProgrammeEarning.Type:G}, period: {period.Period}"),
-                        TransactionType = onProgrammeEarning.Type,
+                                       ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {transactionType:G}, period: {period.Period}"),
+                        TransactionType = transactionType,
                         Aim = aim,
                         AcademicYear = academicYear
                     };
