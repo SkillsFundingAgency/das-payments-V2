@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisode { get; protected set; }
         public virtual DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; protected set; }
         public virtual DbSet<ApprenticeshipDuplicateModel> ApprenticeshipDuplicate { get; protected set; }
+        public virtual DbSet<ProviderAdjustmentModel> ProviderAdjustments { get; protected set; }
 
         public PaymentsDataContext(string connectionString)
         {

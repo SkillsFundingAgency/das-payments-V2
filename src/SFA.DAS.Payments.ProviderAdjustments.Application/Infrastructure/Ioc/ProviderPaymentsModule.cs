@@ -5,7 +5,7 @@ using SFA.DAS.Payments.ProviderAdjustments.Domain;
 
 namespace SFA.DAS.Payments.ProviderAdjustments.Application.Infrastructure.ioc
 {
-    public class DataLockModule : Module
+    public class ProviderPaymentsModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
