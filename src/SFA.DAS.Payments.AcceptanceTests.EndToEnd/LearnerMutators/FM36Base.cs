@@ -483,8 +483,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             {
                 new MessageLearnerLearningDeliveryAppFinRecord()
                 {
-                    AFinAmount = CalculateEmployerContribution(priceEpisode.SfaContributionPercentage,
-                    priceEpisode.TotalTrainingPrice),
+                    AFinAmount = priceEpisode.Pmr ?? CalculateEmployerContribution(priceEpisode.SfaContributionPercentage,
+                                     priceEpisode.TotalTrainingPrice),
                     AFinAmountSpecified = true,
                     AFinType = LearnDelAppFinType.PMR.ToString(),
                     AFinCode = (int)LearnDelAppFinCode.TrainingPayment,
