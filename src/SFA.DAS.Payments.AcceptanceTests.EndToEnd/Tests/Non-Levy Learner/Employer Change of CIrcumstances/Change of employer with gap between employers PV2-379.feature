@@ -46,48 +46,48 @@ Scenario Outline: Non-levy learner changes employer and there is a gap - provide
 		| Jun/Current Academic Year | 500          | 0          | 0         | 90%                         | 1                   | pe-2                     |
 		| Jul/Current Academic Year | 500          | 0          | 0         | 90%                         | 1                   | pe-2                     |
 	And only the following payments will be calculated
-		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
-		| R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
-		| R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         |
-		| R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         |
-		| R06/Current Academic Year | Jan/Current Academic Year | 500          | 0          | 0         |
-		| R07/Current Academic Year | Feb/Current Academic Year | 500          | 0          | 0         |
-		| R08/Current Academic Year | Mar/Current Academic Year | 500          | 0          | 0         |
-		| R09/Current Academic Year | Apr/Current Academic Year | 500          | 0          | 0         |
-		| R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         |
-		| R12/Current Academic Year | Jul/Current Academic Year | 500          | 0          | 0         |
-	And only the following provider payments will be recorded
-		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         |
+		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+		| R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
+		| R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         | 2nd price details        |
+		| R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| R06/Current Academic Year | Jan/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| R07/Current Academic Year | Feb/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| R08/Current Academic Year | Mar/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| R09/Current Academic Year | Apr/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| R12/Current Academic Year | Jul/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+	And only the following provider payments will be recorded											 
+		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Employer    | Price Episode Identifier |
+		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         | employer 1  | 1st price details        |
+		| R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         | employer 1  | 1st price details        |
 		# 100%
-		| R03/Current Academic Year | Oct/Current Academic Year | 1000                   | 0                           | Learning         |
-		| R04/Current Academic Year | Nov/Current Academic Year | 450                    | 50                          | Learning         |
-		| R05/Current Academic Year | Dec/Current Academic Year | 450                    | 50                          | Learning         |
-		| R06/Current Academic Year | Jan/Current Academic Year | 450                    | 50                          | Learning         |
-		| R07/Current Academic Year | Feb/Current Academic Year | 450                    | 50                          | Learning         |
-		| R08/Current Academic Year | Mar/Current Academic Year | 450                    | 50                          | Learning         |
-		| R09/Current Academic Year | Apr/Current Academic Year | 450                    | 50                          | Learning         |
-		| R10/Current Academic Year | May/Current Academic Year | 450                    | 50                          | Learning         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         |
-		| R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | Learning         |
+		| R03/Current Academic Year | Oct/Current Academic Year | 1000                   | 0                           | Learning         | no employer | 2nd price details        |
+		| R04/Current Academic Year | Nov/Current Academic Year | 450                    | 50                          | Learning         | employer 2  | 2nd price details        |
+		| R05/Current Academic Year | Dec/Current Academic Year | 450                    | 50                          | Learning         | employer 2  | 2nd price details        |
+		| R06/Current Academic Year | Jan/Current Academic Year | 450                    | 50                          | Learning         | employer 2  | 2nd price details        |
+		| R07/Current Academic Year | Feb/Current Academic Year | 450                    | 50                          | Learning         | employer 2  | 2nd price details        |
+		| R08/Current Academic Year | Mar/Current Academic Year | 450                    | 50                          | Learning         | employer 2  | 2nd price details        |
+		| R09/Current Academic Year | Apr/Current Academic Year | 450                    | 50                          | Learning         | employer 2  | 2nd price details        |
+		| R10/Current Academic Year | May/Current Academic Year | 450                    | 50                          | Learning         | employer 2  | 2nd price details        |
+		| R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         | employer 2  | 2nd price details        |
+		| R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | Learning         | employer 2  | 2nd price details        |
 	And at month end only the following provider payments will be generated
-		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         |
-		| R03/Current Academic Year | Oct/Current Academic Year | 1000                   | 0                           | Learning         |
-		| R04/Current Academic Year | Nov/Current Academic Year | 450                    | 50                          | Learning         |
-		| R05/Current Academic Year | Dec/Current Academic Year | 450                    | 50                          | Learning         |
-		| R06/Current Academic Year | Jan/Current Academic Year | 450                    | 50                          | Learning         |
-		| R07/Current Academic Year | Feb/Current Academic Year | 450                    | 50                          | Learning         |
-		| R08/Current Academic Year | Mar/Current Academic Year | 450                    | 50                          | Learning         |
-		| R09/Current Academic Year | Apr/Current Academic Year | 450                    | 50                          | Learning         |
-		| R10/Current Academic Year | May/Current Academic Year | 450                    | 50                          | Learning         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         |
-		| R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | Learning         |
+		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Employer    |
+		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         | employer 1  |
+		| R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         | employer 1  |
+		| R03/Current Academic Year | Oct/Current Academic Year | 1000                   | 0                           | Learning         | no employer |
+		| R04/Current Academic Year | Nov/Current Academic Year | 450                    | 50                          | Learning         | employer 2  |
+		| R05/Current Academic Year | Dec/Current Academic Year | 450                    | 50                          | Learning         | employer 2  |
+		| R06/Current Academic Year | Jan/Current Academic Year | 450                    | 50                          | Learning         | employer 2  |
+		| R07/Current Academic Year | Feb/Current Academic Year | 450                    | 50                          | Learning         | employer 2  |
+		| R08/Current Academic Year | Mar/Current Academic Year | 450                    | 50                          | Learning         | employer 2  |
+		| R09/Current Academic Year | Apr/Current Academic Year | 450                    | 50                          | Learning         | employer 2  |
+		| R10/Current Academic Year | May/Current Academic Year | 450                    | 50                          | Learning         | employer 2  |
+		| R11/Current Academic Year | Jun/Current Academic Year | 450                    | 50                          | Learning         | employer 2  |
+		| R12/Current Academic Year | Jul/Current Academic Year | 450                    | 50                          | Learning         | employer 2  |
 	Examples:
 		| Collection_Period         |
 		| R01/Current Academic Year |
