@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -94,11 +90,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         });
                     }
 
-                    earningFailedDataLockEvent.OnProgrammeEarnings.Add(new OnProgrammeEarning
+                    if (EnumHelper.IsOnProgType(earningPerTransactionTypes.Key))
                     {
-                        Type = (OnProgrammeEarningType)earningPerTransactionTypes.Key,
-                        Periods = earningPeriods.AsReadOnly()
-                    });
+                        earningFailedDataLockEvent.OnProgrammeEarnings.Add(new OnProgrammeEarning
+                        {
+                            Type = (OnProgrammeEarningType)earningPerTransactionTypes.Key,
+                            Periods = earningPeriods.AsReadOnly()
+                        });
+                    }
+
+                    if (EnumHelper.IsIncentiveType(earningPerTransactionTypes.Key, true))
+                    {
+                        earningFailedDataLockEvent.IncentiveEarnings.Add(new IncentiveEarning
+                        {
+                            Type = (IncentiveEarningType) earningPerTransactionTypes.Key,
+                            Periods = earningPeriods.AsReadOnly()
+                        });
+                    }
+
                 }
 
                 earningFailedDataLockEvents.Add(earningFailedDataLockEvent);
@@ -118,23 +127,47 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedEvent.LearningAim.FrameworkCode != actualEvent.LearningAim.FrameworkCode)
                 return false;
 
-            if (!MatchOnProgrammeEarnings(expectedEvent as DataLockEvent, actualEvent as DataLockEvent))
+            if (!MatchOnProgrammeEarnings(expectedEvent.OnProgrammeEarnings, actualEvent.OnProgrammeEarnings))
+                return false;
+
+            if (!MatchIncentiveEarnings(expectedEvent.IncentiveEarnings, actualEvent.IncentiveEarnings))
                 return false;
 
             return true;
         }
 
-        private bool MatchOnProgrammeEarnings(DataLockEvent expectedEvent, DataLockEvent actualEvent)
+        private bool MatchOnProgrammeEarnings(List<OnProgrammeEarning> expectedEvent, List<OnProgrammeEarning> actualEvent)
         {
             if (expectedEvent == null)
                 return true;
 
-            var expectedEventOnProgrammeEarnings = expectedEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
-            var actualEventOnProgrammeEarnings = actualEvent.OnProgrammeEarnings ?? new List<OnProgrammeEarning>();
+            var expectedEventOnProgrammeEarnings = expectedEvent;
+            var actualEventOnProgrammeEarnings = actualEvent ?? new List<OnProgrammeEarning>();
 
             foreach (var expectedEarning in expectedEventOnProgrammeEarnings)
             {
                 var actualEarning = actualEventOnProgrammeEarnings.FirstOrDefault(a => a.Type == expectedEarning.Type);
+                if (actualEarning == null)
+                    return false;
+
+                if (!MatchEarningPeriods(actualEarning.Periods, expectedEarning.Periods))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool MatchIncentiveEarnings(List<IncentiveEarning> expectedEvent, List<IncentiveEarning> actualEvent)
+        {
+            if (expectedEvent == null)
+                return true;
+
+            var expectedEventIncentiveEarnings = expectedEvent;
+            var actualEventIncentiveEarnings = actualEvent ?? new List<IncentiveEarning>();
+
+            foreach (var expectedEarning in expectedEventIncentiveEarnings)
+            {
+                var actualEarning = actualEventIncentiveEarnings.FirstOrDefault(a => a.Type == expectedEarning.Type);
                 if (actualEarning == null)
                     return false;
 
@@ -191,7 +224,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         !actualDataLockFailure.ApprenticeshipPriceEpisodeIds.Any())
                         return false;
                 }
-           }
+            }
 
             return true;
         }
