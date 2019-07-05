@@ -8,6 +8,7 @@ using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
@@ -209,6 +210,37 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             priceEpisode.TotalNegotiatedPrice3.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice3);
             priceEpisode.TotalNegotiatedPrice4.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice4);
 
+        }
+
+        [Test]
+        public void TestDataLockEventToDataLockStatusChangedEventMap()
+        {
+            var dataLockEvent = new PayableEarningEvent
+            {
+                Learner = new Learner { Uln = 1, ReferenceNumber = "2"},
+                LearningAim = new LearningAim{FrameworkCode = 3},
+                AgreementId = "4",
+                CollectionPeriod = new CollectionPeriod{AcademicYear = 1, Period = 2},
+                EventId = Guid.NewGuid()                
+            };
+
+            var changedToFailEvent = new DataLockStatusChangedToFailed
+            {
+                TransactionTypesAndPeriods = new Dictionary<TransactionType, List<byte>> {{TransactionType.Balancing, new List<byte> {1, 2}}},
+                EventId = Guid.NewGuid()
+            };
+
+            Mapper.Map(dataLockEvent, changedToFailEvent);
+
+            changedToFailEvent.Learner.Should().NotBeNull();
+            changedToFailEvent.Learner.Uln.Should().Be(1);
+            changedToFailEvent.LearningAim.Should().NotBeNull();
+            changedToFailEvent.LearningAim.FrameworkCode.Should().Be(3);
+            changedToFailEvent.CollectionPeriod.Should().NotBeNull();
+            changedToFailEvent.CollectionPeriod.AcademicYear.Should().Be(1);
+            changedToFailEvent.EventId.Should().Be(changedToFailEvent.EventId);
+            changedToFailEvent.TransactionTypesAndPeriods.Should().NotBeNull();
+            changedToFailEvent.TransactionTypesAndPeriods.Should().NotBeEmpty();
         }
 
         private static Array GetIncentives()

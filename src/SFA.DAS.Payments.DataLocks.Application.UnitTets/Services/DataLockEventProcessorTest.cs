@@ -2,10 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
+using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
@@ -24,13 +26,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         private Mock<IDataLockFailureRepository> repositoryMock;
         private Mock<IDataLockStatusService> dataLockStatusServiceMock;
         private IDataLockEventProcessor processor;
+        private IMapper mapper;
 
         [SetUp]
         public void SetUp()
         {
+            mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<DataLocksProfile>()));
             repositoryMock = new Mock<IDataLockFailureRepository>(MockBehavior.Strict);
-            dataLockStatusServiceMock = new Mock<IDataLockStatusService>(MockBehavior.Strict);
-            processor = new DataLockEventProcessor(repositoryMock.Object, dataLockStatusServiceMock.Object);
+            dataLockStatusServiceMock = new Mock<IDataLockStatusService>(MockBehavior.Strict);            
+            processor = new DataLockEventProcessor(repositoryMock.Object, dataLockStatusServiceMock.Object, mapper);
         }
 
         [TearDown]
@@ -161,7 +165,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
 
             repositoryMock.Setup(r => r.GetFailures(1, "2", 4, 7, 8, 5, "6", 1819)).ReturnsAsync(dbFailures).Verifiable();
-            // TT1
+            // TT2
             // P1
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, dataLockEvent.OnProgrammeEarnings[0].Periods[0].DataLockFailures)).Returns(DataLockStatusChange.ChangedToFailed).Verifiable();
             // P2
@@ -198,38 +202,38 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             changedToFail.Should().NotBeNull();
 
             changedToFail.TransactionTypesAndPeriods.Should().HaveCount(2);
-            changedToFail.TransactionTypesAndPeriods.Should().ContainKey(2);
-            changedToFail.TransactionTypesAndPeriods[2].Should().HaveCount(1);
-            changedToFail.TransactionTypesAndPeriods[2][0].Should().Be(1);
+            changedToFail.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.Completion);
+            changedToFail.TransactionTypesAndPeriods[TransactionType.Completion].Should().HaveCount(1);
+            changedToFail.TransactionTypesAndPeriods[TransactionType.Completion][0].Should().Be(1);
             
-            changedToFail.TransactionTypesAndPeriods.Should().ContainKey(16);
-            changedToFail.TransactionTypesAndPeriods[16].Should().HaveCount(1);
-            changedToFail.TransactionTypesAndPeriods[16][0].Should().Be(1);
+            changedToFail.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.CareLeaverApprenticePayment);
+            changedToFail.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment].Should().HaveCount(1);
+            changedToFail.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment][0].Should().Be(1);
 
 
             var changedToPass = statusChangedEvents.SingleOrDefault(e => e is DataLockStatusChangedToPassed);
             changedToPass.Should().NotBeNull();
 
             changedToPass.TransactionTypesAndPeriods.Should().HaveCount(2);
-            changedToPass.TransactionTypesAndPeriods.Should().ContainKey(3);
-            changedToPass.TransactionTypesAndPeriods[3].Should().HaveCount(1);
-            changedToPass.TransactionTypesAndPeriods[3][0].Should().Be(3);
+            changedToPass.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.Balancing);
+            changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing].Should().HaveCount(1);
+            changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing][0].Should().Be(3);
             
-            changedToPass.TransactionTypesAndPeriods.Should().ContainKey(10);
-            changedToPass.TransactionTypesAndPeriods[10].Should().HaveCount(1);
-            changedToPass.TransactionTypesAndPeriods[10][0].Should().Be(3);
+            changedToPass.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.Balancing16To18FrameworkUplift);
+            changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing16To18FrameworkUplift].Should().HaveCount(1);
+            changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing16To18FrameworkUplift][0].Should().Be(3);
 
             var changedCode = statusChangedEvents.SingleOrDefault(e => e is DataLockFailureChanged);
             changedCode.Should().NotBeNull();
 
             changedCode.TransactionTypesAndPeriods.Should().HaveCount(2);
-            changedCode.TransactionTypesAndPeriods.Should().ContainKey(2);
-            changedCode.TransactionTypesAndPeriods[2].Should().HaveCount(1);
-            changedCode.TransactionTypesAndPeriods[2][0].Should().Be(5);
+            changedCode.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.Completion);
+            changedCode.TransactionTypesAndPeriods[TransactionType.Completion].Should().HaveCount(1);
+            changedCode.TransactionTypesAndPeriods[TransactionType.Completion][0].Should().Be(5);
             
-            changedCode.TransactionTypesAndPeriods.Should().ContainKey(16);
-            changedCode.TransactionTypesAndPeriods[16].Should().HaveCount(1);
-            changedCode.TransactionTypesAndPeriods[16][0].Should().Be(5);
+            changedCode.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.CareLeaverApprenticePayment);
+            changedCode.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment].Should().HaveCount(1);
+            changedCode.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment][0].Should().Be(5);
         }
     }
 }
