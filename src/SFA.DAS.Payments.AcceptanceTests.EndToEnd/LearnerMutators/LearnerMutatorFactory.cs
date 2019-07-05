@@ -25,22 +25,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "335":
                 case "336":
                 case "337":
+                case "381":
                 case "387":
                 case "393":
+                case "394":
                 case "402":
                 case "427":
                 case "435":
                 case "437":
+                case "464":
                 case "485":
                 case "528":
                 case "438":
                 case "615":
                 case "529":
-                case "394":
                 case "436":
                 case "893":
-                case "381":
                 case "382":
+                case "499":
+                case "501":
+                case "509":
                 case "514":
                     return new Framework593Learner(learners, featureNumber);
                 case "326":
@@ -51,12 +55,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "351":
                 case "487":
                     return new Framework403Learner(learners, featureNumber);
-                case "443":
                 case "445":
                 case "444":
                 case "446":
                 case "205":
                 case "207":
+                case "443":
+                case "526":
                     return new StandardLearner(learners, featureNumber);
                 case "324":
                 case "325":
