@@ -6,7 +6,12 @@ using SFA.DAS.Payments.ProviderAdjustments.Domain;
 
 namespace SFA.DAS.Payments.ProviderAdjustments.Application
 {
-    public class ProviderAdjustmentsProcessor
+    public interface IProviderAdjustmentsProcessor
+    {
+        Task ProcessEasAtMonthEnd(int academicYear, int collectionPeriod);
+    }
+
+    public class ProviderAdjustmentsProcessor : IProviderAdjustmentsProcessor
     {
         private readonly IProviderAdjustmentRepository repository;
         private readonly IPaymentLogger logger;
