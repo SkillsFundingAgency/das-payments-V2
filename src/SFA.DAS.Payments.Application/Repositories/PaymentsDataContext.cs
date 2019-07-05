@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; protected set; }
         public virtual DbSet<ApprenticeshipDuplicateModel> ApprenticeshipDuplicate { get; protected set; }
         public virtual DbSet<DataLockFailureModel> DataLockFailure { get; protected set; }
+        public virtual DbSet<EmployerProviderPriorityModel> EmployerProviderPriority { get; protected set; }
 
         public PaymentsDataContext(string connectionString)
         {
@@ -32,6 +33,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new SubmittedLearnerAimModelConfiguration());
             modelBuilder.ApplyConfiguration(new ApprenticeshipDuplicateModelConfiguration());
             modelBuilder.ApplyConfiguration(new DataLockFailureModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EmployerProviderPriorityModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

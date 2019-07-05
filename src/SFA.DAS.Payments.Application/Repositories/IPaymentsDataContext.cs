@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; }
         DbSet<ApprenticeshipDuplicateModel> ApprenticeshipDuplicate { get; }
         DbSet<DataLockFailureModel> DataLockFailure { get; }
+        DbSet<EmployerProviderPriorityModel> EmployerProviderPriority { get; }
         DatabaseFacade Database { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         int SaveChanges();

@@ -24,7 +24,6 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure.Ioc
                 .As<IBatchScope>();
             builder.RegisterType<BatchScopeFactory>()
                 .As<IBatchScopeFactory>();
-            
         }
     }
 }
