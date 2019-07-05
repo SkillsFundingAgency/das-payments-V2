@@ -252,7 +252,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
                 MutateCompletionStatusForLearner(otherLearningDelivery, (int)otherAim.CompletionStatus, actualEndDate);
 
-                MutateLearningDeliveryFamsForLearner(otherLearningDelivery, otherAim);
+   //             MutateLearningDeliveryFamsForLearner(otherLearningDelivery, otherAim);
 
                 SetCourseCodes(otherAim, otherLearningDelivery);
             }
@@ -347,9 +347,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 listOfLearningDeliveryFams = new List<MessageLearnerLearningDeliveryLearningDeliveryFAM>();
             }
 
+            MutatePriceEpisodeForFam(delivery, listOfLearningDeliveryFams, aim);
             foreach (var priceEpisode in aim.PriceEpisodes)
             {
-                MutatePriceEpisodeForFam(delivery, listOfLearningDeliveryFams, priceEpisode, aim);
+                MutateMainAim(delivery, aim, priceEpisode);
             }
 
             delivery.LearningDeliveryFAM = listOfLearningDeliveryFams.ToArray();
@@ -465,22 +466,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             appFinRecord.AFinDateSpecified = true;
         }
 
-        private void MutatePriceEpisodeForFam(MessageLearnerLearningDelivery delivery, List<MessageLearnerLearningDeliveryLearningDeliveryFAM> listOfLearningDeliveryFams, Price priceEpisode, Aim aim)
+        private void MutatePriceEpisodeForFam(MessageLearnerLearningDelivery delivery, List<MessageLearnerLearningDeliveryLearningDeliveryFAM> listOfLearningDeliveryFams, Aim aim)
         {
             listOfLearningDeliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
             {
                 LearnDelFAMType = LearnDelFAMType.ACT.ToString(),
-                LearnDelFAMCode = ((int)priceEpisode.ContractType).ToString(),
+                LearnDelFAMCode = ((int)aim.ContractType).ToString(),
                 LearnDelFAMDateFrom = delivery.LearnStartDate,
                 LearnDelFAMDateFromSpecified = true,
                 LearnDelFAMDateTo = delivery.LearnActEndDate,
                 LearnDelFAMDateToSpecified = aim.ActualDurationAsTimespan.HasValue,
             });
-
-            if (aim.IsMainAim)
-            {
-                MutateMainAim(delivery, aim, priceEpisode);
-            }
         }
 
         private void MutateDeliveryAppFinRecordToPmr(MessageLearnerLearningDelivery delivery, Price priceEpisode)
