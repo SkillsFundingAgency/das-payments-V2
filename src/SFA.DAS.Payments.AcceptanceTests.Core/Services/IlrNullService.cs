@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
     public class IlrNullService : IIlrService
     {
-        public async Task PublishLearnerRequest(List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> clearCache) => await clearCache();
+        public async Task PublishLearnerRequest(List<Training> previousIlr, List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> clearCache) => await clearCache();
     }
 }

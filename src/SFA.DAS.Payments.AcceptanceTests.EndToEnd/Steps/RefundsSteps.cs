@@ -117,7 +117,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
             Task ClearCache() => HandleIlrReSubmissionForTheLearners(collectionPeriodText, TestSession.Provider);
-            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, TestSession.Learners, collectionPeriodText, featureNumber.Extract(), ClearCache);
+            await Scope.Resolve<IIlrService>().PublishLearnerRequest(PreviousIlr, CurrentIlr, TestSession.Learners, collectionPeriodText, featureNumber.Extract(), ClearCache);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]
