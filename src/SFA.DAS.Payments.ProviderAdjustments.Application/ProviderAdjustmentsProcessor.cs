@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
         private readonly IProviderAdjustmentRepository repository;
         private readonly IPaymentLogger logger;
         private readonly IProviderAdjustmentsCalculator calculator;
-
+        
         public ProviderAdjustmentsProcessor(
             IProviderAdjustmentRepository repository, 
             IPaymentLogger logger,

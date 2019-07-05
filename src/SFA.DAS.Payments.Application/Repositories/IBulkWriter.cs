@@ -12,8 +12,9 @@ namespace SFA.DAS.Payments.Application.Repositories
 {
     public interface IBulkWriter<TEntity> where TEntity : class
     {
-        Task Write(TEntity entity, CancellationToken cancellationToken);
-        Task Flush(CancellationToken cancellationToken);
+        Task Write(TEntity entity, CancellationToken cancellationToken = default);
+        Task Write(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+        Task Flush(CancellationToken cancellationToken = default);
     }
 
     public class BulkWriter<TEntity> : IBulkWriter<TEntity> where TEntity : class
@@ -32,7 +33,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             connectionString = configurationHelper.GetConnectionString("PaymentsConnectionString");
         }
 
-        public async Task Write(TEntity entity, CancellationToken cancellationToken)
+        public async Task Write(TEntity entity, CancellationToken cancellationToken = default)
         {
             queue.Enqueue(entity);
 
@@ -42,7 +43,18 @@ namespace SFA.DAS.Payments.Application.Repositories
             await Flush(cancellationToken);
         }
 
-        public async Task Flush(CancellationToken cancellationToken)
+        public async Task Write(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        {
+            var tasks = new List<Task>();
+            foreach (var entity in entities)
+            {
+                tasks.Add(Write(entity, cancellationToken));
+            }
+
+            await Task.WhenAll(tasks);
+        }
+
+        public async Task Flush(CancellationToken cancellationToken = default)
         {
             logger.LogVerbose($"Saving {queue.Count} records of type {typeof(TEntity).Name}");
 

@@ -20,6 +20,19 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
         private readonly HttpClient client;
         private readonly IPaymentsDataContext dataContext;
         private readonly IMapper mapper;
+        private readonly IBulkWriter<ProviderAdjustment> bulkWriter;
+
+        public ProviderAdjustmentRepository(
+            IBulkWriter<ProviderAdjustment> bulkWriter, 
+            IPaymentsDataContext dataContext, 
+            HttpClient client, 
+            IMapper mapper)
+        {
+            this.bulkWriter = bulkWriter;
+            this.dataContext = dataContext;
+            this.client = client;
+            this.mapper = mapper;
+        }
 
         public async Task<List<ProviderAdjustment>> GetCurrentProviderAdjustments()
         {
@@ -34,9 +47,10 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
             return results;
         }
 
-        public Task AddProviderAdjustments(List<ProviderAdjustment> payments)
+        public async Task AddProviderAdjustments(List<ProviderAdjustment> payments)
         {
-            throw new System.NotImplementedException();
+            await bulkWriter.Write(payments);
+            await bulkWriter.Flush().ConfigureAwait(false);
         }
     }
 }
