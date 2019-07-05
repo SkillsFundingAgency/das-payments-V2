@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             SetLearnerEmploymentStatus(messageLearner, learner);
 
-            AddSmallEmployerInfo(messageLearner, learner);
+            AddEefCode(messageLearner, learner);
 
             messageLearner.ULN = learner.Uln;
             messageLearner.ULNSpecified = true;
@@ -162,11 +162,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         }
 
         private MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring[]
-            CreateEmploymentStatusMonitoringRecords(EmploymentStatusMonitoring esm)
+             CreateEmploymentStatusMonitoringRecords(EmploymentStatusMonitoring esm)
         {
             var messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring =
                 new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>();
-            if(esm.EmploymentStatus.ToEmpStatCode() == (int)EmploymentStatus.PaidEmployment)
+            if (esm.EmploymentStatus.ToEmpStatCode() == (int)EmploymentStatus.PaidEmployment)
             {
                 messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring =
                     new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>
@@ -186,7 +186,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                         }
                     };
             }
-            else if(esm.EmploymentStatus.ToEmpStatCode() == (int)EmploymentStatus.LookingForWork)
+            else if (esm.EmploymentStatus.ToEmpStatCode() == (int)EmploymentStatus.LookingForWork)
             {
                 messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring =
                     new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>
@@ -209,16 +209,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             if (!string.IsNullOrWhiteSpace(esm.SmallEmployer))
             {
-                ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
-                ESMCode = (int) EmploymentStatusMonitoringCode.SmallEmployer,
-                ESMCodeSpecified = true
-            });
+                messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring.Add(
+                    new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                    {
+                        ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
+                        ESMCode = (int)EmploymentStatusMonitoringCode.SmallEmployer,
+                        ESMCodeSpecified = true
+                    });
+            }
 
-            messageLearner.LearnerEmploymentStatus[0].EmploymentStatusMonitoring = statusMonitorings.ToArray();
+            return messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring.ToArray();
+        }
 
+        private static void AddEefCode(MessageLearner messageLearner, Learner learner)
+        {
             if (learner.EefCode.HasValue)
             {
-                var eefCode = (LearnDelFAMCode) learner.EefCode.Value;
+                var eefCode = (LearnDelFAMCode)learner.EefCode.Value;
                 DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(messageLearner, LearnDelFAMType.EEF, eefCode);
             }
         }

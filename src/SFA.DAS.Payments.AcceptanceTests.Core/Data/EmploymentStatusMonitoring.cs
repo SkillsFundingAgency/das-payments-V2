@@ -9,5 +9,7 @@
         public string EmploymentStatusApplies { get; set; }
 
         public string LearnerId { get; set; }
+
+        public string SmallEmployer { get; set; }
     }
 }
