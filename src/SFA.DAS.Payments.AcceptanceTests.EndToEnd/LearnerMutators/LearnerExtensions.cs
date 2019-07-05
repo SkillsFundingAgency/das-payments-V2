@@ -43,6 +43,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             {
                 case "in paid employment":
                     return (int) EmploymentStatus.PaidEmployment;
+                case "not in paid employment":
+                    return (int) EmploymentStatus.LookingForWork;
                 default:
                     throw new ArgumentException("A valid employment status is required.", nameof(employmentStatus));
             }

@@ -161,15 +161,53 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
-        private static void AddSmallEmployerInfo(MessageLearner messageLearner, Learner learner)
+        private MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring[]
+            CreateEmploymentStatusMonitoringRecords(EmploymentStatusMonitoring esm)
         {
-            if (learner.SmallEmployer != "SEM1") 
-                return;
+            var messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring =
+                new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>();
+            if(esm.EmploymentStatus.ToEmpStatCode() == (int)EmploymentStatus.PaidEmployment)
+            {
+                messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring =
+                    new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>
+                    {
+                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                        {
+                            ESMType = EmploymentStatusMonitoringType.EII.ToString(),
+                            ESMCode = (int) EmploymentStatusMonitoringCode.EmploymentIntensity30Hours,
+                            ESMCodeSpecified = true
+                        },
 
-            var learnerEmploymentStatus = messageLearner.LearnerEmploymentStatus[0];
-            var statusMonitorings = learnerEmploymentStatus.EmploymentStatusMonitoring.ToList();
+                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                        {
+                            ESMType = EmploymentStatusMonitoringType.LOE.ToString(),
+                            ESMCode = (int) EmploymentStatusMonitoringCode.Employed12Plus,
+                            ESMCodeSpecified = true
+                        }
+                    };
+            }
+            else if(esm.EmploymentStatus.ToEmpStatCode() == (int)EmploymentStatus.LookingForWork)
+            {
+                messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring =
+                    new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>
+                    {
+                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                        {
+                            ESMType = EmploymentStatusMonitoringType.LOU.ToString(),
+                            ESMCode = (int) EmploymentStatusMonitoringCode.Unemployed1223,
+                            ESMCodeSpecified = true
+                        },
 
-            statusMonitorings.Add(new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring
+                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                        {
+                            ESMType = EmploymentStatusMonitoringType.BSI.ToString(),
+                            ESMCode = (int) EmploymentStatusMonitoringCode.BenefitEmploymentSupport,
+                            ESMCodeSpecified = true
+                        }
+                    };
+            }
+
+            if (!string.IsNullOrWhiteSpace(esm.SmallEmployer))
             {
                 ESMType = EmploymentStatusMonitoringType.SEM.ToString(),
                 ESMCode = (int) EmploymentStatusMonitoringCode.SmallEmployer,
