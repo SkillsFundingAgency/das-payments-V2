@@ -46,5 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string Provider { get; set; }
 
         public string LearnerId { get; set; }
+
+        public bool HasContractType => (int) ContractType != 0;
     }
 }

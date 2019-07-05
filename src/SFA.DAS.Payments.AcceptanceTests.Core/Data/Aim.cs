@@ -67,6 +67,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public bool IsMainAim => AimReference == "ZPROG001";
 
+        public bool IsMathsAndEnglish => AimReference == "50114979" || AimReference == "50093186";
+
+        public bool HasContractType => (int) ContractType != 0;
+
         public ContractType ContractType { get; set; }
     }
 }
