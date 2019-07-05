@@ -6,6 +6,7 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
@@ -34,7 +35,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<DataLocksProfile>()));
             repositoryMock = new Mock<IDataLockFailureRepository>(MockBehavior.Strict);
             dataLockStatusServiceMock = new Mock<IDataLockStatusService>(MockBehavior.Strict);            
-            processor = new DataLockEventProcessor(repositoryMock.Object, dataLockStatusServiceMock.Object, mapper);
+            processor = new DataLockEventProcessor(repositoryMock.Object, dataLockStatusServiceMock.Object, mapper, new Mock<IPaymentLogger>().Object);
         }
 
         [TearDown]
