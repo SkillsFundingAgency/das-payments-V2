@@ -1,4 +1,5 @@
-﻿Feature: Holding back completion payments - PV2-501
+﻿@supports_dc_e2e
+Feature: Holding back completion payments - PV2-501
 	As a provider,
 	I want a non-levy learner, where the employer has paid less than their 10% co-investment for the on-program element, and has not yet paid the employer completion payment element
 	So that I am not paid the completion payment by SFA
@@ -6,8 +7,8 @@
 Scenario Outline: Non-Levy Learner-in co-funding no completion payment made as not enough employer contribution PV2-501
 	
 	Given the provider previously submitted the following learner details
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	
 	And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing |
@@ -30,8 +31,8 @@ Scenario Outline: Non-Levy Learner-in co-funding no completion payment made as n
         | R12/Last Academic Year | Jul/Last Academic Year | 540                    | 60                          | Learning         |
 	
 	But the Provider now changes the Learner details as follows
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage | Employer Contribution |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         | 719                   |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage | Employer Contribution |
+		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           |                        |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         | 719                   |
 	
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	
