@@ -29,8 +29,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public static ContractType[] GetContractTypesForLearningDeliveries(this List<LearningDelivery> learningDeliveries)
         {
             var periodisedTextValues = learningDeliveries.Where(x => x.LearningDeliveryPeriodisedTextValues != null)
-                .SelectMany(x =>
-                    x.LearningDeliveryPeriodisedTextValues.Where(l => l.AttributeName == "LearnDelContType"));
+                .SelectMany(x => x.LearningDeliveryPeriodisedTextValues.Where(l => l.AttributeName == "LearnDelContType"))
+                .ToList();
 
             if (!periodisedTextValues.Any())
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
@@ -27,43 +28,21 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                const byte earningPeriods = 12;
-
                 var contractTypes = intermediateLearningAim.Learner.LearningDeliveries.GetContractTypesForLearningDeliveries();
+                var distinctContractTypes = contractTypes.Distinct().ToList();
 
-                var learnerWithSortedPriceEpisodes =
-                    intermediateLearningAim.CopyReplacingPriceEpisodes(intermediateLearningAim.PriceEpisodes);
+                var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(intermediateLearningAim.PriceEpisodes);
+                var functionalSkillEarning = mapper.Map<FunctionalSkillEarningsEvent>(learnerWithSortedPriceEpisodes);
 
-                var functionalSkillEarning =
-                    mapper.Map<FunctionalSkillEarningsEvent>(learnerWithSortedPriceEpisodes);
-
-                functionalSkillEarning.ContractType = intermediateLearningAim.ContractType;
-
-                var currentEarnings = new List<FunctionalSkillEarning>(functionalSkillEarning.Earnings);
-
-                foreach (var mathsAndEnglishAttribute in MathsAndEnglishAttributes())
+                foreach (var contractType in distinctContractTypes)
                 {
-                    var matchingEarning =
-                        currentEarnings.SingleOrDefault(x => x.Type == mathsAndEnglishAttribute.Key);
-
-                    if (matchingEarning == null)
+                    var currentEarnings = new List<FunctionalSkillEarning>(functionalSkillEarning.Earnings);
+                    foreach (var earning in functionalSkillEarning.Earnings)
                     {
-                        continue;
+                        earning.Periods =  GetEarningPeriodsMatchingContractType(contractTypes, contractType, earning.Periods.ToList());
                     }
 
-                    var matchingPeriods = new List<EarningPeriod>(matchingEarning.Periods);
-
-                    var outputEarnings = new List<EarningPeriod>();
-
-                    for (byte i = 1; i <= earningPeriods; i++)
-                    {
-                        if (contractTypes[i - 1] == functionalSkillEarning.ContractType)
-                        {
-                            outputEarnings.Add(matchingPeriods.SingleOrDefault(m => m.Period == i));
-                        }
-                    }
-
-                    matchingEarning.Periods = outputEarnings.AsReadOnly();
+                    functionalSkillEarning.ContractType = intermediateLearningAim.ContractType;
                 }
 
                 results.Add(functionalSkillEarning);
@@ -72,13 +51,22 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return results;
         }
 
-        private static Dictionary<FunctionalSkillType, string> MathsAndEnglishAttributes()
+        private ReadOnlyCollection<EarningPeriod> GetEarningPeriodsMatchingContractType(ContractType[] contractTypes, 
+            ContractType learningDeliveryPeriodContractType, 
+            List<EarningPeriod> earningPeriods)
         {
-            return new Dictionary<FunctionalSkillType, string>
+            const byte periods = 12;
+
+            var outputEarnings = new List<EarningPeriod>();
+            for (byte i = 1; i <= periods; i++)
             {
-                {FunctionalSkillType.OnProgrammeMathsAndEnglish, "MathEndOnProgPayment"},
-                {FunctionalSkillType.BalancingMathsAndEnglish, "MathEngBalPayment"}
-            };
+                if (contractTypes[i - 1] == learningDeliveryPeriodContractType)
+                {
+                    outputEarnings.Add(earningPeriods.SingleOrDefault(m => m.Period == i));
+                }
+            }
+            return  outputEarnings.AsReadOnly();
         }
+      
     }
 }
