@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="Autofac.ServiceFabric" Version="2.0.0" />
+    <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.446" />
+    <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.9-beta0001" />
+    <PackageReference Include="ESFA.DC.Queueing" Version="0.1.18-beta0001" />
+    <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.162" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="3.2.162" />
+    <PackageReference Include="NServiceBus" Version="7.1.5" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
+  </ItemGroup>
+
+
+</Project>

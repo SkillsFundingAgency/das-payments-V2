@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.5-beta0001" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Processors\" />
+    <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.9-beta0001" />
   </ItemGroup>
 
   <ItemGroup>
