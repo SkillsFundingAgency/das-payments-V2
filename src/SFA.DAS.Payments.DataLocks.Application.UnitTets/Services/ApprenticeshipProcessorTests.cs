@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using AutoMapper;
+using Castle.Components.DictionaryAdapter;
 using Moq;
 using NServiceBus;
 using NUnit.Framework;
@@ -172,6 +173,47 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     
                     It.IsAny<PublishOptions>()), Times.Once);
         }
+
+        [Test]
+        public async Task Processes_ApprenticeshipUpdated()
+        {
+            var approvalsEvent = new ApprenticeshipUpdatedApprovedEvent()
+            {
+                Uln = "12345",
+                ApprenticeshipId = 1,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1),
+                ApprovedOn = DateTime.Today,
+                TrainingCode = "ABC",
+                TrainingType = ProgrammeType.Standard,
+                PriceEpisodes = new PriceEpisode[1]
+                {
+                    new PriceEpisode
+                    {
+                        FromDate = DateTime.Today,
+                        ToDate = DateTime.Today.AddYears(1),
+                        Cost = 1000m
+                    }
+                }
+            };
+
+            mocker.Mock<IApprenticeshipService>()
+                .Setup(svc => svc.Update(It.IsAny<ApprenticeshipModel>()))
+                .ReturnsAsync(() => new List<ApprenticeshipDuplicateModel>());
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessUpdatedApprenticeship(approvalsEvent);
+
+            mocker.Mock<IApprenticeshipService>()
+                .Verify(svc => svc.NewApprenticeship(It.Is<ApprenticeshipModel>(model =>
+                    model.AccountId == approvalsEvent.AccountId
+                    && model.Id == approvalsEvent.ApprenticeshipId
+                    && model.Ukprn == approvalsEvent.ProviderId
+                    && model.Uln.ToString() == approvalsEvent.Uln)
+                ), Times.Once);
+
+        }
+
 
     }
 }
