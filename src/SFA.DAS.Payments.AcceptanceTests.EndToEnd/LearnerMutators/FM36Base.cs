@@ -195,7 +195,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         {
             if (learner.EefCode.HasValue)
             {
-                var eefCode = (LearnDelFAMCode) learner.EefCode.Value;
+                var eefCode = (LearnDelFAMCode)learner.EefCode.Value;
                 DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(messageLearner, LearnDelFAMType.EEF, eefCode);
             }
         }
