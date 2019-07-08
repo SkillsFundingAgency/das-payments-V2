@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {

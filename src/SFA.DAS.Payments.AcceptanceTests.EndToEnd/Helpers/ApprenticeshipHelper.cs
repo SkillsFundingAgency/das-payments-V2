@@ -127,9 +127,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             await dataContext.ApprenticeshipDuplicate.AddAsync(apprenticeshipDuplicate).ConfigureAwait(false);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-
-
     }
-
-
 }
