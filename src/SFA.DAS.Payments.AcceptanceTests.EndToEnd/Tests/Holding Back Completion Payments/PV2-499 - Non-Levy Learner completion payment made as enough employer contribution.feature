@@ -1,12 +1,13 @@
-﻿Feature: Holding back completion payments - PV2-499
+﻿@supports_dc_e2e
+Feature: Holding back completion payments - PV2-499
 	As a provider,
 	I want a Non-levy learner, where the employer has paid all their 10% co-investment for the on-program element only, but has not yet paid the employer completion payment element
 	So that I am accurately paid the completion payment by SFA
 
 Scenario Outline: Non-Levy Learner-in co-funding completion payment made as enough employer contribution PV2-499
 	Given the provider previously submitted the following learner details
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
+		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           |                        | 06/Jun/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	
 	And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing |
@@ -29,8 +30,8 @@ Scenario Outline: Non-Levy Learner-in co-funding completion payment made as enou
         | R12/Last Academic Year | Jul/Last Academic Year | 540                    | 60                          | Learning         |
     
 	But the Provider now changes the Learner details as follows
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage | Employer Contribution |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         | 720                   |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage | Employer Contribution |
+		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           |                        |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         | 720                   |
 	
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
