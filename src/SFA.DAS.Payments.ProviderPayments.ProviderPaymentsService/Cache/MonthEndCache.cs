@@ -1,12 +1,11 @@
 using Microsoft.ServiceFabric.Data.Collections;
-using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Model;
 using SFA.DAS.Payments.ServiceFabric.Core;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Data;
+using SFA.DAS.Payments.ServiceFabric.Core.BatchWriting;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 {

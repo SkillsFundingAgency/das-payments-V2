@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
+using SFA.DAS.Payments.ServiceFabric.Core.BatchWriting;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 {

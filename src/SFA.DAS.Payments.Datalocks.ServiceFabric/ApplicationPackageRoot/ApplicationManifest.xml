@@ -24,24 +24,6 @@
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.DataLocks.DataLockEventServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverride Name="Config">
-      <Settings>
-        <Section Name="ConnectionStringsSection">
-          <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
-          <Parameter Name="PaymentsConnectionStringV1" Value="[PaymentsConnectionString]" />
-          <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
-          <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
-          <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-        </Section>
-        <Section Name="Settings">
-          <Parameter Name="EndpointName" Value="[DataLockEventService_EndpointName]" />
-          <Parameter Name="FailedMessagesQueue" Value="[DataLockEventService_FailedMessagesQueue]" />
-          <Parameter Name="LogLevel" Value="[LogLevel]" />
-          <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
-          <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
-        </Section>
-      </Settings>
-    </ConfigOverride>
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.DataLocks.DataLockProxyServicePkg" ServiceManifestVersion="1.0.0" />

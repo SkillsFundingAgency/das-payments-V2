@@ -1,9 +1,8 @@
 ﻿using Autofac;
 using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCache;
-using SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessing;
+using SFA.DAS.Payments.ServiceFabric.Core.BatchWriting;
 
 namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure.Ioc
 {
