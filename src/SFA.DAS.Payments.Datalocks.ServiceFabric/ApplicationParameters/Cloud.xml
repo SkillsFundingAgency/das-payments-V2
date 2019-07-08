@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_PartitionCount" Value="1" />
+    <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_MinReplicaSetSize" Value="3" />
+    <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_TargetReplicaSetSize" Value="3" />
     <Parameter Name="DataLockProxyService_InstanceCount" Value="__DataLockProxyService_InstanceCount__" />
     <Parameter Name="DataLockServiceActorService_PartitionCount" Value="__DataLockServiceActorService_PartitionCount__" />
     <Parameter Name="DataLockServiceActorService_MinReplicaSetSize" Value="__DataLockServiceActorService_MinReplicaSetSize__" />
