@@ -24,15 +24,15 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
         {
             paymentLogger.LogInfo($"Processing CollectionStartedEvent event. Message Id : {context.MessageId}");
 
-            foreach (var key in message.ApprenticeshipKeys)
-            {
-                var actorId = new ActorId(key);
-                var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
+            //foreach (var key in message.ApprenticeshipKeys)
+            //{
+            //    var actorId = new ActorId(key);
+            //    var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
                 
-                await actor.Reset().ConfigureAwait(false);
+            //    //await actor.Reset().ConfigureAwait(false);
 
-                paymentLogger.LogVerbose($"Successfully processed CollectionStartedEvent event for Actor Id {actorId}");
-            }
+            //    paymentLogger.LogVerbose($"Successfully processed CollectionStartedEvent event for Actor Id {actorId}");
+            //}
 
             await context.Reply(0);
         }
