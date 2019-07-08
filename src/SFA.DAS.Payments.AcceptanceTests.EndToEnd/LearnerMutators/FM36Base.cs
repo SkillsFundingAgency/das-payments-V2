@@ -206,6 +206,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 MutateLearningDeliveryFamsForLearner(otherLearningDelivery, otherAim);
 
                 SetCourseCodes(otherAim, otherLearningDelivery);
+
+                SetPriorLearnFundingAdjustment(otherAim, otherLearningDelivery);
             }
         }
 
@@ -246,6 +248,37 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
 
             return actualEndDate;
+        }
+
+        private void SetCourseCodes(Aim aim, MessageLearnerLearningDelivery learningDelivery)
+        {
+            learningDelivery.ProgType = aim.ProgrammeType;
+            learningDelivery.ProgTypeSpecified = true;
+
+            if (aim.ProgrammeType == StandardProgrammeType)
+            {
+                learningDelivery.StdCode = aim.StandardCode;
+                learningDelivery.StdCodeSpecified = true;
+                learningDelivery.FworkCodeSpecified = false;
+                learningDelivery.PwayCodeSpecified = false;
+            }
+            else
+            {
+                learningDelivery.FworkCode = aim.FrameworkCode;
+                learningDelivery.FworkCodeSpecified = true;
+
+                learningDelivery.PwayCode = aim.PathwayCode;
+                learningDelivery.PwayCodeSpecified = true;
+            }
+        }
+        private void SetPriorLearnFundingAdjustment(Aim aim, MessageLearnerLearningDelivery learningDelivery)
+        {
+            var fundingAdjustmentForPriorLearning = aim.FundingAdjustmentForPriorLearning.AsPercentage();
+            if (fundingAdjustmentForPriorLearning.HasValue)
+            {
+                learningDelivery.PriorLearnFundAdj = fundingAdjustmentForPriorLearning.Value;
+                learningDelivery.PriorLearnFundAdjSpecified = true;
+            }
         }
 
         private void MutateCompletionStatusForLearner(MessageLearnerLearningDelivery delivery, int completionStatus, DateTime? actualEndDate)
@@ -304,28 +337,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
 
             delivery.LearningDeliveryFAM = listOfLearningDeliveryFams.ToArray();
-        }
-
-        private void SetCourseCodes(Aim aim, MessageLearnerLearningDelivery learningDelivery)
-        {
-            learningDelivery.ProgType = aim.ProgrammeType;
-            learningDelivery.ProgTypeSpecified = true;
-
-            if (aim.ProgrammeType == StandardProgrammeType)
-            {
-                learningDelivery.StdCode = aim.StandardCode;
-                learningDelivery.StdCodeSpecified = true;
-                learningDelivery.FworkCodeSpecified = false;
-                learningDelivery.PwayCodeSpecified = false;
-            }
-            else
-            {
-                learningDelivery.FworkCode = aim.FrameworkCode;
-                learningDelivery.FworkCodeSpecified = true;
-
-                learningDelivery.PwayCode = aim.PathwayCode;
-                learningDelivery.PwayCodeSpecified = true;
-            }
         }
 
         protected void SetDeliveryAsWithdrawn(MessageLearnerLearningDelivery delivery, Aim learnerRequestAim)
@@ -533,7 +544,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private long CalculateEmployerContribution(string sfaContributionPercentage, decimal totalTrainingPrice)
         {
-            var percentage = decimal.Parse((100 - sfaContributionPercentage.AsPercentage()).ToString());
+            var percentage = decimal.Parse(sfaContributionPercentage.AsPercentage().Value.ToString());
             var employerContribution = totalTrainingPrice * (percentage / 100);
 
             return decimal.ToInt64(employerContribution);

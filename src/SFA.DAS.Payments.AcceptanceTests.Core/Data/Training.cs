@@ -36,10 +36,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public int? Pmr { get; set; } 
         [TableAliases("Exemption Code")]
         public int CompletionHoldBackExemptionCode { get; set; }
-
         public string SmallEmployer { get; set; }
         public int? EefCode { get; set; }
         public string PostcodePrior { get; set; }
+        public string FundingAdjustmentForPriorLearning { get; set; }
 
         public string OriginalStartDate { get; set; }
     }
