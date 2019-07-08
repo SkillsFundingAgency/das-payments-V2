@@ -339,28 +339,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             delivery.LearningDeliveryFAM = listOfLearningDeliveryFams.ToArray();
         }
 
-        private void SetCourseCodes(Aim aim, MessageLearnerLearningDelivery learningDelivery)
-        {
-            learningDelivery.ProgType = aim.ProgrammeType;
-            learningDelivery.ProgTypeSpecified = true;
-
-            if (aim.ProgrammeType == StandardProgrammeType)
-            {
-                learningDelivery.StdCode = aim.StandardCode;
-                learningDelivery.StdCodeSpecified = true;
-                learningDelivery.FworkCodeSpecified = false;
-                learningDelivery.PwayCodeSpecified = false;
-            }
-            else
-            {
-                learningDelivery.FworkCode = aim.FrameworkCode;
-                learningDelivery.FworkCodeSpecified = true;
-
-                learningDelivery.PwayCode = aim.PathwayCode;
-                learningDelivery.PwayCodeSpecified = true;
-            }
-        }
-
         protected void SetDeliveryAsWithdrawn(MessageLearnerLearningDelivery delivery, Aim learnerRequestAim)
         {
             delivery.CompStatus = (int)CompletionStatus.Withdrawn;
