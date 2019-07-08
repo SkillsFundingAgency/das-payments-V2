@@ -107,6 +107,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     continue;
                 }
 
+                if (holdBackCompletionPayments)
+                {
+                    continue;
+                }
                 foreach (var requiredPayment in requiredPayments)
                 {
                     var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType, type, holdBackCompletionPayments);
