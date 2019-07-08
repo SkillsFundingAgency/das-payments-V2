@@ -32,21 +32,25 @@ Scenario: Levy learner a is deleted from ILR in 07/18, but Levy learner b is add
     And the Provider now changes the Learner details as follows
 		| Learner ID | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| learner b  | 06/May/Current Academic Year | 12 months        | 9000                 | 06/May/Current Academic Year        | 0                      | 06/May/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+		| pe-1             | 9000                 | 06/May/Current Academic Year        | 0                      | 06/May/Current Academic Year          | 0                       |                                        | 0                         |                                          | Act1          | 1                   | 90%                         |
+
 	When the amended ILR file is re-submitted for the learners in collection period R12/Current Academic Year
 	Then the following learner earnings should be generated
-		| Learner ID | Delivery Period           | On-Programme | Completion | Balancing |
-		| learner b  | Aug/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Sep/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Oct/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Nov/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Dec/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Jan/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Feb/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Mar/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | Apr/Current Academic Year | 0            | 0          | 0         |
-		| learner b  | May/Current Academic Year | 600          | 0          | 0         |
-		| learner b  | Jun/Current Academic Year | 600          | 0          | 0         |
-		| learner b  | Jul/Current Academic Year | 600          | 0          | 0         |
+		| Learner ID | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+		| learner b  | Aug/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | Sep/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | Oct/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | Nov/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | Dec/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | Jan/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | Feb/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | Mar/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | Apr/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+		| learner b  | May/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+		| learner b  | Jun/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+		| learner b  | Jul/Current Academic Year | 600          | 0          | 0         | pe-1                     |
     And at month end only the following payments will be calculated
         | Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | learner a  | R12/Current Academic Year | May/Current Academic Year | -600         | 0          | 0         |
