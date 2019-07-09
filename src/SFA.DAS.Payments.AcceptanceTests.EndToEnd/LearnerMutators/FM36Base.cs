@@ -317,6 +317,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 }
 
                 SetCourseCodes(otherAim, otherLearningDelivery);
+
+                SetPriorLearnFundingAdjustment(otherAim, otherLearningDelivery);
             }
         }
 
@@ -361,8 +363,38 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             return actualEndDate;
         }
 
-        private void MutateCompletionStatusForLearner(MessageLearnerLearningDelivery delivery, int completionStatus,
-            DateTime? actualEndDate)
+        private void SetCourseCodes(Aim aim, MessageLearnerLearningDelivery learningDelivery)
+        {
+            learningDelivery.ProgType = aim.ProgrammeType;
+            learningDelivery.ProgTypeSpecified = true;
+
+            if (aim.ProgrammeType == StandardProgrammeType)
+            {
+                learningDelivery.StdCode = aim.StandardCode;
+                learningDelivery.StdCodeSpecified = true;
+                learningDelivery.FworkCodeSpecified = false;
+                learningDelivery.PwayCodeSpecified = false;
+            }
+            else
+            {
+                learningDelivery.FworkCode = aim.FrameworkCode;
+                learningDelivery.FworkCodeSpecified = true;
+
+                learningDelivery.PwayCode = aim.PathwayCode;
+                learningDelivery.PwayCodeSpecified = true;
+            }
+        }
+        private void SetPriorLearnFundingAdjustment(Aim aim, MessageLearnerLearningDelivery learningDelivery)
+        {
+            var fundingAdjustmentForPriorLearning = aim.FundingAdjustmentForPriorLearning.AsPercentage();
+            if (fundingAdjustmentForPriorLearning.HasValue)
+            {
+                learningDelivery.PriorLearnFundAdj = fundingAdjustmentForPriorLearning.Value;
+                learningDelivery.PriorLearnFundAdjSpecified = true;
+            }
+        }
+
+        private void MutateCompletionStatusForLearner(MessageLearnerLearningDelivery delivery, int completionStatus, DateTime? actualEndDate)
         {
             delivery.CompStatus = completionStatus;
             delivery.CompStatusSpecified = true;
@@ -396,6 +428,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
+        private void AddLearningSupportFam(MessageLearnerLearningDelivery delivery, Aim aim)
+        {
+            var learningDeliveryFams = delivery.LearningDeliveryFAM.ToList();
+            learningDeliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
+            {
+                LearnDelFAMType = LearnDelFAMType.LSF.ToString(),
+                LearnDelFAMCode = aim.LearningSupportCode.Value.ToString(),
+                LearnDelFAMDateFrom = aim.LearningSupportDateFrom.ToDate(),
+                LearnDelFAMDateFromSpecified = true,
+                LearnDelFAMDateTo = aim.LearningSupportDateTo.ToDate(),
+                LearnDelFAMDateToSpecified = true
+            });
+
+            delivery.LearningDeliveryFAM = learningDeliveryFams.ToArray();
+        }
+
         private void MutateLearningDeliveryFamsForLearner(MessageLearnerLearningDelivery delivery, Aim aim)
         {
             if (aim.HasContractType)
@@ -403,31 +451,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 delivery.LearningDeliveryFAM = AddActToLearningDeliveryFam(aim.ContractType, delivery.LearnStartDate, delivery.LearnActEndDate, delivery.LearningDeliveryFAM.ToList(), aim.ActualDurationAsTimespan.HasValue);
             }
 
+            // not all fams are at Price Episode level.
+            if (aim.LearningSupportCode.HasValue)
+            {
+                listOfLearningDeliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
+                {
+                    LearnDelFAMType = LearnDelFAMType.LSF.ToString(),
+                    LearnDelFAMCode = aim.LearningSupportCode.Value.ToString(),
+                    LearnDelFAMDateFrom = aim.LearningSupportDateFrom.ToDate(),
+                    LearnDelFAMDateFromSpecified = true,
+                    LearnDelFAMDateTo = aim.LearningSupportDateTo.ToDate(),
+                    LearnDelFAMDateToSpecified = true
+                });
+            }
+
             foreach (var priceEpisode in aim.PriceEpisodes)
             {
                 MutateMainAim(delivery, aim, priceEpisode);
-            }
-        }
-
-        private void SetCourseCodes(Aim aim, MessageLearnerLearningDelivery learningDelivery)
-        {
-            learningDelivery.ProgType = aim.ProgrammeType;
-            learningDelivery.ProgTypeSpecified = true;
-
-            if (aim.ProgrammeType == StandardProgrammeType)
-            {
-                learningDelivery.StdCode = aim.StandardCode;
-                learningDelivery.StdCodeSpecified = true;
-                learningDelivery.FworkCodeSpecified = false;
-                learningDelivery.PwayCodeSpecified = false;
-            }
-            else
-            {
-                learningDelivery.FworkCode = aim.FrameworkCode;
-                learningDelivery.FworkCodeSpecified = true;
-
-                learningDelivery.PwayCode = aim.PathwayCode;
-                learningDelivery.PwayCodeSpecified = true;
             }
         }
 
@@ -683,7 +723,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private long CalculateEmployerContribution(string sfaContributionPercentage, decimal totalTrainingPrice)
         {
-            var percentage = decimal.Parse((100 - sfaContributionPercentage.AsPercentage()).ToString());
+            var percentage = decimal.Parse(sfaContributionPercentage.AsPercentage().Value.ToString());
             var employerContribution = totalTrainingPrice * (percentage / 100);
 
             return decimal.ToInt64(employerContribution);

@@ -26,6 +26,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             PathwayCode = training.PathwayCode;
             FundingLineType = training.FundingLineType;
             CompletionStatus = CompletionStatusFromString(training.CompletionStatus);
+            LearningSupportCode = training.LearningSupportCode;
+            LearningSupportDateFrom = training.LearningSupportDateFrom;
+            LearningSupportDateTo = training.LearningSupportDateTo;
+            FundingAdjustmentForPriorLearning = training.FundingAdjustmentForPriorLearning;
             ContractType = training.ContractType;
         }
 
@@ -64,6 +68,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public List<Price> PriceEpisodes { get; set; } = new List<Price>();
         public int FrameworkCode { get; set; }
         public int PathwayCode { get; set; }
+
+        public int? LearningSupportCode { get; set; }
+        public string LearningSupportDateFrom { get; set; }
+        public string LearningSupportDateTo { get; set; }
+
+        public string FundingAdjustmentForPriorLearning { get; set; }
 
         public bool IsMainAim => AimReference == "ZPROG001";
 
