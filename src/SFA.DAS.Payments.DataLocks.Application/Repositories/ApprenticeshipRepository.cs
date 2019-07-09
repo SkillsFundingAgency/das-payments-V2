@@ -89,14 +89,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 
         public async Task UpdateApprenticeship(ApprenticeshipModel updatedApprenticeship)
         {
-            //var apprenticeship = await dataContext.Apprenticeship.SingleOrDefaultAsync(o => o.Id == updatedApprenticeship.ApprenticeshipId)
-            //                         .ConfigureAwait(false) ??
-            //                     throw new Exception($"Can't find Apprenticeship Id: {updatedApprenticeship.ApprenticeshipId} for Uln :{updatedApprenticeship.Uln}");
-
+            dataContext.Apprenticeship.Update(updatedApprenticeship);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-
-     
 
     }
 }
