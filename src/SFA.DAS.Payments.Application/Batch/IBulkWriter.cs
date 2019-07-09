@@ -8,7 +8,7 @@ using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core.Configuration;
 
-namespace SFA.DAS.Payments.Application.BatchWriting
+namespace SFA.DAS.Payments.Application.Batch
 {
     public interface IBulkWriter<TEntity> where TEntity : class
     {

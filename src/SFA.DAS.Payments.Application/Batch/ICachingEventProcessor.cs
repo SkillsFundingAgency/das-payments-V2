@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 
-namespace SFA.DAS.Payments.Application.BatchWriting
+namespace SFA.DAS.Payments.Application.Batch
 {
     public interface ICachingEventProcessor<T>
     {

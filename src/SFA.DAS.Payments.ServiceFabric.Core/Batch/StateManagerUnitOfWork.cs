@@ -4,7 +4,7 @@ using Microsoft.ServiceFabric.Data;
 using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.BatchWriting
+namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
 {
     public class StateManagerUnitOfWork : IManageUnitsOfWork
     {

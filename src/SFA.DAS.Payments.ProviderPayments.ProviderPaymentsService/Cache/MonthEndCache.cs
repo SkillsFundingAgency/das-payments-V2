@@ -5,7 +5,7 @@ using SFA.DAS.Payments.ServiceFabric.Core;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.ServiceFabric.Core.BatchWriting;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 {

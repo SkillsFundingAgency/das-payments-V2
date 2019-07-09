@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 using Autofac;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
+using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.BatchWriting
+namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
 {
     public class BatchScope: IBatchScope
     {

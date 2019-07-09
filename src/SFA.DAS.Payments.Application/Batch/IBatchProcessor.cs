@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
-namespace SFA.DAS.Payments.Application.BatchWriting
+namespace SFA.DAS.Payments.Application.Batch
 {
     public interface IBatchProcessor<T>
     {

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.Application.BatchWriting
+﻿namespace SFA.DAS.Payments.Application.Batch
 {
     public interface IBatchScopeFactory
     {

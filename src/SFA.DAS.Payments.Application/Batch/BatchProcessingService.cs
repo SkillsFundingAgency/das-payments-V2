@@ -5,7 +5,7 @@ using Polly;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core.Configuration;
 
-namespace SFA.DAS.Payments.Application.BatchWriting
+namespace SFA.DAS.Payments.Application.Batch
 {
     public interface IBatchProcessingService<T>
     {

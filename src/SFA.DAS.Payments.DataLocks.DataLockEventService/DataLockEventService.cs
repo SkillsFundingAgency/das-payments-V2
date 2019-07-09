@@ -6,7 +6,7 @@ using Autofac;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
-using SFA.DAS.Payments.Application.BatchWriting;
+using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;

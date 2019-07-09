@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
-using SFA.DAS.Payments.Application.BatchWriting;
+using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.BatchWriting
+namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
 {
     public class BatchedDataCache<T> : IBatchedDataCache<T>
     {

@@ -5,7 +5,7 @@ using Microsoft.ServiceFabric.Data.Collections;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
-using SFA.DAS.Payments.ServiceFabric.Core.BatchWriting;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 {

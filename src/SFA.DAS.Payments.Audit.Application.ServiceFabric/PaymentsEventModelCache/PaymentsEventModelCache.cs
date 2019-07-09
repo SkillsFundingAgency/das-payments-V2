@@ -2,7 +2,7 @@
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.ServiceFabric.Core;
-using SFA.DAS.Payments.ServiceFabric.Core.BatchWriting;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
 namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCache
 {

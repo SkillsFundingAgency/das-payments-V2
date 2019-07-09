@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Payments.Application.BatchWriting
+namespace SFA.DAS.Payments.Application.Batch
 {
     public interface IBatchScope: IDisposable
     {

@@ -11,7 +11,7 @@ using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
-using SFA.DAS.Payments.Application.BatchWriting;
+using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;

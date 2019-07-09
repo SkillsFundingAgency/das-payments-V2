@@ -1,6 +1,7 @@
-﻿using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+﻿using SFA.DAS.Payments.Application.Batch;
+using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.BatchWriting
+namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
 {
     public class BatchScopeFactory: IBatchScopeFactory
     {

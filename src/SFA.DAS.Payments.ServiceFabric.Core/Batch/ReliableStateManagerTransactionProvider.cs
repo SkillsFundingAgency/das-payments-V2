@@ -1,6 +1,6 @@
 ﻿using Microsoft.ServiceFabric.Data;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.BatchWriting
+namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
 {
     public interface IReliableStateManagerTransactionProvider
     {
