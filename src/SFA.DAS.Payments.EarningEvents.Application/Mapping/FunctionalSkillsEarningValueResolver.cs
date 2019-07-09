@@ -57,6 +57,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             {
                 Type = TypeMap[groupItem.Key],
                 Periods = new ReadOnlyCollection<EarningPeriod>(periods),
+                
             };
         }
     }
