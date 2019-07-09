@@ -348,15 +348,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
 
             // not all fams are at Price Episode level.
-            listOfLearningDeliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
+            if (aim.LearningSupportCode.HasValue)
             {
-                LearnDelFAMType = LearnDelFAMType.LSF.ToString(),
-                LearnDelFAMCode = aim.LearningSupportCode.Value.ToString(),
-                LearnDelFAMDateFrom = aim.LearningSupportDateFrom.ToDate(),
-                LearnDelFAMDateFromSpecified = true,
-                LearnDelFAMDateTo = aim.LearningSupportDateTo.ToDate(),
-                LearnDelFAMDateToSpecified = true
-            });
+                listOfLearningDeliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
+                {
+                    LearnDelFAMType = LearnDelFAMType.LSF.ToString(),
+                    LearnDelFAMCode = aim.LearningSupportCode.Value.ToString(),
+                    LearnDelFAMDateFrom = aim.LearningSupportDateFrom.ToDate(),
+                    LearnDelFAMDateFromSpecified = true,
+                    LearnDelFAMDateTo = aim.LearningSupportDateTo.ToDate(),
+                    LearnDelFAMDateToSpecified = true
+                });
+            }
 
             foreach (var priceEpisode in aim.PriceEpisodes)
             {
