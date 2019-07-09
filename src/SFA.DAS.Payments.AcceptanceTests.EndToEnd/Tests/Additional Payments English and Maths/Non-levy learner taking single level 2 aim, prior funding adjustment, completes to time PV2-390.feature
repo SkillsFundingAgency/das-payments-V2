@@ -1,4 +1,5 @@
-﻿@supports_dc_e2e
+﻿@ignore
+@supports_dc_e2e
 Feature: Non-levy learner taking single level 2 aim, prior funding adjustment, completes to time PV2-390
 	As a provider,
 	I want a non-levy learner, planned duration is same as programme (assumes both start and finish at same time), to be paid the correct amount
