@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Application.Batch
             this.logger = logger;
             this.bulkCopyConfig = bulkCopyConfig;
             batchSize = configurationHelper.GetSettingOrDefault("batchSize", 500);
-            connectionString = configurationHelper.GetConnectionString("PaymentsConnectionString");
+            connectionString = bulkCopyConfig.ConnectionString;
         }
 
         public async Task Write(TEntity entity, CancellationToken cancellationToken)

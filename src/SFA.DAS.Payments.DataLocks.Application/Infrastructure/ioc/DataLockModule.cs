@@ -43,7 +43,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<BatchScopeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchProcessingService<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BulkWriter<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<DataLockStatusChangedBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<LegacyDataLockEventBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<LegacyDataLockEventCommitmentVersionBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<LegacyDataLockEventErrorBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<LegacyDataLockEventPeriodBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }
