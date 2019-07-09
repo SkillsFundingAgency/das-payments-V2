@@ -86,15 +86,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 currentApprenticeship.FrameworkCode = updatedApprenticeship.FrameworkCode;
                 currentApprenticeship.PathwayCode = updatedApprenticeship.PathwayCode;
 
-                UpdatePriceEpisodes(updatedApprenticeship.ApprenticeshipPriceEpisodes, 
-                                        currentApprenticeship.ApprenticeshipPriceEpisodes);
+                UpdatePriceEpisodes(updatedApprenticeship.ApprenticeshipPriceEpisodes, currentApprenticeship.ApprenticeshipPriceEpisodes);
 
                 var newPriceEpisodes = updatedApprenticeship.ApprenticeshipPriceEpisodes
-                    .Where(x => currentApprenticeship.ApprenticeshipPriceEpisodes.Any(o => o.StartDate != x.StartDate && o.Cost != x.Cost))
+                    .Where(x => currentApprenticeship.ApprenticeshipPriceEpisodes.All(o => o.StartDate != x.StartDate && o.Cost != x.Cost))
                     .ToList();
 
                 currentApprenticeship.ApprenticeshipPriceEpisodes.AddRange(newPriceEpisodes);
-
 
                 await repository.UpdateApprenticeship(currentApprenticeship);
                 var latestApprenticeship = await repository.Get(updatedApprenticeship.ApprenticeshipId);
@@ -103,8 +101,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 
                 return latestApprenticeship;
             }
-
-
+            
         }
 
         private void UpdatePriceEpisodes(List<ApprenticeshipPriceEpisodeModel> receivedPriceEpisodes, List<ApprenticeshipPriceEpisodeModel> currentPriceEpisodes)
@@ -127,5 +124,4 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
     }
 
 
-}
 }

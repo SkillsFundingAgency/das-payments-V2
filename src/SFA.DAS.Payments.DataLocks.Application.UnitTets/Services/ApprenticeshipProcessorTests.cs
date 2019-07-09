@@ -12,6 +12,7 @@ using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.DataLocks.Application.Services;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -45,6 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     Id = model.Id,
                     Uln = model.Uln
                 });
+            
             mocker.Mock<IEndpointInstance>()
                 .Setup(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()))
                 .Returns(Task.CompletedTask);
@@ -175,7 +177,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task Processes_ApprenticeshipUpdated()
+        public async Task Processes_UpdatedApprenticeship()
         {
             var approvalsEvent = new ApprenticeshipUpdatedApprovedEvent()
             {
@@ -198,19 +200,32 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
 
             mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.Update(It.IsAny<ApprenticeshipModel>()))
-                .ReturnsAsync(() => new List<ApprenticeshipDuplicateModel>());
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = approvalsEvent.ApprenticeshipId,
+                    Uln = long.Parse(approvalsEvent.Uln),
+                    
+                });
+
+            mocker.Mock<IMapper>()
+                .Setup(x => x.Map<UpdatedApprenticeshipModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()))
+                .Returns<ApprenticeshipUpdatedApprovedEvent>(model => new UpdatedApprenticeshipModel
+                {
+                    ApprenticeshipId = model.ApprenticeshipId,
+                    Uln = long.Parse(model.Uln),
+                    EstimatedStartDate = model.StartDate,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
+                });
 
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
             await apprenticeshipProcessor.ProcessUpdatedApprenticeship(approvalsEvent);
 
-            mocker.Mock<IApprenticeshipService>()
-                .Verify(svc => svc.NewApprenticeship(It.Is<ApprenticeshipModel>(model =>
-                    model.AccountId == approvalsEvent.AccountId
-                    && model.Id == approvalsEvent.ApprenticeshipId
-                    && model.Ukprn == approvalsEvent.ProviderId
-                    && model.Uln.ToString() == approvalsEvent.Uln)
-                ), Times.Once);
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
+                        ev.Id == approvalsEvent.ApprenticeshipId
+                        && ev.Uln.ToString() == approvalsEvent.Uln),
+                    It.IsAny<PublishOptions>()), Times.Once);
 
         }
 

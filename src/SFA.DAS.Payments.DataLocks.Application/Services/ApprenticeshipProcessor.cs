@@ -58,20 +58,21 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             try
             {
-                logger.LogDebug($"Now processing the apprenticeship update event. Apprenticeship id: {apprenticeshipApprovedEvent.ApprenticeshipId}");
+                logger.LogDebug($"Now processing the apprenticeship update even for Apprenticeship id: {apprenticeshipApprovedEvent.ApprenticeshipId}");
                 var model = mapper.Map<UpdatedApprenticeshipModel>(apprenticeshipApprovedEvent);
-                var ipdateApprenticeship = await apprenticeshipService.UpdateApprenticeship(model).ConfigureAwait(false);
 
+                var updatedApprenticeship = await apprenticeshipService.UpdateApprenticeship(model).ConfigureAwait(false);
 
-                var updatedEvent = mapper.Map<ApprenticeshipUpdated>(model);
-                updatedEvent.Duplicates = duplicates.Select(duplicate => new ApprenticeshipDuplicate { Ukprn = duplicate.Ukprn, ApprenticeshipId = duplicate.ApprenticeshipId }).ToList();
+                var updatedEvent = mapper.Map<ApprenticeshipUpdated>(updatedApprenticeship);
+
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
                 await endpointInstance.Publish(updatedEvent).ConfigureAwait(false);
-                logger.LogInfo($"Finished processing the apprenticeship created event. Apprenticeship id: {updatedEvent.ApprenticeshipId}, employer account id: {updatedEvent.AccountId}, Ukprn: {updatedEvent.ProviderId}.");
+
+                logger.LogInfo($"Finished processing the apprenticeship updated event. Apprenticeship id: {updatedEvent.Id}, employer account id: {updatedEvent.EmployerAccountId}, Ukprn: {updatedEvent.Ukprn}.");
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error processing the apprenticeship event. Error: {ex.Message}", ex);
+                logger.LogError($"Error processing the apprenticeship updated event. Error: {ex.Message}", ex);
                 throw;
             }
         }
