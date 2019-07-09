@@ -315,6 +315,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
+        private void AddLearningSupportFam(MessageLearnerLearningDelivery delivery, Aim aim)
+        {
+            var learningDeliveryFams = delivery.LearningDeliveryFAM.ToList();
+            learningDeliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
+            {
+                LearnDelFAMType = LearnDelFAMType.LSF.ToString(),
+                LearnDelFAMCode = aim.LearningSupportCode.Value.ToString(),
+                LearnDelFAMDateFrom = aim.LearningSupportDateFrom.ToDate(),
+                LearnDelFAMDateFromSpecified = true,
+                LearnDelFAMDateTo = aim.LearningSupportDateTo.ToDate(),
+                LearnDelFAMDateToSpecified = true
+            });
+
+            delivery.LearningDeliveryFAM = learningDeliveryFams.ToArray();
+        }
+
         private void MutateLearningDeliveryFamsForLearner(MessageLearnerLearningDelivery delivery, Aim aim)
         {
             List<MessageLearnerLearningDeliveryLearningDeliveryFAM> listOfLearningDeliveryFams;
@@ -330,6 +346,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             {
                 listOfLearningDeliveryFams = new List<MessageLearnerLearningDeliveryLearningDeliveryFAM>();
             }
+
+            // not all fams are at Price Episode level.
+            listOfLearningDeliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
+            {
+                LearnDelFAMType = LearnDelFAMType.LSF.ToString(),
+                LearnDelFAMCode = aim.LearningSupportCode.Value.ToString(),
+                LearnDelFAMDateFrom = aim.LearningSupportDateFrom.ToDate(),
+                LearnDelFAMDateFromSpecified = true,
+                LearnDelFAMDateTo = aim.LearningSupportDateTo.ToDate(),
+                LearnDelFAMDateToSpecified = true
+            });
 
             foreach (var priceEpisode in aim.PriceEpisodes)
             {

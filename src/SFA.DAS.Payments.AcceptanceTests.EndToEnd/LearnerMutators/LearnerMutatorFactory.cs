@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DCT.TestDataGenerator.Functor;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
@@ -39,6 +39,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "394":
                 case "436":
                 case "893":
+                case "429":
+                case "488":
+                   return new Framework593Learner(learners, featureNumber);
                 case "389":
                 case "390":
                     return new Framework593Learner(learners, featureNumber);
@@ -48,9 +51,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "330":
                     return new Framework403Learner(learners, featureNumber);
                 case "443":
-                case "445":
                 case "444":
+                case "445":
                 case "446":
+                case "489":
                 case "205":
                 case "207":
                     return new StandardLearner(learners, featureNumber);
