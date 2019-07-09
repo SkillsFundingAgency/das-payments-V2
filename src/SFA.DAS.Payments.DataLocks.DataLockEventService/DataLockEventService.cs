@@ -14,7 +14,7 @@ using SFA.DAS.Payments.ServiceFabric.Core;
 namespace SFA.DAS.Payments.DataLocks.DataLockEventService
 {
     [StatePersistence(StatePersistence.Persisted)]
-    internal sealed class DataLockEventService : StatefulService
+    public class DataLockEventService : StatefulService
     {
         private IStatefulEndpointCommunicationListener listener;
         private readonly ILifetimeScope lifetimeScope;

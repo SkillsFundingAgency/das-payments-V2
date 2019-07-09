@@ -12,6 +12,7 @@
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />
+    <Parameter Name="PaymentsConnectionStringV1" Value="__DasPaymentsV1ConnectionStringRW__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="DataLockService_EndpointName" Value="__DataLockService_EndpointName__" />
