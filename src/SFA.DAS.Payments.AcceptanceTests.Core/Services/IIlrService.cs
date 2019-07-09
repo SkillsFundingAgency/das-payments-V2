@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
     public interface IIlrService
     {
-        Task PublishLearnerRequest(List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> clearCache);
+        Task PublishLearnerRequest(List<Training> previousIlr, List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> clearCache);
     }
 }

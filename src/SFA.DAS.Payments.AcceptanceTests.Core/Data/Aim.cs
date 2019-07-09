@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
@@ -28,6 +30,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             LearningSupportDateFrom = training.LearningSupportDateFrom;
             LearningSupportDateTo = training.LearningSupportDateTo;
             FundingAdjustmentForPriorLearning = training.FundingAdjustmentForPriorLearning;
+            ContractType = training.ContractType;
         }
 
         CompletionStatus CompletionStatusFromString(string completionStatus)
@@ -73,5 +76,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string FundingAdjustmentForPriorLearning { get; set; }
 
         public bool IsMainAim => AimReference == "ZPROG001";
+
+        public bool IsMathsAndEnglish => AimReference == "50114979" || AimReference == "50093186";
+
+        public bool HasContractType => (int) ContractType != 0;
+
+        public ContractType ContractType { get; set; }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DCT.TestDataGenerator.Functor;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.BasicDay;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.ProviderChange;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy.SmallEmployer;
@@ -26,37 +25,49 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "335":
                 case "336":
                 case "337":
+                case "379":
+                case "381":
+                case "382":
                 case "387":
-                case "402":
-                case "427":
-                case "435":
-                case "437":
-                case "485":
-                case "528":
-                case "438":
-                case "615":
-                case "529":
-                case "394":
-                case "436":
-                case "893":
-                case "429":
-                case "488":
-                   return new Framework593Learner(learners, featureNumber);
                 case "389":
                 case "390":
+                case "393":
+                case "394":
+                case "402":
+                case "427":
+                case "429":
+                case "435":
+                case "436":
+                case "437":
+                case "438":
+                case "464":
+                case "485":
+                case "488":
+                case "499":
+                case "501":
+                case "509":
+                case "514":
+                case "528":
+                case "529":
+                case "615":
+                case "893":
                     return new Framework593Learner(learners, featureNumber);
-                case "487":
                 case "326":
                 case "329":
                 case "330":
+                case "331":
+                case "351":
+                case "352":
+                case "487":
                     return new Framework403Learner(learners, featureNumber);
+                case "205":
+                case "207":
                 case "443":
                 case "444":
                 case "445":
                 case "446":
                 case "489":
-                case "205":
-                case "207":
+                case "526":
                     return new StandardLearner(learners, featureNumber);
                 case "324":
                 case "325":

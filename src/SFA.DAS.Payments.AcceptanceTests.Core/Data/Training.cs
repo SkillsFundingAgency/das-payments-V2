@@ -46,5 +46,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string FundingAdjustmentForPriorLearning { get; set; }
 
         public string OriginalStartDate { get; set; }
+        public string EmploymentStatus { get; set; }
+        public string EmploymentStatusApplies { get; set; }
+        public string Employer { get; set; }
     }
 }

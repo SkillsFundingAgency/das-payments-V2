@@ -50,6 +50,8 @@ delete from Payments2.FundingSourceEvent where Ukprn = {0}
 delete from Payments2.RequiredPaymentEvent where Ukprn = {0}
 
 delete from Payments2.Payment where Ukprn = {0}
+
+delete from Payments2.SubmittedLearnerAim where Ukprn = {0}
 ";
 
             Database.ExecuteSqlCommand(deleteUkprnData, ukprn);

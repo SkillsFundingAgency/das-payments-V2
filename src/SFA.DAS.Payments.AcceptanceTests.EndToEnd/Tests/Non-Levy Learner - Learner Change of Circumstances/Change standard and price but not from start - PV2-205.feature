@@ -12,9 +12,9 @@ Scenario Outline: Non-Levy learner changes standard with accompanying change to 
         | Learner Reference Number | Uln |
         | na                       |     |
 	And the following aims
-		| Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Programme Type | Standard Code | Funding Line Type                               | Completion Status |
-		| ZPROG001      | 03/Aug/Current Academic Year | 12 months        | 3 months        | 1                   | 25             | 52            | 19+ Apprenticeship Non-Levy Contract (procured) | withdrawn         |
-		| ZPROG001      | 12/Nov/Current Academic Year | 12 months        |                 | 3                   | 25             | 53            | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        |
+		| Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Programme Type | Standard Code | Funding Line Type                               | Completion Status | Contract Type |
+		| ZPROG001      | 03/Aug/Current Academic Year | 12 months        | 3 months        | 1                   | 25             | 52            | 19+ Apprenticeship Non-Levy Contract (procured) | withdrawn         | Act2          |
+		| ZPROG001      | 12/Nov/Current Academic Year | 12 months        |                 | 3                   | 25             | 53            | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        | Act2          |
 	And price details as follows		
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
         | pe-1             | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | Act2          | 1                   | 90%                         |
