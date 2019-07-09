@@ -160,22 +160,48 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             CreateEmploymentStatusMonitoringRecords(EmploymentStatusMonitoring esm)
         {
             var messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring =
-                new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>
-                {
-                    new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
-                    {
-                        ESMType = EmploymentStatusMonitoringType.EII.ToString(),
-                        ESMCode = (int) EmploymentStatusMonitoringCode.EmploymentIntensity30Hours,
-                        ESMCodeSpecified = true
-                    },
+                new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>();
 
-                    new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+            if (esm.EmploymentStatus.ToEmpStatCode() == (int)EmploymentStatus.PaidEmployment)
+            {
+                messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring =
+                    new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>
                     {
-                        ESMType = EmploymentStatusMonitoringType.LOE.ToString(),
-                        ESMCode = (int) EmploymentStatusMonitoringCode.Employed12Plus,
-                        ESMCodeSpecified = true
-                    }
-                };
+                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                        {
+                            ESMType = EmploymentStatusMonitoringType.EII.ToString(),
+                            ESMCode = (int) EmploymentStatusMonitoringCode.EmploymentIntensity30Hours,
+                            ESMCodeSpecified = true
+                        },
+
+                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                        {
+                            ESMType = EmploymentStatusMonitoringType.LOE.ToString(),
+                            ESMCode = (int) EmploymentStatusMonitoringCode.Employed12Plus,
+                            ESMCodeSpecified = true
+                        }
+                    };
+            }
+            else if (esm.EmploymentStatus.ToEmpStatCode() == (int)EmploymentStatus.LookingForWork)
+            {
+                messageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring =
+                    new List<MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring>
+                    {
+                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                        {
+                            ESMType = EmploymentStatusMonitoringType.LOU.ToString(),
+                            ESMCode = (int) EmploymentStatusMonitoringCode.Unemployed1223,
+                            ESMCodeSpecified = true
+                        },
+
+                        new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring()
+                        {
+                            ESMType = EmploymentStatusMonitoringType.BSI.ToString(),
+                            ESMCode = (int) EmploymentStatusMonitoringCode.BenefitEmploymentSupport,
+                            ESMCodeSpecified = true
+                        }
+                    };
+            }
 
             if (!string.IsNullOrWhiteSpace(esm.SmallEmployer))
             {
