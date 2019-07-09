@@ -451,6 +451,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 delivery.LearningDeliveryFAM = AddActToLearningDeliveryFam(aim.ContractType, delivery.LearnStartDate, delivery.LearnActEndDate, delivery.LearningDeliveryFAM.ToList(), aim.ActualDurationAsTimespan.HasValue);
             }
 
+            var listOfLearningDeliveryFams = delivery.LearningDeliveryFAM.ToList();
+
             // not all fams are at Price Episode level.
             if (aim.LearningSupportCode.HasValue)
             {
