@@ -1,6 +1,4 @@
-﻿@ignore
-# failing due to incorrect handling of maths and english contract types
-Feature: Levy - Learner change of circumstances - change in aim sequence number PV2-339
+﻿Feature: Levy - Learner change of circumstances - change in aim sequence number PV2-339
 As a provider,
 I want a levy learner, where provider changes aim sequence number after payments have occurred, to be paid the correct amount
 So that I am accurately paid my apprenticeship provision.PV2-339
@@ -54,31 +52,31 @@ Scenario Outline: Levy apprentice, provider changes aim sequence numbers in ILR 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	
     Then the following learner earnings should be generated
-        | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier |
-        | Aug/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Sep/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Oct/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Nov/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Dec/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Jan/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Feb/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Mar/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Apr/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | May/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Jun/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Jul/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        |
-        | Aug/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Sep/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Oct/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Nov/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Dec/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Jan/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Feb/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Mar/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Apr/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | May/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Jun/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
-        | Jul/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          |
+        | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Contract Type |
+        | Aug/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Sep/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Oct/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Nov/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Dec/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Jan/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Feb/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Mar/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Apr/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | May/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Jun/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Jul/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | 1st price details        | Act1          |
+        | Aug/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Sep/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Oct/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Nov/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Dec/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Jan/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Feb/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Mar/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Apr/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | May/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Jun/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Jul/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
 
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
