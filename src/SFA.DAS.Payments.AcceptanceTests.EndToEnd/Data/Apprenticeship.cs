@@ -33,6 +33,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public int? ProgrammeType { get; set; }
         public int? PathwayCode { get; set; }
         public int? StandardCode { get; set; }
+
+        public string AgreedOnDate { get; set; }
+
     }
 
 }

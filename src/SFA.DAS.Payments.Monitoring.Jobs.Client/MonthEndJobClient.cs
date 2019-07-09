@@ -28,6 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         {
             logger.LogVerbose($"Sending request to record start of month end job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
             generatedMessages.ForEach(message => logger.LogVerbose($"Learner command event id: {message.MessageId}"));
+
             var providerEarningsEvent = new RecordStartedProcessingMonthEndJob
             {
                 JobId = jobId,
