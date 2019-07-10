@@ -17,5 +17,7 @@
 	TransferSendingEmployerAccountId BIGINT NULL,
 	StopDate Date NULL, 
     [Status] TINYINT NOT NULL,
-    [IsLevyPayer] BIT NOT NULL 
+    [IsLevyPayer] BIT NOT NULL,
+	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_Apprenticeship__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
+
 )

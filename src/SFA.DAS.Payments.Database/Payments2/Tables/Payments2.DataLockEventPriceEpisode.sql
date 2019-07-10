@@ -1,7 +1,7 @@
-﻿CREATE TABLE [Payments2].[EarningEventPriceEpisode]
+﻿CREATE TABLE [Payments2].[DataLockEventPriceEpisode]
 (
-	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_EarningEventPriceEpisode PRIMARY KEY CLUSTERED,
-	EarningEventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_EarningEventPriceEpisode__EarningEvent FOREIGN KEY REFERENCES [Payments2].[EarningEvent] (EventId), 
+	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_DataLockEventPriceEpisode PRIMARY KEY CLUSTERED,
+	DataLockEventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_DataLockEventPriceEpisode__DataLockEvent FOREIGN KEY REFERENCES [Payments2].[DataLockEvent] (EventId), 
 	PriceEpisodeIdentifier NVARCHAR(50) NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	TotalNegotiatedPrice1 DECIMAL(15,5) NOT NULL,
@@ -18,5 +18,5 @@
 	Completed BIT NOT NULL,
     EmployerContribution DECIMAL(15,5) NULL,
     CompletionHoldBackExemptionCode INT NULL,
-	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	
+	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	
 )
