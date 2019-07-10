@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
-using SFA.DAS.Payments.Model.Core.Entities;
+﻿using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions
 {
@@ -19,6 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions
                     apprenticeshipStatus = ApprenticeshipStatus.Active;
                     break;
                 case "cancelled":
+                case "stopped":
                     apprenticeshipStatus = ApprenticeshipStatus.Stopped;
                     break;
                 case "paused":
