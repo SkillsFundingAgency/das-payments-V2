@@ -93,6 +93,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Priority, opt => opt.Ignore())
                 .ForMember(dest => dest.IsLevyPayer, opt => opt.Ignore())
                 ;
+
+            CreateMap<DataLockEvent, DataLockStatusChanged>()
+                .ForMember(destinationMember => destinationMember.TransactionTypesAndPeriods, opt => opt.Ignore());
         }
     }
 }

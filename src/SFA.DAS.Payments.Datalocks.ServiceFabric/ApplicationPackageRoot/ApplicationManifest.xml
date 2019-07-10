@@ -5,6 +5,9 @@
     <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_PartitionCount" DefaultValue="1" />
     <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="ApprovalsService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DataLockStatusChangedService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DataLockStatusChangedService_EndpointName" DefaultValue="" />
+    <Parameter Name="DataLockStatusChangedService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="DataLockProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="DataLockServiceActorService_MinReplicaSetSize" DefaultValue="3" />
@@ -77,6 +80,28 @@
     </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.DataLocks.DataLockStatusChangedServicePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[DataLockStatusChangedService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[DataLockStatusChangedService_FailedMessagesQueue]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.DataLocks.DataLockProxyServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
@@ -133,6 +158,11 @@
     </Service>
     <Service Name="SFA.DAS.Payments.DataLocks.ApprovalsService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.ApprovalsServiceType" InstanceCount="[ApprovalsService_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="SFA.DAS.Payments.DataLocks.DataLockStatusChangedService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.DataLockStatusChangedServiceType" InstanceCount="[DataLockStatusChangedService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>

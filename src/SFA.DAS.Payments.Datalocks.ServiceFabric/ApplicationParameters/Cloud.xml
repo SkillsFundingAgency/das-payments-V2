@@ -5,6 +5,9 @@
     <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_MinReplicaSetSize" Value="3" />
     <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_TargetReplicaSetSize" Value="3" />
     <Parameter Name="ApprovalsService_InstanceCount" Value="__ApprovalsService_InstanceCount__" />
+    <Parameter Name="DataLockStatusChangedService_InstanceCount" Value="__DataLockStatusChangedService_InstanceCount__" />
+    <Parameter Name="DataLockStatusChangedService_EndpointName" Value="__DataLockStatusChangedService_EndpointName__" />
+    <Parameter Name="DataLockStatusChangedService_FailedMessagesQueue" Value="__DataLockStatusChangedService_FailedMessagesQueue__" />
     <Parameter Name="DataLockProxyService_InstanceCount" Value="__DataLockProxyService_InstanceCount__" />
     <Parameter Name="DataLockServiceActorService_PartitionCount" Value="__DataLockServiceActorService_PartitionCount__" />
     <Parameter Name="DataLockServiceActorService_MinReplicaSetSize" Value="__DataLockServiceActorService_MinReplicaSetSize__" />
