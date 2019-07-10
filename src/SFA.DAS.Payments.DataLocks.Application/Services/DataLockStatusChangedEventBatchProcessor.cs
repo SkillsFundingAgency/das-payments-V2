@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
-using AutoMapper;
 using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
@@ -18,7 +17,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         private readonly IBatchedDataCache<DataLockStatusChanged> cache;
         private readonly IPaymentLogger logger;
-        private IMapper mapper;
         private readonly IBulkWriter<LegacyDataLockEvent> dataLockEventWriter;
         private readonly IBulkWriter<LegacyDataLockEventCommitmentVersion> dataLockEventCommitmentVersionWriter;
         private readonly IBulkWriter<LegacyDataLockEventError> dataLockEventErrorWriter;
@@ -27,7 +25,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         public DataLockStatusChangedEventBatchProcessor(
             IBatchedDataCache<DataLockStatusChanged> cache,
             IPaymentLogger logger,
-            IMapper mapper,
             IBulkWriter<LegacyDataLockEvent> dataLockEventWriter,
             IBulkWriter<LegacyDataLockEventCommitmentVersion> dataLockEventCommitmentVersionWriter,
             IBulkWriter<LegacyDataLockEventError> dataLockEventErrorWriter,
@@ -35,7 +32,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             this.cache = cache;
             this.logger = logger;
-            this.mapper = mapper;
             this.dataLockEventWriter = dataLockEventWriter;
             this.dataLockEventCommitmentVersionWriter = dataLockEventCommitmentVersionWriter;
             this.dataLockEventErrorWriter = dataLockEventErrorWriter;
@@ -58,7 +54,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     foreach (var dataLockStatusChangedEvent in batch)
                     {
-                        var errorCode = dataLockStatusChangedEvent is DataLockStatusChangedToFailed ? ((DataLockStatusChangedToFailed) dataLockStatusChangedEvent).ErrorCode : (DataLockErrorCode?) null;
+                        int savedEvents = 0, savedCommitmentVersions = 0, savedPeriods = 0, savedErrors = 0;
+
+                        var errorCode = dataLockStatusChangedEvent is DataLockStatusChangedToFailed failed ? failed.ErrorCode : (DataLockErrorCode?) null;
 
                         // TODO: group by commitment ID
 
@@ -67,124 +65,161 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                         foreach (var priceEpisode in priceEpisodes)
                         {
-                            var dataLockEvent = new LegacyDataLockEvent // commitment ID
-                            {
-                                AcademicYear = dataLockStatusChangedEvent.CollectionPeriod.AcademicYear.ToString(),
-                                Ukprn = dataLockStatusChangedEvent.Ukprn,
-                                DataLockEventId = dataLockStatusChangedEvent.EventId,
-                                EventSource = 1, // submission
-                                HasErrors = !(dataLockStatusChangedEvent is DataLockStatusChangedToPassed),
-                                Uln = dataLockStatusChangedEvent.Learner.Uln,
-                                Status = (dataLockStatusChangedEvent is DataLockStatusChangedToPassed) ? 3 : (dataLockStatusChangedEvent is DataLockStatusChangedToFailed) ? 1 : 2,
-                                ProcessDateTime = DateTime.UtcNow,
-                                LearnRefnumber = dataLockStatusChangedEvent.Learner.ReferenceNumber,
-                                IlrFrameworkCode = dataLockStatusChangedEvent.LearningAim.FrameworkCode,
-                                IlrPathwayCode = dataLockStatusChangedEvent.LearningAim.PathwayCode,
-                                IlrProgrammeType = dataLockStatusChangedEvent.LearningAim.ProgrammeType,
-                                IlrStandardCode = dataLockStatusChangedEvent.LearningAim.StandardCode,
-                                SubmittedDateTime = dataLockStatusChangedEvent.IlrSubmissionDateTime,
+                            await SaveDataLockEvent(cancellationToken, dataLockStatusChangedEvent, priceEpisode).ConfigureAwait(false);
+                            savedEvents++;
 
-                                PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier,
-                                CommitmentId = priceEpisode.ApprenticeshipId.GetValueOrDefault(0),
-                                EmployerAccountId = priceEpisode.AccountId.GetValueOrDefault(0),
-
-                                //AimSeqNumber = 
-                                //IlrPriceEffectiveFromDate = price episode (earning via earning period PE ID)
-                                //IlrPriceEffectiveToDate = price episode (earning via earning period PE ID)
-                                //IlrEndpointAssessorPrice = price episode (earning via earning period PE ID)
-                                //IlrFileName = price episode (earning via earning period PE ID)
-                                //IlrStartDate = price episode (earning via earning period PE ID)
-                                //IlrTrainingPrice = price episode (earning via earning period PE ID)
-
-                            };
-
-                            await dataLockEventWriter.Write(dataLockEvent, cancellationToken).ConfigureAwait(false);
-
-
-
-                            // for error commitment versions can be multiple, for pass there is one.
-                            var commitmentVersionIds = new List<long>();
-
-                            if (errorCode.HasValue)
-                            {
-                                commitmentVersionIds.AddRange(priceEpisode.DataLockFailures.SelectMany(f => f.ApprenticeshipPriceEpisodeIds).Distinct());
-                            }
-                            else
-                            {
-                                commitmentVersionIds.Add(priceEpisode.ApprenticeshipPriceEpisodeId.GetValueOrDefault(0));
-                            }
+                            var commitmentVersionIds = GetCommitmentVersions(errorCode, priceEpisode);
 
                             foreach (var commitmentVersionId in commitmentVersionIds)
                             {
-                                var commitmentVersions = new LegacyDataLockEventCommitmentVersion
-                                {
-                                    DataLockEventId = dataLockStatusChangedEvent.EventId,
-                                    CommitmentVersion = commitmentVersionId.ToString(),
-                                    //CommitmentEffectiveDate = 
-                                    //CommitmentFrameworkCode = 
-                                    //CommitmentNegotiatedPrice = 
-                                    //CommitmentPathwayCode = 
-                                    //CommitmentProgrammeType = 
-                                    //CommitmentStandardCode = 
-                                    //CommitmentStartDate =                             
-                                };
+                                await SaveCommitmentVersion(cancellationToken, dataLockStatusChangedEvent, commitmentVersionId).ConfigureAwait(false);
+                                savedCommitmentVersions++;
 
-                                await dataLockEventCommitmentVersionWriter.Write(commitmentVersions, cancellationToken).ConfigureAwait(false);
+
+                                // collection periods (and transaction types) are recorded per commitment version
+                                // v1 does not record delivery periods so we only need to create a record per transaction type for current collection period
+                                foreach (var transactionTypesAndPeriod in dataLockStatusChangedEvent.TransactionTypesAndPeriods)
+                                {
+                                    await SaveEventPeriods(cancellationToken, dataLockStatusChangedEvent, transactionTypesAndPeriod, errorCode, commitmentVersionId).ConfigureAwait(false);
+                                    savedPeriods++;
+                                }
                             }
 
                             if (errorCode.HasValue)
                             {
-                                var dataLockEventError = new LegacyDataLockEventError
-                                {
-                                    DataLockEventId = dataLockStatusChangedEvent.EventId,
-                                    SystemDescription = errorCode.ToString(),
-                                    ErrorCode = errorCode.ToString()
-                                };
-
-                                await dataLockEventErrorWriter.Write(dataLockEventError, cancellationToken).ConfigureAwait(false);
+                                await SaveErrorCodes(cancellationToken, dataLockStatusChangedEvent, errorCode).ConfigureAwait(false);
+                                savedErrors++;
                             }
-
-
-
-                            foreach (var transactionTypesAndPeriod in dataLockStatusChangedEvent.TransactionTypesAndPeriods)
-                            {
-                                var period = dataLockStatusChangedEvent.CollectionPeriod.Period;
-
-                                var dataLockEventPeriod = new LegacyDataLockEventPeriod
-                                {
-                                    DataLockEventId = dataLockStatusChangedEvent.EventId,
-                                    TransactionType = (int)transactionTypesAndPeriod.Key,
-                                    CollectionPeriodYear = dataLockStatusChangedEvent.CollectionPeriod.AcademicYear,
-                                    CollectionPeriodName = $"{dataLockStatusChangedEvent.CollectionPeriod.AcademicYear}-{period:D2}" ,
-                                    CollectionPeriodMonth = (period < 6) ? period + 7 : period - 5,
-                                    IsPayable = !errorCode.HasValue
-
-                                    //CommitmentVersion = 
-                                };
-                                await dataLockEventPeriodWriter.Write(dataLockEventPeriod, cancellationToken).ConfigureAwait(false);
-                            }
-
-
                         }
 
-
-
-                        logger.LogVerbose($"Saving {typeof(T).Name} to table: {dataLockStatusChangedEvent}");
-                        await bulkWriter.Write(dataLockStatusChangedEvent, cancellationToken).ConfigureAwait(false);
+                        logger.LogDebug($"Saved DataLockStatusChanged event {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}. Legacy events: {savedEvents}, commitment versions: {savedCommitmentVersions}, periods: {savedPeriods}, errors: {savedErrors}");
                     }
 
-                    await bulkWriter.Flush(cancellationToken).ConfigureAwait(false);
+                    await dataLockEventWriter.Flush(cancellationToken).ConfigureAwait(false);
+                    await dataLockEventCommitmentVersionWriter.Flush(cancellationToken).ConfigureAwait(false);
+                    await dataLockEventPeriodWriter.Flush(cancellationToken).ConfigureAwait(false);
+                    await dataLockEventErrorWriter.Flush(cancellationToken).ConfigureAwait(false);
+
                     scope.Complete();
                 }
                 catch (Exception e)
                 {
-                    logger.LogError($"Error performing bulk copy for model type: {typeof(T).Name}. Error: {e.Message}", e);
+                    logger.LogError($"Error saving batch of DataLockStatusChanged events. Error: {e.Message}", e);
                     throw;
                 }
             }
 
             return batch.Count;
 
+        }
+
+        private async Task SaveErrorCodes(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, DataLockErrorCode? errorCode)
+        {
+            var dataLockEventError = new LegacyDataLockEventError
+            {
+                DataLockEventId = dataLockStatusChangedEvent.EventId,
+                SystemDescription = errorCode.ToString(),
+                ErrorCode = errorCode.ToString()
+            };
+
+            logger.LogVerbose($"Saving DataLockEventError for legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
+
+            await dataLockEventErrorWriter.Write(dataLockEventError, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task SaveEventPeriods(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, KeyValuePair<TransactionType, List<EarningPeriod>> transactionTypesAndPeriod, DataLockErrorCode? errorCode, long commitmentVersionId)
+        {
+            var collectionPeriod = dataLockStatusChangedEvent.CollectionPeriod.Period;
+
+            var dataLockEventPeriod = new LegacyDataLockEventPeriod
+            {
+                DataLockEventId = dataLockStatusChangedEvent.EventId,
+                TransactionType = (int) transactionTypesAndPeriod.Key,
+                CollectionPeriodYear = dataLockStatusChangedEvent.CollectionPeriod.AcademicYear,
+                CollectionPeriodName = $"{dataLockStatusChangedEvent.CollectionPeriod.AcademicYear}-{collectionPeriod:D2}",
+                CollectionPeriodMonth = (collectionPeriod < 6) ? collectionPeriod + 7 : collectionPeriod - 5,
+                IsPayable = !errorCode.HasValue,
+                CommitmentVersion = commitmentVersionId.ToString()
+            };
+
+            logger.LogVerbose($"Saving DataLockEventPeriod for legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
+
+            await dataLockEventPeriodWriter.Write(dataLockEventPeriod, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task SaveCommitmentVersion(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, long commitmentVersionId)
+        {
+            var commitmentVersions = new LegacyDataLockEventCommitmentVersion
+            {
+                DataLockEventId = dataLockStatusChangedEvent.EventId,
+                CommitmentVersion = commitmentVersionId.ToString(),
+                //CommitmentEffectiveDate = 
+                //CommitmentFrameworkCode = 
+                //CommitmentNegotiatedPrice = 
+                //CommitmentPathwayCode = 
+                //CommitmentProgrammeType = 
+                //CommitmentStandardCode = 
+                //CommitmentStartDate =                             
+            };
+
+            logger.LogVerbose($"Saving DataLockEventCommitmentVersion for legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
+
+            await dataLockEventCommitmentVersionWriter.Write(commitmentVersions, cancellationToken).ConfigureAwait(false);
+        }
+
+        private static List<long> GetCommitmentVersions(DataLockErrorCode? errorCode, EarningPeriod priceEpisode)
+        {
+// for error commitment versions can be multiple, for pass there is one.
+            var commitmentVersionIds = new List<long>();
+
+            if (errorCode.HasValue)
+            {
+                commitmentVersionIds.AddRange(priceEpisode.DataLockFailures.SelectMany(f => f.ApprenticeshipPriceEpisodeIds).Distinct());
+            }
+            else
+            {
+                commitmentVersionIds.Add(priceEpisode.ApprenticeshipPriceEpisodeId.GetValueOrDefault(0));
+            }
+
+            return commitmentVersionIds;
+        }
+
+        private async Task<LegacyDataLockEvent> SaveDataLockEvent(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, EarningPeriod priceEpisode)
+        {
+            var dataLockEvent = new LegacyDataLockEvent // commitment ID
+            {
+                AcademicYear = dataLockStatusChangedEvent.CollectionPeriod.AcademicYear.ToString(),
+                Ukprn = dataLockStatusChangedEvent.Ukprn,
+                DataLockEventId = dataLockStatusChangedEvent.EventId,
+                EventSource = 1, // submission
+                HasErrors = !(dataLockStatusChangedEvent is DataLockStatusChangedToPassed),
+                Uln = dataLockStatusChangedEvent.Learner.Uln,
+                Status = (dataLockStatusChangedEvent is DataLockStatusChangedToPassed) ? 3 : (dataLockStatusChangedEvent is DataLockStatusChangedToFailed) ? 1 : 2,
+                ProcessDateTime = DateTime.UtcNow,
+                LearnRefnumber = dataLockStatusChangedEvent.Learner.ReferenceNumber,
+                IlrFrameworkCode = dataLockStatusChangedEvent.LearningAim.FrameworkCode,
+                IlrPathwayCode = dataLockStatusChangedEvent.LearningAim.PathwayCode,
+                IlrProgrammeType = dataLockStatusChangedEvent.LearningAim.ProgrammeType,
+                IlrStandardCode = dataLockStatusChangedEvent.LearningAim.StandardCode,
+                SubmittedDateTime = dataLockStatusChangedEvent.IlrSubmissionDateTime,
+
+                PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier,
+                CommitmentId = priceEpisode.ApprenticeshipId.GetValueOrDefault(0),
+                EmployerAccountId = priceEpisode.AccountId.GetValueOrDefault(0),
+
+                //AimSeqNumber = 
+                //IlrPriceEffectiveFromDate = price episode (earning via earning period PE ID)
+                //IlrPriceEffectiveToDate = price episode (earning via earning period PE ID)
+                //IlrEndpointAssessorPrice = price episode (earning via earning period PE ID)
+                //IlrFileName = price episode (earning via earning period PE ID)
+                //IlrStartDate = price episode (earning via earning period PE ID)
+                //IlrTrainingPrice = price episode (earning via earning period PE ID)
+            };
+
+            logger.LogVerbose($"Saving legacy DataLockEvent {dataLockEvent.DataLockEventId} for UKPRN {dataLockEvent.Ukprn}");
+
+            await dataLockEventWriter.Write(dataLockEvent, cancellationToken).ConfigureAwait(false);
+            return dataLockEvent;
         }
     }
 }

@@ -33,7 +33,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<CalculatePeriodStartAndEndDate>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
 
-            builder.RegisterType<BatchProcessor<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<StateManagerUnitOfWork>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchedDataCache<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CachingEventProcessor<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -42,7 +41,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<BatchScope>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchScopeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchProcessingService<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<BulkWriter<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<DataLockStatusChangedEventBatchProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<LegacyDataLockEventBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LegacyDataLockEventCommitmentVersionBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
