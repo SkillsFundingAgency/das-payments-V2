@@ -8,6 +8,9 @@
     <Parameter Name="DataLockStatusChangedService_InstanceCount" Value="__DataLockStatusChangedService_InstanceCount__" />
     <Parameter Name="DataLockStatusChangedService_EndpointName" Value="__DataLockStatusChangedService_EndpointName__" />
     <Parameter Name="DataLockStatusChangedService_FailedMessagesQueue" Value="__DataLockStatusChangedService_FailedMessagesQueue__" />
+    <Parameter Name="DataLockEventService_InstanceCount" Value="__DataLockEventService_InstanceCount__" />
+    <Parameter Name="DataLockEventService_EndpointName" Value="__DataLockEventService_EndpointName__" />
+    <Parameter Name="DataLockEventService_FailedMessagesQueue" Value="__DataLockEventService_FailedMessagesQueue__" />
     <Parameter Name="DataLockProxyService_InstanceCount" Value="__DataLockProxyService_InstanceCount__" />
     <Parameter Name="DataLockServiceActorService_PartitionCount" Value="__DataLockServiceActorService_PartitionCount__" />
     <Parameter Name="DataLockServiceActorService_MinReplicaSetSize" Value="__DataLockServiceActorService_MinReplicaSetSize__" />

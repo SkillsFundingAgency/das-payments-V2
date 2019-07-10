@@ -8,6 +8,9 @@
     <Parameter Name="DataLockStatusChangedService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockStatusChangedService_EndpointName" DefaultValue="" />
     <Parameter Name="DataLockStatusChangedService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="DataLockEventService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DataLockEventService_EndpointName" DefaultValue="" />
+    <Parameter Name="DataLockEventService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="DataLockProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="DataLockServiceActorService_MinReplicaSetSize" DefaultValue="3" />
