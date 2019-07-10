@@ -37,6 +37,7 @@
 #        | Framework uplift balancing   | 0     | ... | 0     | 0     | 0     |
 #        | Provider disadvantage uplift | 0     | ... | 0     | 0     | 0     |
 
+@ignore
 Feature: Employer Stops  PV2-948
 
 Scenario Outline: Employer stops commitment before the day that the course is completed, but in the same month, completes course early. Completion and Balancing payment not paid
@@ -83,22 +84,26 @@ Given the employer levy account balance in collection period <Collection_Period>
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
 		| 01/Aug/Last Academic Year | 14 months        | 15500                | 01/Aug/Last Academic Year           | 2000                   | 01/Aug/Last Academic Year             | 13 months       | completed         | Act1          | 1                   | ZPROG001      | 17            | 25             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
+	And price details are changed as follows        
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+		| pe-1             | 15500                | 01/Aug/Current Academic Year        | 2000                   | 01/Sep/Current Academic Year          | Act1          | 1                   | 90%                         |
+	
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
 	Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing |
-		| Aug/Current Academic Year | 1000         | 0          | 0         |
-		| Sep/Current Academic Year | 0            | 3500       | 1000      |
-		| Oct/Current Academic Year | 0            | 0          | 0         |
-		| Nov/Current Academic Year | 0            | 0          | 0         |
-		| Dec/Current Academic Year | 0            | 0          | 0         |
-		| Jan/Current Academic Year | 0            | 0          | 0         |
-		| Feb/Current Academic Year | 0            | 0          | 0         |
-		| Mar/Current Academic Year | 0            | 0          | 0         |
-		| Apr/Current Academic Year | 0            | 0          | 0         |
-		| May/Current Academic Year | 0            | 0          | 0         |
-		| Jun/Current Academic Year | 0            | 0          | 0         |
-		| Jul/Current Academic Year | 0            | 0          | 0         |
+		| Delivery Period           | On-Programme | Completion | Balancing |Price Episode Identifier |
+		| Aug/Current Academic Year | 1000         | 0          | 0         |pe-1                     |
+		| Sep/Current Academic Year | 0            | 3500       | 1000      |pe-1                     |
+		| Oct/Current Academic Year | 0            | 0          | 0         |pe-1                     |
+		| Nov/Current Academic Year | 0            | 0          | 0         |pe-1                     |
+		| Dec/Current Academic Year | 0            | 0          | 0         |pe-1                     |
+		| Jan/Current Academic Year | 0            | 0          | 0         |pe-1                     |
+		| Feb/Current Academic Year | 0            | 0          | 0         |pe-1                     |
+		| Mar/Current Academic Year | 0            | 0          | 0         |pe-1                     |
+		| Apr/Current Academic Year | 0            | 0          | 0         |pe-1                     |
+		| May/Current Academic Year | 0            | 0          | 0         |pe-1                     |
+		| Jun/Current Academic Year | 0            | 0          | 0         |pe-1                     |
+		| Jul/Current Academic Year | 0            | 0          | 0         |pe-1                     |
 
  # Please check if the next two steps need to be changed
     And the following non-payable earnings were generated
