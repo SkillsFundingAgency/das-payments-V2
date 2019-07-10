@@ -653,7 +653,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private void AddExemptionCodeLearningDeliveryFAM(MessageLearnerLearningDelivery delivery, int exemptionCode)
         {
-            DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(delivery, LearnDelFAMType.LDM, (LearnDelFAMCode)exemptionCode);
+            var deliveryFams = delivery.LearningDeliveryFAM.ToList();
+            deliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM
+                             {
+                                 LearnDelFAMType = LearnDelFAMType.LDM.ToString(),
+                                 LearnDelFAMCode = exemptionCode.ToString()
+                             });
+            delivery.LearningDeliveryFAM = deliveryFams.ToArray();
         }
 
         private void AddNewTnpAppFinRecordForResidualTrainingPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
