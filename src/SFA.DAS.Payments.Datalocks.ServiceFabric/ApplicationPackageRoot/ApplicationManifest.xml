@@ -4,12 +4,14 @@
     <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_PartitionCount" DefaultValue="1" />
     <Parameter Name="SFA.DAS.Payments.DataLocks.DataLockEventService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="ApprovalsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="DataLockServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="DataLockServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="DASServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionStringV1" DefaultValue="" />
@@ -17,6 +19,8 @@
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
+    <Parameter Name="ApprovalsService_EndpointName" DefaultValue="" />
+    <Parameter Name="ApprovalsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="DataLockService_EndpointName" DefaultValue="" />
     <Parameter Name="DataLockService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
@@ -44,6 +48,29 @@
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="BatchIntervalInSeconds" Value="[BatchIntervalInSeconds]" />
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.DataLocks.ApprovalsServicePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="DASServiceBusConnectionString" Value="[DASServiceBusConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[ApprovalsService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[ApprovalsService_FailedMessagesQueue]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -103,6 +130,11 @@
       <StatefulService ServiceTypeName="SFA.DAS.Payments.DataLocks.DataLockEventServiceType" TargetReplicaSetSize="[SFA.DAS.Payments.DataLocks.DataLockEventService_TargetReplicaSetSize]" MinReplicaSetSize="[SFA.DAS.Payments.DataLocks.DataLockEventService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[SFA.DAS.Payments.DataLocks.DataLockEventService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
+    </Service>
+    <Service Name="SFA.DAS.Payments.DataLocks.ApprovalsService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.ApprovalsServiceType" InstanceCount="[ApprovalsService_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
     </Service>
     <Service Name="SFA.DAS.Payments.DataLocks.DataLockProxyService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.DataLockProxyServiceType" InstanceCount="[DataLockProxyService_InstanceCount]">

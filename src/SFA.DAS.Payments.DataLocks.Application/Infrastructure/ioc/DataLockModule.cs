@@ -7,6 +7,7 @@ using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System.Collections.Generic;
 using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
@@ -47,6 +48,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<LegacyDataLockEventCommitmentVersionBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LegacyDataLockEventErrorBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LegacyDataLockEventPeriodBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<ApprenticeshipProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ApprenticeshipService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ApprenticeshipUpdatedProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@ignore
+﻿@ignore - issue with maths and english
 Feature: Levy learner changes aim reference for eng and maths aim and payments are reconciled - PV2-285
 		As a provider,
 		I want a levy learner, where aim reference for English and Maths is changed and payments are reconciled,
@@ -66,46 +66,46 @@ Scenario Outline: Levy learner changes aim reference for eng and maths aim and p
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	# New technical task is needed to hanndle Learning Aim Reference column
     Then the following learner earnings should be generated
-        | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Learning Aim Reference |
+        | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Learning Aim Reference | Contract Type |
 		#p1
-        | Aug/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Sep/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Oct/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Nov/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Dec/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Jan/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Feb/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Mar/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Apr/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | May/Last Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Jun/Last Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
-        | Jul/Last Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               |
+        | Aug/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Sep/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Oct/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Nov/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Dec/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Jan/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Feb/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Mar/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Apr/Last Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | May/Last Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Jun/Last Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
+        | Jul/Last Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | ZPROG001               | Act1          |
 		#p2
-        | Aug/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
-        | Sep/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
-        | Oct/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
-        | Nov/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
-        | Dec/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
-        | Jan/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
-        | Feb/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
-        | Mar/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
-        | Apr/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
-        | May/Last Academic Year | 0            | 0          | 0         | -39.25                     | 1                   |                          | 60001227               |
-        | Jun/Last Academic Year | 0            | 0          | 0         | -39.25                     | 1                   |                          | 60001227               |
-        | Jul/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               |
+        | Aug/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
+        | Sep/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
+        | Oct/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
+        | Nov/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
+        | Dec/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
+        | Jan/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
+        | Feb/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
+        | Mar/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
+        | Apr/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
+        | May/Last Academic Year | 0            | 0          | 0         | -39.25                     | 1                   |                          | 60001227               | Act1          |
+        | Jun/Last Academic Year | 0            | 0          | 0         | -39.25                     | 1                   |                          | 60001227               | Act1          |
+        | Jul/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 60001227               | Act1          |
 		#p3
-        | Aug/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               |
-        | Sep/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               |
-        | Oct/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               |
-        | Nov/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               |
-        | Dec/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               |
-        | Jan/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               |
-        | Feb/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               |
-        | Mar/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               |
-        | Apr/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               |
-        | May/Last Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | 50086832               |
-        | Jun/Last Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | 50086832               |
-        | Jul/Last Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | 50086832               |
+        | Aug/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               | Act1          |
+        | Sep/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               | Act1          |
+        | Oct/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               | Act1          |
+        | Nov/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               | Act1          |
+        | Dec/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               | Act1          |
+        | Jan/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               | Act1          |
+        | Feb/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               | Act1          |
+        | Mar/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               | Act1          |
+        | Apr/Last Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | 50086832               | Act1          |
+        | May/Last Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | 50086832               | Act1          |
+        | Jun/Last Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | 50086832               | Act1          |
+        | Jul/Last Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | 50086832               | Act1          |
 
 	## Option 1
 	## -ve and +ve resulted in 0 values - check if we need price episodes here
