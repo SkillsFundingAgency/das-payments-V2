@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                     LearningAimProgrammeType = model.LearningAimProgrammeType,
                     LearningAimReference = model.LearningAimReference,
                     LearningAimStandardCode = model.LearningAimStandardCode,
-                    Errors = JsonConvert.DeserializeObject<List<DataLockFailure>>(model.Errors)
+                    EarningPeriod = JsonConvert.DeserializeObject<EarningPeriod>(model.EarningPeriod)
                 })
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -85,7 +85,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 LearningAimProgrammeType = f.LearningAimProgrammeType,
                 LearningAimReference = f.LearningAimReference,
                 LearningAimStandardCode = f.LearningAimStandardCode,
-                Errors = JsonConvert.SerializeObject(f.Errors)
+                EarningPeriod = JsonConvert.SerializeObject(f.EarningPeriod)
             })).ConfigureAwait(false);
 
             await paymentsDataContext.SaveChangesAsync().ConfigureAwait(false);

@@ -226,7 +226,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
 
             var changedToFailEvent = new DataLockStatusChangedToFailed
             {
-                TransactionTypesAndPeriods = new Dictionary<TransactionType, List<byte>> {{TransactionType.Balancing, new List<byte> {1, 2}}},
+                TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>> {{TransactionType.Balancing, new List<EarningPeriod> {new EarningPeriod {Period = 1}, new EarningPeriod {Period = 2}}}},
                 EventId = Guid.NewGuid()
             };
 

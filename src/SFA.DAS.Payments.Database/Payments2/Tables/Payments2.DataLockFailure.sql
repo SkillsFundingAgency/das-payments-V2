@@ -13,7 +13,7 @@
     [TransactionType] TINYINT NOT NULL,
     [DeliveryPeriod] TINYINT NOT NULL, 
     [CollectionPeriod] TINYINT NOT NULL, 
-    [Errors] NVARCHAR(MAX) NOT NULL
+    [EarningPeriod] NVARCHAR(MAX) NOT NULL
 )
 
 GO

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Model.Entities
@@ -19,6 +18,6 @@ namespace SFA.DAS.Payments.DataLocks.Model.Entities
         public byte DeliveryPeriod { get; set; }
         public byte CollectionPeriod { get; set; }
         public TransactionType TransactionType { get; set; }
-        public List<DataLockFailure> Errors { get; set; }
+        public EarningPeriod EarningPeriod { get; set; }
     }
 }

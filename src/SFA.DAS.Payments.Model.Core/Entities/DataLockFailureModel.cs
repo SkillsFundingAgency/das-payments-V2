@@ -18,6 +18,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public byte CollectionPeriod { get; set; }
 
         public TransactionType TransactionType { get; set; }
-        public string Errors { get; set; }
+        public string EarningPeriod { get; set; }
     }
 }

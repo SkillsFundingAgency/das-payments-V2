@@ -31,9 +31,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         public async Task<List<DataLockStatusChanged>> ProcessDataLockEvent(DataLockEvent dataLockEvent)
         {
             var result = new List<DataLockStatusChanged>();
-            var changedToFailed = new DataLockStatusChangedToFailed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<byte>>()};
-            var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<byte>>()};
-            var failureChanged = new DataLockFailureChanged {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<byte>>()};
+            var changedToFailed = new DataLockStatusChangedToFailed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+            var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+            var failureChanged = new DataLockFailureChanged {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
             var failuresToDelete = new List<long>();
             var failuresToRecord = new List<DataLockFailureEntity>();
 
@@ -60,25 +60,24 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var period = key.Item2;
 
                 var oldFailureEntity = oldFailures.FirstOrDefault(f => f.TransactionType == transactionType && f.DeliveryPeriod == period);
-                var oldFailure = oldFailureEntity?.Errors;
-                var newFailure = newFailuresGroupedByTypeAndPeriod.ContainsKey(key) ? newFailuresGroupedByTypeAndPeriod[key] : null;
+                var oldFailure = oldFailureEntity?.EarningPeriod.DataLockFailures;
+                var newFailure = newFailuresGroupedByTypeAndPeriod.ContainsKey(key) ? newFailuresGroupedByTypeAndPeriod[key].DataLockFailures : null;
 
                 var statusChange = dataLockStatusService.GetStatusChange(oldFailure, newFailure);
 
                 switch (statusChange)
                 {
                     case DataLockStatusChange.ChangedToFailed:
-                        AddTypeAndPeriodToEvent(changedToFailed, transactionType, period);
-                        failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailure));
+                        AddTypeAndPeriodToEvent(changedToFailed, transactionType, newFailuresGroupedByTypeAndPeriod[key]);
+                        failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailuresGroupedByTypeAndPeriod[key]));
                         break;
                     case DataLockStatusChange.ChangedToPassed:
-                        AddTypeAndPeriodToEvent(changedToPassed, transactionType, period);
-                        if (oldFailureEntity != null)
-                            failuresToDelete.Add(oldFailureEntity.Id);
+                        AddTypeAndPeriodToEvent(changedToPassed, transactionType, oldFailureEntity.EarningPeriod);
+                        failuresToDelete.Add(oldFailureEntity.Id);
                         break;
                     case DataLockStatusChange.FailureCodeChanged:
-                        AddTypeAndPeriodToEvent(failureChanged, transactionType, period);
-                        failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailure));
+                        AddTypeAndPeriodToEvent(failureChanged, transactionType, newFailuresGroupedByTypeAndPeriod[key]);
+                        failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailuresGroupedByTypeAndPeriod[key]));
                         if (oldFailureEntity != null)
                             failuresToDelete.Add(oldFailureEntity.Id);
                         break;
@@ -108,7 +107,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return result;
         }
 
-        private static DataLockFailureEntity CreateEntity(DataLockEvent dataLockEvent, TransactionType transactionType, byte deliveryPeriod, List<DataLockFailure> failures)
+        private static DataLockFailureEntity CreateEntity(DataLockEvent dataLockEvent, TransactionType transactionType, byte deliveryPeriod, EarningPeriod period)
         {
             return new DataLockFailureEntity
             {
@@ -124,11 +123,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 LearningAimProgrammeType = dataLockEvent.LearningAim.ProgrammeType,
                 LearningAimReference = dataLockEvent.LearningAim.Reference,
                 LearningAimStandardCode = dataLockEvent.LearningAim.StandardCode,
-                Errors = failures
+                EarningPeriod = period
             };
         }
 
-        private static void AddTypeAndPeriodToEvent(DataLockStatusChanged changedToPassed, TransactionType transactionType, byte period)
+        private static void AddTypeAndPeriodToEvent(DataLockStatusChanged changedToPassed, TransactionType transactionType, EarningPeriod period)
         {
             if (changedToPassed.TransactionTypesAndPeriods.TryGetValue(transactionType, out var periods))
             {
@@ -136,44 +135,28 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
             else
             {
-                changedToPassed.TransactionTypesAndPeriods.Add(transactionType, new List<byte> {period});
+                changedToPassed.TransactionTypesAndPeriods.Add(transactionType, new List<EarningPeriod> {period});
             }
         }
 
-        private static Dictionary<(TransactionType type, byte period), List<DataLockFailure>> GetFailuresGroupedByTypeAndPeriod(DataLockEvent dataLockEvent)
+        private static Dictionary<(TransactionType type, byte period), EarningPeriod> GetFailuresGroupedByTypeAndPeriod(DataLockEvent dataLockEvent)
         {
-            var result = new Dictionary<(TransactionType type, byte period), List<DataLockFailure>>();
+            var result = new Dictionary<(TransactionType type, byte period), EarningPeriod>();
 
             foreach (var onProgrammeEarning in dataLockEvent.OnProgrammeEarnings)
             {
                 foreach (var period in onProgrammeEarning.Periods)
                 {
-                    if (result.TryGetValue(((TransactionType) onProgrammeEarning.Type, period.Period), out var failures))
-                    {
-                        failures.AddRange(period.DataLockFailures);
-                    }
-                    else
-                    {
-                        result.Add(((TransactionType)onProgrammeEarning.Type, period.Period), period.DataLockFailures);
-                    }
+                    result.Add(((TransactionType) onProgrammeEarning.Type, period.Period), period);
                 }
-                
             }
 
             foreach (var incentiveEarning in dataLockEvent.IncentiveEarnings)
             {
                 foreach (var period in incentiveEarning.Periods)
                 {
-                    if (result.TryGetValue(((TransactionType) incentiveEarning.Type, period.Period), out var failures))
-                    {
-                        failures.AddRange(period.DataLockFailures);
-                    }
-                    else
-                    {
-                        result.Add(((TransactionType)incentiveEarning.Type, period.Period), period.DataLockFailures);
-                    }
+                    result.Add(((TransactionType) incentiveEarning.Type, period.Period), period);
                 }
-                
             }
 
             return result;

@@ -169,7 +169,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         private static List<long> GetCommitmentVersions(DataLockErrorCode? errorCode, EarningPeriod priceEpisode)
         {
-// for error commitment versions can be multiple, for pass there is one.
+            // for error commitment versions can be multiple, for pass there is one.
             var commitmentVersionIds = new List<long>();
 
             if (errorCode.HasValue)
@@ -194,7 +194,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 EventSource = 1, // submission
                 HasErrors = !(dataLockStatusChangedEvent is DataLockStatusChangedToPassed),
                 Uln = dataLockStatusChangedEvent.Learner.Uln,
-                Status = (dataLockStatusChangedEvent is DataLockStatusChangedToPassed) ? 3 : (dataLockStatusChangedEvent is DataLockStatusChangedToFailed) ? 1 : 2,
+                Status = dataLockStatusChangedEvent is DataLockStatusChangedToPassed ? 3 : dataLockStatusChangedEvent is DataLockStatusChangedToFailed ? 1 : 2,
                 ProcessDateTime = DateTime.UtcNow,
                 LearnRefnumber = dataLockStatusChangedEvent.Learner.ReferenceNumber,
                 IlrFrameworkCode = dataLockStatusChangedEvent.LearningAim.FrameworkCode,

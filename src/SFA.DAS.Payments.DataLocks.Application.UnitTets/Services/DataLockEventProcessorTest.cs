@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<DataLocksProfile>()));
             repositoryMock = new Mock<IDataLockFailureRepository>(MockBehavior.Strict);
-            dataLockStatusServiceMock = new Mock<IDataLockStatusService>(MockBehavior.Strict);            
+            dataLockStatusServiceMock = new Mock<IDataLockStatusService>(MockBehavior.Strict);
             processor = new DataLockEventProcessor(repositoryMock.Object, dataLockStatusServiceMock.Object, mapper, new Mock<IPaymentLogger>().Object);
         }
 
@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 Learner = new Learner {ReferenceNumber = "2", Uln = 3},
                 LearningAim = new LearningAim {FrameworkCode = 4, StandardCode = 5, Reference = "6", PathwayCode = 7, ProgrammeType = 8, FundingLineType = "9"},
                 CollectionYear = 1819,
-                CollectionPeriod = new CollectionPeriod{ AcademicYear = 7, Period = 8 },
+                CollectionPeriod = new CollectionPeriod {AcademicYear = 7, Period = 8},
                 OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
@@ -88,36 +88,37 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             statusChangedEvents[0].TransactionTypesAndPeriods.Should().HaveCount(1);
             statusChangedEvents[0].TransactionTypesAndPeriods.First().Key.Should().Be(1);
             statusChangedEvents[0].TransactionTypesAndPeriods.First().Value.Should().HaveCount(1);
-            statusChangedEvents[0].TransactionTypesAndPeriods.First().Value[0].Should().Be(1);
+            statusChangedEvents[0].TransactionTypesAndPeriods.First().Value[0].Period.Should().Be(1);
 
         }
 
-        [Test] public async Task TestCreatesMultipleEventsForPeriodsAndTypes()
+        [Test]
+        public async Task TestCreatesMultipleEventsForPeriodsAndTypes()
         {
             // arrange
 
 
 
             // change of dlock code
-            var oldTT2P5 = new DataLockFailureEntity { Id = 1, DeliveryPeriod = 5, TransactionType = TransactionType.Completion, Errors = new List<DataLockFailure>{ new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06} } };
+            var oldTT2P5 = new DataLockFailureEntity {Id = 1, DeliveryPeriod = 5, TransactionType = TransactionType.Completion, EarningPeriod = new EarningPeriod { Period = 5, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
             var newTT2p5 = new EarningPeriod {Period = 5, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
 
             // no new - changed to pass
-            var oldTT3p3 = new DataLockFailureEntity { Id = 2, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing, Errors = new List<DataLockFailure>{ new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06} } };
+            var oldTT3p3 = new DataLockFailureEntity {Id = 2, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing, EarningPeriod = new EarningPeriod { Period = 3, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
 
             // no change
-            var oldTT2p6 = new DataLockFailureEntity{Id = 3, DeliveryPeriod = 6, TransactionType = TransactionType.Completion, Errors = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
+            var oldTT2p6 = new DataLockFailureEntity {Id = 3, DeliveryPeriod = 6, TransactionType = TransactionType.Completion, EarningPeriod = new EarningPeriod { Period = 6, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}}};
             var newTT2p6 = new EarningPeriod {Period = 6, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
 
             // change of dlock code
-            var oldTT16p5 = new DataLockFailureEntity{Id = 4, DeliveryPeriod = 5, TransactionType = TransactionType.CareLeaverApprenticePayment, Errors = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}};
+            var oldTT16p5 = new DataLockFailureEntity {Id = 4, DeliveryPeriod = 5, TransactionType = TransactionType.CareLeaverApprenticePayment, EarningPeriod = new EarningPeriod { Period = 5, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
             var newTT16p5 = new EarningPeriod {Period = 5, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
 
             // no new - change to pass
-            var oldTT10p3 = new DataLockFailureEntity{Id = 5, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing16To18FrameworkUplift, Errors = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}};
+            var oldTT10p3 = new DataLockFailureEntity {Id = 5, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing16To18FrameworkUplift, EarningPeriod = new EarningPeriod { Period = 3, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
 
             // no change
-            var oldTT16p6 = new DataLockFailureEntity{Id = 6, DeliveryPeriod = 6, TransactionType = TransactionType.CareLeaverApprenticePayment, Errors = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
+            var oldTT16p6 = new DataLockFailureEntity {Id = 6, DeliveryPeriod = 6, TransactionType = TransactionType.CareLeaverApprenticePayment, EarningPeriod = new EarningPeriod { Period = 6, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}}};
             var newTT16p6 = new EarningPeriod {Period = 6, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
 
             // no old - change to fail
@@ -132,7 +133,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 Learner = new Learner {ReferenceNumber = "2", Uln = 3},
                 LearningAim = new LearningAim {FrameworkCode = 4, StandardCode = 5, Reference = "6", PathwayCode = 7, ProgrammeType = 8, FundingLineType = "9"},
                 CollectionYear = 1819,
-                CollectionPeriod = new CollectionPeriod{ AcademicYear = 7, Period = 8 },
+                CollectionPeriod = new CollectionPeriod {AcademicYear = 7, Period = 8},
                 OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
@@ -189,16 +190,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             // P2
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, newTT2p2.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
             // P5
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT2P5.Errors, newTT2p5.DataLockFailures)).Returns(DataLockStatusChange.FailureCodeChanged).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT2P5.EarningPeriod.DataLockFailures, newTT2p5.DataLockFailures)).Returns(DataLockStatusChange.FailureCodeChanged).Verifiable();
             // P6
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT2p6.Errors, newTT2p6.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT2p6.EarningPeriod.DataLockFailures, newTT2p6.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
 
 
             // TT3 P3
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT3p3.Errors, null)).Returns(DataLockStatusChange.ChangedToPassed).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT3p3.EarningPeriod.DataLockFailures, null)).Returns(DataLockStatusChange.ChangedToPassed).Verifiable();
 
             // TT10 P3
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT10p3.Errors, null)).Returns(DataLockStatusChange.ChangedToPassed).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT10p3.EarningPeriod.DataLockFailures, null)).Returns(DataLockStatusChange.ChangedToPassed).Verifiable();
 
             // TT16
             // P1
@@ -206,9 +207,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             // P2
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, newTT16p2.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
             // P5
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT16p5.Errors, newTT16p5.DataLockFailures)).Returns(DataLockStatusChange.FailureCodeChanged).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT16p5.EarningPeriod.DataLockFailures, newTT16p5.DataLockFailures)).Returns(DataLockStatusChange.FailureCodeChanged).Verifiable();
             // P6
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT16p6.Errors, newTT16p6.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT16p6.EarningPeriod.DataLockFailures, newTT16p6.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
 
             var statusChangedEvents = await processor.ProcessDataLockEvent(dataLockEvent).ConfigureAwait(false);
 
@@ -222,11 +223,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             changedToFail.TransactionTypesAndPeriods.Should().HaveCount(2);
             changedToFail.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.Completion);
             changedToFail.TransactionTypesAndPeriods[TransactionType.Completion].Should().HaveCount(1);
-            changedToFail.TransactionTypesAndPeriods[TransactionType.Completion][0].Should().Be(1);
-            
+            changedToFail.TransactionTypesAndPeriods[TransactionType.Completion][0].Period.Should().Be(1);
+
             changedToFail.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.CareLeaverApprenticePayment);
             changedToFail.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment].Should().HaveCount(1);
-            changedToFail.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment][0].Should().Be(1);
+            changedToFail.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment][0].Period.Should().Be(1);
 
 
             var changedToPass = statusChangedEvents.SingleOrDefault(e => e is DataLockStatusChangedToPassed);
@@ -235,11 +236,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             changedToPass.TransactionTypesAndPeriods.Should().HaveCount(2);
             changedToPass.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.Balancing);
             changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing].Should().HaveCount(1);
-            changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing][0].Should().Be(3);
-            
+            changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing][0].Period.Should().Be(3);
+
             changedToPass.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.Balancing16To18FrameworkUplift);
             changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing16To18FrameworkUplift].Should().HaveCount(1);
-            changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing16To18FrameworkUplift][0].Should().Be(3);
+            changedToPass.TransactionTypesAndPeriods[TransactionType.Balancing16To18FrameworkUplift][0].Period.Should().Be(3);
 
             var changedCode = statusChangedEvents.SingleOrDefault(e => e is DataLockFailureChanged);
             changedCode.Should().NotBeNull();
@@ -247,11 +248,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             changedCode.TransactionTypesAndPeriods.Should().HaveCount(2);
             changedCode.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.Completion);
             changedCode.TransactionTypesAndPeriods[TransactionType.Completion].Should().HaveCount(1);
-            changedCode.TransactionTypesAndPeriods[TransactionType.Completion][0].Should().Be(5);
-            
+            changedCode.TransactionTypesAndPeriods[TransactionType.Completion][0].Period.Should().Be(5);
+
             changedCode.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.CareLeaverApprenticePayment);
             changedCode.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment].Should().HaveCount(1);
-            changedCode.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment][0].Should().Be(5);
+            changedCode.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment][0].Period.Should().Be(5);
         }
     }
 }
