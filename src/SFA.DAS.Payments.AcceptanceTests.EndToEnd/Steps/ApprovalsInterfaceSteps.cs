@@ -223,5 +223,51 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                   approvalsApprenticeship.PathwayCode == savedApprenticeship.PathwayCode &&
                   approvalsApprenticeship.ProgrammeType == savedApprenticeship.ProgrammeType;
         }
+
+
+        [Given(@"the following apprenticeships already exist")]
+        public void GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
+        {
+            ApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
+            ApprovalsApprenticeships.ForEach(apprenticeship =>
+            {
+                apprenticeship.Id = TestSession.GenerateId();
+                var newappRenticeship = 
+
+
+                Console.WriteLine($"Apprenticeship: {apprenticeship.ToJson()}");
+            });
+        }
+
+        [Given(@"the existing apprenticeships have the following price episodes")]
+        public void GivenTheExistingApprenticeshipsHaveTheFollowingPriceEpisodes(Table table)
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+        [Given(@"the apprenticeships are changed has follows")]
+        public void GivenTheApprenticeshipsAreChangedHasFollows(Table table)
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+        [Given(@"the apprenticeships are changes to have the following price episodes")]
+        public void GivenTheApprenticeshipsAreChangesToHaveTheFollowingPriceEpisodes(Table table)
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+        [When(@"the Approvals service notifies the Payments service of the apprenticeships changes")]
+        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfTheApprenticeshipsChanges()
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+        [Then(@"the Payments service should record the chamnges yo the apprenticeships")]
+        public void ThenThePaymentsServiceShouldRecordTheChamngesYoTheApprenticeships()
+        {
+            ScenarioContext.Current.Pending();
+        }
+
     }
 }

@@ -141,11 +141,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var apprenticeshipModel = new ApprenticeshipModel
             {
-                Id = 629959,
-                Uln = 123456,
-                AgreedOnDate = DateTime.Today.AddDays(-1),
-                EstimatedStartDate = DateTime.Today,
-                EstimatedEndDate = DateTime.Today.AddYears(1),
+                Id = updatedApprenticeship.ApprenticeshipId,
+                Uln = updatedApprenticeship.Uln,
+                AgreedOnDate = DateTime.Today.AddDays(-2),
+                EstimatedStartDate = DateTime.Today.AddDays(-1),
+                EstimatedEndDate = DateTime.Today.AddYears(2),
                 ProgrammeType = 25,
                 StandardCode = 17,
 
