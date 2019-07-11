@@ -8,13 +8,13 @@ using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
-    public class PeriodEndStartedRunningService
+    public class PeriodEndService
     {
         private readonly ILevyFundingSourceRepository repository;
         private readonly IPaymentLogger logger;
         private readonly IMessageSession messageSession;
 
-        public PeriodEndStartedRunningService(ILevyFundingSourceRepository repository, IPaymentLogger logger,
+        public PeriodEndService(ILevyFundingSourceRepository repository, IPaymentLogger logger,
             IMessageSession messageSession)
         {
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
