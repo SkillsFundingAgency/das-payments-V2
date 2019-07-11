@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         if (oldFailureEntity != null)
                             failuresToDelete.Add(oldFailureEntity.Id);
                         break;
-                    case DataLockStatusChange.FailureCodeChanged:
+                    case DataLockStatusChange.FailureChanged:
                         AddTypeAndPeriodToEvent(failureChanged, transactionType, period);
                         failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailure));
                         if (oldFailureEntity != null)
@@ -128,15 +128,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             };
         }
 
-        private static void AddTypeAndPeriodToEvent(DataLockStatusChanged changedToPassed, TransactionType transactionType, byte period)
+        private static void AddTypeAndPeriodToEvent(DataLockStatusChanged statusChangedEvent, TransactionType transactionType, byte period)
         {
-            if (changedToPassed.TransactionTypesAndPeriods.TryGetValue(transactionType, out var periods))
+            if (statusChangedEvent.TransactionTypesAndPeriods.TryGetValue(transactionType, out var periods))
             {
                 periods.Add(period);
             }
             else
             {
-                changedToPassed.TransactionTypesAndPeriods.Add(transactionType, new List<byte> {period});
+                statusChangedEvent.TransactionTypesAndPeriods.Add(transactionType, new List<byte> {period});
             }
         }
 
