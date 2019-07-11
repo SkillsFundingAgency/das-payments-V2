@@ -52,24 +52,26 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         public async Task<List<DataLockEvent>> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
+            await Initialise().ConfigureAwait(false);
             return await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
         }
 
         public async Task HandleApprenticeshipUpdated(ApprenticeshipUpdated message, CancellationToken none)
         {
+            await Initialise().ConfigureAwait(false);
             await apprenticeshipUpdatedProcessor.ProcessApprenticeshipUpdate(message);
         }
 
         public async Task Reset()
         {
-            paymentLogger.LogInfo($"Resetting actor for provider {Id}");
+            paymentLogger.LogDebug($"Resetting actor for provider {Id}");
             await apprenticeships.ResetInitialiseFlag().ConfigureAwait(false);
+            paymentLogger.LogInfo($"Reset actor for provider {Id}");
         }
 
         protected override async Task OnActivateAsync()
         {
             await Initialise().ConfigureAwait(false);
-
             await base.OnActivateAsync().ConfigureAwait(false);
         }
 
