@@ -20,5 +20,5 @@
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
-    [LearningAimSequenceNumber] BIGINT NULL
+    [LearningAimSequenceNumber] BIGINT NOT NULL
 )
