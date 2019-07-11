@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals
 {
     public class ApprovalsApprenticeship
     {

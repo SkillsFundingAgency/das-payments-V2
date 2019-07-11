@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: PV2-688 - New Apprenticeship Approved
+﻿Feature: PV2-688 - New Apprenticeship Approved
 	As an Employer
 	I want the Payments Calc Data-Locks process to be made aware of newly approved commitments
 	So that they can be matched to the ILR Learner and allow payments to be made for the learner

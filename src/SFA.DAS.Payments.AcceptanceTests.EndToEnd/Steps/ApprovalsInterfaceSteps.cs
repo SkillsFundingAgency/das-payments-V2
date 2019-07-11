@@ -13,6 +13,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Messages.Core;
@@ -84,8 +85,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .Queues()
                 .DefaultMessageTimeToLive(config.DefaultMessageTimeToLive);
             var routing = transportConfig.Routing();
-            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent).Assembly,
-                EndpointNames.DataLocksApprovals);
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent).Assembly, EndpointNames.DataLocksApprovals);
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipUpdatedApprovedEvent).Assembly, EndpointNames.DataLocksApprovals);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -200,23 +201,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(async () =>
             {
                 var apprenticeshipIds = ApprovalsApprenticeships.Select(apprenticeship => apprenticeship.Id).ToArray();
-                var savedApprenticeships = await TestDataContext.Apprenticeship
+
+                var savedApprenticeships = await TestDataContext.Apprenticeship.AsNoTracking()
                     .Include(apprenticeship => apprenticeship.ApprenticeshipPriceEpisodes)
-                    .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id)).ToListAsync();
+                    .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id))
+                    .ToListAsync();
+
                 var notFound = new List<ApprovalsApprenticeship>();
                 foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
                 {
-                    var employer = Employers.FirstOrDefault(e => e.Identifier == approvalsApprenticeship.Employer) ??
-                                   throw new InvalidOperationException(
-                                       $"Failed to find the employer: {approvalsApprenticeship.Employer}");
-                    var provider = TestSession.GetProviderByIdentifier(approvalsApprenticeship.Provider) ??
-                                   throw new InvalidOperationException(
-                                       $"Failed to find the provider: {approvalsApprenticeship.Provider}");
-                    var learner = TestSession.GetLearner(provider.Ukprn, approvalsApprenticeship.Learner) ??
-                                  throw new InvalidOperationException(
-                                      $"Failed to find the learner.  Ukrpn: {provider.Ukprn}");
-                    var savedApprenticeship = savedApprenticeships.FirstOrDefault(apprenticeship =>
-                        approvalsApprenticeship.Id == apprenticeship.Id);
+                    var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
+                    var savedApprenticeship = savedApprenticeships.FirstOrDefault(apprenticeship => approvalsApprenticeship.Id == apprenticeship.Id);
+
                     if (savedApprenticeship == null)
                     {
                         Console.WriteLine(
@@ -390,6 +386,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (expectedPriceEpisodes == null) return true;
 
+
+            actualPriceEpisodes = actualPriceEpisodes.Where(x => !x.Removed).ToList();
+            
             if (expectedPriceEpisodes.Count != actualPriceEpisodes.Count) return false;
 
             foreach (var expectedPriceEpisode in expectedPriceEpisodes)

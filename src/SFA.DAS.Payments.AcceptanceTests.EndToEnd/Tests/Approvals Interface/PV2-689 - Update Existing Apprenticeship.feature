@@ -22,9 +22,10 @@ Scenario: PV2-689 - Update Existing Apprenticeship
 		| Apprenticeship A | 01/Aug/Current Academic Year | 02/Aug/Current Academic Year | Learner A | Provider A | Employer A | 17            | 25             | 1              | 2            | 01/Aug/Current Academic Year | 01/Sep/Next Academic Year |
 	
 	And the changed apprenticeships has the following price episodes
-		| Apprenticeship   | Agreed Price | Effective From               | Effective To                 |
-		| Apprenticeship A | 10000        | 01/Sep/Current Academic Year | 30/Sep/Current Academic Year |
-		| Apprenticeship A | 20000        | 01/Oct/Current Academic Year |                              |
+		| Apprenticeship   | Agreed Price | Effective From               | Effective To                 | 
+		| Apprenticeship A | 10000        | 01/Sep/Current Academic Year | 30/Sep/Current Academic Year | 
+		| Apprenticeship A | 20000        | 01/Oct/Current Academic Year |                              | 
+
 
 	When the Approvals service notifies the Payments service of the apprenticeships changes
 	Then the Payments service should record the apprenticeships
