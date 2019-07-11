@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.ApprovalsService\SFA.DAS.Payments.DataLocks.ApprovalsService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.DataLockProxyService\SFA.DAS.Payments.DataLocks.DataLockProxyService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.DataLockService\SFA.DAS.Payments.DataLocks.DataLockService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.DataLockStatusChangedService\SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.csproj" />

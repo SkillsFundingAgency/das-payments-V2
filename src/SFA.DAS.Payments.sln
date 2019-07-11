@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Core", "SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj", "{F6E38368-C397-488B-B041-D3E8423C1CE1}"
 EndProject
@@ -216,6 +216,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.DataLockStatusChangedService", "SFA.DAS.Payments.DataLocks.DataLockStatusChangedService\SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.csproj", "{63D92999-F026-4068-9C92-47C0235D978E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.Model", "SFA.DAS.Payments.DataLocks.Model\SFA.DAS.Payments.DataLocks.Model.csproj", "{CF1F575E-D5CA-416F-BBE4-0C0B501A26B3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests", "SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests\SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests.csproj", "{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.ApprovalsService", "SFA.DAS.Payments.DataLocks.ApprovalsService\SFA.DAS.Payments.DataLocks.ApprovalsService.csproj", "{B85480D3-6B5D-4EF8-85AD-4333353212CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.DataLocks.Messages.Internal", "SFA.DAS.Payments.DataLocks.Messages.Internal\SFA.DAS.Payments.DataLocks.Messages.Internal.csproj", "{71BB0D59-A659-44D5-B835-1D06FCCC865D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -971,6 +977,30 @@ Global
 		{CF1F575E-D5CA-416F-BBE4-0C0B501A26B3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF1F575E-D5CA-416F-BBE4-0C0B501A26B3}.Release|x64.ActiveCfg = Release|Any CPU
 		{CF1F575E-D5CA-416F-BBE4-0C0B501A26B3}.Release|x64.Build.0 = Release|Any CPU
+		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Debug|x64.Build.0 = Debug|Any CPU
+		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Release|x64.ActiveCfg = Release|Any CPU
+		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Release|x64.Build.0 = Release|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Debug|x64.Build.0 = Debug|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Release|x64.ActiveCfg = Release|Any CPU
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE}.Release|x64.Build.0 = Release|Any CPU
+		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Debug|x64.Build.0 = Debug|Any CPU
+		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Release|x64.ActiveCfg = Release|Any CPU
+		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1068,6 +1098,9 @@ Global
 		{2D2930BB-77E7-4AA1-B18C-BD3E072894F5} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{63D92999-F026-4068-9C92-47C0235D978E} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
 		{CF1F575E-D5CA-416F-BBE4-0C0B501A26B3} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
+		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1} = {0DBC1A28-3662-42C3-81D9-9080FFCF9F88}
+		{B85480D3-6B5D-4EF8-85AD-4333353212CE} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
+		{71BB0D59-A659-44D5-B835-1D06FCCC865D} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}

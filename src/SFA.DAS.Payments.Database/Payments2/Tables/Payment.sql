@@ -36,6 +36,11 @@
 	EarningsCompletionAmount DECIMAL (15,5),
 	EarningsInstalmentAmount DECIMAL (15,5),
 	EarningsNumberOfInstalments SMALLINT NOT NULL,
+	LearningStartDate DATETIME2 NULL,
+    ApprenticeshipId BIGINT NULL,
+    ApprenticeshipPriceEpisodeId BIGINT NULL,
+	ApprenticeshipEmployerType TINYINT NULL,
+	ReportingAimFundingLineType NVARCHAR(100) NULL,
 );
 GO
 

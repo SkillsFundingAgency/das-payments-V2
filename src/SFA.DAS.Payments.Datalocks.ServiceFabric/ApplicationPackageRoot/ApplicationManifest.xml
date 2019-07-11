@@ -4,16 +4,20 @@
     <Parameter Name="DataLockStatusChangedService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockStatusChangedService_EndpointName" DefaultValue="" />
     <Parameter Name="DataLockStatusChangedService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="ApprovalsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="DataLockServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="DataLockServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="DASServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
+    <Parameter Name="ApprovalsService_EndpointName" DefaultValue="" />
+    <Parameter Name="ApprovalsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="DataLockService_EndpointName" DefaultValue="" />
     <Parameter Name="DataLockService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
@@ -35,6 +39,29 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[DataLockStatusChangedService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[DataLockStatusChangedService_FailedMessagesQueue]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
+  </ServiceManifestImport>
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.DataLocks.ApprovalsServicePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="DASServiceBusConnectionString" Value="[DASServiceBusConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[ApprovalsService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[ApprovalsService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
@@ -95,6 +122,11 @@
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.DataLocks.DataLockStatusChangedService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.DataLockStatusChangedServiceType" InstanceCount="[DataLockStatusChangedService_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
+    <Service Name="SFA.DAS.Payments.DataLocks.ApprovalsService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.ApprovalsServiceType" InstanceCount="[ApprovalsService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
