@@ -191,14 +191,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             var dataLockEvent = new LegacyDataLockEvent // commitment ID
             {
                 AcademicYear = dataLockStatusChangedEvent.CollectionPeriod.AcademicYear.ToString(),
-                Ukprn = dataLockStatusChangedEvent.Ukprn,
+                UKPRN = dataLockStatusChangedEvent.Ukprn,
                 DataLockEventId = dataLockStatusChangedEvent.EventId,
                 EventSource = 1, // submission
                 HasErrors = !(dataLockStatusChangedEvent is DataLockStatusChangedToPassed),
-                Uln = dataLockStatusChangedEvent.Learner.Uln,
-                Status = dataLockStatusChangedEvent is DataLockStatusChangedToPassed ? 3 : dataLockStatusChangedEvent is DataLockStatusChangedToFailed ? 1 : 2,
+                ULN = dataLockStatusChangedEvent.Learner.Uln,
+//                Status = dataLockStatusChangedEvent is DataLockStatusChangedToPassed ? 3 : dataLockStatusChangedEvent is DataLockStatusChangedToFailed ? 1 : 2,
                 ProcessDateTime = DateTime.UtcNow,
-                LearnRefnumber = dataLockStatusChangedEvent.Learner.ReferenceNumber,
+                LearnRefNumber = dataLockStatusChangedEvent.Learner.ReferenceNumber,
                 IlrFrameworkCode = dataLockStatusChangedEvent.LearningAim.FrameworkCode,
                 IlrPathwayCode = dataLockStatusChangedEvent.LearningAim.PathwayCode,
                 IlrProgrammeType = dataLockStatusChangedEvent.LearningAim.ProgrammeType,
@@ -213,12 +213,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 //IlrPriceEffectiveFromDate = price episode (earning via earning period PE ID)
                 //IlrPriceEffectiveToDate = price episode (earning via earning period PE ID)
                 //IlrEndpointAssessorPrice = price episode (earning via earning period PE ID)
-                //IlrFileName = price episode (earning via earning period PE ID)
+                IlrFileName = dataLockStatusChangedEvent.IlrFileName,
                 //IlrStartDate = price episode (earning via earning period PE ID)
                 //IlrTrainingPrice = price episode (earning via earning period PE ID)
             };
 
-            logger.LogVerbose($"Saving legacy DataLockEvent {dataLockEvent.DataLockEventId} for UKPRN {dataLockEvent.Ukprn}");
+            logger.LogVerbose($"Saving legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
 
             await dataLockEventWriter.Write(dataLockEvent, cancellationToken).ConfigureAwait(false);
             return dataLockEvent;

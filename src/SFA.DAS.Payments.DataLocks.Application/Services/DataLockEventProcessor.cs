@@ -147,6 +147,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in onProgrammeEarning.Periods)
                 {
+                    if (!(period.DataLockFailures?.Count > 0)) continue;
+                    if (period.Amount == 0 && period.PriceEpisodeIdentifier == null) continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
                     result.Add(((TransactionType) onProgrammeEarning.Type, period.Period), period);
                 }
             }
@@ -155,6 +157,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in incentiveEarning.Periods)
                 {
+                    if (!(period.DataLockFailures?.Count > 0)) continue;
+                    if (period.Amount == 0 && period.PriceEpisodeIdentifier == null) continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
                     result.Add(((TransactionType) incentiveEarning.Type, period.Period), period);
                 }
             }

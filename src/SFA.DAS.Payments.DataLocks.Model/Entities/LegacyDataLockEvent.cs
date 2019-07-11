@@ -4,14 +4,14 @@ namespace SFA.DAS.Payments.DataLocks.Model.Entities
 {
     public class LegacyDataLockEvent
     {
+        public Guid DataLockEventId { get; set; }
         public DateTime ProcessDateTime { get; set; }
-        public int Status { get; set; }
         public string IlrFileName { get; set; }
         public DateTime SubmittedDateTime { get; set; }
         public string AcademicYear { get; set; }
-        public long Ukprn { get; set; }
-        public long Uln { get; set; }
-        public string LearnRefnumber { get; set; }
+        public long UKPRN { get; set; }
+        public long ULN { get; set; }
+        public string LearnRefNumber { get; set; }
         public long AimSeqNumber { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
         public long CommitmentId { get; set; }
@@ -27,6 +27,5 @@ namespace SFA.DAS.Payments.DataLocks.Model.Entities
         public decimal? IlrEndpointAssessorPrice { get; set; }
         public DateTime? IlrPriceEffectiveFromDate { get; set; }
         public DateTime? IlrPriceEffectiveToDate { get; set; }
-        public Guid DataLockEventId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Core.Configuration;
@@ -10,12 +11,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
     {
         private readonly IConfigurationHelper configurationHelper;
 
-        protected BaseLegacyBulkCopyConfiguration(IConfigurationHelper configurationHelper, string tableName)
+        protected BaseLegacyBulkCopyConfiguration(IConfigurationHelper configurationHelper, string tableName, Type type)
         {
             this.configurationHelper = configurationHelper;
             TableName = tableName;
+            Columns = type.GetProperties().ToDictionary(p => p.Name, p => p.Name);
         }
-        public IDictionary<string, string> Columns { get; protected set; }
+
+        public IDictionary<string, string> Columns { get; }
 
         public string TableName { get; }
 
@@ -26,9 +29,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
     public class LegacyDataLockEventBulkCopyConfiguration : BaseLegacyBulkCopyConfiguration, IBulkCopyConfiguration<LegacyDataLockEvent>
     {
         public LegacyDataLockEventBulkCopyConfiguration(IConfigurationHelper configurationHelper) 
-            : base(configurationHelper, "[DataLock].[DataLockEvents]")
+            : base(configurationHelper, "[DataLock].[DataLockEvents]", typeof(LegacyDataLockEvent))
         {
-            Columns = typeof(LegacyDataLockEvent).GetProperties().ToDictionary(p => p.Name, p => p.Name);
         }
 
     }
@@ -36,9 +38,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
     public class LegacyDataLockEventCommitmentVersionBulkCopyConfiguration : BaseLegacyBulkCopyConfiguration, IBulkCopyConfiguration<LegacyDataLockEventCommitmentVersion>
     {
         public LegacyDataLockEventCommitmentVersionBulkCopyConfiguration(IConfigurationHelper configurationHelper) 
-            : base(configurationHelper, "[DataLock].[LegacyDataLockEventCommitmentVersion]")
+            : base(configurationHelper, "[DataLock].[DataLockEventCommitmentVersions]", typeof(LegacyDataLockEventCommitmentVersion))
         {
-            Columns = typeof(LegacyDataLockEventCommitmentVersion).GetProperties().ToDictionary(p => p.Name, p => p.Name);
         }
 
     }
@@ -46,9 +47,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
     public class LegacyDataLockEventErrorBulkCopyConfiguration : BaseLegacyBulkCopyConfiguration, IBulkCopyConfiguration<LegacyDataLockEventError>
     {
         public LegacyDataLockEventErrorBulkCopyConfiguration(IConfigurationHelper configurationHelper) 
-            : base(configurationHelper, "[DataLock].[DataLockEventErrors]")
+            : base(configurationHelper, "[DataLock].[DataLockEventErrors]", typeof(LegacyDataLockEventError))
         {
-            Columns = typeof(LegacyDataLockEventError).GetProperties().ToDictionary(p => p.Name, p => p.Name);
         }
 
     }
@@ -56,9 +56,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
     public class LegacyDataLockEventPeriodBulkCopyConfiguration : BaseLegacyBulkCopyConfiguration, IBulkCopyConfiguration<LegacyDataLockEventPeriod>
     {
         public LegacyDataLockEventPeriodBulkCopyConfiguration(IConfigurationHelper configurationHelper) 
-            : base(configurationHelper, "[DataLock].[DataLockEventPeriods]")
+            : base(configurationHelper, "[DataLock].[DataLockEventPeriods]", typeof(LegacyDataLockEventPeriod))
         {
-            Columns = typeof(LegacyDataLockEventPeriod).GetProperties().ToDictionary(p => p.Name, p => p.Name);
         }
 
     }
