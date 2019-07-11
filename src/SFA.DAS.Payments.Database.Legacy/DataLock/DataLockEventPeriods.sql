@@ -4,7 +4,8 @@
 	CollectionPeriodName	varchar(8)		NOT NULL,
 	CollectionPeriodMonth	int				NOT NULL,
 	CollectionPeriodYear	int				NOT NULL,
-	CommitmentVersion		bigint			NOT NULL,
+	CommitmentVersion		VARCHAR(25)			NOT NULL,
 	IsPayable				bit				NOT NULL,
-	TransactionType			int				NOT NULL
+	TransactionType			int				NOT NULL, 
+    [TransactionTypesFlag] INT NULL
 )
