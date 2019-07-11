@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public class PriceEpisode
         {
             public string Apprenticeship { get; set; }
-            public decimal Amount { get; set; }
+            public decimal AgreedPrice { get; set; }
             public string EffectiveFrom { get; set; }
             public string EffectiveTo { get; set; }
         }

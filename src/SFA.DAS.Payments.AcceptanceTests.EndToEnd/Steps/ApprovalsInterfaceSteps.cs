@@ -33,12 +33,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value);
         }
 
-        public List<ApprovalsApprenticeship> ApprovalsApprenticeships
+        private List<ApprovalsApprenticeship> ApprovalsApprenticeships
         {
             get => Get<List<ApprovalsApprenticeship>>();
             set => Set(value);
         }
 
+        private List<ApprovalsApprenticeship> PreviousApprovalsApprenticeships
+        {
+            get => !Context.TryGetValue<List<ApprovalsApprenticeship>>("PreviousApprovalsApprenticeships", out var previousApprovals) 
+                ? null : previousApprovals;
+            set => Set(value, "PreviousApprovalsApprenticeships");
+        }
+        
         public static IMessageSession DasMessageSession { get; set; }
         private static EndpointConfiguration dasEndpointConfiguration;
         protected TestPaymentsDataContext TestDataContext => Scope.Resolve<TestPaymentsDataContext>();
@@ -105,7 +112,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
-        [Given(@"the apprenticeships are changed has follows")]
         [Given(@"the following apprenticeships have been approved")]
         public void GivenTheFollowingApprenticeshipsHaveBeenApproved(Table table)
         {
@@ -113,6 +119,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             ApprovalsApprenticeships.ForEach(apprenticeship =>
             {
                 apprenticeship.Id = TestSession.GenerateId();
+
+                Console.WriteLine($"Apprenticeship: {apprenticeship.ToJson()}");
+            });
+        }
+
+        [Given(@"the apprenticeships are changed has follows")]
+        public void GivenTheFollowingApprenticeshipsHaveBeenApprovedX(Table table)
+        {
+            ApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
+            ApprovalsApprenticeships.ForEach(apprenticeshipSpec =>
+            {
+
+                var apprenticeship = PreviousApprovalsApprenticeships.Single(x => x.Identifier == apprenticeshipSpec.Identifier);
+
+                apprenticeshipSpec.Id = apprenticeship.Id;
+
                 Console.WriteLine($"Apprenticeship: {apprenticeship.ToJson()}");
             });
         }
@@ -164,7 +186,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         {
                             FromDate = pp.EffectiveFrom.ToDate(),
                             ToDate = pp.EffectiveTo?.ToDate(),
-                            Cost = pp.Amount
+                            Cost = pp.AgreedPrice
                         }).ToArray()
                 };
                 Console.WriteLine($"Sending CreatedApprenticeship message: {createdMessage.ToJson()}");
@@ -229,18 +251,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following apprenticeships already exist")]
-        public void GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
+        public async Task GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
         {
-            ApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
-            ApprovalsApprenticeships.ForEach(async apprenticeshipSpec =>
+            PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
+
+            foreach (var apprenticeshipSpec in PreviousApprovalsApprenticeships)
             {
+                apprenticeshipSpec.Id = TestSession.GenerateId();
                 var apprenticeship = CreateApprenticeshipModel(apprenticeshipSpec);
                 await TestDataContext.Apprenticeship.AddAsync(apprenticeship);
-
-                apprenticeshipSpec.Id = apprenticeship.Id;
+                await TestDataContext.SaveChangesAsync();
 
                 Console.WriteLine($"Existing Apprenticeship Created: {apprenticeship.ToJson()}");
-            });
+            }
         }
 
         [Given(@"the existing apprenticeships have the following price episodes")]
@@ -251,17 +274,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 Console.WriteLine($"adding price episode to apprenticeship. Price episode: {priceEpisode.ToJson()}");
                 var apprenticeship =
-                    ApprovalsApprenticeships.FirstOrDefault(appr => appr.Identifier == priceEpisode.Apprenticeship);
+                    PreviousApprovalsApprenticeships.FirstOrDefault(appr => appr.Identifier == priceEpisode.Apprenticeship);
                 if (apprenticeship == null)
                     Assert.Fail($"Failed to find the apprenticeship for price episode: {priceEpisode.ToJson()}");
 
                 var newPriceEpisode = CreateApprenticeshipPriceEpisode(apprenticeship.Id, priceEpisode);
 
                 await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode);
+                await TestDataContext.SaveChangesAsync();
 
                 Console.WriteLine($"Existing Apprenticeship Created: {newPriceEpisode.ToJson()}");
 
-                apprenticeship.PriceEpisodes.Add(priceEpisode);
             }
         }
 
@@ -288,8 +311,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         new CommitmentsV2.Messages.Events.PriceEpisode
                         {
                             FromDate = pp.EffectiveFrom.ToDate(),
-                            ToDate = pp.EffectiveTo?.ToDate(),
-                            Cost = pp.Amount
+                            ToDate = pp.EffectiveTo?.ToNullableDate(),
+                            Cost = pp.AgreedPrice
                         }).ToArray(),
                 };
                 Console.WriteLine($"Sending ApprenticeshipUpdatedApprovedEvent message: {createdMessage.ToJson()}");
@@ -302,6 +325,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(apprenticeshipSpec);
             var apprenticeshipModel = new ApprenticeshipModel
             {
+                Id = apprenticeshipSpec.Id,
                 Ukprn = provider.Ukprn,
                 AccountId = employer.AccountId,
                 TransferSendingEmployerAccountId = sendingEmployer?.AccountId,
@@ -355,7 +379,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return new ApprenticeshipPriceEpisodeModel
             {
                 ApprenticeshipId = apprenticeshipId,
-                Cost = priceEpisode.Amount,
+                Cost = priceEpisode.AgreedPrice,
                 StartDate = priceEpisode.EffectiveFrom.ToDate(),
                 EndDate = priceEpisode.EffectiveTo.ToNullableDate()
             };
@@ -373,7 +397,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var actualPriceEpisode = actualPriceEpisodes
                     .FirstOrDefault(x => x.Removed == false &&
                                          x.StartDate == expectedPriceEpisode.EffectiveFrom.ToDate() &&
-                                         x.Cost == expectedPriceEpisode.Amount &&
+                                         x.Cost == expectedPriceEpisode.AgreedPrice &&
                                          x.EndDate == expectedPriceEpisode.EffectiveTo.ToNullableDate());
 
                 if (actualPriceEpisode == null) return false;
