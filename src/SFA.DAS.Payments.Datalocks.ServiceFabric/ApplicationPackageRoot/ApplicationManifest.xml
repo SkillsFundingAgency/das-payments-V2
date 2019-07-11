@@ -47,8 +47,8 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[DataLockService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[DataLockService_FailedMessagesQueue]" />
+            <Parameter Name="EndpointName" Value="[DataLockEventService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[DataLockEventService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />

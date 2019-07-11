@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
@@ -14,7 +15,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             this.configurationHelper = configurationHelper;
             TableName = tableName;
         }
-        public IDictionary<string, string> Columns => null;
+        public IDictionary<string, string> Columns { get; protected set; }
 
         public string TableName { get; }
 
@@ -27,6 +28,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         public LegacyDataLockEventBulkCopyConfiguration(IConfigurationHelper configurationHelper) 
             : base(configurationHelper, "[DataLock].[DataLockEvents]")
         {
+            Columns = typeof(LegacyDataLockEvent).GetProperties().ToDictionary(p => p.Name, p => p.Name);
         }
 
     }
@@ -36,6 +38,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         public LegacyDataLockEventCommitmentVersionBulkCopyConfiguration(IConfigurationHelper configurationHelper) 
             : base(configurationHelper, "[DataLock].[LegacyDataLockEventCommitmentVersion]")
         {
+            Columns = typeof(LegacyDataLockEventCommitmentVersion).GetProperties().ToDictionary(p => p.Name, p => p.Name);
         }
 
     }
@@ -45,6 +48,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         public LegacyDataLockEventErrorBulkCopyConfiguration(IConfigurationHelper configurationHelper) 
             : base(configurationHelper, "[DataLock].[DataLockEventErrors]")
         {
+            Columns = typeof(LegacyDataLockEventError).GetProperties().ToDictionary(p => p.Name, p => p.Name);
         }
 
     }
@@ -54,6 +58,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         public LegacyDataLockEventPeriodBulkCopyConfiguration(IConfigurationHelper configurationHelper) 
             : base(configurationHelper, "[DataLock].[DataLockEventPeriods]")
         {
+            Columns = typeof(LegacyDataLockEventPeriod).GetProperties().ToDictionary(p => p.Name, p => p.Name);
         }
 
     }

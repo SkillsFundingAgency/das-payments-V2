@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,8 +17,9 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
 
         public BatchedDataCache(IReliableStateManagerTransactionProvider transactionProvider, IReliableStateManagerProvider reliableStateManagerProvider, IPaymentLogger logger)
         {
-            this.transactionProvider = transactionProvider;
+            this.transactionProvider = transactionProvider ?? throw new ArgumentNullException(nameof(transactionProvider));
             this.logger = logger;
+            if (reliableStateManagerProvider == null) throw new ArgumentNullException(nameof(reliableStateManagerProvider));
             queue = reliableStateManagerProvider.Current.GetOrAddAsync<IReliableConcurrentQueue<T>>("BatchedDataCacheQueue").Result;
         }
 

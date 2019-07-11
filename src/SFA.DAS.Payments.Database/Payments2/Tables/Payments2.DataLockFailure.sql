@@ -13,7 +13,8 @@
     [TransactionType] TINYINT NOT NULL,
     [DeliveryPeriod] TINYINT NOT NULL, 
     [CollectionPeriod] TINYINT NOT NULL, 
-    [EarningPeriod] NVARCHAR(MAX) NOT NULL
+    [EarningPeriod] NVARCHAR(MAX) NOT NULL, 
+    [CreationDate] DATETIME2 NOT NULL DEFAULT getutcdate()
 )
 
 GO

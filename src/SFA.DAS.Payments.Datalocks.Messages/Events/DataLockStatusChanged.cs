@@ -16,8 +16,8 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
         private static Type[] inheritors;
         private static Type[] GetInheritors()
         {
-            return inheritors ?? (inheritors = typeof(DataLockEvent).Assembly.GetTypes()
-                       .Where(x => x.IsSubclassOf(typeof(DataLockEvent)))
+            return inheritors ?? (inheritors = typeof(DataLockStatusChanged).Assembly.GetTypes()
+                       .Where(x => x.IsSubclassOf(typeof(DataLockStatusChanged)))
                        .ToArray());
         }
     }

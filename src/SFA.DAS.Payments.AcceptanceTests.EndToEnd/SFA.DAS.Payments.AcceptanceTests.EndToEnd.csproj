@@ -188,7 +188,7 @@
       <HintPath>..\packages\NServiceBus.7.1.5\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Newtonsoft.Json, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NServiceBus.Newtonsoft.Json.2.2.0\lib\net452\NServiceBus.Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\NServiceBus.Newtonsoft.Json.2.1.0\lib\net452\NServiceBus.Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.ObjectBuilder.Autofac, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Autofac.7.0.0\lib\net452\NServiceBus.ObjectBuilder.Autofac.dll</HintPath>

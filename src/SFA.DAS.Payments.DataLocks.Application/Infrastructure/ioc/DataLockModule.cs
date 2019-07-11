@@ -34,11 +34,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<CalculatePeriodStartAndEndDate>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
 
-            builder.RegisterType<StateManagerUnitOfWork>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchedDataCache<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CachingEventProcessor<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ReliableStateManagerTransactionProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<ReliableStateManagerProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchScope>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchScopeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchProcessingService<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
