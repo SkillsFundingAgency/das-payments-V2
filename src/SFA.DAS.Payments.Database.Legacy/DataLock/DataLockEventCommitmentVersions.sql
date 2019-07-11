@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [DataLock].[DataLockEventCommitmentVersions]
 (
 	DataLockEventId				uniqueidentifier			NOT NULL,
-	CommitmentVersion			bigint			NOT NULL,
+	CommitmentVersion			VARCHAR(25)			NOT NULL,
 	CommitmentStartDate			date			NOT NULL,
 	CommitmentStandardCode		bigint			NULL,
 	CommitmentProgrammeType		int				NULL,

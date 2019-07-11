@@ -8,8 +8,8 @@
 	AcademicYear				varchar(4)    		NOT NULL,
 	UKPRN						bigint				NOT NULL,
 	ULN							bigint				NOT NULL,
-	LearnRefNumber				varchar(100)		NOT NULL,
-    AimSeqNumber				bigint				NOT NULL,
+	LearnRefNumber				varchar(12)		NOT NULL,
+    AimSeqNumber				INT				NOT NULL,
 	PriceEpisodeIdentifier		varchar(25)			NOT NULL,
 	CommitmentId				bigint				NOT NULL,
 	EmployerAccountId			bigint				NOT NULL,
@@ -23,5 +23,6 @@
 	IlrTrainingPrice			decimal(12,5)		NULL,
 	IlrEndpointAssessorPrice	decimal(12,5)		NULL,
 	IlrPriceEffectiveFromDate	date				NULL,
-	IlrPriceEffectiveToDate		date				NULL
+	IlrPriceEffectiveToDate		date				NULL, 
+    [Status] INT NOT NULL
 )
