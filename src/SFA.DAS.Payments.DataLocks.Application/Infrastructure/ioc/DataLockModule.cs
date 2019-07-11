@@ -32,6 +32,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<CourseValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CalculatePeriodStartAndEndDate>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<DataLockEventProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<DataLockEventProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<DataLockStatusService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
 
             builder.RegisterType<BatchedDataCache<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -50,8 +53,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<ApprenticeshipProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipUpdatedProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<DataLockEventProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<DataLockStatusService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
         }
     }
 }

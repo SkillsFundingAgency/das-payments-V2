@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
                 return DataLockStatusChange.ChangedToPassed;
 
             if (oldFailures.Count != newFailures.Count)
-                return DataLockStatusChange.FailureCodeChanged;
+                return DataLockStatusChange.FailureChanged;
 
             var orderedOld = OrderFailures(oldFailures);
             var orderedNew = OrderFailures(newFailures);
@@ -29,21 +29,21 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
                 var newFailure = orderedNew[i];
 
                 if (oldFailure.ApprenticeshipId != newFailure.ApprenticeshipId)
-                    return DataLockStatusChange.FailureCodeChanged;
+                    return DataLockStatusChange.FailureChanged;
 
                 if (oldFailure.DataLockError != newFailure.DataLockError)
-                    return DataLockStatusChange.FailureCodeChanged;
+                    return DataLockStatusChange.FailureChanged;
 
                 var oldEpisodes = oldFailure.ApprenticeshipPriceEpisodeIds ?? new List<long>();
                 var newEpisodes = newFailure.ApprenticeshipPriceEpisodeIds ?? new List<long>();
 
                 if (oldEpisodes.Count != newEpisodes.Count)
-                    return DataLockStatusChange.FailureCodeChanged;
+                    return DataLockStatusChange.FailureChanged;
 
                 for (var k = 0; k < oldEpisodes.Count; k++)
                 {
                     if (!oldEpisodes.Contains(newEpisodes[k]) || !newEpisodes.Contains(oldEpisodes[k]))
-                        return DataLockStatusChange.FailureCodeChanged;
+                        return DataLockStatusChange.FailureChanged;
                 }
             }
 

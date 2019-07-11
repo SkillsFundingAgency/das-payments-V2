@@ -190,7 +190,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             // P2
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, newTT2p2.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
             // P5
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT2P5.EarningPeriod.DataLockFailures, newTT2p5.DataLockFailures)).Returns(DataLockStatusChange.FailureCodeChanged).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT2P5.EarningPeriod.DataLockFailures, newTT2p5.DataLockFailures)).Returns(DataLockStatusChange.FailureChanged).Verifiable();
             // P6
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT2p6.EarningPeriod.DataLockFailures, newTT2p6.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
 
@@ -207,7 +207,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             // P2
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, newTT16p2.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
             // P5
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT16p5.EarningPeriod.DataLockFailures, newTT16p5.DataLockFailures)).Returns(DataLockStatusChange.FailureCodeChanged).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT16p5.EarningPeriod.DataLockFailures, newTT16p5.DataLockFailures)).Returns(DataLockStatusChange.FailureChanged).Verifiable();
             // P6
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT16p6.EarningPeriod.DataLockFailures, newTT16p6.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
 

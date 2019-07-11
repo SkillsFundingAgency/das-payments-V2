@@ -13,6 +13,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
         NoChange,
         ChangedToFailed,
         ChangedToPassed,
-        FailureCodeChanged
+        FailureChanged
     }
 }
