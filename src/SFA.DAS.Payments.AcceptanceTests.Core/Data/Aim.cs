@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 
@@ -77,10 +78,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public bool IsMainAim => AimReference == "ZPROG001";
 
-        public bool IsMathsAndEnglish => AimReference == "50114979" || AimReference == "50093186";
+        public bool IsMathsAndEnglish => MathsAndEnglishAimReferenceCodes.Contains(AimReference);
 
         public bool HasContractType => (int) ContractType != 0;
 
         public ContractType ContractType { get; set; }
+
+        private static IEnumerable<string> MathsAndEnglishAimReferenceCodes =>
+            new[]
+            {
+                "50086832",
+                "50089638",
+                "50091268",
+                "50093186",
+                "50094695",
+                "50098342"
+            };
     }
 }
