@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.DataLocks.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="DataLockStatusChangedService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="DataLockStatusChangedService_EndpointName" DefaultValue="" />
+    <Parameter Name="DataLockStatusChangedService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApprovalsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockServiceActorService_PartitionCount" DefaultValue="10" />
@@ -22,6 +25,28 @@
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.DataLocks.DataLockStatusChangedServicePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[DataLockStatusChangedService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[DataLockStatusChangedService_FailedMessagesQueue]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
+  </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.DataLocks.ApprovalsServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
@@ -95,6 +120,11 @@
          ServiceFabric PowerShell module.
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
+    <Service Name="SFA.DAS.Payments.DataLocks.DataLockStatusChangedService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.DataLockStatusChangedServiceType" InstanceCount="[DataLockStatusChangedService_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
     <Service Name="SFA.DAS.Payments.DataLocks.ApprovalsService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.ApprovalsServiceType" InstanceCount="[ApprovalsService_InstanceCount]">
         <SingletonPartition />
