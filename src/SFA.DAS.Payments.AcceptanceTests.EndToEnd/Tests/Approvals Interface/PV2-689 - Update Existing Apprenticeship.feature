@@ -1,4 +1,5 @@
-﻿Feature: PV2-689 - Update Existing Apprenticeship
+﻿@ignore
+Feature: PV2-689 - Update Existing Apprenticeship
 	As an Employer
 	I want the Payments Calc Data-Locks process to be made aware f updated commitments
 	So that they can be matched to the ILR Learner and allow payments to be made for the learner
