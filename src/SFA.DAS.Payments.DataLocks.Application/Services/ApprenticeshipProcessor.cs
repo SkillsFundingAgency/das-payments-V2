@@ -6,6 +6,7 @@ using NServiceBus;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -15,6 +16,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     public interface IApprenticeshipProcessor
     {
         Task Process(ApprenticeshipCreatedEvent createdEvent);
+        Task ProcessUpdatedApprenticeship(ApprenticeshipUpdatedApprovedEvent updatedEvent);
     }
 
     public class ApprenticeshipProcessor : IApprenticeshipProcessor
@@ -51,5 +53,30 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 throw;
             }
         }
+
+        public async Task ProcessUpdatedApprenticeship(ApprenticeshipUpdatedApprovedEvent apprenticeshipApprovedEvent)
+        {
+            try
+            {
+                logger.LogDebug($"Now processing the apprenticeship update even for Apprenticeship id: {apprenticeshipApprovedEvent.ApprenticeshipId}");
+                var model = mapper.Map<UpdatedApprenticeshipModel>(apprenticeshipApprovedEvent);
+
+                var updatedApprenticeship = await apprenticeshipService.UpdateApprenticeship(model).ConfigureAwait(false);
+
+                var updatedEvent = mapper.Map<ApprenticeshipUpdated>(updatedApprenticeship);
+
+                var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+                await endpointInstance.Publish(updatedEvent).ConfigureAwait(false);
+
+                logger.LogInfo($"Finished processing the apprenticeship updated event. Apprenticeship id: {updatedEvent.Id}, employer account id: {updatedEvent.EmployerAccountId}, Ukprn: {updatedEvent.Ukprn}.");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error processing the apprenticeship updated event. Error: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+
     }
 }

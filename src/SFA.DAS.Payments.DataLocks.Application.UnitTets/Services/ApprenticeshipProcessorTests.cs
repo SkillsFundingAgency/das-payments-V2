@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using AutoMapper;
+using Castle.Components.DictionaryAdapter;
 using Moq;
 using NServiceBus;
 using NUnit.Framework;
@@ -11,6 +12,7 @@ using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.DataLocks.Application.Services;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -44,6 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     Id = model.Id,
                     Uln = model.Uln
                 });
+            
             mocker.Mock<IEndpointInstance>()
                 .Setup(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()))
                 .Returns(Task.CompletedTask);
@@ -172,6 +175,60 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     
                     It.IsAny<PublishOptions>()), Times.Once);
         }
+
+        [Test]
+        public async Task Processes_UpdatedApprenticeship()
+        {
+            var approvalsEvent = new ApprenticeshipUpdatedApprovedEvent()
+            {
+                Uln = "12345",
+                ApprenticeshipId = 1,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1),
+                ApprovedOn = DateTime.Today,
+                TrainingCode = "ABC",
+                TrainingType = ProgrammeType.Standard,
+                PriceEpisodes = new PriceEpisode[1]
+                {
+                    new PriceEpisode
+                    {
+                        FromDate = DateTime.Today,
+                        ToDate = DateTime.Today.AddYears(1),
+                        Cost = 1000m
+                    }
+                }
+            };
+
+            mocker.Mock<IApprenticeshipService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = approvalsEvent.ApprenticeshipId,
+                    Uln = long.Parse(approvalsEvent.Uln),
+                    
+                });
+
+            mocker.Mock<IMapper>()
+                .Setup(x => x.Map<UpdatedApprenticeshipModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()))
+                .Returns<ApprenticeshipUpdatedApprovedEvent>(model => new UpdatedApprenticeshipModel
+                {
+                    ApprenticeshipId = model.ApprenticeshipId,
+                    Uln = long.Parse(model.Uln),
+                    EstimatedStartDate = model.StartDate,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessUpdatedApprenticeship(approvalsEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
+                        ev.Id == approvalsEvent.ApprenticeshipId
+                        && ev.Uln.ToString() == approvalsEvent.Uln),
+                    It.IsAny<PublishOptions>()), Times.Once);
+
+        }
+
 
     }
 }

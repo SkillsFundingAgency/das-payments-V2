@@ -13,6 +13,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Messages.Core;
@@ -33,12 +34,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value);
         }
 
-        public List<ApprovalsApprenticeship> ApprovalsApprenticeships
+        private List<ApprovalsApprenticeship> ApprovalsApprenticeships
         {
             get => Get<List<ApprovalsApprenticeship>>();
             set => Set(value);
         }
 
+        private List<ApprovalsApprenticeship> PreviousApprovalsApprenticeships
+        {
+            get => !Context.TryGetValue<List<ApprovalsApprenticeship>>("PreviousApprovalsApprenticeships", out var previousApprovals) 
+                ? null : previousApprovals;
+            set => Set(value, "PreviousApprovalsApprenticeships");
+        }
+        
         public static IMessageSession DasMessageSession { get; set; }
         private static EndpointConfiguration dasEndpointConfiguration;
         protected TestPaymentsDataContext TestDataContext => Scope.Resolve<TestPaymentsDataContext>();
@@ -78,6 +86,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .DefaultMessageTimeToLive(config.DefaultMessageTimeToLive);
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent).Assembly, EndpointNames.DataLocksApprovals);
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipUpdatedApprovedEvent).Assembly, EndpointNames.DataLocksApprovals);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -111,10 +120,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             ApprovalsApprenticeships.ForEach(apprenticeship =>
             {
                 apprenticeship.Id = TestSession.GenerateId();
+
                 Console.WriteLine($"Apprenticeship: {apprenticeship.ToJson()}");
             });
         }
 
+        [Given(@"the apprenticeships are changed has follows")]
+        public void GivenTheFollowingApprenticeshipsHaveBeenApprovedX(Table table)
+        {
+            ApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
+            ApprovalsApprenticeships.ForEach(apprenticeshipSpec =>
+            {
+
+                var apprenticeship = PreviousApprovalsApprenticeships.Single(x => x.Identifier == apprenticeshipSpec.Identifier);
+
+                apprenticeshipSpec.Id = apprenticeship.Id;
+
+                Console.WriteLine($"Apprenticeship: {apprenticeship.ToJson()}");
+            });
+        }
+
+        [Given(@"the changed apprenticeships has the following price episodes")]
         [Given(@"the apprenticeships have the following price episodes")]
         public void GivenTheApprenticeshipsHaveTheFollowingPriceEpisodes(Table table)
         {
@@ -122,7 +148,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             foreach (var priceEpisode in priceEpisodes)
             {
                 Console.WriteLine($"adding price episode to apprenticeship. Price episode: {priceEpisode.ToJson()}");
-                var apprenticeship = ApprovalsApprenticeships.FirstOrDefault(appr => appr.Identifier == priceEpisode.Apprenticeship);
+                var apprenticeship =
+                    ApprovalsApprenticeships.FirstOrDefault(appr => appr.Identifier == priceEpisode.Apprenticeship);
                 if (apprenticeship == null)
                     Assert.Fail($"Failed to find the apprenticeship for price episode: {priceEpisode.ToJson()}");
                 apprenticeship.PriceEpisodes.Add(priceEpisode);
@@ -134,15 +161,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
-                var employer = Employers.FirstOrDefault(emp => emp.Identifier == approvalsApprenticeship.Employer);
-                if (employer == null)
-                    Assert.Fail($"Failed to find employer: {approvalsApprenticeship.Employer}");
-                var sendingEmployer =
-                    Employers.FirstOrDefault(emp => emp.Identifier == approvalsApprenticeship.SendingEmployer);
-                var provider = TestSession.GetProviderByIdentifier(approvalsApprenticeship.Provider);
-                if (provider == null)
-                    Assert.Fail($"Failed to generate provider: {approvalsApprenticeship.Provider}");
-                var learner = TestSession.GetLearner(provider.Ukprn, approvalsApprenticeship.Learner) ?? throw new InvalidOperationException($"Failed to get learner for identifier: {approvalsApprenticeship.Learner}");
+                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
+
                 var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent
                 {
                     AccountId = employer.AccountId,
@@ -154,16 +174,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     CreatedOn = approvalsApprenticeship.CreatedOnDate.ToDate(),
                     LegalEntityName = employer.Name,
                     ProviderId = provider.Ukprn,
-                    TrainingType = approvalsApprenticeship.StandardCode > 0 ? ProgrammeType.Standard : ProgrammeType.Framework,
-                    TrainingCode = approvalsApprenticeship.StandardCode > 0 ? approvalsApprenticeship.StandardCode.ToString() : $"{approvalsApprenticeship.FrameworkCode}-{approvalsApprenticeship.ProgrammeType}-{approvalsApprenticeship.PathwayCode}",
+                    TrainingType = approvalsApprenticeship.StandardCode > 0
+                        ? ProgrammeType.Standard
+                        : ProgrammeType.Framework,
+                    TrainingCode = approvalsApprenticeship.StandardCode > 0
+                        ? approvalsApprenticeship.StandardCode.ToString()
+                        : $"{approvalsApprenticeship.FrameworkCode}-{approvalsApprenticeship.ProgrammeType}-{approvalsApprenticeship.PathwayCode}",
                     TransferSenderId = sendingEmployer?.AccountId,
                     Uln = learner.Uln.ToString(),
-                    PriceEpisodes = approvalsApprenticeship.PriceEpisodes.Select(pp => new CommitmentsV2.Messages.Events.PriceEpisode
-                    {
-                        FromDate = pp.EffectiveFrom.ToDate(),
-                        ToDate = pp.EffectiveTo?.ToDate(),
-                        Cost = pp.Amount
-                    }).ToArray()
+                    PriceEpisodes = approvalsApprenticeship.PriceEpisodes.Select(pp =>
+                        new CommitmentsV2.Messages.Events.PriceEpisode
+                        {
+                            FromDate = pp.EffectiveFrom.ToDate(),
+                            ToDate = pp.EffectiveTo?.ToDate(),
+                            Cost = pp.AgreedPrice
+                        }).ToArray()
                 };
                 Console.WriteLine($"Sending CreatedApprenticeship message: {createdMessage.ToJson()}");
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
@@ -176,45 +201,150 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(async () =>
             {
                 var apprenticeshipIds = ApprovalsApprenticeships.Select(apprenticeship => apprenticeship.Id).ToArray();
-                var savedApprenticeships = await TestDataContext.Apprenticeship
+
+                var savedApprenticeships = await TestDataContext.Apprenticeship.AsNoTracking()
                     .Include(apprenticeship => apprenticeship.ApprenticeshipPriceEpisodes)
-                    .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id)).ToListAsync();
+                    .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id))
+                    .ToListAsync();
+
                 var notFound = new List<ApprovalsApprenticeship>();
                 foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
                 {
-                    var employer = Employers.FirstOrDefault(e => e.Identifier == approvalsApprenticeship.Employer) ?? throw new InvalidOperationException($"Failed to find the employer: {approvalsApprenticeship.Employer}");
-                    var provider = TestSession.GetProviderByIdentifier(approvalsApprenticeship.Provider) ??
-                                   throw new InvalidOperationException($"Failed to find the provider: {approvalsApprenticeship.Provider}");
-                    var learner = TestSession.GetLearner(provider.Ukprn, approvalsApprenticeship.Learner) ?? throw new InvalidOperationException($"Failed to find the learner.  Ukrpn: {provider.Ukprn}");
+                    var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
                     var savedApprenticeship = savedApprenticeships.FirstOrDefault(apprenticeship => approvalsApprenticeship.Id == apprenticeship.Id);
+
                     if (savedApprenticeship == null)
                     {
-                        Console.WriteLine($"Failed to find apprenticeship Id: {approvalsApprenticeship.Id}, Uln: {learner.Uln}.");
+                        Console.WriteLine(
+                            $"Failed to find apprenticeship Id: {approvalsApprenticeship.Id}, Uln: {learner.Uln}.");
                         notFound.Add(approvalsApprenticeship);
                         continue;
                     }
 
-                    if (MatchesTrainingCode(approvalsApprenticeship,savedApprenticeship) &&
+                    if (MatchesTrainingCode(approvalsApprenticeship, savedApprenticeship) &&
+                        MatchPriceEpisodes(approvalsApprenticeship.PriceEpisodes, savedApprenticeship.ApprenticeshipPriceEpisodes) &&
                         provider.Ukprn == savedApprenticeship.Ukprn &&
-                        employer.AccountId == savedApprenticeship.AccountId && 
+                        employer.AccountId == savedApprenticeship.AccountId &&
                         learner.Uln == savedApprenticeship.Uln)
                     {
-                        Console.WriteLine($"Matched apprenticeship: {approvalsApprenticeship.Identifier}, leaner: {approvalsApprenticeship.Learner}, Employer: {approvalsApprenticeship.Employer}");
+                        Console.WriteLine(
+                            $"Matched apprenticeship: {approvalsApprenticeship.Identifier}, leaner: {approvalsApprenticeship.Learner}, Employer: {approvalsApprenticeship.Employer}");
                     }
                     else
                     {
-                        Console.WriteLine($"Failed to validate stored details for apprenticeship. Apprenticeship details: {approvalsApprenticeship.ToJson()}, saved details: {savedApprenticeship.ToJson()}.");
+                        Console.WriteLine(
+                            $"Failed to validate stored details for apprenticeship. Apprenticeship details: {approvalsApprenticeship.ToJson()}, saved details: {savedApprenticeship.ToJson()}.");
                         notFound.Add(approvalsApprenticeship);
                     }
                 }
+
                 if (!notFound.Any())
                     return true;
-                notFound.ForEach(apprenticeship => Console.WriteLine($"Failed to find and/or validate apprenticeship: {apprenticeship.ToJson()}"));
+                notFound.ForEach(apprenticeship =>
+                    Console.WriteLine($"Failed to find and/or validate apprenticeship: {apprenticeship.ToJson()}"));
                 return false;
-            },"Failed to find all the stored apprenticeships.");
+            }, "Failed to find all the stored apprenticeships.");
         }
 
-        private static bool MatchesTrainingCode(ApprovalsApprenticeship approvalsApprenticeship, ApprenticeshipModel savedApprenticeship)
+        [Given(@"the following apprenticeships already exist")]
+        public async Task GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
+        {
+            PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
+
+            foreach (var apprenticeshipSpec in PreviousApprovalsApprenticeships)
+            {
+                apprenticeshipSpec.Id = TestSession.GenerateId();
+                var apprenticeship = CreateApprenticeshipModel(apprenticeshipSpec);
+                await TestDataContext.Apprenticeship.AddAsync(apprenticeship);
+                await TestDataContext.SaveChangesAsync();
+
+                Console.WriteLine($"Existing Apprenticeship Created: {apprenticeship.ToJson()}");
+            }
+        }
+
+        [Given(@"the existing apprenticeships have the following price episodes")]
+        public async Task GivenTheExistingApprenticeshipsHaveTheFollowingPriceEpisodesAsync(Table table)
+        {
+            var priceEpisodes = table.CreateSet<ApprovalsApprenticeship.PriceEpisode>();
+            foreach (var priceEpisode in priceEpisodes)
+            {
+                Console.WriteLine($"adding price episode to apprenticeship. Price episode: {priceEpisode.ToJson()}");
+                var apprenticeship =
+                    PreviousApprovalsApprenticeships.FirstOrDefault(appr => appr.Identifier == priceEpisode.Apprenticeship);
+                if (apprenticeship == null)
+                    Assert.Fail($"Failed to find the apprenticeship for price episode: {priceEpisode.ToJson()}");
+
+                var newPriceEpisode = CreateApprenticeshipPriceEpisode(apprenticeship.Id, priceEpisode);
+
+                await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode);
+                await TestDataContext.SaveChangesAsync();
+
+                Console.WriteLine($"Existing Apprenticeship Created: {newPriceEpisode.ToJson()}");
+
+            }
+        }
+
+        [When(@"the Approvals service notifies the Payments service of the apprenticeships changes")]
+        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfTheApprenticeshipsChanges()
+        {
+            foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
+            {
+                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
+                var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipUpdatedApprovedEvent()
+                {
+                    StartDate = approvalsApprenticeship.StartDate.ToDate(),
+                    EndDate = approvalsApprenticeship.EndDate.ToDate(),
+                    ApprovedOn = approvalsApprenticeship.AgreedOnDate.ToDate(),
+                    ApprenticeshipId = approvalsApprenticeship.Id,
+                    TrainingType = approvalsApprenticeship.StandardCode > 0
+                        ? ProgrammeType.Standard
+                        : ProgrammeType.Framework,
+                    TrainingCode = approvalsApprenticeship.StandardCode > 0
+                        ? approvalsApprenticeship.StandardCode.ToString()
+                        : $"{approvalsApprenticeship.FrameworkCode}-{approvalsApprenticeship.ProgrammeType}-{approvalsApprenticeship.PathwayCode}",
+                    Uln = learner.Uln.ToString(),
+                    PriceEpisodes = approvalsApprenticeship.PriceEpisodes.Select(pp =>
+                        new CommitmentsV2.Messages.Events.PriceEpisode
+                        {
+                            FromDate = pp.EffectiveFrom.ToDate(),
+                            ToDate = pp.EffectiveTo?.ToNullableDate(),
+                            Cost = pp.AgreedPrice
+                        }).ToArray(),
+                };
+                Console.WriteLine($"Sending ApprenticeshipUpdatedApprovedEvent message: {createdMessage.ToJson()}");
+                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+            }
+        }
+        
+        private ApprenticeshipModel CreateApprenticeshipModel(ApprovalsApprenticeship apprenticeshipSpec)
+        {
+            var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(apprenticeshipSpec);
+            var apprenticeshipModel = new ApprenticeshipModel
+            {
+                Id = apprenticeshipSpec.Id,
+                Ukprn = provider.Ukprn,
+                AccountId = employer.AccountId,
+                TransferSendingEmployerAccountId = sendingEmployer?.AccountId,
+                Uln = learner.Uln,
+                FrameworkCode = apprenticeshipSpec.FrameworkCode, //TODO change when app bug is fixed
+                ProgrammeType = apprenticeshipSpec.ProgrammeType,
+                PathwayCode = apprenticeshipSpec.PathwayCode,
+                StandardCode = apprenticeshipSpec.StandardCode,
+                Status = ApprenticeshipStatus.Active,
+                LegalEntityName = employer.Name,
+                EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
+                EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
+                AgreedOnDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.AgreedOnDate)
+                    ? DateTime.UtcNow
+                    : apprenticeshipSpec.AgreedOnDate.ToDate(),
+                IsLevyPayer = true,
+            };
+
+            return apprenticeshipModel;
+        }
+
+        private static bool MatchesTrainingCode(ApprovalsApprenticeship approvalsApprenticeship,
+            ApprenticeshipModel savedApprenticeship)
         {
             return approvalsApprenticeship.StandardCode > 0
                 ? approvalsApprenticeship.StandardCode == savedApprenticeship.StandardCode &&
@@ -222,6 +352,58 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 : approvalsApprenticeship.FrameworkCode == savedApprenticeship.FrameworkCode &&
                   approvalsApprenticeship.PathwayCode == savedApprenticeship.PathwayCode &&
                   approvalsApprenticeship.ProgrammeType == savedApprenticeship.ProgrammeType;
+        }
+
+        private (ApprovalsEmployer employer, ApprovalsEmployer sendingEmployer, Provider provider, Learner learner)
+            GetApprovalsReferenceData(ApprovalsApprenticeship approvalsApprenticeship)
+        {
+            var employer = Employers.FirstOrDefault(emp => emp.Identifier == approvalsApprenticeship.Employer);
+            if (employer == null) Assert.Fail($"Failed to find employer: {approvalsApprenticeship.Employer}");
+            var sendingEmployer =
+                Employers.FirstOrDefault(emp => emp.Identifier == approvalsApprenticeship.SendingEmployer);
+            var provider = TestSession.GetProviderByIdentifier(approvalsApprenticeship.Provider);
+            if (provider == null) Assert.Fail($"Failed to generate provider: {approvalsApprenticeship.Provider}");
+            var learner = TestSession.GetLearner(provider.Ukprn, approvalsApprenticeship.Learner) ??
+                          throw new InvalidOperationException(
+                              $"Failed to get learner for identifier: {approvalsApprenticeship.Learner}");
+            return (employer, sendingEmployer, provider, learner);
+        }
+
+        private static ApprenticeshipPriceEpisodeModel CreateApprenticeshipPriceEpisode(long apprenticeshipId,
+            ApprovalsApprenticeship.PriceEpisode priceEpisode)
+        {
+            return new ApprenticeshipPriceEpisodeModel
+            {
+                ApprenticeshipId = apprenticeshipId,
+                Cost = priceEpisode.AgreedPrice,
+                StartDate = priceEpisode.EffectiveFrom.ToDate(),
+                EndDate = priceEpisode.EffectiveTo.ToNullableDate()
+            };
+        }
+
+        private static bool MatchPriceEpisodes(List<ApprovalsApprenticeship.PriceEpisode> expectedPriceEpisodes,
+            List<ApprenticeshipPriceEpisodeModel> actualPriceEpisodes)
+        {
+            if (expectedPriceEpisodes == null) return true;
+
+
+            actualPriceEpisodes = actualPriceEpisodes.Where(x => !x.Removed).ToList();
+            
+            if (expectedPriceEpisodes.Count != actualPriceEpisodes.Count) return false;
+
+            foreach (var expectedPriceEpisode in expectedPriceEpisodes)
+            {
+                var actualPriceEpisode = actualPriceEpisodes
+                    .FirstOrDefault(x => x.Removed == false &&
+                                         x.StartDate == expectedPriceEpisode.EffectiveFrom.ToDate() &&
+                                         x.Cost == expectedPriceEpisode.AgreedPrice &&
+                                         x.EndDate == expectedPriceEpisode.EffectiveTo.ToNullableDate());
+
+                if (actualPriceEpisode == null) return false;
+
+            }
+
+            return true;
         }
     }
 }
