@@ -116,8 +116,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         {
             if (learner.EmploymentStatusMonitoring == null || learner.EmploymentStatusMonitoring.Count == 0)
             {
-                messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp =
-                    messageLearner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
+                if (learner.Restart && learner.Aims.Exists(a => !string.IsNullOrWhiteSpace(a.OriginalStartDate)))
+                {
+                    messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp =
+                        learner.Aims.First(x => x.IsMainAim).OriginalStartDate.ToDate().AddMonths(-1);
+                }
+                else
+                {
+                    messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp =
+                        messageLearner.LearningDelivery[0].LearnStartDate.AddMonths(-6);
+                }
             }
             else
             {
@@ -260,7 +268,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     learningDeliveries.Add(delivery);
                 }
 
-                CleanUpMainAim(delivery);
+                ClearAppFinRecords(delivery);
                 delivery.LearnAimRef = aim.AimReference;
                 delivery.AimSeqNumber = aim.AimSequenceNumber;
 
@@ -274,7 +282,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
-        private void CleanUpMainAim(MessageLearnerLearningDelivery delivery)
+        private void ClearAppFinRecords(MessageLearnerLearningDelivery delivery)
         {
             // Remove any TNP records so they can be build from scratch.
             delivery.AppFinRecord = new MessageLearnerLearningDeliveryAppFinRecord[0];
@@ -458,20 +466,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 delivery.LearningDeliveryFAM = AddActToLearningDeliveryFam(aim.ContractType, delivery.LearnStartDate, delivery.LearnActEndDate, delivery.LearningDeliveryFAM.ToList(), aim.ActualDurationAsTimespan.HasValue);
             }
 
+            if (aim.Restart)
+            {
+                DCT.TestDataGenerator.Helpers.AddLearningDeliveryRestartFAM(delivery);
+            }
+
             // not all fams are at Price Episode level.
             if (aim.LearningSupportCode.HasValue)
             {
-                var listOfLearningDeliveryFams = delivery.LearningDeliveryFAM.ToList();
-                listOfLearningDeliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM()
-                {
-                    LearnDelFAMType = LearnDelFAMType.LSF.ToString(),
-                    LearnDelFAMCode = aim.LearningSupportCode.Value.ToString(),
-                    LearnDelFAMDateFrom = aim.LearningSupportDateFrom.ToDate(),
-                    LearnDelFAMDateFromSpecified = true,
-                    LearnDelFAMDateTo = aim.LearningSupportDateTo.ToDate(),
-                    LearnDelFAMDateToSpecified = true
-                });
-                delivery.LearningDeliveryFAM = listOfLearningDeliveryFams.ToArray();
+                AddLearningSupportFam(delivery, aim);
             }
 
             foreach (var priceEpisode in aim.PriceEpisodes)

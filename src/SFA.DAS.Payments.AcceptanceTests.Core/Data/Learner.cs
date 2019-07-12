@@ -19,6 +19,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public List<EmploymentStatusMonitoring> EmploymentStatusMonitoring { get; set; } = new List<EmploymentStatusMonitoring>();
 
+        public bool Restart { get; set; }
+
         public override string ToString()
         {
             return $"Learn Ref Number: [ {LearnRefNumber} ]\tUln: [ {Uln} ]\t\tLearner Identifier: [ {LearnerIdentifier} ]";
