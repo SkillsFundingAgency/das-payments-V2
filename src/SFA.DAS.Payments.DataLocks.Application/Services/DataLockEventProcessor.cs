@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
@@ -28,83 +29,87 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.paymentLogger = paymentLogger;
         }
 
-        public async Task<List<DataLockStatusChanged>> ProcessDataLockEvent(DataLockEvent dataLockEvent)
+        public async Task<List<DataLockStatusChanged>> ProcessDataLockFailure(EarningFailedDataLockMatching dataLockEvent)
         {
-            var result = new List<DataLockStatusChanged>();
-            var changedToFailed = new DataLockStatusChangedToFailed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
-            var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
-            var failureChanged = new DataLockFailureChanged {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
-            var failuresToDelete = new List<long>();
-            var failuresToRecord = new List<DataLockFailureEntity>();
-
-            var newFailuresGroupedByTypeAndPeriod = GetFailuresGroupedByTypeAndPeriod(dataLockEvent);
-            
-            var oldFailures = await dataLockFailureRepository.GetFailures(
-                dataLockEvent.Ukprn,
-                dataLockEvent.Learner.ReferenceNumber,
-                dataLockEvent.LearningAim.FrameworkCode,
-                dataLockEvent.LearningAim.PathwayCode,
-                dataLockEvent.LearningAim.ProgrammeType,
-                dataLockEvent.LearningAim.StandardCode,
-                dataLockEvent.LearningAim.Reference,
-                dataLockEvent.CollectionYear
-            ).ConfigureAwait(false);
-
-            var fullListOfKeys = newFailuresGroupedByTypeAndPeriod.Keys
-                .Concat(oldFailures.Select(f => (f.TransactionType, f.DeliveryPeriod)))
-                .Distinct();
-
-            foreach (var key in fullListOfKeys)
+            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
             {
-                var transactionType = key.Item1;
-                var period = key.Item2;
+                var result = new List<DataLockStatusChanged>();
+                var changedToFailed = new DataLockStatusChangedToFailed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+                var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+                var failureChanged = new DataLockFailureChanged {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+                var failuresToDelete = new List<long>();
+                var failuresToRecord = new List<DataLockFailureEntity>();
 
-                var oldFailureEntity = oldFailures.FirstOrDefault(f => f.TransactionType == transactionType && f.DeliveryPeriod == period);
-                var oldFailure = oldFailureEntity?.EarningPeriod.DataLockFailures;
-                var newFailure = newFailuresGroupedByTypeAndPeriod.ContainsKey(key) ? newFailuresGroupedByTypeAndPeriod[key].DataLockFailures : null;
+                var newFailuresGroupedByTypeAndPeriod = GetFailuresGroupedByTypeAndPeriod(dataLockEvent);
 
-                var statusChange = dataLockStatusService.GetStatusChange(oldFailure, newFailure);
+                var oldFailures = await dataLockFailureRepository.GetFailures(
+                    dataLockEvent.Ukprn,
+                    dataLockEvent.Learner.ReferenceNumber,
+                    dataLockEvent.LearningAim.FrameworkCode,
+                    dataLockEvent.LearningAim.PathwayCode,
+                    dataLockEvent.LearningAim.ProgrammeType,
+                    dataLockEvent.LearningAim.StandardCode,
+                    dataLockEvent.LearningAim.Reference,
+                    dataLockEvent.CollectionYear
+                ).ConfigureAwait(false);
 
-                switch (statusChange)
+                var fullListOfKeys = newFailuresGroupedByTypeAndPeriod.Keys
+                    .Concat(oldFailures.Select(f => (f.TransactionType, f.DeliveryPeriod)))
+                    .Distinct()
+                    .ToList();
+
+                foreach (var key in fullListOfKeys)
                 {
-                    case DataLockStatusChange.ChangedToFailed:
-                        AddTypeAndPeriodToEvent(changedToFailed, transactionType, newFailuresGroupedByTypeAndPeriod[key]);
-                        failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailuresGroupedByTypeAndPeriod[key]));
-                        break;
-                    case DataLockStatusChange.ChangedToPassed:
-                        AddTypeAndPeriodToEvent(changedToPassed, transactionType, oldFailureEntity.EarningPeriod);
-                        failuresToDelete.Add(oldFailureEntity.Id);
-                        break;
-                    case DataLockStatusChange.FailureChanged:
-                        AddTypeAndPeriodToEvent(failureChanged, transactionType, newFailuresGroupedByTypeAndPeriod[key]);
-                        failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailuresGroupedByTypeAndPeriod[key]));
-                        if (oldFailureEntity != null)
+                    var transactionType = key.Item1;
+                    var period = key.Item2;
+
+                    var oldFailureEntity = oldFailures.FirstOrDefault(f => f.TransactionType == transactionType && f.DeliveryPeriod == period);
+                    var oldFailure = oldFailureEntity?.EarningPeriod.DataLockFailures;
+                    var newFailure = newFailuresGroupedByTypeAndPeriod.ContainsKey(key) ? newFailuresGroupedByTypeAndPeriod[key].DataLockFailures : null;
+
+                    var statusChange = dataLockStatusService.GetStatusChange(oldFailure, newFailure);
+
+                    switch (statusChange)
+                    {
+                        case DataLockStatusChange.ChangedToFailed:
+                            AddTypeAndPeriodToEvent(changedToFailed, transactionType, newFailuresGroupedByTypeAndPeriod[key]);
+                            failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailuresGroupedByTypeAndPeriod[key]));
+                            break;
+                        case DataLockStatusChange.ChangedToPassed:
+                            AddTypeAndPeriodToEvent(changedToPassed, transactionType, oldFailureEntity.EarningPeriod);
                             failuresToDelete.Add(oldFailureEntity.Id);
-                        break;
+                            break;
+                        case DataLockStatusChange.FailureChanged:
+                            AddTypeAndPeriodToEvent(failureChanged, transactionType, newFailuresGroupedByTypeAndPeriod[key]);
+                            failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailuresGroupedByTypeAndPeriod[key]));
+                            failuresToDelete.Add(oldFailureEntity.Id);
+                            break;
+                    }
+
                 }
 
+                if (changedToFailed.TransactionTypesAndPeriods.Count > 0)
+                    result.Add(changedToFailed);
+
+                if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
+                    result.Add(changedToPassed);
+
+                if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
+                    result.Add(failureChanged);
+
+                foreach (var dataLockStatusChanged in result)
+                {
+                    mapper.Map(dataLockEvent, dataLockStatusChanged);
+                }
+
+                await dataLockFailureRepository.ReplaceFailures(failuresToDelete, failuresToRecord).ConfigureAwait(false);
+
+                scope.Complete();
+
+                paymentLogger.LogDebug($"Deleted {failuresToDelete.Count} old DL failures, created {failuresToRecord.Count} new for UKPRN {dataLockEvent.Ukprn} Learner Ref {dataLockEvent.Learner.ReferenceNumber} on R{dataLockEvent.CollectionPeriod.Period:00}");
+
+                return result;
             }
-
-            if (changedToFailed.TransactionTypesAndPeriods.Count > 0)
-                result.Add(changedToFailed);
-
-            if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
-                result.Add(changedToPassed);
-
-            if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
-                result.Add(failureChanged);
-
-            // add mapping
-            foreach (var dataLockStatusChanged in result)
-            {
-                mapper.Map(dataLockEvent, dataLockStatusChanged);
-            }
-
-            await dataLockFailureRepository.ReplaceFailures(failuresToDelete, failuresToRecord).ConfigureAwait(false);
-
-            paymentLogger.LogDebug($"Deleted {failuresToDelete.Count} old DL failures, created {failuresToRecord.Count} new for UKPRN {dataLockEvent.Ukprn} Learner Ref {dataLockEvent.Learner.ReferenceNumber} on R{dataLockEvent.CollectionPeriod.Period:00}");
-
-            return result;
         }
 
         private static DataLockFailureEntity CreateEntity(DataLockEvent dataLockEvent, TransactionType transactionType, byte deliveryPeriod, EarningPeriod period)
@@ -164,6 +169,77 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
 
             return result;
+        }
+
+        private static Dictionary<(TransactionType type, byte period), EarningPeriod> GetPassesGroupedByTypeAndPeriod(PayableEarningEvent dataLockEvent)
+        {
+            var result = new Dictionary<(TransactionType type, byte period), EarningPeriod>();
+
+            foreach (var onProgrammeEarning in dataLockEvent.OnProgrammeEarnings)
+            {
+                foreach (var period in onProgrammeEarning.Periods)
+                {
+                    result.Add(((TransactionType) onProgrammeEarning.Type, period.Period), period);
+                }
+            }
+
+            foreach (var incentiveEarning in dataLockEvent.IncentiveEarnings)
+            {
+                foreach (var period in incentiveEarning.Periods)
+                {
+                    result.Add(((TransactionType) incentiveEarning.Type, period.Period), period);
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<List<DataLockStatusChanged>> ProcessPayableEarning(PayableEarningEvent payableEarningEvent)
+        {
+            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+            {
+                var result = new List<DataLockStatusChanged>();
+                var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+                var failuresToDelete = new List<long>();
+
+                var newPassesGroupedByTypeAndPeriod = GetPassesGroupedByTypeAndPeriod(payableEarningEvent);
+
+                var oldFailures = await dataLockFailureRepository.GetFailures(
+                    payableEarningEvent.Ukprn,
+                    payableEarningEvent.Learner.ReferenceNumber,
+                    payableEarningEvent.LearningAim.FrameworkCode,
+                    payableEarningEvent.LearningAim.PathwayCode,
+                    payableEarningEvent.LearningAim.ProgrammeType,
+                    payableEarningEvent.LearningAim.StandardCode,
+                    payableEarningEvent.LearningAim.Reference,
+                    payableEarningEvent.CollectionYear
+                ).ConfigureAwait(false);
+
+                foreach (var oldFailure in oldFailures)
+                {
+                    if (newPassesGroupedByTypeAndPeriod.ContainsKey((oldFailure.TransactionType, oldFailure.DeliveryPeriod)))
+                    {
+                        AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, oldFailure.EarningPeriod);
+                        failuresToDelete.Add(oldFailure.Id);
+                    }
+                }
+
+                if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
+                    result.Add(changedToPassed);
+
+                foreach (var dataLockStatusChanged in result)
+                {
+                    mapper.Map(payableEarningEvent, dataLockStatusChanged);
+                }
+
+                await dataLockFailureRepository.ReplaceFailures(failuresToDelete, new List<DataLockFailureEntity>()).ConfigureAwait(false);
+
+                scope.Complete();
+
+                paymentLogger.LogDebug($"Deleted {failuresToDelete.Count} old DL failures for UKPRN {payableEarningEvent.Ukprn} Learner Ref {payableEarningEvent.Learner.ReferenceNumber} on R{payableEarningEvent.CollectionPeriod.Period:00}");
+
+                return result;
+            }
         }
     }
 }

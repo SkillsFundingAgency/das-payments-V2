@@ -11,6 +11,20 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.ToTable("DataLockFailure", "Payments2");
 
             builder.HasKey(x => x.Id);
+            builder.HasIndex(x => new
+            {
+                x.Ukprn, 
+                x.LearnerReferenceNumber, 
+                x.LearningAimFrameworkCode, 
+                x.LearningAimPathwayCode, 
+                x.LearningAimProgrammeType, 
+                x.LearningAimReference, 
+                x.LearningAimStandardCode, 
+                x.AcademicYear, 
+                x.DeliveryPeriod, 
+                x.TransactionType
+            });
+
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
 
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();

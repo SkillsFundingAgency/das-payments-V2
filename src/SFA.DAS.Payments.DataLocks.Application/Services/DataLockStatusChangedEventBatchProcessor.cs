@@ -196,7 +196,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 EventSource = 1, // submission
                 HasErrors = !(dataLockStatusChangedEvent is DataLockStatusChangedToPassed),
                 ULN = dataLockStatusChangedEvent.Learner.Uln,
-//                Status = dataLockStatusChangedEvent is DataLockStatusChangedToPassed ? 3 : dataLockStatusChangedEvent is DataLockStatusChangedToFailed ? 1 : 2,
+                Status = dataLockStatusChangedEvent is DataLockStatusChangedToPassed ? 3 : dataLockStatusChangedEvent is DataLockStatusChangedToFailed ? 1 : 2,
                 ProcessDateTime = DateTime.UtcNow,
                 LearnRefNumber = dataLockStatusChangedEvent.Learner.ReferenceNumber,
                 IlrFrameworkCode = dataLockStatusChangedEvent.LearningAim.FrameworkCode,

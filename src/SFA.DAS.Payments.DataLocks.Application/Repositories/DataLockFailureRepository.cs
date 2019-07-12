@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
 using SFA.DAS.Payments.Model.Core;
@@ -29,22 +31,24 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
     public class DataLockFailureRepository : IDataLockFailureRepository
     {
         private readonly IPaymentsDataContext paymentsDataContext;
+        private IPaymentLogger logger;
 
-        public DataLockFailureRepository(IPaymentsDataContext paymentsDataContext)
+        public DataLockFailureRepository(IPaymentsDataContext paymentsDataContext, IPaymentLogger logger)
         {
             this.paymentsDataContext = paymentsDataContext;
+            this.logger = logger;
         }
 
         public async Task<List<DataLockFailureEntity>> GetFailures(long ukprn, string learnerReferenceNumber, int frameworkCode, int pathwayCode, int programmeType, int standardCode, string learnAimRef, short academicYear)
         {
-            return await paymentsDataContext.DataLockFailure.Where(f =>
+            var entities = await paymentsDataContext.DataLockFailure.Where(f =>
                     f.Ukprn == ukprn &&
                     f.LearnerReferenceNumber == learnerReferenceNumber &&
                     f.LearningAimFrameworkCode == frameworkCode &&
                     f.LearningAimPathwayCode == pathwayCode &&
                     f.LearningAimProgrammeType == programmeType &&
                     f.LearningAimStandardCode == standardCode &&
-                    f.LearningAimReference == learnerReferenceNumber &&
+                    f.LearningAimReference == learnAimRef &&
                     f.AcademicYear == academicYear
                 )
                 .Select(model => new DataLockFailureEntity
@@ -65,11 +69,34 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 })
                 .ToListAsync()
                 .ConfigureAwait(false);
+
+            logger.LogDebug($"retrieved {entities.Count} errors for UKPRN {ukprn}");
+
+            return entities;
         }
 
         public async Task ReplaceFailures(List<long> oldFailureIds, List<DataLockFailureEntity> newFailures)
         {
+            if (oldFailureIds.Count > 0)
+                logger.LogDebug($"deleting {oldFailureIds.Count} errors");
+            if (newFailures.Count > 0)
+                logger.LogDebug($"adding {newFailures.Count} new failures for UKPRN {newFailures[0].Ukprn}");
+
             paymentsDataContext.DataLockFailure.RemoveRange(paymentsDataContext.DataLockFailure.Where(f => oldFailureIds.Contains(f.Id)));
+
+            //if (newFailures.Count > 0)
+            //    paymentsDataContext.DataLockFailure.RemoveRange(paymentsDataContext.DataLockFailure.Where(f =>
+            //        f.Ukprn == newFailures[0].Ukprn &&
+            //        f.LearnerReferenceNumber == newFailures[0].LearnerReferenceNumber &&
+            //        f.LearningAimFrameworkCode == newFailures[0].LearningAimFrameworkCode &&
+            //        f.LearningAimPathwayCode == newFailures[0].LearningAimPathwayCode &&
+            //        f.LearningAimProgrammeType == newFailures[0].LearningAimProgrammeType &&
+            //        f.LearningAimReference == newFailures[0].LearningAimReference &&
+            //        f.LearningAimStandardCode == newFailures[0].LearningAimStandardCode &&
+            //        f.AcademicYear == newFailures[0].AcademicYear &&
+            //        f.DeliveryPeriod == newFailures[0].DeliveryPeriod &&
+            //        f.TransactionType == newFailures[0].TransactionType
+            //    ));
 
             await paymentsDataContext.DataLockFailure.AddRangeAsync(newFailures.Select(f => new DataLockFailureModel
             {

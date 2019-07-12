@@ -27,5 +27,6 @@ namespace SFA.DAS.Payments.DataLocks.Model.Entities
         public decimal? IlrEndpointAssessorPrice { get; set; }
         public DateTime? IlrPriceEffectiveFromDate { get; set; }
         public DateTime? IlrPriceEffectiveToDate { get; set; }
+        public int Status { get; set; }
     }
 }

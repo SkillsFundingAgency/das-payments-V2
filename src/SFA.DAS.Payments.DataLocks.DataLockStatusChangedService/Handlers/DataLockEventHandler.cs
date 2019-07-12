@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -22,7 +23,13 @@ namespace SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.Handlers
         {
             paymentLogger.LogVerbose($"Processing {message.GetType().Name} event for UKPRN {message.Ukprn}");
 
-            var dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessDataLockEvent(message).ConfigureAwait(false);
+            List<DataLockStatusChanged> dataLockStatusChangeMessages;
+
+            if (message is PayableEarningEvent)
+                dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessPayableEarning((PayableEarningEvent)message).ConfigureAwait(false);
+            else
+                dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessDataLockFailure((EarningFailedDataLockMatching)message).ConfigureAwait(false);
+
             await Task.WhenAll(dataLockStatusChangeMessages.Select(context.Publish)).ConfigureAwait(false);
 
             paymentLogger.LogDebug($"Processed {message.GetType().Name} event for UKPRN {message.Ukprn}, generated {dataLockStatusChangeMessages.Count} events");
