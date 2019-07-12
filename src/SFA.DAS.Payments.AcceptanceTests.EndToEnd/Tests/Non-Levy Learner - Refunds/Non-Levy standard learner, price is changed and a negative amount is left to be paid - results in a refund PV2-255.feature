@@ -5,10 +5,16 @@ Feature: Non-Levy standard learner, price is changed and a negative amount is le
 	So that TODO
 
 Scenario Outline: Non-Levy standard learner, price is changed and a negative amount is left to be paid - results in a refund PV2-255
-    Given the provider previously submitted the following learner details
-        | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     |
-        | 1        | start of academic year | 12 months        | 11250                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | 90%                         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) |
-    And the following earnings had been generated for the learner
+    	Given the following learners
+		| Learner Reference Number |
+		| abc123                   |
+	And the following aims
+		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | Completion Status | Price Episode Id  |
+		| Programme        | ZPROG001      | 01/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        | 1st Price Details |
+	 And price details as follows
+        | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
+        | 1st price details | 11250                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          | 90%                         | Act2          | 1                   |
+      And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Current Academic Year | 750          | 0          | 0         |
         | Sep/Current Academic Year | 750          | 0          | 0         |
@@ -27,11 +33,11 @@ Scenario Outline: Non-Levy standard learner, price is changed and a negative amo
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 675                    | 75                          | Learning         |
         | R02/Current Academic Year | Sep/Current Academic Year | 675                    | 75                          | Learning         |
+    But aims details are changed as follows
+		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | Completion Status | Price Episode Id  |
+		| Programme        | ZPROG001      | 01/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        | 1st Price Details |
 
-    But the Provider now changes the Learner details as follows
-        | Priority | Start Date             | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   |
-        | 1        | start of academic year | 12 months        | 11250                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) |
-    And price details as follows
+	And price details as follows
         | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
         | 1st price details | 11250                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          | 90%                         | Act2          | 1                   |
         | 2nd price details | 1400                 | 01/Oct/Current Academic Year        | 0                      | 01/Oct/Current Academic Year          | 90%                         | Act2          | 1                   |
