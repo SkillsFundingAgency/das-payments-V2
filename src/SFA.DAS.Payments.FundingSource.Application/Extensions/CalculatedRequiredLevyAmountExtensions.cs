@@ -9,7 +9,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Extensions
         {
             if (!message.AccountId.HasValue)
                 throw new InvalidOperationException($"The account id of the levy message is invalid.");
-            return message.TransferSenderAccountId.HasValue && message.AccountId != message.TransferSenderAccountId;
+            return message.TransferSenderAccountId.HasValue && 
+                   message.TransferSenderAccountId != 0 && 
+                   message.AccountId != message.TransferSenderAccountId;
         }
     }
 }
