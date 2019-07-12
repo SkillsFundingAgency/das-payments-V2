@@ -217,6 +217,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.Model", "SFA.DAS.Payments.DataLocks.Model\SFA.DAS.Payments.DataLocks.Model.csproj", "{CF1F575E-D5CA-416F-BBE4-0C0B501A26B3}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.Payments.Database.Legacy", "SFA.DAS.Payments.Database.Legacy\SFA.DAS.Payments.Database.Legacy.sqlproj", "{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests", "SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests\SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests.csproj", "{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.ApprovalsService", "SFA.DAS.Payments.DataLocks.ApprovalsService\SFA.DAS.Payments.DataLocks.ApprovalsService.csproj", "{B85480D3-6B5D-4EF8-85AD-4333353212CE}"
@@ -977,6 +979,18 @@ Global
 		{CF1F575E-D5CA-416F-BBE4-0C0B501A26B3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF1F575E-D5CA-416F-BBE4-0C0B501A26B3}.Release|x64.ActiveCfg = Release|Any CPU
 		{CF1F575E-D5CA-416F-BBE4-0C0B501A26B3}.Release|x64.Build.0 = Release|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Debug|x64.Build.0 = Debug|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Release|x64.ActiveCfg = Release|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Release|x64.Build.0 = Release|Any CPU
+		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E}.Release|x64.Deploy.0 = Release|Any CPU
 		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1}.Debug|x64.ActiveCfg = Debug|Any CPU
