@@ -18,7 +18,7 @@ Scenario: PV2-689 - Update Existing Apprenticeship
 		| Apprenticeship A | 15000        | 01/Aug/Current Academic Year |
 		| Apprenticeship A | 10000        | 01/Sep/Current Academic Year |
 
-   And the apprenticeships are changed has follows
+   And the apprenticeships are changed as follows
 		| Identifier       | Created On Date              | Agreed On Date               | Learner   | Provider   | Employer   | Standard Code | Programme Type | Framework Code | Pathway Code | Start date                   | End date                  |
 		| Apprenticeship A | 01/Aug/Current Academic Year | 02/Aug/Current Academic Year | Learner A | Provider A | Employer A | 17            | 25             | 1              | 2            | 01/Aug/Current Academic Year | 01/Sep/Next Academic Year |
 	

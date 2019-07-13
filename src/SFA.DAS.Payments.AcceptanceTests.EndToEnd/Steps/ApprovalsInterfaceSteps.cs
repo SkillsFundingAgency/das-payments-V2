@@ -125,7 +125,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
-        [Given(@"the apprenticeships are changed has follows")]
+        [Given(@"the apprenticeships are changed as follows")]
         public void GivenTheFollowingApprenticeshipsHaveBeenApprovedX(Table table)
         {
             ApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
@@ -343,8 +343,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return apprenticeshipModel;
         }
 
-        private static bool MatchesTrainingCode(ApprovalsApprenticeship approvalsApprenticeship,
-            ApprenticeshipModel savedApprenticeship)
+        private static bool MatchesTrainingCode(ApprovalsApprenticeship approvalsApprenticeship, ApprenticeshipModel savedApprenticeship)
         {
             return approvalsApprenticeship.StandardCode > 0
                 ? approvalsApprenticeship.StandardCode == savedApprenticeship.StandardCode &&
