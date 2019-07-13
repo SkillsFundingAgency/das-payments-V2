@@ -12,14 +12,14 @@ using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
-    public class MonthEndService : IMonthEndService
+    public class ProviderPeriodEndService : IProviderPeriodEndService
     {
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
         private readonly IPaymentsEventModelBatchService<ProviderPaymentEventModel> batchService;
         private readonly IMonthEndCache monthEndCache;
         private readonly IPaymentLogger logger;
 
-        public MonthEndService(IProviderPaymentsRepository providerPaymentsRepository, IMonthEndCache monthEndCache, IPaymentLogger logger, IPaymentsEventModelBatchService<ProviderPaymentEventModel> batchService)
+        public ProviderPeriodEndService(IProviderPaymentsRepository providerPaymentsRepository, IMonthEndCache monthEndCache, IPaymentLogger logger, IPaymentsEventModelBatchService<ProviderPaymentEventModel> batchService)
         {
             this.providerPaymentsRepository = providerPaymentsRepository;
             this.monthEndCache = monthEndCache ?? throw new ArgumentNullException(nameof(monthEndCache));
