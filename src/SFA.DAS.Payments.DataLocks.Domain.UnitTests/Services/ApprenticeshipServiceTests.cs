@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         [Test]
         public async Task Updates_Apprenticeship()
         {
-            var updatedApprenticeship = new UpdatedApprenticeshipModel
+            var updatedApprenticeship = new UpdatedApprenticeshipApprovedModel
             {
                 ApprenticeshipId = 629959,
                 Uln = 123456,
@@ -178,15 +178,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.UpdateApprenticeship(It.Is<ApprenticeshipModel>(model =>
-                    model.Id == apprenticeshipModel.Id
-                    && model.AgreedOnDate == apprenticeshipModel.AgreedOnDate
-                    && model.Uln == apprenticeshipModel.Uln
-                    && model.EstimatedStartDate == apprenticeshipModel.EstimatedStartDate
-                    && model.EstimatedEndDate == apprenticeshipModel.EstimatedEndDate
-                    && model.StandardCode == apprenticeshipModel.StandardCode
-                    && model.ProgrammeType == apprenticeshipModel.ProgrammeType
-                    && model.FrameworkCode == apprenticeshipModel.FrameworkCode
-                    && model.PathwayCode == apprenticeshipModel.PathwayCode
+                    model.Id == updatedApprenticeship.ApprenticeshipId
+                    && model.AgreedOnDate == updatedApprenticeship.AgreedOnDate
+                    && model.Uln == updatedApprenticeship.Uln
+                    && model.EstimatedStartDate == updatedApprenticeship.EstimatedStartDate
+                    && model.EstimatedEndDate == updatedApprenticeship.EstimatedEndDate
+                    && model.StandardCode == updatedApprenticeship.StandardCode
+                    && model.ProgrammeType == updatedApprenticeship.ProgrammeType
+                    && model.FrameworkCode == updatedApprenticeship.FrameworkCode
+                    && model.PathwayCode == updatedApprenticeship.PathwayCode
                     
                     && model.ApprenticeshipPriceEpisodes.Count == 3
                     && model.ApprenticeshipPriceEpisodes[0].EndDate == updatedApprenticeship.ApprenticeshipPriceEpisodes[0].EndDate
@@ -198,6 +198,88 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.Get(It.Is<long>(id => id == apprenticeshipModel.Id)),Times.Exactly(2));
+
+        }
+
+        [Test]
+        public async Task Updates_Apprenticeship_DataLockTriage()
+        {
+            var updatedApprenticeship = new UpdatedApprenticeshipDataLockTriageModel
+            {
+                ApprenticeshipId = 629959,
+                AgreedOnDate = DateTime.Today.AddDays(-1),
+                ProgrammeType = 26,
+                StandardCode = 18,
+
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        StartDate = new DateTime(2017,08,06),
+                        EndDate = new DateTime(2017,08,30),
+                        Cost = 15000.00m
+                    },
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        StartDate = new DateTime(2017,09,06),
+                        Cost = 20000.00m
+                    }
+                }
+            };
+
+            var apprenticeshipModel = new ApprenticeshipModel
+            {
+                Id = updatedApprenticeship.ApprenticeshipId,
+                Uln = 1,
+                AgreedOnDate = DateTime.Today.AddDays(-2),
+                EstimatedStartDate = DateTime.Today.AddDays(-1),
+                EstimatedEndDate = DateTime.Today.AddYears(2),
+                ProgrammeType = 25,
+                StandardCode = 17,
+
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        Id = 1,
+                        ApprenticeshipId = updatedApprenticeship.ApprenticeshipId,
+                        StartDate = new DateTime(2017,08,06),
+                        Cost = 15000.00m
+                    },
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        Id =161,
+                        ApprenticeshipId = updatedApprenticeship.ApprenticeshipId,
+                        StartDate = new DateTime(2017,08,10),
+                        Cost = 1000.00m
+                    }
+                }
+            };
+            
+            mocker.Mock<IApprenticeshipRepository>()
+                .Setup(x => x.Get(It.Is<long>(id => id == apprenticeshipModel.Id)))
+                .ReturnsAsync(apprenticeshipModel);
+
+            var service = mocker.Create<ApprenticeshipService>();
+            await service.UpdateApprenticeshipForDataLockTriage(updatedApprenticeship);
+
+            mocker.Mock<IApprenticeshipRepository>()
+                .Verify(x => x.UpdateApprenticeship(It.Is<ApprenticeshipModel>(model =>
+                    model.Id == updatedApprenticeship.ApprenticeshipId
+                    && model.AgreedOnDate == updatedApprenticeship.AgreedOnDate
+                    && model.StandardCode == updatedApprenticeship.StandardCode
+                    && model.ProgrammeType == updatedApprenticeship.ProgrammeType
+                    && model.FrameworkCode == updatedApprenticeship.FrameworkCode
+                    && model.PathwayCode == updatedApprenticeship.PathwayCode
+                    && model.ApprenticeshipPriceEpisodes.Count == 3
+                    && model.ApprenticeshipPriceEpisodes[0].EndDate == updatedApprenticeship.ApprenticeshipPriceEpisodes[0].EndDate
+                    && model.ApprenticeshipPriceEpisodes[1].Removed == true
+                    && model.ApprenticeshipPriceEpisodes[2].StartDate == updatedApprenticeship.ApprenticeshipPriceEpisodes[1].StartDate
+                    && model.ApprenticeshipPriceEpisodes[2].Cost == updatedApprenticeship.ApprenticeshipPriceEpisodes[1].Cost)
+                ), Times.Once);
+
+            mocker.Mock<IApprenticeshipRepository>()
+                .Verify(x => x.Get(It.Is<long>(id => id == apprenticeshipModel.Id)), Times.Exactly(2));
 
         }
     }

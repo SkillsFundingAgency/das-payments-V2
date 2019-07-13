@@ -95,7 +95,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.IsLevyPayer, opt => opt.Ignore())
                 ;
 
-            CreateMap<ApprenticeshipUpdatedApprovedEvent, UpdatedApprenticeshipModel>()
+            CreateMap<ApprenticeshipUpdatedApprovedEvent, UpdatedApprenticeshipApprovedModel>()
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
                 .ForMember(dest => dest.StandardCode, opt => opt.ResolveUsing(source => source.TrainingType == ProgrammeType.Standard ? int.Parse(source.TrainingCode) : 0))
                .ForMember(dest => dest.FrameworkCode, opt => opt.ResolveUsing(source => source.TrainingType == ProgrammeType.Framework ? int.Parse(source.TrainingCode.Split('-').FirstOrDefault() ?? throw new InvalidOperationException($"Failed to parse the training code field to get the Framework code. Data: {source.TrainingCode}")) : 0))
@@ -106,6 +106,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.AgreedOnDate, opt => opt.MapFrom(source => source.ApprovedOn))
                 .ForMember(dest => dest.EstimatedEndDate, opt => opt.MapFrom(source => source.EndDate))
                 .ForMember(dest => dest.EstimatedStartDate, opt => opt.MapFrom(source => source.StartDate))
+                ;
+
+            CreateMap<DataLockTriageApprovedEvent, UpdatedApprenticeshipDataLockTriageModel>()
+                .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
+                .ForMember(dest => dest.StandardCode, opt => opt.ResolveUsing(source => source.TrainingType == ProgrammeType.Standard ? int.Parse(source.TrainingCode) : 0))
+                .ForMember(dest => dest.FrameworkCode, opt => opt.ResolveUsing(source => source.TrainingType == ProgrammeType.Framework ? int.Parse(source.TrainingCode.Split('-').FirstOrDefault() ?? throw new InvalidOperationException($"Failed to parse the training code field to get the Framework code. Data: {source.TrainingCode}")) : 0))
+                .ForMember(dest => dest.ProgrammeType, opt => opt.ResolveUsing(source => source.TrainingType == ProgrammeType.Framework ? int.Parse(source.TrainingCode.Split('-').Skip(1).FirstOrDefault() ?? throw new InvalidOperationException($"Failed to parse the training code field to get the Programme Type. Data: {source.TrainingCode}")) : 25))
+                .ForMember(dest => dest.PathwayCode, opt => opt.ResolveUsing(source => source.TrainingType == ProgrammeType.Framework ? int.Parse(source.TrainingCode.Split('-').Skip(2).FirstOrDefault() ?? throw new InvalidOperationException($"Failed to parse the training code field to get the Pathway code. Data: {source.TrainingCode}")) : 0))
+                .ForMember(dest => dest.AgreedOnDate, opt => opt.MapFrom(source => source.ApprovedOn))
+                .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
                 ;
 
 

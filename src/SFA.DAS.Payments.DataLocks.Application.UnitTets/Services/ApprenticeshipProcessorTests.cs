@@ -200,7 +200,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
 
             mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipModel>()))
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipApprovedModel>()))
                 .ReturnsAsync(() => new ApprenticeshipModel
                 {
                     Id = approvalsEvent.ApprenticeshipId,
@@ -209,8 +209,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 });
 
             mocker.Mock<IMapper>()
-                .Setup(x => x.Map<UpdatedApprenticeshipModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()))
-                .Returns<ApprenticeshipUpdatedApprovedEvent>(model => new UpdatedApprenticeshipModel
+                .Setup(x => x.Map<UpdatedApprenticeshipApprovedModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()))
+                .Returns<ApprenticeshipUpdatedApprovedEvent>(model => new UpdatedApprenticeshipApprovedModel
                 {
                     ApprenticeshipId = model.ApprenticeshipId,
                     Uln = long.Parse(model.Uln),
@@ -229,6 +229,51 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
         }
 
+
+        [Test]
+        public async Task Process_Apprenticeship_DataLock_Triage()
+        {
+            var approvalsEvent = new DataLockTriageApprovedEvent()
+            {
+                ApprenticeshipId = 1,
+                ApprovedOn = DateTime.Today,
+                TrainingCode = "ABC",
+                TrainingType = ProgrammeType.Standard,
+                PriceEpisodes = new PriceEpisode[1]
+                {
+                    new PriceEpisode
+                    {
+                        FromDate = DateTime.Today,
+                        ToDate = DateTime.Today.AddYears(1),
+                        Cost = 1000m
+                    }
+                }
+            };
+
+            mocker.Mock<IMapper>()
+                .Setup(x => x.Map<UpdatedApprenticeshipDataLockTriageModel>(It.IsAny<DataLockTriageApprovedEvent>()))
+                .Returns<DataLockTriageApprovedEvent>(model => new UpdatedApprenticeshipDataLockTriageModel
+                {
+                    ApprenticeshipId = model.ApprenticeshipId,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
+                });
+
+            mocker.Mock<IApprenticeshipService>()
+                .Setup(svc => svc.UpdateApprenticeshipForDataLockTriage(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = approvalsEvent.ApprenticeshipId
+                });
+            
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessApprenticeshipDataLockTriage(approvalsEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
+                        ev.Id == approvalsEvent.ApprenticeshipId),
+                    It.IsAny<PublishOptions>()), Times.Once);
+
+        }
 
     }
 }

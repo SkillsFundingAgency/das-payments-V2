@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         Task Process(ApprenticeshipCreatedEvent createdEvent);
         Task ProcessUpdatedApprenticeship(ApprenticeshipUpdatedApprovedEvent updatedEvent);
+        Task ProcessApprenticeshipDataLockTriage(DataLockTriageApprovedEvent apprenticeshipDataLockTriageEvent);
     }
 
     public class ApprenticeshipProcessor : IApprenticeshipProcessor
@@ -59,7 +60,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             try
             {
                 logger.LogDebug($"Now processing the apprenticeship update even for Apprenticeship id: {apprenticeshipApprovedEvent.ApprenticeshipId}");
-                var model = mapper.Map<UpdatedApprenticeshipModel>(apprenticeshipApprovedEvent);
+                var model = mapper.Map<UpdatedApprenticeshipApprovedModel>(apprenticeshipApprovedEvent);
 
                 var updatedApprenticeship = await apprenticeshipService.UpdateApprenticeship(model).ConfigureAwait(false);
 
@@ -76,6 +77,30 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 throw;
             }
         }
+
+        public async Task ProcessApprenticeshipDataLockTriage(DataLockTriageApprovedEvent apprenticeshipDataLockTriageEvent)
+        {
+            try
+            {
+                logger.LogDebug($"Now processing the apprenticeship DataLock Triage update for Apprenticeship id: {apprenticeshipDataLockTriageEvent.ApprenticeshipId}");
+                var model = mapper.Map<UpdatedApprenticeshipDataLockTriageModel>(apprenticeshipDataLockTriageEvent);
+
+                var updatedApprenticeship = await apprenticeshipService.UpdateApprenticeshipForDataLockTriage(model).ConfigureAwait(false);
+
+                var updatedEvent = mapper.Map<ApprenticeshipUpdated>(updatedApprenticeship);
+
+                var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+                await endpointInstance.Publish(updatedEvent).ConfigureAwait(false);
+
+                logger.LogInfo($"Finished processing the Apprenticeship dataLock Triage update event. Apprenticeship id: {updatedEvent.Id}, employer account id: {updatedEvent.EmployerAccountId}, Ukprn: {updatedEvent.Ukprn}.");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error processing the apprenticeship DataLock Triage update event. Error: {ex.Message}", ex);
+                throw;
+            }
+        }
+
 
 
     }

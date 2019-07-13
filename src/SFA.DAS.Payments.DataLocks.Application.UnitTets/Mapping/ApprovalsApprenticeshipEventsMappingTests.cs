@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
 
 
         [Test]
-        public void Maps_ApprenticeshipUpdatedApprovedEvent_To_UpdatedApprenticeshipModel_Correctly()
+        public void Maps_ApprenticeshipUpdatedApprovedEvent_To_UpdatedApprenticeshipApprovalModel_Correctly()
         {
             var approvalsEvent = new ApprenticeshipUpdatedApprovedEvent
             {
@@ -172,7 +172,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                     new PriceEpisode { FromDate = DateTime.Today, Cost = 1200M }
                 }
             };
-            var model = Mapper.Map<UpdatedApprenticeshipModel>(approvalsEvent);
+            var model = Mapper.Map<UpdatedApprenticeshipApprovedModel>(approvalsEvent);
 
             model.AgreedOnDate.Should().Be(approvalsEvent.ApprovedOn);
             model.EstimatedEndDate.Should().Be(approvalsEvent.EndDate);
@@ -183,6 +183,35 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             model.ProgrammeType.Should().Be(3);
             model.PathwayCode.Should().Be(2);
             model.Uln.ToString().Should().Be(approvalsEvent.Uln);
+            model.ApprenticeshipPriceEpisodes.Count.Should().Be(approvalsEvent.PriceEpisodes.Length);
+            approvalsEvent.PriceEpisodes
+                .All(pe => model.ApprenticeshipPriceEpisodes.Any(ape => ape.StartDate == pe.FromDate && ape.Cost == pe.Cost && ape.EndDate == pe.ToDate))
+                .Should().BeTrue();
+        }
+
+        [Test]
+        public void Maps_DataLockTriageApprovedEvent_To_UpdatedApprenticeshipDataLockTriageModel_Correctly()
+        {
+            var approvalsEvent = new DataLockTriageApprovedEvent
+            {
+                ApprovedOn = DateTime.Today.AddMonths(-13),
+                ApprenticeshipId = 12,
+                TrainingCode = "460-3-2",
+                TrainingType = ProgrammeType.Framework,
+                PriceEpisodes = new PriceEpisode[]
+                {
+                    new PriceEpisode { FromDate = DateTime.Today.AddMonths(-12), Cost = 1000M, ToDate = DateTime.Today.AddDays(-1)},
+                    new PriceEpisode { FromDate = DateTime.Today, Cost = 1200M }
+                }
+            };
+            var model = Mapper.Map<UpdatedApprenticeshipDataLockTriageModel>(approvalsEvent);
+
+            model.AgreedOnDate.Should().Be(approvalsEvent.ApprovedOn);
+            model.ApprenticeshipId.Should().Be(approvalsEvent.ApprenticeshipId);
+            model.StandardCode.Should().Be(0);
+            model.FrameworkCode.Should().Be(460);
+            model.ProgrammeType.Should().Be(3);
+            model.PathwayCode.Should().Be(2);
             model.ApprenticeshipPriceEpisodes.Count.Should().Be(approvalsEvent.PriceEpisodes.Length);
             approvalsEvent.PriceEpisodes
                 .All(pe => model.ApprenticeshipPriceEpisodes.Any(ape => ape.StartDate == pe.FromDate && ape.Cost == pe.Cost && ape.EndDate == pe.ToDate))
