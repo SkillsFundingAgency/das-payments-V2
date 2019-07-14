@@ -13,6 +13,8 @@ using SFA.DAS.Payments.PeriodEnd.Application.Infrastructure;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.PeriodEnd.Model;
 using NServiceBus;
+using SFA.DAS.Payments.Monitoring.Jobs.Client;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 {
@@ -20,13 +22,15 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
     {
         private readonly IPaymentLogger logger;
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
+        private readonly IPeriodEndJobClient jobClient;
 
         public PeriodEndJobContextMessageHandler(IPaymentLogger logger,
-            IEndpointInstanceFactory endpointInstanceFactory)
+            IEndpointInstanceFactory endpointInstanceFactory, IPeriodEndJobClient jobClient)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.endpointInstanceFactory = endpointInstanceFactory ??
                                            throw new ArgumentNullException(nameof(endpointInstanceFactory));
+            this.jobClient = jobClient ?? throw new ArgumentNullException(nameof(jobClient));
         }
 
         public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
@@ -45,6 +49,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     Period = Convert.ToByte(GetMessageValue(message, JobContextMessageConstants.KeyValuePairs.ReturnPeriod))
                 };
                 logger.LogDebug($"Got period end event: {periodEndEvent.ToJson()}");
+                await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
                 await endpointInstance.Publish(periodEndEvent);
                 logger.LogInfo(
@@ -55,6 +60,35 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
             {
                 logger.LogError($"Failed to process job context message. Message: {message.ToJson()}", ex);
                 throw;
+            }
+        }
+
+        private async Task RecordPeriodEndJob(PeriodEndTaskType taskType, PeriodEndEvent periodEndEvent)
+        {
+            logger.LogDebug($"Recording period end job. Type: {taskType:G}");
+            var generatedMessage = new GeneratedMessage
+            {
+                MessageId = periodEndEvent.EventId,
+                MessageName = periodEndEvent.GetType().FullName,
+                StartTime = periodEndEvent.EventTime
+
+            };
+            switch (taskType)
+            {
+                case PeriodEndTaskType.PeriodEndStart:
+                    await jobClient.RecordPeriodEndStart(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
+                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> {generatedMessage}).ConfigureAwait(false);
+                    break;
+                case PeriodEndTaskType.PeriodEndRun:
+                    await jobClient.RecordPeriodEndRun(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
+                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
+                    break;
+                case PeriodEndTaskType.PeriodEndStop:
+                    await jobClient.RecordPeriodEndStop(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
+                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unhandled period end task type: {taskType:G}");
             }
         }
 
