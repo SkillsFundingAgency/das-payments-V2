@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Stores_New_Jobs()
         {
-            var jobStarted = new RecordStartedProcessingMonthEndJob()
+            var jobStarted = new RecordPeriodEndStartJob()
             {
                 CollectionPeriod = 1,
                 CollectionYear = 1819,
@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Verify(dc => dc.SaveNewJob(
                     It.Is<JobModel>(job =>
                         job.StartTime == jobStarted.StartTime
-                        && job.JobType == JobType.MonthEndJob
+                        && job.JobType == JobType.PeriodEndStartJob
                         && job.Status == JobStatus.InProgress 
                         && job.DcJobId == jobStarted.JobId
                         && job.CollectionPeriod == jobStarted.CollectionPeriod

@@ -795,7 +795,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
 
             //TODO: remove when DC have implemented the Month End Task
-            var dcStartedMonthEndJobCommand = new RecordStartedProcessingMonthEndJob
+            var dcStartedMonthEndJobCommand = new RecordPeriodEndStartJob
             {
                 JobId = provider.JobId,
                 CollectionPeriod = CollectionPeriod,

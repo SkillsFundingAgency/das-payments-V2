@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
 {
-    public class StartedProcessingMonthEndJobCommandHandler : IHandleMessages<RecordStartedProcessingMonthEndJob>
+    public class StartedProcessingMonthEndJobCommandHandler : IHandleMessages<RecordPeriodEndStartJob>
     {
         private readonly IPaymentLogger logger;
         private readonly IMonthEndJobService monthEndJobService;
@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
             this.monthEndJobService = monthEndJobService ?? throw new ArgumentNullException(nameof(monthEndJobService));
         }
 
-        public async Task Handle(RecordStartedProcessingMonthEndJob message, IMessageHandlerContext context)
+        public async Task Handle(RecordPeriodEndStartJob message, IMessageHandlerContext context)
         {
             try
             {
