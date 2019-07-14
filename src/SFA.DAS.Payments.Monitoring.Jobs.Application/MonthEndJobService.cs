@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 {
     public interface IMonthEndJobService
     {
-        Task JobStarted(RecordPeriodEndStartJob startedStartJobCommand);
+        Task RecordPeriodEndJob(RecordPeriodEndJob startedStartJobCommand);
     }
 
     public class MonthEndJobService : IMonthEndJobService
@@ -28,19 +28,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task JobStarted(RecordPeriodEndStartJob startedStartJobCommand)
+        public async Task RecordPeriodEndJob(RecordPeriodEndJob periodEndJob)
         {
-            logger.LogVerbose($"Now recording new month end job.  Job Id: {startedStartJobCommand.JobId}, Collection period: {startedStartJobCommand.CollectionYear}-{startedStartJobCommand.CollectionPeriod}.");
+            logger.LogVerbose($"Now recording new month end job.  Job Id: {periodEndJob.JobId}, Collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}.");
             var jobDetails = new JobModel
             {
-                StartTime = startedStartJobCommand.StartTime,
+                StartTime = periodEndJob.StartTime,
                 Status = JobStatus.InProgress,
-                JobType = JobType.PeriodEndStartJob,
-                CollectionPeriod = startedStartJobCommand.CollectionPeriod,
-                AcademicYear = startedStartJobCommand.CollectionYear,
-                DcJobId = startedStartJobCommand.JobId,
+                JobType = ToJobType(periodEndJob),
+                CollectionPeriod = periodEndJob.CollectionPeriod,
+                AcademicYear = periodEndJob.CollectionYear,
+                DcJobId = periodEndJob.JobId,
             };
-            var jobSteps = startedStartJobCommand.GeneratedMessages.Select(msg => new JobStepModel
+            var jobSteps = periodEndJob.GeneratedMessages.Select(msg => new JobStepModel
             {
                 MessageId = msg.MessageId,
                 StartTime = msg.StartTime,
@@ -49,11 +49,22 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             }).ToList();
             await dataContext.SaveNewJob(jobDetails, jobSteps);
             telemetry.AddProperty("JobType", jobDetails.JobType.ToString("G"));
-            telemetry.AddProperty("JobId", startedStartJobCommand.JobId.ToString());
-            telemetry.AddProperty("CollectionPeriod", startedStartJobCommand.CollectionPeriod.ToString());
-            telemetry.AddProperty("CollectionYear", startedStartJobCommand.CollectionYear.ToString());
+            telemetry.AddProperty("JobId", periodEndJob.JobId.ToString());
+            telemetry.AddProperty("CollectionPeriod", periodEndJob.CollectionPeriod.ToString());
+            telemetry.AddProperty("CollectionYear", periodEndJob.CollectionYear.ToString());
             telemetry.TrackEvent("Started Job");
-            logger.LogDebug($"Finished recording new month end job.  Job Id: {startedStartJobCommand.JobId}, Collection period: {startedStartJobCommand.CollectionYear}-{startedStartJobCommand.CollectionPeriod}.");
+            logger.LogDebug($"Finished recording new month end job.  Job Id: {periodEndJob.JobId}, Job type: {jobDetails.JobType:G}, Collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}.");
+        }
+
+        private JobType ToJobType(RecordPeriodEndJob periodEndJob)
+        {
+            if (periodEndJob is RecordPeriodEndStartJob)
+                return JobType.PeriodEndStartJob;
+            if (periodEndJob is RecordPeriodEndRunJob)
+                return JobType.PeriodEndRunJob;
+            if (periodEndJob is RecordPeriodEndStopJob)
+                return JobType.PeriodEndStopJob;
+            throw new InvalidOperationException($"Unhandled period end job type: {periodEndJob.GetType().Name}");
         }
 
     }

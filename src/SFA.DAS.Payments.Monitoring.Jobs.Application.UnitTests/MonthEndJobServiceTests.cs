@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 StartTime = DateTimeOffset.UtcNow,
             };
             var service = mocker.Create<MonthEndJobService>();
-            await service.JobStarted(jobStarted);
+            await service.RecordPeriodEndJob(jobStarted);
             mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveNewJob(
                     It.Is<JobModel>(job =>
