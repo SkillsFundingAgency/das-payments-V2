@@ -51,6 +51,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "514":
                 case "528":
                 case "529":
+                case "609":
                 case "615":
                 case "893":
                     return new Framework593Learner(learners, featureNumber);
@@ -79,8 +80,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     return new Framework593LearnerWithdrawsAfterQualifyingPeriod(learners);
                 case "278":
                     return new Framework593LearnerWithdrawsAfterPlannedEndDate(learners);
-                case "609":
-                    return new Framework593LearnerFinalProgramPayment(learners);
                 case "328":
                     return new Framework403Learner19PlusWithEHCPlanAndSmallEmployer(learners, featureNumber);
                 

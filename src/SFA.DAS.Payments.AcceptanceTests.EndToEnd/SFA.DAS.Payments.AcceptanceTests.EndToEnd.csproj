@@ -352,7 +352,6 @@
     <Compile Include="LearnerMutators\LearnerMutatorFactory.cs" />
     <Compile Include="LearnerMutators\LearnerExtensions.cs" />
     <Compile Include="LearnerMutators\Framework593Learner.cs" />
-    <Compile Include="LearnerMutators\NonLevy\Framework593LearnerFinalProgramPayment.cs" />
     <Compile Include="LearnerMutators\StandardLearner.cs" />
     <Compile Include="LearnerMutators\NonLevy\SmallEmployer\Framework403Learner19PlusWithEHCPlanAndSmallEmployer.cs" />
     <Compile Include="LearnerMutators\NonLevy\Framework593LearnerRestarts.cs" />
