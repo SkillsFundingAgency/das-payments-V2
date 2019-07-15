@@ -87,6 +87,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent).Assembly, EndpointNames.DataLocksApprovals);
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipUpdatedApprovedEvent).Assembly, EndpointNames.DataLocksApprovals);
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.DataLockTriageApprovedEvent).Assembly, EndpointNames.DataLocksApprovals);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -312,6 +313,37 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         }).ToArray(),
                 };
                 Console.WriteLine($"Sending ApprenticeshipUpdatedApprovedEvent message: {createdMessage.ToJson()}");
+                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+            }
+        }
+
+
+        [When(@"the Approvals service notifies the Payments service of the apprenticeships datalock triage changes")]
+        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfTheApprenticeshipsDatalockTriageChanges()
+        {
+            foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
+            {
+                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
+                var createdMessage = new CommitmentsV2.Messages.Events.DataLockTriageApprovedEvent
+                {
+                    ApprovedOn = approvalsApprenticeship.AgreedOnDate.ToDate(),
+                    ApprenticeshipId = approvalsApprenticeship.Id,
+                    TrainingType = approvalsApprenticeship.StandardCode > 0
+                        ? ProgrammeType.Standard
+                        : ProgrammeType.Framework,
+                    TrainingCode = approvalsApprenticeship.StandardCode > 0
+                        ? approvalsApprenticeship.StandardCode.ToString()
+                        : $"{approvalsApprenticeship.FrameworkCode}-{approvalsApprenticeship.ProgrammeType}-{approvalsApprenticeship.PathwayCode}",
+
+                    PriceEpisodes = approvalsApprenticeship.PriceEpisodes.Select(pp =>
+                        new CommitmentsV2.Messages.Events.PriceEpisode
+                        {
+                            FromDate = pp.EffectiveFrom.ToDate(),
+                            ToDate = pp.EffectiveTo?.ToNullableDate(),
+                            Cost = pp.AgreedPrice
+                        }).ToArray(),
+                };
+                Console.WriteLine($"Sending DataLockTriageApprovedEvent message: {createdMessage.ToJson()}");
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
