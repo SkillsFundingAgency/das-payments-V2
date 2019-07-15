@@ -36,6 +36,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 .Setup(x => x.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipApprovedModel>()))
                 .ReturnsAsync(new ApprenticeshipModel());
 
+            mocker.Mock<IApprenticeshipDataLockTriageService>()
+                .Setup(x => x.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
+                .ReturnsAsync(new ApprenticeshipModel());
 
             apprenticeship = new ApprenticeshipModel
             {
@@ -168,6 +171,52 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             mocker.Mock<IApprenticeshipApprovedUpdatedService>()
                 .Verify(x => x.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipApprovedModel>()), Times.Once);
 
+            result.Id.Should().Be(updatedApprenticeship.ApprenticeshipId);
+        }
+
+        [Test]
+        public async Task Update_Apprenticeship_For_DataLockTriage()
+        {
+
+            var updatedApprenticeship = new UpdatedApprenticeshipDataLockTriageModel
+            {
+                ApprenticeshipId = 629959,
+                AgreedOnDate = DateTime.Today.AddDays(-1),
+                ProgrammeType = 26,
+                StandardCode = 18,
+
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        StartDate = new DateTime(2017, 08, 06),
+                        EndDate = new DateTime(2017, 08, 30),
+                        Cost = 15000.00m
+                    },
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        StartDate = new DateTime(2017, 09, 06),
+                        Cost = 20000.00m
+                    }
+                }
+
+            };
+
+            mocker.Mock<IApprenticeshipDataLockTriageService>()
+                .Setup(x => x.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
+                .ReturnsAsync(new ApprenticeshipModel
+                {
+                    Id = updatedApprenticeship.ApprenticeshipId
+                });
+
+            var service = mocker.Create<ApprenticeshipService>();
+            var result = await service.UpdateApprenticeshipForDataLockTriage(updatedApprenticeship);
+
+            mocker.Mock<IApprenticeshipDataLockTriageService>()
+                .Verify(x => x.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()), Times.Once);
+
+
+            result.Id.Should().Be(updatedApprenticeship.ApprenticeshipId);
 
         }
     }
