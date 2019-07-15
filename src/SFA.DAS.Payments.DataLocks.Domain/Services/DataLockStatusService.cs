@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
@@ -28,14 +29,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
                 var oldFailure = orderedOld[i];
                 var newFailure = orderedNew[i];
 
-                if (oldFailure.ApprenticeshipId != newFailure.ApprenticeshipId)
+                if (oldFailure.Apprenticeship?.Id != newFailure.Apprenticeship?.Id)
                     return DataLockStatusChange.FailureChanged;
 
                 if (oldFailure.DataLockError != newFailure.DataLockError)
                     return DataLockStatusChange.FailureChanged;
 
-                var oldEpisodes = oldFailure.ApprenticeshipPriceEpisodeIds ?? new List<long>();
-                var newEpisodes = newFailure.ApprenticeshipPriceEpisodeIds ?? new List<long>();
+                var oldEpisodes = oldFailure.ApprenticeshipPriceEpisodes == null ? new List<long>() : oldFailure.ApprenticeshipPriceEpisodes.Select(e => e.Id).ToList();
+                var newEpisodes = newFailure.ApprenticeshipPriceEpisodes == null ? new List<long>() : newFailure.ApprenticeshipPriceEpisodes.Select(e => e.Id).ToList();
 
                 if (oldEpisodes.Count != newEpisodes.Count)
                     return DataLockStatusChange.FailureChanged;
@@ -53,8 +54,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
         private static List<DataLockFailure> OrderFailures(List<DataLockFailure> currentFailures)
         {
             return currentFailures.OrderBy(f => f.DataLockError)
-                .ThenBy(f => f.ApprenticeshipId)
-                .ThenBy(f => f.ApprenticeshipPriceEpisodeIds == null ? string.Empty : string.Join("-", f.ApprenticeshipPriceEpisodeIds.OrderBy(p => p)))
+                .ThenBy(f => f.Apprenticeship?.Id)
+                .ThenBy(f => f.ApprenticeshipPriceEpisodes == null ? string.Empty : string.Join("-", f.ApprenticeshipPriceEpisodes.Select(p => p.Id).OrderBy(p => p)))
                 .ToList();
         }
     }

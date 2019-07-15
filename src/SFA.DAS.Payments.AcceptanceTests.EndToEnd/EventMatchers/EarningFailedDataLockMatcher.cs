@@ -7,6 +7,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.Tests.Core;
@@ -52,6 +53,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 var learnerEarnings = expectedDataLockErrorsSpec.Where(x => x.LearnerId == learnerId).ToList();
                 var groupedEarningPerTransactionTypes = learnerEarnings.GroupBy(x => x.TransactionType);
 
+                var dataLockError = learnerEarnings.First();
+
                 var earningFailedDataLockEvent = new EarningFailedDataLockMatching
                 {
                     CollectionPeriod = collectionPeriod,
@@ -62,10 +65,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     },
                     LearningAim = new LearningAim
                     {
-                        ProgrammeType = learnerEarnings.First().ProgrammeType, //May need to move to another Matcher
-                        StandardCode = learnerEarnings.First().StandardCode,
-                        FrameworkCode = learnerEarnings.First().FrameworkCode,
-                        PathwayCode = learnerEarnings.First().PathwayCode
+                        ProgrammeType = dataLockError.ProgrammeType, //May need to move to another Matcher
+                        StandardCode = dataLockError.StandardCode,
+                        FrameworkCode = dataLockError.FrameworkCode,
+                        PathwayCode = dataLockError.PathwayCode
                     },
                     OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 };
@@ -83,9 +86,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             Period = new CollectionPeriodBuilder().WithDate(earningPerPeriods.Key.ToDate()).Build().Period,
                             DataLockFailures = earningPerPeriods.Select(x => new DataLockFailure
                             {
-                                ApprenticeshipId = learnerEarnings.First().ApprenticeshipId,
+                                Apprenticeship = dataLockError.ApprenticeshipId.HasValue ? new ApprenticeshipModel { Id = dataLockError.ApprenticeshipId.Value } : null,
                                 DataLockError = x.ErrorCode,
-                                ApprenticeshipPriceEpisodeIds = new List<long>()
+                                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
                             }).ToList()
                         });
                     }
@@ -213,15 +216,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     expectedDataLockFailure.DataLockError == DataLockErrorCode.DLOCK_02)
                 {
                     if (actualDataLockFailure == null ||
-                        actualDataLockFailure.ApprenticeshipId != null)
+                        actualDataLockFailure.Apprenticeship != null)
                         return false;
                 }
                 else
                 {
-                    if (actualDataLockFailure?.ApprenticeshipId == null ||
-                        actualDataLockFailure.ApprenticeshipId.Value != expectedDataLockFailure.ApprenticeshipId ||
-                        actualDataLockFailure.ApprenticeshipPriceEpisodeIds == null ||
-                        !actualDataLockFailure.ApprenticeshipPriceEpisodeIds.Any())
+                    if (actualDataLockFailure?.Apprenticeship == null ||
+                        actualDataLockFailure.Apprenticeship?.Id != expectedDataLockFailure.Apprenticeship?.Id ||
+                        actualDataLockFailure.ApprenticeshipPriceEpisodes == null ||
+                        !actualDataLockFailure.ApprenticeshipPriceEpisodes.Any())
                         return false;
                 }
             }

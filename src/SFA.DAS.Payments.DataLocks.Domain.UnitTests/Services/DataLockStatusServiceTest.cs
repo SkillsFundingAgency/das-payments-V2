@@ -3,6 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
@@ -66,14 +67,24 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 new DataLockFailure
                 {
                     DataLockError = DataLockErrorCode.DLOCK_03,
-                    ApprenticeshipId = 1,
-                    ApprenticeshipPriceEpisodeIds = new List<long> { 1,3,2 }
+                    Apprenticeship = new ApprenticeshipModel { Id = 1 },
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel {Id = 1 },
+                        new ApprenticeshipPriceEpisodeModel {Id = 3 },
+                        new ApprenticeshipPriceEpisodeModel {Id = 2 },
+                    }
                 },
                 new DataLockFailure
                 {
                     DataLockError = DataLockErrorCode.DLOCK_04,
-                    ApprenticeshipId = 2,
-                    ApprenticeshipPriceEpisodeIds = new List<long> { 3,2,1 }
+                    Apprenticeship = new ApprenticeshipModel { Id = 2 },
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel {Id = 3 },
+                        new ApprenticeshipPriceEpisodeModel {Id = 2 },
+                        new ApprenticeshipPriceEpisodeModel {Id = 1 },
+                    }
                 }
             };
 
@@ -82,14 +93,24 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 new DataLockFailure
                 {
                     DataLockError = DataLockErrorCode.DLOCK_04,
-                    ApprenticeshipId = 2,
-                    ApprenticeshipPriceEpisodeIds = new List<long> {3, 2, 1}
+                    Apprenticeship = new ApprenticeshipModel { Id = 2 },
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel {Id = 3 },
+                        new ApprenticeshipPriceEpisodeModel {Id = 2 },
+                        new ApprenticeshipPriceEpisodeModel {Id = 1 },
+                    }
                 },
                 new DataLockFailure
                 {
                     DataLockError = DataLockErrorCode.DLOCK_03,
-                    ApprenticeshipId = 1,
-                    ApprenticeshipPriceEpisodeIds = new List<long> {2, 3, 1}
+                    Apprenticeship = new ApprenticeshipModel { Id = 1},
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel {Id = 2 },
+                        new ApprenticeshipPriceEpisodeModel {Id = 3 },
+                        new ApprenticeshipPriceEpisodeModel {Id = 1 },
+                    }
                 }
             };
 
