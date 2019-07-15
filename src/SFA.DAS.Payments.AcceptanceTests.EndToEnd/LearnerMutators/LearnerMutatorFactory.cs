@@ -16,6 +16,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             {
                 case "199":
                 case "209":
+                case "216":
                 case "251":
                 case "258":
                 case "261":
@@ -73,7 +74,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     return new StandardLearner(learners, featureNumber);
                 case "324":
                 case "325":
-                    return new Framework593LearnerRestartsTowardsEndOfAcademicYear(learners, featureNumber);
+                    return new Framework593LearnerWithNewFilePreparationDate(learners, featureNumber);
                 case "277":
                     return new Framework593LearnerWithdrawsAfterQualifyingPeriod(learners);
                 case "278":

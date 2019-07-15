@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 if (learner.Restart && learner.Aims.Exists(a => !string.IsNullOrWhiteSpace(a.OriginalStartDate)))
                 {
                     messageLearner.LearnerEmploymentStatus[0].DateEmpStatApp =
-                        learner.Aims.First(x => x.IsMainAim).OriginalStartDate.ToDate().AddMonths(-1);
+                        learner.Aims.First(x => x.IsMainAim).OriginalStartDate.ToDate().AddMonths(-2);
                 }
                 else
                 {
@@ -291,9 +291,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         protected void SetFrameworkComponentAimDetails(MessageLearner messageLearner, Learner learner,
             string learnAimRef)
         {
-            var programmeAim = messageLearner.LearningDelivery.Single(ld => ld.AimType == 1);
+            var programmeAim = messageLearner.LearningDelivery.First(ld => ld.AimType == 1);
             var componentAim = messageLearner.LearningDelivery.First(ld => ld.AimType == 3);
-            componentAim.LearnAimRef = learner.Aims.Count == 1
+            componentAim.LearnAimRef = learner.Aims.All(x => x.IsMainAim)
                 ? learnAimRef
                 : learner.Aims.First(x => !x.IsMainAim).AimReference;
             componentAim.FundModel = programmeAim.FundModel;
@@ -439,6 +439,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     delivery.OutcomeSpecified = true;
                     delivery.WithdrawReason = (int)WithDrawalReason.NotKnown;
                     delivery.WithdrawReasonSpecified = true;
+                    break;
+                case (int)CompletionStatus.PlannedBreak:
+                    delivery.Outcome = (int) Outcome.Partial;
+                    delivery.OutcomeSpecified = true;
                     break;
             }
         }
