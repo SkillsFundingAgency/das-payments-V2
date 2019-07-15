@@ -38,15 +38,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             try
             {
                 var messagePointer = Guid.NewGuid().ToString().Replace("-", string.Empty);
-
-
                 var dto = new JobContextDto
                 {
                     JobId = jobId,
                     KeyValuePairs = new Dictionary<string, object>
                     {
-                        {JobContextMessageKey.FundingFm36Output, messagePointer},
-                        {JobContextMessageKey.Filename, messagePointer},
+                        {JobContextMessageKey.UkPrn, 0 },
+                        {JobContextMessageKey.Filename, string.Empty },
+                        {JobContextMessageKey.CollectionYear, collectionYear },
                         {JobContextMessageKey.ReturnPeriod, collectionPeriod },
                         {JobContextMessageKey.Username, "PV2-Automated" }
                     },
@@ -56,27 +55,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     {
                         new TopicItemDto
                         {
-                            SubscriptionName = subscriptionName,
+                            SubscriptionName = "Payments",
                             Tasks = new List<TaskItemDto>
                             {
                                 new TaskItemDto
                                 {
                                     SupportsParallelExecution = false,
-                                    Tasks = new List<string>()
+                                    Tasks = new List<string> { taskName }
                                 }
                             }
                         }
                     }
                 };
 
-                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
+                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "Payments" } }, $"Payments_{taskName}");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-
         }
 
         public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, short collectionYear, byte collectionPeriod, long jobId)

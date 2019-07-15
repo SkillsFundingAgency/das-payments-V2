@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Threading.Tasks;
+using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using TechTalk.SpecFlow;
@@ -27,10 +28,10 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
         }
 
         [When(@"the period end service is notified the the period end has started")]
-        public void WhenThePeriodEndServiceIsNotifiedTheThePeriodEndHasStarted()
+        public async Task WhenThePeriodEndServiceIsNotifiedTheThePeriodEndHasStarted()
         {
-            var dcHelper = Scope.Resolve<DcHelper>();
-            dcHelper.SendIlrSubmission()
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.JobId, "PeriodEndStart").ConfigureAwait(false);
         }
 
         [Then(@"the period end service should publish a period end started event")]
