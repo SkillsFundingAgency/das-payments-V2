@@ -84,20 +84,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 
             paymentsDataContext.DataLockFailure.RemoveRange(paymentsDataContext.DataLockFailure.Where(f => oldFailureIds.Contains(f.Id)));
 
-            //if (newFailures.Count > 0)
-            //    paymentsDataContext.DataLockFailure.RemoveRange(paymentsDataContext.DataLockFailure.Where(f =>
-            //        f.Ukprn == newFailures[0].Ukprn &&
-            //        f.LearnerReferenceNumber == newFailures[0].LearnerReferenceNumber &&
-            //        f.LearningAimFrameworkCode == newFailures[0].LearningAimFrameworkCode &&
-            //        f.LearningAimPathwayCode == newFailures[0].LearningAimPathwayCode &&
-            //        f.LearningAimProgrammeType == newFailures[0].LearningAimProgrammeType &&
-            //        f.LearningAimReference == newFailures[0].LearningAimReference &&
-            //        f.LearningAimStandardCode == newFailures[0].LearningAimStandardCode &&
-            //        f.AcademicYear == newFailures[0].AcademicYear &&
-            //        f.DeliveryPeriod == newFailures[0].DeliveryPeriod &&
-            //        f.TransactionType == newFailures[0].TransactionType
-            //    ));
-
             await paymentsDataContext.DataLockFailure.AddRangeAsync(newFailures.Select(f => new DataLockFailureModel
             {
                 CollectionPeriod = f.CollectionPeriod,
