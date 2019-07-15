@@ -1,4 +1,6 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core;
+﻿using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
@@ -27,7 +29,8 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
         [When(@"the period end service is notified the the period end has started")]
         public void WhenThePeriodEndServiceIsNotifiedTheThePeriodEndHasStarted()
         {
-            ScenarioContext.Current.Pending();
+            var dcHelper = Scope.Resolve<DcHelper>();
+            dcHelper.SendIlrSubmission()
         }
 
         [Then(@"the period end service should publish a period end started event")]
