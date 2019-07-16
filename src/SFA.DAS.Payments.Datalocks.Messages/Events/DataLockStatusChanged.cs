@@ -12,7 +12,9 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
     public abstract class DataLockStatusChanged : PaymentsEvent
     {
         public Dictionary<TransactionType, List<EarningPeriod>> TransactionTypesAndPeriods { get; set; }
-        
+
+        public List<PriceEpisode> PriceEpisodes { get; set; }
+
         private static Type[] inheritors;
         private static Type[] GetInheritors()
         {
