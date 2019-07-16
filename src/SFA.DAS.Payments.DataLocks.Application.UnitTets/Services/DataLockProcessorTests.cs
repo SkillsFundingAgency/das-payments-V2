@@ -179,7 +179,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 new DataLockFailure
                 {
                     DataLockError = DataLockErrorCode.DLOCK_09,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
+                    ApprenticeshipPriceEpisodeIds = new List<long>()
                 }
             };
 
@@ -252,7 +252,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 new DataLockFailure
                 {
                     DataLockError = DataLockErrorCode.DLOCK_09,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
+                    ApprenticeshipPriceEpisodeIds = new List<long>()
                 }
             };
 

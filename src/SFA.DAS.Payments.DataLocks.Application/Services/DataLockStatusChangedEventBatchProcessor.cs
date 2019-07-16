@@ -22,6 +22,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IBulkWriter<LegacyDataLockEventCommitmentVersion> dataLockEventCommitmentVersionWriter;
         private readonly IBulkWriter<LegacyDataLockEventError> dataLockEventErrorWriter;
         private readonly IBulkWriter<LegacyDataLockEventPeriod> dataLockEventPeriodWriter;
+        private readonly IApprenticeshipRepository apprenticeshipRepository;
+        private IDictionary<long, ApprenticeshipModel> apprenticeshipCache;
 
         public DataLockStatusChangedEventBatchProcessor(
             IBatchedDataCache<DataLockStatusChanged> cache,
@@ -38,6 +40,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.dataLockEventCommitmentVersionWriter = dataLockEventCommitmentVersionWriter;
             this.dataLockEventErrorWriter = dataLockEventErrorWriter;
             this.dataLockEventPeriodWriter = dataLockEventPeriodWriter;
+            this.apprenticeshipRepository = apprenticeshipRepository;
         }
 
         public async Task<int> Process(int batchSize, CancellationToken cancellationToken)
@@ -50,10 +53,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 return 0;
             }
 
+            try
+            {
+                await PopulateApprenticeshipCache(batch, cancellationToken).ConfigureAwait(false);
+
             using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
             {
-                try
-                {
                     foreach (var dataLockStatusChangedEvent in batch)
                     {
                         int savedEvents = 0, savedCommitmentVersions = 0, savedPeriods = 0, savedErrors = 0;
@@ -61,8 +66,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         var flatPeriodList = dataLockStatusChangedEvent.TransactionTypesAndPeriods.SelectMany(tp => tp.Value).ToList();
 
                         // there may be multiple commitment IDs when employer changes or separate errors against two employers
-                        var apprenticeshipIds = flatPeriodList.Select(p => p.Apprenticeship?.Id)
-                            .Concat(flatPeriodList.SelectMany(p => p.DataLockFailures.Select(f => f.Apprenticeship?.Id)))
+                        var apprenticeshipIds = flatPeriodList.Select(p => p.ApprenticeshipId)
+                            .Concat(flatPeriodList.SelectMany(p => p.DataLockFailures.Select(f => f.ApprenticeshipId)))
                             .Distinct()
                             .ToList();
 
@@ -71,7 +76,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                             // v1 doesn't use delivery period, get one earning period for each price episode
                             var earningPeriodsByPriceEpisode = flatPeriodList
                                 .GroupBy(p => p.PriceEpisodeIdentifier)
-                                .Select(g => g.FirstOrDefault(p => p.Apprenticeship?.Id == apprenticeshipId || p.DataLockFailures.Any(f => f.Apprenticeship?.Id == apprenticeshipId)))
+                                .Select(g => g.FirstOrDefault(p => p.ApprenticeshipId == apprenticeshipId || p.DataLockFailures.Any(f => f.ApprenticeshipId == apprenticeshipId)))
                                 .Where(g => g != null)
                                 .ToList();
 
@@ -80,7 +85,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                                 // only records null apprenticeship when DLOCK 01 & 02
                                 if (!apprenticeshipId.HasValue)
                                 {
-                                    if (earningPeriod.DataLockFailures.Any(f => f.Apprenticeship != null))
+                                    if (earningPeriod.DataLockFailures.Any(f => f.ApprenticeshipId.HasValue))
                                         continue;
                                 }
 
@@ -93,24 +98,24 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                                     {
                                         var writtentVersions = new HashSet<(long apprenticeshipId, long apprenticeshipPriceEpisodeId)>();
 
-                                        foreach (var dataLockFailure in earningPeriod.DataLockFailures.Where(f => f.Apprenticeship?.Id == apprenticeshipId))
+                                        foreach (var dataLockFailure in earningPeriod.DataLockFailures.Where(f => f.ApprenticeshipId == apprenticeshipId))
                                         {
-                                            foreach (var apprenticeshipPriceEpisode in dataLockFailure.ApprenticeshipPriceEpisodes)
+                                            foreach (var apprenticeshipPriceEpisodeId in dataLockFailure.ApprenticeshipPriceEpisodeIds)
                                             {
                                                 // there are multiple errors recorded for the same apprenticeship episode
-                                                if (writtentVersions.Contains((apprenticeshipId.Value, apprenticeshipPriceEpisode.Id)))
+                                                if (writtentVersions.Contains((apprenticeshipId.Value, apprenticeshipPriceEpisodeId)))
                                                     continue;
 
-                                                savedPeriods += await SaveCommitmentVersionAndPeriods(dataLockStatusChangedEvent, dataLockFailure.Apprenticeship, apprenticeshipPriceEpisode, isError, earningPeriod, cancellationToken);
+                                                savedPeriods += await SaveCommitmentVersionAndPeriods(dataLockStatusChangedEvent, dataLockFailure.ApprenticeshipId.Value, apprenticeshipPriceEpisodeId, isError, cancellationToken);
                                                 savedCommitmentVersions++;
 
-                                                writtentVersions.Add((apprenticeshipId.Value, apprenticeshipPriceEpisode.Id));
+                                                writtentVersions.Add((apprenticeshipId.Value, apprenticeshipPriceEpisodeId));
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        savedPeriods += await SaveCommitmentVersionAndPeriods(dataLockStatusChangedEvent, earningPeriod.Apprenticeship, earningPeriod.ApprenticeshipPriceEpisode, isError, earningPeriod, cancellationToken);
+                                        savedPeriods += await SaveCommitmentVersionAndPeriods(dataLockStatusChangedEvent, earningPeriod.ApprenticeshipId.Value, earningPeriod.ApprenticeshipPriceEpisodeId.Value, isError, cancellationToken);
                                         savedCommitmentVersions++;
                                     }
                                 }
@@ -133,27 +138,26 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                     scope.Complete();
                 }
+            }
                 catch (Exception e)
                 {
                     logger.LogError($"Error saving batch of DataLockStatusChanged events. Error: {e.Message}", e);
                     throw;
                 }
-            }
 
             return batch.Count;
-
         }
 
-        private async Task<int> SaveCommitmentVersionAndPeriods(DataLockStatusChanged dataLockStatusChangedEvent, ApprenticeshipModel apprenticeship, ApprenticeshipPriceEpisodeModel apprenticeshipPriceEpisode, bool isError, EarningPeriod earningPeriod, CancellationToken cancellationToken)
+        private async Task<int> SaveCommitmentVersionAndPeriods(DataLockStatusChanged dataLockStatusChangedEvent, long apprenticeshipId, long apprenticeshipPriceEpisodeId, bool isError, CancellationToken cancellationToken)
         {
             int savedPeriods = 0;
-            await SaveCommitmentVersion(cancellationToken, dataLockStatusChangedEvent, apprenticeship, apprenticeshipPriceEpisode).ConfigureAwait(false);
+            await SaveCommitmentVersion(cancellationToken, dataLockStatusChangedEvent, apprenticeshipId, apprenticeshipPriceEpisodeId).ConfigureAwait(false);
 
             // collection periods (and transaction types) are recorded per commitment version
             // v1 does not record delivery periods so we only need to create a record per transaction type for current collection period
             foreach (var transactionTypesAndPeriod in dataLockStatusChangedEvent.TransactionTypesAndPeriods)
             {
-                await SaveEventPeriods(cancellationToken, dataLockStatusChangedEvent, transactionTypesAndPeriod, isError, apprenticeshipPriceEpisode.Id).ConfigureAwait(false);
+                await SaveEventPeriods(cancellationToken, dataLockStatusChangedEvent, transactionTypesAndPeriod, isError, apprenticeshipPriceEpisodeId).ConfigureAwait(false);
                 savedPeriods++;
             }
 
@@ -233,8 +237,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        private async Task SaveCommitmentVersion(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, ApprenticeshipModel apprenticeship, ApprenticeshipPriceEpisodeModel apprenticeshipPriceEpisode)
+        private async Task SaveCommitmentVersion(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, long apprenticeshipId, long apprenticeshipPriceEpisodeId)
         {
+            var apprenticeship = apprenticeshipCache[apprenticeshipId];
+            var apprenticeshipPriceEpisode = apprenticeship.ApprenticeshipPriceEpisodes.Single(e => e.Id == apprenticeshipPriceEpisodeId);
+
             var commitmentVersion = new LegacyDataLockEventCommitmentVersion
             {
                 DataLockEventId = dataLockStatusChangedEvent.EventId,
@@ -292,5 +299,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             await dataLockEventWriter.Write(dataLockEvent, cancellationToken).ConfigureAwait(false);
             return dataLockEvent;
         }
+
+        private async Task PopulateApprenticeshipCache(List<DataLockStatusChanged> statusChangeEvents, CancellationToken cancellationToken)
+        {
+            var allPeriods = statusChangeEvents.SelectMany(e => e.TransactionTypesAndPeriods.SelectMany(p => p.Value)).ToList();
+            var allApprenticeshipIds = allPeriods.Select(p => p.ApprenticeshipId)
+                .Concat(allPeriods.Where(p => p.DataLockFailures != null).SelectMany(p => p.DataLockFailures.Select(f => f.ApprenticeshipId)))                
+                .Distinct()
+                .Where(id => id.HasValue)
+                .Select(id => id.Value)
+                .ToList();
+
+            var apprenticeshipModels = await apprenticeshipRepository.Get(allApprenticeshipIds, cancellationToken).ConfigureAwait(false);
+            apprenticeshipCache = apprenticeshipModels.ToDictionary(m => m.Id, m => m);
     }
+}
 }
