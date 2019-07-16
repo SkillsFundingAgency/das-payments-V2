@@ -199,7 +199,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }
             };
 
-            mocker.Mock<IApprenticeshipService>()
+            mocker.Mock<IApprenticeshipApprovedUpdatedService>()
                 .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipApprovedModel>()))
                 .ReturnsAsync(() => new ApprenticeshipModel
                 {
@@ -226,6 +226,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         ev.Id == approvalsEvent.ApprenticeshipId
                         && ev.Uln.ToString() == approvalsEvent.Uln),
                     It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<IMapper>()
+                .Verify(x => x.Map<UpdatedApprenticeshipApprovedModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()), Times.Once);
 
         }
 
@@ -258,8 +261,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
                 });
 
-            mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.UpdateApprenticeshipForDataLockTriage(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
+            mocker.Mock<IApprenticeshipDataLockTriageService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
                 .ReturnsAsync(() => new ApprenticeshipModel
                 {
                     Id = approvalsEvent.ApprenticeshipId
@@ -307,6 +310,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
                         ev.Id == approvalsEvent.ApprenticeshipId),
                     It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipDataLockTriageService>()
+                .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()), Times.Once);
 
         }
 
