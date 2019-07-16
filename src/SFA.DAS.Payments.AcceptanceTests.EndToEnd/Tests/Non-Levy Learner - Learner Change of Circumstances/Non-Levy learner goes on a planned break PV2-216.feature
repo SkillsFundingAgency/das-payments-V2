@@ -34,20 +34,20 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
         | R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         |
 	But aims details are changed as follows
 		| Aim Type  | Original Start Date          | Start Date                   | Planned Duration | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | Restart |
-		| Programme |                              | 01/Sep/Current Academic Year | 12 months        | 2 months        | planned break     | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) |         |
-		| Programme | 01/Sep/Current Academic Year | 03/Jan/Current Academic Year | 10 months        |                 | continuing        | Act2          | 3                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | True    |
+#		| Programme |                              | 01/Sep/Current Academic Year | 12 months        | 2 months        | planned break     | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) |         |
+		| Programme | 01/Sep/Current Academic Year | 03/Jan/Current Academic Year | 10 months        |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | True    |
 	And price details as follows
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
-        | pe-1             | 15000                | 01/Sep/Current Academic Year        |                        |                                       | 90%                         | Act2          | 1                   |
-        | pe-2             | 15000                | 03/Jan/Current Academic Year        |                        |                                       | 90%                         | Act2          | 3                   |
+#        | pe-1             | 15000                | 01/Sep/Current Academic Year        |                        |                                       | 90%                         | Act2          | 3                   |
+        | pe-2             | 15000                | 03/Jan/Current Academic Year        |                        |                                       | 90%                         | Act2          | 1                   |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-        | Aug/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-        | Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | Oct/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | Nov/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-        | Dec/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Aug/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Sep/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Oct/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Nov/Current Academic Year | 0            | 0          | 0         | pe-2                     |
+        | Dec/Current Academic Year | 0            | 0          | 0         | pe-2                     |
         | Jan/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
         | Feb/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
         | Mar/Current Academic Year | 1000         | 0          | 0         | pe-2                     |

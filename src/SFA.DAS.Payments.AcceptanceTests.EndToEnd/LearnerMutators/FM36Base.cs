@@ -441,7 +441,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     delivery.WithdrawReasonSpecified = true;
                     break;
                 case (int)CompletionStatus.PlannedBreak:
-                    delivery.Outcome = (int) Outcome.Partial;
+                    delivery.Outcome = (int) Outcome.NoAchievement;
                     delivery.OutcomeSpecified = true;
                     break;
             }
