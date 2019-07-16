@@ -282,7 +282,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 SubmittedDateTime = dataLockStatusChangedEvent.IlrSubmissionDateTime,
 
                 PriceEpisodeIdentifier = earningPeriod.PriceEpisodeIdentifier,
-                CommitmentId = earningPeriod.Apprenticeship?.Id ?? 0,
+                CommitmentId = earningPeriod.ApprenticeshipId ?? 0,
                 EmployerAccountId = earningPeriod.AccountId.GetValueOrDefault(0),
 
                 AimSeqNumber = dataLockStatusChangedEvent.LearningAim.SequenceNumber,
