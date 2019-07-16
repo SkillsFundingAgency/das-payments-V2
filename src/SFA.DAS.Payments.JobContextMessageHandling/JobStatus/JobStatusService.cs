@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
-using SFA.DAS.Payments.PeriodEnd.Application.Infrastructure;
 
-namespace SFA.DAS.Payments.PeriodEnd.Application.Services
+namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
 {
     /// <summary>
     /// TODO: Temp solution to wait for jobs to finish
@@ -20,13 +19,13 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
     /// TODO: Temp solution to wait for jobs to finish
     /// </summary>
     [Obsolete("Temporary solution to wait for jobs to finish.  Should really use events from Job service but DC.JobContextManager doesn't support that kind of pattern")]
-    public class JobStatusService: IJobStatusService
+    public class JobStatusService : IJobStatusService
     {
         private readonly IJobsDataContext dataContext;
         private readonly IPaymentLogger logger;
-        private readonly IPeriodEndConfiguration config;
+        private readonly IJobStatusConfiguration config;
 
-        public JobStatusService(IJobsDataContext dataContext, IPaymentLogger logger, IPeriodEndConfiguration config)
+        public JobStatusService(IJobsDataContext dataContext, IPaymentLogger logger, IJobStatusConfiguration config)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -41,7 +40,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
             while (DateTime.Now < endTime)
             {
                 var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
-                if (job.Status == JobStatus.InProgress)
+                if (job == null || job.Status == Monitoring.Jobs.Data.Model.JobStatus.InProgress)
                 {
                     logger.LogVerbose($"DC Job {jobId} is still in progress");
                     await Task.Delay(config.TimeToPauseBetweenChecks);

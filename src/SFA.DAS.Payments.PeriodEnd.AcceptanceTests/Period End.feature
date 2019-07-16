@@ -9,3 +9,11 @@ Background:
 Scenario: Period End Started Job
 	When the period end service is notified the the period end has started
 	Then the period end service should publish a period end started event
+
+Scenario: Period End Running Job
+	When the period end service is notified the the period end is running
+	Then the period end service should publish a period end running event
+
+Scenario: Period End Stopped Job
+	When the period end service is notified the the period end has stopped
+	Then the period end service should publish a period end stopped event

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.PeriodEnd.Application.Infrastructure
+﻿namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure
 {
     public class JobContextMessageConstants
     {

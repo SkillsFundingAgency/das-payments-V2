@@ -4,10 +4,11 @@ using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
+using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.PeriodEnd.Application.Infrastructure;
-using SFA.DAS.Payments.PeriodEnd.Application.Services;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
 {
@@ -35,9 +36,9 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             mocker.Mock<IJobsDataContext>()
                 .Setup(dc => dc.GetJobByDcJobId(It.IsAny<long>()))
                 .ReturnsAsync(job);
-            mocker.Mock<IPeriodEndConfiguration>()
+            mocker.Mock<IJobStatusConfiguration>()
                 .Setup(cfg => cfg.TimeToPauseBetweenChecks).Returns(TimeSpan.FromMilliseconds(500));
-            mocker.Mock<IPeriodEndConfiguration>()
+            mocker.Mock<IJobStatusConfiguration>()
                 .Setup(cfg => cfg.TimeToWaitForJobToComplete).Returns(TimeSpan.FromSeconds(1));
         }
 

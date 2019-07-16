@@ -106,6 +106,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\PeriodEndStartedEventHandler.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
     <Compile Include="Period End.feature.cs">
       <AutoGen>True</AutoGen>
@@ -142,14 +143,16 @@
       <Project>{0f0beb68-7f9f-4d39-b85a-3fe7701bb6cc}</Project>
       <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
+      <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
+      <Name>SFA.DAS.Payments.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Messages\SFA.DAS.Payments.PeriodEnd.Messages.csproj">
       <Project>{07B3D8AE-B2C2-4B87-8256-FD1B7B55FB88}</Project>
       <Name>SFA.DAS.Payments.PeriodEnd.Messages</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Handlers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SpecFlow.2.4.1\build\SpecFlow.targets" Condition="Exists('..\packages\SpecFlow.2.4.1\build\SpecFlow.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

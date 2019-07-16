@@ -9,13 +9,13 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.PeriodEnd.Application.Infrastructure;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.PeriodEnd.Model;
 using NServiceBus;
+using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
+using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
-using SFA.DAS.Payments.PeriodEnd.Application.Services;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 {
@@ -74,7 +74,6 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 MessageId = periodEndEvent.EventId,
                 MessageName = periodEndEvent.GetType().FullName,
                 StartTime = periodEndEvent.EventTime
-
             };
             switch (taskType)
             {
