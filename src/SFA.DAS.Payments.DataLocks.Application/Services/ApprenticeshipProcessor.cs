@@ -26,13 +26,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IMapper mapper;
         private readonly IApprenticeshipService apprenticeshipService;
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
+        private readonly IApprenticeshipApprovedUpdatedService apprenticeshipApprovedUpdatedService;
+        private readonly IApprenticeshipDataLockTriageService apprenticeshipDataLockTriageService;
 
-        public ApprenticeshipProcessor(IPaymentLogger logger, IMapper mapper, IApprenticeshipService apprenticeshipService, IEndpointInstanceFactory endpointInstanceFactory)
+
+        public ApprenticeshipProcessor(IPaymentLogger logger, IMapper mapper, 
+            IApprenticeshipService apprenticeshipService, 
+            IEndpointInstanceFactory endpointInstanceFactory,
+            IApprenticeshipApprovedUpdatedService apprenticeshipApprovedUpdatedService,
+            IApprenticeshipDataLockTriageService apprenticeshipDataLockTriageService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.apprenticeshipService = apprenticeshipService ?? throw new ArgumentNullException(nameof(apprenticeshipService));
             this.endpointInstanceFactory = endpointInstanceFactory ?? throw new ArgumentNullException(nameof(endpointInstanceFactory));
+            this.apprenticeshipApprovedUpdatedService = apprenticeshipApprovedUpdatedService ?? throw new ArgumentNullException(nameof(apprenticeshipApprovedUpdatedService));
+            this.apprenticeshipDataLockTriageService = apprenticeshipDataLockTriageService ?? throw new ArgumentNullException(nameof(apprenticeshipDataLockTriageService));
         }
 
         public async Task Process(ApprenticeshipCreatedEvent createdEvent)
@@ -62,7 +71,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 logger.LogDebug($"Now processing the apprenticeship update even for Apprenticeship id: {apprenticeshipApprovedEvent.ApprenticeshipId}");
                 var model = mapper.Map<UpdatedApprenticeshipApprovedModel>(apprenticeshipApprovedEvent);
 
-                var updatedApprenticeship = await apprenticeshipService.UpdateApprenticeship(model).ConfigureAwait(false);
+                var updatedApprenticeship = await apprenticeshipApprovedUpdatedService.UpdateApprenticeship(model).ConfigureAwait(false);
 
                 var updatedEvent = mapper.Map<ApprenticeshipUpdated>(updatedApprenticeship);
 
@@ -85,7 +94,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 logger.LogDebug($"Now processing the apprenticeship DataLock Triage update for Apprenticeship id: {apprenticeshipDataLockTriageEvent.ApprenticeshipId}");
                 var model = mapper.Map<UpdatedApprenticeshipDataLockTriageModel>(apprenticeshipDataLockTriageEvent);
 
-                var updatedApprenticeship = await apprenticeshipService.UpdateApprenticeshipForDataLockTriage(model).ConfigureAwait(false);
+                var updatedApprenticeship = await apprenticeshipDataLockTriageService.UpdateApprenticeship(model).ConfigureAwait(false);
 
                 var updatedEvent = mapper.Map<ApprenticeshipUpdated>(updatedApprenticeship);
 

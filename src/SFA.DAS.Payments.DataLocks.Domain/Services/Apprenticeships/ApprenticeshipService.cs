@@ -12,23 +12,18 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
     public interface IApprenticeshipService
     {
         Task<List<ApprenticeshipDuplicateModel>> NewApprenticeship(ApprenticeshipModel apprenticeship);
-        Task<ApprenticeshipModel> UpdateApprenticeship(UpdatedApprenticeshipApprovedModel updatedApprenticeshipApproved);
-        Task<ApprenticeshipModel> UpdateApprenticeshipForDataLockTriage(UpdatedApprenticeshipDataLockTriageModel updatedApprenticeship);
     }
 
     public class ApprenticeshipService : IApprenticeshipService
     {
         private readonly IApprenticeshipRepository repository;
-        private readonly IApprenticeshipApprovedUpdatedService apprenticeshipApprovedUpdatedService;
-        private readonly IApprenticeshipDataLockTriageService apprenticeshipDataLockTriageService;
+      
 
         public ApprenticeshipService(IApprenticeshipRepository repository, 
             IApprenticeshipApprovedUpdatedService apprenticeshipUpdatedService,
             IApprenticeshipDataLockTriageService apprenticeshipDataLockTriageService)
         {
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            this.apprenticeshipApprovedUpdatedService = apprenticeshipUpdatedService;
-            this.apprenticeshipDataLockTriageService = apprenticeshipDataLockTriageService;
         }
 
         public async Task<List<ApprenticeshipDuplicateModel>> NewApprenticeship(ApprenticeshipModel newApprenticeship)
@@ -73,17 +68,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 return duplicates;
             }
         }
-
-        public async Task<ApprenticeshipModel> UpdateApprenticeship(UpdatedApprenticeshipApprovedModel updatedApprenticeship)
-        {
-            return await apprenticeshipApprovedUpdatedService.UpdateApprenticeship(updatedApprenticeship);
-        }
-
-        public async Task<ApprenticeshipModel> UpdateApprenticeshipForDataLockTriage(UpdatedApprenticeshipDataLockTriageModel updatedApprenticeship)
-        {
-            return await apprenticeshipDataLockTriageService.UpdateApprenticeship(updatedApprenticeship);
-        }
-
-
+        
     }
 }
