@@ -8,7 +8,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 {
-    public abstract class ApprenticeshipUpdatedService<T> : IApprenticeshipUpdatedService<T> where T : UpdatedApprenticeshipModel
+    public abstract class ApprenticeshipUpdatedService<T> : IApprenticeshipUpdatedService<T> where T : BaseUpdatedApprenticeshipModel
     {
         private readonly IApprenticeshipRepository repository;
 
@@ -25,9 +25,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
             {
 
                 HandleUpdated(currentApprenticeship, updatedApprenticeship);
-
-                UpdatePriceEpisodes(updatedApprenticeship.ApprenticeshipPriceEpisodes, currentApprenticeship.ApprenticeshipPriceEpisodes);
-
+                
+                if (updatedApprenticeship.ApprenticeshipPriceEpisodes != null &&  updatedApprenticeship.ApprenticeshipPriceEpisodes.Any())
+                {
+                    UpdatePriceEpisodes(updatedApprenticeship.ApprenticeshipPriceEpisodes, currentApprenticeship.ApprenticeshipPriceEpisodes);
+                }
+                
                 await repository.UpdateApprenticeship(currentApprenticeship);
 
                 var latestApprenticeship = await GetApprenticeship(updatedApprenticeship.ApprenticeshipId).ConfigureAwait(false);

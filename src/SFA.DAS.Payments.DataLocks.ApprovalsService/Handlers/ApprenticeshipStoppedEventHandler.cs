@@ -24,9 +24,9 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
 
             var processor = scope.Resolve<IApprenticeshipProcessor>();
 
-         await processor.ProcessApprenticeshipDataLockTriage(message);
+         await processor.ProcessStoppedApprenticeship(message);
 
-            Logger.LogInfo($"Finished handling apprenticeship  DataLock Triage Approved event.  " +
+            Logger.LogInfo($"Finished handling apprenticeship stopped event.  " +
                            $"Now resolving the apprenticeship processor service to handle the new apprenticeship. " +
                            $"Apprenticeship Id: {message.ApprenticeshipId}");
         }

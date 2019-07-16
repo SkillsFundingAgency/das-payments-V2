@@ -77,12 +77,14 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
                 .DefiningMessagesAs(t =>
                     t.IsAssignableTo<ApprenticeshipCreatedEvent>() ||
                     t.IsAssignableTo<ApprenticeshipUpdatedApprovedEvent>() ||
-                    t.IsAssignableTo<DataLockTriageApprovedEvent>()
+                    t.IsAssignableTo<DataLockTriageApprovedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipStoppedEvent>()
                     )
                 .DefiningEventsAs(t =>
                     t.IsAssignableTo<ApprenticeshipCreatedEvent>() ||
                     t.IsAssignableTo<ApprenticeshipUpdatedApprovedEvent>() ||
-                    t.IsAssignableTo<DataLockTriageApprovedEvent>()
+                    t.IsAssignableTo<DataLockTriageApprovedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipStoppedEvent>()
                     );
                 
 

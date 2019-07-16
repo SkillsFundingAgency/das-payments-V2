@@ -36,6 +36,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
 
             builder.RegisterType<ApprenticeshipApprovedUpdatedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipDataLockTriageService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<IApprenticeshipStoppedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

@@ -288,31 +288,23 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 StopDate = DateTime.Today
             };
 
-            mocker.Mock<IMapper>()
-                .Setup(x => x.Map<UpdatedApprenticeshipDataLockTriageModel>(It.IsAny<DataLockTriageApprovedEvent>()))
-                .Returns<DataLockTriageApprovedEvent>(model => new UpdatedApprenticeshipDataLockTriageModel
-                {
-                    ApprenticeshipId = model.ApprenticeshipId,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
-                });
-
-            mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.UpdateApprenticeshipForDataLockTriage(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
+            mocker.Mock<IApprenticeshipStoppedService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()))
                 .ReturnsAsync(() => new ApprenticeshipModel
                 {
-                    Id = approvalsEvent.ApprenticeshipId
+                    Id = approvalsEvent.ApprenticeshipId,
                 });
 
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
-            await apprenticeshipProcessor.ProcessApprenticeshipDataLockTriage(approvalsEvent);
+            await apprenticeshipProcessor.ProcessStoppedApprenticeship(approvalsEvent);
 
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
                         ev.Id == approvalsEvent.ApprenticeshipId),
                     It.IsAny<PublishOptions>()), Times.Once);
 
-            mocker.Mock<IApprenticeshipDataLockTriageService>()
-                .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()), Times.Once);
+            mocker.Mock<IApprenticeshipStoppedService>()
+                .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()), Times.Once);
 
         }
 

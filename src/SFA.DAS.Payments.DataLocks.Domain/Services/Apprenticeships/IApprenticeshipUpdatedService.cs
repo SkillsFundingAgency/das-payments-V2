@@ -4,7 +4,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 {
-    public interface IApprenticeshipUpdatedService<in T> where T : UpdatedApprenticeshipModel
+    public interface IApprenticeshipUpdatedService<in T> where T : BaseUpdatedApprenticeshipModel
     {
         Task<ApprenticeshipModel> UpdateApprenticeship(T updatedApprenticeship);
     }
@@ -14,6 +14,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
     }
 
     public interface IApprenticeshipDataLockTriageService : IApprenticeshipUpdatedService<UpdatedApprenticeshipDataLockTriageModel>
+    {
+    }
+
+    public interface IApprenticeshipStoppedService : IApprenticeshipUpdatedService<UpdatedApprenticeshipStoppedModel>
     {
     }
 }
