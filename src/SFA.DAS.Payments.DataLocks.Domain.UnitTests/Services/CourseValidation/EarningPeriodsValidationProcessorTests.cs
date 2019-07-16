@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 new DataLockFailure
                 {
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>(),
+                    ApprenticeshipPriceEpisodeIds = new List<long>(),
                     DataLockError = DataLockErrorCode.DLOCK_03
                 }
             };
@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 AcademicYear);
 
             periods.ValidPeriods.Count.Should().Be(1);
-            periods.ValidPeriods.All(p => p.ApprenticeshipPriceEpisode.Id == 90).Should().Be(true);
+            periods.ValidPeriods.All(p => p.ApprenticeshipPriceEpisodeId == 90).Should().Be(true);
         }
 
         [Test]
@@ -125,8 +125,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 aim,
                 AcademicYear);
             periods.ValidPeriods.Count.Should().Be(2);
-            periods.ValidPeriods.Any(p =>  p.ApprenticeshipPriceEpisode.Id == 90 && p.AccountId == 21).Should().Be(true);
-            periods.ValidPeriods.Any(p =>  p.ApprenticeshipPriceEpisode.Id == 96 && p.AccountId == 22).Should().Be(true);
+            periods.ValidPeriods.Any(p =>  p.ApprenticeshipPriceEpisodeId == 90 && p.AccountId == 21).Should().Be(true);
+            periods.ValidPeriods.Any(p =>  p.ApprenticeshipPriceEpisodeId == 96 && p.AccountId == 22).Should().Be(true);
         }
 
         [Test]
@@ -208,7 +208,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 AcademicYear);
 
             periods.ValidPeriods.Count.Should().Be(2);
-            periods.ValidPeriods.Any(p => p.Apprenticeship.Id == 1 && p.TransferSenderAccountId == 999).Should().Be(true);
+            periods.ValidPeriods.Any(p => p.ApprenticeshipId == 1 && p.TransferSenderAccountId == 999).Should().Be(true);
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
@@ -30,9 +32,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 {
                     dataLockFailures.Add(new DataLockFailure
                     {
-                        Apprenticeship = dataLockValidationModel.Apprenticeship,
+                        ApprenticeshipId = dataLockValidationModel.Apprenticeship.Id,
                         DataLockError = validatorResult.DataLockErrorCode.Value,
-                        ApprenticeshipPriceEpisodes = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
+                        ApprenticeshipPriceEpisodeIds = allApprenticeshipPriceEpisodeIds
                     });
                 }
                 else
