@@ -27,7 +27,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IApprenticeshipService apprenticeshipService;
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
 
-        public ApprenticeshipProcessor(IPaymentLogger logger, IMapper mapper, IApprenticeshipService apprenticeshipService, IEndpointInstanceFactory endpointInstanceFactory)
+        public ApprenticeshipProcessor(IPaymentLogger logger, IMapper mapper,
+            IApprenticeshipService apprenticeshipService,
+            IEndpointInstanceFactory endpointInstanceFactory)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
