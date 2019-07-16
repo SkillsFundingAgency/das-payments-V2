@@ -264,14 +264,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     Ukprn = expectedUkprn,
                     Uln = 1,
                     Id = Guid.NewGuid().ToString(),
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 },
                 new RequiredPaymentSortKeyModel
                 {
                     Ukprn = expectedUkprn,
                     Uln = 2,
                     Id = Guid.NewGuid().ToString(),
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 }
             };
 
@@ -629,14 +629,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     Ukprn = expectedUkprn,
                     Uln = 1,
                     Id = Guid.NewGuid().ToString(),
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 },
                 new RequiredPaymentSortKeyModel
                 {
                     Ukprn = expectedUkprn,
                     Uln = 2,
                     Id = Guid.NewGuid().ToString(),
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 }
             };
             var unableToFundEvent = new ProcessUnableToFundTransferFundingSourcePayment
