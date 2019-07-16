@@ -1,4 +1,3 @@
-@ignore
 # issue with refund being created for pe-1 £500 incentives in collection period 5 for which is pe-2. This is because a £0 incentive (TT4) comes through for delivery period 4 and there is a historic payment of £500 for that period so a refund is generated.
 Feature: One Learner changes employer - incentives earned in transfer month PV2-373
 	As a provider,
@@ -47,14 +46,16 @@ Feature: One Learner changes employer - incentives earned in transfer month PV2-
         | R04/Current Academic Year | Nov/Current Academic Year |               | 500                       | First16To18ProviderIncentive | employer 1 |
 
     But the Provider now changes the Learner details as follows
-		| Employer id | Start Date                   | Planned Duration | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
-		| employer 1  | 05/Aug/Current Academic Year | 12 months        | 3 months        | withdrawn         | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
-		| employer 2  | 15/Nov/Current Academic Year | 12 months        | 9 months        | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+		| Start Date                   | Planned Duration             | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
+		| 05/Aug/Current Academic Year | 12 months                    | 12 months       | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+
+ #                            | 05/Aug/Current Academic Year | 12 months       | 3 months          | withdrawn     | Act1                | 1             | ZPROG001      | 51             | 25                                                 | 16-18 Apprenticeship (From May 2017) Levy Contract |
+
 
 	And price details as follows
-        | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
-        | pe-1             | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
-        | pe-2             |                      |                                     |                        |                                       | 5000                    | 15/Dec/Current Academic Year           | 625                       | 15/Dec/Current Academic Year             | 90%                         | Act1          |
+        | Employer id | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
+        | employer 1  | pe-1             | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
+        | employer 2  | pe-2             |                      |                                     |                        |                                       | 5000                    | 15/Dec/Current Academic Year           | 625                       | 15/Dec/Current Academic Year             | 90%                         | Act1          |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
@@ -63,7 +64,8 @@ Feature: One Learner changes employer - incentives earned in transfer month PV2-
 		| Aug/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
 		| Sep/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
 		| Oct/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
-		| Nov/Current Academic Year | 562.5        | 0          | 0         | 500                          | 0                             | 500                          | 0                             | pe-1                     |
+		| Nov/Current Academic Year | 500          | 0          | 0         | 500                          | 0                             | 500                          | 0                             | pe-1                     |
+		| Nov/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
 		| Dec/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
 		| Jan/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
 		| Feb/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
