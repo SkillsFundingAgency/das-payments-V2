@@ -6,23 +6,23 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
 {
-    public class StartedProcessingMonthEndJobCommandHandler : IHandleMessages<RecordStartedProcessingMonthEndJob>
+    public class RecordPeriodEndStartJobCommandHandler : IHandleMessages<RecordPeriodEndJob>
     {
         private readonly IPaymentLogger logger;
         private readonly IMonthEndJobService monthEndJobService;
 
-        public StartedProcessingMonthEndJobCommandHandler(IPaymentLogger logger, IMonthEndJobService monthEndJobService)
+        public RecordPeriodEndStartJobCommandHandler(IPaymentLogger logger, IMonthEndJobService monthEndJobService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.monthEndJobService = monthEndJobService ?? throw new ArgumentNullException(nameof(monthEndJobService));
         }
 
-        public async Task Handle(RecordStartedProcessingMonthEndJob message, IMessageHandlerContext context)
+        public async Task Handle(RecordPeriodEndJob message, IMessageHandlerContext context)
         {
             try
             {
                 logger.LogVerbose($"Handling month end job. Job Id: {message.JobId}, collection period: {message.CollectionYear}-{message.CollectionPeriod} ");
-                await monthEndJobService.JobStarted(message);
+                await monthEndJobService.RecordPeriodEndJob(message);
                 logger.LogDebug($"Finished handling month end job. Job Id: {message.JobId}, collection period: {message.CollectionYear}-{message.CollectionPeriod}");
             }
             catch (Exception ex)

@@ -16,6 +16,8 @@ using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
 
 namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
 {
@@ -75,11 +77,31 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
                     c.Resolve<IJsonSerializationService>());
             }).As<IQueuePublishService<JobStatusDto>>();
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService, ISerializationService>();
-            //builder.RegisterType<XmlSerializationService>().As<IXmlSerializationService>();
 
             builder.RegisterType<JobContextManagerService>()
                 .As<IJobContextManagerService>()
                 .SingleInstance();
+
+            builder.Register(c =>
+                {
+                    var config = c.Resolve<IConfigurationHelper>();
+                    var periodEndConfig = new JobStatusConfiguration
+                    {
+                        TimeToPauseBetweenChecks = TimeSpan.Parse(config.GetSettingOrDefault("TimeToPauseBetweenChecks", "00:00:30")),
+                        TimeToWaitForJobToComplete = TimeSpan.Parse(config.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:02:30"))
+                    };
+                    return periodEndConfig;
+                })
+                .As<IJobStatusConfiguration>()
+                .SingleInstance();
+            builder.RegisterType<JobStatusService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new JobsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+                })
+                .As<IJobsDataContext>()
+                .InstancePerLifetimeScope();
         }
     }
 }

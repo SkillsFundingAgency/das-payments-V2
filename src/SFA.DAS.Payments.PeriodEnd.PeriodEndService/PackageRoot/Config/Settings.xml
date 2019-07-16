@@ -10,6 +10,8 @@
   </Section>
 
   <Section Name="Settings">
+    <Parameter Name="TimeToPauseBetweenChecks" Value=""/>
+    <Parameter Name="TimeToWaitForJobToComplete" Value=""/>
     <Parameter Name="EndpointName" Value=""/>
     <Parameter Name="FailedMessagesQueue" Value=""/>
     <Parameter Name="AuditQueueName" Value="" />

@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.EarningEvents);
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
             routing.RouteToEndpoint(typeof(CollectionStartedEvent), EndpointNames.RequiredPayments);
-            routing.RouteToEndpoint(typeof(RecordStartedProcessingMonthEndJob).Assembly, EndpointNames.JobMonitoring);
+            routing.RouteToEndpoint(typeof(RecordPeriodEndStartJob).Assembly, EndpointNames.JobMonitoring);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
             routing.RouteToEndpoint(typeof(EmployerChangedProviderPriority).Assembly, EndpointNames.FundingSource);
             transportConfig.Queues().LockDuration(TimeSpan.FromMinutes(5));
