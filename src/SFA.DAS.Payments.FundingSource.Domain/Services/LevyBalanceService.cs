@@ -3,9 +3,6 @@ using SFA.DAS.Payments.FundingSource.Domain.Interface;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.Services
 {
-
-
-
     public class LevyBalanceService : ILevyBalanceService
     {
         public decimal RemainingBalance { get; private set; }
@@ -24,7 +21,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             if (!initialised)
                 throw new InvalidOperationException("LevyBalanceService is not initialised");
 
-            var amountAvailable = requiredAmount > 0 ? Math.Min(RemainingBalance, requiredAmount) : requiredAmount;
+            var amountAvailable = requiredAmount > 0 ? Math.Max(Math.Min(RemainingBalance, requiredAmount), 0) : requiredAmount;
 
             RemainingBalance -= amountAvailable;
             RemainingTransferAllowance = Math.Min(RemainingBalance, RemainingTransferAllowance);
@@ -36,7 +33,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             if (!initialised)
                 throw new InvalidOperationException("LevyBalanceService is not initialised");
 
-            var amountFunded = requiredAmount > 0 ? Math.Min(RemainingTransferAllowance, requiredAmount) : requiredAmount;
+            var amountFunded = requiredAmount > 0 ? Math.Max(Math.Min(RemainingTransferAllowance, requiredAmount), 0) : requiredAmount;
 
             RemainingBalance -= amountFunded;
             RemainingTransferAllowance -= amountFunded;
