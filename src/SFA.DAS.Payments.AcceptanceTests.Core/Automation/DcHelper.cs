@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -15,6 +16,11 @@ using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using Newtonsoft.Json;
+using NServiceBus;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.RequiredPayments.Domain.Services;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -31,6 +37,37 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
             this.topicPublishingService = topicPublishingService ?? throw new ArgumentNullException(nameof(topicPublishingService));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
+        }
+
+        public async Task SendCustomFm36File(IMessageSession messageSession, byte collectionPeriod)
+        {
+            var json = File.ReadAllText("G:\\FundingOutput.json");
+            var fm36 = JsonConvert.DeserializeObject<FM36Global>(json);
+            var apprenticeshipKeyService = new ApprenticeshipKeyService();
+            var keys = new List<string>();
+            foreach (var fm36Learner in fm36.Learners)
+            {
+                foreach (var delivery in fm36Learner.LearningDeliveries)
+                {
+                    keys.Add(apprenticeshipKeyService.GenerateApprenticeshipKey(
+                        fm36.UKPRN,
+                        fm36Learner.LearnRefNumber,
+                        delivery.LearningDeliveryValues.FworkCode.Value,
+                        delivery.LearningDeliveryValues.PwayCode.Value,
+                        delivery.LearningDeliveryValues.ProgType.Value,
+                        delivery.LearningDeliveryValues.StdCode.GetValueOrDefault(0),
+                        delivery.LearningDeliveryValues.LearnAimRef,
+                        short.Parse(fm36.Year), ContractType.Act1));
+                }
+            }
+            var jobId = DateTime.Now.Ticks;
+            var startedEvent = new CollectionStartedEvent
+            {
+                ApprenticeshipKeys = keys,
+                JobId = jobId
+            };
+            await messageSession.Request<int>(startedEvent).ConfigureAwait(false);
+            await SendIlrSubmission(fm36.Learners, fm36.UKPRN, short.Parse(fm36.Year), collectionPeriod, jobId);
         }
 
         public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, short collectionYear, byte collectionPeriod, long jobId)
