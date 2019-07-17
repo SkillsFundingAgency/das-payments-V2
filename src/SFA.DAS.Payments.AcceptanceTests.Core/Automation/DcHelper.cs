@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public async Task SendCustomFm36File(IMessageSession messageSession, byte collectionPeriod)
         {
-            var json = File.ReadAllText("G:\\FundingOutput.json");
+            var json = File.ReadAllText("C:\\Temp\\FundingOutput.json");
             var fm36 = JsonConvert.DeserializeObject<FM36Global>(json);
             var apprenticeshipKeyService = new ApprenticeshipKeyService();
             var keys = new List<string>();
