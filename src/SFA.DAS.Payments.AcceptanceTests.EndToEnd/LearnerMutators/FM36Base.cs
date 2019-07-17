@@ -260,6 +260,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     learningDeliveries.Add(delivery);
                 }
 
+                CleanUpMainAim(delivery);
                 delivery.LearnAimRef = aim.AimReference;
                 delivery.AimSeqNumber = aim.AimSequenceNumber;
 
@@ -271,6 +272,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
                 SetCourseCodes(aim, delivery);
             }
+        }
+
+        private void CleanUpMainAim(MessageLearnerLearningDelivery delivery)
+        {
+            // Remove any TNP records so they can be build from scratch.
+            delivery.AppFinRecord = new MessageLearnerLearningDeliveryAppFinRecord[0];
         }
 
         protected void SetFrameworkComponentAimDetails(MessageLearner messageLearner, Learner learner,
@@ -518,20 +525,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         protected void AddNewTnpAppFinRecordForTrainingPrice(
             List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
         {
-            var tnp = appFinRecords.SingleOrDefault(a =>
-                a.AFinType == LearnDelAppFinType.TNP.ToString() &&
-                a.AFinCode == (int)LearnDelAppFinCode.TotalTrainingPrice);
+            var tnp = new MessageLearnerLearningDeliveryAppFinRecord()
+                      {
+                          AFinType = LearnDelAppFinType.TNP.ToString(),
+                          AFinCode = (int)LearnDelAppFinCode.TotalTrainingPrice,
+                          AFinCodeSpecified = true
+                      };
 
-            if (tnp == null)
-            {
-                tnp = new MessageLearnerLearningDeliveryAppFinRecord()
-                {
-                    AFinType = LearnDelAppFinType.TNP.ToString(),
-                    AFinCode = (int)LearnDelAppFinCode.TotalTrainingPrice,
-                    AFinCodeSpecified = true
-                };
-                appFinRecords.Add(tnp);
-            }
+            appFinRecords.Add(tnp);
 
             tnp.AFinAmount = Convert.ToInt32(priceEpisode.TotalTrainingPrice);
             tnp.AFinAmountSpecified = true;

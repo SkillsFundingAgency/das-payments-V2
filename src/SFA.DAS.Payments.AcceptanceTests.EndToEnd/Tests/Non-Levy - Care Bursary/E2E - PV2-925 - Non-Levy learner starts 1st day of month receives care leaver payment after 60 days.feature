@@ -1,4 +1,4 @@
-﻿
+﻿@supports_dc_e2e
 
 
 #Feature: Care Leaver Bursary
@@ -56,8 +56,8 @@ Feature: Non-Levy learner starts 1st day of month receives care leaver payment a
 
 Scenario Outline: Non-Levy learner starts 1st day of month receives care leaver payment after 60 days - PV2-925
 	Given the provider is providing training for the following learners
-		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 01/Aug/Current Academic Year | 12 months        | 7500                 | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |	
+		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                 | SFA Contribution Percentage | EefCode |
+		| 01/Aug/Current Academic Year | 12 months        | 7500                 | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 52            | 25             | 16-18 Apprenticeship Non-Levy Contract (procured) | 90%                         | 4       |
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
 		| pe-1             | 7500                 | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
@@ -81,23 +81,19 @@ Scenario Outline: Non-Levy learner starts 1st day of month receives care leaver 
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | CareLeaverApprenticePayment |
 		| R01/Current Academic Year | Aug/Current Academic Year | 500          | 0          | 0         | 0                           |
 		| R02/Current Academic Year | Sep/Current Academic Year | 500          | 0          | 0         | 1000                        |
-		| R03/Current Academic Year | Oct/Current Academic Year | 500          | 0          | 0         | 0                           |
 	# New transaction type - CareLeaverApprenticePayment
 	And only the following provider payments will be recorded
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type            |
 		| R01/Current Academic Year | Aug/Current Academic Year | 450                    | 50                          | 0                         | Learning                    |
 		| R02/Current Academic Year | Sep/Current Academic Year | 450                    | 50                          | 0                         | Learning                    |
-		| R03/Current Academic Year | Oct/Current Academic Year | 450                    | 50                          | 0                         | Learning                    |
 		| R02/Current Academic Year | Sep/Current Academic Year | 0                      | 0                           | 1000                      | CareLeaverApprenticePayment |
 	And at month end only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type            |
 		| R01/Current Academic Year | Aug/Current Academic Year | 450                    | 50                          | 0                         | Learning                    |
 		| R02/Current Academic Year | Sep/Current Academic Year | 450                    | 50                          | 0                         | Learning                    |
-		| R03/Current Academic Year | Oct/Current Academic Year | 450                    | 50                          | 0                         | Learning                    |
 		| R02/Current Academic Year | Sep/Current Academic Year | 0                      | 0                           | 1000                      | CareLeaverApprenticePayment |
 
 Examples:
 		| Collection_Period         |
 		| R01/Current Academic Year |
 		| R02/Current Academic Year |
-		| R03/Current Academic Year |
