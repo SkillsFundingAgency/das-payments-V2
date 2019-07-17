@@ -19,9 +19,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
         private readonly IApprenticeshipRepository repository;
       
 
-        public ApprenticeshipService(IApprenticeshipRepository repository, 
-            IApprenticeshipApprovedUpdatedService apprenticeshipUpdatedService,
-            IApprenticeshipDataLockTriageService apprenticeshipDataLockTriageService)
+        public ApprenticeshipService(IApprenticeshipRepository repository)
         {
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
