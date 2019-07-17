@@ -1080,14 +1080,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
             var dcHelper = Scope.Resolve<IDcHelper>();
 
-            //await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
-            //    provider.JobId);
-
-            await dcHelper.SendCustomFm36File(MessageSession, CollectionPeriod);
-            TestSession.Employer.AccountId = 17084;
-            TestSession.Provider.Ukprn = 10003161;
-            await Task.Delay(TimeSpan.FromSeconds(10));
-            await SendLevyMonthEnd();
+            await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
+                provider.JobId);
 
             var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
                 TestSession, CurrentCollectionPeriod, learners);
