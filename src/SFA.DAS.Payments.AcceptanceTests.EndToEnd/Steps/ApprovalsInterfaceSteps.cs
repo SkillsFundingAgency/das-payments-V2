@@ -280,7 +280,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode);
                 await TestDataContext.SaveChangesAsync();
-
+                
+                apprenticeship.PriceEpisodes.Add(priceEpisode);
+                
                 Console.WriteLine($"Existing Apprenticeship Created: {newPriceEpisode.ToJson()}");
 
             }
@@ -348,7 +350,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
-        
+
+        [Given(@"the apprenticeship is stopped as follows")]
+        public void GivenTheApprenticeshipIsStoppedAsFollows(Table table)
+        {
+            if(PreviousApprovalsApprenticeships == null )  throw  new InvalidOperationException();
+        }
+
+        [When(@"the Approvals service notifies the Payments service of that the apprenticeships has stopped")]
+        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfThatTheApprenticeshipsHasStopped()
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+
+
         private ApprenticeshipModel CreateApprenticeshipModel(ApprovalsApprenticeship apprenticeshipSpec)
         {
             var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(apprenticeshipSpec);
