@@ -7,7 +7,6 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
-using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -110,6 +109,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 TestSession.Learner.Uln = newUln;
             }
+        }
+
+        [Given("appEarnHistory is required as follows")]
+        public void AppEarnHistoryIsRequired(Table table)
+        {
+            AddAppEarnHistoryToLearner(table);
         }
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]

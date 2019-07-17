@@ -1,5 +1,10 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Autofac;
 using AutoMapper;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.EntityFrameworkCore;
 using NServiceBus;
@@ -9,8 +14,10 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
@@ -20,19 +27,11 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
-using Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
-using SFA.DAS.Payments.DataLocks.Messages.Events;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -1224,6 +1223,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 learner.EmploymentStatusMonitoring.AddRange(employmentStatusMonitorings);
             }
+        }
+
+        protected void AddAppEarnHistoryToLearner(Table table)
+        {
+            if (TestSession.AtLeastOneScenarioCompleted)
+            {
+                return;
+            }
+
+            var history = new LearnerEarningsHistory
+                      {
+                          AdditionalData = table.CreateSet<AdditionalIlrData>(),
+                          PreviousEarnings = PreviousEarnings
+                      };
+
+            TestSession.Learners.Single(l => l.Ukprn == TestSession.Provider.Ukprn).EarningsHistory = history;
         }
     }
 }
