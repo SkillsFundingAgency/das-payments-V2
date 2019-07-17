@@ -1234,7 +1234,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var history = new LearnerEarningsHistory
                       {
-                          AdditionalData = table.CreateSet<AdditionalIlrData>(),
+                          AdditionalData = table.CreateSet<AdditionalIlrData>().SingleOrDefault(),
                           PreviousEarnings = PreviousEarnings
                       };
 

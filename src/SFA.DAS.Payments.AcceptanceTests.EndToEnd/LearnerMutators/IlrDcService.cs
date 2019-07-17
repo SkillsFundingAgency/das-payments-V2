@@ -83,6 +83,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             if (learners.Any(l => l.EarningsHistory != null) && !testSession.AtLeastOneScenarioCompleted)
             {
+                await appEarnHistoryService.DeleteHistoryAsync(testSession.Provider.Ukprn);
                 await appEarnHistoryService.AddHistoryAsync(2018, 4, learners);
             }
 

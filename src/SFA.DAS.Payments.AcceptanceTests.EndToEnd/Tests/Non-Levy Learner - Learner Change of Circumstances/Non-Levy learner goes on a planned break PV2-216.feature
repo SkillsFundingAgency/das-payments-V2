@@ -33,8 +33,8 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
         | R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         |
         | R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         |
 	And appEarnHistory is required as follows
-		| Employer   | Actual Duration | Completion Status |
-		| employer 1 | 2 months        | planned break     |
+		| Employer   | Actual Duration | Completion Status | History Period            |
+		| employer 1 | 2 months        | planned break     | Nov/Current Academic Year |
 	But aims details are changed as follows
 		| Aim Type  | Original Start Date          | Start Date                   | Planned Duration | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | Restart |
 #		| Programme |                              | 01/Sep/Current Academic Year | 12 months        | 2 months        | planned break     | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) |         |
@@ -89,7 +89,7 @@ Examples:
         | Collection_Period         |
 #        | R03/Current Academic Year |
 #        | R04/Current Academic Year |
-#        | R05/Current Academic Year |
+        | R05/Current Academic Year |
         | R06/Current Academic Year |
         | R07/Current Academic Year |
         | R08/Current Academic Year |

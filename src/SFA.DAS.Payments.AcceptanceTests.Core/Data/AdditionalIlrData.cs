@@ -6,6 +6,8 @@
 
         public string ActualDuration { get; set; }
 
-        public string CompletionStatus { get; set; }    
+        public string CompletionStatus { get; set; }
+
+        public string HistoryPeriod { get; set; }
     }
 }

@@ -346,6 +346,7 @@
     <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
+    <Compile Include="LearnerMutators\ApprenticeshipEarningsHistoryService.cs" />
     <Compile Include="LearnerMutators\Fm36Base.cs" />
     <Compile Include="LearnerMutators\Framework403Learner.cs" />
     <Compile Include="LearnerMutators\IApprenticeshipEarningsHistoryService.cs" />
