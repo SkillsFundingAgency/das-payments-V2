@@ -7,6 +7,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -65,7 +66,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             var previousProviderEarnings = CreateEarnings(table, provider.Ukprn);
 
-            if(PreviousEarnings == null) PreviousEarnings = new List<Earning>();
+            if (PreviousEarnings == null) PreviousEarnings = new List<Earning>();
 
             PreviousEarnings.AddRange(previousProviderEarnings);
 
@@ -99,8 +100,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]
         public void TheProviderChangesTheLearnersUln(long newUln)
         {
-            TestSession.Learner.Uln = newUln;
             CurrentIlr = PreviousIlr;
+            if (Config.ValidateDcAndDasServices)
+            {
+                TestSession.Learner.Uln = Scope.Resolve<IUlnService>().GenerateUln(TestSession.Learner.Ukprn);
+                CurrentIlr.ForEach(x => x.Uln = TestSession.Learner.Uln);
+            }
+            else
+            {
+                TestSession.Learner.Uln = newUln;
+            }
         }
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
@@ -108,7 +117,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
             Task ClearCache() => HandleIlrReSubmissionForTheLearners(collectionPeriodText, TestSession.Provider);
-            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, TestSession.Learners, collectionPeriodText, featureNumber.Extract(), ClearCache);
+            await Scope.Resolve<IIlrService>().PublishLearnerRequest(PreviousIlr, CurrentIlr, TestSession.Learners, collectionPeriodText, featureNumber.Extract(), ClearCache);
         }
 
         [When(@"the ILR file is submitted for the learners for the collection period (.*) by ""(.*)""")]
