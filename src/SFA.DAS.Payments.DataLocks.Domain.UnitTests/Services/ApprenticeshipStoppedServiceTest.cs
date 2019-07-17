@@ -35,13 +35,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             var apprenticeshipModel = new ApprenticeshipModel
             {
                 Id = updatedApprenticeship.ApprenticeshipId,
+                StopDate = DateTime.Today.AddDays(-5),
+                Status = ApprenticeshipStatus.Active,
                 Uln = 1,
                 AgreedOnDate = DateTime.Today.AddDays(-2),
                 EstimatedStartDate = DateTime.Today.AddDays(-1),
                 EstimatedEndDate = DateTime.Today.AddYears(2),
                 ProgrammeType = 25,
                 StandardCode = 17,
-
                 ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                 {
                     new ApprenticeshipPriceEpisodeModel
@@ -58,7 +59,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                         StartDate = new DateTime(2017,08,10),
                         Cost = 1000.00m
                     }
-                }
+                },
+                Ukprn = 100,
+                TransferSendingEmployerAccountId = 101,
+                AccountId = 1,
+                AgreementId = "1",
+                IsLevyPayer = true,
+                LegalEntityName = "Test Employer",
+                FrameworkCode = 1,
+                PathwayCode = 1,
             };
 
             mocker.Mock<IApprenticeshipRepository>()
@@ -77,8 +86,23 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                     && model.ApprenticeshipPriceEpisodes[0].Cost == apprenticeshipModel.ApprenticeshipPriceEpisodes[0].Cost
                     && model.ApprenticeshipPriceEpisodes[0].StartDate == apprenticeshipModel.ApprenticeshipPriceEpisodes[0].StartDate
                     && model.ApprenticeshipPriceEpisodes[1].StartDate == apprenticeshipModel.ApprenticeshipPriceEpisodes[1].StartDate
-                    && model.ApprenticeshipPriceEpisodes[1].Cost == apprenticeshipModel.ApprenticeshipPriceEpisodes[1].Cost)
-                ), Times.Once);
+                    && model.ApprenticeshipPriceEpisodes[1].Cost == apprenticeshipModel.ApprenticeshipPriceEpisodes[1].Cost
+                    && model.Uln == apprenticeshipModel.Uln
+                    && model.AgreedOnDate == apprenticeshipModel.AgreedOnDate
+                    && model.EstimatedStartDate == apprenticeshipModel.EstimatedStartDate
+                    && model.EstimatedEndDate == apprenticeshipModel.EstimatedEndDate
+                    && model.ProgrammeType == apprenticeshipModel.ProgrammeType
+                    && model.StandardCode == apprenticeshipModel.StandardCode
+                    && model.Ukprn == apprenticeshipModel.Ukprn
+                    && model.TransferSendingEmployerAccountId == apprenticeshipModel.TransferSendingEmployerAccountId
+                    && model.AccountId == apprenticeshipModel.AccountId
+                    && model.AgreementId == apprenticeshipModel.AgreementId
+                    && model.IsLevyPayer == apprenticeshipModel.IsLevyPayer
+                    && model.LegalEntityName == apprenticeshipModel.LegalEntityName
+                    && model.FrameworkCode == apprenticeshipModel.FrameworkCode
+                    && model.PathwayCode == apprenticeshipModel.FrameworkCode
+
+                )), Times.Once);
 
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.Get(It.Is<long>(id => id == apprenticeshipModel.Id)), Times.Exactly(2));
