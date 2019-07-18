@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
@@ -95,6 +94,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 "50091268",
                 "50093186",
                 "50094695",
+                "50098342",
                 "50098342",
                 "50114979"
             };

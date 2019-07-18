@@ -1,4 +1,5 @@
-﻿Feature: Holding back completion payments - PV2-609
+﻿@supports_dc_e2e
+Feature: Holding back completion payments - PV2-609
 	As a provider,
 	I want a Non-levy learner with co-funding, where the employer has paid their 10% co-investment for the on-program element, but has not yet paid the employer completion payment element, and the final on program payment is the same day as the completion payment
 	So that I am accurately paid the completion payment by SFA
@@ -6,7 +7,7 @@
 Scenario Outline: Non-Levy learner, sufficient employer contribution, on program payment same day as completion payment - pay completion PV2-609
 	Given the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         |
+		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           | 0                      | 01/Jun/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing |
         | Aug/Last Academic Year | 0            | 0          | 0         |
@@ -28,7 +29,7 @@ Scenario Outline: Non-Levy learner, sufficient employer contribution, on program
 	# New field - Employer Contribution
     But the Provider now changes the Learner details as follows
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                      | SFA Contribution Percentage | Employer Contribution |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract | 90%                         | 720                   |
+		| 01/Jun/Last Academic Year | 12 months - 1 day       | 9000                 | 01/Jun/Last Academic Year           | 0                      |                                       | 12 months  - 1 day     | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         | 720                   |
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
 		| pe-1             | 9000                 | 01/Jun/Last Academic Year           | 0                      | 01/Jun/Last Academic Year             | 0                       |                                        | 0                         |                                          | Act2          | 1                   | 90%                         |
