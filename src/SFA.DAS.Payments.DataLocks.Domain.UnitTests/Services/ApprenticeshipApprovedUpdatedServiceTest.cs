@@ -67,7 +67,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                     {
                         StartDate = new DateTime(2017,09,06),
                         Cost = 20000.00m
-                    }
+                    },
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        StartDate = new DateTime(2017,08,10),
+                        Cost = 3000.00m
+                    },
                 }
 
             };
@@ -121,11 +126,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                     && model.ProgrammeType == updatedApprenticeship.ProgrammeType
                     && model.FrameworkCode == updatedApprenticeship.FrameworkCode
                     && model.PathwayCode == updatedApprenticeship.PathwayCode
-                    && model.ApprenticeshipPriceEpisodes.Count == 3
+                    && model.ApprenticeshipPriceEpisodes.Count == 4
                     && model.ApprenticeshipPriceEpisodes[0].EndDate == updatedApprenticeship.ApprenticeshipPriceEpisodes[0].EndDate
                     && model.ApprenticeshipPriceEpisodes[1].Removed == true
                     && model.ApprenticeshipPriceEpisodes[2].StartDate == updatedApprenticeship.ApprenticeshipPriceEpisodes[1].StartDate
-                    && model.ApprenticeshipPriceEpisodes[2].Cost == updatedApprenticeship.ApprenticeshipPriceEpisodes[1].Cost)
+                    && model.ApprenticeshipPriceEpisodes[2].Cost == updatedApprenticeship.ApprenticeshipPriceEpisodes[1].Cost
+                    && model.ApprenticeshipPriceEpisodes[3].StartDate == updatedApprenticeship.ApprenticeshipPriceEpisodes[2].StartDate
+                    && model.ApprenticeshipPriceEpisodes[3].Cost == updatedApprenticeship.ApprenticeshipPriceEpisodes[2].Cost)
 
                 ), Times.Once);
 
