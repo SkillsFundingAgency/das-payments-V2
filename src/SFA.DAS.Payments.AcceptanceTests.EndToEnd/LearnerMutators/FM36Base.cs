@@ -650,7 +650,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 delivery.LearningDeliveryFAM = AddActToLearningDeliveryFam(priceEpisode.ContractType, delivery.LearnStartDate, delivery.LearnActEndDate, delivery.LearningDeliveryFAM.ToList(), aim.ActualDurationAsTimespan.HasValue);
             }
 
+            if (priceEpisode.CompletionHoldBackExemptionCode != 0)
+            {
+                AddExemptionCodeLearningDeliveryFAM(delivery, priceEpisode.CompletionHoldBackExemptionCode);
+            }
+
             delivery.AppFinRecord = appFinRecords.ToArray();
+        }
+
+        private void AddExemptionCodeLearningDeliveryFAM(MessageLearnerLearningDelivery delivery, int exemptionCode)
+        {
+            DCT.TestDataGenerator.Helpers.AddLearningDeliveryFAM(delivery, LearnDelFAMType.LDM, (LearnDelFAMCode)exemptionCode);
         }
 
         private void AddNewTnpAppFinRecordForResidualTrainingPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
