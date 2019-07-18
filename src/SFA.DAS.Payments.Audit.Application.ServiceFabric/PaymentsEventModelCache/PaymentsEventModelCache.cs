@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCac
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
         private readonly IReliableConcurrentQueue<T> queue;
         private readonly IPaymentLogger logger;
-
+        
         public PaymentsEventModelCache(
             IReliableStateManagerProvider reliableStateManagerProvider, 
             IReliableStateManagerTransactionProvider transactionProvider, 

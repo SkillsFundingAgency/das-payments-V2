@@ -6,7 +6,6 @@ using SFA.DAS.Payments.ServiceFabric.Core;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Data;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 {
@@ -16,10 +15,15 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
         private readonly IReliableStateManagerProvider stateManagerProvider;
         private IReliableDictionary2<string, MonthEndDetails> reliableDictionary;
         private readonly object lockObject = new object();
+        private readonly ISecondLevelMonthEndCache secondLevelCache;
 
-        public MonthEndCache(IReliableStateManagerProvider stateManagerProvider, IReliableStateManagerTransactionProvider transactionProvider)
+        public MonthEndCache(
+            IReliableStateManagerProvider stateManagerProvider, 
+            IReliableStateManagerTransactionProvider transactionProvider, 
+            ISecondLevelMonthEndCache secondLevelCache)
         {
             this.transactionProvider = transactionProvider ?? throw new ArgumentNullException(nameof(transactionProvider));
+            this.secondLevelCache = secondLevelCache ?? throw new ArgumentNullException(nameof(secondLevelCache));
             this.stateManagerProvider = stateManagerProvider ?? throw new ArgumentNullException(nameof(stateManagerProvider));
         }
 
@@ -27,27 +31,59 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
         {
             var key = CreateKey(ukprn, academicYear, collectionPeriod);
             var entity = new MonthEndDetails { Ukprn = ukprn, AcademicYear = academicYear, CollectionPeriod = collectionPeriod, JobId = monthEndJobId };
-            var state = await GetState();
 
-            await state.AddOrUpdateAsync(transactionProvider.Current, key, entity, (newKey, monthEnd) => monthEnd, TimeSpan.FromSeconds(4), cancellationToken).ConfigureAwait(false);
+            if (!secondLevelCache.MonthEndDetailsStore.ContainsKey(entity))
+            {
+                var state = await GetState();
+
+                await state.AddOrUpdateAsync(transactionProvider.Current, key, entity, (newKey, monthEnd) => monthEnd, TimeSpan.FromSeconds(4), cancellationToken).ConfigureAwait(false);
+                secondLevelCache.MonthEndDetailsStore.TryAdd(entity, 0);
+            }
         }
 
         public async Task<bool> Exists(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var key = CreateKey(ukprn, academicYear, collectionPeriod);
-            var state = await GetState();
+            var entity = await PopulateLocalCacheIfRequired(ukprn, academicYear, collectionPeriod, cancellationToken);
 
-            return await state
-                .ContainsKeyAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(4), cancellationToken)
-                .ConfigureAwait(false);
+            if (secondLevelCache.MonthEndDetailsStore.ContainsKey(entity))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private async Task<MonthEndDetails> PopulateLocalCacheIfRequired(long ukprn, short academicYear, byte collectionPeriod,
+            CancellationToken cancellationToken)
+        {
+            var entity = new MonthEndDetails {Ukprn = ukprn, AcademicYear = academicYear, CollectionPeriod = collectionPeriod};
+            if (!secondLevelCache.MonthEndDetailsChecked.ContainsKey(entity))
+            {
+                secondLevelCache.MonthEndDetailsChecked.TryAdd(entity, 0);
+                var key = CreateKey(ukprn, academicYear, collectionPeriod);
+                var state = await GetState();
+
+                var result = await state
+                    .ContainsKeyAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(4), cancellationToken)
+                    .ConfigureAwait(false);
+                if (result)
+                {
+                    secondLevelCache.MonthEndDetailsStore.TryAdd(entity, 0);
+                }
+            }
+
+            return entity;
         }
 
         public async Task<MonthEndDetails> GetMonthEndDetails(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var key = CreateKey(ukprn, academicYear, collectionPeriod);
-            var state = await GetState();
-            var value = await state.TryGetValueAsync(transactionProvider.Current, key, TimeSpan.FromSeconds(4), cancellationToken).ConfigureAwait(false);
-            return value.Value;
+            var entity = await PopulateLocalCacheIfRequired(ukprn, academicYear, collectionPeriod, cancellationToken);
+            if (secondLevelCache.MonthEndDetailsStore.ContainsKey(entity))
+            {
+                return entity;
+            }
+
+            return null;
         }
 
         private async Task<IReliableDictionary2<string, MonthEndDetails>> GetState()
