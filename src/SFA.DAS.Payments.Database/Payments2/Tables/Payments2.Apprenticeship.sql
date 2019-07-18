@@ -21,3 +21,13 @@
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_Apprenticeship__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 
 )
+GO
+
+CREATE INDEX [IX_Apprenticeship__AccountSearch] ON [Payments2].[Apprenticeship]
+(
+  [Ukprn],
+  AccountId,
+  TransferSendingEmployerAccountId,
+  IsLevyPayer
+) 
+GO
