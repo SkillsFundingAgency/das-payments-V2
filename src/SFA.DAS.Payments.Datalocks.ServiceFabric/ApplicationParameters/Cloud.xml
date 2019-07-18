@@ -8,6 +8,7 @@
     <Parameter Name="DataLockServiceActorService_TargetReplicaSetSize" Value="__DataLockServiceActorService_TargetReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__"/>
     <Parameter Name="DASServiceBusConnectionString" Value="__DASServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />

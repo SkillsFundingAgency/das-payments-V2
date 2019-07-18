@@ -3,6 +3,7 @@
   <Parameters>
     <Parameter Name="EarningEventsService_InstanceCount" Value="__EarningEventsService_InstanceCount__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__"/>
     <Parameter Name="DCServiceBusConnectionString" Value="__DCServiceBusConnectionString__" />
     <Parameter Name="EarningEventsService_EndpointName" Value="__EarningEventsService_EndpointName__" />
     <Parameter Name="EarningEventsService_FailedMessagesQueue" Value="__EarningEventsService_FailedMessagesQueue__" />
