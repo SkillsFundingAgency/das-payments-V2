@@ -75,9 +75,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }
         }
 
-        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(ApprenticeshipContract2TypeFunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
         {
-            paymentLogger.LogVerbose($"Handling FunctionalSkillEarningsEvent for {apprenticeshipKeyString}");
+            paymentLogger.LogVerbose($"Handling ApprenticeshipContract2TypeFunctionalSkillEarningsEvent for {apprenticeshipKeyString}");
 
             using (var operation = telemetry.StartOperation())
             {

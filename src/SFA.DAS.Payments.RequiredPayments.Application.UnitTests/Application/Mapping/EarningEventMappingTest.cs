@@ -123,7 +123,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
         public void ContractTypeIsCorrectForFunctionalSkills(Type requiredPaymentEventType, ContractType expectedContractType)
         {
             var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
-            var earningEvent = new FunctionalSkillEarningsEvent
+            var earningEvent = new ApprenticeshipContract2TypeFunctionalSkillEarningsEvent
             {
                 ContractType = expectedContractType,
             };
@@ -283,9 +283,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             Assert.AreEqual(requiredPayment.IlrSubmissionDateTime, earning.IlrSubmissionDateTime);
         }
 
-        private static FunctionalSkillEarningsEvent CreateFunctionalSkillEarningsEvent()
+        private static ApprenticeshipContract2TypeFunctionalSkillEarningsEvent CreateFunctionalSkillEarningsEvent()
         {
-            return new FunctionalSkillEarningsEvent
+            return new ApprenticeshipContract2TypeFunctionalSkillEarningsEvent
             {
                 CollectionYear = 1819,
                 Learner = new Learner { ReferenceNumber = "R", Uln = 10 },

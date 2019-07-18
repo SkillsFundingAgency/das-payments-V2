@@ -7,7 +7,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public class FunctionalSkillEarningsEventProcessor : EarningEventProcessorBase<FunctionalSkillEarningsEvent>, IFunctionalSkillEarningsEventProcessor
+    public class FunctionalSkillEarningsEventProcessor : EarningEventProcessorBase<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>, IFunctionalSkillEarningsEventProcessor
     {
         public FunctionalSkillEarningsEventProcessor(
             IMapper mapper,
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             return EarningType.Incentive;
         }
 
-        protected override IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(FunctionalSkillEarningsEvent earningEvent)
+        protected override IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(ApprenticeshipContract2TypeFunctionalSkillEarningsEvent earningEvent)
         {
             var result = new List<(EarningPeriod period, int type)>();
 

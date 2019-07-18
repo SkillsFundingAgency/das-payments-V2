@@ -10,11 +10,11 @@ using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
 {
-    public class FunctionalSkillMappingTests: EarningEventMappingTests<FunctionalSkillEarningsEvent>
+    public class FunctionalSkillMappingTests: EarningEventMappingTests<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>
     {
-        protected override FunctionalSkillEarningsEvent CreatePaymentEvent()
+        protected override ApprenticeshipContract2TypeFunctionalSkillEarningsEvent CreatePaymentEvent()
         {
-            return new FunctionalSkillEarningsEvent
+            return new ApprenticeshipContract2TypeFunctionalSkillEarningsEvent
             {
                 Earnings = new List<FunctionalSkillEarning>
                 {

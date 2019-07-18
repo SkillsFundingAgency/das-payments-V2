@@ -11,7 +11,7 @@ using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public class FunctionalSkillsEarningValueResolver : IValueResolver<IntermediateLearningAim, FunctionalSkillEarningsEvent, ReadOnlyCollection<FunctionalSkillEarning>>
+    public class FunctionalSkillsEarningValueResolver : IValueResolver<IntermediateLearningAim, ApprenticeshipContract2TypeFunctionalSkillEarningsEvent, ReadOnlyCollection<FunctionalSkillEarning>>
     {
         private static readonly Dictionary<string, FunctionalSkillType> TypeMap =
             new Dictionary<string, FunctionalSkillType>
@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 {"PriceEpisodeLSFCash", FunctionalSkillType.LearningSupport},
             };
 
-        public ReadOnlyCollection<FunctionalSkillEarning> Resolve(IntermediateLearningAim source, FunctionalSkillEarningsEvent destination, ReadOnlyCollection<FunctionalSkillEarning> destMember, ResolutionContext context)
+        public ReadOnlyCollection<FunctionalSkillEarning> Resolve(IntermediateLearningAim source, ApprenticeshipContract2TypeFunctionalSkillEarningsEvent destination, ReadOnlyCollection<FunctionalSkillEarning> destMember, ResolutionContext context)
         {
             return source.Aim.LearningDeliveryPeriodisedValues
                 .Where(periodisedValues => TypeMap.ContainsKey(periodisedValues.AttributeName))

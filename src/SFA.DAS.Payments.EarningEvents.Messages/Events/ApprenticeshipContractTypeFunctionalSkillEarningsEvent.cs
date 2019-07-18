@@ -5,11 +5,7 @@ using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
-    /// <summary>
-    /// Earning events for sub aims such as Maths & English
-    /// </summary>
-    /// <seealso cref="EarningEvent" />
-    public class FunctionalSkillEarningsEvent : EarningEvent
+    public class ApprenticeshipContractTypeFunctionalSkillEarningsEvent : EarningEvent
     {
         /// <summary>
         /// Gets or sets the earnings.
@@ -22,7 +18,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public ReadOnlyCollection<FunctionalSkillEarning> Earnings { get; set; }
 
         public DateTime StartDate { get; set; }
-        
+
         public ContractType ContractType { get; set; }
     }
 }

@@ -87,7 +87,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
             byte deliveryPeriod = 2;
 
-            var earningEvent = new FunctionalSkillEarningsEvent
+            var earningEvent = new ApprenticeshipContract2TypeFunctionalSkillEarningsEvent
             {
                 Ukprn = 1,
                 CollectionPeriod = period,
@@ -157,7 +157,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             // arrange
             var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
             
-            var earningEvent = new FunctionalSkillEarningsEvent
+            var earningEvent = new ApprenticeshipContract2TypeFunctionalSkillEarningsEvent
             {
                 Ukprn = 1,
                 CollectionPeriod = period,

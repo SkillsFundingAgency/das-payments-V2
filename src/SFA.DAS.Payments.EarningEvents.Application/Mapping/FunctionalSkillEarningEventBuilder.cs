@@ -21,10 +21,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             this.mapper = mapper;
         }
 
-        public List<FunctionalSkillEarningsEvent> Build(ProcessLearnerCommand learnerSubmission)
+        public List<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent> Build(ProcessLearnerCommand learnerSubmission)
         {
             var intermediateResults = InitialLearnerTransform(learnerSubmission, false);
-            var results = new List<FunctionalSkillEarningsEvent>();
+            var results = new List<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>();
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 var distinctContractTypes = contractTypes.Distinct().ToList();
 
                 var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(intermediateLearningAim.PriceEpisodes);
-                var functionalSkillEarning = mapper.Map<FunctionalSkillEarningsEvent>(learnerWithSortedPriceEpisodes);
+                var functionalSkillEarning = mapper.Map<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>(learnerWithSortedPriceEpisodes);
 
                 foreach (var contractType in distinctContractTypes)
                 {

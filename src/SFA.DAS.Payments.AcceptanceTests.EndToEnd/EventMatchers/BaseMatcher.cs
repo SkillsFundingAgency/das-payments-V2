@@ -19,16 +19,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var actualPayments = GetActualEvents();
 
-            actualPayments = actualPayments.Where(x => (x is FunctionalSkillEarningsEvent &&
-                                                        (x as FunctionalSkillEarningsEvent).Earnings.Any()) ||
-                                                       (x as FunctionalSkillEarningsEvent) == null)
+            actualPayments = actualPayments.Where(x => (x is ApprenticeshipContract2TypeFunctionalSkillEarningsEvent &&
+                                                        (x as ApprenticeshipContract2TypeFunctionalSkillEarningsEvent).Earnings.Any()) ||
+                                                       (x as ApprenticeshipContract2TypeFunctionalSkillEarningsEvent) == null)
                 .ToList();
 
 
             var expectedPayments = GetExpectedEvents();
 
             //remove any FunctionalSkillEarningsEvent when we are not expecting any(only if they have all 0 values)
-            if (expectedPayments.All(x => x.GetType() != typeof(FunctionalSkillEarningsEvent)))
+            if (expectedPayments.All(x => x.GetType() != typeof(ApprenticeshipContract2TypeFunctionalSkillEarningsEvent)))
             {
                 actualPayments = RemoveEmptyFunctionSkillEarningEvent(actualPayments);
             }
@@ -64,8 +64,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private IList<T> RemoveEmptyFunctionSkillEarningEvent(IList<T> actualPayments)
         {
             return actualPayments.Except(actualPayments
-                .Where(actualPayment => actualPayment.GetType() == typeof(FunctionalSkillEarningsEvent) && 
-                                          (actualPayment as FunctionalSkillEarningsEvent).Earnings.All(e=>e.Periods.All(p=>p.Amount == 0)))).ToList();
+                .Where(actualPayment => actualPayment.GetType() == typeof(ApprenticeshipContract2TypeFunctionalSkillEarningsEvent) && 
+                                          (actualPayment as ApprenticeshipContract2TypeFunctionalSkillEarningsEvent).Earnings.All(e=>e.Periods.All(p=>p.Amount == 0)))).ToList();
         }
     }
 }

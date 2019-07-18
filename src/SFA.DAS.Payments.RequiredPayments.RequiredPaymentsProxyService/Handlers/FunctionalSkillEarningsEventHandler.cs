@@ -11,14 +11,14 @@ using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public class FunctionalSkillEarningsEventHandler : EarningEventHandlerBase<FunctionalSkillEarningsEvent>
+    public class FunctionalSkillEarningsEventHandler : EarningEventHandlerBase<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>
     {
         public FunctionalSkillEarningsEventHandler(IApprenticeshipKeyService apprenticeshipKeyService, IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger, IExecutionContext executionContext) 
             : base(apprenticeshipKeyService, proxyFactory, paymentLogger, executionContext)
         {
         }
 
-        protected override async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(FunctionalSkillEarningsEvent message, IRequiredPaymentsService actor)
+        protected override async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(ApprenticeshipContract2TypeFunctionalSkillEarningsEvent message, IRequiredPaymentsService actor)
         {
             return await actor.HandleFunctionalSkillEarningsEvent(message, CancellationToken.None).ConfigureAwait(false);
         }

@@ -26,11 +26,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         {
             // arrange
             var mockMapper = new Mock<IMapper>(MockBehavior.Strict);
-            var expectedResult = new FunctionalSkillEarningsEvent
+            var expectedResult = new ApprenticeshipContract2TypeFunctionalSkillEarningsEvent
             {
                 Earnings = new List<FunctionalSkillEarning>().AsReadOnly()
             };
-            mockMapper.Setup(m => m.Map<FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedResult).Verifiable();
+            mockMapper.Setup(m => m.Map<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedResult).Verifiable();
             var builder = new FunctionalSkillEarningEventBuilder(mockMapper.Object);
             var learnerSubmission = new ProcessLearnerCommand
             {
@@ -143,12 +143,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             };
 
-            var expectedResult = new FunctionalSkillEarningsEvent
+            var expectedResult = new ApprenticeshipContract2TypeFunctionalSkillEarningsEvent
             {
                 Earnings = earnings.AsReadOnly()
             };
 
-            mockMapper.Setup(m => m.Map<FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedResult).Verifiable();
+            mockMapper.Setup(m => m.Map<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedResult).Verifiable();
             var builder = new FunctionalSkillEarningEventBuilder(mockMapper.Object);
             var learnerSubmission = new ProcessLearnerCommand
             {
@@ -242,7 +242,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             // arrange
             var mockMapper = new Mock<IMapper>(MockBehavior.Strict);
 
-            mockMapper.Setup(m => m.Map<FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(GetFunctionalSkillEarningsEvent).Verifiable();
+            mockMapper.Setup(m => m.Map<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(GetFunctionalSkillEarningsEvent).Verifiable();
             var builder = new FunctionalSkillEarningEventBuilder(mockMapper.Object);
             var learnerSubmission = new ProcessLearnerCommand
             {
@@ -338,7 +338,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             mockMapper.Verify();
         }
 
-        private static FunctionalSkillEarningsEvent GetFunctionalSkillEarningsEvent()
+        private static ApprenticeshipContract2TypeFunctionalSkillEarningsEvent GetFunctionalSkillEarningsEvent()
         {
             var earningPeriods = new List<EarningPeriod>
             {
@@ -365,7 +365,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 },
             };
 
-            var expectedResult = new FunctionalSkillEarningsEvent
+            var expectedResult = new ApprenticeshipContract2TypeFunctionalSkillEarningsEvent
             {
                 Earnings = earnings.AsReadOnly()
             };

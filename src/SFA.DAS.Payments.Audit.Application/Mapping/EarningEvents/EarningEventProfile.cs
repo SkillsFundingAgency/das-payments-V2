@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
             CreateMap<EarningEvent, EarningEventModel>()
                 .Include<ApprenticeshipContractType2EarningEvent, EarningEventModel>()
                 .Include<ApprenticeshipContractType1EarningEvent, EarningEventModel>()
-                .Include<FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent, EarningEventModel>()
                 .MapCommon()
                 .ForMember(dest => dest.ContractType, opt => opt.Ignore())
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))
                 .ForMember(dest => dest.Periods,opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>());
 
-            CreateMap<FunctionalSkillEarningsEvent, EarningEventModel>()
+            CreateMap<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))  //TODO: fix for ACT1 events
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<FunctionalSkillEarningResolver>());
 
