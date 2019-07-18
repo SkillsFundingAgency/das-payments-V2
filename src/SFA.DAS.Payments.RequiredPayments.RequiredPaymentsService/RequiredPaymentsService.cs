@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Application;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -25,7 +26,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
     public class RequiredPaymentsService : Actor, IRequiredPaymentsService
     {
         private ReliableCollectionCache<PaymentHistoryEntity[]> paymentHistoryCache;
-
+        private ReliableCollectionCache<CollectionPeriod> collectionPeriodCache;
         private readonly IPaymentLogger paymentLogger;
         private readonly ApprenticeshipKey apprenticeshipKey;
         private readonly string apprenticeshipKeyString;
@@ -35,6 +36,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly IPayableEarningEventProcessor payableEarningEventProcessor;
         private readonly IRefundRemovedLearningAimProcessor refundRemovedLearningAimProcessor;
         readonly ITelemetry telemetry;
+        
 
 
         public RequiredPaymentsService(ActorService actorService,
@@ -67,6 +69,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
             using (var operation = telemetry.StartOperation())
             {
+                await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
+                    .ConfigureAwait(false);
+
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await contractType2EarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
@@ -81,6 +86,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
             using (var operation = telemetry.StartOperation())
             {
+                await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
+                    .ConfigureAwait(false);
+
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
@@ -96,6 +104,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             {
                 using (var operation = telemetry.StartOperation())
                 {
+                    await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
+                        .ConfigureAwait(false);
+
                     await Initialise().ConfigureAwait(false);
                     var requiredPaymentEvents = await payableEarningEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                     Log(requiredPaymentEvents);
@@ -113,6 +124,8 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> RefundRemovedLearningAim(IdentifiedRemovedLearningAim removedLearningAim, CancellationToken cancellationToken)
         {
             paymentLogger.LogDebug($"Handling identified removed learning aim for {apprenticeshipKeyString}.");
+            await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(removedLearningAim.CollectionPeriod)
+                .ConfigureAwait(false);
 
             await Initialise().ConfigureAwait(false);
 
@@ -147,10 +160,42 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             //TODO: why are we still doing this?  We are supposed to be resolving this from the container.
             paymentHistoryCache = new ReliableCollectionCache<PaymentHistoryEntity[]>(StateManager);
+            collectionPeriodCache = new ReliableCollectionCache<CollectionPeriod>(StateManager);
 
             await Initialise().ConfigureAwait(false);
 
             await base.OnActivateAsync().ConfigureAwait(false);
+        }
+
+        private async Task ResetPaymentHistoryCacheIfDifferentCollectionPeriod(CollectionPeriod collectionPeriod)
+        {
+            paymentLogger.LogVerbose($"Checking if collection period is new collection. Period: {collectionPeriod.Period}, Year: {collectionPeriod.AcademicYear}");
+            var isNewCollection = await IsNewCollection(collectionPeriod).ConfigureAwait(false);
+            if (!isNewCollection)
+            {
+                paymentLogger.LogVerbose("Is not new collection period.");
+                return;
+            }
+
+            paymentLogger.LogDebug("Is new collection period, resetting the payment history cache.");
+            await Reset().ConfigureAwait(false);
+            await StoreCollectionPeriod(collectionPeriod).ConfigureAwait(false);
+            paymentLogger.LogInfo($"Finished storing the new collection period '{collectionPeriod.Period}-{collectionPeriod.AcademicYear}' for actor: {apprenticeshipKey}");
+        }
+
+        private async Task<bool> IsNewCollection(CollectionPeriod collectionPeriod)
+        {
+            var cacheItem = await collectionPeriodCache.TryGet("CollectionPeriod").ConfigureAwait(false);
+            if (!cacheItem.HasValue)
+                return true;
+            var cachedCollectionPeriod = cacheItem.Value;
+            return collectionPeriod.AcademicYear != cachedCollectionPeriod.AcademicYear
+                   || collectionPeriod.Period != cachedCollectionPeriod.Period;
+        }
+
+        private async Task StoreCollectionPeriod(CollectionPeriod collectionPeriod)
+        {
+            await collectionPeriodCache.AddOrReplace("CollectionPeriod", collectionPeriod).ConfigureAwait(false);
         }
 
         public async Task Initialise()

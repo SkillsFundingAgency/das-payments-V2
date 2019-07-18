@@ -386,7 +386,6 @@
     <Compile Include="Automation\DcNullHelper.cs" />
     <Compile Include="Automation\IDcHelper.cs" />
     <Compile Include="Automation\LearnRefNumberGenerator.cs" />
-    <Compile Include="Automation\RequiredPaymentsCacheCleaner.cs" />
     <Compile Include="Automation\TestSession.cs" />
     <Compile Include="BindingsBase.cs" />
     <Compile Include="Data\Configurations\ProviderModelConfiguration.cs" />
