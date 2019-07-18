@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extras.Moq" Version="4.3.0" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.446" />
     <PackageReference Include="FluentAssertions" Version="5.6.0" />
@@ -26,6 +27,7 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Domain\SFA.DAS.Payments.EarningEvents.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Model\SFA.DAS.Payments.EarningEvents.Model.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.JobContextMessageHandling\SFA.DAS.Payments.JobContextMessageHandling.csproj" />
   </ItemGroup>
 
 </Project>

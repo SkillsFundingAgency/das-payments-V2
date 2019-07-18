@@ -1,6 +1,9 @@
 ﻿using Autofac;
+using ESFA.DC.JobContextManager.Interface;
+using ESFA.DC.JobContextManager.Model;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Application.Handlers;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Application.Services;
@@ -51,6 +54,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             //    c.Resolve<IPaymentLogger>(),
             //    c.Resolve<IEarningEventMapper>()
             //)).As<IEarningEventsProcessingService>();
+            builder.RegisterType<JobContextMessageHandler>().As<IMessageHandler<JobContextMessage>>();
+
         }
     }
 }

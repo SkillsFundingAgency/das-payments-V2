@@ -18,6 +18,8 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
+using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
@@ -36,15 +38,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter;
         private readonly ISubmittedLearnerAimBuilder submittedLearnerAimBuilder;
         private readonly ISubmittedLearnerAimRepository submittedLearnerAimRepository;
+        private readonly IJobStatusService jobStatusService;
 
         public JobContextMessageHandler(IPaymentLogger logger,
             IFileService azureFileService,
             IJsonSerializationService serializationService,
             IEndpointInstanceFactory factory,
             IEarningsJobClientFactory jobClientFactory,
-            ITelemetry telemetry, 
-            IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter, 
-            ISubmittedLearnerAimBuilder submittedLearnerAimBuilder, ISubmittedLearnerAimRepository submittedLearnerAimRepository)
+            ITelemetry telemetry,
+            IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter,
+            ISubmittedLearnerAimBuilder submittedLearnerAimBuilder, 
+            ISubmittedLearnerAimRepository submittedLearnerAimRepository,
+            IJobStatusService jobStatusService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
@@ -55,6 +60,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.submittedAimWriter = submittedAimWriter;
             this.submittedLearnerAimBuilder = submittedLearnerAimBuilder;
             this.submittedLearnerAimRepository = submittedLearnerAimRepository;
+            this.jobStatusService = jobStatusService;
         }
 
 
@@ -84,6 +90,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                             { TelemetryKeys.Duration, duration}
                         });
                     telemetry.StopOperation(operation);
+                    await jobStatusService.WaitForJobToFinish(message.JobId);
                     logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
                     return true;
                 }
@@ -110,7 +117,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 JobId = jobId,
                 IlrSubmissionDateTime = ilrSubmissionDateTime,
-                CollectionPeriod = new CollectionPeriod {AcademicYear = short.Parse(academicYear), Period = (byte) collectionPeriod},
+                CollectionPeriod = new CollectionPeriod { AcademicYear = short.Parse(academicYear), Period = (byte)collectionPeriod },
                 Ukprn = ukprn,
                 EventTime = DateTimeOffset.UtcNow
             };
@@ -119,11 +126,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             await endpointInstance.Publish(message).ConfigureAwait(false);
         }
 
-        private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken )
+        private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken)
         {
             FM36Global fm36Output;
-            var fileReference = message.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString();
-            var container = message.KeyValuePairs[JobContextMessageKey.Container].ToString();
+            var fileReference = message.Topics.Any(topic => topic.Tasks.Any(task => task.Tasks.Any(taskName => taskName.Equals(JobContextMessageConstants.Tasks.ProcessPeriodEndSubmission))))
+            ? message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd].ToString()
+            : message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.FundingFm36Output].ToString();
+            var container = message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.Container].ToString();
             logger.LogDebug($"Deserialising FM36Output for job: {message.JobId}, using file reference: {fileReference}, container: {container}");
             var stopwatch = new Stopwatch();
             stopwatch.Start();
