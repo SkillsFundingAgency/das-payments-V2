@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
         public async Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken)
         {
             var transferSenders = (await dataContext.Apprenticeship
-                .Where(apprenticeship => apprenticeship.TransferSendingEmployerAccountId != null)
+                .Where(apprenticeship => apprenticeship.TransferSendingEmployerAccountId != null && apprenticeship.TransferSendingEmployerAccountId != 0)
                 .Select(apprenticeship => apprenticeship.TransferSendingEmployerAccountId)
                 .Distinct()
                 .ToListAsync(cancellationToken))
