@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
-    public interface IMonthEndService
+    public interface IProviderPeriodEndService
     {
         Task<List<PaymentModel>> GetMonthEndPayments(CollectionPeriod collectionPeriod, long ukprn,
             CancellationToken cancellationToken = default(CancellationToken));
