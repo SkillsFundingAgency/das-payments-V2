@@ -1,4 +1,4 @@
-
+@ignore
 Feature: PV2-692 - Apprenticeship Is Stopped by the Employer without completing
 	As an Employer
 	I want to be able to stop a learners apprenticeship from today's date or retrospectively.
