@@ -37,7 +37,11 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
                 var state = await GetState();
 
                 await state.AddOrUpdateAsync(transactionProvider.Current, key, entity, (newKey, monthEnd) => monthEnd, TimeSpan.FromSeconds(4), cancellationToken).ConfigureAwait(false);
-                secondLevelCache.MonthEndDetailsStore.TryAdd(entity, 0);
+                secondLevelCache.MonthEndDetailsStore.TryAdd(entity, monthEndJobId);
+            }
+            else
+            {
+                secondLevelCache.MonthEndDetailsStore.TryUpdate(entity, monthEndJobId, secondLevelCache.MonthEndDetailsStore[entity]);
             }
         }
 
@@ -80,6 +84,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
             var entity = await PopulateLocalCacheIfRequired(ukprn, academicYear, collectionPeriod, cancellationToken);
             if (secondLevelCache.MonthEndDetailsStore.ContainsKey(entity))
             {
+                entity.JobId = secondLevelCache.MonthEndDetailsStore[entity];
                 return entity;
             }
 

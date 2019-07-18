@@ -5,13 +5,13 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 {
     public interface ISecondLevelMonthEndCache
     {
-        ConcurrentDictionary<MonthEndDetails, int> MonthEndDetailsStore { get; }
-        ConcurrentDictionary<MonthEndDetails, int> MonthEndDetailsChecked { get; }
+        ConcurrentDictionary<MonthEndDetails, long> MonthEndDetailsStore { get; }
+        ConcurrentDictionary<MonthEndDetails, long> MonthEndDetailsChecked { get; }
     }
 
     public class SecondLevelMonthEndCache : ISecondLevelMonthEndCache
     {
-        public ConcurrentDictionary<MonthEndDetails, int> MonthEndDetailsStore { get; } = new ConcurrentDictionary<MonthEndDetails, int>();
-        public ConcurrentDictionary<MonthEndDetails, int> MonthEndDetailsChecked { get; } = new ConcurrentDictionary<MonthEndDetails, int>();
+        public ConcurrentDictionary<MonthEndDetails, long> MonthEndDetailsStore { get; } = new ConcurrentDictionary<MonthEndDetails, long>();
+        public ConcurrentDictionary<MonthEndDetails, long> MonthEndDetailsChecked { get; } = new ConcurrentDictionary<MonthEndDetails, long>();
     }
 }
