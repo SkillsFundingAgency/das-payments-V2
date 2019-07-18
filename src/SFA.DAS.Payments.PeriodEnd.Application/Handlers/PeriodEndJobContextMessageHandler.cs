@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
                 await endpointInstance.Publish(periodEndEvent);
                 logger.LogInfo($"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
-                await jobStatusService.WaitForJobToFinish(message.JobId);
+                await jobStatusService.WaitForJobToFinish(message.JobId).ConfigureAwait(false);
                 return true;
             }
             catch (Exception ex)

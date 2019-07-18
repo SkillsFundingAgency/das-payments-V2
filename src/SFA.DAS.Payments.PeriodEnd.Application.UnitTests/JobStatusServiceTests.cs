@@ -4,11 +4,9 @@ using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
-using SFA.DAS.Payments.PeriodEnd.Application.Infrastructure;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
 {
@@ -49,7 +47,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var service = mocker.Create<JobStatusService>();
             await service.WaitForJobToFinish(1).ConfigureAwait(false);
             mocker.Mock<IJobsDataContext>()
-                .Verify(dc => dc.GetJobByDcJobId(It.Is<long>(jobId => jobId == 1)),Times.Once);
+                .Verify(dc => dc.GetJobByDcJobId(1),Times.Once);
         }
 
         [Test]
