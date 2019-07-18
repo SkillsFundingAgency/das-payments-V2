@@ -530,11 +530,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
         {
             var tnp = new MessageLearnerLearningDeliveryAppFinRecord()
-            {
-                AFinType = LearnDelAppFinType.TNP.ToString(),
-                AFinCode = (int)LearnDelAppFinCode.TotalTrainingPrice,
-                AFinCodeSpecified = true
-            };
+                      {
+                          AFinType = LearnDelAppFinType.TNP.ToString(),
+                          AFinCode = (int)LearnDelAppFinCode.TotalTrainingPrice,
+                          AFinCodeSpecified = true
+                      };
 
             appFinRecords.Add(tnp);
 
