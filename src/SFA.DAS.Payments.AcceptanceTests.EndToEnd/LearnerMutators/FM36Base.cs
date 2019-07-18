@@ -242,6 +242,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
+
+       
+
         private void MutateMainAimForLearner(IEnumerable<Aim> mainAims,
             List<MessageLearnerLearningDelivery> learningDeliveries)
         {
@@ -261,6 +264,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 }
 
                 CleanUpMainAim(delivery);
+
                 delivery.LearnAimRef = aim.AimReference;
                 delivery.AimSeqNumber = aim.AimSequenceNumber;
 
@@ -543,6 +547,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 tnp.AFinDateSpecified = true;
             }
         }
+
+        
 
         protected void SetupTnpAppFinRecord(MessageLearner messageLearner, MessageLearnerLearningDelivery delivery)
         {
