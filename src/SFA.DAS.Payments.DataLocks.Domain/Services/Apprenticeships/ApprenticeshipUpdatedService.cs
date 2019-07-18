@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
             }
 
             var newPriceEpisodes = receivedPriceEpisodes
-                .Where(x => currentPriceEpisodes.All(o => o.Cost != x.Cost))
+                .Where(x => currentPriceEpisodes.All(o => o.Cost != x.Cost || o.StartDate != x.StartDate))
                 .ToList();
 
             currentPriceEpisodes.AddRange(newPriceEpisodes);
