@@ -77,9 +77,10 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
                 new ApprenticeshipContractType2EarningEvent()
             };
 
-            var functionalSkillEarnings = new List<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>
+            var functionalSkillEarnings = new List<ApprenticeshipContractTypeFunctionalSkillEarningsEvent>
             {
-                new ApprenticeshipContract2TypeFunctionalSkillEarningsEvent()
+                new ApprenticeshipContractType2FunctionalSkillEarningsEvent(),
+                new ApprenticeshipContractType1FunctionalSkillEarningsEvent()
             };
 
             actBuilder.Setup(b => b.Build(learnerSubmission)).Returns(actEarnings).Verifiable();
@@ -91,7 +92,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 
             // assert
             Assert.IsFalse(result.Validation.Failed);
-            Assert.AreEqual(3, result.EarningEvents.Count);
+            Assert.AreEqual(4, result.EarningEvents.Count);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces
     public interface IRequiredPaymentsService : IActor
     {
         Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken);
-        Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(ApprenticeshipContract2TypeFunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken);
+        Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(ApprenticeshipContractType2FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken);
         Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandlePayableEarningEvent(PayableEarningEvent earningEvent, CancellationToken cancellationToken);
         Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> RefundRemovedLearningAim(IdentifiedRemovedLearningAim removedLearningAim, CancellationToken cancellationToken);
         Task Initialise();

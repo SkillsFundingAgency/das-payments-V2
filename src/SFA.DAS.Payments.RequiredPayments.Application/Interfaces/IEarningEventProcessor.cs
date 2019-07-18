@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application
     {
     }
 
-    public interface IFunctionalSkillEarningsEventProcessor : IEarningEventProcessor<ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>
+    public interface IFunctionalSkillEarningsEventProcessor : IEarningEventProcessor<ApprenticeshipContractType2FunctionalSkillEarningsEvent>
     {
     }
 

@@ -13,7 +13,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         {
             CreateMap<IntermediateLearningAim, EarningEvent>()
                 .Include<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent>()
-                .Include<IntermediateLearningAim, ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>()
+                .Include<IntermediateLearningAim, ApprenticeshipContractTypeFunctionalSkillEarningsEvent>()
+                .Include<IntermediateLearningAim, ApprenticeshipContractType1FunctionalSkillEarningsEvent>()
+                .Include<IntermediateLearningAim, ApprenticeshipContractType2FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.PriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
                 .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.MapFrom(source => source.Aim))
                 .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.MapFrom(source => source.AcademicYear))
@@ -40,7 +42,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>();
 
-            CreateMap<IntermediateLearningAim, ApprenticeshipContract2TypeFunctionalSkillEarningsEvent>()
+            CreateMap<IntermediateLearningAim, ApprenticeshipContractType1FunctionalSkillEarningsEvent>();
+            CreateMap<IntermediateLearningAim, ApprenticeshipContractType2FunctionalSkillEarningsEvent>();
+
+            CreateMap<IntermediateLearningAim, ApprenticeshipContractTypeFunctionalSkillEarningsEvent>()
+                .Include<IntermediateLearningAim, ApprenticeshipContractType1FunctionalSkillEarningsEvent>()
+                .Include<IntermediateLearningAim, ApprenticeshipContractType2FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.Earnings, opt => opt.ResolveUsing<FunctionalSkillsEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.StartDate, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnStartDate))
                 .Ignore(x => x.ContractType)
