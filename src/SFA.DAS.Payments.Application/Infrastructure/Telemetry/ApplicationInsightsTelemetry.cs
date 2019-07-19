@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -47,7 +46,13 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
 
         public void TrackEvent(string eventName, Dictionary<string, string> eventProperties, Dictionary<string, double> metrics)
         {
-            telemetryClient.TrackEvent($"Event: {eventName}", properties.ConcatDictionary(eventProperties), metrics);
+
+            foreach (var property in properties)
+            {
+                if (!eventProperties.ContainsKey(property.Key))
+                    eventProperties.Add(property.Key, property.Value);
+            }
+            telemetryClient.TrackEvent($"Event: {eventName}", eventProperties, metrics);
         }
 
         public void TrackDuration(string durationName, TimeSpan duration)

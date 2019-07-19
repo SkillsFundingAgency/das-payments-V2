@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using Autofac;
+using Microsoft.ApplicationInsights.Channel;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
@@ -13,6 +15,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new JobsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+                })
+                .As<IJobsDataContext>()
+                .InstancePerDependency();
+
             builder.Register((c, p) =>
                 {
                     var logger = c.Resolve<IPaymentLogger>();
@@ -26,13 +36,27 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                 {
                     var logger = c.Resolve<IPaymentLogger>();
                     var factory = c.Resolve<IMonitoringMessageSessionFactory>();
-                    return new EarningsJobClient(factory.Create(),logger);
+                    var dataContext = c.Resolve<IJobsDataContext>();
+                    return new EarningsJobClient(factory.Create(), logger, dataContext, c.Resolve<Application.Infrastructure.Telemetry.ITelemetry>());
                 })
                 .As<IEarningsJobClient>()
-                .SingleInstance();
+                .InstancePerDependency();
 
             builder.RegisterType<EarningsJobClientFactory>()
                 .As<IEarningsJobClientFactory>()
+                .SingleInstance();
+
+            builder.Register((c, p) =>
+                {
+                    var logger = c.Resolve<IPaymentLogger>();
+                    var factory = c.Resolve<IMonitoringMessageSessionFactory>();
+                    return new JobMessageClient(factory.Create(), logger);
+                })
+                .As<IJobMessageClient>()
+                .SingleInstance();
+
+            builder.RegisterType<JobMessageClientFactory>()
+                .As<IJobMessageClientFactory>()
                 .SingleInstance();
 
             builder.RegisterType<JobStatusIncomingMessageBehaviour>()
