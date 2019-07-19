@@ -1,4 +1,5 @@
-﻿@supports_dc_e2e
+﻿@ignore
+@supports_dc_e2e
 Feature: Non-levy learner, goes on a planned break which is recorded in ILR PV2-216
 	As a provider,
 	I want a non-levy learner, goes on a planned break which is recorded in ILR, to be paid the correct amount
@@ -41,23 +42,23 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
 		| Programme | 01/Sep/Current Academic Year | 03/Jan/Current Academic Year | 10 months        |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | True    |
 	And price details as follows
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
-#        | pe-1             | 15000                | 01/Sep/Current Academic Year        |                        |                                       | 90%                         | Act2          | 3                   |
-        | pe-2             | 15000                | 03/Jan/Current Academic Year        |                        |                                       | 90%                         | Act2          | 1                   |
+#        | pe-1             | 15000                | 01/Sep/Current Academic Year        |                        |                                       | 90%                         | Act2          | 1                   |
+        | pe-1             | 15000                | 03/Jan/Current Academic Year        |                        |                                       | 90%                         | Act2          | 1                   |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-        | Aug/Current Academic Year | 0            | 0          | 0         | pe-2                     |
-        | Sep/Current Academic Year | 0            | 0          | 0         | pe-2                     |
-        | Oct/Current Academic Year | 0            | 0          | 0         | pe-2                     |
-        | Nov/Current Academic Year | 0            | 0          | 0         | pe-2                     |
-        | Dec/Current Academic Year | 0            | 0          | 0         | pe-2                     |
-        | Jan/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | Feb/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | Mar/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | Apr/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | May/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | Jun/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | Jul/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | Aug/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Sep/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Oct/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Nov/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Dec/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
     And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R06/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         |
@@ -87,9 +88,8 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
         | R12/Current Academic Year | Jul/Current Academic Year | 900                    | 100                         | Learning         |
 Examples: 
         | Collection_Period         |
-#        | R03/Current Academic Year |
-#        | R04/Current Academic Year |
-        | R05/Current Academic Year |
+        #| R04/Current Academic Year |
+        #| R05/Current Academic Year |
         | R06/Current Academic Year |
         | R07/Current Academic Year |
         | R08/Current Academic Year |
