@@ -33,6 +33,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 
                 await repository.UpdateApprenticeship(currentApprenticeship);
 
+                await UpdateHistoryTablesAsync(currentApprenticeship, updatedApprenticeship);
+                
                 var latestApprenticeship = await GetApprenticeship(updatedApprenticeship.ApprenticeshipId).ConfigureAwait(false);
 
                 scope.Complete();
@@ -42,6 +44,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
         }
 
         protected abstract void HandleUpdated(ApprenticeshipModel current, T updated);
+
+        protected virtual async Task UpdateHistoryTablesAsync(ApprenticeshipModel current, T updated)
+        {
+            await Task.CompletedTask;
+        }
 
         private async Task<ApprenticeshipModel> GetApprenticeship(long apprenticeshipId)
         {

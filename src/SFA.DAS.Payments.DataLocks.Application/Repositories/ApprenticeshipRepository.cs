@@ -93,5 +93,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
+        public async Task AddApprenticeshipPause(ApprenticeshipPauseModel pauseModel)
+        {
+            dataContext.ApprenticeshipPause.Add(pauseModel);
+            await dataContext.SaveChangesAsync();
+        }
+
     }
 }
