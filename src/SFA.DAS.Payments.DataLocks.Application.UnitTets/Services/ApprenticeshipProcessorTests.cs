@@ -308,5 +308,34 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
         }
 
+
+        [Test]
+        public async Task Process_Apprenticeship_Stop_Date_Changed_Correctly()
+        {
+            var approvalsEvent = new ApprenticeshipStopDateChangedEvent()
+            {
+                ApprenticeshipId = 1,
+                ChangedOn = DateTime.Today,
+                StopDate = DateTime.Today
+            };
+
+            mocker.Mock<IApprenticeshipStoppedService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = approvalsEvent.ApprenticeshipId,
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessStopDateChange(approvalsEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == approvalsEvent.ApprenticeshipId), It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipStoppedService>()
+                .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()), Times.Once);
+
+        }
+
     }
 }

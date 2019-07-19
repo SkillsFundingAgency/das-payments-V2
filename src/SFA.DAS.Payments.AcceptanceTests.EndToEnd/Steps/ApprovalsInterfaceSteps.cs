@@ -90,6 +90,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipUpdatedApprovedEvent).Assembly, EndpointNames.DataLocksApprovals);
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.DataLockTriageApprovedEvent).Assembly, EndpointNames.DataLocksApprovals);
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipStoppedEvent).Assembly, EndpointNames.DataLocksApprovals);
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipStopDateChangedEvent).Assembly, EndpointNames.DataLocksApprovals);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -358,6 +359,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        [Given(@"the apprenticeship stop date is changed as follows")]
         [Given(@"the apprenticeship is stopped as follows")]
         public void GivenTheApprenticeshipIsStoppedAsFollows(Table table)
         {
@@ -392,7 +394,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                  DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
-
+        
+        [When(@"the Approvals service notifies the Payments service that the apprenticeships stop date has changed")]
+        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsStopDateHasChanged()
+        {
+            foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
+            {
+                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
+                var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipStopDateChangedEvent()
+                {
+                    ApprenticeshipId = approvalsApprenticeship.Id,
+                    StopDate = approvalsApprenticeship.StoppedOnDate.ToDate(),
+                };
+                Console.WriteLine($"Sending ApprenticeshipStopDateChangedEvent message: {createdMessage.ToJson()}");
+                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+            }
+        }
+        
         private ApprenticeshipModel CreateApprenticeshipModel(ApprovalsApprenticeship apprenticeshipSpec)
         {
             var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(apprenticeshipSpec);
@@ -415,6 +433,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ? DateTime.UtcNow
                     : apprenticeshipSpec.AgreedOnDate.ToDate(),
                 IsLevyPayer = true,
+                StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StoppedOnDate) 
+                    ? default(DateTime?) 
+                    : apprenticeshipSpec.StoppedOnDate.ToDate()
             };
 
             return apprenticeshipModel;
