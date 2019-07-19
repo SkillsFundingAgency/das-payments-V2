@@ -8,6 +8,7 @@
     <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" Value="__LevyFundedServiceActorService_MinReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="NonLevyFundedService_EndpointName" Value="__NonLevyFundedService_EndpointName__" />
     <Parameter Name="LevyFundedService_EndpointName" Value="__LevyFundedService_EndpointName__" />

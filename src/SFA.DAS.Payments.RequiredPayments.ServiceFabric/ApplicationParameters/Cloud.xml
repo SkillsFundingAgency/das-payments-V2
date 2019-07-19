@@ -7,6 +7,7 @@
     <Parameter Name="RequiredPaymentsServiceActorService_MinReplicaSetSize" Value="__RequiredPaymentsServiceActorService_MinReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
