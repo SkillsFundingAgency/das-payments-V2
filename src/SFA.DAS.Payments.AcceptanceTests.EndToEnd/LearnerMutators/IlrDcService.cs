@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 learners.AddRange(currentIlr.DistinctBy(ilr => ilr.LearnerId).Select(dist => new Learner()
                 {
                     Ukprn = dist.Ukprn, Uln = dist.Uln, LearnerIdentifier = dist.LearnerId,
-                    PostcodePrior = dist.PostcodePrior, EefCode = dist.EefCode,
+                    PostcodePrior = dist.PostcodePrior, EefCode = dist.EefCode, Restart = dist.Restart,
                     EmploymentStatusMonitoring = CreateLearnerEmploymentStatusMonitoringFromTraining(previousIlr?.Single(p=>p.LearnerId == dist.LearnerId), dist)
                 }));
 
