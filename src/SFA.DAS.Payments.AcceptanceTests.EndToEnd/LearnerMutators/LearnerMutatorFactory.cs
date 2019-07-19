@@ -80,11 +80,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "446":
                 case "489":
                 case "526":
+                case "897":
                 case "925":
                     return new StandardLearner(learners, featureNumber);
                 case "324":
                 case "325":
                     return new Framework593LearnerRestarts(learners, featureNumber);
+
                 case "277":
                     return new Framework593LearnerWithdrawsAfterQualifyingPeriod(learners);
                 case "278":
