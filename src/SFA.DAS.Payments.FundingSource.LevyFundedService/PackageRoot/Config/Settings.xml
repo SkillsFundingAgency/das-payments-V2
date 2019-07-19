@@ -4,7 +4,7 @@
     <Parameter Name="StorageConnectionString" Value="" />
     <Parameter Name="LoggingConnectionString" Value="" />
     <Parameter Name="ServiceBusConnectionString" Value="" />
-    <Parameter Name="MonitoringServiceBusConnectionString" Value=""/>
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
     <Parameter Name="PaymentsConnectionString" Value="" />
   </Section>
   <Section Name="Settings">

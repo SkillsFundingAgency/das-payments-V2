@@ -8,7 +8,7 @@
     <Parameter Name="JobStatusQueueName" DefaultValue="" />
     <Parameter Name="AuditQueueName" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
-    <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue=""/>
+    <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="DCServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
@@ -31,7 +31,7 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]"/>
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
             <Parameter Name="DCServiceBusConnectionString" Value="[DCServiceBusConnectionString]" />
             <Parameter Name="DcStorageConnectionString" Value="[DcStorageConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />

@@ -6,7 +6,7 @@
     <Parameter Name="ProviderPaymentsService_TargetReplicaSetSize" Value="__ProviderPaymentsService_TargetReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
-    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__"/>
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" Value="__ProviderPaymentsService_FailedMessagesQueue__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />

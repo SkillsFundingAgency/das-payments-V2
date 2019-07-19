@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client
@@ -20,10 +19,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
 
-        public EarningsJobClient(IEndpointInstanceFactory factory, IPaymentLogger logger)
+        public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger)
         {
-
-            messageSession = factory?.GetEndpointInstance().Result ?? throw new ArgumentNullException();
+            this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -47,7 +45,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     CollectionPeriod = collectionPeriod,
                     GeneratedMessages = batch,
                     LearnerCount = generatedMessages.Count
-
                 };
                 await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
             }
