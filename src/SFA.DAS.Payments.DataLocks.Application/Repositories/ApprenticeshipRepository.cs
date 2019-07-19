@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -55,6 +56,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         public async Task<ApprenticeshipModel> Get(long apprenticeshipId)
         {
             return await dataContext.Apprenticeship
+                .Include(x => x.ApprenticeshipPriceEpisodes)
                 .FirstOrDefaultAsync(apprenticeship => apprenticeship.Id == apprenticeshipId)
                 .ConfigureAwait(false);
         }
@@ -84,5 +86,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 .Where(o => !o.Removed)
                 .ToList());
         }
+
+        public async Task UpdateApprenticeship(ApprenticeshipModel updatedApprenticeship)
+        {
+            dataContext.Apprenticeship.Update(updatedApprenticeship);
+            await dataContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
     }
 }
