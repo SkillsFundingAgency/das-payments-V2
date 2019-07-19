@@ -11,3 +11,12 @@
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_JobEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 	CONSTRAINT UC_JobEvent__JobId_EventId UNIQUE (JobId,EventId)
 )
+GO
+
+CREATE INDEX [IX_JobEvent__Search] ON [Payments2].[JobEvent](
+	JobEventId,
+	JobId,
+	[Status],
+	EndTime
+)
+GO
