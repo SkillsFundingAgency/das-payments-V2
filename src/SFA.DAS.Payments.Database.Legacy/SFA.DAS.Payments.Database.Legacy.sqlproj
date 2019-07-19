@@ -65,5 +65,7 @@
     <Build Include="DataLock\DataLockEventPeriods.sql" />
     <Build Include="DataLock\DataLockEventCommitmentVersions.sql" />
     <Build Include="DataLock\DataLockEventErrors.sql" />
+    <Build Include="DataLock\Submissions.sql" />
+    <Build Include="DataLock\SubmissionEvents.sql" />
   </ItemGroup>
 </Project>
