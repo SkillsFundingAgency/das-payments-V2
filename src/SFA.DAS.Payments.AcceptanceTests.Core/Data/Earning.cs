@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
 
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
+namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
     public class Earning
     {

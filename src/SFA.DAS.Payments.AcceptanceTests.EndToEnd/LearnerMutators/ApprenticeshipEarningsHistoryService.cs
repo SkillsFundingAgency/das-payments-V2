@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
             this.appEarnHistoryContext = appEarnHistoryContext ?? throw new ArgumentNullException(nameof(appEarnHistoryContext));
         }
 
-        public async Task AddHistoryAsync(int collectionYear, byte collectionPeriod, IEnumerable<Learner> learners)
+        public async Task AddHistoryAsync(IEnumerable<Learner> learners)
         {
             foreach (var learner in learners)
             {
@@ -27,12 +27,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
                               {
                                   AppIdentifier = AppIdentifier(learnerAim),
                                   AppProgCompletedInTheYearInput = learnerAim.CompletionStatus == CompletionStatus.Completed,
-                                  BalancingProgAimPaymentsInTheYear = 0,
+                                  BalancingProgAimPaymentsInTheYear = learner.EarningsHistory.BalancingEarningsToDate,
                                   CollectionYear = learner.EarningsHistory.CollectionYear,
                                   CollectionReturnCode = $"R{learner.EarningsHistory.CollectionPeriod}",
-                                  CompletionProgaimPaymentsInTheYear = 0,
+                                  CompletionProgaimPaymentsInTheYear = learner.EarningsHistory.CompletionEarningsToDate,
                                   DaysInYear = learner.EarningsHistory.TrainingDaysCompleted(OriginalStartDate(learnerAim)),
-                                  FworkCode = learnerAim.FrameworkCode,
+                                  FworkCode = learnerAim.ProgrammeType == 25 ? default(int?) : learnerAim.FrameworkCode,
                                   HistoricEffectiveTnpstartDateInput = OriginalStartDate(learnerAim).ToDate(),
                                   HistoricLearner1618StartInput = false,
                                   HistoricTotal1618UpliftPaymentsInTheYearInput = 0,
@@ -48,9 +48,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
                                   ProgrammeStartDateIgnorePathway = OriginalStartDate(learnerAim).ToDate(),
                                   ProgrammeStartDateMatchPathway = OriginalStartDate(learnerAim).ToDate(),
                                   ProgType = learnerAim.ProgrammeType,
-                                  PwayCode = learnerAim.PathwayCode,
-                                  Stdcode = null,
-                                  TotalProgAimPaymentsInTheYear = learner.EarningsHistory.OnProgrammeEarningsToDate,
+                                  PwayCode = learnerAim.ProgrammeType == 25 ? default(int?) : learnerAim.PathwayCode,
+                                  Stdcode = learnerAim.ProgrammeType == 25 ? learnerAim.StandardCode : default(int?),
+                                  TotalProgAimPaymentsInTheYear = learner.EarningsHistory.TotalEarningsToDate,
                                   UptoEndDate = learner.EarningsHistory.UpToEndDate(OriginalStartDate(learnerAim)),
                                   Ukprn = (int) learner.Ukprn,
                                   Uln = learner.Uln,
