@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.EarningEvents.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="SFA.DAS.Payments.EarningEvents.SubmissionEventsService_InstanceCount" Value="-1" />
     <Parameter Name="EarningEventsService_InstanceCount" Value="__EarningEventsService_InstanceCount__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="DCServiceBusConnectionString" Value="__DCServiceBusConnectionString__" />

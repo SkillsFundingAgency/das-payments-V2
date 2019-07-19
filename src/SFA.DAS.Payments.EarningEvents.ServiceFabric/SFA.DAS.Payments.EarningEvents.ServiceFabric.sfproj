@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.EarningEventsService\SFA.DAS.Payments.EarningEvents.EarningEventsService.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.SubmissionEventsService\SFA.DAS.Payments.EarningEvents.SubmissionEventsService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

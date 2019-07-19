@@ -5,13 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Domain\SFA.DAS.Payments.DataLocks.Domain.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj" />
+    <Compile Remove="Internal\**" />
+    <EmbeddedResource Remove="Internal\**" />
+    <None Remove="Internal\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Internal\" />
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Domain\SFA.DAS.Payments.DataLocks.Domain.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,6 +12,7 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages.Internal\SFA.DAS.Payments.EarningEvents.Messages.Internal.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Model\SFA.DAS.Payments.EarningEvents.Model.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj" />
   </ItemGroup>
 
