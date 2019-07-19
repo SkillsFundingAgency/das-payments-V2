@@ -25,15 +25,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
                 {
                     var aeh = new AppsEarningsHistory
                               {
-                                  AppIdentifier = $"{learnerAim.ProgrammeType}-{learnerAim.FrameworkCode}-{learnerAim.PathwayCode}",
-                                  AppProgCompletedInTheYearInput = false,
+                                  AppIdentifier = AppIdentifier(learnerAim),
+                                  AppProgCompletedInTheYearInput = learnerAim.CompletionStatus == CompletionStatus.Completed,
                                   BalancingProgAimPaymentsInTheYear = 0,
-                                  CollectionYear = collectionYear.ToString(),
-                                  CollectionReturnCode = $"R{learner.EarningsHistory.AdditionalData.HistoryPeriod.ToMonthPeriod()}",
+                                  CollectionYear = learner.EarningsHistory.CollectionYear,
+                                  CollectionReturnCode = $"R{learner.EarningsHistory.CollectionPeriod}",
                                   CompletionProgaimPaymentsInTheYear = 0,
-                                  DaysInYear = 62, //learner.EarningsHistory.TrainingDaysCompleted(), // todo compute
+                                  DaysInYear = learner.EarningsHistory.TrainingDaysCompleted(OriginalStartDate(learnerAim)),
                                   FworkCode = learnerAim.FrameworkCode,
-                                  HistoricEffectiveTnpstartDateInput = learnerAim.OriginalStartDate.ToDate(),
+                                  HistoricEffectiveTnpstartDateInput = OriginalStartDate(learnerAim).ToDate(),
                                   HistoricLearner1618StartInput = false,
                                   HistoricTotal1618UpliftPaymentsInTheYearInput = 0,
                                   HistoricTnp1input = learnerAim.PriceEpisodes.Single().TotalTrainingPrice,
@@ -44,20 +44,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
                                   HistoricVirtualTnp4endOfTheYearInput = 0,
                                   LatestInYear = true,
                                   LearnRefNumber = learner.LearnRefNumber,
-                                  OnProgProgAimPaymentsInTheYear = 2000,//learner.EarningsHistory.OnProgrammeEarningsToDate(),  // todo compute
-                                  ProgrammeStartDateIgnorePathway = learnerAim.OriginalStartDate.ToDate(),
-                                  ProgrammeStartDateMatchPathway = learnerAim.OriginalStartDate.ToDate(),
+                                  OnProgProgAimPaymentsInTheYear = learner.EarningsHistory.OnProgrammeEarningsToDate,
+                                  ProgrammeStartDateIgnorePathway = OriginalStartDate(learnerAim).ToDate(),
+                                  ProgrammeStartDateMatchPathway = OriginalStartDate(learnerAim).ToDate(),
                                   ProgType = learnerAim.ProgrammeType,
                                   PwayCode = learnerAim.PathwayCode,
                                   Stdcode = null,
-                                  TotalProgAimPaymentsInTheYear = 2000, //learner.EarningsHistory.OnProgrammeEarningsToDate(), //todo compute
-                                  UptoEndDate = new DateTime(2018, 11, 1), //learner.EarningsHistory.UpToEndDate, //todo compute
-                                  Ukprn = (int)learner.Ukprn,
+                                  TotalProgAimPaymentsInTheYear = learner.EarningsHistory.OnProgrammeEarningsToDate,
+                                  UptoEndDate = learner.EarningsHistory.UpToEndDate(OriginalStartDate(learnerAim)),
+                                  Ukprn = (int) learner.Ukprn,
                                   Uln = learner.Uln,
-                                  HistoricEmpIdEndWithinYear = 154549452,//learner.EarningsHistory.Employer, //todo dynamic update
-                                  HistoricEmpIdStartWithinYear = 154549452,//learner.EarningsHistory.Employer,
+                                  HistoricEmpIdEndWithinYear = learner.EarningsHistory.EmployerId,
+                                  HistoricEmpIdStartWithinYear = learner.EarningsHistory.EmployerId,
                                   HistoricPmramount = 0,
-                                  HistoricLearnDelProgEarliestAct2dateInput = learnerAim.StartDate.ToDate(),
+                                  HistoricLearnDelProgEarliestAct2dateInput = OriginalStartDate(learnerAim).ToDate()
                               };
                     appEarnHistoryContext.AppsEarningsHistories.Add(aeh);
                 }
@@ -68,6 +68,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
         public async Task DeleteHistoryAsync(long ukprn)
         {
             await appEarnHistoryContext.Database.ExecuteSqlCommandAsync(@"delete from dbo.AppsEarningsHistory where UKPRN = {0}", ukprn);
+        }
+
+        private string AppIdentifier(Aim aim)
+        {
+            return aim.ProgrammeType == 25 
+                       ? $"{aim.ProgrammeType}-{aim.StandardCode}" 
+                       : $"{aim.ProgrammeType}-{aim.FrameworkCode}-{aim.PathwayCode}";
+        }
+
+        private string OriginalStartDate(Aim aim)
+        {
+            return string.IsNullOrWhiteSpace(aim.OriginalStartDate) ? aim.StartDate : aim.OriginalStartDate;
         }
     }
 }

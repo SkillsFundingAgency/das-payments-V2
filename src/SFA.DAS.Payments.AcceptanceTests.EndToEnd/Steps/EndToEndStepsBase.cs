@@ -1225,19 +1225,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected void AddAppEarnHistoryToLearner(Table table)
+        protected void AddAppEarnHistoryToLearner(AdditionalIlrData additionalIlrData)
         {
             if (TestSession.AtLeastOneScenarioCompleted)
             {
                 return;
             }
 
-            var history = new LearnerEarningsHistory
-                      {
-                          AdditionalData = table.CreateSet<AdditionalIlrData>().SingleOrDefault(),
-                          PreviousEarnings = PreviousEarnings
-                      };
-
+            var history = new LearnerEarningsHistory(additionalIlrData, PreviousEarnings);
             TestSession.Learners.Single(l => l.Ukprn == TestSession.Provider.Ukprn).EarningsHistory = history;
         }
     }

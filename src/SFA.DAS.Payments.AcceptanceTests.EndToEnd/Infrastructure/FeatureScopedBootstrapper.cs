@@ -42,14 +42,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             }).As<IPaymentsDataContext>().InstancePerLifetimeScope();
             DcHelper.AddDcConfig(Builder);
 
-            Builder.RegisterType<IlrDcService>()
-                   .As<IIlrService>()
-                   .InstancePerLifetimeScope()
-                   .IfNotRegistered(typeof(IIlrService));
             Builder.RegisterType<ApprenticeshipEarningsHistoryService>()
                    .As<IApprenticeshipEarningsHistoryService>()
                    .InstancePerLifetimeScope()
-                   .OnlyIf(x => x.IsRegistered(new TypedService(typeof(IIlrService))));
+                   .IfNotRegistered(typeof(IIlrService));
             Builder.Register(ctx =>
                              {
                                  var configHelper = ctx.Resolve<TestsConfiguration>();
@@ -58,6 +54,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
                                  return new AppEarnHistoryContext(builder.Options);
                              })
                    .OnlyIf(x => x.IsRegistered(new TypedService(typeof(IApprenticeshipEarningsHistoryService))));
+            Builder.RegisterType<IlrDcService>()
+                   .As<IIlrService>()
+                   .InstancePerLifetimeScope()
+                   .IfNotRegistered(typeof(IIlrService));
 
             Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
 

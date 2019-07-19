@@ -114,7 +114,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("appEarnHistory is required as follows")]
         public void AppEarnHistoryIsRequired(Table table)
         {
-            AddAppEarnHistoryToLearner(table);
+            AddAppEarnHistoryToLearner(table.CreateSet<AdditionalIlrData>().SingleOrDefault());
         }
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
