@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 {
     public abstract class ApprenticeshipUpdatedService<T> : IApprenticeshipUpdatedService<T> where T : BaseUpdatedApprenticeshipModel
     {
-        private readonly IApprenticeshipRepository repository;
+        protected readonly IApprenticeshipRepository repository;
 
         protected ApprenticeshipUpdatedService(IApprenticeshipRepository repository)
         {
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 
                 await repository.UpdateApprenticeship(currentApprenticeship);
 
-                await UpdateHistoryTablesAsync(currentApprenticeship, updatedApprenticeship);
+                await UpdateHistoryTables(currentApprenticeship, updatedApprenticeship);
                 
                 var latestApprenticeship = await GetApprenticeship(updatedApprenticeship.ApprenticeshipId).ConfigureAwait(false);
 
@@ -45,9 +45,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 
         protected abstract void HandleUpdated(ApprenticeshipModel current, T updated);
 
-        protected virtual async Task UpdateHistoryTablesAsync(ApprenticeshipModel current, T updated)
+        protected virtual Task UpdateHistoryTables(ApprenticeshipModel current, T updated)
         {
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         private async Task<ApprenticeshipModel> GetApprenticeship(long apprenticeshipId)

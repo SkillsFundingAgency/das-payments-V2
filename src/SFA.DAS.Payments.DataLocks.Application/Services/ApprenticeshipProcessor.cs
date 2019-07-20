@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         Task ProcessApprenticeshipDataLockTriage(DataLockTriageApprovedEvent apprenticeshipDataLockTriageEvent);
         Task ProcessStoppedApprenticeship(ApprenticeshipStoppedEvent apprenticeshipStoppedEvent);
         Task ProcessStopDateChange(ApprenticeshipStopDateChangedEvent stopDateChangedEvent);
+        Task ProcessPausedApprenticeship(ApprenticeshipPausedEvent pausedEvent);
     }
 
     public class ApprenticeshipProcessor : IApprenticeshipProcessor
@@ -31,6 +32,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IApprenticeshipApprovedUpdatedService apprenticeshipApprovedUpdatedService;
         private readonly IApprenticeshipDataLockTriageService apprenticeshipDataLockTriageService;
         private readonly IApprenticeshipStoppedService apprenticeshipStoppedService;
+        private readonly IApprenticeshipPauseService apprenticeshipPauseService;
 
 
         public ApprenticeshipProcessor(IPaymentLogger logger, IMapper mapper,
@@ -38,7 +40,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             IEndpointInstanceFactory endpointInstanceFactory,
             IApprenticeshipApprovedUpdatedService apprenticeshipApprovedUpdatedService,
             IApprenticeshipDataLockTriageService apprenticeshipDataLockTriageService,
-            IApprenticeshipStoppedService apprenticeshipStoppedService)
+            IApprenticeshipStoppedService apprenticeshipStoppedService,
+            IApprenticeshipPauseService apprenticeshipPauseService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -47,6 +50,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.apprenticeshipApprovedUpdatedService = apprenticeshipApprovedUpdatedService ?? throw new ArgumentNullException(nameof(apprenticeshipApprovedUpdatedService));
             this.apprenticeshipDataLockTriageService = apprenticeshipDataLockTriageService ?? throw new ArgumentNullException(nameof(apprenticeshipDataLockTriageService));
             this.apprenticeshipStoppedService = apprenticeshipStoppedService ?? throw new ArgumentNullException(nameof(apprenticeshipStoppedService));
+            this.apprenticeshipPauseService = apprenticeshipPauseService;
         }
 
         public async Task Process(ApprenticeshipCreatedEvent createdEvent)
@@ -142,20 +146,24 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             try
             {
                 logger.LogDebug($"Now processing the apprenticeship paused event for Apprenticeship id: {pausedEvent.ApprenticeshipId}");
-                var model = mapper.Map<UpdatedApprenticeshipApprovedModel>(apprenticeshipApprovedEvent);
+                var model = new UpdatedApprenticeshipPausedModel
+                {
+                    ApprenticeshipId = pausedEvent.ApprenticeshipId,
+                    PauseDate = pausedEvent.PausedOn,
+                };
 
-                var updatedApprenticeship = await apprenticeshipApprovedUpdatedService.UpdateApprenticeship(model).ConfigureAwait(false);
+                var updatedApprenticeship = await apprenticeshipPauseService.UpdateApprenticeship(model).ConfigureAwait(false);
 
                 var updatedEvent = mapper.Map<ApprenticeshipUpdated>(updatedApprenticeship);
 
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
                 await endpointInstance.Publish(updatedEvent).ConfigureAwait(false);
 
-                logger.LogInfo($"Finished processing the apprenticeship updated event. Apprenticeship id: {updatedEvent.Id}, employer account id: {updatedEvent.EmployerAccountId}, Ukprn: {updatedEvent.Ukprn}.");
+                logger.LogInfo($"Finished processing the apprenticeship paused event. Apprenticeship id: {updatedEvent.Id}, employer account id: {updatedEvent.EmployerAccountId}, Ukprn: {updatedEvent.Ukprn}.");
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error processing the apprenticeship updated event. Error: {ex.Message}", ex);
+                logger.LogError($"Error processing the apprenticeship paused event. Error: {ex.Message}", ex);
                 throw;
             }
         }
