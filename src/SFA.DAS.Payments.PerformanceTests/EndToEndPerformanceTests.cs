@@ -107,35 +107,49 @@ namespace SFA.DAS.Payments.PerformanceTests
 
 
         [TestCase(1, 100, 1)]
-        public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerCount, int collectionPeriod)
+        public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerAct1Count, int providerLearnerAct2Count, int collectionPeriod)
         {
             Randomizer.Seed = new Random(8675309);
             var sessions = Enumerable.Range(1, providerCount)
                 .Select(i => new TestSession(new RandomUkprnService(Container.Resolve<TestPaymentsDataContext>()), new RandomUlnService()))
                 .ToList();
             var ilrSubmissions = new List<Task>();
-            if (providerLearnerCount > 1)
-            {
-                DeliveryTime = DateTimeOffset.UtcNow.AddSeconds(providerLearnerCount >= 10000 ? 600 : providerLearnerCount >= 1000 ? 300 : 60);
-                Console.WriteLine($"Using delivery time of: {DeliveryTime:O}");
-            }
 
             var learnerId = 0;
             foreach (var session in sessions)
             {
                 session.Learners.Clear();
-                session.Learners.AddRange(Enumerable.Range(1, providerLearnerCount)
+                var levyLearners = Enumerable.Range(1, providerLearnerAct1Count)
                     .Select(i => new Learner
                     {
                         Ukprn = session.Ukprn,
                         Uln = ++learnerId,
                         LearnRefNumber = learnerId.ToString(),
-                        Course = session.CourseFaker.Generate(1).FirstOrDefault()
+                        Course = session.CourseFaker.Generate(1).FirstOrDefault(),
+                        IsLevyLearner = true
+                    })
+                    .ToList();
+                await AddApprenticeships(session.Ukprn, levyLearners);
+                session.Learners.AddRange(levyLearners);
+                session.Learners.AddRange(Enumerable.Range(1, providerLearnerAct2Count)
+                    .Select(i => new Learner
+                    {
+                        Ukprn = session.Ukprn,
+                        Uln = ++learnerId,
+                        LearnRefNumber = learnerId.ToString(),
+                        Course = session.CourseFaker.Generate(1).FirstOrDefault(),
+                        IsLevyLearner = false
                     }));
                 ilrSubmissions.Add(SubmitIlr(session, collectionPeriod));
                 await Task.WhenAll(ilrSubmissions);
                 Console.WriteLine($"Finished sending Ukprn: {session.Ukprn}. Time: {DateTime.Now:O}");
             }
+        }
+
+        private async Task AddApprenticeships(long ukprn, List<Learner> learners)
+        {
+            var dataContext = Container.Resolve<IPaymentsDataContext>();
+            dataContext.
         }
 
         protected DateTimeOffset? DeliveryTime;
@@ -171,29 +185,6 @@ namespace SFA.DAS.Payments.PerformanceTests
                 MessageName = command.GetType().FullName,
                 MessageId = command.CommandId
             }).ToList(); 
-            //await CreateJob(session, startTime, generatedMessages, (byte)collectionPeriod, JobType.EarningsJob).ConfigureAwait(false);
-            //var jobClient = Container.Resolve<IEarningsJobClient>();
-            //await jobClient.StartJob(session.JobId, session.Ukprn, session.IlrSubmissionTime, 1819,
-            //    (byte) collectionPeriod, generatedMessages, startTime);
-            //var jobMessage = new RecordStartedProcessingEarningsJob
-            //{
-            //    Ukprn = session.Ukprn,
-            //    CollectionPeriod = (byte)collectionPeriod,
-            //    GeneratedMessages = generatedMessages,
-            //    IlrSubmissionTime = session.IlrSubmissionTime,
-            //    JobId = session.JobId,
-            //    StartTime = startTime,
-            //    LearnerCount = generatedMessages.Count
-
-            //};
-
-
-            //foreach (var processLearnerCommand in commands)
-            //{
-            //    await MessageSession.Send(processLearnerCommand, sendOptions).ConfigureAwait(false);
-            //    Console.WriteLine($"sent process learner command. Uln: {processLearnerCommand.Learner.ULN}");
-            //}
-
             var dcHelper = Container.Resolve<DcHelper>();
             await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, 1819, (byte) collectionPeriod, session.JobId);
         }

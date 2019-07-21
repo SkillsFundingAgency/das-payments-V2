@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string SmallEmployer { get; set; }
 
         public string PostcodePrior { get; set; }
-
+        public bool IsLevyLearner { get; set; }
         public override string ToString()
         {
             return $"Learn Ref Number: [ {LearnRefNumber} ]\tUln: [ {Uln} ]\t\tLearner Identifier: [ {LearnerIdentifier} ]";
