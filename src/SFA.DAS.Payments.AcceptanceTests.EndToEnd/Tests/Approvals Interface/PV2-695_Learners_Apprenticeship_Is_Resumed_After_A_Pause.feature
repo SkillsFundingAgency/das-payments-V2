@@ -1,4 +1,4 @@
-
+@ignore
 Feature: PV2-695 - Learners Apprenticeship Is Resumed After a Pause
 	As an Employer,
 	I want to be able to resume a learners apprenticeship if they are currently in a state of Pause
