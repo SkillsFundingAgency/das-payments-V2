@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Bogus;
+using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
@@ -17,6 +18,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
@@ -106,7 +108,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         }
 
 
-        [TestCase(1, 100, 1)]
+        [TestCase(1, 1,1, 1)]
         public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerAct1Count, int providerLearnerAct2Count, int collectionPeriod)
         {
             Randomizer.Seed = new Random(8675309);
@@ -129,7 +131,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                         IsLevyLearner = true
                     })
                     .ToList();
-                await AddApprenticeships(session.Ukprn, levyLearners);
+                //await AddApprenticeships(session.Ukprn, levyLearners);
                 session.Learners.AddRange(levyLearners);
                 session.Learners.AddRange(Enumerable.Range(1, providerLearnerAct2Count)
                     .Select(i => new Learner
@@ -148,8 +150,12 @@ namespace SFA.DAS.Payments.PerformanceTests
 
         private async Task AddApprenticeships(long ukprn, List<Learner> learners)
         {
-            var dataContext = Container.Resolve<IPaymentsDataContext>();
-            dataContext.
+            //var dataContext = Container.Resolve<IPaymentsDataContext>();
+            //learners.Select(learner => new ApprenticeshipModel
+            //{
+            //    AccountId = ukprn,
+            //    AgreedOnDate = learner.
+            //})
         }
 
         protected DateTimeOffset? DeliveryTime;
