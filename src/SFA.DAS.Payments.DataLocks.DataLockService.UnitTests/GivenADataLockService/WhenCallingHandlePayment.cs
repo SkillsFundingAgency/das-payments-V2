@@ -9,10 +9,10 @@ using Moq;
 using NUnit.Framework;
 using ServiceFabric.Mocks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
-using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
                 });
 
             var actuals = await new DataLockService(actorService, new ActorId(Guid.Empty), paymentLoggerMock,
-                    commitmentRepositoryMock, dataCacheMock, dataLockProcessor.Object, Mock.Of<IApprenticeshipUpdatedProcessor>())
+                    commitmentRepositoryMock, dataCacheMock, dataLockProcessor.Object, Mock.Of<IApprenticeshipUpdatedProcessor>(),Mock.Of<ITelemetry>())
                 .HandleEarning(testEarning, default(CancellationToken));
 
             actuals.Should().HaveCount(2);
