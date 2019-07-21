@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 
                 await repository.UpdateApprenticeship(currentApprenticeship);
 
-                await UpdateHistoryTables(currentApprenticeship, updatedApprenticeship);
+                await UpdateHistoryTables(updatedApprenticeship);
                 
                 var latestApprenticeship = await GetApprenticeship(updatedApprenticeship.ApprenticeshipId).ConfigureAwait(false);
 
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 
         protected abstract void HandleUpdated(ApprenticeshipModel current, T updated);
 
-        protected virtual Task UpdateHistoryTables(ApprenticeshipModel current, T updated)
+        protected virtual Task UpdateHistoryTables(T updated)
         {
             return Task.CompletedTask;
         }

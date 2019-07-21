@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
             current.Status = ApprenticeshipStatus.Paused;
         }
 
-        protected override async Task UpdateHistoryTables(ApprenticeshipModel current, UpdatedApprenticeshipPausedModel updated)
+        protected override async Task UpdateHistoryTables( UpdatedApprenticeshipPausedModel updated)
         {
             var newPauseModel = new ApprenticeshipPauseModel
             {

@@ -364,5 +364,32 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
         }
 
+        [Test]
+        public async Task Process_Apprenticeship_Resumed_Correctly()
+        {
+            var apprenticeshipResumedEvent = new ApprenticeshipResumedEvent()
+            {
+                ApprenticeshipId = 1,
+                ResumedOn = DateTime.Today
+            };
+
+            mocker.Mock<IApprenticeshipResumedService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipResumedModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = apprenticeshipResumedEvent.ApprenticeshipId,
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessResumedApprenticeship(apprenticeshipResumedEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeshipResumedEvent.ApprenticeshipId), It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipResumedService>()
+                .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipResumedModel>()), Times.Once);
+
+        }
+
     }
 }
