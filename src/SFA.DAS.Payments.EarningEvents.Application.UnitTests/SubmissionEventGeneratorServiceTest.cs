@@ -6,6 +6,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Batch;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Domain;
@@ -24,6 +25,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         private List<LegacySubmissionEvent> writtenEvents;
         private Mock<IBulkWriter<LegacySubmissionEvent>> bulkWriterMock;
         private Mock<ISubmissionEventProcessor> submissionEventProcessorMock;
+        private Mock<IPaymentLogger> loggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
 
         [SetUp]
         public void SetUp()
@@ -39,13 +41,22 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             service = new SubmissionEventGeneratorService();
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            submissionEventProcessorMock.Verify();
+            submittedPriceEpisodeRepoMock.Verify();
+        }
+
         [Test]
-        public async Task TestEventsAreGeneratedOnNewSubmission()
+        public async Task TestEventsAreWrittenWhenReturnedByDomainService()
         {
             // arrange
             var generatedEvent = new LegacySubmissionEvent();
-            submissionEventProcessorMock.Setup(p => p.ProcessSubmission(It.IsAny<SubmittedPriceEpisodeEntity>(), null)).Returns(generatedEvent);
-            submittedPriceEpisodeRepoMock.Setup(r => r.GetLastSubmittedPriceEpisodes(1, "2", ct)).ReturnsAsync(new List<SubmittedPriceEpisodeEntity>());
+
+            submissionEventProcessorMock.Setup(p => p.ProcessSubmission(It.IsAny<SubmittedPriceEpisodeEntity>(), null)).Returns(generatedEvent).Verifiable();
+            submittedPriceEpisodeRepoMock.Setup(r => r.GetLastSubmittedPriceEpisodes(1, "2", ct)).ReturnsAsync(new List<SubmittedPriceEpisodeEntity>()).Verifiable();
+
             var newEvent = new ApprenticeshipContractType1EarningEvent
             {
                 Ukprn = 1,
