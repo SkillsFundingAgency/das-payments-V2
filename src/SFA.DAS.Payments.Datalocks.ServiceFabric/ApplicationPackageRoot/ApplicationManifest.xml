@@ -109,7 +109,7 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <Service Name="DataLockServiceActorService" GeneratedIdRef="69470196-7251-4db6-9c8c-3a7385352770|Persisted">
+    <Service Name="DataLockServiceActorService" GeneratedIdRef="102f2d7a-f636-463f-b5d0-f185f4768f72|Volatile">
       <StatefulService ServiceTypeName="DataLockServiceActorServiceType" TargetReplicaSetSize="[DataLockServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[DataLockServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[DataLockServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>

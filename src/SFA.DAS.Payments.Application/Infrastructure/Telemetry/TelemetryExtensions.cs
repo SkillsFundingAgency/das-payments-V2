@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
 {
@@ -26,6 +30,48 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
         {
             AddContextInfo(telemetry, jobId, ukprn);
             telemetry.AddProperty("Learner Reference", learnerReference);
+        }
+
+        public static void TrackDuration(this ITelemetry telemetry, string eventName, Stopwatch stopwatch, IPaymentsEvent paymentEvent, long? employerAccountId = null)
+        {
+            stopwatch.Stop();
+            TrackDuration(telemetry, eventName, stopwatch.Elapsed, paymentEvent);
+        }
+
+        public static void TrackDuration(this ITelemetry telemetry, string eventName, TimeSpan duration, IPaymentsEvent paymentEvent, long? employerAccountId = null)
+        {
+            var props = new Dictionary<string, string>
+            {
+                {TelemetryKeys.LearnerRef, paymentEvent.Learner?.ReferenceNumber},
+                {TelemetryKeys.CollectionPeriod, paymentEvent.CollectionPeriod.Period.ToString()},
+                {TelemetryKeys.AcademicYear, paymentEvent.CollectionPeriod.AcademicYear.ToString()},
+                {TelemetryKeys.ExternalJobId, paymentEvent.JobId.ToString()},
+                {TelemetryKeys.Ukprn, paymentEvent.Ukprn.ToString()},
+            };
+            if (employerAccountId.HasValue)
+                props.Add("Employer", employerAccountId.ToString());
+
+            telemetry.TrackEvent(eventName,
+                props,
+                new Dictionary<string, double>
+                {
+                    { TelemetryKeys.Duration, duration.TotalMilliseconds }
+                });
+        }
+
+        public static async Task TrackDuration(this ITelemetry telemetry, string eventName, IPaymentsEvent paymentEvent, Func<Task> action)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            try
+            {
+                await action();
+            }
+            finally
+            {
+                stopwatch.Stop();
+                TrackDuration(telemetry, eventName, stopwatch.Elapsed, paymentEvent);
+            }
         }
     }
 }

@@ -74,6 +74,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     telemetry.TrackEvent("Sent All ProcessLearnerCommand Messages",
                         new Dictionary<string, string>
                         {
+                            { TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
                             { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
                             { TelemetryKeys.AcademicYear, fm36Output.Year},
                             { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
@@ -81,7 +82,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         },
                         new Dictionary<string, double>
                         {
-                            { TelemetryKeys.Duration, duration}
+                            { TelemetryKeys.Duration, duration},
+                            { TelemetryKeys.Count, fm36Output.Learners.Count},
                         });
                     telemetry.StopOperation(operation);
                     logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");

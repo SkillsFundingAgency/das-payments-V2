@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -65,9 +66,9 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
             telemetryClient.TrackDependency(dependencyType, $"Dependency: {dependencyName}", JsonConvert.SerializeObject(properties), startTime, duration, success);
         }
 
-        public IOperationHolder<RequestTelemetry> StartOperation(string operationName = "PaymentMessageProcessing")
+        public IOperationHolder<RequestTelemetry> StartOperation(string operationName = "PaymentMessageProcessing", string operationId = null)
         {
-            return telemetryClient.StartOperation<RequestTelemetry>(operationName);
+            return telemetryClient.StartOperation<RequestTelemetry>(operationName,operationId);
         }
 
         public void StopOperation(IOperationHolder<RequestTelemetry> operation)

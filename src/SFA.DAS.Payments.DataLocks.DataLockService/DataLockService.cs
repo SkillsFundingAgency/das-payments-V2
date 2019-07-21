@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
@@ -19,7 +21,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockService
 {
-    [StatePersistence(StatePersistence.Persisted)]
+    [StatePersistence(StatePersistence.Volatile)]
     public class DataLockService : Actor, IDataLockService
     {
         private readonly ActorService actorService;
@@ -28,6 +30,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         private readonly IActorDataCache<List<ApprenticeshipModel>> apprenticeships;
         private readonly IDataLockProcessor dataLockProcessor;
         private readonly IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor;
+        private readonly ITelemetry telemetry;
         private readonly IApprenticeshipRepository apprenticeshipRepository;
 
         public DataLockService(
@@ -37,7 +40,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             IApprenticeshipRepository apprenticeshipRepository,
             IActorDataCache<List<ApprenticeshipModel>> apprenticeships,
             IDataLockProcessor dataLockProcessor,
-            IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor
+            IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor,
+            ITelemetry telemetry
             )
             : base(actorService, actorId)
         {
@@ -48,18 +52,32 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             this.apprenticeships = apprenticeships;
             this.dataLockProcessor = dataLockProcessor;
             this.apprenticeshipUpdatedProcessor = apprenticeshipUpdatedProcessor ?? throw new ArgumentNullException(nameof(apprenticeshipUpdatedProcessor));
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
         public async Task<List<DataLockEvent>> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
-            await Initialise().ConfigureAwait(false);
-            return await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
+            using (var operation = telemetry.StartOperation("DataLockService.HandleEarning", message.EventId.ToString()))
+            {
+                var stopwatch = StartStopwatch();
+                await Initialise().ConfigureAwait(false);
+                var dataLockEvents = await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
+                telemetry.TrackDuration("DataLockService.HandleEarning", stopwatch, message);
+                telemetry.StopOperation(operation);
+                return dataLockEvents;
+            }
         }
 
         public async Task HandleApprenticeshipUpdated(ApprenticeshipUpdated message, CancellationToken none)
         {
-            await Initialise().ConfigureAwait(false);
-            await apprenticeshipUpdatedProcessor.ProcessApprenticeshipUpdate(message);
+            using (var operation = telemetry.StartOperation("DataLockService.HandleApprenticeshipUpdated", message.EventId.ToString()))
+            {
+                var stopwatch = StartStopwatch();
+                await Initialise().ConfigureAwait(false);
+                await apprenticeshipUpdatedProcessor.ProcessApprenticeshipUpdate(message);
+                TrackInfrastructureEvent("DataLockService.HandleApprenticeshipUpdated", stopwatch);
+                telemetry.StopOperation(operation);
+            }
         }
 
         public async Task Reset()
@@ -71,13 +89,24 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         protected override async Task OnActivateAsync()
         {
-            await Initialise().ConfigureAwait(false);
-            await base.OnActivateAsync().ConfigureAwait(false);
+            using (var operation = telemetry.StartOperation("DataLockService.OnActivateAsync", $"{Id}_{Guid.NewGuid():N}"))
+            {
+                var stopwatch = StartStopwatch();
+                await Initialise().ConfigureAwait(false);
+                await base.OnActivateAsync().ConfigureAwait(false);
+                TrackInfrastructureEvent("DataLockService.HandleEarning", stopwatch);
+                telemetry.StopOperation(operation);
+            }
         }
 
         private async Task Initialise()
         {
-            if (await apprenticeships.IsInitialiseFlagIsSet().ConfigureAwait(false)) return;
+            if (await apprenticeships.IsInitialiseFlagIsSet().ConfigureAwait(false))
+            {
+                paymentLogger.LogVerbose($"Actor already initialised for apprenticeship {Id}");
+                return;
+            }
+            var stopwatch = StartStopwatch();
 
             paymentLogger.LogInfo($"Initialising actor for provider {Id}");
 
@@ -98,10 +127,31 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
                 await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerDuplicateApprenticeships).ConfigureAwait(false);
             }
-
-            paymentLogger.LogInfo($"Initialised actor for provider {Id}");
-
             await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
+            paymentLogger.LogInfo($"Initialised actor for provider {Id}");
+            stopwatch.Stop();
+            TrackInfrastructureEvent("DataLockService.Initialise", stopwatch);
+        }
+
+        private Stopwatch StartStopwatch()
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            return stopwatch;
+        }
+
+        private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
+        {
+            telemetry.TrackEvent(eventName,
+                new Dictionary<string, string>
+                {
+                    { "ActorId",Id.ToString()},
+                    { TelemetryKeys.Ukprn, Id.ToString()},
+                },
+                new Dictionary<string, double>
+                {
+                    { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }
+                });
         }
     }
 }
