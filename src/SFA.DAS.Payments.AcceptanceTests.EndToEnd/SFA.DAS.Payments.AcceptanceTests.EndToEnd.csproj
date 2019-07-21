@@ -438,6 +438,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-688 - New Apprenticeship Approved.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs">
+      <DependentUpon>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Approvals Interface\PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature.cs">
       <DependentUpon>PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -1617,6 +1622,10 @@
     <None Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Approvals Interface\PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

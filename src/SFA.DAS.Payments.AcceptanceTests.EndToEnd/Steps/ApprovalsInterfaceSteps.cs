@@ -43,11 +43,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private List<ApprovalsApprenticeship> PreviousApprovalsApprenticeships
         {
-            get => !Context.TryGetValue<List<ApprovalsApprenticeship>>("PreviousApprovalsApprenticeships", out var previousApprovals) 
+            get => !Context.TryGetValue<List<ApprovalsApprenticeship>>("PreviousApprovalsApprenticeships", out var previousApprovals)
                 ? null : previousApprovals;
             set => Set(value, "PreviousApprovalsApprenticeships");
         }
-        
+
         public static IMessageSession DasMessageSession { get; set; }
         private static EndpointConfiguration dasEndpointConfiguration;
         protected TestPaymentsDataContext TestDataContext => Scope.Resolve<TestPaymentsDataContext>();
@@ -92,7 +92,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipStoppedEvent).Assembly, EndpointNames.DataLocksApprovals);
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipStopDateChangedEvent).Assembly, EndpointNames.DataLocksApprovals);
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipPausedEvent).Assembly, EndpointNames.DataLocksApprovals);
-
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipResumedEvent).Assembly, EndpointNames.DataLocksApprovals);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -200,10 +200,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
-        
+
         [Then(@"the Payments service should record the stopped apprenticeships")]
         [Then(@"the Payments service should record the apprenticeships")]
         [Then(@"the Payments service should record the paused apprenticeships")]
+        [Then(@"the Payments service should record the resumed apprenticeships")]
         public async Task ThenPaymentsVShouldRecordTheApprenticeships()
         {
             await WaitForIt(async () =>
@@ -232,7 +233,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var expectedStatus = string.IsNullOrWhiteSpace(approvalsApprenticeship.Status)
                         ? savedApprenticeship.Status
                         : approvalsApprenticeship.Status.ToApprenticeshipPaymentStatus();
-                    
+
 
                     if (MatchesTrainingCode(approvalsApprenticeship, savedApprenticeship) &&
                         MatchPriceEpisodes(approvalsApprenticeship.PriceEpisodes, savedApprenticeship.ApprenticeshipPriceEpisodes) &&
@@ -259,7 +260,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 return false;
             }, "Failed to find all the stored apprenticeships.");
         }
-        
+
         [Given(@"the following apprenticeships already exist")]
         public async Task GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
         {
@@ -292,9 +293,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode);
                 await TestDataContext.SaveChangesAsync();
-                
+
                 apprenticeship.PriceEpisodes.Add(priceEpisode);
-                
+
                 Console.WriteLine($"Existing Apprenticeship Created: {newPriceEpisode.ToJson()}");
 
             }
@@ -331,7 +332,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
-        
+
         [When(@"the Approvals service notifies the Payments service of the apprenticeships datalock triage changes")]
         public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfTheApprenticeshipsDatalockTriageChanges()
         {
@@ -365,6 +366,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the apprenticeship stop date is changed as follows")]
         [Given(@"the apprenticeship is stopped as follows")]
         [Given(@"the apprenticeship is paused as follows")]
+        [Given(@"the apprenticeship resumed date is changed as follows")]
         public void GivenTheApprenticeshipIsChangedAsFollows(Table table)
         {
             var apprenticeshipChangeModels = table.CreateSet<ApprovalsApprenticeshipChangeModel>();
@@ -377,9 +379,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprovalsApprenticeships.FirstOrDefault(x => x.Identifier == changedApprenticeshipSpec.Identifier) ??
                     throw new InvalidOperationException("Can't find changed apprenticeship");
 
-                changedApprenticeship.StoppedOnDate = changedApprenticeshipSpec.StoppedOnDate;
+              if(!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.Status))
                 changedApprenticeship.Status = changedApprenticeshipSpec.Status;
-                changedApprenticeship.PauseOnDate = changedApprenticeshipSpec.PausedOnDate;
+
+              if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.StoppedOnDate))
+                    changedApprenticeship.StoppedOnDate = changedApprenticeshipSpec.StoppedOnDate;
+              
+                if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.PausedOnDate))
+                    changedApprenticeship.PauseOnDate = changedApprenticeshipSpec.PausedOnDate;
+
+                if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.ResumedOnDate))
+                    changedApprenticeship.ResumedOnDate = changedApprenticeshipSpec.ResumedOnDate;
+
             }
         }
 
@@ -395,10 +406,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     StopDate = approvalsApprenticeship.StoppedOnDate.ToDate(),
                 };
                 Console.WriteLine($"Sending ApprenticeshipStoppedEvent message: {createdMessage.ToJson()}");
-                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
-        
+
         [When(@"the Approvals service notifies the Payments service that the apprenticeships stop date has changed")]
         public void WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsStopDateHasChanged()
         {
@@ -425,7 +436,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     PausedOn = approvalsApprenticeship.PauseOnDate.ToDate(),
                     ApprenticeshipId = approvalsApprenticeship.Id,
-                    
+
                 };
                 Console.WriteLine($"Sending ApprenticeshipPausedEvent message: {createdMessage.ToJson()}");
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
@@ -457,7 +468,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         continue;
                     }
 
-                    if (approvalsApprenticeship.PauseOnDate.ToDate() == apprenticeshipPause.PauseDate)
+                    if (approvalsApprenticeship.PauseOnDate.ToDate() == apprenticeshipPause.PauseDate  &&
+                        approvalsApprenticeship.ResumedOnDate.ToNullableDate() == apprenticeshipPause.ResumeDate)
                     {
                         Console.WriteLine(
                             $"Matched pause for apprenticeship: {approvalsApprenticeship.Identifier}, leaner: {approvalsApprenticeship.Learner}, Employer: {approvalsApprenticeship.Employer}");
@@ -477,6 +489,47 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }, "Failed to find all the stored apprenticeships paused details.");
         }
 
+        [When(@"the Approvals service notifies the Payments service that the apprenticeships has been resumed")]
+        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsHasBeenResumed()
+        {
+            foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
+            {
+                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
+                var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipResumedEvent()
+                {
+                    ResumedOn = approvalsApprenticeship.ResumedOnDate.ToDate(),
+                    ApprenticeshipId = approvalsApprenticeship.Id,
+                };
+                Console.WriteLine($"Sending ApprenticeshipPausedEvent message: {createdMessage.ToJson()}");
+                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+            }
+        }
+
+        [Given(@"the existing apprenticeships has the following pause history")]
+        public async Task GivenTheExistingApprenticeshipsHasTheFollowingPauseHistoryAsync(Table table)
+        {
+            var pausedModels = table.CreateSet<ApprovalsApprenticeshipPausedModel>();
+
+            foreach (var pausedModel in pausedModels)
+            {
+                var previousApprenticeship = PreviousApprovalsApprenticeships
+                    .FirstOrDefault(x => x.Identifier == pausedModel.Apprenticeship) ??
+                                             throw new InvalidOperationException($"Can't find apprenticeship {pausedModel.Apprenticeship}");
+
+                previousApprenticeship.PauseOnDate = pausedModel.PausedOnDate;
+
+                var pauseDbModel = new ApprenticeshipPauseModel
+                {
+                    ApprenticeshipId = previousApprenticeship.Id,
+                    PauseDate = previousApprenticeship.PauseOnDate.ToDate()
+                };
+
+                await TestDataContext.ApprenticeshipPause.AddAsync(pauseDbModel).ConfigureAwait(false);
+                await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
+
+            }
+        }
+
         private ApprenticeshipModel CreateApprenticeshipModel(ApprovalsApprenticeship apprenticeshipSpec)
         {
             var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(apprenticeshipSpec);
@@ -491,7 +544,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ProgrammeType = apprenticeshipSpec.ProgrammeType,
                 PathwayCode = apprenticeshipSpec.PathwayCode,
                 StandardCode = apprenticeshipSpec.StandardCode,
-                Status = ApprenticeshipStatus.Active,
+                Status  = string.IsNullOrWhiteSpace(apprenticeshipSpec.Status)
+                    ? ApprenticeshipStatus.Active
+                    : apprenticeshipSpec.Status.ToApprenticeshipPaymentStatus(),
                 LegalEntityName = employer.Name,
                 EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
                 EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
@@ -499,8 +554,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ? DateTime.UtcNow
                     : apprenticeshipSpec.AgreedOnDate.ToDate(),
                 IsLevyPayer = true,
-                StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StoppedOnDate) 
-                    ? default(DateTime?) 
+                StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StoppedOnDate)
+                    ? default(DateTime?)
                     : apprenticeshipSpec.StoppedOnDate.ToDate()
             };
 
@@ -548,7 +603,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
 
             actualPriceEpisodes = actualPriceEpisodes.Where(x => !x.Removed).ToList();
-            
+
             if (expectedPriceEpisodes.Count != actualPriceEpisodes.Count) return false;
 
             foreach (var expectedPriceEpisode in expectedPriceEpisodes)
