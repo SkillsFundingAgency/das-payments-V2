@@ -71,6 +71,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.Uln))
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodes))
                 .ForMember(dest => dest.Duplicates, opt => opt.Ignore())
+                .ForMember(dest => dest.EventId, opt => opt.Ignore())
+                .ForMember(dest => dest.EventTime, opt => opt.Ignore())
                 ;
 
             CreateMap<ApprenticeshipUpdated, ApprenticeshipModel>()
