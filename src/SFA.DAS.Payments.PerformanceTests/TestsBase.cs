@@ -20,10 +20,10 @@ namespace SFA.DAS.Payments.PerformanceTests
     public class TestsBase
     {
         public static TestsConfiguration Config => new TestsConfiguration();
-        protected FM36Learner CreateFM36Learner(TestSession session, Learner testLearner, bool isLevyLearner = false)
+        protected FM36Learner CreateFM36Learner(TestSession session, Learner testLearner, DateTime startDate, bool isLevyLearner = false)
         {
             var learner = new FM36Learner { LearnRefNumber = testLearner.LearnRefNumber, ULN = testLearner.Uln};
-            var startDate = new DateTime(DateTime.Today.Year + (DateTime.Today.Month < 8 ? -1 : 0), 8, 1);
+            //var startDate = new DateTime(DateTime.Today.Year + (DateTime.Today.Month < 8 ? -1 : 0), 8, 1);
             var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
             {
                 PriceEpisodeIdentifier = "pe-1",

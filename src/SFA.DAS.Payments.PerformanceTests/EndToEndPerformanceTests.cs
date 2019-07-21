@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
@@ -75,7 +76,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                 ruleNameSanitizer: ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
             EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             EndpointConfiguration.EnableInstallers();
-            
+
 
 
             Builder.RegisterType<EarningsJobClient>()
@@ -108,7 +109,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         }
 
 
-        [TestCase(1, 1,1, 1)]
+        [TestCase(1, 2, 1, 1)]
         public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerAct1Count, int providerLearnerAct2Count, int collectionPeriod)
         {
             Randomizer.Seed = new Random(8675309);
@@ -118,6 +119,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             var ilrSubmissions = new List<Task>();
 
             var learnerId = 0;
+            var startDate = new DateTime(DateTime.Today.Year + (DateTime.Today.Month < 8 ? -1 : 0), 8, 1);
             foreach (var session in sessions)
             {
                 session.Learners.Clear();
@@ -131,7 +133,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                         IsLevyLearner = true
                     })
                     .ToList();
-                //await AddApprenticeships(session.Ukprn, levyLearners);
+                await AddApprenticeships(session, levyLearners, startDate);
                 session.Learners.AddRange(levyLearners);
                 session.Learners.AddRange(Enumerable.Range(1, providerLearnerAct2Count)
                     .Select(i => new Learner
@@ -142,28 +144,58 @@ namespace SFA.DAS.Payments.PerformanceTests
                         Course = session.CourseFaker.Generate(1).FirstOrDefault(),
                         IsLevyLearner = false
                     }));
-                ilrSubmissions.Add(SubmitIlr(session, collectionPeriod));
+                ilrSubmissions.Add(SubmitIlr(session, collectionPeriod, startDate));
                 await Task.WhenAll(ilrSubmissions);
                 Console.WriteLine($"Finished sending Ukprn: {session.Ukprn}. Time: {DateTime.Now:O}");
             }
         }
 
-        private async Task AddApprenticeships(long ukprn, List<Learner> learners)
+        private async Task AddApprenticeships(TestSession session, List<Learner> learners, DateTime startDate)
         {
-            //var dataContext = Container.Resolve<IPaymentsDataContext>();
-            //learners.Select(learner => new ApprenticeshipModel
-            //{
-            //    AccountId = ukprn,
-            //    AgreedOnDate = learner.
-            //})
+            var dataContext = Container.Resolve<IPaymentsDataContext>();
+            var apprenticeships = learners.Select(learner => new ApprenticeshipModel
+            {
+                AccountId = session.Ukprn,
+                AgreedOnDate = startDate,
+                AgreementId = Guid.NewGuid().ToString("N"),
+                Id = session.GenerateId(),
+                EstimatedEndDate = startDate.AddMonths(12),
+                Ukprn = session.Ukprn,
+                Uln = learner.Uln,
+                FrameworkCode = learner.Course.FrameworkCode,
+                LegalEntityName = "Test Company",
+                IsLevyPayer = true,
+                PathwayCode = learner.Course.PathwayCode,
+                ProgrammeType = learner.Course.ProgrammeType,
+                StandardCode = learner.Course.StandardCode,
+                Status = ApprenticeshipStatus.Active,
+                EstimatedStartDate = startDate,
+                ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                {
+                    new ApprenticeshipPriceEpisodeModel
+                    {
+                        StartDate = startDate,
+                        Cost = 15000M
+                    }
+                }
+            });
+            var apprenticeshipIds = apprenticeships.Select(appr => appr.Id.ToString()).Join();
+            await dataContext.Database.ExecuteSqlCommandAsync(
+                $"Delete from Payments2.ApprenticeshipDuplicate where ApprenticeshipId in ({apprenticeshipIds})");
+            await dataContext.Database.ExecuteSqlCommandAsync(
+                $"Delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId in ({apprenticeshipIds})");
+            await dataContext.Database.ExecuteSqlCommandAsync(
+                $"Delete from Payments2.Apprenticeship where Id in ({apprenticeshipIds})");
+            dataContext.Apprenticeship.AddRange(apprenticeships);
+            await dataContext.SaveChangesAsync();
         }
 
         protected DateTimeOffset? DeliveryTime;
 
-        protected async Task SubmitIlr(TestSession session, int collectionPeriod)
+        protected async Task SubmitIlr(TestSession session, int collectionPeriod, DateTime startDate)
         {
             var ilrLearners = session.Learners
-                .Select(learner => CreateFM36Learner(session, learner))
+                .Select(learner => CreateFM36Learner(session, learner, startDate))
                 .ToList();
             session.IlrSubmissionTime = DateTime.UtcNow;
             var startTime = DateTimeOffset.UtcNow;
@@ -190,9 +222,9 @@ namespace SFA.DAS.Payments.PerformanceTests
                 StartTime = command.RequestTime,
                 MessageName = command.GetType().FullName,
                 MessageId = command.CommandId
-            }).ToList(); 
+            }).ToList();
             var dcHelper = Container.Resolve<DcHelper>();
-            await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, 1819, (byte) collectionPeriod, session.JobId);
+            await dcHelper.SendIlrSubmission(ilrLearners, session.Ukprn, 1819, (byte)collectionPeriod, session.JobId);
         }
 
         [OneTimeTearDown]
@@ -201,7 +233,7 @@ namespace SFA.DAS.Payments.PerformanceTests
 
         }
 
-        public async Task CreateJob(TestSession session,  DateTimeOffset startTime, List<GeneratedMessage> generatedMessages, byte collectionPeriod, JobType jobType = JobType.ComponentAcceptanceTestEarningsJob)
+        public async Task CreateJob(TestSession session, DateTimeOffset startTime, List<GeneratedMessage> generatedMessages, byte collectionPeriod, JobType jobType = JobType.ComponentAcceptanceTestEarningsJob)
         {
             var job = new JobModel
             {
