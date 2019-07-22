@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         public async Task GivenNoDataLockErrorAllEarningPeriodsShouldBePayableEvent()
         {
             learnerMatcherMock
-                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .Setup(x => x.MatchLearner(apprenticeships[0].Ukprn,apprenticeships[0].Uln))
                 .ReturnsAsync(() => new LearnerMatchResult
                 {
                     DataLockErrorCode = null,
@@ -116,7 +116,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             earningEvent.IncentiveEarnings = new List<IncentiveEarning>();
 
             learnerMatcherMock
-                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .Setup(x => x.MatchLearner(apprenticeships[0].Ukprn, apprenticeships[0].Uln))
                 .ReturnsAsync(() => new LearnerMatchResult
                 {
                     DataLockErrorCode = DataLockErrorCode.DLOCK_01,
@@ -139,7 +139,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         public async Task LearnerDataLockForEarningWithIncentivesShouldReturnValidNonPayableEarningEvent()
         {
             learnerMatcherMock
-                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .Setup(x => x.MatchLearner(apprenticeships[0].Ukprn, apprenticeships[0].Uln))
                 .ReturnsAsync(() => new LearnerMatchResult
                 {
                     DataLockErrorCode = DataLockErrorCode.DLOCK_01,
@@ -162,7 +162,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         public async Task GivenCourseValidationDataLockIsReturnedMapBothValidAndInvalidEarningPeriods()
         {
             learnerMatcherMock
-                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .Setup(x => x.MatchLearner(apprenticeships[0].Ukprn, apprenticeships[0].Uln))
                 .ReturnsAsync(() => new LearnerMatchResult
                 {
                     DataLockErrorCode = null,
@@ -236,7 +236,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         public async Task CourseValidationDataLockForEarningWithIncentivesMapBothValidAndInvalidIncentivesAndOnprogEarningPeriods()
         {
             learnerMatcherMock
-                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .Setup(x => x.MatchLearner(apprenticeships[0].Ukprn, apprenticeships[0].Uln))
                 .ReturnsAsync(() => new LearnerMatchResult
                 {
                     DataLockErrorCode = null,

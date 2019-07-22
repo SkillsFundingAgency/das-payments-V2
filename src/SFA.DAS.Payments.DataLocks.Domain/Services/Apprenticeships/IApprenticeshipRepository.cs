@@ -6,7 +6,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 {
     public interface IApprenticeshipRepository
     {
-        Task<List<ApprenticeshipModel>> ApprenticeshipsForProvider(long ukprn);
+        Task<List<long>> GetProviderIds();
+        Task<List<long>> ApprenticeshipUlnsByProvider(long ukprn);
+        Task<List<ApprenticeshipModel>> ApprenticeshipsByUln(long uln);
         Task<List<ApprenticeshipModel>> DuplicateApprenticeshipsForProvider(long ukprn);
         Task<ApprenticeshipModel> Get(long apprenticeshipId);
         Task<List<ApprenticeshipDuplicateModel>> GetDuplicates(long uln);

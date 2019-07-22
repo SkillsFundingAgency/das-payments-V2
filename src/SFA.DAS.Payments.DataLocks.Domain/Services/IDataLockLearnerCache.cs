@@ -6,7 +6,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
 {
     public interface IDataLockLearnerCache
     {
-        Task<bool> HasLearnerRecords();
+        Task<bool> UkprnExists(long ukprn);
         Task<List<ApprenticeshipModel>> GetLearnerApprenticeships(long uln);
         Task<List<ApprenticeshipModel>> GetDuplicateApprenticeships();
     }

@@ -50,8 +50,12 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
             {
                 Learner = new Learner
                 {
-                    Uln = 123,
-                }
+                    Uln = 123456,
+                    ReferenceNumber = "1234567",
+                    
+                },
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1819, Period = 10 }
+
             };
 
             var dataLockProcessor = new Mock<IDataLockProcessor>();
@@ -62,8 +66,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
                     new EarningFailedDataLockMatching()
                 });
 
-            var actuals = await new DataLockService(actorService, new ActorId(Guid.Empty), paymentLoggerMock,
-                    commitmentRepositoryMock, dataCacheMock, dataLockProcessor.Object, Mock.Of<IApprenticeshipUpdatedProcessor>(),Mock.Of<ITelemetry>())
+            var actuals = await new DataLockService(actorService, new ActorId(123456), paymentLoggerMock,
+                    () => commitmentRepositoryMock, dataCacheMock, Mock.Of<IActorDataCache<List<long>>>(), dataLockProcessor.Object, Mock.Of<IApprenticeshipUpdatedProcessor>(),Mock.Of<ITelemetry>())
                 .HandleEarning(testEarning, default(CancellationToken));
 
             actuals.Should().HaveCount(2);
