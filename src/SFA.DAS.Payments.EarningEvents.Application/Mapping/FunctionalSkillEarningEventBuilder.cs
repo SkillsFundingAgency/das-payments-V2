@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
@@ -8,7 +7,6 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -21,10 +19,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             this.mapper = mapper;
         }
 
-        public List<FunctionalSkillEarningsEvent> Build(ProcessLearnerCommand learnerSubmission)
+        public List<ApprenticeshipContractTypeFunctionalSkillEarningsEvent> Build(ProcessLearnerCommand learnerSubmission)
         {
             var intermediateResults = InitialLearnerTransform(learnerSubmission, false);
-            var results = new List<FunctionalSkillEarningsEvent>();
+            var results = new List<ApprenticeshipContractTypeFunctionalSkillEarningsEvent>();
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
@@ -32,23 +30,38 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 var distinctContractTypes = contractTypes.Distinct().ToList();
 
                 var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(intermediateLearningAim.PriceEpisodes);
-                var functionalSkillEarning = mapper.Map<FunctionalSkillEarningsEvent>(learnerWithSortedPriceEpisodes);
-
+                
                 foreach (var contractType in distinctContractTypes)
                 {
-                    var currentEarnings = new List<FunctionalSkillEarning>(functionalSkillEarning.Earnings);
+                    var functionalSkillEarning =
+                        GetContractTypeFunctionalSkillEarningEvent(learnerWithSortedPriceEpisodes, contractType);
+
                     foreach (var earning in functionalSkillEarning.Earnings)
                     {
                         earning.Periods =  GetEarningPeriodsMatchingContractType(contractTypes, contractType, earning.Periods.ToList());
                     }
 
-                    functionalSkillEarning.ContractType = intermediateLearningAim.ContractType;
+                    results.Add(functionalSkillEarning);
                 }
 
-                results.Add(functionalSkillEarning);
+            
             }
 
-            return results;
+            return results.Distinct().ToList();
+        }
+
+        private ApprenticeshipContractTypeFunctionalSkillEarningsEvent GetContractTypeFunctionalSkillEarningEvent(
+            IntermediateLearningAim intermediateLearningAim, ContractType contractType)
+        {
+            switch (contractType)
+            {
+                case ContractType.Act1:
+                    return mapper.Map<ApprenticeshipContractType1FunctionalSkillEarningsEvent>(intermediateLearningAim);
+                case ContractType.Act2:
+                    return mapper.Map<ApprenticeshipContractType2FunctionalSkillEarningsEvent>(intermediateLearningAim);
+            }
+
+            return null;
         }
 
         private ReadOnlyCollection<EarningPeriod> GetEarningPeriodsMatchingContractType(ContractType[] contractTypes, 
