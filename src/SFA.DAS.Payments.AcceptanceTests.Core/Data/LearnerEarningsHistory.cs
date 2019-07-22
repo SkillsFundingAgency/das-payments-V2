@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
@@ -15,7 +16,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public LearnerEarningsHistory(AdditionalIlrData additionalIlrData, IEnumerable<Earning> previousEarnings)
         {
             this.additionalIlrData = additionalIlrData ?? new AdditionalIlrData();
-            this.previousEarnings = previousEarnings?.ToList() ?? new List<Earning>();
+            this.previousEarnings = previousEarnings.ToList() ?? new List<Earning>();
         }
 
         public string CollectionYear => additionalIlrData.HistoryPeriod.ToDate().Year.ToString();
@@ -26,7 +27,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public decimal? OnProgrammeEarningsToDate
         {
-            get { return previousEarnings.Sum(x => x.OnProgramme); }
+            get
+            {
+                var previouslyPaidPayedEarnings =
+                    previousEarnings?.Where(pe =>
+                        pe.DeliveryPeriod.ToDate().Year <= Convert.ToInt32(CollectionYear) &&
+                        pe.DeliveryPeriod.ToMonthPeriod() <= CollectionPeriod).ToList() ?? new List<Earning>();
+
+                var onProgrammeEarningsToDate = previouslyPaidPayedEarnings.Sum(x => x.OnProgramme);
+
+                return onProgrammeEarningsToDate; 
+            }
         }
 
         public DateTime? UpToEndDate(string originalStartDate)

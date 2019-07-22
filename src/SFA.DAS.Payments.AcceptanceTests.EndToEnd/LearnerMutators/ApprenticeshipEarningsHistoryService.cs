@@ -17,11 +17,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
             this.appEarnHistoryContext = appEarnHistoryContext ?? throw new ArgumentNullException(nameof(appEarnHistoryContext));
         }
 
-        public async Task AddHistoryAsync(int collectionYear, byte collectionPeriod, IEnumerable<Learner> learners)
+        public async Task AddHistoryAsync(IEnumerable<Learner> learners)
         {
             foreach (var learner in learners)
             {
-                foreach (var learnerAim in learner.Aims)
+                foreach (var learnerAim in learner.Aims.Where(a=>a.IsMainAim))
                 {
                     var aeh = new AppsEarningsHistory
                               {

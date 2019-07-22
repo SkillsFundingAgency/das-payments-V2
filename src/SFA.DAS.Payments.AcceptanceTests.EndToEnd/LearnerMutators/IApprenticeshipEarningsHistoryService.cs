@@ -6,7 +6,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     public interface IApprenticeshipEarningsHistoryService
     {
-        Task AddHistoryAsync(int collectionYear, byte collectionPeriod, IEnumerable<Learner> learners);
+        Task AddHistoryAsync(IEnumerable<Learner> learners);
 
         Task DeleteHistoryAsync(long ukprn);
     }
