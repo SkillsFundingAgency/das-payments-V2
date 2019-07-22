@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
@@ -16,7 +15,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public LearnerEarningsHistory(AdditionalIlrData additionalIlrData, IEnumerable<Earning> previousEarnings)
         {
             this.additionalIlrData = additionalIlrData ?? new AdditionalIlrData();
-            this.previousEarnings = previousEarnings.ToList() ?? new List<Earning>();
+            this.previousEarnings = previousEarnings?.ToList() ?? new List<Earning>();
         }
 
         public string CollectionYear => additionalIlrData.HistoryPeriod.ToDate().Year.ToString();
