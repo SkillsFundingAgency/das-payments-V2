@@ -5,12 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using AutoMapper;
 using ESFA.DC.ILR.TestDataGenerator.Interfaces;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.JobStatus.Interface;
 using MoreLinq;
 using Polly;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -22,12 +20,12 @@ using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using JobStatusType = ESFA.DC.JobStatus.Interface.JobStatusType;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
     public class IlrDcService : IIlrService
     {
-        private readonly IMapper mapper;
         private readonly ITdgService tdgService;
         private readonly TestSession testSession;
         private readonly IJobService jobService;
@@ -35,9 +33,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         private readonly IStreamableKeyValuePersistenceService storageService;
         private readonly IPaymentsDataContext dataContext;
 
-        public IlrDcService(IMapper mapper, ITdgService tdgService, TestSession testSession, IJobService jobService, IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IStreamableKeyValuePersistenceService storageService, IPaymentsDataContext dataContext)
+        public IlrDcService(ITdgService tdgService, TestSession testSession, IJobService jobService, IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IStreamableKeyValuePersistenceService storageService, IPaymentsDataContext dataContext)
         {
-            this.mapper = mapper;
             this.tdgService = tdgService;
             this.testSession = testSession;
             this.jobService = jobService;
@@ -104,10 +101,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             XNamespace xsdns = tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
             var learnerDescendants = xDoc.Descendants(xsdns + "Learner");
-
-            for (var i = 0; i < learners.Count(); i++)
+            var learnersEnumeration = learners as Learner[] ?? learners.ToArray();
+            for (var i = 0; i < learnersEnumeration.Count(); i++)
             {
-                var request = learners.Skip(i).Take(1).First();
+                var request = learnersEnumeration.Skip(i).Take(1).First();
                 var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerIdentifier);
                 var originalUln = testSessionLearner.Uln;
                 var learner = learnerDescendants.Skip(i).Take(1).First();
@@ -141,11 +138,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private async Task PublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
-            var submission = new SubmissionModel(JobType.IlrSubmission, ukprn)
+            var submission = new SubmissionModel(EnumJobType.IlrSubmission, ukprn)
             {
                 FileName = $"{ukprn}/{ilrFileName}",
                 FileSizeBytes = ilrFile.Length,
-                SubmittedBy = "System",
+                CreatedBy = "System",
                 CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
                 Period = collectionPeriod,
                 NotifyEmail = "dcttestemail@gmail.com",
