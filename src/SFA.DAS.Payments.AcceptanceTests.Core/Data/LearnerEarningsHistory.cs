@@ -28,12 +28,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         {
             get
             {
-                var previouslyPaidPayedEarnings =
+                var previouslyPaidEarnings =
                     previousEarnings?.Where(pe =>
                         pe.DeliveryPeriod.ToDate().Year <= Convert.ToInt32(CollectionYear) &&
                         pe.DeliveryPeriod.ToMonthPeriod() <= CollectionPeriod).ToList() ?? new List<Earning>();
 
-                var onProgrammeEarningsToDate = previouslyPaidPayedEarnings.Sum(x => x.OnProgramme);
+                var onProgrammeEarningsToDate = previouslyPaidEarnings.Sum(x => x.OnProgramme);
 
                 return onProgrammeEarningsToDate; 
             }
