@@ -11,9 +11,9 @@ using SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers
 {
-    public class FunctionalSkillEarningsEventHandler : EarningEventHandlerBase<ApprenticeshipContractType2FunctionalSkillEarningsEvent>
+    public class ApprenticeshipContractTypeFunctionalSkillEarningsEventHandler : EarningEventHandlerBase<ApprenticeshipContractType2FunctionalSkillEarningsEvent>
     {
-        public FunctionalSkillEarningsEventHandler(IApprenticeshipKeyService apprenticeshipKeyService, IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger, IExecutionContext executionContext) 
+        public ApprenticeshipContractTypeFunctionalSkillEarningsEventHandler(IApprenticeshipKeyService apprenticeshipKeyService, IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger, IExecutionContext executionContext) 
             : base(apprenticeshipKeyService, proxyFactory, paymentLogger, executionContext)
         {
         }
