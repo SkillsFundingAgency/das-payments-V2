@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.PerformanceTests
     public class TestsBase
     {
         public static TestsConfiguration Config => new TestsConfiguration();
-        protected FM36Learner CreateFM36Learner(TestSession session, Learner testLearner, DateTime startDate, bool isLevyLearner = false)
+        protected FM36Learner CreateFM36Learner(TestSession session, Learner testLearner, DateTime startDate)
         {
             var learner = new FM36Learner { LearnRefNumber = testLearner.LearnRefNumber, ULN = testLearner.Uln};
             //var startDate = new DateTime(DateTime.Today.Year + (DateTime.Today.Month < 8 ? -1 : 0), 8, 1);
@@ -33,6 +33,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                     EpisodeEffectiveTNPStartDate = startDate,
                     PriceEpisodeCompletionElement = 3000,
                     PriceEpisodeCompleted = false,
+                    PriceEpisodeTotalTNPPrice = 15000,
                     TNP1 = 9000,
                     TNP2 = 6000,
                     PriceEpisodeInstalmentValue = 1000,
@@ -42,7 +43,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                     PriceEpisodeFundLineType = testLearner.Course.FundingLineType,
                     PriceEpisodeBalanceValue = 0,
                     PriceEpisodeCompletionPayment = 3000,
-                    PriceEpisodeContractType = isLevyLearner ? "Levy Contract" : "Non-Levy Contract", //ContractType.Act2.ToString("G"),
+                    PriceEpisodeContractType = testLearner.IsLevyLearner ? "Levy Contract" : "Non-Levy Contract", //ContractType.Act2.ToString("G"),
                     PriceEpisodeOnProgPayment = 1000,
                     PriceEpisodePlannedEndDate = startDate.AddMonths(12),
                     PriceEpisodeSFAContribPct = .9M,
@@ -130,7 +131,5 @@ namespace SFA.DAS.Payments.PerformanceTests
             }
             Assert.Fail(failText + " - " + reason);
         }
-
-
     }
 }
