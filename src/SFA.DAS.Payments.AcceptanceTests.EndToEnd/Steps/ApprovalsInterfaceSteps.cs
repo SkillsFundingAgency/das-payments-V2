@@ -430,8 +430,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
-                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
-                var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipPausedEvent()
+              var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipPausedEvent()
                 {
                     PausedOn = approvalsApprenticeship.PauseOnDate.ToDate(),
                     ApprenticeshipId = approvalsApprenticeship.Id,
@@ -493,7 +492,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
-                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
                 var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipResumedEvent()
                 {
                     ResumedOn = approvalsApprenticeship.ResumedOnDate.ToDate(),
