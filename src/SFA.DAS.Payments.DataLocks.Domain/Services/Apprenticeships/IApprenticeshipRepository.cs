@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 {
-    public interface IApprenticeshipRepository
+    public interface IApprenticeshipRepository: IDisposable
     {
         Task<List<long>> GetProviderIds();
         Task<List<long>> ApprenticeshipUlnsByProvider(long ukprn);

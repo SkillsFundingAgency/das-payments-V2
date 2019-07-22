@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -100,6 +101,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             apprenticeships.ForEach(x => x.ApprenticeshipPriceEpisodes = x.ApprenticeshipPriceEpisodes?
                 .Where(o => !o.Removed)
                 .ToList());
+        }
+
+        public void Dispose()
+        {
+            (dataContext as PaymentsDataContext)?.Dispose();
         }
     }
 }

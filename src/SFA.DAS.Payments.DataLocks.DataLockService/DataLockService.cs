@@ -113,12 +113,14 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
                 paymentLogger.LogInfo($"Initialising actor for provider {Id}");
                 var uln = long.Parse(Id.ToString());
-                var repository = apprenticeshipRepository();
-                var providerApprenticeships = await repository.ApprenticeshipsByUln(uln).ConfigureAwait(false);
-                await this.apprenticeships.AddOrReplace(uln.ToString(), providerApprenticeships).ConfigureAwait(false);
-                await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerApprenticeships).ConfigureAwait(false); //TODO: no need for this anymore
-                var providerIds = await repository.GetProviderIds();
-                await this.providers.AddOrReplace(CacheKeys.ProvidersKey, providerIds).ConfigureAwait(false);
+                using (var repository = apprenticeshipRepository())
+                {
+                    var providerApprenticeships = await repository.ApprenticeshipsByUln(uln).ConfigureAwait(false);
+                    await this.apprenticeships.AddOrReplace(uln.ToString(), providerApprenticeships).ConfigureAwait(false);
+                    await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerApprenticeships).ConfigureAwait(false); //TODO: no need for this anymore
+                    var providerIds = await repository.GetProviderIds();
+                    await this.providers.AddOrReplace(CacheKeys.ProvidersKey, providerIds).ConfigureAwait(false);
+                }
                 await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
                 paymentLogger.LogInfo($"Initialised actor for uln {Id.ToString().Substring(0, 4)}****");
                 stopwatch.Stop();
@@ -131,7 +133,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 throw;
             }
         }
-
+        
         private Stopwatch StartStopwatch()
         {
             var stopwatch = new Stopwatch();
