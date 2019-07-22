@@ -14,6 +14,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Messages.Core;
@@ -87,6 +88,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent).Assembly, EndpointNames.DataLocksApprovals);
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipUpdatedApprovedEvent).Assembly, EndpointNames.DataLocksApprovals);
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.DataLockTriageApprovedEvent).Assembly, EndpointNames.DataLocksApprovals);
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipStoppedEvent).Assembly, EndpointNames.DataLocksApprovals);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -125,7 +128,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
-        [Given(@"the apprenticeships are changed has follows")]
+        [Given(@"the apprenticeships are changed as follows")]
         public void GivenTheFollowingApprenticeshipsHaveBeenApprovedX(Table table)
         {
             ApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
@@ -194,7 +197,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
-
+        
+        [Then(@"the Payments service should record the stopped apprenticeships")]
         [Then(@"the Payments service should record the apprenticeships")]
         public async Task ThenPaymentsVShouldRecordTheApprenticeships()
         {
@@ -221,11 +225,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         continue;
                     }
 
+                    var expectedStatus = string.IsNullOrWhiteSpace(approvalsApprenticeship.Status)
+                        ? savedApprenticeship.Status
+                        : approvalsApprenticeship.Status.ToApprenticeshipPaymentStatus();
+                    
+
                     if (MatchesTrainingCode(approvalsApprenticeship, savedApprenticeship) &&
                         MatchPriceEpisodes(approvalsApprenticeship.PriceEpisodes, savedApprenticeship.ApprenticeshipPriceEpisodes) &&
                         provider.Ukprn == savedApprenticeship.Ukprn &&
                         employer.AccountId == savedApprenticeship.AccountId &&
-                        learner.Uln == savedApprenticeship.Uln)
+                        learner.Uln == savedApprenticeship.Uln &&
+                        expectedStatus == savedApprenticeship.Status)
                     {
                         Console.WriteLine(
                             $"Matched apprenticeship: {approvalsApprenticeship.Identifier}, leaner: {approvalsApprenticeship.Learner}, Employer: {approvalsApprenticeship.Employer}");
@@ -245,7 +255,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 return false;
             }, "Failed to find all the stored apprenticeships.");
         }
-
+        
         [Given(@"the following apprenticeships already exist")]
         public async Task GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
         {
@@ -278,7 +288,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode);
                 await TestDataContext.SaveChangesAsync();
-
+                
+                apprenticeship.PriceEpisodes.Add(priceEpisode);
+                
                 Console.WriteLine($"Existing Apprenticeship Created: {newPriceEpisode.ToJson()}");
 
             }
@@ -316,6 +328,71 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
         
+        [When(@"the Approvals service notifies the Payments service of the apprenticeships datalock triage changes")]
+        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfTheApprenticeshipsDatalockTriageChanges()
+        {
+            foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
+            {
+                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
+                var createdMessage = new CommitmentsV2.Messages.Events.DataLockTriageApprovedEvent
+                {
+                    ApprovedOn = approvalsApprenticeship.AgreedOnDate.ToDate(),
+                    ApprenticeshipId = approvalsApprenticeship.Id,
+                    TrainingType = approvalsApprenticeship.StandardCode > 0
+                        ? ProgrammeType.Standard
+                        : ProgrammeType.Framework,
+                    TrainingCode = approvalsApprenticeship.StandardCode > 0
+                        ? approvalsApprenticeship.StandardCode.ToString()
+                        : $"{approvalsApprenticeship.FrameworkCode}-{approvalsApprenticeship.ProgrammeType}-{approvalsApprenticeship.PathwayCode}",
+
+                    PriceEpisodes = approvalsApprenticeship.PriceEpisodes.Select(pp =>
+                        new CommitmentsV2.Messages.Events.PriceEpisode
+                        {
+                            FromDate = pp.EffectiveFrom.ToDate(),
+                            ToDate = pp.EffectiveTo?.ToNullableDate(),
+                            Cost = pp.AgreedPrice
+                        }).ToArray(),
+                };
+                Console.WriteLine($"Sending DataLockTriageApprovedEvent message: {createdMessage.ToJson()}");
+                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+            }
+        }
+
+        [Given(@"the apprenticeship is stopped as follows")]
+        public void GivenTheApprenticeshipIsStoppedAsFollows(Table table)
+        {
+            var stoppedApprenticeships = table.CreateSet<ApprovalsApprenticeshipStop>();
+
+            ApprovalsApprenticeships = PreviousApprovalsApprenticeships ?? throw new NullReferenceException($"{nameof(PreviousApprovalsApprenticeships)} can't be null");
+
+            foreach (var stoppedApprenticeship in stoppedApprenticeships)
+            {
+                var changedApprenticeship =
+                    ApprovalsApprenticeships.FirstOrDefault(x => x.Identifier == stoppedApprenticeship.Identifier) ??
+                    throw new InvalidOperationException("Can't find stopped apprenticeship");
+
+                changedApprenticeship.StoppedOnDate = stoppedApprenticeship.StoppedOnDate;
+                changedApprenticeship.Status = stoppedApprenticeship.Status;
+            }
+
+        }
+
+        [When(@"the Approvals service notifies the Payments service that the apprenticeships has stopped")]
+        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfThatTheApprenticeshipsHasStopped()
+        {
+            foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
+            {
+                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
+                var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipStoppedEvent()
+                {
+                    ApprenticeshipId = approvalsApprenticeship.Id,
+                    StopDate = approvalsApprenticeship.StoppedOnDate.ToDate(),
+                };
+                Console.WriteLine($"Sending ApprenticeshipStoppedEvent message: {createdMessage.ToJson()}");
+                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+            }
+        }
+
         private ApprenticeshipModel CreateApprenticeshipModel(ApprovalsApprenticeship apprenticeshipSpec)
         {
             var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(apprenticeshipSpec);
@@ -343,8 +420,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return apprenticeshipModel;
         }
 
-        private static bool MatchesTrainingCode(ApprovalsApprenticeship approvalsApprenticeship,
-            ApprenticeshipModel savedApprenticeship)
+        private static bool MatchesTrainingCode(ApprovalsApprenticeship approvalsApprenticeship, ApprenticeshipModel savedApprenticeship)
         {
             return approvalsApprenticeship.StandardCode > 0
                 ? approvalsApprenticeship.StandardCode == savedApprenticeship.StandardCode &&

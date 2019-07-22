@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     Id = model.Id,
                     Uln = model.Uln
                 });
-            
+
             mocker.Mock<IEndpointInstance>()
                 .Setup(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()))
                 .Returns(Task.CompletedTask);
@@ -77,7 +77,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
             mocker.Mock<IApprenticeshipService>()
                 .Setup(svc => svc.NewApprenticeship(It.IsAny<ApprenticeshipModel>()))
-                .ReturnsAsync(() =>  new List<ApprenticeshipDuplicateModel>());
+                .ReturnsAsync(() => new List<ApprenticeshipDuplicateModel>());
 
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
             await apprenticeshipProcessor.Process(approvalsEvent);
@@ -170,9 +170,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         && ev.Id == approvalsEvent.ApprenticeshipId
                         && ev.Ukprn == approvalsEvent.ProviderId
                         && ev.Uln.ToString() == approvalsEvent.Uln
-                        && ev.Duplicates.Count==1
+                        && ev.Duplicates.Count == 1
                         && ev.Duplicates.All(duplicate => duplicate.ApprenticeshipId == 13 && duplicate.Ukprn == 4321)),
-                    
+
                     It.IsAny<PublishOptions>()), Times.Once);
         }
 
@@ -199,18 +199,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }
             };
 
-            mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipModel>()))
+            mocker.Mock<IApprenticeshipApprovedUpdatedService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipApprovedModel>()))
                 .ReturnsAsync(() => new ApprenticeshipModel
                 {
                     Id = approvalsEvent.ApprenticeshipId,
                     Uln = long.Parse(approvalsEvent.Uln),
-                    
+
                 });
 
             mocker.Mock<IMapper>()
-                .Setup(x => x.Map<UpdatedApprenticeshipModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()))
-                .Returns<ApprenticeshipUpdatedApprovedEvent>(model => new UpdatedApprenticeshipModel
+                .Setup(x => x.Map<UpdatedApprenticeshipApprovedModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()))
+                .Returns<ApprenticeshipUpdatedApprovedEvent>(model => new UpdatedApprenticeshipApprovedModel
                 {
                     ApprenticeshipId = model.ApprenticeshipId,
                     Uln = long.Parse(model.Uln),
@@ -227,8 +227,86 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         && ev.Uln.ToString() == approvalsEvent.Uln),
                     It.IsAny<PublishOptions>()), Times.Once);
 
+            mocker.Mock<IMapper>()
+                .Verify(x => x.Map<UpdatedApprenticeshipApprovedModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()), Times.Once);
+
         }
 
+
+        [Test]
+        public async Task Process_Apprenticeship_DataLock_Triage()
+        {
+            var approvalsEvent = new DataLockTriageApprovedEvent()
+            {
+                ApprenticeshipId = 1,
+                ApprovedOn = DateTime.Today,
+                TrainingCode = "ABC",
+                TrainingType = ProgrammeType.Standard,
+                PriceEpisodes = new PriceEpisode[1]
+                {
+                    new PriceEpisode
+                    {
+                        FromDate = DateTime.Today,
+                        ToDate = DateTime.Today.AddYears(1),
+                        Cost = 1000m
+                    }
+                }
+            };
+
+            mocker.Mock<IMapper>()
+                .Setup(x => x.Map<UpdatedApprenticeshipDataLockTriageModel>(It.IsAny<DataLockTriageApprovedEvent>()))
+                .Returns<DataLockTriageApprovedEvent>(model => new UpdatedApprenticeshipDataLockTriageModel
+                {
+                    ApprenticeshipId = model.ApprenticeshipId,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
+                });
+
+            mocker.Mock<IApprenticeshipDataLockTriageService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = approvalsEvent.ApprenticeshipId
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessApprenticeshipDataLockTriage(approvalsEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
+                        ev.Id == approvalsEvent.ApprenticeshipId),
+                    It.IsAny<PublishOptions>()), Times.Once);
+
+        }
+
+        [Test]
+        public async Task Process_Apprenticeship_Stopped_Correctly()
+        {
+            var approvalsEvent = new ApprenticeshipStoppedEvent()
+            {
+                ApprenticeshipId = 1,
+                AppliedOn = DateTime.Today,
+                StopDate = DateTime.Today
+            };
+
+            mocker.Mock<IApprenticeshipStoppedService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = approvalsEvent.ApprenticeshipId,
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessStoppedApprenticeship(approvalsEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
+                        ev.Id == approvalsEvent.ApprenticeshipId),
+                    It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipStoppedService>()
+                .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()), Times.Once);
+
+        }
 
     }
 }
