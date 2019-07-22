@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
@@ -12,5 +14,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
         Task<List<ApprenticeshipDuplicateModel>> GetDuplicates(long uln);
         Task Add(ApprenticeshipModel apprenticeship);
         Task StoreDuplicates(List<ApprenticeshipDuplicateModel> duplicates);
+        Task UpdateApprenticeship(ApprenticeshipModel updatedApprenticeship);
     }
 }

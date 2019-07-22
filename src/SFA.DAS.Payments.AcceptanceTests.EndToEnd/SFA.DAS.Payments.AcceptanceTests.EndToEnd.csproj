@@ -438,6 +438,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-688 - New Apprenticeship Approved.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature.cs">
+      <DependentUpon>PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-689 - Update Existing Apprenticeship.feature.cs">
+      <DependentUpon>PV2-689 - Update Existing Apprenticeship.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1592,6 +1607,18 @@
     <None Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-689 - Update Existing Apprenticeship.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-689 - Update Existing Apprenticeship.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Approvals Interface\PV2-688 - New Apprenticeship Approved.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
