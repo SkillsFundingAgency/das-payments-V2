@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using AutoMapper;
 using ESFA.DC.ILR.TestDataGenerator.Interfaces;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
@@ -34,7 +33,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         private readonly IStreamableKeyValuePersistenceService storageService;
         private readonly IPaymentsDataContext dataContext;
 
-        public IlrDcService(ITdgService tdgService, TestSession testSession, IJobService jobService, IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IStreamableKeyValuePersistenceService storageService, IPaymentsDataContext dataContext)
+        private readonly IApprenticeshipEarningsHistoryService appEarnHistoryService;
+
+        public IlrDcService(ITdgService tdgService,
+                            TestSession testSession,
+                            IJobService jobService,
+                            IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig,
+                            IStreamableKeyValuePersistenceService storageService,
+                            IPaymentsDataContext dataContext,
+                            IApprenticeshipEarningsHistoryService appEarnHistoryService)
         {
             this.tdgService = tdgService;
             this.testSession = testSession;
@@ -42,6 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             this.storageServiceConfig = storageServiceConfig;
             this.storageService = storageService;
             this.dataContext = dataContext;
+            this.appEarnHistoryService = appEarnHistoryService;
         }
 
         public async Task PublishLearnerRequest(List<Training> previousIlr, List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> clearCache)
@@ -72,6 +80,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
 
             await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learners);
+
+            if (learners.Any(l => l.EarningsHistory != null) && !testSession.AtLeastOneScenarioCompleted)
+            {
+                await appEarnHistoryService.DeleteHistoryAsync(testSession.Provider.Ukprn);
+                await appEarnHistoryService.AddHistoryAsync(2018, 4, learners);
+            }
 
             // this needs to be called here as the LearnRefNumber is updated to match the ILR in RefreshTestSessionLearnerFromIlr above
             await clearCache();

@@ -73,6 +73,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             GetPropertyInfo(period).SetValue(values, value);
         }
 
+        public static int ToEmployerAccountId(this string employer)
+        {
+            switch (employer)
+            {
+                case "employer 2":
+                    return 913703206;
+                default:
+                    return 154549452;
+            }
+        }
+
         private static PropertyInfo GetPropertyInfo(int period)
         {
             if (!periodisedProperties.TryGetValue(period, out var propertyInfo))
