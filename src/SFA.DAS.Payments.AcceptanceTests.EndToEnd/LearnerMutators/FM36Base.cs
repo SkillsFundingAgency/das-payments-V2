@@ -250,6 +250,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
+
+       
+
         private void MutateMainAimForLearner(IEnumerable<Aim> mainAims,
             List<MessageLearnerLearningDelivery> learningDeliveries)
         {
@@ -551,6 +554,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
         }
 
+        
+
         protected void SetupTnpAppFinRecord(MessageLearner messageLearner, MessageLearnerLearningDelivery delivery)
         {
             var appFinRecord =
@@ -651,7 +656,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 delivery.LearningDeliveryFAM = AddActToLearningDeliveryFam(priceEpisode.ContractType, delivery.LearnStartDate, delivery.LearnActEndDate, delivery.LearningDeliveryFAM.ToList(), aim.ActualDurationAsTimespan.HasValue);
             }
 
+            if (priceEpisode.CompletionHoldBackExemptionCode != 0)
+            {
+                AddExemptionCodeLearningDeliveryFAM(delivery, priceEpisode.CompletionHoldBackExemptionCode);
+            }
+
             delivery.AppFinRecord = appFinRecords.ToArray();
+        }
+
+        private void AddExemptionCodeLearningDeliveryFAM(MessageLearnerLearningDelivery delivery, int exemptionCode)
+        {
+            var deliveryFams = delivery.LearningDeliveryFAM.ToList();
+            deliveryFams.Add(new MessageLearnerLearningDeliveryLearningDeliveryFAM
+                             {
+                                 LearnDelFAMType = LearnDelFAMType.LDM.ToString(),
+                                 LearnDelFAMCode = exemptionCode.ToString()
+                             });
+            delivery.LearningDeliveryFAM = deliveryFams.ToArray();
         }
 
         private void AddNewTnpAppFinRecordForResidualTrainingPrice(List<MessageLearnerLearningDeliveryAppFinRecord> appFinRecords, Price priceEpisode)
