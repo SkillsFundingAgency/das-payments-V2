@@ -415,7 +415,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
-                var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(approvalsApprenticeship);
                 var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipStopDateChangedEvent()
                 {
                     ApprenticeshipId = approvalsApprenticeship.Id,
@@ -554,9 +553,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ? DateTime.UtcNow
                     : apprenticeshipSpec.AgreedOnDate.ToDate(),
                 IsLevyPayer = true,
-                StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StoppedOnDate)
-                    ? default(DateTime?)
-                    : apprenticeshipSpec.StoppedOnDate.ToDate()
+                StopDate = apprenticeshipSpec.StoppedOnDate.ToNullableDate()
             };
 
             return apprenticeshipModel;
